@@ -1,0 +1,17 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "9mm 충격탄"
+description = "저지력이 극대화된 특수 충격탄. 적에게 큰 경직을 주어 복도 뒤(2칸)로 밀쳐냅니다."
+damage = 1
+accuracy = 4
+penetration = 0
+knockback = 2
+slow = 0
+effect_type = 0
+effect_value = 0
+
+caliber = 0

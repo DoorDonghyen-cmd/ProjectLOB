@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dfasdasdfa"]
+
+[ext_resource type="Script" path="res://scenes/effects/bullet_trail.gd" id="1_script"]
+
+[node name="BulletTrail" type="Line2D"]
+width = 2.0
+default_color = Color(1, 0.8, 0.4, 1)
+script = ExtResource("1_script")

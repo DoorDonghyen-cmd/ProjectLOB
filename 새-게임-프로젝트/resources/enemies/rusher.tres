@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_rusher.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "폭동 돌격병"
+description = "근접 살상 무기를 쥐고 돌진하는 폭동 테러 대원. 방어력은 약하나 매우 빠른 기동력을 가집니다."
+icon = ExtResource("1_icon")
+archetype = 0
+max_hp = 8
+defense = 1
+pen_resist = 0
+evasion = 2
+speed = 3
+start_distance = 8

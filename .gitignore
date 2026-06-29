@@ -1,0 +1,28 @@
+# ═══════════════════════════════════════
+# Godot 4.x .gitignore
+# ═══════════════════════════════════════
+
+# Godot import cache & editor data
+.godot/
+
+# Mono/.NET build artifacts
+.mono/
+data_*/
+mono_crash.*.json
+
+# Export builds
+*.translation
+export_presets.cfg
+
+# ═══════════════════════════════════════
+# OS & Editor junk
+# ═══════════════════════════════════════
+.DS_Store
+Thumbs.db
+*.tmp
+*~
+
+# ═══════════════════════════════════════
+# AI Agent working files (optional)
+# ═══════════════════════════════════════
+.agents/skills/*/scratch/

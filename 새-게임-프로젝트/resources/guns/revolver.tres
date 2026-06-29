@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "전술 리볼버"
+description = "요원들이 범용적으로 사용하는 신뢰도 높은 부무장. 4발의 탄창 용량과 표준적인 재장전 템포를 제공합니다."
+magazine_capacity = 4
+magazine_structure = 0
+reload_turns = 1
+passive_dmg_bonus = 0
+passive_pen_bonus = 0
+passive_knockback_bonus = 0

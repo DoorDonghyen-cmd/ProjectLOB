@@ -1,0 +1,17 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "5.56mm 철갑탄"
+description = "장갑 관통 능력이 뛰어난 전술 탄환. 방탄조끼를 관통하며, 피격된 적의 방어력(DEF)을 영구히 파쇄합니다."
+damage = 2
+accuracy = 5
+penetration = 4
+knockback = 0
+slow = 0
+effect_type = 1
+effect_value = 2
+
+caliber = 1

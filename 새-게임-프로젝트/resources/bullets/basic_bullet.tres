@@ -1,0 +1,17 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "9mm 일반탄"
+description = "대인용 저지력을 지닌 탄환. 특수 방탄 장비가 없는 적에게 순수 물리 대미지를 입힙니다."
+damage = 3
+accuracy = 7
+penetration = 0
+knockback = 0
+slow = 0
+effect_type = 0
+effect_value = 0
+
+caliber = 0

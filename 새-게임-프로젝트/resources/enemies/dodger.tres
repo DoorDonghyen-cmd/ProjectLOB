@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_dodger.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "나노 침투병"
+description = "광학 은폐 슈트를 사용하여 조준을 흐트러뜨리는 특수 요원. 명중 요구치(EVA)가 매우 높습니다."
+icon = ExtResource("1_icon")
+archetype = 2
+max_hp = 6
+defense = 1
+pen_resist = 0
+evasion = 6
+speed = 2
+start_distance = 10

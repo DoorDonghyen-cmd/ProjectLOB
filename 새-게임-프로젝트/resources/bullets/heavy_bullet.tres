@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "7.62mm 중화력탄"
+description = "결정적 일격을 위해 지급되는 강력한 중화기 탄환. 직전에 격발한 탄과 구경이 다를 때 추가 대미지 2가 보너스로 적용됩니다."
+damage = 4
+accuracy = 6
+penetration = 1
+knockback = 0
+slow = 0
+effect_type = 5
+effect_value = 2
+caliber = 2

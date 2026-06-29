@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_tank.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "진압 방패병"
+description = "전술 방탄 진압 방패를 장착한 중무장 대원. 기동력은 느리나 높은 방어력과 관통 저항으로 압박합니다."
+icon = ExtResource("1_icon")
+archetype = 1
+max_hp = 12
+defense = 5
+pen_resist = 2
+evasion = 1
+speed = 1
+start_distance = 12

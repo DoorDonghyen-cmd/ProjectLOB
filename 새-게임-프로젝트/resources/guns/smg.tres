@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "전술 기관단총 (SMG)"
+description = "화력 투사 위주의 경량 기관단총. 대용량 탄창(6발)과 약실 적재(+1발)를 제공하지만, 속사 제어로 인해 기본 대미지가 1 감소합니다."
+magazine_capacity = 6
+has_chamber = true
+reload_turns = 2
+passive_dmg_bonus = -1
+passive_pen_bonus = 0
+passive_knockback_bonus = 0
+passive_acc_bonus = 0

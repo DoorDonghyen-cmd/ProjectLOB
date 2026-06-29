@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "정밀 지정사수소총 (DMR)"
+description = "단발 정밀 사격총. 3발의 적은 용량과 약실 적재(+1발)를 가졌으며, 패시브 명중률 보정(+1)이 적용되어 회피가 높은 침투 적 처치에 유리합니다."
+magazine_capacity = 3
+has_chamber = true
+reload_turns = 1
+passive_dmg_bonus = 0
+passive_pen_bonus = 0
+passive_knockback_bonus = 0
+passive_acc_bonus = 1
