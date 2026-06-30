@@ -8,7 +8,6 @@ var data: EnemyData          ## 원본 데이터 참조
 
 var current_hp: int
 var current_def: int
-var current_pres: int
 var current_evasion: int
 var current_speed: int
 var current_distance: int
@@ -27,7 +26,6 @@ func _init(enemy_data: EnemyData) -> void:
 	data = enemy_data
 	current_hp = data.max_hp
 	current_def = data.defense
-	current_pres = data.pen_resist
 	current_evasion = data.evasion
 	current_speed = data.speed
 	current_distance = data.start_distance
@@ -121,12 +119,10 @@ func _shift_stance() -> void:
 	if current_stance == Enums.EnemyStance.IRON_SHIELD:
 		current_stance = Enums.EnemyStance.ACTIVE_DODGER
 		current_def = 0
-		current_pres = 0
 		current_evasion = 7
 		current_speed = 3
 	elif current_stance == Enums.EnemyStance.ACTIVE_DODGER:
 		current_stance = Enums.EnemyStance.IRON_SHIELD
-		current_def = 6
-		current_pres = 3
+		current_def = 4
 		current_evasion = 1
 		current_speed = 1

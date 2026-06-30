@@ -8,7 +8,7 @@ extends Node
 signal encounter_started(enemy_list: Array[EnemyInstance])
 signal loading_phase_started()
 signal bullet_fired(bullet: BulletData, hit: bool, damage: int)
-signal enemy_damaged(enemy_inst: EnemyInstance, remaining_hp: int)
+signal enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int)
 signal enemy_moved(enemy_inst: EnemyInstance, new_distance: int, speed_used: int)
 signal all_enemies_moved()
 signal enemy_knocked_back(enemy_inst: EnemyInstance, new_distance: int, amount: int)
@@ -145,10 +145,10 @@ func _fire_internal(target: EnemyInstance) -> void:
 	if hit:
 		# ── 2. 대미지 계산 ──
 		var damage := DamageCalculator.calculate_damage(
-			bullet, target.current_def, target.current_pres, gun
+			bullet, target.current_def, gun
 		)
 		var breakdown := DamageCalculator.damage_breakdown(
-			bullet, target.current_def, target.current_pres, gun
+			bullet, target.current_def, gun
 		)
 
 		# ── 2.5 구경 다름 조건부 추가피해 ──
@@ -164,7 +164,7 @@ func _fire_internal(target: EnemyInstance) -> void:
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미" % [bullet.display_name, target.data.display_name, damage])
 		combat_log.emit("   %s" % breakdown)
 		bullet_fired.emit(bullet, true, damage)
-		enemy_damaged.emit(target, target.current_hp)
+		enemy_damaged.emit(target, damage, target.current_hp)
 
 		# ── 4. 피격 후 효과 ──
 		_apply_post_hit_effects(bullet, target, is_first, is_last)
@@ -177,19 +177,19 @@ func _fire_internal(target: EnemyInstance) -> void:
 			if target_idx != -1:
 				if target_idx + 1 < alive_list.size():
 					var e2: EnemyInstance = alive_list[target_idx + 1]
-					var dmg2: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e2.current_def, e2.current_pres, gun) * 0.5)))
+					var dmg2: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e2.current_def, gun) * 0.5)))
 					e2.apply_damage(dmg2)
 					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (50%% 감쇄)" % [e2.data.display_name, dmg2])
-					enemy_damaged.emit(e2, e2.current_hp)
+					enemy_damaged.emit(e2, dmg2, e2.current_hp)
 					if e2.is_dead():
 						combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
 						enemy_killed.emit(e2)
 				if target_idx + 2 < alive_list.size():
 					var e3: EnemyInstance = alive_list[target_idx + 2]
-					var dmg3: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e3.current_def, e3.current_pres, gun) * 0.25)))
+					var dmg3: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e3.current_def, gun) * 0.25)))
 					e3.apply_damage(dmg3)
 					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (75%% 감쇄)" % [e3.data.display_name, dmg3])
-					enemy_damaged.emit(e3, e3.current_hp)
+					enemy_damaged.emit(e3, dmg3, e3.current_hp)
 					if e3.is_dead():
 						combat_log.emit("💀 [%s] 처치!" % e3.data.display_name)
 						enemy_killed.emit(e3)

@@ -17,10 +17,8 @@ extends Resource
 @export_group("전투 스탯")
 ## 체력 (HP) — 0이 되면 처치
 @export_range(1, 50) var max_hp: int = 10
-## 방어 (DEF) — 받는 대미지에서 차감
+## 방어 (DEF) — 관통 게이트 임계값
 @export_range(0, 10) var defense: int = 1
-## 관통저항 (PRES) — 총알의 관통력을 상쇄
-@export_range(0, 5) var pen_resist: int = 0
 ## 회피임계값 (EVA) — 이 수치 이상의 ACC가 필요
 @export_range(0, 8) var evasion: int = 3
 

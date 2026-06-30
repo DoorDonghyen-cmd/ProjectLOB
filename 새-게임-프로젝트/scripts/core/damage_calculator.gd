@@ -29,7 +29,6 @@ static func check_hit(bullet: BulletData, enemy_evasion: int, gun: GunData = nul
 static func calculate_damage(
 	bullet: BulletData,
 	enemy_def: int,
-	enemy_pres: int,
 	gun: GunData = null
 ) -> int:
 	var total_dmg := bullet.damage
@@ -40,9 +39,10 @@ static func calculate_damage(
 		total_dmg += gun.passive_dmg_bonus
 		total_pen += gun.passive_pen_bonus
 
-	var effective_pen := maxi(total_pen - enemy_pres, 0)
-	var raw_damage := total_dmg + effective_pen - enemy_def
-	return maxi(raw_damage, 0)
+	# 이진 관통 게이트: PEN < DEF 이면 0
+	if total_pen < enemy_def:
+		return 0
+	return total_dmg
 
 
 ## 넉백량 계산 (총 패시브 포함)
@@ -57,7 +57,6 @@ static func calculate_knockback(bullet: BulletData, gun: GunData = null) -> int:
 static func damage_breakdown(
 	bullet: BulletData,
 	enemy_def: int,
-	enemy_pres: int,
 	gun: GunData = null
 ) -> String:
 	var total_dmg := bullet.damage
@@ -66,11 +65,9 @@ static func damage_breakdown(
 		total_dmg += gun.passive_dmg_bonus
 		total_pen += gun.passive_pen_bonus
 
-	var effective_pen := maxi(total_pen - enemy_pres, 0)
-	var raw_damage := total_dmg + effective_pen - enemy_def
-	var final_damage := maxi(raw_damage, 0)
+	var is_penetrated := total_pen >= enemy_def
+	var final_damage := total_dmg if is_penetrated else 0
 
-	return "DMG(%d) + PEN(%d-%d=%d) - DEF(%d) = %d → %d" % [
-		total_dmg, total_pen, enemy_pres, effective_pen,
-		enemy_def, raw_damage, final_damage
+	return "PEN(%d) vs DEF(%d) -> %s | DMG: %d" % [
+		total_pen, enemy_def, "관통" if is_penetrated else "도탄(0)", final_damage
 	]

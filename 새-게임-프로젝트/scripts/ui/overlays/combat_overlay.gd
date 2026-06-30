@@ -787,9 +787,23 @@ func start_combat(gun_data: GunData, enemy_datas: Array[EnemyData], cm: CombatMa
 	
 	# 시뮬레이터 시작
 	var enemy_data_list: Array[EnemyData] = []
+	var floor_num := run_manager.current_floor if run_manager else 1
+	var dist_modifier := 0
+	if floor_num <= 3:
+		dist_modifier = 4
+	elif floor_num <= 7:
+		dist_modifier = 2
+	elif floor_num >= 15:
+		dist_modifier = -2
+
+	if dist_modifier > 0:
+		add_combat_log("[color=#88ff88]ℹ️ 초반 보너스: 적 소환 거리가 %dm 멀어집니다.[/color]" % dist_modifier)
+	elif dist_modifier < 0:
+		add_combat_log("[color=#ff8888]ℹ️ 종반 패널티: 적 소환 거리가 %dm 좁혀집니다.[/color]" % abs(dist_modifier))
+
 	for ed in enemy_datas:
 		var temp_ed := ed.duplicate()
-		temp_ed.start_distance = maxi(ed.start_distance, 4)
+		temp_ed.start_distance = maxi(ed.start_distance + dist_modifier, 4)
 		enemy_data_list.append(temp_ed)
 	combat_manager.start_encounter(gun_data, enemy_data_list, run_manager.active_relics)
 
@@ -1001,13 +1015,54 @@ func _on_combat_log(msg: String) -> void:
 	add_combat_log(msg)
 
 
-func _on_enemy_damaged(enemy_inst: EnemyInstance, remaining_hp: int) -> void:
+# 대미지/도탄/빗나감 플로팅 텍스트 소환
+func _spawn_damage_floating_text(es: Control, damage_or_miss: int) -> void:
+	if not es or not is_instance_valid(es):
+		return
+		
+	var label := Label.new()
+	if damage_or_miss == -1:
+		label.text = "빗나감!"
+		label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+	elif damage_or_miss == 0:
+		label.text = "도탄!"
+		label.add_theme_color_override("font_color", Color(0.7, 0.8, 1.0))
+	else:
+		label.text = "-%d" % damage_or_miss
+		label.add_theme_color_override("font_color", Color(1.0, 0.35, 0.35))
+		
+	label.add_theme_font_size_override("font_size", 24 if damage_or_miss >= 0 else 22)
+	
+	# 아웃라인으로 가독성 확보
+	label.add_theme_constant_override("outline_size", 6)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	
+	# 적 스프라이트 상단 중앙 쯤에 소환
+	var spawn_pos := es.position + Vector2(es.size.x / 2.0 - 30.0, -40.0)
+	label.position = spawn_pos
+	
+	_ingame_area.add_child(label)
+	
+	var tween := create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(label, "position:y", spawn_pos.y - 60.0, 0.8)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "modulate:a", 0.0, 0.8)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_IN)
+		
+	tween.chain().tween_callback(label.queue_free)
+
+
+func _on_enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int) -> void:
 	_enemy_hp_bar.value = remaining_hp
 	_enemy_hp_label.text = "%d/%d" % [remaining_hp, enemy_inst.data.max_hp]
 
 	# Juice: 피격된 적 스프라이트를 식별하여 개별 피격 셰이크 및 붉은색 플래시 연출 적용
 	var es = _enemy_sprites.get(enemy_inst)
 	if es and is_instance_valid(es):
+		_spawn_damage_floating_text(es, damage)
 		_spawn_hit_particles(es)
 		var orig_pos: Vector2 = es.position
 		es.position.x += 15.0  # 뒤로 밀림
@@ -1285,6 +1340,21 @@ func _update_action_buttons() -> void:
 	
 	if _is_targeting_mode:
 		_fire_btn.text = "조준 중 (대상을 탭하세요)"
+	elif has_ammo and combat_manager.enemy:
+		var next_bullet := combat_manager.magazine.peek()
+		var target := combat_manager.enemy
+		
+		var is_hit := DamageCalculator.check_hit(next_bullet, target.current_evasion, _current_gun_data)
+		var next_pen := next_bullet.penetration
+		if _current_gun_data:
+			next_pen += _current_gun_data.passive_pen_bonus
+			
+		if not is_hit:
+			_fire_btn.text = "⚠️ 빗나감! (격발)"
+		elif next_pen < target.current_def:
+			_fire_btn.text = "🛡️ 도탄! (격발)"
+		else:
+			_fire_btn.text = "🔫 격발"
 	else:
 		_fire_btn.text = "격발" 
 
@@ -1576,6 +1646,7 @@ func _on_bullet_fired(bullet: BulletData, hit: bool, damage: int) -> void:
 		if not hit:
 			target_x += 250.0 # 빗나가면 뒤로 뚫고 지나감
 			target_y += randf_range(-60.0, 60.0) # 살짝 빗나감
+			_spawn_damage_floating_text(first_enemy_sprite, -1)
 			
 	trail.add_point(Vector2(target_x, target_y))
 	_ingame_area.add_child(trail)
