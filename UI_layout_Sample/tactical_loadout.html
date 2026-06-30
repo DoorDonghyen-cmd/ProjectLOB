@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Tactical Loadout</title>
+<style>
+    /* 16bit 픽셀 폰트 (눈누 CDN) */
+    @font-face {
+        font-family: 'DungGuenMo';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGuenMo.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    :root {
+        --bg-charcoal: #111115;
+        --neon-gold: #d4af37;
+        --neon-gold-dim: rgba(212, 175, 55, 0.3);
+        --text-main: #e0e0e0;
+        --text-dim: #777780;
+        --alert-red: #ff4444;
+        --alert-red-bg: rgba(255, 68, 68, 0.1);
+        --buff-green: #00ff00;
+        --panel-bg: #1a1a20;
+    }
+
+    * {
+        box-sizing: border-box;
+        image-rendering: pixelated;
+        -webkit-font-smoothing: none;
+        user-select: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: #000;
+        color: var(--text-main);
+        font-family: 'DungGuenMo', 'Courier New', monospace;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        letter-spacing: 1px;
+    }
+
+    /* 960x540 콤팩트 핏 컨테이너 */
+    .loadout-container {
+        width: 960px;
+        height: 540px;
+        background-color: var(--bg-charcoal);
+        border: 2px solid var(--neon-gold);
+        display: flex;
+        flex-direction: column;
+        padding: 16px;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.15), inset 0 0 10px rgba(0,0,0,0.8);
+        position: relative;
+    }
+
+    /* 헤더 */
+    .header {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid var(--neon-gold);
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+    }
+    .header h1 {
+        color: var(--neon-gold);
+        font-size: 1.4rem;
+        text-shadow: 2px 2px 0 #000;
+    }
+    .header .scan-line {
+        flex-grow: 1;
+        height: 2px;
+        background: repeating-linear-gradient(90deg, var(--neon-gold-dim), var(--neon-gold-dim) 4px, transparent 4px, transparent 8px);
+        margin-left: 16px;
+    }
+
+    /* 메인 레이아웃 (HBox) */
+    .main-content {
+        display: flex;
+        gap: 16px;
+        flex: 1;
+        min-height: 0; 
+    }
+
+    /* 좌측 40%: 로스터 & 렐릭 */
+    .left-panel {
+        flex: 0 0 38%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* 간격 축소 */
+    }
+
+    .section-title {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+    }
+
+    /* 무기 리스트 (VBox) */
+    .weapon-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px; /* 겹침 방지를 위해 카드 간 간격 축소 */
+    }
+
+    .weapon-card {
+        background: var(--panel-bg);
+        border: 2px solid #333;
+        padding: 8px 12px; /* 상하 패딩 축소 */
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+    }
+    .weapon-card:hover {
+        border-color: #888;
+        background: #222;
+    }
+    .weapon-card.active {
+        border-color: var(--neon-gold);
+        background: rgba(212, 175, 55, 0.1);
+        box-shadow: inset 2px 0 0 var(--neon-gold);
+    }
+    .weapon-icon { font-size: 1.5rem; margin-right: 12px; }
+    .weapon-name-kor { font-size: 1.1rem; color: #fff; margin-bottom: 2px; display: block; }
+    .weapon-name-eng { font-size: 0.8rem; color: var(--neon-gold); }
+
+    /* 렐릭 토글 (HBox) */
+    .relic-container {
+        background: var(--panel-bg);
+        border: 2px solid #333;
+        padding: 8px 12px; /* 상하 패딩 축소 */
+        display: flex;
+        justify-content: space-between;
+    }
+    .relic-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        position: relative;
+        opacity: 0.5;
+        transition: opacity 0.2s;
+    }
+    .relic-item:hover { opacity: 0.8; }
+    .relic-item.active { opacity: 1; }
+    .relic-item.active .relic-icon {
+        border-color: var(--neon-gold);
+        color: var(--neon-gold);
+    }
+    .relic-icon {
+        width: 36px; height: 36px;
+        border: 2px solid #555;
+        display: flex; justify-content: center; align-items: center;
+        font-size: 1.1rem; background: #000;
+    }
+    .relic-name { font-size: 0.75rem; color: #aaa; }
+
+    /* 우측 60%: 전술 프로필 */
+    .right-panel {
+        flex: 0 0 calc(62% - 16px);
+        display: flex;
+        flex-direction: column;
+        background: var(--panel-bg);
+        border: 2px solid #333;
+        padding: 12px 16px;
+        position: relative;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .gun-render-box {
+        width: 100%; height: 100px; /* 높이 약간 축소 */
+        background: #000; border: 2px solid #444;
+        display: flex; justify-content: center; align-items: center;
+        margin-bottom: 12px;
+        position: relative;
+        box-shadow: inset 0 0 20px rgba(0,0,0,1);
+    }
+    .gun-render-box::after {
+        content: 'GUN RENDER (PIXEL)';
+        position: absolute; color: #333; font-size: 1.5rem; letter-spacing: 2px;
+    }
+
+    /* 스탯 인포 그리드 */
+    .stat-row {
+        display: flex; align-items: center; margin-bottom: 8px;
+        font-size: 1rem;
+    }
+    .stat-label { width: 140px; color: var(--text-dim); }
+    
+    .capacity-slots { display: flex; gap: 4px; }
+    .cap-slot {
+        width: 18px; height: 18px; border: 2px solid var(--neon-gold);
+        background: rgba(212, 175, 55, 0.2);
+    }
+    
+    .stat-value { color: #fff; display: flex; align-items: center; gap: 8px;}
+    .stat-buff { color: var(--buff-green); font-size: 0.9rem; font-weight: bold; }
+
+    /* 시그니처 & 페널티 박스 */
+    .info-box {
+        padding: 10px; border-left: 4px solid; margin-top: auto; margin-bottom: 8px;
+        background: rgba(0,0,0,0.4); font-size: 0.9rem; line-height: 1.4;
+    }
+    .info-box.passive {
+        border-color: var(--neon-gold); color: var(--neon-gold);
+    }
+    .info-box.penalty {
+        border-color: var(--alert-red); color: var(--alert-red); background: var(--alert-red-bg);
+        margin-bottom: 0;
+    }
+    .box-title { font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;}
+
+    /* 하단 작전 개시 바 */
+    .action-bar {
+        margin-top: 12px;
+        height: 48px; /* 높이 약간 축소 */
+        flex-shrink: 0;
+    }
+    .btn-start {
+        width: 100%; height: 100%;
+        background: #000; border: 2px solid var(--neon-gold);
+        color: var(--neon-gold); font-family: 'DungGuenMo', monospace;
+        font-size: 1.2rem; letter-spacing: 2px; cursor: pointer;
+        display: flex; justify-content: center; align-items: center; gap: 12px;
+        transition: all 0.2s;
+    }
+    .btn-start:hover {
+        background: var(--neon-gold); color: #000;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    .btn-start:active { transform: translateY(2px); }
+
+</style>
+</head>
+<body>
+
+<div class="loadout-container">
+    <div class="header">
+        <h1>🛠️ AGENT TACTICAL LOADOUT</h1>
+        <div class="scan-line"></div>
+    </div>
+
+    <div class="main-content">
+        <!-- 좌측: 무기 리스트 & 렐릭 -->
+        <div class="left-panel">
+            <div class="section-title">▶ FIREARM SELECTION</div>
+            <div class="weapon-list">
+                <div class="weapon-card active" data-weapon="workhorse">
+                    <div class="weapon-icon">🔫</div>
+                    <div>
+                        <span class="weapon-name-kor">표준형</span>
+                        <span class="weapon-name-eng">WORKHORSE</span>
+                    </div>
+                </div>
+                <div class="weapon-card" data-weapon="marksman">
+                    <div class="weapon-icon">🎯</div>
+                    <div>
+                        <span class="weapon-name-kor">저격형</span>
+                        <span class="weapon-name-eng">MARKSMAN</span>
+                    </div>
+                </div>
+                <div class="weapon-card" data-weapon="bruiser">
+                    <div class="weapon-icon">💥</div>
+                    <div>
+                        <span class="weapon-name-kor">돌격형</span>
+                        <span class="weapon-name-eng">BRUISER</span>
+                    </div>
+                </div>
+                <div class="weapon-card" data-weapon="tempo">
+                    <div class="weapon-icon">⚡</div>
+                    <div>
+                        <span class="weapon-name-kor">속사형</span>
+                        <span class="weapon-name-eng">TEMPO</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">▶ TACTICAL RELICS</div>
+            <div class="relic-container">
+                <div class="relic-item" data-relic="glove" title="장전 속도 증가">
+                    <div class="relic-icon">🧤</div>
+                    <div class="relic-name">전술 장갑</div>
+                </div>
+                <div class="relic-item" data-relic="valve" title="탄창 한도 +1">
+                    <div class="relic-icon">🎛️</div>
+                    <div class="relic-name">압력 밸브</div>
+                </div>
+                <div class="relic-item" data-relic="goggles" title="예고창 시야 +1">
+                    <div class="relic-icon">🥽</div>
+                    <div class="relic-name">스마트 고글</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 우측: 프로필 패널 -->
+        <div class="right-panel" id="profile-panel">
+            <div class="gun-render-box"></div>
+            
+            <div class="stat-row">
+                <div class="stat-label">■ CAPACITY SLOTS</div>
+                <div class="capacity-slots" id="ui-cap-slots">
+                    <!-- JS로 렌더링 -->
+                </div>
+            </div>
+            
+            <div class="stat-row">
+                <div class="stat-label">■ AMMO SIZE</div>
+                <div class="stat-value">🔋 <span id="ui-ammo">4</span> <span class="stat-buff" id="buff-ammo"></span></div>
+            </div>
+            
+            <div class="stat-row">
+                <div class="stat-label">■ PREVIEW SIZE</div>
+                <div class="stat-value">👁️ <span id="ui-prev">2</span> <span class="stat-buff" id="buff-prev"></span></div>
+            </div>
+
+            <div class="stat-row" style="margin-bottom: 12px;">
+                <div class="stat-label">■ CALIBERS</div>
+                <div class="stat-value" id="ui-calibers" style="color:var(--neon-gold); font-size: 0.9rem;"></div>
+            </div>
+
+            <div class="info-box passive">
+                <div class="box-title">▶ SIGNATURE PASSIVE RULE</div>
+                <div id="ui-passive"></div>
+            </div>
+            
+            <div class="info-box penalty">
+                <div class="box-title">⚠️ CRITICAL PENALTY RISK</div>
+                <div id="ui-penalty"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <button class="btn-start">🚀 봉쇄 구역 작전 개시</button>
+    </div>
+</div>
+
+<script>
+    // 무기 데이터
+    const weaponData = {
+        workhorse: { cap: 4, ammo: 4, prev: 2, calibers: "[9mm] [45ACP]", passive: "- 균형잡힌 스탯 / 범용 파츠 시너지 우수", penalty: "- 특화된 극한 데미지 빌드 구성 어려움" },
+        marksman: { cap: 3, ammo: 2, prev: 4, calibers: "[7.62mm] [.50BMG]", passive: "- 첫 격발 시 무조건 ACC+4 / 초장거리 관통 보너스", penalty: "- 근접(Close-Range) 타겟팅 시 데미지 반감" },
+        bruiser: { cap: 5, ammo: 8, prev: 1, calibers: "[12Gauge] [Slug]", passive: "- 거리 1 넉백 확정 / 타겟 방어력(DEF) 무시 확률", penalty: "- 기본 명중(ACC) 게이트 매우 낮음 / 원거리 불가" },
+        tempo: { cap: 3, ammo: 10, prev: 3, calibers: "[9mm] [5.56mm]", passive: "- 동일 구경 연사 시 리듬 보너스 중첩 (Combo)", penalty: "- 기본 관통력(PEN) 0 고정 / 장갑형 적에 취약" }
+    };
+
+    let currentWeapon = 'workhorse';
+    const activeRelics = { glove: false, valve: false, goggles: false };
+
+    const cards = document.querySelectorAll('.weapon-card');
+    const relicItems = document.querySelectorAll('.relic-item');
+    const profilePanel = document.getElementById('profile-panel');
+    
+    function updateUI() {
+        const data = weaponData[currentWeapon];
+        
+        profilePanel.style.opacity = '0';
+        
+        setTimeout(() => {
+            let slotHtml = '';
+            const totalCap = activeRelics.valve ? data.cap + 1 : data.cap;
+            for(let i=0; i<totalCap; i++) {
+                slotHtml += `<div class="cap-slot" ${i >= data.cap ? 'style="border-color:#00ff00; background:rgba(0,255,0,0.1);"' : ''}></div>`;
+            }
+            document.getElementById('ui-cap-slots').innerHTML = slotHtml;
+
+            document.getElementById('ui-ammo').textContent = data.ammo;
+            document.getElementById('ui-prev').textContent = data.prev;
+            document.getElementById('ui-calibers').textContent = data.calibers;
+            document.getElementById('ui-passive').textContent = data.passive;
+            document.getElementById('ui-penalty').textContent = data.penalty;
+
+            document.getElementById('buff-ammo').textContent = activeRelics.valve ? '→ +2' : '';
+            document.getElementById('buff-prev').textContent = activeRelics.goggles ? '→ +1' : '';
+
+            profilePanel.style.opacity = '1';
+        }, 150);
+    }
+
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            cards.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            currentWeapon = this.getAttribute('data-weapon');
+            updateUI();
+        });
+    });
+
+    relicItems.forEach(item => {
+        item.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const relic = this.getAttribute('data-relic');
+            activeRelics[relic] = this.classList.contains('active');
+            updateUI();
+        });
+    });
+
+    document.querySelector('.btn-start').addEventListener('click', () => {
+        document.body.style.backgroundColor = 'var(--neon-gold)';
+        setTimeout(() => document.body.style.backgroundColor = '#000', 100);
+    });
+
+    updateUI();
+</script>
+</body>
+</html>

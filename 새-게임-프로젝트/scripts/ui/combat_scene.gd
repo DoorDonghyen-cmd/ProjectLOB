@@ -44,6 +44,8 @@ var _rm: RunManager = RunManager.new()
 var _title_overlay: TitleOverlay
 var _map_overlay: MapOverlay
 var _maintenance_overlay: MaintenanceOverlay
+var _loadout_overlay: LoadoutOverlay
+var _bullet_gallery_overlay: BulletGalleryOverlay
 var _combat_margin: MarginContainer
 var _combat_overlay: CombatOverlay
 var _debriefing_overlay: DebriefingOverlay
@@ -51,6 +53,7 @@ var _camera: Camera2D
 
 # ── 현재 상태 ──
 var _current_gun_data: GunData
+var _is_shortcut_mode: bool = false
 
 
 func _ready() -> void:
@@ -85,8 +88,23 @@ func _build_ui() -> void:
 	# 3. Maintenance Overlay 생성
 	_maintenance_overlay = MaintenanceOverlay.new()
 	add_child(_maintenance_overlay)
+	_maintenance_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_maintenance_overlay.initialize(self, _rm)
 	_maintenance_overlay.visible = false
+
+	# 3-2. Loadout Overlay 생성
+	_loadout_overlay = LoadoutOverlay.new()
+	add_child(_loadout_overlay)
+	_loadout_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_loadout_overlay.initialize(self, _rm)
+	_loadout_overlay.visible = false
+
+	# 3-3. Bullet Gallery Overlay 생성
+	_bullet_gallery_overlay = BulletGalleryOverlay.new()
+	add_child(_bullet_gallery_overlay)
+	_bullet_gallery_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_bullet_gallery_overlay.initialize(self)
+	_bullet_gallery_overlay.visible = false
 
 	# 4. Debriefing Overlay 생성
 	_debriefing_overlay = DebriefingOverlay.new()
@@ -116,12 +134,13 @@ func set_current_gun(gun: GunData) -> void:
 
 
 func force_goggles_on_title() -> void:
-	if _title_overlay:
-		_title_overlay.chk_goggles.button_pressed = true
+	if _loadout_overlay:
+		_loadout_overlay.active_relics.goggles = true
+		_loadout_overlay._refresh_stats_ui()
 
 
 func is_goggles_enabled() -> bool:
-	return _title_overlay and _title_overlay.chk_goggles.button_pressed
+	return _loadout_overlay and _loadout_overlay.active_relics.goggles
 
 
 func trigger_camera_shake(intensity: float = 8.0, duration: float = 0.2) -> void:
@@ -135,9 +154,57 @@ func trigger_camera_shake(intensity: float = 8.0, duration: float = 0.2) -> void
 
 
 func start_run_from_title() -> void:
-	_rm.start_new_run(_bullets_basic, _bullets_ap, _bullets_kb)
+	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	_title_overlay.visible = false
 	_show_map_screen()
+
+
+func trigger_parts_test_ui() -> void:
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	var test_node = RunManager.RunNode.new(999, "무기 캐비닛 (테스트)", "숏컷 테스트 구역", [])
+	_start_maintenance_phase(test_node)
+
+
+func show_loadout_screen() -> void:
+	_title_overlay.visible = false
+	_loadout_overlay.open_loadout_overlay()
+
+
+func trigger_loadout_test_ui() -> void:
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_loadout_overlay.open_loadout_overlay()
+
+
+func trigger_bullet_gallery_ui() -> void:
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_bullet_gallery_overlay.open_gallery()
+
+
+func handle_gallery_closed() -> void:
+	_is_shortcut_mode = false
+	_show_title_screen()
+
+
+func handle_loadout_finished() -> void:
+	if _is_shortcut_mode:
+		_is_shortcut_mode = false
+		_show_title_screen()
+		return
+		
+	# 실제 런(Run) 개시
+	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	_show_map_screen()
+
+
+func sync_relics_from_loadout(relics_map: Dictionary) -> void:
+	var list: Array[String] = []
+	if relics_map.gloves: list.append("tactical_gloves")
+	if relics_map.valve: list.append("gas_valve")
+	if relics_map.goggles: list.append("smart_sensor_goggles")
+	_rm.active_relics = list
 
 
 func _show_title_screen() -> void:
@@ -224,13 +291,7 @@ func _start_combat_phase(enemy_datas: Array[EnemyData]) -> void:
 	_cm.name = "CombatManager"
 	add_child(_cm)
 	
-	# 렐릭 동기화
-	var relics: Array[String] = []
-	if _title_overlay.chk_gloves.button_pressed: relics.append("tactical_gloves")
-	if _title_overlay.chk_valve.button_pressed: relics.append("gas_valve")
-	if _title_overlay.chk_goggles.button_pressed: relics.append("smart_sensor_goggles")
-	_rm.active_relics = relics
-	
+	# 렐릭 동기화는 이제 요원 작전 준비실(LoadoutOverlay) 작전 개시 시점에 _rm.active_relics로 연동 완료되었습니다.
 	_combat_overlay.start_combat(_current_gun_data, enemy_datas, _cm)
 
 
@@ -239,6 +300,11 @@ func _start_maintenance_phase(node: RunManager.RunNode) -> void:
 
 
 func handle_maintenance_finished() -> void:
+	if _is_shortcut_mode:
+		_is_shortcut_mode = false
+		_show_title_screen()
+		return
+		
 	_rm.current_floor += 1
 	if _rm.current_floor > 20:
 		_show_debriefing(true)

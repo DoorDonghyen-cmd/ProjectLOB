@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "관통 저격탄"
+description = "초고장력 운동 에너지를 지녀, 일렬로 늘어선 타겟 뒤편의 다수 적까지 함께 뚫고 지나가 피해를 입힙니다."
+damage = 4
+accuracy = 7
+penetration = 3
+knockback = 0
+slow = 0
+effect_type = 6
+effect_value = 1
+caliber = 2

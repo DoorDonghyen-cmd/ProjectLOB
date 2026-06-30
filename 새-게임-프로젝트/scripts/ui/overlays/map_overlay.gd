@@ -57,9 +57,18 @@ func _build_ui() -> void:
 	main_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(main_vbox)
 
-	_map_floor_label = parent_scene.make_label("빌딩 침투 지도 (1층)", 28, parent_scene.C_ACCENT)
-	_map_floor_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	main_vbox.add_child(_map_floor_label)
+	# 맵 상단 헤더 컨테이너
+	var map_header_hbox := HBoxContainer.new()
+	main_vbox.add_child(map_header_hbox)
+
+	_map_floor_label = parent_scene.make_label("빌딩 침투 지도 (1층)", 24, parent_scene.C_ACCENT)
+	_map_floor_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	map_header_hbox.add_child(_map_floor_label)
+	
+	var btn_exit_run: Button = parent_scene.make_button("❌ 작전 포기", _on_exit_run_pressed, parent_scene.C_DANGER)
+	btn_exit_run.custom_minimum_size = Vector2(120, 36)
+	btn_exit_run.add_theme_font_size_override("font_size", 13)
+	map_header_hbox.add_child(btn_exit_run)
 
 	var desc: Label = parent_scene.make_label("다음 진입할 구역(방 노드)을 선택하세요.", 15, parent_scene.C_DIM)
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -296,6 +305,11 @@ func _on_route_selected(route: String) -> void:
 	_map_route_selector.visible = false
 	visible = false
 	parent_scene.handle_route_selected(_selected_node, route)
+
+
+func _on_exit_run_pressed() -> void:
+	visible = false
+	parent_scene.handle_debrief_confirmed() # 타이틀 화면으로 복귀
 
 
 func _draw_lines(drawer: Control) -> void:

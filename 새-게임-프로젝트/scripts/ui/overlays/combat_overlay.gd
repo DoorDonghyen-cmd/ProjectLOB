@@ -52,7 +52,7 @@ var _btn_load_card: Button
 var _btn_unload_card: Button
 var _right_bag_panel: PanelContainer
 var _bag_scroll: ScrollContainer
-var _bag_card_container: HBoxContainer
+var _bag_card_container: GridContainer
 var _bag_mini_summary: Label
 var _is_bag_expanded: bool = false
 var _enemy_sprite: TextureRect
@@ -234,16 +234,16 @@ func _build_left_column(parent: VBoxContainer) -> void:
 
 	control_hbox.add_child(_btn_unload_card)
 
-	# Bottom: Bag Panel (55% height)
-
 	_right_bag_panel = PanelContainer.new()
-
 	_right_bag_panel.clip_contents = true
-
-	var bag_style := StyleBoxTexture.new()
-
-	bag_style.texture = load("res://assets/sprites/bag_panel_hex.png") as Texture2D
-
+	
+	var bag_style := StyleBoxFlat.new()
+	bag_style.bg_color = Color(0.04, 0.04, 0.06, 0.8) # 아주 어둡고 투명한 차콜 그레이 패널
+	bag_style.border_width_left = 1
+	bag_style.border_width_right = 1
+	bag_style.border_width_top = 1
+	bag_style.border_width_bottom = 1
+	bag_style.border_color = Color(0.12, 0.14, 0.18, 0.5)
 	_right_bag_panel.add_theme_stylebox_override("panel", bag_style)
 
 	_right_bag_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -324,31 +324,21 @@ func _build_left_column(parent: VBoxContainer) -> void:
 	bag_vbox.add_child(_bag_mini_summary)
 
 	_bag_scroll = ScrollContainer.new()
-
 	_bag_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 	_bag_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-
-	_bag_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-
-	_bag_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-
+	_bag_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_bag_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_bag_scroll.mouse_filter = Control.MOUSE_FILTER_PASS
-
 	_bag_scroll.visible = false
-
 	bag_vbox.add_child(_bag_scroll)
 
-	_bag_card_container = HBoxContainer.new()
-
-	_bag_card_container.add_theme_constant_override("separation", 8)
-
+	_bag_card_container = GridContainer.new()
+	_bag_card_container.columns = 5
+	_bag_card_container.add_theme_constant_override("h_separation", 8)
+	_bag_card_container.add_theme_constant_override("v_separation", 8)
 	_bag_card_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
 	_bag_card_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
-
 	_bag_card_container.mouse_filter = Control.MOUSE_FILTER_PASS
-
 	_bag_scroll.add_child(_bag_card_container)
 
 
@@ -1220,10 +1210,28 @@ func _on_result_confirmed() -> void:
 
 
 func _generate_draft_choices() -> Array[BulletData]:
-	var pool: Array[BulletData] = [_bullets_basic, _bullets_ap, _bullets_kb, _bullets_heavy, _bullets_slow]
+	var pool: Array[BulletData] = []
+	var path: String = "res://resources/bullets/"
+	var dir: DirAccess = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name: String = dir.get_next()
+		while file_name != "":
+			if not dir.current_is_dir() and file_name.ends_with(".tres"):
+				var res: BulletData = load(path + file_name) as BulletData
+				if res:
+					pool.append(res)
+			file_name = dir.get_next()
+		dir.list_dir_end()
+		
+	if pool.is_empty():
+		# 폴백 안전 처리
+		pool = [_bullets_basic, _bullets_ap, _bullets_kb, _bullets_heavy, _bullets_slow]
+		
 	pool.shuffle()
 	var choices: Array[BulletData] = []
-	for i in range(3):
+	var count: int = mini(3, pool.size())
+	for i in range(count):
 		choices.append(pool[i].duplicate())
 	return choices
 
@@ -1391,7 +1399,7 @@ func _update_enemy_display(enemy: EnemyInstance) -> void:
 func _update_enemy_stats_display(enemy: EnemyInstance) -> void:
 	if parent_scene.is_goggles_enabled():
 		_enemy_stats_label.text = "DEF %d | PRES %d | EVA %d | SPD %d" % [
-			enemy.current_def, enemy.current_pres,
+			enemy.current_def, enemy.knockback_resistance,
 			enemy.current_evasion, enemy.current_speed,
 		]
 	else:

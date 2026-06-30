@@ -1,14 +1,20 @@
-[gd_resource type="Resource" load_steps=2 format=3]
+[gd_resource type="Resource" load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/smg.png" id="1_icon"]
+[ext_resource type="Resource" path="res://resources/parts/rhythm_chamber.tres" id="2_part"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="3_script"]
 
 [resource]
-script = ExtResource("1_script")
-display_name = "전술 기관단총 (SMG)"
-description = "화력 투사 위주의 경량 기관단총. 대용량 탄창(6발)과 약실 적재(+1발)를 제공하지만, 속사 제어로 인해 기본 대미지가 1 감소합니다."
+script = ExtResource("3_script")
+display_name = "전술 기관단총 (Tempo)"
+description = "속사형 템포 총기. 6발 대용량 탄창과 동일 구경 연타 시 대미지가 누적 폭증하는 리듬 챔버 파츠를 기본 내장하고 있습니다."
+icon = ExtResource("1_icon")
 magazine_capacity = 6
 has_chamber = true
+magazine_structure = 0
 reload_turns = 2
+parts_capacity = 4
+default_part = ExtResource("2_part")
 passive_dmg_bonus = -1
 passive_pen_bonus = 0
 passive_knockback_bonus = 0

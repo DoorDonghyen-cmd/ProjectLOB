@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "리듬 전술탄"
+description = "경량 사격 지원형 탄환. 직전 격발이 명중 상태일 때 연속 피해 +2를 부여합니다."
+damage = 3
+accuracy = 6
+penetration = 1
+knockback = 0
+slow = 0
+effect_type = 2
+effect_value = 2
+caliber = 0

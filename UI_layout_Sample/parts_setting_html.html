@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>파츠 개조 시스템 UI 프로토타입</title>
+<style>
+    /* 전체 테마: 다크/로그라이크/픽셀아트 분위기 톤앤매너 */
+    :root {
+        --bg-color: #0d0d0d;
+        --panel-bg: #1a1a1a;
+        --text-main: #e0e0e0;
+        --text-dim: #7a7a7a;
+        --border-color: #333333;
+        --accent-gold: #d4af37;
+        --alert-red: #ff3333;
+        --buff-green: #4caf50;
+        --slot-bg: #222222;
+        --font-family: 'Courier New', Courier, monospace; 
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        font-family: var(--font-family);
+        margin: 0;
+        padding: 40px;
+        display: flex;
+        justify-content: center;
+        user-select: none;
+    }
+
+    .ui-container {
+        width: 900px;
+        background: var(--panel-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 12px;
+        margin-bottom: 24px;
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 1.4em;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .header .phase-text {
+        color: var(--text-dim);
+        font-size: 0.9em;
+    }
+
+    .main-layout {
+        display: flex;
+        gap: 24px;
+    }
+
+    /* 좌/우 패널 공통 */
+    .panel {
+        flex: 1;
+        background: rgba(0,0,0,0.3);
+        padding: 20px;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .section-title {
+        font-size: 1em;
+        color: var(--text-dim);
+        margin-bottom: 16px;
+        font-weight: bold;
+    }
+
+    /* --- 신규: 무기 이미지 프리뷰 영역 --- */
+    .weapon-preview-container {
+        width: 100%;
+        height: 140px;
+        background: #111;
+        border: 2px solid #444;
+        border-radius: 4px;
+        margin-bottom: 24px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .weapon-preview-container::before {
+        content: 'SIDE-VIEW WEAPON SPRITE'; /* 임시 텍스트 */
+        position: absolute;
+        color: #333;
+        font-size: 0.8em;
+        letter-spacing: 2px;
+        z-index: 1;
+    }
+
+    .weapon-image {
+        position: relative;
+        z-index: 2;
+        max-width: 90%;
+        max-height: 90%;
+        /* 픽셀 아트 원본 느낌을 살리기 위한 렌더링 설정 */
+        image-rendering: pixelated; 
+        filter: drop-shadow(0 0 10px rgba(212,175,55,0.2));
+    }
+
+    .weapon-name {
+        position: absolute;
+        top: 8px;
+        left: 10px;
+        font-size: 0.9em;
+        color: var(--accent-gold);
+        font-weight: bold;
+        z-index: 3;
+        text-shadow: 1px 1px 2px #000;
+    }
+
+    .weapon-capacity {
+        position: absolute;
+        bottom: 8px;
+        right: 10px;
+        font-size: 0.8em;
+        color: var(--text-dim);
+        z-index: 3;
+        background: rgba(0,0,0,0.6);
+        padding: 2px 6px;
+        border-radius: 3px;
+    }
+
+    /* 슬롯 디자인 */
+    .slot-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 24px;
+    }
+
+    .slot {
+        width: 85px;
+        height: 110px;
+        background: var(--slot-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .slot-num {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        font-size: 0.7em;
+        color: var(--text-dim);
+    }
+
+    .slot:hover {
+        transform: translateY(-3px);
+        border-color: var(--text-dim);
+    }
+
+    /* 장착된 파츠 */
+    .slot.equipped {
+        border-color: #555;
+    }
+
+    /* 안티시너지 충돌 상태 (점멸) */
+    .slot.conflict {
+        border-color: var(--alert-red);
+        animation: pulse-red 1.5s infinite;
+    }
+
+    /* 파괴 경고 (Hover 시 X 표시) */
+    .slot.equipped:hover::after {
+        content: 'X';
+        position: absolute;
+        font-size: 4em;
+        color: rgba(255, 51, 51, 0.8);
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(0,0,0,0.8);
+        z-index: 10;
+    }
+    
+    .slot.equipped:hover {
+        border-color: var(--alert-red);
+    }
+
+    /* 임시 보관 슬롯 */
+    .slot.hold-slot {
+        border: 2px dashed #555;
+        opacity: 0.5;
+    }
+
+    .slot.hold-slot:hover {
+        opacity: 1;
+        border-color: var(--accent-gold);
+    }
+
+    .part-icon { font-size: 2.2em; margin-bottom: 8px; }
+    .part-name-small { font-size: 0.75em; text-align: center; line-height: 1.2; }
+
+    /* 새 파츠 (우측 패널) */
+    .new-part-card {
+        border: 2px solid var(--accent-gold);
+        padding: 20px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, rgba(212,175,55,0.05) 0%, transparent 100%);
+        box-shadow: inset 0 0 20px rgba(212,175,55,0.05);
+        flex-grow: 1;
+    }
+
+    .part-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .part-title {
+        color: var(--accent-gold);
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+
+    .part-desc {
+        font-size: 0.85em;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        color: #bbb;
+    }
+
+    .stat-box {
+        background: rgba(0,0,0,0.5);
+        padding: 12px;
+        border-radius: 4px;
+        border-left: 3px solid var(--accent-gold);
+        font-size: 0.85em;
+        margin-bottom: 20px;
+    }
+
+    /* 예상 변화 패널 */
+    .projection-panel {
+        margin-top: 24px;
+        padding: 16px 20px;
+        background: #000;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .stat-diff {
+        display: flex;
+        gap: 20px;
+    }
+
+    .stat-item { font-size: 0.9em; }
+    .stat-up { color: var(--buff-green); font-weight: bold; }
+    
+    .warning-msg {
+        color: var(--alert-red);
+        font-size: 0.85em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+    }
+
+    .warning-msg::before {
+        content: '⚠';
+        font-size: 1.2em;
+    }
+
+    /* 버튼 액션 */
+    .actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 24px;
+    }
+
+    button {
+        flex: 1;
+        padding: 14px;
+        font-family: var(--font-family);
+        font-weight: bold;
+        font-size: 0.9em;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-transform: uppercase;
+    }
+
+    .btn-equip {
+        background: var(--accent-gold);
+        color: #000;
+    }
+    .btn-equip:hover { background: #e5c158; box-shadow: 0 0 15px rgba(212,175,55,0.3); }
+
+    .btn-hold {
+        background: #333;
+        color: #fff;
+        border: 1px solid #555;
+    }
+    .btn-hold:hover { background: #444; }
+
+    .btn-discard {
+        background: transparent;
+        border: 1px solid var(--alert-red);
+        color: var(--alert-red);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-discard .btn-text {
+        position: relative;
+        z-index: 2;
+    }
+
+    .btn-discard::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0%;
+        background: rgba(255, 51, 51, 0.3);
+        transition: width 1.5s linear;
+        z-index: 1;
+    }
+
+    .btn-discard:active::before,
+    .btn-discard:hover::before {
+        width: 100%;
+    }
+
+    @keyframes pulse-red {
+        0% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0.5); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 51, 51, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
+    }
+</style>
+</head>
+<body>
+
+<div class="ui-container">
+    <div class="header">
+        <h1>Parts Modification</h1>
+        <div class="phase-text">[ SAFE ZONE : COMMIT PENDING ]</div>
+    </div>
+
+    <div class="main-layout">
+        <div class="panel">
+            
+            <div class="section-title" style="margin-bottom: 10px;">Equipped Weapon</div>
+            <div class="weapon-preview-container">
+                <div class="weapon-name">MK.4 리볼버</div>
+                <div class="weapon-capacity">CAPACITY: 6</div>
+            </div>
+
+            <div class="section-title">Current Stack (LIFO)</div>
+            <div class="slot-row">
+                <div class="slot equipped conflict" title="이 파츠를 교체하면 영구 파괴됩니다.">
+                    <span class="slot-num">1</span>
+                    <div class="part-icon">⚡</div>
+                    <div class="part-name-small">인터럽터<br>(Interrupter)</div>
+                </div>
+                <div class="slot equipped" title="이 파츠를 교체하면 영구 파괴됩니다.">
+                    <span class="slot-num">2</span>
+                    <div class="part-icon">🎯</div>
+                    <div class="part-name-small">고정밀 총열<br>(ACC+)</div>
+                </div>
+                <div class="slot">
+                    <span class="slot-num">3</span>
+                    <div class="part-icon"></div>
+                    <div class="part-name-small">[ EMPTY ]</div>
+                </div>
+            </div>
+
+            <div class="section-title">Hold Buffer</div>
+            <div class="slot-row" style="margin-bottom: 0;">
+                <div class="slot hold-slot">
+                    <span class="slot-num">H</span>
+                    <div class="part-icon">🔒</div>
+                    <div class="part-name-small">비활성화 됨</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" style="background: transparent; border: none; padding: 0;">
+            <div class="section-title">New Part Discovered</div>
+            <div class="new-part-card">
+                <div class="part-header">
+                    <div class="part-title">리듬 챔버 (Rhythm Chamber)</div>
+                    <div class="part-icon" style="font-size: 1.5em; margin:0;">🥁</div>
+                </div>
+                <div class="part-desc">
+                    동일 구경(Caliber)의 탄환을 연속 발사할 경우, N번째 격발부터 대미지가 폭발적으로 가산됩니다. <br><br>
+                    <i>"일정한 박자는 곧 치명적인 파괴력을 낳는다."</i>
+                </div>
+                <div class="stat-box">
+                    • <b>조건:</b> 직전 탄환과 동일 구경<br>
+                    • <b>효과:</b> 격발당 DMG +3 누적 증가<br>
+                    • <b>슬롯:</b> 층위 1 (스택 레이어)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="projection-panel">
+        <div class="stat-diff">
+            <div class="stat-item">Base DMG: 15 <span class="stat-up">→ 18~24</span></div>
+            <div class="stat-item">Stack Mode: <span style="color:#ffd700;">Combo</span></div>
+        </div>
+        <div class="warning-msg">
+            안티시너지 경고: '인터럽터(교차 교대)'와 상극입니다!
+        </div>
+    </div>
+
+    <div class="actions">
+        <button class="btn-equip">장착 및 교체 (Equip)</button>
+        <button class="btn-hold">임시 보관 (Hold Swap)</button>
+        <button class="btn-discard">
+            <span class="btn-text">버리기 (Hold to Discard)</span>
+        </button>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "전술 저격경 (Marksman)"
+description = "저격형 고유 내장 파츠. 탈거 불가. 명중률 패시브 ACC +4를 부여하며, 탄창의 첫 탄 격발 시 적의 회피율을 무시하고 확정 명중시킵니다."
+part_id = 23
+tier = 3

@@ -1,14 +1,20 @@
-[gd_resource type="Resource" load_steps=2 format=3]
+[gd_resource type="Resource" load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/dmr.png" id="1_icon"]
+[ext_resource type="Resource" path="res://resources/parts/marksman_scope.tres" id="2_part"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="3_script"]
 
 [resource]
-script = ExtResource("1_script")
-display_name = "정밀 지정사수소총 (DMR)"
-description = "단발 정밀 사격총. 3발의 적은 용량과 약실 적재(+1발)를 가졌으며, 패시브 명중률 보정(+1)이 적용되어 회피가 높은 침투 적 처치에 유리합니다."
+script = ExtResource("3_script")
+display_name = "정밀 지정사수소총 (Marksman)"
+description = "저격형 마크스맨 총기. 3발의 적은 용량을 가졌으며, 패시브 명중률 보정 및 첫 탄 확정 명중을 제공하는 저격경을 내장하고 있습니다. 근거리 화력은 약화됩니다."
+icon = ExtResource("1_icon")
 magazine_capacity = 3
 has_chamber = true
+magazine_structure = 0
 reload_turns = 1
+parts_capacity = 4
+default_part = ExtResource("2_part")
 passive_dmg_bonus = 0
 passive_pen_bonus = 0
 passive_knockback_bonus = 0

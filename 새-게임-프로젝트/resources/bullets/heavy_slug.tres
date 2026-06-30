@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "대구경 충격탄"
+description = "초강력 충격 납탄. 탄창 첫 사격 시 타겟 적군을 3칸 뒤로 멀리 밀쳐내 확실한 거리를 확보합니다."
+damage = 2
+accuracy = 4
+penetration = 2
+knockback = 1
+slow = 0
+effect_type = 4
+effect_value = 3
+caliber = 2

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "교차 구경탄"
+description = "이종 급탄용 탄환. 직전 발사된 탄환과 구경(Caliber) 규격이 다를 시 고전압 추가 피해 +4가 발동합니다."
+damage = 2
+accuracy = 5
+penetration = 1
+knockback = 0
+slow = 0
+effect_type = 5
+effect_value = 4
+caliber = 1

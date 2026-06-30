@@ -12,6 +12,9 @@ static var meta_hp_armor_lvl: int = 0    # 시작 HP 버퍼 업그레이드 (최
 static var meta_discount_unlocked: bool = false # 탄환 폐기 수수료 면제
 
 # ── 런 가변 상태 ──
+var current_gun: GunData = null                 # 현재 런에서 선택하여 고정된 총기
+var equipped_parts: Array[PartData] = []        # 현재 장착된 총기 파츠들
+var hold_part: PartData = null                  # 임시 보관 파츠 (최대 1칸)
 var hp_buffer: int = 1
 var credits: int = 0
 var current_floor: int = 1
@@ -38,7 +41,7 @@ class RunNode:
 
 
 ## 신규 런 시작 및 상태 초기화
-func start_new_run(basic_bullet: BulletData, ap_bullet: BulletData, kb_bullet: BulletData) -> void:
+func start_new_run(gun: GunData, basic_bullet: BulletData, ap_bullet: BulletData, kb_bullet: BulletData) -> void:
 	current_floor = 1
 	hp_buffer = 1 + meta_hp_armor_lvl
 	credits = 0
@@ -48,6 +51,13 @@ func start_new_run(basic_bullet: BulletData, ap_bullet: BulletData, kb_bullet: B
 	has_chamber_polish = false
 	current_route_type = "stairs"
 	visible_magazine_slots = 2
+	
+	# 총기 및 기본 파츠 초기화
+	current_gun = gun
+	equipped_parts.clear()
+	hold_part = null
+	if current_gun != null and current_gun.default_part != null:
+		equipped_parts.append(current_gun.default_part)
 	
 	# 기본 덱 구성 (메타 해금 레벨에 따라 수량 증가)
 	var jhp_count := 5 + meta_backpack_lvl
@@ -175,3 +185,75 @@ func get_nodes_for_floor(floor_num: int) -> Array[RunNode]:
 		nodes.append(RunNode.new(base_id + 2, "보급 캐비닛 (정비)", "특수 작전용 정비 사물함 잔존", ["air_duct"]))
 		
 	return nodes
+
+
+# ── 파츠 장착 및 교체 제어 ──
+
+## 빈 슬롯이 있으면 파츠를 즉시 장착한다. 성공 시 true, 슬롯이 가득 찬 경우 false 반환.
+func equip_part_to_slot(part: PartData) -> bool:
+	if current_gun == null:
+		return false
+	if equipped_parts.size() < current_gun.parts_capacity:
+		equipped_parts.append(part)
+		return true
+	return false
+
+
+## 지정한 인덱스의 장착 파츠를 새 파츠로 강제 교체 장착하고, 기존 파츠는 버린다(파괴).
+## 반환: 버려진 이전 파츠
+func replace_equipped_part(index: int, new_part: PartData) -> PartData:
+	if index < 0 or index >= equipped_parts.size():
+		return null
+	var old_part = equipped_parts[index]
+	equipped_parts[index] = new_part
+	return old_part
+
+
+# ── Hold (임시 보관) 슬롯 제어 ──
+
+## Hold 슬롯에 파츠를 보관한다. 기존에 Hold 파츠가 들어있었다면 밀어내어 폐기한다.
+## 반환: 버려진 이전 Hold 파츠
+func store_in_hold(part: PartData) -> PartData:
+	var old_hold = hold_part
+	hold_part = part
+	return old_hold
+
+
+## Hold 슬롯의 파츠와 장착 중인 특정 인덱스의 파츠 간 스왑을 처리한다.
+## 만약 해당 장착 인덱스가 비어 있다면 Hold 파츠를 그 자리에 즉시 장착하고 Hold 슬롯은 비운다.
+func swap_hold_with_equipped(equipped_index: int) -> void:
+	if current_gun == null or hold_part == null:
+		return
+	
+	# 인덱스가 빈 슬롯(새 장착) 범위인 경우
+	if equipped_index == equipped_parts.size() and equipped_parts.size() < current_gun.parts_capacity:
+		equipped_parts.append(hold_part)
+		hold_part = null
+		return
+		
+	# 인덱스가 기존 장착 범위인 경우 스왑
+	if equipped_index >= 0 and equipped_index < equipped_parts.size():
+		var temp = equipped_parts[equipped_index]
+		equipped_parts[equipped_index] = hold_part
+		hold_part = temp
+
+
+# ── 무기 캐비닛 (Tactical Locker Node) 전술 조율 ──
+
+## 장착 중인 파츠 중 하나를 Hold 슬롯으로 안전 추출한다.
+## 성공 시 true, Hold 슬롯이 차 있어서 추출 불가인 경우 false 반환.
+func extract_to_hold(equipped_index: int) -> bool:
+	if hold_part != null or equipped_index < 0 or equipped_index >= equipped_parts.size():
+		return false
+	hold_part = equipped_parts[equipped_index]
+	equipped_parts.remove_at(equipped_index)
+	return true
+
+
+## 장착 중인 두 파츠 간의 슬롯 배치 순서를 서로 스왑한다. (LIFO 순서 튜닝용)
+func swap_equipped_parts(idx1: int, idx2: int) -> void:
+	if idx1 < 0 or idx1 >= equipped_parts.size() or idx2 < 0 or idx2 >= equipped_parts.size():
+		return
+	var temp = equipped_parts[idx1]
+	equipped_parts[idx1] = equipped_parts[idx2]
+	equipped_parts[idx2] = temp

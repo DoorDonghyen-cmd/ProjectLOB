@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "리코일 푸시 (Recoil Push)"
+description = "적 처치 시, 그 뒤에 대기 중인 모든 적들의 거리를 강제로 +1칸 넉백시킵니다 (넉백 저항 무시)."
+part_id = 9
+tier = 2

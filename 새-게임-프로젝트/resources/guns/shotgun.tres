@@ -1,14 +1,20 @@
-[gd_resource type="Resource" load_steps=2 format=3]
+[gd_resource type="Resource" load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/shotgun.png" id="1_icon"]
+[ext_resource type="Resource" path="res://resources/parts/point_blank.tres" id="2_part"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="3_script"]
 
 [resource]
-script = ExtResource("1_script")
-display_name = "브리칭 샷건"
-description = "돌입(Breaching)용 산탄총. 탄창 용량은 2발로 제한되나, 사격 시 강력한 충격으로 모든 탄에 넉백 +1 보너스를 적용합니다."
-magazine_capacity = 2
+script = ExtResource("3_script")
+display_name = "브리칭 샷건 (Bruiser)"
+description = "돌격형 브루이저 총기. 슬롯 5칸과 탄창 5발 사양을 가지며, 적과의 거리가 극도로 가까울 때 대미지가 폭증하는 포인트블랭크 장치를 기본 내장하고 있습니다."
+icon = ExtResource("1_icon")
+magazine_capacity = 5
 magazine_structure = 0
 reload_turns = 1
+parts_capacity = 5
+default_part = ExtResource("2_part")
 passive_dmg_bonus = 0
 passive_pen_bonus = 0
 passive_knockback_bonus = 1
+passive_acc_bonus = 0

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "딥로더 (Deep Loader)"
+description = "탄창 아래쪽(바닥) 칸에 적재된 탄환일수록 발사 시 DMG 보너스가 가산됩니다."
+part_id = 1
+tier = 1

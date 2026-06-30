@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "콤보 폭발탄"
+description = "직전 격발한 탄환이 대상에 명중했을 시, 불꽃을 연쇄하여 추가 피해를 3 가산합니다."
+damage = 2
+accuracy = 6
+penetration = 1
+knockback = 0
+slow = 0
+effect_type = 2
+effect_value = 3
+caliber = 0

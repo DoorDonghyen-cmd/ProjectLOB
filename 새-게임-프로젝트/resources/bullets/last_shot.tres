@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "마무리 철갑탄"
+description = "탄창의 맨 마지막(최후의 한 발) 격발 시 기계식 압축으로 피해를 2배(200%) 폭증시킵니다."
+damage = 3
+accuracy = 5
+penetration = 2
+knockback = 0
+slow = 0
+effect_type = 3
+effect_value = 200
+caliber = 1

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "확산 격발 장치"
+description = "샷건 고유 내장 파츠. 탈거 불가. 사격 시 탄환이 확산 형태로 격발되며 넉백이 분산 적용됩니다."
+tier = 2

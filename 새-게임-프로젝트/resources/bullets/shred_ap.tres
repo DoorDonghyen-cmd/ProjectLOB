@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "파쇄 철갑탄"
+description = "복합식 장갑 파괴형 탄환. 피격된 타겟의 방어력을 3만큼 대폭 영구 삭감합니다."
+damage = 1
+accuracy = 5
+penetration = 4
+knockback = 0
+slow = 0
+effect_type = 1
+effect_value = 3
+caliber = 1

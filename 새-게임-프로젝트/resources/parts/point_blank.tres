@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "포인트블랭크 (Point Blank)"
+description = "돌격형 고유 내장 파츠. 탈거 불가. 타겟과의 거리가 가까울수록(DIST 1~2칸) 대미지가 대폭 가산됩니다."
+part_id = 6
+tier = 2

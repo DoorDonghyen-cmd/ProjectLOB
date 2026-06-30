@@ -1,0 +1,16 @@
+[gd_resource type="Resource" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "결전용 중탄"
+description = "초장거리 정밀 대형 탄환. 탄창 최하단 최후의 격발 시 위력이 1.5배(150%) 증폭됩니다."
+damage = 4
+accuracy = 6
+penetration = 2
+knockback = 0
+slow = 0
+effect_type = 3
+effect_value = 150
+caliber = 2

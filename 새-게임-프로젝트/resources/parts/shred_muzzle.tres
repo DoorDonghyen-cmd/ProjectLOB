@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "파쇄 총구 (Shred Muzzle)"
+description = "명중 시 타겟 적의 DEF(방어력)를 영구적으로 -1 파쇄합니다."
+part_id = 12
+tier = 3

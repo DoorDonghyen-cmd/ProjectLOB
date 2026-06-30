@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "스코프 (Scope)"
+description = "예고창(HUD상 미리 볼 수 있는 탄 슬롯 수)을 +1칸 확장합니다."
+part_id = 19
+tier = 5

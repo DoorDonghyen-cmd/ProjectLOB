@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "리듬 챔버 (Rhythm Chamber)"
+description = "속사형 고유 내장 파츠. 탈거 불가. 동일 구경의 탄환을 연속 발사할 경우 대미지가 점진적으로 증가합니다."
+part_id = 2
+tier = 1

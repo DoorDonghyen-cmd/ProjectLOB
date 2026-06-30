@@ -36,3 +36,31 @@ enum EnemyStance {
 	ACTIVE_DODGER,   ## 회피 돌격 태세 — 회피 높음, 속도 빠름
 }
 
+## ── 총기 파츠 고유 ID ──
+enum PartID {
+	NONE,
+	DEEP_LOADER,       ## 딥로더
+	RHYTHM_CHAMBER,    ## 리듬 챔버
+	INTERRUPTER,       ## 인터럽터
+	UNDERFLOW,         ## 언더플로우
+	CHASER,            ## 체이서
+	POINT_BLANK,       ## 포인트블랭크
+	LONG_SHOT,         ## 롱샷
+	EXECUTIONER,       ## 처형자
+	RECOIL_PUSH,       ## 리코일 푸시
+	HIGH_PRECISION,    ## 고정밀 총열
+	ARMOR_PIERCING,    ## 철갑 총열
+	SHRED_MUZZLE,      ## 파쇄 총구
+	VERSATILE_CHAMBER, ## 만능 약실
+	TARGET_INDICATOR,  ## 표적 지시기
+	CHAIN_ACC,         ## 연동 조준
+	STANCE_FORESIGHT,  ## 태세 예지
+	STANCE_LOCK,       ## 태세 고정
+	INERTIA_FIRE,      ## 관성 격발
+	SCOPE,             ## 스코프
+	BLIND_FIRE,        ## 블라인드파이어
+	QUICK_LOAD,        ## 퀵로드
+	SPREAD_SHOT,       ## 확산 격발 장치 (샷건 고유)
+	MARKSMAN_SCOPE,    ## 저격경 (Marksman 고유)
+}
+

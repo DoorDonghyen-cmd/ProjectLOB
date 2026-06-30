@@ -13,9 +13,7 @@ var _meta_backpack_btn: Button
 var _meta_hp_armor_btn: Button
 var _meta_discount_btn: Button
 
-var chk_gloves: CheckButton
-var chk_valve: CheckButton
-var chk_goggles: CheckButton
+var _dev_test_panel: PanelContainer
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
@@ -38,6 +36,8 @@ func _build_ui() -> void:
 	margin.add_theme_constant_override("margin_top", 36)
 	margin.add_theme_constant_override("margin_bottom", 36)
 	add_child(margin)
+	
+	_build_dev_test_panel()
 
 	var main_hbox := HBoxContainer.new()
 	main_hbox.add_theme_constant_override("separation", 32)
@@ -67,6 +67,10 @@ func _build_ui() -> void:
 	var start_run_btn: Button = parent_scene.make_button("🚀 봉쇄 빌딩 진입 (런 시작)", _on_start_run_pressed, parent_scene.C_ACCENT)
 	start_run_btn.custom_minimum_size = Vector2(0, 56)
 	left_vbox.add_child(start_run_btn)
+
+	var parts_test_btn: Button = parent_scene.make_button("🛠️ 개발자 테스트", _on_dev_test_pressed, parent_scene.C_WARNING)
+	parts_test_btn.custom_minimum_size = Vector2(0, 40)
+	left_vbox.add_child(parts_test_btn)
 
 	# ── 우측: 영구 업그레이드 상점 및 게임 설정 ──
 	var right_vbox := VBoxContainer.new()
@@ -105,57 +109,7 @@ func _build_ui() -> void:
 	_meta_discount_btn.custom_minimum_size = Vector2(0, 36)
 	shop_vbox.add_child(_meta_discount_btn)
 
-	# ── 전술 무기 및 렐릭 설정 ──
-	var settings_hbox := HBoxContainer.new()
-	settings_hbox.add_theme_constant_override("separation", 16)
-	right_vbox.add_child(settings_hbox)
-
-	# 무기 선택
-	var gun_vbox := VBoxContainer.new()
-	gun_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	settings_hbox.add_child(gun_vbox)
-	gun_vbox.add_child(parent_scene.make_label("🔫 휴대 무기 설정", 16, parent_scene.C_WARNING))
-
-	var gun_option := OptionButton.new()
-	gun_option.add_item("6발 리볼버 (Revolver)", 0)
-	gun_option.add_item("2발 더블배럴 산탄총 (Shotgun)", 1)
-	gun_option.add_item("10발 SMG (Chamber+1)", 2)
-	gun_option.add_item("4발 DMR (Chamber+1)", 3)
-	gun_option.custom_minimum_size = Vector2(0, 38)
-	gun_vbox.add_child(gun_option)
-	
-	gun_option.item_selected.connect(func(idx):
-		match idx:
-			0: parent_scene.set_current_gun(parent_scene._gun_revolver)
-			1: parent_scene.set_current_gun(parent_scene._gun_shotgun)
-			2: parent_scene.set_current_gun(parent_scene._gun_smg)
-			3: parent_scene.set_current_gun(parent_scene._gun_dmr)
-	)
-
-	# 렐릭 설정
-	var relic_vbox := VBoxContainer.new()
-	relic_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	settings_hbox.add_child(relic_vbox)
-	relic_vbox.add_child(parent_scene.make_label("🎒 전술 렐릭 활성화", 16, parent_scene.C_WARNING))
-
-	var chk_hbox := HBoxContainer.new()
-	relic_vbox.add_child(chk_hbox)
-	
-	chk_gloves = CheckButton.new()
-	chk_gloves.text = "장갑"
-	chk_gloves.tooltip_text = "최초 1회 Unload 패널티 면제"
-	chk_hbox.add_child(chk_gloves)
-
-	chk_valve = CheckButton.new()
-	chk_valve.text = "밸브"
-	chk_valve.tooltip_text = "넉백 +1"
-	chk_hbox.add_child(chk_valve)
-
-	chk_goggles = CheckButton.new()
-	chk_goggles.text = "고글"
-	chk_goggles.tooltip_text = "적 정보 완벽 투명화 공개"
-	chk_goggles.button_pressed = false
-	chk_hbox.add_child(chk_goggles)
+	# 메타 해금 상점 아래의 무기 및 렐릭 설정란은 로드아웃 오버레이로 통합되어 이곳에서 제거되었습니다.
 
 
 
@@ -198,4 +152,87 @@ func _on_upgrade_discount_pressed() -> void:
 
 
 func _on_start_run_pressed() -> void:
-	parent_scene.start_run_from_title()
+	parent_scene.show_loadout_screen()
+
+
+func _on_dev_test_pressed() -> void:
+	if _dev_test_panel:
+		_dev_test_panel.visible = true
+
+
+## 개발자 테스트 팝업 패널 빌드
+func _build_dev_test_panel() -> void:
+	_dev_test_panel = PanelContainer.new()
+	_dev_test_panel.custom_minimum_size = Vector2(340, 240)
+	_dev_test_panel.visible = false
+	
+	# 화면 정중앙 팝업 스타일
+	_dev_test_panel.set_anchors_preset(Control.PRESET_CENTER)
+	_dev_test_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_dev_test_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.08, 0.08, 0.12, 0.98) # 어두운 패널
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.border_color = parent_scene.C_WARNING # 금색/노란색 테두리
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	_dev_test_panel.add_theme_stylebox_override("panel", style)
+	
+	add_child(_dev_test_panel)
+	
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	_dev_test_panel.add_child(margin)
+	
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 14)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(vbox)
+	
+	vbox.add_child(parent_scene.make_label("🛠️ 개발자 디버그 테스트", 20, parent_scene.C_WARNING))
+	
+	# 1. 파츠 개조 UI 테스트 숏컷 버튼
+	var btn_parts = parent_scene.make_button("🔧 파츠 개조 UI 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_parts_test_ui()
+	, parent_scene.C_ACCENT)
+	btn_parts.custom_minimum_size = Vector2(0, 40)
+	vbox.add_child(btn_parts)
+	
+	# 2. 요원 준비실 UI 테스트 숏컷 버튼
+	var btn_loadout = parent_scene.make_button("🎒 요원 준비실 UI 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_loadout_test_ui()
+	, parent_scene.C_ACCENT)
+	btn_loadout.custom_minimum_size = Vector2(0, 40)
+	btn_loadout.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_loadout)
+	
+	# 3. 탄환 이미지 갤러리 테스트 숏컷 버튼
+	var btn_gallery = parent_scene.make_button("🔴 탄환 이미지 갤러리 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_bullet_gallery_ui()
+	, parent_scene.C_ACCENT)
+	btn_gallery.custom_minimum_size = Vector2(0, 40)
+	btn_gallery.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_gallery)
+	
+	var spacer := Control.new()
+	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(spacer)
+	
+	# 닫기 버튼
+	var btn_close = parent_scene.make_button("❌ 닫기", func():
+		_dev_test_panel.visible = false
+	, parent_scene.C_DANGER)
+	btn_close.custom_minimum_size = Vector2(0, 36)
+	vbox.add_child(btn_close)
