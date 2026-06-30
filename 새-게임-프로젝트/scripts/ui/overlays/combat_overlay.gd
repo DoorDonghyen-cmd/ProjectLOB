@@ -758,20 +758,10 @@ func start_combat(gun_data: GunData, enemy_datas: Array[EnemyData], cm: CombatMa
 	# 전투 로그 초기화 및 안내
 	add_combat_log("[color=#5588aa]전투 및 시뮬레이션 페이즈 진입[/color]")
 	
-	# 각 인스턴스 정보 초기 셋팅
+	# 각 인스턴스 정보 초기 셋팅 (원본 데이터 유지)
 	_bullet_pool.clear()
 	for b_data in run_manager.deck:
-		var match_b: BulletData = _bullets_basic
-		if b_data.display_name.contains("관통") or b_data.display_name.contains("철갑"):
-			match_b = _bullets_ap
-		elif b_data.display_name.contains("충격") or b_data.display_name.contains("스턴"):
-			match_b = _bullets_kb
-		elif b_data.display_name.contains("중화력"):
-			match_b = _bullets_heavy
-		elif b_data.display_name.contains("슬로우") or b_data.display_name.contains("감속"):
-			match_b = _bullets_slow
-			
-		_bullet_pool[match_b] = _bullet_pool.get(match_b, 0) + 1
+		_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
 		
 	_loaded_bullets.clear()
 	
@@ -894,19 +884,7 @@ func _start_loading_phase() -> void:
 
 	_bullet_pool.clear()
 	for b_data in run_manager.deck:
-		var match_b: BulletData = _bullets_basic
-		if b_data.display_name.contains("철갑탄") or b_data.display_name.contains("관통"):
-			match_b = _bullets_ap
-		elif b_data.display_name.contains("스턴탄") or b_data.display_name.contains("충격"):
-			match_b = _bullets_kb
-		elif b_data.display_name.contains("중화력"):
-			match_b = _bullets_heavy
-		elif b_data.display_name.contains("슬로우") or b_data.display_name.contains("감속"):
-			match_b = _bullets_slow
-		elif b_data.display_name.contains("슬로우") or b_data.display_name.contains("감속"):
-			match_b = _bullets_slow
-			
-		_bullet_pool[match_b] = _bullet_pool.get(match_b, 0) + 1
+		_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
 		
 	_loaded_bullets.clear()
 	_refresh_loading_ui()
