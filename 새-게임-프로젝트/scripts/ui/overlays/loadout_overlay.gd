@@ -13,6 +13,10 @@ var _gun_revolver: GunData
 var _gun_shotgun: GunData
 var _gun_smg: GunData
 var _gun_dmr: GunData
+var _gun_heavy: GunData
+var _gun_trickster: GunData
+var _gun_gambler: GunData
+var _gun_stance_hunter: GunData
 
 # ── 선택 상태 변수 ──
 var selected_weapon_key: String = "workhorse"
@@ -69,7 +73,7 @@ const WEAPON_PROFILES := {
 		"cap": 4,
 		"ammo": 3,
 		"prev": 2,
-		"calibers": "[9mm] [5.56mm] [DMR전용]",
+		"calibers": "[9mm] [5.56mm] [저격전용]",
 		"passive": "- 패시브 ACC+4 가산 보너스\n- 첫 탄 격발 시 적의 EVA(회피) 무시 확정 명중",
 		"penalty": "- 탄창 슬롯 3칸으로 좁아 연계 빌드 한계\n- 근거리 (DIST 1 이하) 격발 시 DMG 감소 취약"
 	},
@@ -96,6 +100,54 @@ const WEAPON_PROFILES := {
 		"calibers": "[9mm] [5.56mm] [속사전용]",
 		"passive": "- 리듬 챔버 혜택 일부 내장 (Combo 연타 DMG+)\n- 9mm 권총탄 계열 연사 시 추가 탄 공급 보너스",
 		"penalty": "- 대구경 고화력 7.62mm 탄환 사용 불가능\n- 기본 관통(PEN) 게이트가 낮아 중장갑 좀비에 취약"
+	},
+	"heavy": {
+		"res_key": "heavy",
+		"display_name_kor": "중장형",
+		"display_name_eng": "HEAVY",
+		"emoji": "💣",
+		"cap": 4,
+		"ammo": 6,
+		"prev": 1,
+		"calibers": "[7.62mm] [대구경] [전 구경]",
+		"passive": "- 패시브 PEN+1 / DMG+1 / 넉백+1 버프 제공\n- 관통 게이트 통과 시 초과 PEN만큼 뒤 적 관통타격",
+		"penalty": "- 예고창이 1개로 엄격 차단되어 기억력 의존\n- 조준 불안정 패시브 ACC -1 감쇄 패널티"
+	},
+	"trickster": {
+		"res_key": "trickster",
+		"display_name_kor": "곡예형",
+		"display_name_eng": "TRICKSTER",
+		"emoji": "🎪",
+		"cap": 3,
+		"ammo": 4,
+		"prev": 3,
+		"calibers": "[9mm] [45ACP] [전 구경]",
+		"passive": "- 예고창 3개로 뛰어난 가시성 제공\n- 턴당 1회 맨 위 탄을 맨 아래로 보내는 이젝트 사용 가능",
+		"penalty": "- 일반 개조 슬롯이 3칸으로 극도 제한\n- 이젝트 기믹으로 밀려난 탄환 격발 시 DMG -1 감쇄"
+	},
+	"gambler": {
+		"res_key": "gambler",
+		"display_name_kor": "도박형",
+		"display_name_eng": "GAMBLER",
+		"emoji": "🎲",
+		"cap": 5,
+		"ammo": 5,
+		"prev": 0,
+		"calibers": "[전 구경 지원]",
+		"passive": "- 패시브 DMG+2 및 5칸의 넓은 개조 슬롯 지원\n- 탄창 내 아래에 깊숙이 묻힌 탄일수록 격발 위력 증가",
+		"penalty": "- 예고창 0개로 블라인드 (발사 직전 1발만 명중 예고)\n- 탄창 관리 실수를 하면 빌드가 꼬이기 쉬움"
+	},
+	"stance_hunter": {
+		"res_key": "stance_hunter",
+		"display_name_kor": "태세사냥꾼",
+		"display_name_eng": "STANCE HUNTER",
+		"emoji": "🏹",
+		"cap": 4,
+		"ammo": 5,
+		"prev": 2,
+		"calibers": "[전 구경 지원]",
+		"passive": "- 태세 예지 내장 (적 태세 전환 1턴 미리 예고)\n- 적의 태세 전환 턴에 모든 게이트 무시 (확정 명중/관통)",
+		"penalty": "- 태세 전환이 없는 적을 상대할 때는 시그니처 혜택 소멸\n- 낮은 범용성에 따른 빌드 불안정성"
 	}
 }
 
@@ -109,6 +161,10 @@ func initialize(p_scene: Control, rm: RunManager) -> void:
 	_gun_shotgun = parent_scene._gun_shotgun
 	_gun_smg = parent_scene._gun_smg
 	_gun_dmr = parent_scene._gun_dmr
+	_gun_heavy = parent_scene._gun_heavy
+	_gun_trickster = parent_scene._gun_trickster
+	_gun_gambler = parent_scene._gun_gambler
+	_gun_stance_hunter = parent_scene._gun_stance_hunter
 	
 	# 풀 화면 오버레이 설정
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -180,10 +236,18 @@ func _build_ui() -> void:
 	
 	left_panel.add_child(parent_scene.make_label("▶ FIREARM SELECTION", 12, parent_scene.C_DIM))
 	
-	# 총기 카드 선택 리스트 (VBox)
+	# 총기 카드 선택 리스트 (VBox + ScrollContainer)
+	var weapon_scroll := ScrollContainer.new()
+	weapon_scroll.custom_minimum_size = Vector2(0, 240)
+	weapon_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	weapon_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	weapon_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	left_panel.add_child(weapon_scroll)
+	
 	var weapon_list_vbox := VBoxContainer.new()
 	weapon_list_vbox.add_theme_constant_override("separation", 6)
-	left_panel.add_child(weapon_list_vbox)
+	weapon_list_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	weapon_scroll.add_child(weapon_list_vbox)
 	
 	for w_key in WEAPON_PROFILES.keys():
 		var profile = WEAPON_PROFILES[w_key]
@@ -538,6 +602,10 @@ func _on_start_run_pressed() -> void:
 		"shotgun": target_gun = _gun_shotgun
 		"smg": target_gun = _gun_smg
 		"dmr": target_gun = _gun_dmr
+		"heavy": target_gun = _gun_heavy
+		"trickster": target_gun = _gun_trickster
+		"gambler": target_gun = _gun_gambler
+		"stance_hunter": target_gun = _gun_stance_hunter
 		
 	if target_gun:
 		parent_scene.set_current_gun(target_gun)

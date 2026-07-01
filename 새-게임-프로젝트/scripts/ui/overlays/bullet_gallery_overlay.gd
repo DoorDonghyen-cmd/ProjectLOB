@@ -112,7 +112,6 @@ func open_gallery() -> void:
 	for child in _grid_container.get_children():
 		child.queue_free()
 		
-	# resources/bullets/ 에서 모든 .tres 파일 로드
 	var bullet_datas: Array[BulletData] = []
 	var path = "res://resources/bullets/"
 	var dir = DirAccess.open(path)
@@ -120,10 +119,12 @@ func open_gallery() -> void:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
-			if not dir.current_is_dir() and file_name.ends_with(".tres"):
-				var res = load(path + file_name)
-				if res is BulletData:
-					bullet_datas.append(res)
+			if not dir.current_is_dir():
+				if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
+					var clean_name = file_name.replace(".remap", "")
+					var res = load(path + clean_name)
+					if res is BulletData:
+						bullet_datas.append(res)
 			file_name = dir.get_next()
 		dir.list_dir_end()
 		

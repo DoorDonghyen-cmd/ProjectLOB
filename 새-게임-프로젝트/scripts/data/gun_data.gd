@@ -38,3 +38,5 @@ extends Resource
 @export_range(-1, 3) var passive_knockback_bonus: int = 0
 ## 모든 총알의 명중에 가산되는 보너스
 @export_range(-3, 5) var passive_acc_bonus: int = 0
+## 전투 중 탄창에서 보여질 예고창의 크기
+@export_range(0, 4) var preview_window_size: int = 2

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_nano_stalker.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "나노 은폐 정찰병"
+description = "초굴절 나노 광학 위장 슈트를 활성화한 침투 정찰 요원. 극도로 취약하나 실시간 조준이 거의 불가능합니다."
+icon = ExtResource("1_icon")
+archetype = 2
+max_hp = 4
+defense = 0
+evasion = 9
+speed = 2
+start_distance = 10
+knockback_resistance = 0

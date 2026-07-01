@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_absorber_mech.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "나노 흡수 보안로봇"
+description = "나노 보호막을 두른 보안 기갑 병기. 느리지만 매우 단단하며 물리적 충격과 넉백에 완벽히 저항합니다."
+icon = ExtResource("1_icon")
+archetype = 1
+max_hp = 15
+defense = 4
+evasion = 0
+speed = 1
+start_distance = 12
+knockback_resistance = 3

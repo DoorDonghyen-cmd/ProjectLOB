@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/dmr.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "태세 사냥꾼 (Stance Hunter)"
+description = "태세 카운터 소총. 적의 태세 전환 타임라인을 1턴 미리 예고받으며, 적이 태세를 교대하는 교체 턴에 장갑과 회피 자물쇠를 무시하고 100% 명중 관통시키는 파훼 능력을 가집니다."
+icon = ExtResource("1_icon")
+magazine_capacity = 5
+has_chamber = false
+magazine_structure = 0
+reload_turns = 2
+parts_capacity = 4
+preview_window_size = 2
+passive_dmg_bonus = 0
+passive_pen_bonus = 0
+passive_knockback_bonus = 0
+passive_acc_bonus = 1

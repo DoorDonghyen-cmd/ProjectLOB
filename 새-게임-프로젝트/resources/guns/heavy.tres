@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/shotgun.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "중장형 소총 (Heavy)"
+description = "중장형 탱커 킬러. 철갑 관통(PEN) 가산과 예고창 1칸 패널티를 지니며, 관통 게이트 돌파 시 초과 PEN만큼 뒤의 적까지 관통 타격을 입힙니다."
+icon = ExtResource("1_icon")
+magazine_capacity = 6
+has_chamber = false
+magazine_structure = 0
+reload_turns = 2
+parts_capacity = 4
+preview_window_size = 1
+passive_dmg_bonus = 1
+passive_pen_bonus = 1
+passive_knockback_bonus = 1
+passive_acc_bonus = -1

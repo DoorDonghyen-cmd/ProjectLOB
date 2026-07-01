@@ -41,6 +41,8 @@ var _log_text: RichTextLabel
 var _fire_btn: Button
 var _unload_btn: Button
 var _reload_btn: Button
+var _double_tap_btn: Button
+var _eject_btn: Button
 
 # ── 3분할 및 가변 슬라이드 UI 참조 ──
 var _ingame_area: Control
@@ -645,6 +647,26 @@ func _build_right_column(parent: VBoxContainer) -> void:
 
 	_action_row.add_child(_confirm_btn)
 
+	_double_tap_btn = parent_scene.make_button("💥 더블탭 OFF", _on_double_tap_toggled, parent_scene.C_DIM)
+
+	_double_tap_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	_double_tap_btn.visible = false
+
+	_apply_tactical_button_style(_double_tap_btn, parent_scene.C_DIM)
+
+	_action_row.add_child(_double_tap_btn)
+
+	_eject_btn = parent_scene.make_button("🎪 이젝트", _on_eject_pressed, parent_scene.C_ACCENT)
+
+	_eject_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	_eject_btn.visible = false
+
+	_apply_tactical_button_style(_eject_btn, parent_scene.C_NEON_GOLD)
+
+	_action_row.add_child(_eject_btn)
+
 	_fire_btn = parent_scene.make_button("🔫 발사", _on_fire_pressed, parent_scene.C_ACCENT)
 
 	_fire_btn.icon = load("res://assets/sprites/btn_fire_accent.png") as Texture2D
@@ -770,8 +792,10 @@ func start_combat(gun_data: GunData, enemy_datas: Array[EnemyData], cm: CombatMa
 	var floor_num := run_manager.current_floor if run_manager else 1
 	var dist_modifier := 0
 	if floor_num <= 3:
-		dist_modifier = 4
+		dist_modifier = 6
 	elif floor_num <= 7:
+		dist_modifier = 4
+	elif floor_num <= 10:
 		dist_modifier = 2
 	elif floor_num >= 15:
 		dist_modifier = -2
@@ -918,6 +942,9 @@ func _refresh_loading_ui() -> void:
 
 func _on_loading_add_bullet(bullet: BulletData) -> void:
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
+		if combat_manager.double_tap_active:
+			combat_manager.combat_log.emit("⚠ 더블탭이 선언된 턴에는 납탄할 수 없습니다.")
+			return
 		var cap := _current_gun_data.magazine_capacity
 		var has_ch := _current_gun_data.has_chamber
 		var max_cap := cap + (1 if has_ch else 0)
@@ -1172,6 +1199,35 @@ func _on_unload_pressed() -> void:
 		_update_action_buttons()
 
 
+func _on_eject_pressed() -> void:
+	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
+		combat_manager.request_eject()
+		_update_action_buttons()
+
+
+func _on_double_tap_toggled() -> void:
+	if not combat_manager or combat_manager.state != CombatManager.State.PLAYER_TURN:
+		return
+		
+	# Check if we have enough bullets
+	if combat_manager.magazine.get_remaining() < 2:
+		combat_manager.combat_log.emit("⚠ 탄창에 탄환이 2발 이상 있어야 더블탭을 선언할 수 없습니다.")
+		return
+		
+	# Check if lead bullet was inserted this turn (tempo tax)
+	if combat_manager._insert_seal_active:
+		combat_manager.combat_log.emit("⚠ 이번 턴에 이미 납탄(삽탄)을 수행하여 더블탭을 선언할 수 없습니다.")
+		return
+		
+	combat_manager.double_tap_active = not combat_manager.double_tap_active
+	if combat_manager.double_tap_active:
+		add_combat_log("[color=#ff8822]💥 더블탭 시그니처 선언! 이번 격발은 연속 2발 사격하며, 납탄(중간 장전)이 금지됩니다.[/color]")
+	else:
+		add_combat_log("[color=#888888]더블탭 선언 해제. 단발 사격 모드로 전환합니다.[/color]")
+		
+	_update_action_buttons()
+
+
 func _on_reload_pressed() -> void:
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
 		combat_manager.request_reload()
@@ -1195,10 +1251,12 @@ func _generate_draft_choices() -> Array[BulletData]:
 		dir.list_dir_begin()
 		var file_name: String = dir.get_next()
 		while file_name != "":
-			if not dir.current_is_dir() and file_name.ends_with(".tres"):
-				var res: BulletData = load(path + file_name) as BulletData
-				if res:
-					pool.append(res)
+			if not dir.current_is_dir():
+				if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
+					var clean_name: String = file_name.replace(".remap", "")
+					var res: BulletData = load(path + clean_name) as BulletData
+					if res:
+						pool.append(res)
 			file_name = dir.get_next()
 		dir.list_dir_end()
 		
@@ -1299,6 +1357,9 @@ func _update_action_buttons() -> void:
 	if not combat_manager:
 		return
 		
+	var is_tempo := combat_manager.gun and (combat_manager.gun.display_name.contains("Tempo") or combat_manager.gun.display_name.contains("속사형"))
+	var is_trickster := combat_manager.gun and (combat_manager.gun.display_name.contains("Trickster") or combat_manager.gun.display_name.contains("곡예형"))
+		
 	if combat_manager.state == CombatManager.State.LOADING:
 		_confirm_btn.visible = true
 		_confirm_btn.disabled = _loaded_bullets.is_empty()
@@ -1306,23 +1367,51 @@ func _update_action_buttons() -> void:
 		_fire_btn.visible = false
 		_unload_btn.visible = false
 		_reload_btn.visible = false
+		_double_tap_btn.visible = false
+		_eject_btn.visible = false
 		return
 		
 	_confirm_btn.visible = false
 	_fire_btn.visible = true
 	_unload_btn.visible = true
 	_reload_btn.visible = true
+	_double_tap_btn.visible = is_tempo
+	_eject_btn.visible = is_trickster
 	
 	if combat_manager.state != CombatManager.State.PLAYER_TURN:
 		_fire_btn.disabled = true
 		_unload_btn.disabled = true
 		_reload_btn.disabled = true
+		if _double_tap_btn.visible:
+			_double_tap_btn.disabled = true
+		if _eject_btn.visible:
+			_eject_btn.disabled = true
 		return
 		
 	var has_ammo: bool = not combat_manager.magazine.is_empty()
 	_fire_btn.disabled = not has_ammo
 	_unload_btn.disabled = not has_ammo
 	_reload_btn.disabled = false
+	if _eject_btn.visible:
+		_eject_btn.disabled = not has_ammo or combat_manager.eject_used_this_turn
+	
+	# 더블탭 버튼 제어
+	if _double_tap_btn.visible:
+		var ammo_count := combat_manager.magazine.get_remaining()
+		if ammo_count < 2:
+			if combat_manager.double_tap_active:
+				combat_manager.double_tap_active = false
+				add_combat_log("[color=#ff3333]⚠ 탄환이 부족하여 더블탭 선언이 해제되었습니다.[/color]")
+			_double_tap_btn.disabled = true
+		else:
+			_double_tap_btn.disabled = false
+			
+		if combat_manager.double_tap_active:
+			_double_tap_btn.text = "🔥 더블탭 ON"
+			_apply_tactical_button_style(_double_tap_btn, parent_scene.C_WARNING)
+		else:
+			_double_tap_btn.text = "💥 더블탭 OFF"
+			_apply_tactical_button_style(_double_tap_btn, parent_scene.C_DIM)
 	
 	if _is_targeting_mode:
 		_fire_btn.text = "조준 중 (대상을 탭하세요)"
@@ -1347,9 +1436,21 @@ func _update_action_buttons() -> void:
 
 func _update_enemy_display(enemy: EnemyInstance) -> void:
 	var stance_suffix := ""
+	var is_stance_hunter := combat_manager.gun and (combat_manager.gun.display_name.contains("Stance") or combat_manager.gun.display_name.contains("태세"))
+	
 	match enemy.current_stance:
-		Enums.EnemyStance.IRON_SHIELD: stance_suffix = " [물리 장갑]"
-		Enums.EnemyStance.ACTIVE_DODGER: stance_suffix = " [회피 돌격]"
+		Enums.EnemyStance.IRON_SHIELD:
+			var rem := 3 - enemy.shot_counter
+			if is_stance_hunter:
+				stance_suffix = " [물리 장갑 (전환까지 %d발) ➡️ 회피 돌격 예고]" % rem
+			else:
+				stance_suffix = " [물리 장갑 (전환까지 %d발)]" % rem
+		Enums.EnemyStance.ACTIVE_DODGER:
+			var rem := 3 - enemy.shot_counter
+			if is_stance_hunter:
+				stance_suffix = " [회피 돌격 (전환까지 %d발) ➡️ 물리 장갑 예고]" % rem
+			else:
+				stance_suffix = " [회피 돌격 (전환까지 %d발)]" % rem
 
 	_enemy_name_label.text = "%s (%s)%s" % [
 		enemy.data.display_name,

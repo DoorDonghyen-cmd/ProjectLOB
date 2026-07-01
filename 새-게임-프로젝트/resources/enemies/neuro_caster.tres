@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_neuro_caster.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "신경 오염 광신도"
+description = "치명적인 나노 자폭 가스를 방출하려는 기업 광신도 요원. 둔화로 충전을 늦추지 않으면 차징 완료 시 적을 대폭 전진시킵니다."
+icon = ExtResource("1_icon")
+archetype = 3
+max_hp = 12
+defense = 1
+evasion = 2
+speed = 0
+start_distance = 12
+knockback_resistance = 0

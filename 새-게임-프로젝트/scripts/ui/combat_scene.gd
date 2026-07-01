@@ -9,6 +9,10 @@ var _gun_revolver: GunData = preload("res://resources/guns/revolver.tres")
 var _gun_shotgun: GunData = preload("res://resources/guns/shotgun.tres")
 var _gun_smg: GunData = preload("res://resources/guns/smg.tres")
 var _gun_dmr: GunData = preload("res://resources/guns/dmr.tres")
+var _gun_heavy: GunData = preload("res://resources/guns/heavy.tres")
+var _gun_trickster: GunData = preload("res://resources/guns/trickster.tres")
+var _gun_gambler: GunData = preload("res://resources/guns/gambler.tres")
+var _gun_stance_hunter: GunData = preload("res://resources/guns/stance_hunter.tres")
 
 var _bullets_basic: BulletData = preload("res://resources/bullets/basic_bullet.tres")
 var _bullets_ap: BulletData = preload("res://resources/bullets/armor_piercing.tres")
@@ -19,6 +23,10 @@ var _enemy_tank: EnemyData = preload("res://resources/enemies/tank.tres")
 var _enemy_dodger: EnemyData = preload("res://resources/enemies/dodger.tres")
 var _enemy_drone: EnemyData = preload("res://resources/enemies/sentry_drone.tres")
 var _enemy_caster: EnemyData = preload("res://resources/enemies/caster.tres")
+var _enemy_absorber: EnemyData = preload("res://resources/enemies/absorber_mech.tres")
+var _enemy_stalker: EnemyData = preload("res://resources/enemies/nano_stalker.tres")
+var _enemy_scrambler: EnemyData = preload("res://resources/enemies/scrambler_drone.tres")
+var _enemy_neuro_caster: EnemyData = preload("res://resources/enemies/neuro_caster.tres")
 var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_bullet.tres")
 
 # ── 색상 상수 ──
@@ -46,6 +54,7 @@ var _map_overlay: MapOverlay
 var _maintenance_overlay: MaintenanceOverlay
 var _loadout_overlay: LoadoutOverlay
 var _bullet_gallery_overlay: BulletGalleryOverlay
+var _monster_gallery_overlay: MonsterGalleryOverlay
 var _combat_margin: MarginContainer
 var _combat_overlay: CombatOverlay
 var _debriefing_overlay: DebriefingOverlay
@@ -105,6 +114,13 @@ func _build_ui() -> void:
 	_bullet_gallery_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_bullet_gallery_overlay.initialize(self)
 	_bullet_gallery_overlay.visible = false
+
+	# 3-4. Monster Gallery Overlay 생성
+	_monster_gallery_overlay = MonsterGalleryOverlay.new()
+	add_child(_monster_gallery_overlay)
+	_monster_gallery_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_monster_gallery_overlay.initialize(self)
+	_monster_gallery_overlay.visible = false
 
 	# 4. Debriefing Overlay 생성
 	_debriefing_overlay = DebriefingOverlay.new()
@@ -188,6 +204,33 @@ func handle_gallery_closed() -> void:
 	_show_title_screen()
 
 
+func trigger_monster_gallery_ui() -> void:
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_monster_gallery_overlay.open_gallery()
+
+
+func handle_monster_gallery_closed() -> void:
+	_is_shortcut_mode = false
+	_show_title_screen()
+
+
+func trigger_double_tap_test() -> void:
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_current_gun_data = _gun_smg
+	
+	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	
+	_combat_margin.visible = true
+	_combat_overlay.visible = true
+	_combat_overlay.clear_combat_log()
+	_combat_overlay.add_combat_log("[color=#ffff66]🛠️ 더블탭 전투 테스트 시작! (속사형 SMG 탑재)[/color]")
+	
+	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_tank]
+	_start_combat_phase(enemy_list)
+
+
 func handle_loadout_finished() -> void:
 	if _is_shortcut_mode:
 		_is_shortcut_mode = false
@@ -234,16 +277,16 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		var enemy_list: Array[EnemyData] = []
 		var floor_num := _rm.current_floor
 		
-		if selected_node.type_name.contains("보스"):
-			# 보스전: 층이 높아질수록 편대가 강화됨
+		if selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss") or selected_node.type_name.contains("boss"):
+			# 보스전: 층이 높아질수록 편대가 강화됨 (신규 몬스터 기믹 대량 반영)
 			if floor_num <= 5:
-				enemy_list = [_enemy_tank, _enemy_caster]
+				enemy_list = [_enemy_tank, _enemy_neuro_caster]
 			elif floor_num <= 10:
-				enemy_list = [_enemy_tank, _enemy_rusher, _enemy_caster]
+				enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_neuro_caster]
 			elif floor_num <= 15:
-				enemy_list = [_enemy_tank, _enemy_dodger, _enemy_caster, _enemy_drone]
+				enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_neuro_caster, _enemy_scrambler]
 			else:
-				enemy_list = [_enemy_tank, _enemy_rusher, _enemy_caster, _enemy_dodger]
+				enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_scrambler, _enemy_neuro_caster]
 		else:
 			# 일반전: 층(current_floor) 구간별 난이도 점진적 증가
 			if floor_num <= 3:
@@ -254,28 +297,40 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 					enemy_list = [_enemy_rusher, _enemy_dodger]
 			elif floor_num <= 6:
 				# 4~6층: 2~3마리 (보통)
-				if randf() < 0.5:
+				var r := randf()
+				if r < 0.33:
 					enemy_list = [_enemy_rusher, _enemy_tank]
-				else:
+				elif r < 0.66:
 					enemy_list = [_enemy_rusher, _enemy_drone, _enemy_caster]
+				else:
+					enemy_list = [_enemy_scrambler, _enemy_dodger]
 			elif floor_num <= 10:
 				# 7~10층: 3마리 (어려움)
-				if randf() < 0.5:
+				var r := randf()
+				if r < 0.33:
 					enemy_list = [_enemy_tank, _enemy_dodger, _enemy_caster]
+				elif r < 0.66:
+					enemy_list = [_enemy_scrambler, _enemy_drone, _enemy_caster]
 				else:
-					enemy_list = [_enemy_rusher, _enemy_drone, _enemy_caster]
+					enemy_list = [_enemy_stalker, _enemy_scrambler, _enemy_tank]
 			elif floor_num <= 15:
 				# 11~15층: 3~4마리 (매우 어려움)
-				if randf() < 0.5:
-					enemy_list = [_enemy_tank, _enemy_tank, _enemy_caster]
+				var r := randf()
+				if r < 0.33:
+					enemy_list = [_enemy_absorber, _enemy_scrambler, _enemy_neuro_caster]
+				elif r < 0.66:
+					enemy_list = [_enemy_tank, _enemy_stalker, _enemy_caster]
 				else:
-					enemy_list = [_enemy_rusher, _enemy_dodger, _enemy_drone, _enemy_caster]
+					enemy_list = [_enemy_rusher, _enemy_stalker, _enemy_drone, _enemy_neuro_caster]
 			else:
 				# 16~19층: 4마리 고정 (극한)
-				if randf() < 0.5:
+				var r := randf()
+				if r < 0.33:
+					enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_scrambler, _enemy_neuro_caster]
+				elif r < 0.66:
 					enemy_list = [_enemy_tank, _enemy_rusher, _enemy_dodger, _enemy_caster]
 				else:
-					enemy_list = [_enemy_tank, _enemy_drone, _enemy_caster, _enemy_dodger]
+					enemy_list = [_enemy_absorber, _enemy_drone, _enemy_neuro_caster, _enemy_stalker]
 				
 		_start_combat_phase(enemy_list)
 	else:
@@ -315,6 +370,10 @@ func handle_maintenance_finished() -> void:
 func handle_combat_finished(is_dead: bool) -> void:
 	_combat_margin.visible = false
 	_combat_overlay.visible = false
+	if _is_shortcut_mode:
+		_is_shortcut_mode = false
+		_show_title_screen()
+		return
 	if is_dead:
 		_show_debriefing(false)
 		return

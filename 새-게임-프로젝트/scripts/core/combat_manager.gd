@@ -35,6 +35,8 @@ var reload_turns_remaining: int = 0
 var active_relics: Array[String] = []
 var unload_penalty_waived: bool = false
 var _insert_seal_active: bool = false
+var double_tap_active: bool = false
+var eject_used_this_turn: bool = false
 
 # ── 총기 파츠 및 기믹 상태 ──
 var equipped_parts: Array[PartData] = []
@@ -93,6 +95,7 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], relics: A
 	active_relics = relics
 	unload_penalty_waived = false
 	_insert_seal_active = false
+	double_tap_active = false
 	last_fired_caliber = Enums.Caliber.CAL_9MM
 	
 	# 파츠 및 기믹 상태 초기화
@@ -104,7 +107,7 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], relics: A
 	consecutive_caliber_count = 0
 	
 	# 예고창 슬롯 수 보정 (Scope, Blind Fire 파츠)
-	visible_magazine_slots = 2
+	visible_magazine_slots = gun.preview_window_size if gun != null else 2
 	if _has_part(Enums.PartID.SCOPE):
 		visible_magazine_slots += 1
 	if _has_part(Enums.PartID.BLIND_FIRE):
@@ -118,6 +121,8 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], relics: A
 func _enter_loading_phase() -> void:
 	state = State.LOADING
 	_insert_seal_active = false
+	double_tap_active = false
+	eject_used_this_turn = false
 	loading_phase_started.emit()
 
 
@@ -127,23 +132,61 @@ func confirm_loading(bullets: Array[BulletData]) -> void:
 		return
 	magazine.load_bullets(bullets)
 	state = State.PLAYER_TURN
+	eject_used_this_turn = false
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
 	combat_log.emit("── 탄창 장전 완료! %d발 ──" % magazine.get_remaining())
 
 
 ## 발사 — 탄창에서 한 발 꺼내 최근접 적에게 쏜다 (강제 타겟팅).
 func fire() -> void:
-	var target := _get_nearest_enemy()
-	_fire_internal(target)
+	if double_tap_active:
+		_fire_double_tap()
+	else:
+		var target := _get_nearest_enemy()
+		_fire_internal(target)
+
+
+func _fire_double_tap() -> void:
+	if state != State.PLAYER_TURN:
+		return
+	if magazine.get_remaining() < 2:
+		combat_log.emit("⚠ 탄창에 탄환이 부족하여 더블탭을 수행할 수 없습니다.")
+		return
+		
+	# 1발째 격발
+	var target1 := _get_nearest_enemy()
+	if target1 == null:
+		combat_log.emit("⚠ 타겟이 없습니다.")
+		return
+		
+	combat_log.emit("🔥 [더블탭 1발째 격발]")
+	_fire_internal(target1, false) # 적 전진 없음
+	
+	if state != State.PLAYER_TURN:
+		double_tap_active = false
+		return
+		
+	# 2발째 격발
+	var target2 := _get_nearest_enemy()
+	if target2 == null:
+		combat_log.emit("⚠ 더블탭 2발째 격발을 수행할 대상이 없습니다.")
+		_all_enemies_advance() # 2발째 격발 타겟 없더라도 적 1회 전진
+		double_tap_active = false
+		return
+		
+	combat_log.emit("🔥 [더블탭 2발째 격발]")
+	_fire_internal(target2, true) # 적 전진 있음
+	
+	double_tap_active = false
 
 
 ## 지정 사격 — 특정 적을 지정하여 쏜다 (슬로우 탄 자유 조준 사격용).
 func fire_at_target(target_enemy: EnemyInstance) -> void:
-	_fire_internal(target_enemy)
+	_fire_internal(target_enemy, true)
 
 
 ## 실제 격발 정산 로직
-func _fire_internal(target: EnemyInstance) -> void:
+func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void:
 	if state != State.PLAYER_TURN:
 		return
 	if magazine.is_empty():
@@ -189,6 +232,16 @@ func _fire_internal(target: EnemyInstance) -> void:
 
 	var target_evasion := target.current_evasion
 	
+	# ── 저격형(Marksman) 총기 시그니처: 명중 게이트 무시 (거리 > 1) ──
+	var is_marksman_ignore_eva := false
+	if gun and gun.display_name.contains("저격"):
+		if target.current_distance > 1:
+			target_evasion = 0
+			is_marksman_ignore_eva = true
+			combat_log.emit("   ↳ 🎯 [저격형 시그니처] 명중 게이트 무시 발동! (거리 %dm)" % target.current_distance)
+		else:
+			combat_log.emit("   ↳ ⚠ [저격형 페널티] 초근접(DIST <= 1m) 조준선 불일치로 명중 우회 규칙 해제!")
+	
 	# 저격경 (MARKSMAN_SCOPE) 첫 탄 확정 명중
 	if _has_part(Enums.PartID.MARKSMAN_SCOPE) and is_first:
 		target_evasion = 0
@@ -200,8 +253,21 @@ func _fire_internal(target: EnemyInstance) -> void:
 		target_marker_active = true
 		combat_log.emit("   ↳ 🎯 [표적 지시기] 적의 회피율을 이번 사격에 한해 0으로 고정!")
 
+	# ── 태세 사냥꾼(Stance Hunter) 총기 시그니처: 파훼 ──
+	var is_stance_hunter_bypass := false
+	if gun and gun.display_name.contains("태세") and target.current_stance != Enums.EnemyStance.NONE:
+		if target.shot_counter == 2:
+			is_stance_hunter_bypass = true
+			target_evasion = 0
+			combat_log.emit("   ↳ 🎯 [태세 사냥꾼 시그니처] 파훼 발동! 태세 전환 타이밍 간파 (게이트 무조건 통과!)")
+
 	var calc_bullet_acc := bullet.duplicate()
 	calc_bullet_acc.accuracy += part_acc_bonus
+
+	# ── 돌격형(Bruiser) 총기 페널티: 원거리 조준 불안정 ──
+	if gun and gun.display_name.contains("돌격") and target.current_distance >= 4:
+		calc_bullet_acc.accuracy -= 4
+		combat_log.emit("   ↳ ⚠ [돌격형 페널티] 원거리 조준 불안정으로 이번 사격 ACC -4 감소!")
 
 	var hit := DamageCalculator.check_hit(calc_bullet_acc, target_evasion, gun)
 	last_shot_hit = hit
@@ -255,10 +321,10 @@ func _fire_internal(target: EnemyInstance) -> void:
 			part_dmg_bonus += 5
 			combat_log.emit("   ↳ 💥 [언더플로우] 피날레 격발! DMG +5 가산")
 
-		# 포인트블랭크 (POINT_BLANK): 거리 1~2칸 초근접 시 DMG +4
-		if _has_part(Enums.PartID.POINT_BLANK) and target.current_distance <= 2:
+		# 포인트블랭크 (POINT_BLANK): 거리 1~2칸 초근접 시 DMG +4 (돌격형 총기 기본 내장)
+		if (_has_part(Enums.PartID.POINT_BLANK) or (gun and gun.display_name.contains("돌격"))) and target.current_distance <= 2:
 			part_dmg_bonus += 4
-			combat_log.emit("   ↳ ⚡ [포인트블랭크] 초근접 사격! DMG +4 가산")
+			combat_log.emit("   ↳ ⚡ [돌격형 시그니처] 초근접(DIST %dm) 보너스로 DMG +4 가산!" % target.current_distance)
 			
 		# 롱샷 (LONG_SHOT): 거리 3칸 이상 원거리 시 DMG 비례 상승 (DIST - 2)
 		if _has_part(Enums.PartID.LONG_SHOT) and target.current_distance >= 3:
@@ -281,6 +347,22 @@ func _fire_internal(target: EnemyInstance) -> void:
 			part_pen_bonus += chaser_pen_bonus
 			if chaser_pen_bonus > 0:
 				combat_log.emit("   ↳ 🚀 [체이서] 누적 관통력 PEN +%d 적용" % chaser_pen_bonus)
+
+		# 태세 사냥꾼(Stance Hunter) 파훼 관통 우회
+		if is_stance_hunter_bypass:
+			part_pen_bonus += 99
+
+		# 저격형(Marksman) 근거리 패널티 (DIST <= 1)
+		if gun and gun.display_name.contains("저격") and target.current_distance <= 1:
+			part_dmg_bonus -= 2
+			combat_log.emit("   ↳ ⚠ [저격형 페널티] 초근접(DIST <= 1m) 사격 패널티로 DMG -2 감쇄!")
+
+		# 도박형(Gambler) 올인 데미지 가산
+		if gun and gun.display_name.contains("도박"):
+			var depth := remaining_before_fire - 1
+			var gambler_bonus := depth * 2
+			part_dmg_bonus += gambler_bonus
+			combat_log.emit("   ↳ 🎲 [도박형 시그니처] 올인 격발! 깊이 %d단계 보너스로 DMG +%d 가산!" % [depth, gambler_bonus])
 
 		var calc_bullet := bullet.duplicate()
 		calc_bullet.damage += part_dmg_bonus
@@ -328,6 +410,28 @@ func _fire_internal(target: EnemyInstance) -> void:
 		combat_log.emit("   %s" % breakdown)
 		bullet_fired.emit(bullet, true, damage)
 		enemy_damaged.emit(target, damage, target.current_hp)
+
+		# ── 중장형(Heavy) 총기 시그니처: 과관통 ──
+		if gun and gun.display_name.contains("중장"):
+			var total_pen := bullet.penetration + part_pen_bonus
+			if gun: total_pen += gun.passive_pen_bonus
+			var excess_pen := total_pen - target.current_def
+			if excess_pen > 0:
+				var alive_list := get_alive_enemies()
+				alive_list.sort_custom(func(a, b): return a.current_distance < b.current_distance)
+				var target_idx := alive_list.find(target)
+				if target_idx != -1 and target_idx + 1 < alive_list.size():
+					var e2: EnemyInstance = alive_list[target_idx + 1]
+					if excess_pen >= e2.current_def:
+						var dmg2 := bullet.damage + part_dmg_bonus
+						if gun: dmg2 += gun.passive_dmg_bonus
+						dmg2 = maxi(dmg2, 1)
+						e2.apply_damage(dmg2)
+						combat_log.emit("   ↳ 🎯 [중장형 과관통] 초과 관통(PEN %d vs DEF %d)으로 [%s] 관통! %d 대미지" % [excess_pen, e2.current_def, e2.data.display_name, dmg2])
+						enemy_damaged.emit(e2, dmg2, e2.current_hp)
+						if e2.is_dead():
+							combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
+							enemy_killed.emit(e2)
 
 		# ── 4. 피격 후 효과 ──
 		_apply_post_hit_effects(bullet, target, is_first, is_last)
@@ -416,6 +520,20 @@ func _fire_internal(target: EnemyInstance) -> void:
 			combat_log.emit("💀 [%s] 처치!" % target.data.display_name)
 			enemy_killed.emit(target)
 			
+			# 돌격형(Bruiser) 총기 시그니처: 끌어당김
+			if gun and gun.display_name.contains("돌격"):
+				var alive_list := get_alive_enemies()
+				var next_enemy: EnemyInstance = null
+				var min_dist := 999
+				for e in alive_list:
+					if e != target and e.current_distance < min_dist:
+						min_dist = e.current_distance
+						next_enemy = e
+				if next_enemy:
+					next_enemy.current_distance = maxi(next_enemy.current_distance - 1, 0)
+					combat_log.emit("   ↳ ⚠ [돌격형 시그니처] 끌어당김 발동! 다음 적 [%s]이 1칸 전진! (현재 거리 %dm)" % [next_enemy.data.display_name, next_enemy.current_distance])
+					enemy_moved.emit(next_enemy, next_enemy.current_distance, -1)
+			
 			# 체이서 (CHASER): 처치 성공 시 다음 사격 PEN +2 누적
 			if _has_part(Enums.PartID.CHASER):
 				chaser_pen_bonus += 2
@@ -449,9 +567,11 @@ func _fire_internal(target: EnemyInstance) -> void:
 		return
 
 	# ── 모든 생존 적 전진 (매발 전진) ──
-	_all_enemies_advance()
-	if state == State.LOST:
-		return
+	if advance_enemies:
+		eject_used_this_turn = false
+		_all_enemies_advance()
+		if state == State.LOST:
+			return
 
 	# ── 적 상태 변환 체크 ──
 	if target and not target.is_dead():
@@ -516,6 +636,9 @@ func request_unload() -> void:
 ## 인게임 중간 장전(납탄) 요청
 func request_insert_bullet(bullet: BulletData) -> void:
 	if state != State.PLAYER_TURN:
+		return
+	if double_tap_active:
+		combat_log.emit("⚠ 더블탭이 선언된 턴에는 납탄할 수 없습니다.")
 		return
 	var cap := gun.magazine_capacity
 	var has_ch := gun.has_chamber
@@ -666,3 +789,25 @@ func _has_part(part_id: Enums.PartID) -> bool:
 		if p != null and p.part_id == part_id:
 			return true
 	return false
+
+
+## 이젝트 요청 (곡예형 시그니처)
+func request_eject() -> void:
+	if state != State.PLAYER_TURN:
+		return
+	if magazine.is_empty():
+		combat_log.emit("⚠ 탄창이 비어있어 이젝트할 탄환이 없습니다.")
+		return
+	if eject_used_this_turn:
+		combat_log.emit("⚠ 이젝트 기믹은 턴당 1회만 사용할 수 있습니다.")
+		return
+		
+	var bullet := magazine.unload()
+	if bullet:
+		var dup := bullet.duplicate()
+		dup.damage = maxi(dup.damage - 1, 0)
+		magazine._bullets.insert(0, dup)
+		eject_used_this_turn = true
+		
+		combat_log.emit("⚡ [곡예형 시그니처] 이젝트 발동! 맨 위 [%s] 탄환을 맨 밑으로 이동했습니다. (이동된 탄환 DMG -1)" % bullet.display_name)
+		magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())

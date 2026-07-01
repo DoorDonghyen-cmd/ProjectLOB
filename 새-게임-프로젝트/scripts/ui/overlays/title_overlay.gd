@@ -163,7 +163,7 @@ func _on_dev_test_pressed() -> void:
 ## 개발자 테스트 팝업 패널 빌드
 func _build_dev_test_panel() -> void:
 	_dev_test_panel = PanelContainer.new()
-	_dev_test_panel.custom_minimum_size = Vector2(340, 240)
+	_dev_test_panel.custom_minimum_size = Vector2(340, 330)
 	_dev_test_panel.visible = false
 	
 	# 화면 정중앙 팝업 스타일
@@ -225,6 +225,24 @@ func _build_dev_test_panel() -> void:
 	btn_gallery.custom_minimum_size = Vector2(0, 40)
 	btn_gallery.add_theme_font_size_override("font_size", 13)
 	vbox.add_child(btn_gallery)
+	
+	# 3-2. 몬스터 이미지 갤러리 테스트 숏컷 버튼
+	var btn_monster_gallery = parent_scene.make_button("👾 몬스터 갤러리 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_monster_gallery_ui()
+	, parent_scene.C_ACCENT)
+	btn_monster_gallery.custom_minimum_size = Vector2(0, 40)
+	btn_monster_gallery.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_monster_gallery)
+	
+	# 4. 더블탭 전투 테스트 숏컷 버튼
+	var btn_double_tap = parent_scene.make_button("🔫 더블탭 전투 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_double_tap_test()
+	, parent_scene.C_ACCENT)
+	btn_double_tap.custom_minimum_size = Vector2(0, 40)
+	btn_double_tap.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_double_tap)
 	
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL

@@ -14,6 +14,7 @@
 | 2026-06-29 | **Tier 1 & 2 코어 전술 시스템 고도화** | `168caff8` | 다수 적 스태거링 공유 트랙, 술사 적 차징 공격, 슬로우 저격 조준, 관통 다중타 피해, 7.62mm 구경 보너스, 원터치 클릭 장전/회수 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/168caff8-edab-4761-b950-f0bd42e12149/walkthrough.md) |
 | 2026-06-30 | **스탯 시스템 개편 & 팝업 연출** | `8acd207f` | PRES 폐지 및 이진 관통 게이트 적용, 난이도 층별 거리 보정, 실시간 도탄/빗나감 예고 UI, 대미지 팝업 연출 구현 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/8acd207f-7395-4eef-8fdf-3a9dd9f951e9/walkthrough.md) |
 | 2026-07-01 | **특수 탄환 가방 미노출 버그 해결** | `820f3ccd` | 전투 인벤토리 가방 내 특수 탄환 5종 기본형 치환문 제거 및 원본 데이터 전달로 15종 탄환 개별 렌더링 및 전투 효과 활성화 보장 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/820f3ccd-0935-4d7b-bf5c-e814640fb44e/walkthrough.md) |
+| 2026-07-01 | **속사형 더블탭 & 몬스터 4종 & 총기 8종 구현** | `70fd47fc` | 속사형 더블탭 및 기믹형 몬스터 4종 설계/적용 완료. 핵심 총기 8종(표준, 저격, 돌격, 속사, 중장, 곡예, 도박, 태세사냥꾼) 리소스 및 고유 시그니처/패널티 전투 규칙 전면 구현, 준비실 스크롤 뷰 지원 및 이젝트 버튼/태세 전환 예고 HUD 연동 완료 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/70fd47fc-a52b-4449-9675-a36976f0100e/walkthrough.md) |
 
 ---
 
@@ -24,5 +25,6 @@
 * [Session 168caff8-edab-4761-b950-f0bd42e12149 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/168caff8-edab-4761-b950-f0bd42e12149/walkthrough.md)
 * [Session 8acd207f-7395-4eef-8fdf-3a9dd9f951e9 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/8acd207f-7395-4eef-8fdf-3a9dd9f951e9/walkthrough.md)
 * [Session 820f3ccd-0935-4d7b-bf5c-e814640fb44e Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/820f3ccd-0935-4d7b-bf5c-e814640fb44e/walkthrough.md)
+* [Session 70fd47fc-a52b-4449-9675-a36976f0100e Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/70fd47fc-a52b-4449-9675-a36976f0100e/walkthrough.md)
 
 

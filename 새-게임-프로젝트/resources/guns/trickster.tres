@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/revolver.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "곡예형 권총 (Trickster)"
+description = "순서 조작 권총. 3칸의 극단적인 슬롯 제약을 받지만, 예고창 3칸과 함께 턴당 1회 맨 위 탄환을 덱 맨 밑으로 보내는 이젝트(Eject) 능력을 가집니다."
+icon = ExtResource("1_icon")
+magazine_capacity = 4
+has_chamber = true
+magazine_structure = 0
+reload_turns = 1
+parts_capacity = 3
+preview_window_size = 3
+passive_dmg_bonus = 0
+passive_pen_bonus = 0
+passive_knockback_bonus = 0
+passive_acc_bonus = 1

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_scrambler_drone.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "전파 방해 드론"
+description = "요원의 조준 센서를 교란하는 고주파 해킹 보안 드론. 돌격병만큼 빠르며 약간의 장갑과 넉백 저항을 갖추고 비행합니다."
+icon = ExtResource("1_icon")
+archetype = 0
+max_hp = 6
+defense = 1
+evasion = 5
+speed = 3
+start_distance = 8
+knockback_resistance = 1

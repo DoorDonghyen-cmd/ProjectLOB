@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/smg.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "도박형 기관단총 (Gambler)"
+description = "하드코어 도박형 무기. 예고창 0칸의 블라인드 패널티를 안고 장전되나, 5칸의 넓은 개조 슬롯을 지니고 탄창 깊은 스택에서 격발될수록 위력이 배가됩니다."
+icon = ExtResource("1_icon")
+magazine_capacity = 5
+has_chamber = false
+magazine_structure = 0
+reload_turns = 2
+parts_capacity = 5
+preview_window_size = 0
+passive_dmg_bonus = 2
+passive_pen_bonus = 0
+passive_knockback_bonus = 0
+passive_acc_bonus = 0
