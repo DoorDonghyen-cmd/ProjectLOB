@@ -50,6 +50,8 @@ var _action_row: HBoxContainer
 var _bottom_area: HBoxContainer
 var _left_magazine_panel: VBoxContainer
 var _mag_tube_container: VBoxContainer
+var _tube_panel: Control
+var _last_bullet_count: int = -1
 var _btn_load_card: Button
 var _btn_unload_card: Button
 var _right_bag_panel: PanelContainer
@@ -165,8 +167,8 @@ func _build_left_column(parent: VBoxContainer) -> void:
 	parent.add_child(_left_magazine_panel)
 
 	var tube_panel := DragDropTube.new()
-
 	tube_panel.initialize(self)
+	_tube_panel = tube_panel
 
 	tube_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
@@ -618,12 +620,14 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	_action_row.add_theme_constant_override("separation", 8)
 
 	_action_row.custom_minimum_size = Vector2(0, 56)
+	_action_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	parent.add_child(_action_row)
 
 	_unload_btn = parent_scene.make_button("🗑 빼내기", _on_unload_pressed, parent_scene.C_DANGER)
 
 	_unload_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_unload_btn.add_theme_font_size_override("font_size", 14)
 
 	_apply_tactical_button_style(_unload_btn, parent_scene.C_WARNING)
 
@@ -632,6 +636,7 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	_reload_btn = parent_scene.make_button("🔄 리로드", _on_reload_pressed, parent_scene.C_WARNING)
 
 	_reload_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_reload_btn.add_theme_font_size_override("font_size", 14)
 
 	_apply_tactical_button_style(_reload_btn, parent_scene.C_ACCENT)
 
@@ -642,6 +647,7 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	_confirm_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	_confirm_btn.visible = false
+	_confirm_btn.add_theme_font_size_override("font_size", 14)
 
 	_apply_tactical_button_style(_confirm_btn, parent_scene.C_SUCCESS)
 
@@ -652,6 +658,7 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	_double_tap_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	_double_tap_btn.visible = false
+	_double_tap_btn.add_theme_font_size_override("font_size", 14)
 
 	_apply_tactical_button_style(_double_tap_btn, parent_scene.C_DIM)
 
@@ -662,6 +669,7 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	_eject_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	_eject_btn.visible = false
+	_eject_btn.add_theme_font_size_override("font_size", 14)
 
 	_apply_tactical_button_style(_eject_btn, parent_scene.C_NEON_GOLD)
 
@@ -674,6 +682,7 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	_fire_btn.expand_icon = true
 
 	_fire_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_fire_btn.add_theme_font_size_override("font_size", 14)
 
 	_apply_tactical_button_style(_fire_btn, parent_scene.C_DANGER)
 
@@ -832,6 +841,7 @@ func _connect_signals() -> void:
 
 
 func _on_encounter_started(enemy_list) -> void:
+	_last_bullet_count = -1
 	if _agent_sprite:
 		_agent_sprite.visible = true # 요원 표시
 		
@@ -848,18 +858,18 @@ func _on_encounter_started(enemy_list) -> void:
 		# 스프라이트 할당 시트 로직 
 		if enemy.data and enemy.data.sprite_sheet:
 			es.texture = enemy.data.sprite_sheet
+			var z_tex := AtlasTexture.new()
+			z_tex.atlas = es.texture
+			z_tex.region = Rect2(0, 0, 380, 380) # 폭동 진압병 프레임
+			es.texture = z_tex
+		elif enemy.data and enemy.data.icon:
+			es.texture = enemy.data.icon
 		else:
 			es.texture = load("res://assets/sprites/zombie_sheet.png")
-			
-		var z_tex := AtlasTexture.new()
-		z_tex.atlas = es.texture
-		
-		# 좀비 프레임 1024x1024, 폭동 진압병 프레임 380x380 (대충 분기)
-		if es.texture.resource_path.get_file() == "zombie_sheet.png":
+			var z_tex := AtlasTexture.new()
+			z_tex.atlas = es.texture
 			z_tex.region = Rect2(0, 0, 1024, 1024)
-		else:
-			z_tex.region = Rect2(0, 0, 380, 380) # 폭동 진압병 프레임
-		es.texture = z_tex
+			es.texture = z_tex
 		
 		es.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		es.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -872,6 +882,7 @@ func _on_encounter_started(enemy_list) -> void:
 		
 		_ingame_area.add_child(es)
 		_enemy_sprites[enemy] = es
+		_start_enemy_idle_shamble(es, 0.75)
 		
 	# 공유 트랙의 최대 거리를 소환된 적들 중 가장 먼 거리로 설정
 	_global_max_dist = 12.0
@@ -1414,7 +1425,7 @@ func _update_action_buttons() -> void:
 			_apply_tactical_button_style(_double_tap_btn, parent_scene.C_DIM)
 	
 	if _is_targeting_mode:
-		_fire_btn.text = "조준 중 (대상을 탭하세요)"
+		_fire_btn.text = "🎯 대상을 탭하세요"
 	elif has_ammo and combat_manager.enemy:
 		var next_bullet := combat_manager.magazine.peek()
 		var target := combat_manager.enemy
@@ -1612,6 +1623,11 @@ func _update_enemy_position_and_scale(enemy: EnemyInstance, animate: bool) -> vo
 		var target_pos := Vector2(target_x - 70.0, floor_y - 70.0 - 70.0 * target_scale)
 		
 		if animate:
+			if es.has_meta("idle_tween"):
+				var t = es.get_meta("idle_tween")
+				if t and t.is_valid():
+					t.kill()
+					
 			var is_knockback: bool = target_pos.x > es.position.x
 			var tilt_angle: float = 0.08 if is_knockback else -0.08
 			
@@ -1636,6 +1652,8 @@ func _update_enemy_position_and_scale(enemy: EnemyInstance, animate: bool) -> vo
 			rot_tween.tween_property(es, "rotation", 0.0, 0.2)\
 				.set_trans(Tween.TRANS_QUAD)\
 				.set_ease(Tween.EASE_IN_OUT)
+				
+			scale_tween.tween_callback(func(): _start_enemy_idle_shamble(es, target_scale))
 		else:
 			es.position = target_pos
 			es.scale = Vector2(target_scale, target_scale)
@@ -1705,11 +1723,16 @@ func _on_bullet_fired(bullet: BulletData, hit: bool, damage: int) -> void:
 		# 사격 프레임 (4번째 프레임 인덱스 3) 할당: 278 * 3
 		tex.region = Rect2(278 * 3, 0, 278, 278)
 	
-	# 1. Firing Recoil Tween
-	_agent_sprite.position = base_pos - Vector2(15.0, 0.0)  # Push back horizontally by 15px
+	# 1. Firing Recoil Tween with Muzzle Flip
+	_agent_sprite.position = base_pos - Vector2(20.0, 0.0)  # Push back horizontally by 20px
+	_agent_sprite.rotation = -0.06  # Slight muzzle flip upwards
 	var tween: Tween = create_tween()
-	tween.tween_property(_agent_sprite, "position", base_pos, 0.15)\
-		.set_trans(Tween.TRANS_QUAD)\
+	tween.set_parallel(true)
+	tween.tween_property(_agent_sprite, "position", base_pos, 0.2)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_property(_agent_sprite, "rotation", 0.0, 0.2)\
+		.set_trans(Tween.TRANS_BACK)\
 		.set_ease(Tween.EASE_OUT)
 	if tex:
 		# 사격 반동 후 다시 조준(Aiming) 모션으로 복귀
@@ -1768,6 +1791,11 @@ func _update_cylinder_visuals() -> void:
 	else:
 		bullets = _loaded_bullets
 		is_loading_phase = true
+		
+	var bullet_count_changed := (_last_bullet_count != -1 and bullets.size() != _last_bullet_count)
+	_last_bullet_count = bullets.size()
+	if bullet_count_changed:
+		_bounce_cylinder()
 		
 	var animate_last := false
 	if is_loading_phase:
@@ -1979,3 +2007,49 @@ func _on_all_enemies_moved() -> void:
 	if nearest:
 		_update_enemy_position_and_scale(nearest, true)
 	_track_overlay.queue_redraw()
+
+
+func _bounce_cylinder() -> void:
+	if not _tube_panel:
+		return
+	_tube_panel.pivot_offset = Vector2(_tube_panel.size.x / 2.0, _tube_panel.size.y)
+	if _tube_panel.has_meta("bounce_tween"):
+		var t = _tube_panel.get_meta("bounce_tween")
+		if t and t.is_valid():
+			t.kill()
+	var tween := _tube_panel.create_tween().set_parallel(true)
+	_tube_panel.set_meta("bounce_tween", tween)
+	_tube_panel.rotation_degrees = -3.0
+	_tube_panel.scale = Vector2(1.06, 1.06)
+	tween.tween_property(_tube_panel, "rotation_degrees", 0.0, 0.2)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_property(_tube_panel, "scale", Vector2(1.0, 1.0), 0.2)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+
+
+func _start_enemy_idle_shamble(es: TextureRect, base_scale: float = 0.75) -> void:
+	if not is_instance_valid(es):
+		return
+	es.pivot_offset = Vector2(70, 140)
+	if es.has_meta("idle_tween"):
+		var t = es.get_meta("idle_tween")
+		if t and t.is_valid():
+			t.kill()
+	var tween := es.create_tween().set_loops()
+	es.set_meta("idle_tween", tween)
+	
+	var dur := randf_range(1.0, 1.4)
+	var rot := randf_range(0.03, 0.06)
+	var scale_y_min := base_scale * 0.95
+	var scale_y_max := base_scale * 1.02
+	
+	tween.tween_property(es, "rotation", rot, dur)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.parallel().tween_property(es, "scale:y", scale_y_min, dur)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(es, "rotation", -rot, dur)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.parallel().tween_property(es, "scale:y", scale_y_max, dur)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)

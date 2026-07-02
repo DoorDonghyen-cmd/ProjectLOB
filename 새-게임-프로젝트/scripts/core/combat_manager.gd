@@ -93,7 +93,6 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], relics: A
 	magazine = Magazine.new(gun)
 	last_shot_hit = false
 	active_relics = relics
-	unload_penalty_waived = false
 	_insert_seal_active = false
 	double_tap_active = false
 	last_fired_caliber = Enums.Caliber.CAL_9MM
@@ -620,13 +619,6 @@ func request_unload() -> void:
 	if bullet:
 		combat_log.emit("🗑 [%s] 탄환을 빼내어 이번 인카운터 풀에서 제외(소실)했습니다." % bullet.display_name)
 		bullet_unloaded.emit(bullet)
-		
-		if active_relics.has("tactical_gloves") and not unload_penalty_waived:
-			unload_penalty_waived = true
-			combat_log.emit("🛡 [전술 장갑] Unload 패널티 적 전진이 최초 1회 면제되었습니다!")
-		else:
-			_unload_penalty_advance()
-		
 		magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
 		
 		if magazine.is_empty() and state == State.PLAYER_TURN:
@@ -660,21 +652,6 @@ func request_insert_bullet(bullet: BulletData) -> void:
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
 
 
-## Unload 패널티: 최근접 적만 1칸 강제 전진
-func _unload_penalty_advance() -> void:
-	var target := _get_nearest_enemy()
-	if target == null:
-		return
-	target.current_distance = maxi(target.current_distance - 1, 0)
-	enemy_moved.emit(target, target.current_distance, 1)
-	combat_log.emit("👣 [Unload 패널티] [%s] 즉시 1칸 강제 전진! 거리 %d" % [target.data.display_name, target.current_distance])
-	
-	if target.is_at_player():
-		state = State.LOST
-		combat_log.emit("💀 적이 도달했습니다... 사망!")
-		player_died.emit()
-
-
 func _check_enemy_stance_shift(target: EnemyInstance) -> void:
 	if target.apply_shot_and_check_shift():
 		var stance_str := ""
@@ -697,7 +674,11 @@ func request_reload() -> void:
 		combat_log.emit("남은 %d발을 버리고 리로드합니다." % remaining)
 
 	magazine.clear()
-	reload_turns_remaining = gun.reload_turns
+	var turns := gun.reload_turns
+	if active_relics.has("tactical_gloves"):
+		turns = maxi(turns - 1, 1)
+		combat_log.emit("🧤 [전술 장갑] 신속한 재장전 동작으로 리로드 소요 시간이 단축되었습니다!")
+	reload_turns_remaining = turns
 	state = State.RELOADING
 	reload_started.emit(reload_turns_remaining)
 	combat_log.emit("🔄 리로드 시작! (%d턴 소요)" % reload_turns_remaining)

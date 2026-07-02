@@ -43,6 +43,7 @@ const C_HP_BAR := Color(0.85, 0.20, 0.20)
 const C_DIST_SAFE := Color(0.25, 0.75, 0.40)
 const C_DIST_WARN := Color(0.90, 0.75, 0.15)
 const C_DIST_DANGER := Color(0.95, 0.25, 0.20)
+const C_NEON_GOLD := Color(0.83, 0.69, 0.22, 1.0)
 
 # ── 매니저 인스턴스 ──
 var _cm: CombatManager

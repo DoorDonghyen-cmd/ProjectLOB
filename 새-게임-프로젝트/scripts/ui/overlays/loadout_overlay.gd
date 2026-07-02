@@ -202,6 +202,7 @@ func _build_ui() -> void:
 
 	# ── 헤더 (Header) ──
 	var header_hbox := HBoxContainer.new()
+	header_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_vbox.add_child(header_hbox)
 	
 	var title_lbl = parent_scene.make_label("🛠️ AGENT TACTICAL LOADOUT", 20, C_NEON_GOLD)
@@ -224,6 +225,7 @@ func _build_ui() -> void:
 	# ── 메인 좌우 분리 레이아웃 (HBox) ──
 	var split_hbox := HBoxContainer.new()
 	split_hbox.add_theme_constant_override("separation", 16)
+	split_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	split_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	main_vbox.add_child(split_hbox)
 

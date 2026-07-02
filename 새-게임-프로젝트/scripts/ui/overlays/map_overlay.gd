@@ -42,6 +42,11 @@ func initialize(p_scene: Control, rm: RunManager) -> void:
 	_build_ui()
 
 
+func _process(_delta: float) -> void:
+	if visible and _lines_drawer:
+		_lines_drawer.queue_redraw()
+
+
 func _build_ui() -> void:
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 32)
@@ -318,6 +323,26 @@ func _draw_lines(drawer: Control) -> void:
 		
 	var start_floor = ((run_manager.current_floor - 1) / 5) * 5 + 1
 	var end_floor = start_floor + 4
+	
+	# Draw horizontal floor division lines (building floors)
+	for f in range(start_floor, end_floor + 1):
+		var nodes = run_manager.get_nodes_for_floor(f)
+		if nodes.is_empty():
+			continue
+		var sum_y := 0.0
+		var count := 0
+		for n in nodes:
+			if _node_buttons.has(n.id):
+				var btn: Button = _node_buttons[n.id]
+				var center = btn.global_position + btn.size / 2
+				var local_center = drawer.get_global_transform().affine_inverse() * center
+				sum_y += local_center.y
+				count += 1
+		if count > 0:
+			var avg_y = sum_y / count
+			var line_start := Vector2(0, avg_y)
+			var line_end := Vector2(drawer.size.x, avg_y)
+			drawer.draw_line(line_start, line_end, Color(0.2, 0.2, 0.3, 0.15), 1.5)
 	
 	# Loop from start_floor + 1 to end_floor to draw lines from f-1 to f
 	for f in range(start_floor + 1, end_floor + 1):

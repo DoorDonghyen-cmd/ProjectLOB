@@ -157,6 +157,7 @@ func open_gallery() -> void:
 		
 		var sprite_rect := TextureRect.new()
 		sprite_rect.custom_minimum_size = Vector2(100, 100)
+		sprite_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		sprite_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		sprite_rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST # 픽셀 엣지 보존
 		
