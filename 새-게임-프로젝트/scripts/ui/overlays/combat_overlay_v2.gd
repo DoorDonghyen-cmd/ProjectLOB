@@ -24,6 +24,7 @@ var _is_targeting_mode: bool = false
 var _is_bag_expanded: bool = false
 var _last_bullet_count: int = -1
 var _last_loaded_count: int = 0
+var _current_gun_data: GunData
 
 # ── UI 참조 (좌측 기둥) ──
 var _hit_info_panel: PanelContainer
@@ -112,7 +113,7 @@ func _build_ui() -> void:
 	var hit_vbox := VBoxContainer.new()
 	hit_margin.add_child(hit_vbox)
 	
-	var hit_title := parent_scene.make_label("◎ 다음 격발 분석 (최근접)", 11, parent_scene.C_SUCCESS)
+	var hit_title: Label = parent_scene.make_label("◎ 다음 격발 분석 (최근접)", 11, parent_scene.C_SUCCESS)
 	hit_vbox.add_child(hit_title)
 	
 	_hit_info_label = RichTextLabel.new()
@@ -193,7 +194,7 @@ func _build_ui() -> void:
 	life_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	_lifeline_panel.add_child(life_vbox)
 	
-	var life_lbl := parent_scene.make_label("최근접 적 거리 (생사선)", 11, parent_scene.C_DIM)
+	var life_lbl: Label = parent_scene.make_label("최근접 적 거리 (생사선)", 11, parent_scene.C_DIM)
 	life_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	life_vbox.add_child(life_lbl)
 	
@@ -230,7 +231,7 @@ func _build_ui() -> void:
 	hp_hbox.add_theme_constant_override("separation", 8)
 	enemy_vbox.add_child(hp_hbox)
 	
-	var hp_title := parent_scene.make_label("HP", 14, parent_scene.C_DIM)
+	var hp_title: Label = parent_scene.make_label("HP", 14, parent_scene.C_DIM)
 	hp_hbox.add_child(hp_title)
 	
 	_enemy_hp_bar = ProgressBar.new()
@@ -315,7 +316,7 @@ func _build_ui() -> void:
 	_apply_button_style(_reload_btn, parent_scene.C_ACCENT)
 	_action_row.add_child(_reload_btn)
 	
-	var bag_btn := parent_scene.make_button("🎒 가방", _on_bag_clicked, parent_scene.C_WARNING)
+	var bag_btn: Button = parent_scene.make_button("🎒 가방", _on_bag_clicked, parent_scene.C_WARNING)
 	bag_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bag_btn.add_theme_font_size_override("font_size", 13)
 	_apply_button_style(bag_btn, parent_scene.C_WARNING)
@@ -380,7 +381,7 @@ func _build_drawer_panel() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head_hbox.add_child(spacer)
 	
-	var close_btn := parent_scene.make_button("✕ 닫기", func(): _toggle_drawer(false), parent_scene.C_DIM)
+	var close_btn: Button = parent_scene.make_button("✕ 닫기", func(): _toggle_drawer(false), parent_scene.C_DIM)
 	head_hbox.add_child(close_btn)
 	
 	# 서랍 바디 (소모품 리스트)
@@ -388,13 +389,13 @@ func _build_drawer_panel() -> void:
 	_drawer_body_item.add_theme_constant_override("separation", 6)
 	drawer_vbox.add_child(_drawer_body_item)
 	
-	var item1 := _create_drawer_item("✚ 응급 키트", "체력 회복", true)
+	var item1: HBoxContainer = _create_drawer_item("✚ 응급 키트", "체력 회복", true)
 	_drawer_body_item.add_child(item1)
 	
-	var item2 := _create_drawer_item("◆ 장갑 파쇄액", "DEF 차감 디버프", true)
+	var item2: HBoxContainer = _create_drawer_item("◆ 장갑 파쇄액", "DEF 차감 디버프", true)
 	_drawer_body_item.add_child(item2)
 	
-	var item3 := _create_drawer_item("≈ 둔화 지뢰", "SPD 둔화 장치", true)
+	var item3: HBoxContainer = _create_drawer_item("≈ 둔화 지뢰", "SPD 둔화 장치", true)
 	_drawer_body_item.add_child(item3)
 	
 	# 서랍 바디 (탄환 열람)
@@ -403,33 +404,33 @@ func _build_drawer_panel() -> void:
 	_drawer_body_ammo.visible = false
 	drawer_vbox.add_child(_drawer_body_ammo)
 	
-	var ammo1 := _create_drawer_item("▮ 9mm 일반탄 x12", "가용 가능", false)
+	var ammo1: HBoxContainer = _create_drawer_item("▮ 9mm 일반탄 x12", "가용 가능", false)
 	_drawer_body_ammo.add_child(ammo1)
-	var ammo2 := _create_drawer_item("▮ 7.62 관통탄 x4", "가용 가능", false)
+	var ammo2: HBoxContainer = _create_drawer_item("▮ 7.62 관통탄 x4", "가용 가능", false)
 	_drawer_body_ammo.add_child(ammo2)
 	
-	var note_lbl := parent_scene.make_label("🔒 전투 중 탄환 수정 차단 - 삽탄은 준비실/적재 페이즈에서만 가능합니다.", 11, parent_scene.C_DIM)
+	var note_lbl: Label = parent_scene.make_label("🔒 전투 중 탄환 수정 차단 - 삽탄은 준비실/적재 페이즈에서만 가능합니다.", 11, parent_scene.C_DIM)
 	_drawer_body_ammo.add_child(note_lbl)
 
 func _create_drawer_item(title: String, desc: String, can_use: bool) -> HBoxContainer:
 	var item_hbox := HBoxContainer.new()
 	item_hbox.add_theme_constant_override("separation", 12)
 	
-	var lbl_title := parent_scene.make_label(title, 13, parent_scene.C_TEXT)
+	var lbl_title: Label = parent_scene.make_label(title, 13, parent_scene.C_TEXT)
 	lbl_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	item_hbox.add_child(lbl_title)
 	
-	var lbl_desc := parent_scene.make_label(desc, 12, parent_scene.C_DIM)
+	var lbl_desc: Label = parent_scene.make_label(desc, 12, parent_scene.C_DIM)
 	item_hbox.add_child(lbl_desc)
 	
 	if can_use:
-		var use_btn := parent_scene.make_button("사용", func():
+		var use_btn: Button = parent_scene.make_button("사용", func():
 			add_combat_log("[color=#37e0ac]💊 소모품 즉발 사용: %s 효과가 격발되었습니다.[/color]" % title)
 			_toggle_drawer(false)
 		, parent_scene.C_SUCCESS)
 		item_hbox.add_child(use_btn)
 	else:
-		var use_btn := parent_scene.make_button("잠금", func(): pass, parent_scene.C_DIM)
+		var use_btn: Button = parent_scene.make_button("잠금", func(): pass, parent_scene.C_DIM)
 		use_btn.disabled = true
 		item_hbox.add_child(use_btn)
 		
@@ -566,7 +567,7 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	badge_style.border_color = color
 	badge_panel.add_theme_stylebox_override("panel", badge_style)
 	
-	var lbl := parent_scene.make_label(txt, 11, Color.WHITE)
+	var lbl: Label = parent_scene.make_label(txt, 11, Color.WHITE)
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	badge_panel.add_child(lbl)
@@ -612,11 +613,11 @@ func _update_enemy_position_and_scale(target_enemy: EnemyInstance, animate: bool
 				es.visible = false
 			continue
 			
-		var dist := e.current_distance
-		var ratio := float(dist) / _global_max_dist if _global_max_dist > 0 else 0.0
+		var dist: int = e.current_distance
+		var ratio: float = float(dist) / _global_max_dist if _global_max_dist > 0 else 0.0
 		
 		# 수평 트랙 횡 배치 (요원 60px에서 몹 최대거리까지 가로 나열)
-		var target_x := lerp(120.0, size.x - 60.0, ratio)
+		var target_x: float = lerp(120.0, size.x - 60.0, ratio)
 		var target_y := 110.0 - 40.0 # 중앙선에 맞춘 스케일 센터
 		
 		var target_pos := Vector2(target_x, target_y)
@@ -690,8 +691,8 @@ func _update_cylinder_visuals() -> void:
 	# 예고창 가이드라인: 앞 2발은 선명히, 나머지는 N칸 더 묶어서 덩어리로 표시!
 	var size_to_draw := min(bullets.size(), 2)
 	for i in range(size_to_draw):
-		var bullet := bullets[i]
-		var card := parent_scene.make_panel(parent_scene.C_PANEL_DARK)
+		var bullet: BulletData = bullets[i]
+		var card: PanelContainer = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
 		card.custom_minimum_size = Vector2(0, 48)
 		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_apply_panel_style(card, _get_bullet_color(bullet))
@@ -700,11 +701,11 @@ func _update_cylinder_visuals() -> void:
 		card_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 		card.add_child(card_vbox)
 		
-		var idx_lbl := parent_scene.make_label("다음 격발" if i == 0 else "그다음", 10, parent_scene.C_SUCCESS if i == 0 else parent_scene.C_DIM)
+		var idx_lbl: Label = parent_scene.make_label("다음 격발" if i == 0 else "그다음", 10, parent_scene.C_SUCCESS if i == 0 else parent_scene.C_DIM)
 		idx_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		card_vbox.add_child(idx_lbl)
 		
-		var name_lbl := parent_scene.make_label(bullet.display_name, 12, Color.WHITE)
+		var name_lbl: Label = parent_scene.make_label(bullet.display_name, 12, Color.WHITE)
 		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		card_vbox.add_child(name_lbl)
 		
@@ -722,7 +723,7 @@ func _update_cylinder_visuals() -> void:
 		bundle_style.border_color = parent_scene.C_DIM
 		bundle.add_theme_stylebox_override("panel", bundle_style)
 		
-		var bundle_lbl := parent_scene.make_label("+ %d칸 더 적재됨" % [bullets.size() - 2], 11, parent_scene.C_DIM)
+		var bundle_lbl: Label = parent_scene.make_label("+ %d칸 더 적재됨" % [bullets.size() - 2], 11, parent_scene.C_DIM)
 		bundle_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		bundle_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		bundle.add_child(bundle_lbl)
@@ -751,7 +752,19 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 		_hit_info_label.text = "[color=#ff4242]약실 비어있음 - 리로드 필요[/color]"
 		return
 		
-	var can_pierce := DamageCalculator.can_pierce(next_bullet, enemy)
+	var total_pen: int = next_bullet.penetration
+	var b_csv: Dictionary = DataLoader.get_bullet(next_bullet.resource_path.get_file().get_basename())
+	if not b_csv.is_empty():
+		total_pen = b_csv.penetration
+		
+	if _current_gun_data:
+		var g_csv: Dictionary = DataLoader.get_gun(_current_gun_data.resource_path.get_file().get_basename())
+		var pen_bonus: int = _current_gun_data.passive_pen_bonus
+		if not g_csv.is_empty():
+			pen_bonus = g_csv.passive_pen_bonus
+		total_pen += pen_bonus
+
+	var can_pierce: bool = total_pen >= enemy.current_def
 	var hit_status := "[color=#37e0ac]관통 성공 ✓[/color]" if can_pierce else "[color=#ff4242]도탄 경고 ✗ (DEF>=PEN)[/color]"
 	
 	_hit_info_label.text = "사격탄: %s\n예상명중: %s\n대상타겟: %s" % [
@@ -920,7 +933,7 @@ func _spawn_damage_text(es_inst: EnemyInstance, text: String) -> void:
 	var es = _enemy_sprites.get(es_inst)
 	if not is_instance_valid(es): return
 	
-	var lbl := parent_scene.make_label(text, 20, parent_scene.C_DANGER)
+	var lbl: Label = parent_scene.make_label(text, 20, parent_scene.C_DANGER)
 	lbl.position = Vector2(20, -50)
 	es.add_child(lbl)
 	
