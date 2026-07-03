@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>적재 — 탄창 성장 (세로)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080b11; --panel:#111823; --panel-2:#0d131c; --line:#22303f;
+    --ink:#e6edf4; --muted:#66788c;
+    --safe:#37e0ac; --danger:#ff4242; --amber:#f5a623; --dim:#3a4a5c; --steel:#7fa8d8;
+    --c9:#8fa3b8;      /* 9mm */
+    --c556:#37e0ac;    /* 5.56 */
+    --c762:#f5a623;    /* 7.62 */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(120% 90% at 50% 0%, #0d1420 0%, var(--bg) 60%);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:18px;min-height:100vh}
+  .wrap{max-width:1120px;margin:0 auto}
+
+  .ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px}
+  .ctrl .tag{font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-right:4px}
+  .btn{font-size:12.5px;font-weight:600;color:var(--ink);background:#182231;border:1px solid var(--line);border-radius:7px;padding:7px 14px;cursor:pointer}
+  .btn.on{background:var(--safe);color:#04120d;border-color:var(--safe)}
+  .hint{font-size:11.5px;color:var(--muted);margin-left:auto}
+
+  .screen{position:relative;background:linear-gradient(180deg,#0e151f 0%, #0a0f17 100%);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;height:560px}
+  .topbar{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line);background:rgba(55,224,172,.04)}
+  .toast{font-size:11.5px;color:var(--muted)}
+  .toast b{color:var(--safe)}
+  .phase-pill{margin-left:auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--safe);border:1px solid rgba(55,224,172,.4);border-radius:20px;padding:4px 11px}
+
+  .loadmain{flex:1;display:flex;gap:20px;padding:14px 20px;min-height:0}
+
+  /* 세로 스택 */
+  .stackcol{width:250px;display:flex;flex-direction:column;min-height:0}
+  .stack-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .stack-h .t{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .stack-h .c{font-family:'Oswald';font-size:15px;color:var(--safe)}
+  .stack{display:flex;flex-direction:column;gap:5px;flex:1;min-height:0}
+  .slot{
+    border-radius:8px;border:1px solid var(--line);background:linear-gradient(180deg,#16202d,#101823);
+    display:flex;align-items:center;gap:10px;padding:0 11px;position:relative;overflow:visible;flex:1;min-height:0;
+  }
+  .slot .cbar{width:4px;height:56%;border-radius:2px;flex-shrink:0}
+  .slot.c9 .cbar{background:var(--c9)} .slot.c556 .cbar{background:var(--c556)} .slot.c762 .cbar{background:var(--c762)}
+  .slot .role{font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);width:38px;flex-shrink:0}
+  .slot .cal{font-family:'Oswald';font-weight:600;font-size:15px}
+  .slot.c9 .cal{color:var(--c9)} .slot.c556 .cal{color:var(--c556)} .slot.c762 .cal{color:var(--c762)}
+  .slot .st{font-family:'Oswald';font-size:11px;color:var(--muted);margin-left:auto}
+  .slot.top{border-color:var(--safe);box-shadow:0 0 0 1px rgba(55,224,172,.25)}
+  .slot.top .role{color:var(--safe)}
+
+  /* 정보 계층화: 촘촘할수록 스탯 숨기고 툴팁으로 */
+  .stack.dense .slot .st{display:none}
+  .stack.dense .slot .role{display:none}
+  .stack.dense .slot .cal{font-size:13px}
+  .stack.dense .slot.top .role{display:block;position:absolute;right:10px;font-size:8px}
+  .slot .tip{
+    position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:8px;z-index:10;
+    background:#0a0f17;border:1px solid var(--line);border-radius:6px;padding:5px 9px;white-space:nowrap;
+    font-family:'Oswald';font-size:11px;color:var(--ink);opacity:0;pointer-events:none;transition:.12s;
+  }
+  .slot:hover .tip{opacity:1}
+  .slot .tip .k{color:var(--muted)}
+
+  /* 가방 */
+  .bag{flex:1;border:1px solid var(--line);border-radius:11px;background:var(--panel-2);display:flex;flex-direction:column;overflow:hidden}
+  .bag-h{padding:11px 14px 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line)}
+  .bag-body{padding:14px}
+  .bag-hint{font-size:11.5px;color:var(--safe);margin-bottom:12px}
+  .ammo-grid{display:flex;gap:10px;flex-wrap:wrap}
+  .ammo{width:132px;border:1px solid var(--line);border-radius:9px;background:#141d29;padding:11px 12px;cursor:pointer;transition:.15s;position:relative;border-left-width:4px}
+  .ammo.c9{border-left-color:var(--c9)} .ammo.c556{border-left-color:var(--c556)} .ammo.c762{border-left-color:var(--c762)}
+  .ammo:hover{transform:translateY(-2px)}
+  .ammo .a-cal{font-family:'Oswald';font-weight:600;font-size:16px}
+  .ammo.c9 .a-cal{color:var(--c9)} .ammo.c556 .a-cal{color:var(--c556)} .ammo.c762 .a-cal{color:var(--c762)}
+  .ammo .a-st{font-family:'Oswald';font-size:11px;color:var(--muted);margin:3px 0 6px}
+  .ammo .a-cnt{font-size:10.5px;color:var(--muted)}
+  .ammo .a-add{position:absolute;top:9px;right:10px;font-size:15px;color:var(--safe);font-weight:700}
+  .legend-mini{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:16px;font-size:11px;color:var(--muted)}
+  .legend-mini span{display:flex;align-items:center;gap:6px}
+  .legend-mini i{width:10px;height:10px;border-radius:2px;display:inline-block}
+  .memnote{font-size:11px;color:var(--amber);margin-top:12px}
+
+  .actions{display:flex;gap:10px;padding:11px 16px;border-top:1px solid var(--line);background:var(--panel)}
+  .abtn{font-size:12.5px;font-weight:600;color:var(--ink);background:#18222f;border:1px solid var(--line);border-radius:8px;padding:10px 15px;cursor:pointer}
+  .abtn.ghost{background:transparent;color:var(--muted)}
+  .abtn.commit{margin-left:auto;background:linear-gradient(180deg,#3ce0b0,#22b98f);border-color:#4dedbd;color:#04120d;font-weight:700}
+
+  .legend{margin-top:14px;padding:14px 16px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px}
+  .legend h4{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600}
+  .lrow{display:flex;gap:10px;align-items:baseline;font-size:12.5px;margin:6px 0;color:#c2ccd6}
+  .lrow .n{font-family:'Oswald';font-weight:700;color:var(--safe);width:96px;flex-shrink:0}
+  .lrow b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ctrl">
+    <span class="tag">탄창 크기 (성장)</span>
+    <button class="btn" onclick="setCap(4)">4칸 (시작)</button>
+    <button class="btn" onclick="setCap(7)">7칸</button>
+    <button class="btn on" onclick="setCap(10)">10칸 (천장)</button>
+    <span class="hint">세로 유지 · 칸이 자동 축소 · 색 = 구경 · 작은 칸은 호버로 스탯</span>
+  </div>
+
+  <div class="screen">
+    <div class="topbar">
+      <div class="toast"><b>적재 페이즈</b> — 세로 스택, 위=다음 발사. 성장할수록 촘촘해짐</div>
+      <div class="phase-pill">● 적재 페이즈</div>
+    </div>
+
+    <div class="loadmain">
+      <div class="stackcol">
+        <div class="stack-h">
+          <span class="t">▲ 스택 (위 = 다음 발사)</span>
+          <span class="c" id="cap">10/10</span>
+        </div>
+        <div class="stack" id="stack"></div>
+      </div>
+
+      <div class="bag">
+        <div class="bag-h">가방 · 탄환 (눌러서 맨 위 삽탄)</div>
+        <div class="bag-body">
+          <div class="bag-hint">✓ 적재 페이즈 — 탄을 눌러 스택 맨 위에 삽탄</div>
+          <div class="ammo-grid">
+            <div class="ammo c9" onclick="load('9mm','D3·A7','c9')"><span class="a-add">＋</span><div class="a-cal">9mm</div><div class="a-st">D3 · A7</div><div class="a-cnt">일반탄 ×12</div></div>
+            <div class="ammo c762" onclick="load('7.62','D5·P4','c762')"><span class="a-add">＋</span><div class="a-cal">7.62</div><div class="a-st">D5 · P4</div><div class="a-cnt">관통탄 ×4</div></div>
+            <div class="ammo c556" onclick="load('5.56','D2·A5','c556')"><span class="a-add">＋</span><div class="a-cal">5.56</div><div class="a-st">D2 · A5</div><div class="a-cnt">속사탄 ×8</div></div>
+          </div>
+          <div class="legend-mini">
+            <span><i style="background:var(--c9)"></i>9mm</span>
+            <span><i style="background:var(--c556)"></i>5.56</span>
+            <span><i style="background:var(--c762)"></i>7.62</span>
+          </div>
+          <div class="memnote" id="memnote">⚠ 10칸 — 가려질 칸이 많아 전투 시 기억 부담 큼 (성장의 트레이드)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="abtn ghost" onclick="unload()">납탄 (맨 위 제거)</button>
+      <button class="abtn ghost" onclick="fillCap()">가득 채우기</button>
+      <button class="abtn commit">장전 완료 ▸</button>
+    </div>
+  </div>
+
+  <div class="legend">
+    <h4>탄창 10칸을 세로로 — "칸 크기 = 성장 피드백"</h4>
+    <div class="lrow"><span class="n">자동 축소</span><span>칸 높이가 탄창 크기에 <b>반비례</b>. 4칸은 크게, 10칸은 촘촘히 → 항상 한눈에(스크롤 없음).</span></div>
+    <div class="lrow"><span class="n">성장 피드백</span><span>빽빽해지는 화면 자체가 <b>"탄창이 컸다"</b>는 뿌듯함 + 관리 부담(기억)을 시각적으로 전달.</span></div>
+    <div class="lrow"><span class="n">구경 = 색</span><span>작은 칸에서도 <b>색 패턴</b>으로 스택 구성이 읽힘(9mm 회색 / 5.56 초록 / 7.62 주황).</span></div>
+    <div class="lrow"><span class="n">정보 계층화</span><span>촘촘하면 스탯 숨기고 <b>호버(탭)로 툴팁</b>. 칸 위에 마우스 올려보면 D·A 표시.</span></div>
+    <div class="lrow"><span class="n">전투 땐 무관</span><span>10칸이어도 전투 페이즈는 <b>앞 2칸만</b> 표시 → 10칸 문제는 적재 페이즈 한정.</span></div>
+  </div>
+
+</div>
+
+<script>
+  const pool=[['9mm','D3·A7','c9'],['7.62','D5·P4','c762'],['5.56','D2·A5','c556']];
+  let cap=10;
+  let stack=[]; // 0=바닥, 끝=맨위
+  function seed(n){ stack=[]; for(let i=0;i<n;i++){ stack.push(pool[i%3]); } }
+
+  function render(){
+    const el=document.getElementById('stack');
+    const dense = stack.length>=8;
+    el.className='stack'+(dense?' dense':'');
+    el.innerHTML='';
+    const n=stack.length;
+    for(let i=n-1;i>=0;i--){
+      const pos=n-1-i;
+      const role = pos===0?'다음':(pos===1?'2번':(i===0?'바닥':''));
+      const [cal,st,cc]=stack[i];
+      const d=document.createElement('div');
+      d.className='slot '+cc+(pos===0?' top':'');
+      d.innerHTML=`<span class="cbar"></span><span class="role">${role}</span><span class="cal">${cal}</span><span class="st">${st}</span><span class="tip"><span class="k">${cal}</span> ${st}</span>`;
+      el.appendChild(d);
+    }
+    for(let e=0;e<cap-n;e++){
+      const d=document.createElement('div');
+      d.className='slot';d.style.borderStyle='dashed';d.style.opacity='.35';
+      el.insertBefore(d, el.firstChild);
+    }
+    document.getElementById('cap').textContent=n+'/'+cap;
+    document.getElementById('memnote').style.display = cap>=8?'block':'none';
+  }
+  function setCap(c){
+    cap=c; seed(c); render();
+    document.querySelectorAll('.ctrl .btn').forEach(b=>b.classList.remove('on'));
+    event.target.classList.add('on');
+  }
+  function load(cal,st,cc){ if(stack.length>=cap)return; stack.push([cal,st,cc]); render(); }
+  function unload(){ stack.pop(); render(); }
+  function fillCap(){ seed(cap); render(); }
+  seed(10); render();
+</script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>적재 페이즈 UI 목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080b11; --panel:#111823; --panel-2:#0d131c; --line:#22303f;
+    --ink:#e6edf4; --muted:#66788c;
+    --safe:#37e0ac; --danger:#ff4242; --amber:#f5a623; --dim:#3a4a5c;
+    --steel:#5b8fd6; --purple:#a878e8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(120% 90% at 50% 0%, #0d1420 0%, var(--bg) 60%);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:18px;min-height:100vh}
+  .wrap{max-width:1160px;margin:0 auto}
+
+  .ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px}
+  .ctrl .tag{font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .hint{font-size:11.5px;color:var(--muted);margin-left:auto}
+  .btn{font-size:12.5px;font-weight:600;color:var(--ink);background:#182231;border:1px solid var(--line);border-radius:7px;padding:7px 13px;cursor:pointer}
+
+  .screen{position:relative;background:linear-gradient(180deg,#0e151f 0%, #0a0f17 100%);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-height:600px}
+
+  /* 페이즈 표시 */
+  .topbar{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line);background:rgba(55,224,172,.04)}
+  .toast{font-size:11.5px;color:var(--muted)}
+  .toast b{color:var(--safe);font-weight:600}
+  .phase-pill{margin-left:auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--safe);border:1px solid rgba(55,224,172,.4);border-radius:20px;padding:4px 11px}
+
+  /* 참고 바: 전장·거리 (조연으로 물러남) */
+  .refbar{display:flex;align-items:center;gap:16px;padding:8px 16px;border-bottom:1px solid var(--line);background:rgba(0,0,0,.15)}
+  .refbar .rl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .mini-track{flex:1;position:relative;height:2px;background:var(--line);margin:0 4px;max-width:420px}
+  .mb{position:absolute;top:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:#0d131c;border:2px solid}
+  .mb.dol{color:var(--danger);border-color:var(--danger)} .mb.bang{color:var(--steel);border-color:var(--steel)} .mb.hoe{color:var(--safe);border-color:var(--safe)}
+  .refdist{font-family:'Oswald';font-size:15px;color:var(--muted)}
+  .refdist b{color:var(--ink);font-weight:600}
+
+  /* 메인: 스택(좌) + 가방(우) */
+  .loadmain{flex:1;display:flex;gap:20px;padding:16px 20px}
+
+  /* 세로 스택 */
+  .stackcol{width:230px;display:flex;flex-direction:column}
+  .stack-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+  .stack-h .t{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .stack-h .c{font-family:'Oswald';font-size:15px;color:var(--safe)}
+  .stack{display:flex;flex-direction:column;gap:6px;flex:1}
+  .slot{
+    height:52px;border-radius:9px;border:1px solid var(--line);background:linear-gradient(180deg,#16202d,#101823);
+    display:flex;align-items:center;gap:11px;padding:0 13px;position:relative;transition:.2s;
+  }
+  .slot .role{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);width:44px;flex-shrink:0}
+  .slot .cal{font-family:'Oswald';font-weight:600;font-size:16px;color:var(--ink)}
+  .slot .st{font-family:'Oswald';font-size:11px;color:var(--muted);margin-left:auto}
+  .slot.top{border-color:var(--safe);box-shadow:0 0 0 1px rgba(55,224,172,.25)}
+  .slot.top .role{color:var(--safe)}
+  .slot.empty{border-style:dashed;border-color:var(--dim);background:transparent}
+  .slot.empty .ph{font-size:11px;color:var(--dim);margin:0 auto}
+  .slot .arrow{position:absolute;left:-16px;top:50%;transform:translateY(-50%);color:var(--safe);font-size:13px}
+  .slot:not(.top) .arrow{display:none}
+  /* 장전완료 후 하단 흐려짐(기억 레이어) */
+  .stack.committed .slot.dim{opacity:.4;border-style:dashed;filter:blur(.4px)}
+  .stack.committed .slot.dim .cal,.stack.committed .slot.dim .st{color:var(--dim)}
+
+  /* 가방 (활짝) */
+  .bag{flex:1;border:1px solid var(--line);border-radius:11px;background:var(--panel-2);display:flex;flex-direction:column;overflow:hidden}
+  .bag-tabs{display:flex;border-bottom:1px solid var(--line)}
+  .bag-tab{flex:1;font-size:12px;font-weight:600;color:var(--muted);background:transparent;border:none;border-right:1px solid var(--line);padding:11px;cursor:pointer}
+  .bag-tab:last-child{border-right:none}
+  .bag-tab.on{color:var(--ink);background:#18222f}
+  .bag-body{padding:14px;flex:1}
+  .bag-hint{font-size:11.5px;color:var(--safe);margin-bottom:12px}
+  .ammo-grid{display:flex;gap:10px;flex-wrap:wrap}
+  .ammo{
+    width:126px;border:1px solid var(--line);border-radius:9px;background:#141d29;padding:11px 12px;cursor:pointer;transition:.15s;position:relative;
+  }
+  .ammo:hover{border-color:var(--safe);transform:translateY(-2px)}
+  .ammo .a-cal{font-family:'Oswald';font-weight:600;font-size:16px;color:var(--ink)}
+  .ammo .a-cal.p{color:var(--amber)}
+  .ammo .a-st{font-family:'Oswald';font-size:11px;color:var(--muted);margin:3px 0 6px}
+  .ammo .a-cnt{font-size:10.5px;color:var(--muted)}
+  .ammo .a-add{position:absolute;top:9px;right:10px;font-size:16px;color:var(--safe);font-weight:700}
+  .bag-note{font-size:11px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+
+  /* 액션 바 (적재용) */
+  .actions{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line);background:var(--panel)}
+  .abtn{font-size:13px;font-weight:600;color:var(--ink);background:#18222f;border:1px solid var(--line);border-radius:8px;padding:11px 16px;cursor:pointer;transition:.15s}
+  .abtn:hover{border-color:var(--dim)}
+  .abtn.ghost{background:transparent;color:var(--muted)}
+  .abtn.commit{margin-left:auto;background:linear-gradient(180deg,#3ce0b0,#22b98f);border-color:#4dedbd;color:#04120d;font-weight:700}
+
+  .legend{margin-top:14px;padding:14px 16px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px}
+  .legend h4{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600}
+  .lrow{display:flex;gap:10px;align-items:baseline;font-size:12.5px;margin:6px 0;color:#c2ccd6}
+  .lrow .n{font-family:'Oswald';font-weight:700;color:var(--safe);width:92px;flex-shrink:0}
+  .lrow b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ctrl">
+    <span class="tag">적재 페이즈 — 세로 스택 (방식 A · 위 = 다음 발사)</span>
+    <span class="hint">가방의 탄을 눌러 삽탄 · 납탄으로 맨 위 제거 · 장전 완료로 전투 전환</span>
+  </div>
+
+  <div class="screen" id="screen">
+
+    <div class="topbar">
+      <div class="toast">웨이브 2 · <b>스택을 짜는 시간</b> — 전체 노출, 여유 있음</div>
+      <div class="phase-pill">● 적재 페이즈</div>
+    </div>
+
+    <!-- 참고 바: 전장·거리 (조연) -->
+    <div class="refbar">
+      <span class="rl">전장 참고</span>
+      <div class="mini-track">
+        <span class="mb dol" style="left:20%">돌</span>
+        <span class="mb bang" style="left:50%">방</span>
+        <span class="mb hoe" style="left:80%">회</span>
+      </div>
+      <span class="refdist">최근접 <b>7</b>m</span>
+    </div>
+
+    <!-- 메인 -->
+    <div class="loadmain">
+      <!-- 세로 스택 -->
+      <div class="stackcol">
+        <div class="stack-h">
+          <span class="t">▲ 스택 (위 = 다음 발사)</span>
+          <span class="c" id="cap">3/5</span>
+        </div>
+        <div class="stack" id="stack"></div>
+      </div>
+
+      <!-- 가방 (활짝) -->
+      <div class="bag">
+        <div class="bag-tabs">
+          <button class="bag-tab on" id="tabA" onclick="bagTab('ammo')">탄환 · 삽탄</button>
+          <button class="bag-tab" id="tabI" onclick="bagTab('item')">소모품</button>
+        </div>
+        <div class="bag-body" id="bagAmmo">
+          <div class="bag-hint">✓ 적재 페이즈 — 탄을 눌러 스택 맨 위에 삽탄</div>
+          <div class="ammo-grid">
+            <div class="ammo" onclick="load('9mm','D3·A7',false)"><span class="a-add">＋</span><div class="a-cal">9mm</div><div class="a-st">D3 · A7</div><div class="a-cnt">일반탄 ×12</div></div>
+            <div class="ammo" onclick="load('7.62','D5·P4',true)"><span class="a-add">＋</span><div class="a-cal p">7.62</div><div class="a-st">D5 · P4</div><div class="a-cnt">관통탄 ×4</div></div>
+            <div class="ammo" onclick="load('5.56','D2·A5',false)"><span class="a-add">＋</span><div class="a-cal">5.56</div><div class="a-st">D2 · A5</div><div class="a-cnt">속사탄 ×8</div></div>
+          </div>
+          <div class="bag-note">순서를 바꾸려면 <b>납탄으로 위에서부터 빼서 다시 삽탄</b> — 중간 삽입 없음(LIFO). 자유 재배치는 곡예형 총기 시그니처.</div>
+        </div>
+        <div class="bag-body" id="bagItem" style="display:none">
+          <div class="bag-hint">소모품 — 즉발 사용</div>
+          <div class="ammo-grid">
+            <div class="ammo"><div class="a-cal" style="font-size:14px">✚ 응급 키트</div><div class="a-cnt" style="margin-top:6px">HP 회복</div></div>
+            <div class="ammo"><div class="a-cal" style="font-size:14px">◆ 파쇄액</div><div class="a-cnt" style="margin-top:6px">타겟 DEF −</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="abtn ghost" onclick="unload()">납탄 (맨 위 제거)</button>
+      <button class="abtn ghost" onclick="resetStack()">취소</button>
+      <button class="abtn commit" id="commitBtn" onclick="commit()">장전 완료 ▸</button>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <h4>적재 페이즈 — 전투와 정반대 정보 노출</h4>
+    <div class="lrow"><span class="n">스택 주연</span><span>세로로 크게, <b>전체 노출</b>(전투 땐 상단 2칸만). 위=다음 발사, 아래=바닥(먼저 넣음).</span></div>
+    <div class="lrow"><span class="n">가방 활짝</span><span>삽탄이 이 페이즈의 <b>메인 작업</b>. 탄 눌러 맨 위에 얹음. 전투 땐 열람만이던 게 여기선 활성.</span></div>
+    <div class="lrow"><span class="n">전장 조연</span><span>거리·적 배치는 위쪽에 <b>작게(참고용)</b>. 아직 발사 전이라 주인공 아님.</span></div>
+    <div class="lrow"><span class="n">LIFO 제약</span><span>중간 순서 직접 변경 없음 — 위에서 빼서 다시 넣기. 이 제약이 "신중히 넣자"는 판단을 만듦.</span></div>
+    <div class="lrow"><span class="n">장전 완료</span><span>커밋 순간 — 하단 칸이 <b>흐려지며(기억 레이어 닫힘)</b> 전투 페이즈로. "계획 끝, 실행"을 몸으로.</span></div>
+  </div>
+
+</div>
+
+<script>
+  // index 0 = 바닥(먼저 넣음), 마지막 = 맨 위(다음 발사)
+  let stack=[{cal:'9mm',st:'D3·A7'},{cal:'5.56',st:'D2·A5'},{cal:'9mm',st:'D3·A7'}];
+  let committed=false;
+  const MAX=5;
+
+  function render(){
+    const el=document.getElementById('stack');
+    el.className='stack'+(committed?' committed':'');
+    el.innerHTML='';
+    // 위(다음발사)부터 그리기 = 배열 역순
+    const n=stack.length;
+    for(let i=n-1;i>=0;i--){
+      const pos=n-1-i; // 0=맨위
+      const role = pos===0?'다음 발사':(pos===1?'그다음':(i===0?'바닥':''));
+      const dim = committed && pos>=2; // 전투 전환 시 상단 2칸 외 흐림
+      const d=document.createElement('div');
+      d.className='slot'+(pos===0?' top':'')+(dim?' dim':'');
+      d.innerHTML=`<span class="arrow">▶</span><span class="role">${role}</span><span class="cal">${stack[i].cal}</span><span class="st">${stack[i].st}</span>`;
+      el.appendChild(d);
+    }
+    // 빈 칸(위쪽에 추가 여지)
+    for(let e=0;e<MAX-n;e++){
+      const d=document.createElement('div');
+      d.className='slot empty';
+      d.innerHTML='<span class="ph">비어 있음 — 삽탄 가능</span>';
+      el.insertBefore(d, el.firstChild);
+    }
+    document.getElementById('cap').textContent=n+'/'+MAX;
+  }
+  function load(cal,st){
+    if(committed){resetStack();}
+    if(stack.length>=MAX)return;
+    stack.push({cal,st});
+    render();
+  }
+  function unload(){ if(committed)return; stack.pop(); render(); }
+  function commit(){ committed=!committed; document.getElementById('commitBtn').textContent=committed?'◀ 적재로 복귀':'장전 완료 ▸'; render();
+    document.querySelector('.phase-pill').textContent = committed?'● 전투 전환됨':'● 적재 페이즈';
+  }
+  function resetStack(){ committed=false; document.getElementById('commitBtn').textContent='장전 완료 ▸'; document.querySelector('.phase-pill').textContent='● 적재 페이즈'; render(); }
+  function bagTab(w){const a=w==='ammo';document.getElementById('tabA').classList.toggle('on',a);document.getElementById('tabI').classList.toggle('on',!a);document.getElementById('bagAmmo').style.display=a?'block':'none';document.getElementById('bagItem').style.display=a?'none':'block';}
+  render();
+</script>
+</body>
+</html>

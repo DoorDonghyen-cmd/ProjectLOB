@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전투 UI — 다수 적 목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080b11; --panel:#111823; --panel-2:#0d131c; --line:#22303f;
+    --ink:#e6edf4; --muted:#66788c;
+    --safe:#37e0ac; --danger:#ff4242; --amber:#f5a623; --dim:#3a4a5c;
+    --steel:#5b8fd6; --purple:#a878e8;
+    --c9:#8fa3b8; --c556:#37e0ac; --c762:#f5a623;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:radial-gradient(120% 90% at 50% 0%, #0d1420 0%, var(--bg) 60%);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:18px;min-height:100vh}
+  .wrap{max-width:1200px;margin:0 auto}
+
+  .ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:10px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px}
+  .ctrl .tag{font-size:11px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-right:4px}
+  .btn{font-family:'Inter';font-size:12.5px;font-weight:600;color:var(--ink);background:#182231;border:1px solid var(--line);border-radius:7px;padding:7px 13px;cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--dim)}
+  .btn.on{background:var(--danger);color:#fff;border-color:var(--danger)}
+  .spacer{flex:1}
+  .hint{font-size:11.5px;color:var(--muted)}
+
+  .screen{position:relative;background:linear-gradient(180deg,#0e151f 0%, #0a0f17 100%);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-height:600px}
+
+  /* 이벤트 로그 토스트 */
+  .topbar{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}
+  .toast{font-size:11.5px;color:var(--muted)}
+  .toast b{color:var(--amber);font-weight:600}
+  .phase-pill{margin-left:auto;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--danger);border:1px solid rgba(255,66,66,.4);border-radius:20px;padding:4px 11px}
+
+  /* 헤더: 명중분석(좌) + 거리 생사선(중앙) */
+  .chead{position:relative;padding:16px 0 6px;min-height:118px}
+  .lifeline{text-align:center;position:relative;z-index:2}
+  .lifeline .lbl{font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+  .lifeline .num{font-family:'Oswald';font-weight:700;line-height:.9;font-size:76px;color:var(--amber);transition:.25s}
+  .lifeline .unit{font-family:'Oswald';font-size:22px;color:var(--muted);font-weight:500}
+  .lifeline .sub{font-size:12px;color:var(--muted);height:16px;margin-top:2px}
+  .screen.crisis .lifeline .num{color:var(--danger);font-size:96px;text-shadow:0 0 24px rgba(255,66,66,.55);animation:pulse 1s ease-in-out infinite}
+  .screen.crisis .lifeline .sub{color:var(--danger);font-weight:600}
+  @keyframes pulse{50%{opacity:.55}}
+
+  /* 명중 분석 — 헤더 좌측 상단 (캐릭터 안 가림) */
+  .analysis{position:absolute;top:8px;left:16px;z-index:3;background:rgba(8,12,18,.9);border:1px solid var(--line);border-left:3px solid var(--safe);border-radius:9px;padding:8px 12px;min-width:206px}
+  .analysis .a-t{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--safe);margin-bottom:5px}
+  .analysis .a-t span{color:var(--muted)}
+  .analysis .a-row{display:flex;align-items:center;gap:8px;font-size:12.5px;margin:3px 0}
+  .analysis .a-row .k{color:var(--muted);width:44px;font-size:11px}
+  .analysis .pass{color:var(--safe);font-weight:700}
+  .analysis .val{color:var(--ink);font-weight:600}
+  .analysis .kill{color:var(--amber);font-weight:600}
+  .analysis .mini{color:var(--muted);font-size:10.5px}
+
+  /* 전장 + 트랙 */
+  .field{flex:1;position:relative;display:flex;align-items:center;padding:10px 26px 16px}
+  .actor{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px;z-index:2}
+  .actor .role{font-size:11px;color:var(--muted)}
+
+  /* 예고창 — 캐릭터 옆 세로 (위=다음 발사) */
+  .vchamber{display:flex;flex-direction:column;gap:5px;width:78px;z-index:2;margin:0 8px 0 0}
+  .vc-lbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:1px}
+  .vcard{height:48px;border-radius:8px;border:1px solid var(--line);background:linear-gradient(180deg,#16202d,#101823);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;position:relative;border-top-width:3px}
+  .vcard.c9{border-top-color:var(--c9)} .vcard.c556{border-top-color:var(--c556)} .vcard.c762{border-top-color:var(--c762)}
+  .vcard .vidx{font-size:8px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .vcard .vcal{font-family:'Oswald';font-weight:600;font-size:14px}
+  .vcard.c9 .vcal{color:var(--c9)} .vcard.c556 .vcal{color:var(--c556)} .vcard.c762 .vcal{color:var(--c762)}
+  .vcard .vst{font-family:'Oswald';font-size:9px;color:var(--muted)}
+  .vcard.next{box-shadow:0 0 0 1px rgba(55,224,172,.3), 0 4px 12px rgba(0,0,0,.4)}
+  .vcard.next .vidx{color:var(--safe);font-weight:700}
+  .vbundle{border-radius:8px;border:1px dashed var(--dim);background:repeating-linear-gradient(45deg,#0c1119,#0c1119 5px,#0e141c 5px,#0e141c 10px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;opacity:.7}
+  .vbundle .n{font-size:9px;color:var(--muted);text-align:center;line-height:1.3;font-family:'Oswald'}
+  .vbundle .n b{color:var(--dim);font-size:13px;display:block}
+  .sil{width:46px;height:70px}
+  .sil.ally path{fill:#9fb3c6}
+
+  .track{flex:1;position:relative;height:2px;background:var(--line);margin:0 6px}
+  .screen.crisis .track{background:linear-gradient(90deg,rgba(255,66,66,.5),var(--line))}
+  .tick{position:absolute;top:-4px;width:1px;height:9px;background:var(--dim)}
+
+  .enemy{position:absolute;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:5px;transition:left .5s cubic-bezier(.4,0,.2,1);z-index:2;width:60px}
+  .badge{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:2px solid;background:#0d131c;position:relative}
+  .badge.dol{color:var(--danger);border-color:var(--danger)}
+  .badge.bang{color:var(--steel);border-color:var(--steel)}
+  .badge.hoe{color:var(--safe);border-color:var(--safe)}
+  .badge.spn{color:var(--purple);border-color:var(--purple)}
+  .badge.sul{color:var(--amber);border-color:var(--amber)}
+  .hp{width:44px;height:5px;background:#241016;border-radius:3px;overflow:hidden}
+  .hp>i{display:block;height:100%;background:var(--danger);transition:width .35s}
+  .tag{font-size:10px;color:var(--muted);white-space:nowrap;letter-spacing:.03em}
+  .cnt{font-size:9.5px;color:var(--muted);margin-top:-2px}
+  .cnt b{color:var(--purple)}
+  .cnt.sul b{color:var(--amber)}
+
+  /* 강제 타겟 강조 */
+  .enemy.target .badge{box-shadow:0 0 0 4px rgba(255,66,66,.18), 0 0 18px rgba(255,66,66,.4)}
+  .tmark{position:absolute;bottom:100%;margin-bottom:20px;font-size:10px;color:var(--danger);font-weight:700;letter-spacing:.08em;white-space:nowrap;animation:bob 1.2s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(3px)}}
+  .enemy:not(.target) .tmark{display:none}
+
+  /* 사격 결과 플로팅 */
+  .floater{position:absolute;bottom:100%;margin-bottom:34px;white-space:nowrap;pointer-events:none;font-family:'Oswald';font-weight:700;opacity:0;display:flex;gap:6px;align-items:center}
+  .floater .kill{color:#fff;background:var(--danger);border-radius:5px;padding:1px 9px;font-size:16px;letter-spacing:.04em}
+  .floater .dmg{color:#ff8a8a;font-size:15px}
+  .floater .blocked{color:var(--steel);border:1px solid var(--steel);border-radius:4px;padding:0 7px;font-size:12px}
+  .floater.go{animation:floatup 1.3s ease-out forwards}
+  @keyframes floatup{0%{opacity:0;transform:translateY(6px)}18%{opacity:1;transform:translateY(0)}75%{opacity:1;transform:translateY(-20px)}100%{opacity:0;transform:translateY(-38px)}}
+
+  /* 사격 로그 (정밀 수치 보조) */
+  .shotlog{padding:6px 18px;border-top:1px solid var(--line);background:rgba(0,0,0,.2);font-size:11.5px;color:var(--muted);font-family:'Oswald';letter-spacing:.02em;min-height:28px;display:flex;align-items:center;gap:8px}
+  .shotlog .h{color:var(--dim);text-transform:uppercase;font-size:10px;letter-spacing:.14em}
+  .shotlog em{font-style:normal;color:#c2ccd6}
+  .shotlog .k{color:var(--danger)}
+  .shotlog .b{color:var(--steel)}
+
+  /* 예고창 */
+  .chamber{padding:11px 18px 9px;border-top:1px solid var(--line);background:var(--panel-2);display:flex;align-items:center;gap:14px}
+  .chamber .c-lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap}
+  .cards{display:flex;gap:8px}
+  .card{width:60px;height:78px;border-radius:9px;border:1px solid var(--line);background:linear-gradient(180deg,#16202d,#101823);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative}
+  .card .cal{font-family:'Oswald';font-weight:600;font-size:14px;color:var(--ink)}
+  .card .st{font-size:9.5px;color:var(--muted);font-family:'Oswald'}
+  .card .idx{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--safe);background:var(--bg);padding:1px 6px;border-radius:10px;border:1px solid rgba(55,224,172,.4);white-space:nowrap}
+  .card.next{border-color:var(--safe);box-shadow:0 0 0 1px rgba(55,224,172,.25)}
+  .card.hidden{background:#0c1119;border-style:dashed;border-color:var(--dim);opacity:.5}
+  .card.hidden .cal,.card.hidden .st{display:none}
+  .card.hidden .q{font-family:'Oswald';font-size:24px;color:var(--dim);font-weight:700}
+  .memtag{font-size:10.5px;color:var(--muted);max-width:120px;line-height:1.4}
+  .memtag b{color:var(--dim)}
+
+  .actions{display:flex;gap:10px;padding:11px 16px;border-top:1px solid var(--line);background:var(--panel)}
+  .agroup{display:flex;gap:8px;padding:0 10px;border-right:1px solid var(--line)}
+  .agroup:last-child{border-right:none;margin-left:auto}
+  .abtn{font-family:'Inter';font-weight:600;font-size:12.5px;color:var(--ink);background:#18222f;border:1px solid var(--line);border-radius:8px;padding:10px 14px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .abtn:hover{border-color:var(--dim)}
+  .abtn.ghost{background:transparent;color:var(--muted)}
+  .abtn.fire{background:linear-gradient(180deg,#ff4a4a,#d62b2b);border-color:#ff6a6a;color:#fff;font-weight:700}
+  .abtn.dbl{border-color:rgba(55,224,172,.5);color:var(--safe)}
+
+  /* 가방 서랍 — 오버랩(레이아웃 안 밀고 전황 위에 뜸) */
+  .drawer{
+    position:absolute;left:0;right:0;bottom:0;z-index:20;
+    background:rgba(13,19,28,.97);border-top:1px solid var(--safe);
+    box-shadow:0 -12px 30px rgba(0,0,0,.5);
+    transform:translateY(100%);transition:transform .28s ease;
+    backdrop-filter:blur(4px);
+  }
+  .drawer.open{transform:translateY(0)}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:9px 16px 4px}
+  .dtabs{display:flex;gap:6px}
+  .dtab{font-family:'Inter';font-size:11.5px;font-weight:600;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:7px 7px 0 0;padding:6px 12px;cursor:pointer}
+  .dtab.on{color:var(--ink);background:#18222f;border-bottom-color:#18222f}
+  .dclose{font-family:'Inter';font-size:11px;color:var(--muted);background:transparent;border:none;cursor:pointer}
+  .dbody{padding:8px 16px 14px;display:flex;flex-direction:column;gap:6px}
+  .item{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+  .item .ic{width:20px;text-align:center;color:var(--safe)}
+  .item b{font-weight:600;flex:1}
+  .item.live{background:#141d29}
+  .item.live .use{font-size:11.5px;font-weight:700;color:#04120d;background:var(--safe);border-radius:5px;padding:3px 11px;cursor:pointer}
+  .item.dead{opacity:.42}
+  .item.dead .ic{color:var(--dim)}
+  .item.dead b{color:var(--muted)}
+  .dnote{font-size:11px;color:var(--muted);margin-top:2px}
+  .dnote.live{color:var(--safe)}
+  .dnote b{color:#c2ccd6}
+  .abtn.ghost.bagon{background:var(--safe);color:#04120d;border-color:var(--safe)}
+
+  .legend{margin-top:14px;padding:14px 16px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px}
+  .legend h4{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600}
+  .lrow{display:flex;gap:10px;align-items:baseline;font-size:12.5px;margin:6px 0;color:#c2ccd6}
+  .lrow .n{font-family:'Oswald';font-weight:700;color:var(--safe);width:96px;flex-shrink:0}
+  .lrow b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ctrl">
+    <span class="tag">상태 전환</span>
+    <button class="btn" id="btnDist" onclick="toggleDist()">근접군 압박 (위기)</button>
+    <button class="btn" onclick="fireDemo()">▸ 격발(관통) 시연</button>
+    <span class="spacer"></span>
+    <span class="hint">트랙 = 거리 분포 · 배지 = 자물쇠 · 강제타겟은 맨 앞 1명</span>
+  </div>
+
+  <div class="screen" id="screen">
+
+    <div class="topbar">
+      <div class="toast">웨이브 2 · <b>적 5</b> 소환 · 강제 타겟: 최근접</div>
+      <div class="phase-pill">● 전투 페이즈</div>
+    </div>
+
+    <!-- 헤더: 명중분석(좌) + 거리(중앙) -->
+    <div class="chead">
+      <div class="analysis">
+        <div class="a-t">◎ 다음 격발 분석 <span>· 최근접 타겟만</span></div>
+        <div class="a-row"><span class="k">사격탄</span><span class="val">9mm 일반탄</span></div>
+        <div class="a-row"><span class="k">명중</span><span class="pass">통과 ✓</span><span class="mini">돌격형 · EVA 낮음</span></div>
+        <div class="a-row"><span class="k">처치</span><span class="kill">2발 필요</span></div>
+      </div>
+      <div class="lifeline">
+        <div class="lbl">최근접 적 거리 (생사선)</div>
+        <div><span class="num" id="distNum">7</span><span class="unit"> m</span></div>
+        <div class="sub" id="distSub">경계 — 근접군이 다가온다</div>
+      </div>
+    </div>
+
+    <!-- 전장: 트랙 위 5마리 -->
+    <div class="field">
+      <!-- 예고창: 캐릭터 좌측(화면 가장자리 쪽) 세로 -->
+      <div class="vchamber">
+        <div class="vc-lbl">▸ 예고창</div>
+        <div class="vcard next c9"><span class="vidx">다음 발사</span><span class="vcal">9mm</span><span class="vst">D3·A7</span></div>
+        <div class="vcard c762"><span class="vidx">그다음</span><span class="vcal">7.62</span><span class="vst">D5·P4</span></div>
+        <div class="vbundle"><span class="n"><b>8</b>칸 더<br>기억</span></div>
+      </div>
+
+      <div class="actor">
+        <svg class="sil ally" viewBox="0 0 24 36"><path d="M12 0a4 4 0 100 8 4 4 0 000-8zM6 10h12v13h-3v13h-2V26h-2v10H9V23H6z"/></svg>
+        <span class="role">플레이어</span>
+      </div>
+
+      <div class="track" id="track">
+        <span class="tick" style="left:16%"></span><span class="tick" style="left:33%"></span>
+        <span class="tick" style="left:50%"></span><span class="tick" style="left:66%"></span>
+        <span class="tick" style="left:83%"></span>
+
+        <!-- 1) 돌격 (최근접 = 강제 타겟) -->
+        <div class="enemy target" id="e1" style="left:35%">
+          <div class="tmark">▼ 다음 타겟</div>
+          <div class="floater" id="f1"><span class="kill">처치!</span></div>
+          <div class="badge dol">돌</div>
+          <div class="hp"><i id="hp1" style="width:60%"></i></div>
+          <div class="tag">돌격형</div>
+        </div>
+        <!-- 2) 방패 -->
+        <div class="enemy" id="e2" style="left:50%">
+          <div class="floater" id="f2"><span class="blocked">관통 · 막힘</span></div>
+          <div class="badge bang">방</div>
+          <div class="hp"><i style="width:100%"></i></div>
+          <div class="tag">방패형</div>
+        </div>
+        <!-- 3) 회피 -->
+        <div class="enemy" id="e3" style="left:65%">
+          <div class="badge hoe">회</div>
+          <div class="hp"><i style="width:100%"></i></div>
+          <div class="tag">회피형</div>
+        </div>
+        <!-- 4) 스택 스펀지 -->
+        <div class="enemy" id="e4" style="left:80%">
+          <div class="badge spn">스</div>
+          <div class="hp"><i style="width:100%"></i></div>
+          <div class="tag">스펀지</div>
+          <div class="cnt">발사 <b>0/3</b></div>
+        </div>
+        <!-- 5) 술사 -->
+        <div class="enemy" id="e5" style="left:95%">
+          <div class="badge sul">술</div>
+          <div class="hp"><i style="width:100%"></i></div>
+          <div class="tag">술사</div>
+          <div class="cnt sul">차징 <b>2턴</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 사격 로그 (정밀 수치·관통 다중타 보조) -->
+    <div class="shotlog" id="shotlog">
+      <span class="h">최근 사격</span><em>대기 중 — 격발 시 결과 표시</em>
+    </div>
+
+    <!-- 가방 서랍 (하단 슬라이드업, 전황 안 가림) -->
+    <div class="drawer" id="drawer">
+      <div class="drawer-head">
+        <div class="dtabs">
+          <button class="dtab on" id="tabItem" onclick="drawerTab('item')">소모품 · 즉발</button>
+          <button class="dtab" id="tabAmmo" onclick="drawerTab('ammo')">탄환 · 다음 적재 미리보기</button>
+        </div>
+        <button class="dclose" onclick="toggleBag()">✕ 닫기</button>
+      </div>
+      <!-- A: 소모품 (전투 중 즉발 사용 가능) -->
+      <div class="dbody" id="bodyItem">
+        <div class="item live"><span class="ic">✚</span><b>응급 키트</b><span class="use">사용</span></div>
+        <div class="item live"><span class="ic">◆</span><b>장갑 파쇄액</b><span class="use">사용</span></div>
+        <div class="item live"><span class="ic">≈</span><b>둔화 지뢰</b><span class="use">사용</span></div>
+        <div class="dnote live">✓ 소모품은 전투 중 즉발 사용 가능 (커밋 유지)</div>
+      </div>
+      <!-- C: 탄환 열람 (전투 중엔 비활성) -->
+      <div class="dbody" id="bodyAmmo" style="display:none">
+        <div class="item dead"><span class="ic">▮</span><b>9mm 일반탄 ×12</b></div>
+        <div class="item dead"><span class="ic">▮</span><b>7.62 관통탄 ×4</b></div>
+        <div class="item dead"><span class="ic">▮</span><b>5.56 속사탄 ×8</b></div>
+        <div class="dnote">🔒 전투 중엔 열람만 — 삽탄은 <b>적재 단계</b>에서 (커밋 원칙)</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="agroup">
+        <button class="abtn ghost">삽탄</button>
+        <button class="abtn ghost">납탄</button>
+        <button class="abtn ghost">장전 완료</button>
+      </div>
+      <div class="agroup">
+        <button class="abtn ghost" id="bagBtn" onclick="toggleBag()">🎒 가방</button>
+      </div>
+      <div class="agroup">
+        <button class="abtn">리로드</button>
+        <button class="abtn dbl">더블탭</button>
+        <button class="abtn">빼내기</button>
+        <button class="abtn fire" onclick="fireDemo()">격발 ▸</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <h4>다수 적 — "트랙이 모든 것의 답"</h4>
+    <div class="lrow"><span class="n">거리 분포</span><span>숫자 5개를 읽는 게 아니라 <b>트랙 위 위치</b>로 한눈에. "줄이 얼마나 붐비나"를 봄.</span></div>
+    <div class="lrow"><span class="n">자물쇠</span><span>각 적 위 <b>배지 아이콘</b>(돌·방·회·스·술)으로. 텍스트 나열 대신 스캔이 빠름.</span></div>
+    <div class="lrow"><span class="n">강제 타겟</span><span>최근접(맨 앞) 1명만 <b>붉은 링 + "다음 타겟"</b> 강조. 내 탄이 누구에게 가는지 자동.</span></div>
+    <div class="lrow"><span class="n">명중 분석</span><span><b>맨 앞 1명만</b> 분석(5명 다 하면 정보 폭발). 헤더 좌측으로 올려 캐릭터 안 가림.</span></div>
+    <div class="lrow"><span class="n">사격 결과</span><span>적 위 <b>플로팅</b> — 처치는 크게, 대미지는 작게. 관통 다중타는 순차로.</span></div>
+    <div class="lrow"><span class="n">사격 로그</span><span>플로팅이 놓치는 <b>정밀 수치·관통 연쇄</b>를 한 줄로 보조.</span></div>
+    <div class="lrow"><span class="n">예고창</span><span><b>캐릭터 옆 세로</b> — 위=다음 발사(적재와 방향 통일). 앞 2칸만 선명, 나머지는 "N칸 더" 흐린 덩어리(10칸이어도 항상 작음).</span></div>
+    <div class="lrow"><span class="n">가방 서랍</span><span>하단 <b>서랍</b>으로 슬라이드업 — 전황(거리·트랙·예고창)을 안 가림. 소모품은 즉발 사용, 탄환은 열람만(전투 중 커밋 유지). <b>🎒 가방</b> 눌러서 확인.</span></div>
+  </div>
+
+</div>
+
+<script>
+  const screen=document.getElementById('screen');
+  let crisis=false;
+  const safePos=['35%','50%','65%','80%','95%'];
+  const crisisPos=['12%','28%','44%','62%','82%'];
+
+  function toggleDist(){
+    crisis=!crisis;
+    screen.classList.toggle('crisis',crisis);
+    const b=document.getElementById('btnDist');
+    b.classList.toggle('on',crisis);
+    b.textContent=crisis?'근접군 물러남 (경계)':'근접군 압박 (위기)';
+    document.getElementById('distNum').textContent=crisis?'2':'7';
+    document.getElementById('distSub').textContent=crisis?'⚠ 도달 임박 — 다음 턴 즉사 위험':'경계 — 근접군이 다가온다';
+    const pos=crisis?crisisPos:safePos;
+    ['e1','e2','e3','e4','e5'].forEach((id,i)=>document.getElementById(id).style.left=pos[i]);
+  }
+
+  function fireDemo(){
+    // 강제 타겟(돌격) 처치 → 관통이 뒤 방패에서 막힘
+    const f1=document.getElementById('f1'), f2=document.getElementById('f2');
+    f1.classList.remove('go'); void f1.offsetWidth; f1.classList.add('go');
+    document.getElementById('hp1').style.width='0%';
+    setTimeout(()=>{f2.classList.remove('go');void f2.offsetWidth;f2.classList.add('go');},260);
+    document.getElementById('shotlog').innerHTML=
+      '<span class="h">최근 사격</span><em>9mm → <span class="k">돌격형 처치</span> · 관통 진행 → <span class="b">방패형 막힘(PEN&lt;DEF)</span></em>';
+  }
+  function toggleBag(){
+    const d=document.getElementById('drawer');
+    const open=d.classList.toggle('open');
+    document.getElementById('bagBtn').classList.toggle('bagon',open);
+  }
+  function drawerTab(which){
+    const it=which==='item';
+    document.getElementById('tabItem').classList.toggle('on',it);
+    document.getElementById('tabAmmo').classList.toggle('on',!it);
+    document.getElementById('bodyItem').style.display=it?'flex':'none';
+    document.getElementById('bodyAmmo').style.display=it?'none':'flex';
+  }
+  window.addEventListener('load',()=>setTimeout(fireDemo,600));
+</script>
+</body>
+</html>
