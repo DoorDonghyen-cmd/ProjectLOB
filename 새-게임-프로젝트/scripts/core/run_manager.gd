@@ -326,8 +326,12 @@ func generate_run_map() -> void:
 	floor_connections.clear()
 	
 	# 노드 추가 람다 헬퍼
-	var add_node = func(f: int, id: int, type: String, desc: String, routes: Array[String], is_hidden: bool = false, cond_type: String = "") -> RunNode:
-		var n = RunNode.new(id, type, desc, routes)
+	var add_node = func(f: int, id: int, type: String, desc: String, routes: Array, is_hidden: bool = false, cond_type: String = "") -> RunNode:
+		# RunNode 내부에 string 배열로 전달하기 위해 변환
+		var route_strings: Array[String] = []
+		for r in routes:
+			route_strings.append(String(r))
+		var n = RunNode.new(id, type, desc, route_strings)
 		n.is_hidden = is_hidden
 		n.unlock_condition_type = cond_type
 		
