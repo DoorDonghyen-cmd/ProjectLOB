@@ -363,9 +363,8 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	# 1a. Left Side: Hit Info Panel
 
 	_hit_info_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
-
 	_hit_info_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
+	_hit_info_panel.custom_minimum_size = Vector2(360, 110)
 	_apply_tactical_panel_style(_hit_info_panel, parent_scene.C_ACCENT)
 
 	top_hbox.add_child(_hit_info_panel)
@@ -409,9 +408,8 @@ func _build_right_column(parent: VBoxContainer) -> void:
 	# 1b. Right Side: Enemy Info Panel
 
 	_enemy_info_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
-
 	_enemy_info_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
+	_enemy_info_panel.custom_minimum_size = Vector2(360, 110)
 	_apply_tactical_panel_style(_enemy_info_panel, parent_scene.C_DANGER)
 
 	top_hbox.add_child(_enemy_info_panel)
