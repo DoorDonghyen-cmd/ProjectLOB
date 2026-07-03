@@ -5,6 +5,8 @@ extends PanelContainer
 ## 타이틀 및 영구 메타 상점 오버레이
 ## ═══════════════════════════════════════════════════
 
+const DataLoader = preload("res://scripts/core/data_loader.gd")
+
 var parent_scene: Control
 var run_manager: RunManager
 
@@ -333,7 +335,7 @@ func _show_balance_matrix_popup() -> void:
 	margin.add_child(layout)
 	
 	# 상단 헤더
-	var title_lbl := parent_scene.make_label("📊 L.O.B 전술 밸런스 검증 매트릭스 (CSV 연동)", 22, parent_scene.C_ACCENT)
+	var title_lbl: Label = parent_scene.make_label("📊 L.O.B 전술 밸런스 검증 매트릭스 (CSV 연동)", 22, parent_scene.C_ACCENT)
 	layout.add_child(title_lbl)
 	
 	var desc_lbl := Label.new()
@@ -345,7 +347,7 @@ func _show_balance_matrix_popup() -> void:
 	# 그리드 콘테이너 (표 구성)
 	var grid := GridContainer.new()
 	# 열 수 = 1(적 이름) + 탄환 종류 개수
-	var bullets := DataLoader.get_all_bullets()
+	var bullets: Array = DataLoader.get_all_bullets()
 	grid.columns = 1 + bullets.size()
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 10)
@@ -353,12 +355,12 @@ func _show_balance_matrix_popup() -> void:
 	layout.add_child(grid)
 	
 	# 1. 그리드 가로 헤더 그리기
-	var corner := parent_scene.make_label("적 아키타입 \\ 탄환", 13, parent_scene.C_NEON_GOLD)
+	var corner: Label = parent_scene.make_label("적 아키타입 \\ 탄환", 13, parent_scene.C_NEON_GOLD)
 	corner.custom_minimum_size = Vector2(160, 0)
 	grid.add_child(corner)
 	
 	for b in bullets:
-		var b_hdr = parent_scene.make_label("%s\n(DMG:%d/PEN:%d/ACC:%d)" % [
+		var b_hdr: Label = parent_scene.make_label("%s\n(DMG:%d/PEN:%d/ACC:%d)" % [
 			b.display_name.split(" ")[0], b.damage, b.penetration, b.accuracy
 		], 12, parent_scene.C_NEON_GOLD)
 		b_hdr.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -366,10 +368,10 @@ func _show_balance_matrix_popup() -> void:
 		grid.add_child(b_hdr)
 		
 	# 2. 그리드 데이터 행 그리기
-	var enemies := DataLoader.get_all_enemies()
+	var enemies: Array = DataLoader.get_all_enemies()
 	for e in enemies:
 		# 첫 열: 적 이름 및 기본 스탯
-		var e_lbl = parent_scene.make_label("%s\n(HP:%d/DEF:%d/EVA:%d)" % [
+		var e_lbl: Label = parent_scene.make_label("%s\n(HP:%d/DEF:%d/EVA:%d)" % [
 			e.display_name, e.max_hp, e.defense, e.evasion
 		], 12, parent_scene.C_TEXT)
 		e_lbl.custom_minimum_size = Vector2(160, 0)
@@ -386,7 +388,7 @@ func _show_balance_matrix_popup() -> void:
 			var is_pen = pen >= def
 			
 			var cell_text := ""
-			var cell_color := parent_scene.C_TEXT
+			var cell_color: Color = parent_scene.C_TEXT
 			
 			# 스펀지 아키타입(4) 여부
 			var is_sponge: bool = (e.archetype == 4)
@@ -408,7 +410,7 @@ func _show_balance_matrix_popup() -> void:
 				cell_text = "🎯 통과 (%d발)" % shots
 				cell_color = parent_scene.C_SUCCESS
 				
-			var cell_lbl = parent_scene.make_label(cell_text, 12, cell_color)
+			var cell_lbl: Label = parent_scene.make_label(cell_text, 12, cell_color)
 			cell_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			grid.add_child(cell_lbl)
 			
