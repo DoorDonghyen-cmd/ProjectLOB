@@ -689,7 +689,7 @@ func _update_cylinder_visuals() -> void:
 	_magazine_label.text = "탄창 (%d/%d)" % [bullets.size(), 6]
 	
 	# 예고창 가이드라인: 앞 2발은 선명히, 나머지는 N칸 더 묶어서 덩어리로 표시!
-	var size_to_draw := min(bullets.size(), 2)
+	var size_to_draw: int = min(bullets.size(), 2)
 	for i in range(size_to_draw):
 		var bullet: BulletData = bullets[i]
 		var card: PanelContainer = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
