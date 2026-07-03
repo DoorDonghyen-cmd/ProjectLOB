@@ -111,7 +111,7 @@ func _build_ui() -> void:
 	# 1. Left Column (Magazine + Bag) - ~33% width
 
 	var left_vbox := VBoxContainer.new()
-	left_vbox.custom_minimum_size = Vector2(280, 0)
+	left_vbox.custom_minimum_size = Vector2(240, 0)
 
 	left_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
@@ -329,6 +329,7 @@ func _build_left_column(parent: VBoxContainer) -> void:
 	_bag_scroll = ScrollContainer.new()
 	_bag_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_bag_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_bag_scroll.custom_minimum_size = Vector2(0, 180)
 	_bag_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	_bag_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_bag_scroll.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -363,7 +364,7 @@ func _build_right_column(parent: VBoxContainer) -> void:
 
 	_hit_info_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
 	_hit_info_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_hit_info_panel.custom_minimum_size = Vector2(360, 110)
+	_hit_info_panel.custom_minimum_size = Vector2(240, 110)
 	_apply_tactical_panel_style(_hit_info_panel, parent_scene.C_ACCENT)
 
 	top_hbox.add_child(_hit_info_panel)
@@ -408,7 +409,7 @@ func _build_right_column(parent: VBoxContainer) -> void:
 
 	_enemy_info_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
 	_enemy_info_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_enemy_info_panel.custom_minimum_size = Vector2(360, 110)
+	_enemy_info_panel.custom_minimum_size = Vector2(240, 110)
 	_apply_tactical_panel_style(_enemy_info_panel, parent_scene.C_DANGER)
 
 	top_hbox.add_child(_enemy_info_panel)
