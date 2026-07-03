@@ -1201,7 +1201,12 @@ func _on_confirm_pressed() -> void:
 	combat_manager.player_end_turn()
 
 func _on_fire_pressed() -> void:
-	if not combat_manager or combat_manager.state != CombatManager.State.PLAYER_TURN:
+	if not combat_manager:
+		return
+	if combat_manager.state == CombatManager.State.LOADING:
+		_on_loading_confirm()
+		return
+	if combat_manager.state != CombatManager.State.PLAYER_TURN:
 		return
 		
 	var next_bullet := combat_manager.magazine.peek()
@@ -1391,23 +1396,29 @@ func _update_action_buttons() -> void:
 	var is_tempo := combat_manager.gun and (combat_manager.gun.display_name.contains("Tempo") or combat_manager.gun.display_name.contains("속사형"))
 	var is_trickster := combat_manager.gun and (combat_manager.gun.display_name.contains("Trickster") or combat_manager.gun.display_name.contains("곡예형"))
 		
-	if combat_manager.state == CombatManager.State.LOADING:
-		_confirm_btn.visible = true
-		_confirm_btn.disabled = _loaded_bullets.is_empty()
-		
-		_fire_btn.visible = false
-		_unload_btn.visible = false
-		_reload_btn.visible = false
-		_double_tap_btn.visible = false
-		_eject_btn.visible = false
-		return
-		
+	# 언제나 버튼 가시성은 요원 총기 기능 사양에 맞춰 완전 고정
 	_confirm_btn.visible = false
 	_fire_btn.visible = true
 	_unload_btn.visible = true
 	_reload_btn.visible = true
 	_double_tap_btn.visible = is_tempo
 	_eject_btn.visible = is_trickster
+
+	if combat_manager.state == CombatManager.State.LOADING:
+		# 장전 완료 상태에 따라 발사 버튼을 완료 버튼으로 대용
+		_fire_btn.text = "✅ 장전완료"
+		_fire_btn.disabled = _loaded_bullets.is_empty()
+		
+		_unload_btn.disabled = true
+		_reload_btn.disabled = true
+		if _double_tap_btn.visible:
+			_double_tap_btn.disabled = true
+		if _eject_btn.visible:
+			_eject_btn.disabled = true
+		return
+		
+	# 평상시 발사 텍스트 유지
+	_fire_btn.text = "🔫 발사"
 	
 	if combat_manager.state != CombatManager.State.PLAYER_TURN:
 		_fire_btn.disabled = true
