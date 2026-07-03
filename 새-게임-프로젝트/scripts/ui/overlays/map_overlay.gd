@@ -408,6 +408,7 @@ func _draw_lines(drawer: Control) -> void:
 func _build_scan_hint_panel() -> void:
 	_scan_hint_panel = PanelContainer.new()
 	_scan_hint_panel.custom_minimum_size = Vector2(280, 45)
+	_scan_hint_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.0, 0.05, 0.0, 0.9)
@@ -425,11 +426,13 @@ func _build_scan_hint_panel() -> void:
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 8)
 	margin.add_theme_constant_override("margin_right", 8)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_scan_hint_panel.add_child(margin)
 	
 	_scan_hint_lbl = parent_scene.make_label("", 11, Color(0.2, 0.9, 0.4))
 	_scan_hint_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_scan_hint_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_scan_hint_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	margin.add_child(_scan_hint_lbl)
 	
 	add_child(_scan_hint_panel)
