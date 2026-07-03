@@ -59,8 +59,9 @@ var _loadout_overlay: LoadoutOverlay
 var _bullet_gallery_overlay: BulletGalleryOverlay
 var _monster_gallery_overlay: MonsterGalleryOverlay
 var _combat_margin: MarginContainer
-var _combat_overlay: CombatOverlay
+var _combat_overlay: Control
 var _debriefing_overlay: DebriefingOverlay
+var is_v2_ui: bool = false
 var _camera: Camera2D
 
 # ── 현재 상태 ──
@@ -140,7 +141,10 @@ func _build_ui() -> void:
 	_combat_margin.add_theme_constant_override("margin_bottom", 24)
 	add_child(_combat_margin)
 	
-	_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay.tscn").instantiate()
+	if is_v2_ui:
+		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
+	else:
+		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay.tscn").instantiate()
 	_combat_margin.add_child(_combat_overlay)
 	_combat_overlay.initialize(self, _rm)
 	_combat_margin.visible = false
@@ -231,6 +235,30 @@ func trigger_double_tap_test() -> void:
 	_combat_overlay.add_combat_log("[color=#ffff66]🛠️ 더블탭 전투 테스트 시작! (속사형 SMG 탑재)[/color]")
 	
 	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_tank]
+	_start_combat_phase(enemy_list)
+
+
+func trigger_v2_ui_test() -> void:
+	self.is_v2_ui = true
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_current_gun_data = _gun_smg
+	
+	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	
+	if _combat_overlay:
+		_combat_overlay.queue_free()
+		
+	_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
+	_combat_margin.add_child(_combat_overlay)
+	_combat_overlay.initialize(self, _rm)
+	
+	_combat_margin.visible = true
+	_combat_overlay.visible = true
+	_combat_overlay.clear_combat_log()
+	_combat_overlay.add_combat_log("[color=#37e0ac]🔥 목업 기반 신규 전투 UI V2 데모 모드 개시![/color]")
+	
+	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_tank, _enemy_dodger, _enemy_drone, _enemy_caster]
 	_start_combat_phase(enemy_list)
 
 

@@ -173,7 +173,7 @@ func _on_dev_test_pressed() -> void:
 ## 개발자 테스트 팝업 패널 빌드
 func _build_dev_test_panel() -> void:
 	_dev_test_panel = PanelContainer.new()
-	_dev_test_panel.custom_minimum_size = Vector2(340, 330)
+	_dev_test_panel.custom_minimum_size = Vector2(340, 520)
 	_dev_test_panel.visible = false
 	
 	# 화면 정중앙 팝업 스타일
@@ -253,6 +253,15 @@ func _build_dev_test_panel() -> void:
 	btn_double_tap.custom_minimum_size = Vector2(0, 40)
 	btn_double_tap.add_theme_font_size_override("font_size", 13)
 	vbox.add_child(btn_double_tap)
+	
+	# 4-2. 🔥 새 전투 UI 데모 (v2) 실행 버튼
+	var btn_v2_ui = parent_scene.make_button("🔥 새 전투 UI 데모 (v2) 실행", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_v2_ui_test()
+	, parent_scene.C_SUCCESS)
+	btn_v2_ui.custom_minimum_size = Vector2(0, 40)
+	btn_v2_ui.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_v2_ui)
 	
 	# 5. 해금 및 보상 테스트 숏컷 버튼
 	var btn_unlock_test = parent_scene.make_button("🔑 해금 및 보상 테스트", func():
