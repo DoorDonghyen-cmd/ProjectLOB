@@ -458,7 +458,7 @@ func update_conditional_paths() -> void:
 			var cond = node.unlock_condition_type
 			var can_unlock = false
 			if cond == "caliber_762":
-				if current_gun and (current_gun.display_name_eng == "HEAVY" or "7.62" in current_gun.display_name_eng or "7.62" in current_gun.display_name_kor):
+				if current_gun and (current_gun.display_name.to_upper().contains("HEAVY") or "7.62" in current_gun.display_name or "중장형" in current_gun.display_name):
 					can_unlock = true
 			elif cond == "gas_valve":
 				if active_relics.has("gas_valve"):
