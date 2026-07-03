@@ -57,7 +57,7 @@ class RunNode:
 	var connected_routes: Array[String] # 연결되는 통로들: "stairs", "air_duct", "shaft"
 	
 	# 신설 필드
-	var connected_node_ids: Array[int] = [] # 다음 층의 타겟 노드 ID들
+	var connected_node_ids: Array = [] # 다음 층의 타겟 노드 ID들
 	var connected_node_routes: Dictionary = {} # target_node_id(int) -> route_type(String, "stairs", "air_duct", "shaft")
 	var is_hidden: bool = false            # 조건부 노출 여부
 	var unlock_condition_type: String = ""  # "caliber_762", "gas_valve", "chamber_polish", ""
