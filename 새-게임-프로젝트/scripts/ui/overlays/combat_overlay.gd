@@ -160,7 +160,7 @@ func _build_left_column(parent: VBoxContainer) -> void:
 	_left_magazine_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	_left_magazine_panel.size_flags_stretch_ratio = 0.45
-
+	_left_magazine_panel.custom_minimum_size = Vector2(240, 240)
 	_left_magazine_panel.add_theme_constant_override("separation", 4)
 
 	parent.add_child(_left_magazine_panel)
@@ -254,6 +254,7 @@ func _build_left_column(parent: VBoxContainer) -> void:
 	_right_bag_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 	_right_bag_panel.size_flags_stretch_ratio = 0.55
+	_right_bag_panel.custom_minimum_size = Vector2(240, 280)
 
 	parent.add_child(_right_bag_panel)
 
