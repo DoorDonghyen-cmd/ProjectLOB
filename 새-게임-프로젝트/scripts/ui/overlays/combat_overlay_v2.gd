@@ -471,8 +471,32 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	combat_manager.player_died.connect(_on_player_died)
 	combat_manager.bullet_unloaded.connect(func(b): run_manager.unload_bullet_to_discard(b))
 	combat_manager.bullet_fired.connect(_on_bullet_fired)
-	
-	_on_encounter_started(enemy_list)
+	if combat_manager.has_signal("enemy_killed"):
+		combat_manager.enemy_killed.connect(_on_enemy_killed)
+		
+	var floor_num := run_manager.current_floor if run_manager else 1
+	var dist_modifier := 0
+	if floor_num <= 3:
+		dist_modifier = 6
+	elif floor_num <= 7:
+		dist_modifier = 4
+	elif floor_num <= 10:
+		dist_modifier = 2
+	elif floor_num >= 15:
+		dist_modifier = -2
+
+	if dist_modifier > 0:
+		add_combat_log("[color=#88ff88]ℹ️ 초반 보너스: 적 소환 거리가 %dm 멀어집니다.[/color]" % dist_modifier)
+	elif dist_modifier < 0:
+		add_combat_log("[color=#ff8888]ℹ️ 종반 패널티: 적 소환 거리가 %dm 좁혀집니다.[/color]" % abs(dist_modifier))
+
+	var enemy_data_list: Array[EnemyData] = []
+	for ed in enemy_list:
+		var temp_ed: EnemyData = ed.duplicate() as EnemyData
+		temp_ed.start_distance = maxi(ed.start_distance + dist_modifier, 4)
+		enemy_data_list.append(temp_ed)
+		
+	combat_manager.start_encounter(gun, enemy_data_list, run_manager.active_relics if run_manager else [])
 
 func _on_encounter_started(enemy_list) -> void:
 	_last_bullet_count = -1
