@@ -265,7 +265,9 @@ func _build_dev_test_panel() -> void:
 			RunManager.meta_unlocked_weapons.append("tempo")
 		
 		# 기밀 정보 파편 19개 수집 상태 프리셋 (엔딩 및 도감 테스트 가시화)
-		RunManager.meta_lore_fragments = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+		RunManager.meta_lore_fragments.clear()
+		for i in range(1, 20):
+			RunManager.meta_lore_fragments.append(i)
 		
 		# 준비실을 열기 전에 알림
 		print("디버그: TDC 10개 가산, 2개 무기 해금 및 기밀 파편 19개(1~19F)가 테스트 프리셋되었습니다.")
