@@ -109,10 +109,7 @@ func _build_ui() -> void:
 	# 1. Left Column (Magazine + Bag) - ~33% width
 
 	var left_vbox := VBoxContainer.new()
-
-	left_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-
-	left_vbox.size_flags_stretch_ratio = 0.33
+	left_vbox.custom_minimum_size = Vector2(280, 0)
 
 	left_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
