@@ -92,6 +92,8 @@ func _build_ui() -> void:
 	for child in get_children():
 		child.queue_free()
 
+	self.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	self.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_theme_constant_override("separation", 0)
 
 	# Main horizontal split
