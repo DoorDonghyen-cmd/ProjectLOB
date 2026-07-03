@@ -251,8 +251,8 @@ func show_map_screen() -> void:
 				btn.add_theme_stylebox_override("hover", hover_style)
 				btn.add_theme_stylebox_override("pressed", hover_style)
 			
-			# 미지 노드인 경우 마우스 호버 전술 스캔 힌트 연결
-			if node.type_name.begins_with("???") and node.scan_hint != "":
+			# 미지 노드인 경우 마우스 호버 전술 스캔 힌트 연결 (오직 선택 가능한 활성 노드일 때만)
+			if f == run_manager.current_floor and node.type_name.begins_with("???") and node.scan_hint != "":
 				btn.mouse_entered.connect(func(): _show_scan_hint(node.scan_hint, btn))
 				btn.mouse_exited.connect(func(): _hide_scan_hint())
 				
