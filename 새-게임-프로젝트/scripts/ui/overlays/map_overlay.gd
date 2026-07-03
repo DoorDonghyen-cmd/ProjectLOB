@@ -19,6 +19,9 @@ var _map_route_container: VBoxContainer
 var _selected_node: RunManager.RunNode = null
 var _node_buttons: Dictionary = {}
 
+var _scan_hint_panel: PanelContainer
+var _scan_hint_lbl: Label
+
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
 	parent_scene = p_scene
@@ -151,8 +154,8 @@ func show_map_screen() -> void:
 		
 	_node_buttons.clear()
 	
-	var start_floor = ((run_manager.current_floor - 1) / 5) * 5 + 1
-	var end_floor = start_floor + 4
+	var start_floor = 1
+	var end_floor = 10
 	
 	# Loop from end_floor down to start_floor (top-down visual stacking)
 	for f in range(end_floor, start_floor - 1, -1):
@@ -188,7 +191,7 @@ func show_map_screen() -> void:
 		var fp_label: Label = parent_scene.make_label("%dF" % f, 18, parent_scene.C_TEXT)
 		if f == run_manager.current_floor:
 			fp_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
-		elif f % 5 == 0:
+		elif f == 5 or f == 10:
 			fp_label.text = "%dF\nBOSS" % f
 			fp_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
 		else:
@@ -206,6 +209,9 @@ func show_map_screen() -> void:
 		
 		var nodes := run_manager.get_nodes_for_floor(f)
 		for node in nodes:
+			if node.is_hidden:
+				continue # 조건부 개방 전 숨김 노드는 렌더링 패스
+				
 			# Rich button card representing a room
 			var btn := Button.new()
 			btn.custom_minimum_size = Vector2(240, 64)
@@ -245,6 +251,11 @@ func show_map_screen() -> void:
 				btn.add_theme_stylebox_override("hover", hover_style)
 				btn.add_theme_stylebox_override("pressed", hover_style)
 			
+			# 미지 노드인 경우 마우스 호버 전술 스캔 힌트 연결
+			if node.type_name.begins_with("???") and node.scan_hint != "":
+				btn.mouse_entered.connect(func(): _show_scan_hint(node.scan_hint, btn))
+				btn.mouse_exited.connect(func(): _hide_scan_hint())
+				
 			nodes_hbox.add_child(btn)
 			_node_buttons[node.id] = btn
 			
@@ -261,9 +272,9 @@ func show_map_screen() -> void:
 				title_color = parent_scene.C_ACCENT
 			elif node.type_name.contains("보스"):
 				title_color = parent_scene.C_DANGER
-			elif node.type_name.contains("정비") or node.type_name.contains("완충"):
+			elif node.type_name.contains("정비") or node.type_name.contains("완충") or node.type_name.contains("보급"):
 				title_color = parent_scene.C_SUCCESS
-			elif node.type_name.contains("이벤트"):
+			elif node.type_name.contains("이벤트") or node.type_name.contains("우회"):
 				title_color = parent_scene.C_WARNING
 				
 			var title_lbl: Label = parent_scene.make_label(node.type_name, 15, title_color)
@@ -321,8 +332,8 @@ func _draw_lines(drawer: Control) -> void:
 	if not run_manager or _node_buttons.is_empty():
 		return
 		
-	var start_floor = ((run_manager.current_floor - 1) / 5) * 5 + 1
-	var end_floor = start_floor + 4
+	var start_floor = 1
+	var end_floor = 10
 	
 	# Draw horizontal floor division lines (building floors)
 	for f in range(start_floor, end_floor + 1):
@@ -332,6 +343,8 @@ func _draw_lines(drawer: Control) -> void:
 		var sum_y := 0.0
 		var count := 0
 		for n in nodes:
+			if n.is_hidden:
+				continue
 			if _node_buttons.has(n.id):
 				var btn: Button = _node_buttons[n.id]
 				var center = btn.global_position + btn.size / 2
@@ -352,53 +365,91 @@ func _draw_lines(drawer: Control) -> void:
 		if prev_nodes.is_empty() or curr_nodes.is_empty():
 			continue
 			
-		for curr_node in curr_nodes:
-			for route in curr_node.connected_routes:
-				# Resolve source node on prev floor
-				var prev_node: RunManager.RunNode = null
-				if prev_nodes.size() == 1:
-					prev_node = prev_nodes[0]
-				else:
-					if route == "stairs":
-						prev_node = prev_nodes[0]
-					elif route == "air_duct":
-						prev_node = prev_nodes[0]
-					elif route == "shaft":
-						prev_node = prev_nodes[-1]
+		for prev_node in prev_nodes:
+			if prev_node.is_hidden:
+				continue
+			for curr_node in curr_nodes:
+				if curr_node.is_hidden:
+					continue
+				
+				if prev_node.connected_node_ids.has(curr_node.id):
+					var route: String = prev_node.connected_node_routes.get(curr_node.id, "stairs")
+					
+					if _node_buttons.has(prev_node.id) and _node_buttons.has(curr_node.id):
+						var btn_prev: Button = _node_buttons[prev_node.id]
+						var btn_curr: Button = _node_buttons[curr_node.id]
 						
-				if not prev_node:
-					prev_node = prev_nodes[0]
-					
-				# Calculate positions
-				if _node_buttons.has(prev_node.id) and _node_buttons.has(curr_node.id):
-					var btn_prev: Button = _node_buttons[prev_node.id]
-					var btn_curr: Button = _node_buttons[curr_node.id]
-					
-					var start_pos = btn_prev.global_position + btn_prev.size / 2
-					var end_pos = btn_curr.global_position + btn_curr.size / 2
-					
-					var local_start = drawer.get_global_transform().affine_inverse() * start_pos
-					var local_end = drawer.get_global_transform().affine_inverse() * end_pos
-					
-					var color: Color = parent_scene.C_ACCENT
-					match route:
-						"stairs": color = parent_scene.C_SUCCESS
-						"air_duct": color = parent_scene.C_WARNING
-						"shaft": color = parent_scene.C_DANGER
+						var start_pos = btn_prev.global_position + btn_prev.size / 2
+						var end_pos = btn_curr.global_position + btn_curr.size / 2
 						
-					# Add transparency depending on floor state
-					if f - 1 != run_manager.current_floor and f != run_manager.current_floor:
-						color.a = 0.3
-					else:
-						if f == run_manager.current_floor:
-							if route == run_manager.current_route_type:
-								color.a = 1.0
-							else:
-								color.a = 0.15
-						else:
-							color.a = 0.7
+						var local_start = drawer.get_global_transform().affine_inverse() * start_pos
+						var local_end = drawer.get_global_transform().affine_inverse() * end_pos
+						
+						var color: Color = parent_scene.C_ACCENT
+						match route:
+							"stairs": color = parent_scene.C_SUCCESS
+							"air_duct": color = parent_scene.C_WARNING
+							"shaft": color = parent_scene.C_DANGER
 							
-					drawer.draw_line(local_start, local_end, color, 3.5, true)
+						if f - 1 != run_manager.current_floor and f != run_manager.current_floor:
+							color.a = 0.25
+						else:
+							if f == run_manager.current_floor:
+								if route == run_manager.current_route_type:
+									color.a = 1.0
+								else:
+									color.a = 0.15
+							else:
+								color.a = 0.65
+								
+						drawer.draw_line(local_start, local_end, color, 3.5, true)
+
+
+func _build_scan_hint_panel() -> void:
+	_scan_hint_panel = PanelContainer.new()
+	_scan_hint_panel.custom_minimum_size = Vector2(280, 45)
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.05, 0.0, 0.9)
+	style.border_width_left = 1
+	style.border_width_right = 1
+	style.border_width_top = 1
+	style.border_width_bottom = 1
+	style.border_color = Color(0.2, 0.9, 0.4)
+	style.corner_radius_top_left = 3
+	style.corner_radius_top_right = 3
+	style.corner_radius_bottom_left = 3
+	style.corner_radius_bottom_right = 3
+	_scan_hint_panel.add_theme_stylebox_override("panel", style)
+	
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 8)
+	margin.add_theme_constant_override("margin_right", 8)
+	_scan_hint_panel.add_child(margin)
+	
+	_scan_hint_lbl = parent_scene.make_label("", 11, Color(0.2, 0.9, 0.4))
+	_scan_hint_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_scan_hint_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	margin.add_child(_scan_hint_lbl)
+	
+	add_child(_scan_hint_panel)
+	_scan_hint_panel.visible = false
+
+
+func _show_scan_hint(hint: String, target_btn: Button) -> void:
+	if not _scan_hint_panel:
+		_build_scan_hint_panel()
+	_scan_hint_lbl.text = hint
+	_scan_hint_panel.visible = true
+	_scan_hint_panel.size = _scan_hint_panel.custom_minimum_size
+	
+	var local_pos = target_btn.global_position - global_position
+	_scan_hint_panel.position = Vector2(local_pos.x + (target_btn.size.x - _scan_hint_panel.size.x) / 2.0, local_pos.y - 50)
+
+
+func _hide_scan_hint() -> void:
+	if _scan_hint_panel:
+		_scan_hint_panel.visible = false
 
 
 

@@ -73,16 +73,45 @@ func show_debriefing(won: bool) -> void:
 		_debrief_title.add_theme_color_override("font_color", parent_scene.C_DANGER)
 		
 	var earned := run_manager.end_run(won)
+	var unlocked_weapons := run_manager.check_weapon_unlocks()
 	
 	var log_text := "── 작전 디브리핑 정산 내역 ──\n\n"
 	log_text += "- 도달한 층수: %d 층 (x15 Cr) = %d Cr\n" % [run_manager.current_floor, run_manager.current_floor * 15]
 	log_text += "- 보유한 렐릭 보너스: %d 개 (x20 Cr) = %d Cr\n" % [run_manager.active_relics.size(), run_manager.active_relics.size() * 20]
 	if won:
 		log_text += "- 헬기 보딩 성공 보너스 = 50 Cr\n"
+	log_text += "- 획득한 전술 데이터 코어 (TDC): %d 개\n" % run_manager.tactical_data_cores
 	log_text += "──────────────────────────\n"
-	log_text += "[color=#ffff44]총 환전된 크레딧: +%d Cr[/color]\n\n" % earned
+	log_text += "[color=#ffff44]총 환전된 크레딧: +%d Cr[/color]\n" % earned
 	log_text += "누적 보유 크레딧: %d Cr\n" % RunManager.meta_credits
-	log_text += "다음 작전을 준비하기 위해 영구 메타 상점에서 기량을 해금하세요."
+	log_text += "[color=#aaffaa]누적 보유 데이터 코어 (TDC): %d 개[/color]\n\n" % RunManager.meta_tactical_data_cores
+	
+	if not unlocked_weapons.is_empty():
+		log_text += "[color=#00ff66][b]🆕 전술 데이터 분석 완료 - 신규 무기 영구 해금! 🆕[/b][/color]\n"
+		for w_key in unlocked_weapons:
+			var name_kor = "알 수 없음"
+			match w_key:
+				"marksman": name_kor = "저격형 (MARKSMAN)"
+				"bruiser": name_kor = "돌격형 (BRUISER)"
+				"tempo": name_kor = "속사형 (TEMPO)"
+				"trickster": name_kor = "곡예형 (TRICKSTER)"
+				"heavy": name_kor = "중장형 (HEAVY)"
+				"stance_hunter": name_kor = "태세사냥꾼 (STANCE HUNTER)"
+				"gambler": name_kor = "도박형 (GAMBLER)"
+			log_text += "  ★ [b]%s[/b]이(가) 무기 캐비닛에 영구 추가되었습니다!\n" % name_kor
+		log_text += "\n"
+	
+	log_text += "다음 작전을 준비하기 위해 준비실에서 해금된 총기를 선택해 작전을 개시하세요."
+	
+	# ── 100% 정보 도감 해독 완료 엔딩 (소프트 엔딩) ──
+	if won and run_manager.current_floor >= 10 and RunManager.meta_lore_fragments.size() == 20:
+		log_text += "\n\n"
+		log_text += "[color=#33ffff]📥 🚨 기밀 통신망 복원 완료 - [PROJECT L.O.B] 블랙박스 파일 해독 완료 🚨[/color]\n"
+		log_text += "[color=#00ff66][b]보안 등급 5 (RESTRICTED LOG):[/b][/color]\n"
+		log_text += "\"이 빌딩은 좀비 바이러스가 아닌, 나노 자율 머신 'L.O.B'의 통제 실패로 봉쇄되었다.\n"
+		log_text += "최후의 탑승자(Last on Board)들은 기밀 보존을 위해 모두 빌딩 내에서 숙청되었으며,\n"
+		log_text += "당신이 확보한 블랙박스가 회수되는 즉시 본 구역 전체에 정밀 열핵 정화가 시작된다.\"\n"
+		log_text += "[color=#ff5555][b]STATUS: OPERATION SUCCESSFUL. SYSTEM DECONTAMINATED.[/b][/color]"
 	
 	_debrief_log.text = log_text
 

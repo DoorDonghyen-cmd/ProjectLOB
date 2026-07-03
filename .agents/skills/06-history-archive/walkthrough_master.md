@@ -16,12 +16,14 @@
 | 2026-07-01 | **특수 탄환 가방 미노출 버그 해결** | `820f3ccd` | 전투 인벤토리 가방 내 특수 탄환 5종 기본형 치환문 제거 및 원본 데이터 전달로 15종 탄환 개별 렌더링 및 전투 효과 활성화 보장 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/820f3ccd-0935-4d7b-bf5c-e814640fb44e/walkthrough.md) |
 | 2026-07-01 | **속사형 더블탭 & 몬스터 4종 & 총기 8종 구현** | `70fd47fc` | 속사형 더블탭 및 기믹형 몬스터 4종 설계/적용 완료. 핵심 총기 8종(표준, 저격, 돌격, 속사, 중장, 곡예, 도박, 태세사냥꾼) 리소스 및 고유 시그니처/패널티 전투 규칙 전면 구현, 준비실 스크롤 뷰 지원 및 이젝트 버튼/태세 전환 예고 HUD 연동 완료 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/70fd47fc-a52b-4449-9675-a36976f0100e/walkthrough.md) |
 | 2026-07-02 | **C_NEON_GOLD 오류 및 요원 준비실 UI & 버그/밸런스 수정 6종** | `46ca166d` | C_NEON_GOLD 상수 추가, 준비실 UI 100% 확장, 발사 버튼 모바일 오버플로우 수정, 몬스터 갤러리 카드 크기 고정 및 인게임 스프라이트 매칭 완료, 빼내기 패널티 제거 및 전술 장갑 턴 단축 재구현 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/46ca166d-2f0e-4374-9d61-863e0f35dfaf/walkthrough.md) |
+| 2026-07-03 | **보상/해금, 맵, 몬스터 & 반복성/완결 개편** | `64478efc` | TDC 가속 및 8종 총기 영구 해금 연동, 준비실 🔒 잠금 UI. 10층 압축 구조 맵 제너레이터, 2~3갈래 가로 분기 UI 그리기, 미지 노드 스캔 힌트, 조건부 우회로 실시간 개방 및 층 상승 연출 완결. 스택 스펀지(유효타 3회 및 관통 스침) 처치 기믹, ◆ ◆ ◆ 배리어 UI 표시, 태세병 1턴 전 변경 예고 HUD 연동. 5단계 침투 위험도 전술 제약(예고창 가림, 적 전진 배치, 쉴드량 스케일링, 빼내기 시 적 전진), 기밀 파편(Lore Fragment) 20종 도감 우회로 매핑 연동 및 10F 최종 탈출 성공 시 블랙박스 해독 보안 로그 폭로 소프트 엔딩 완결 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/64478efc-e950-4f76-80ad-e56539a2c655/walkthrough.md) |
 
 ---
 
 ## 🔗 세션별 원본 링크 (References)
 
-* [Session bbacb3ae-bec7-4690-b500-e3c4ec102daf Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/bbacb3ae-bec7-4690-b500-e3c4ec102daf/walkthrough.md)
+* [Session 64478efc-e950-4f76-80ad-e56539a2c655 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/64478efc-e950-4f76-80ad-e56539a2c655/walkthrough.md)
+* [Session 46ca166d-2f0e-4374-9d61-863e0f35dfaf Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/46ca166d-2f0e-4374-9d61-863e0f35dfaf/walkthrough.md)
 * [Session 287baf0e-2bda-448a-bf37-3a9f62aa7cfe Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/287baf0e-2bda-448a-bf37-3a9f62aa7cfe/walkthrough.md)
 * [Session 168caff8-edab-4761-b950-f0bd42e12149 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/168caff8-edab-4761-b950-f0bd42e12149/walkthrough.md)
 * [Session 8acd207f-7395-4eef-8fdf-3a9dd9f951e9 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/8acd207f-7395-4eef-8fdf-3a9dd9f951e9/walkthrough.md)

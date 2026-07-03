@@ -63,7 +63,8 @@ const WEAPON_PROFILES := {
 		"prev": 2,
 		"calibers": "[9mm] [45ACP] [전 구경]",
 		"passive": "- 균형잡힌 스탯 / 범용 파츠 시너지 우수\n- 표준 LIFO 디펜스의 탄탄한 기초 제공",
-		"penalty": "- 특화된 극딜/넉백 유틸리티 부재\n- 시그니처 혜택이 없는 것 자체가 리스크"
+		"penalty": "- 특화된 극딜/넉백 유틸리티 부재\n- 시그니처 혜택이 없는 것 자체가 리스크",
+		"unlock_desc": ""
 	},
 	"marksman": {
 		"res_key": "dmr",
@@ -75,7 +76,8 @@ const WEAPON_PROFILES := {
 		"prev": 2,
 		"calibers": "[9mm] [5.56mm] [저격전용]",
 		"passive": "- 패시브 ACC+4 가산 보너스\n- 첫 탄 격발 시 적의 EVA(회피) 무시 확정 명중",
-		"penalty": "- 탄창 슬롯 3칸으로 좁아 연계 빌드 한계\n- 근거리 (DIST 1 이하) 격발 시 DMG 감소 취약"
+		"penalty": "- 탄창 슬롯 3칸으로 좁아 연계 빌드 한계\n- 근거리 (DIST 1 이하) 격발 시 DMG 감소 취약",
+		"unlock_desc": "[원거리 통제] 평균 처치 거리 4.0 이상으로 완주"
 	},
 	"bruiser": {
 		"res_key": "shotgun",
@@ -87,7 +89,8 @@ const WEAPON_PROFILES := {
 		"prev": 2,
 		"calibers": "[12Gauge] [Slug] [전 구경]",
 		"passive": "- 포인트블랭크 렐릭 기본 탑재 (근접 DMG 폭증)\n- 격발 당 근접 타격 넉백 거리 극대화 (+1 KB)",
-		"penalty": "- 기본 명중(ACC) 보정 게이트가 매우 낮음\n- 원거리 (DIST 4 이상) 타겟 대상 명중률 하락"
+		"penalty": "- 기본 명중(ACC) 보정 게이트가 매우 낮음\n- 원거리 (DIST 4 이상) 타겟 대상 명중률 하락",
+		"unlock_desc": "[처치 연쇄] 한 턴 3마리 이상의 적 처치"
 	},
 	"tempo": {
 		"res_key": "smg",
@@ -99,7 +102,8 @@ const WEAPON_PROFILES := {
 		"prev": 2,
 		"calibers": "[9mm] [5.56mm] [속사전용]",
 		"passive": "- 리듬 챔버 혜택 일부 내장 (Combo 연타 DMG+)\n- 9mm 권총탄 계열 연사 시 추가 탄 공급 보너스",
-		"penalty": "- 대구경 고화력 7.62mm 탄환 사용 불가능\n- 기본 관통(PEN) 게이트가 낮아 중장갑 좀비에 취약"
+		"penalty": "- 대구경 고화력 7.62mm 탄환 사용 불가능\n- 기본 관통(PEN) 게이트가 낮아 중장갑 좀비에 취약",
+		"unlock_desc": "[계획 규율] 납탄(중간 삽탄) 격발 없이 완주"
 	},
 	"heavy": {
 		"res_key": "heavy",
@@ -111,7 +115,8 @@ const WEAPON_PROFILES := {
 		"prev": 1,
 		"calibers": "[7.62mm] [대구경] [전 구경]",
 		"passive": "- 패시브 PEN+1 / DMG+1 / 넉백+1 버프 제공\n- 관통 게이트 통과 시 초과 PEN만큼 뒤 적 관통타격",
-		"penalty": "- 예고창이 1개로 엄격 차단되어 기억력 의존\n- 조준 불안정 패시브 ACC -1 감쇄 패널티"
+		"penalty": "- 예고창이 1개로 엄격 차단되어 기억력 의존\n- 조준 불안정 패시브 ACC -1 감쇄 패널티",
+		"unlock_desc": "[시스템 파훼] 관통 피해 없이 파쇄만으로 탱커 처치"
 	},
 	"trickster": {
 		"res_key": "trickster",
@@ -123,7 +128,8 @@ const WEAPON_PROFILES := {
 		"prev": 3,
 		"calibers": "[9mm] [45ACP] [전 구경]",
 		"passive": "- 예고창 3개로 뛰어난 가시성 제공\n- 턴당 1회 맨 위 탄을 맨 아래로 보내는 이젝트 사용 가능",
-		"penalty": "- 일반 개조 슬롯이 3칸으로 극도 제한\n- 이젝트 기믹으로 밀려난 탄환 격발 시 DMG -1 감쇄"
+		"penalty": "- 일반 개조 슬롯이 3칸으로 극도 제한\n- 이젝트 기믹으로 밀려난 탄환 격발 시 DMG -1 감쇄",
+		"unlock_desc": "[완벽 실행] 한 전투를 빗나감/0데미지 없이 클리어"
 	},
 	"gambler": {
 		"res_key": "gambler",
@@ -135,7 +141,8 @@ const WEAPON_PROFILES := {
 		"prev": 0,
 		"calibers": "[전 구경 지원]",
 		"passive": "- 패시브 DMG+2 및 5칸의 넓은 개조 슬롯 지원\n- 탄창 내 아래에 깊숙이 묻힌 탄일수록 격발 위력 증가",
-		"penalty": "- 예고창 0개로 블라인드 (발사 직전 1발만 명중 예고)\n- 탄창 관리 실수를 하면 빌드가 꼬이기 쉬움"
+		"penalty": "- 예고창 0개로 블라인드 (발사 직전 1발만 명중 예고)\n- 탄창 관리 실수를 하면 빌드가 꼬이기 쉬움",
+		"unlock_desc": "[리스크 감수] 무손실 (근접 1m 허용 없이) 완주"
 	},
 	"stance_hunter": {
 		"res_key": "stance_hunter",
@@ -147,7 +154,8 @@ const WEAPON_PROFILES := {
 		"prev": 2,
 		"calibers": "[전 구경 지원]",
 		"passive": "- 태세 예지 내장 (적 태세 전환 1턴 미리 예고)\n- 적의 태세 전환 턴에 모든 게이트 무시 (확정 명중/관통)",
-		"penalty": "- 태세 전환이 없는 적을 상대할 때는 시그니처 혜택 소멸\n- 낮은 범용성에 따른 빌드 불안정성"
+		"penalty": "- 태세 전환이 없는 적을 상대할 때는 시그니처 혜택 소멸\n- 낮은 범용성에 따른 빌드 불안정성",
+		"unlock_desc": "[시스템 파훼] 슬로우 없이 태세 전환 병사 처치"
 	}
 }
 
@@ -253,10 +261,15 @@ func _build_ui() -> void:
 	
 	for w_key in WEAPON_PROFILES.keys():
 		var profile = WEAPON_PROFILES[w_key]
+		var is_unlocked := RunManager.meta_unlocked_weapons.has(w_key)
 		var card := PanelContainer.new()
 		card.custom_minimum_size = Vector2(0, 48)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
 		card.focus_mode = Control.FOCUS_NONE # 포커스 획득 시 하얗게 오버레이되는 버그 차단
+		
+		if not is_unlocked:
+			card.modulate = Color(1.0, 1.0, 1.0, 0.45)
+			
 		weapon_list_vbox.add_child(card)
 		_weapon_cards[w_key] = card
 		
@@ -273,7 +286,10 @@ func _build_ui() -> void:
 		inner_hbox.add_theme_constant_override("separation", 12)
 		inner_margin.add_child(inner_hbox)
 		
-		var icon_lbl = parent_scene.make_label(profile.emoji, 18, parent_scene.C_TEXT)
+		var icon_text = profile.emoji
+		if not is_unlocked:
+			icon_text = "🔒"
+		var icon_lbl = parent_scene.make_label(icon_text, 18, parent_scene.C_TEXT)
 		inner_hbox.add_child(icon_lbl)
 		
 		var name_vbox := VBoxContainer.new()
@@ -281,7 +297,10 @@ func _build_ui() -> void:
 		name_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 		inner_hbox.add_child(name_vbox)
 		
-		var name_kor = parent_scene.make_label(profile.display_name_kor, 13, parent_scene.C_TEXT)
+		var display_name = profile.display_name_kor
+		if not is_unlocked:
+			display_name += " (잠김)"
+		var name_kor = parent_scene.make_label(display_name, 13, parent_scene.C_TEXT)
 		name_vbox.add_child(name_kor)
 		
 		var name_eng = parent_scene.make_label(profile.display_name_eng, 10, C_NEON_GOLD)
@@ -590,8 +609,16 @@ func _refresh_stats_ui() -> void:
 		
 	# 5. 구경 및 설명 텍스트
 	_lbl_calibers.text = profile.calibers
-	_lbl_passive_desc.text = profile.passive
-	_lbl_penalty_desc.text = profile.penalty
+	
+	var is_unlocked := RunManager.meta_unlocked_weapons.has(selected_weapon_key)
+	if is_unlocked:
+		_lbl_passive_desc.text = profile.passive
+		_lbl_penalty_desc.text = profile.penalty
+		_btn_start_run.disabled = false
+	else:
+		_lbl_passive_desc.text = "🔒 잠김: 이 무기는 아직 사용할 수 없습니다.\n해금 조건: " + profile.unlock_desc
+		_lbl_penalty_desc.text = "이전 작전(런)에서 위의 도전 과제를 완료하면 영구 해금됩니다."
+		_btn_start_run.disabled = true
 
 
 ## 🚀 작전 개시 액션

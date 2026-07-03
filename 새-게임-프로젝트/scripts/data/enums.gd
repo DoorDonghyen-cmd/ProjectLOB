@@ -23,10 +23,12 @@ enum BulletEffect {
 
 ## ── 적 아키타입 ──
 enum EnemyArchetype {
-	RUSHER,  ## 돌격병 — 빠르고 방어 낮음
-	TANK,    ## 중장갑 — 느리고 방어 높음
-	DODGER,  ## 회피형 — 중간 속도, 높은 회피
-	CASTER,  ## 술사형 — 전진하지 않고 원거리 차징 공격
+	RUSHER,    ## 돌격병 — 빠르고 방어 낮음
+	TANK,      ## 중장갑 — 느리고 방어 높음
+	DODGER,    ## 회피형 — 중간 속도, 높은 회피
+	CASTER,    ## 술사형 — 전진하지 않고 원거리 차징 공격
+	ABSORBER,  ## 스택 스펀지 — 유효 격발 횟수로 처치 (3회)
+	SCRAMBLER, ## 태세 전환병 — 3발 주기 자물쇠 교체
 }
 
 ## ── 적 전투 중 태세 (Stance) ──

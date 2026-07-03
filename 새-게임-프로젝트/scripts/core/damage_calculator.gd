@@ -15,8 +15,15 @@ class_name DamageCalculator
 ## gun이 주어지면 패시브 명중 보너스를 가산한다.
 static func check_hit(bullet: BulletData, enemy_evasion: int, gun: GunData = null) -> bool:
 	var total_acc := bullet.accuracy
+	var b_csv := DataLoader.get_bullet(bullet.resource_path.get_file().get_basename())
+	if not b_csv.is_empty():
+		total_acc = b_csv.accuracy
+		
 	if gun:
-		total_acc += gun.passive_acc_bonus
+		var g_csv := DataLoader.get_gun(gun.resource_path.get_file().get_basename())
+		var passive_acc_bonus := gun.passive_acc_bonus
+		# 총기 스탯도 룩업 가능 (현재는 passive_acc_bonus가 CSV에 없으므로 기본 리소스값 유지)
+		total_acc += passive_acc_bonus
 	return total_acc >= enemy_evasion
 
 
@@ -33,11 +40,22 @@ static func calculate_damage(
 ) -> int:
 	var total_dmg := bullet.damage
 	var total_pen := bullet.penetration
+	
+	var b_csv := DataLoader.get_bullet(bullet.resource_path.get_file().get_basename())
+	if not b_csv.is_empty():
+		total_dmg = b_csv.damage
+		total_pen = b_csv.penetration
 
 	# 총 패시브 가산
 	if gun:
-		total_dmg += gun.passive_dmg_bonus
-		total_pen += gun.passive_pen_bonus
+		var g_csv := DataLoader.get_gun(gun.resource_path.get_file().get_basename())
+		var dmg_bonus := gun.passive_dmg_bonus
+		var pen_bonus := gun.passive_pen_bonus
+		if not g_csv.is_empty():
+			dmg_bonus = g_csv.passive_dmg_bonus
+			pen_bonus = g_csv.passive_pen_bonus
+		total_dmg += dmg_bonus
+		total_pen += pen_bonus
 
 	# 이진 관통 게이트: PEN < DEF 이면 0
 	if total_pen < enemy_def:
@@ -48,6 +66,10 @@ static func calculate_damage(
 ## 넉백량 계산 (총 패시브 포함)
 static func calculate_knockback(bullet: BulletData, gun: GunData = null) -> int:
 	var total_kb := bullet.knockback
+	var b_csv := DataLoader.get_bullet(bullet.resource_path.get_file().get_basename())
+	if not b_csv.is_empty():
+		total_kb = b_csv.knockback
+		
 	if gun:
 		total_kb += gun.passive_knockback_bonus
 	return total_kb
@@ -61,9 +83,21 @@ static func damage_breakdown(
 ) -> String:
 	var total_dmg := bullet.damage
 	var total_pen := bullet.penetration
+	
+	var b_csv := DataLoader.get_bullet(bullet.resource_path.get_file().get_basename())
+	if not b_csv.is_empty():
+		total_dmg = b_csv.damage
+		total_pen = b_csv.penetration
+		
 	if gun:
-		total_dmg += gun.passive_dmg_bonus
-		total_pen += gun.passive_pen_bonus
+		var g_csv := DataLoader.get_gun(gun.resource_path.get_file().get_basename())
+		var dmg_bonus := gun.passive_dmg_bonus
+		var pen_bonus := gun.passive_pen_bonus
+		if not g_csv.is_empty():
+			dmg_bonus = g_csv.passive_dmg_bonus
+			pen_bonus = g_csv.passive_pen_bonus
+		total_dmg += dmg_bonus
+		total_pen += pen_bonus
 
 	var is_penetrated := total_pen >= enemy_def
 	var final_damage := total_dmg if is_penetrated else 0

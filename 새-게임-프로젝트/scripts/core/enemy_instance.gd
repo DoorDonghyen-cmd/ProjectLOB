@@ -21,23 +21,56 @@ var knockback_resistance: int = 0
 var charge_turns_max: int = 3
 var charge_turns_current: int = 0
 
+# ── 스택 스펀지(ABSORBER) 변수 ──
+var is_stack_sponge: bool = false
+var barrier_cells: int = 3
+
 
 func _init(enemy_data: EnemyData) -> void:
 	data = enemy_data
-	current_hp = data.max_hp
-	current_def = data.defense
-	current_evasion = data.evasion
-	current_speed = data.speed
-	current_distance = data.start_distance
-	start_distance = data.start_distance
-	knockback_resistance = data.knockback_resistance
 	
-	if data.archetype == Enums.EnemyArchetype.TANK:
+	var res_id := enemy_data.resource_path.get_file().get_basename()
+	var csv := DataLoader.get_enemy(res_id)
+	
+	var current_arch = data.archetype
+	
+	if not csv.is_empty():
+		current_hp = csv.max_hp
+		current_def = csv.defense
+		current_evasion = csv.evasion
+		current_speed = csv.speed
+		current_distance = csv.start_distance
+		knockback_resistance = csv.knockback_resistance
+		current_arch = csv.archetype
+	else:
+		current_hp = data.max_hp
+		current_def = data.defense
+		current_evasion = data.evasion
+		current_speed = data.speed
+		current_distance = data.start_distance
+		knockback_resistance = data.knockback_resistance
+		
+	if RunManager.infiltration_risk_level >= 3:
+		current_distance = maxi(current_distance - 1, 1)
+	start_distance = current_distance
+	
+	if current_arch == Enums.EnemyArchetype.TANK:
 		current_stance = Enums.EnemyStance.IRON_SHIELD
-	elif data.archetype == Enums.EnemyArchetype.DODGER:
+	elif current_arch == Enums.EnemyArchetype.DODGER:
 		current_stance = Enums.EnemyStance.ACTIVE_DODGER
-	elif data.archetype == Enums.EnemyArchetype.CASTER:
+	elif current_arch == Enums.EnemyArchetype.CASTER:
 		current_speed = 0 # 술사는 전진하지 않고 원거리 차징에 전념
+	elif current_arch == Enums.EnemyArchetype.ABSORBER:
+		is_stack_sponge = true
+		barrier_cells = 3
+		if RunManager.infiltration_risk_level >= 4:
+			barrier_cells = 4
+		current_hp = 99
+	elif current_arch == Enums.EnemyArchetype.SCRAMBLER:
+		current_stance = Enums.EnemyStance.IRON_SHIELD
+		current_def = 4
+		current_evasion = 1
+		current_speed = 1
 
 
 ## 대미지 적용. HP는 0 미만으로 내려가지 않는다.
@@ -93,6 +126,8 @@ func apply_armor_shred(amount: int) -> void:
 
 ## 적이 죽었는가
 func is_dead() -> bool:
+	if is_stack_sponge:
+		return barrier_cells <= 0
 	return current_hp <= 0
 
 

@@ -1062,8 +1062,18 @@ func _spawn_damage_floating_text(es: Control, damage_or_miss: int) -> void:
 
 
 func _on_enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int) -> void:
-	_enemy_hp_bar.value = remaining_hp
-	_enemy_hp_label.text = "%d/%d" % [remaining_hp, enemy_inst.data.max_hp]
+	if enemy_inst.is_stack_sponge:
+		_enemy_hp_bar.value = enemy_inst.barrier_cells
+		var barrier_str := ""
+		for i in range(3):
+			if i < enemy_inst.barrier_cells:
+				barrier_str += "◆ "
+			else:
+				barrier_str += "◇ "
+		_enemy_hp_label.text = "SHIELD: %s" % barrier_str.strip_edges()
+	else:
+		_enemy_hp_bar.value = remaining_hp
+		_enemy_hp_label.text = "%d/%d" % [remaining_hp, enemy_inst.data.max_hp]
 
 	# Juice: 피격된 적 스프라이트를 식별하여 개별 피격 셰이크 및 붉은색 플래시 연출 적용
 	var es = _enemy_sprites.get(enemy_inst)
@@ -1132,6 +1142,18 @@ func _on_encounter_won() -> void:
 	elif _current_enemy_data:
 		enemy_name = _current_enemy_data.display_name
 	_result_message.text = "%s 처치 완료!\n탄환 1개를 드래프트합니다." % enemy_name
+
+	# 거리 피드백 연출 발동 (라스트 스탠드 및 퍼펙트 킬)
+	if combat_manager:
+		var dist = combat_manager.final_kill_distance
+		if dist == 1:
+			parent_scene.trigger_camera_shake(20.0, 1.2)
+			_trigger_last_stand_slowmotion()
+			add_combat_log("[color=#ff3333][b]🚨 LAST STAND! 🚨[/b] 죽음의 문턱에서 간신히 거리를 지켜내 생존했습니다![/color]")
+		elif dist >= 4 and dist != 99:
+			_trigger_perfect_kill_decal()
+			add_combat_log("[color=#33ff55][b]🛡️ SECURE DISTANCE - PERFECT! 🛡️[/b] 완벽하게 통제된 거리에서 위협을 차단했습니다.[/color]")
+			add_combat_log("[color=#66ffcc]🔊 *깡!- 차가운 전술 차단 금속음*[/color]")
 
 	_draft_selected = null
 	_draft_confirm_btn.disabled = true
@@ -1437,7 +1459,7 @@ func _update_action_buttons() -> void:
 			
 		if not is_hit:
 			_fire_btn.text = "⚠️ 빗나감! (격발)"
-		elif next_pen < target.current_def:
+		elif next_pen < target.current_def and RunManager.infiltration_risk_level < 2:
 			_fire_btn.text = "🛡️ 도탄! (격발)"
 		else:
 			_fire_btn.text = "🔫 격발"
@@ -1449,28 +1471,49 @@ func _update_enemy_display(enemy: EnemyInstance) -> void:
 	var stance_suffix := ""
 	var is_stance_hunter := combat_manager.gun and (combat_manager.gun.display_name.contains("Stance") or combat_manager.gun.display_name.contains("태세"))
 	
-	match enemy.current_stance:
-		Enums.EnemyStance.IRON_SHIELD:
-			var rem := 3 - enemy.shot_counter
-			if is_stance_hunter:
-				stance_suffix = " [물리 장갑 (전환까지 %d발) ➡️ 회피 돌격 예고]" % rem
-			else:
-				stance_suffix = " [물리 장갑 (전환까지 %d발)]" % rem
-		Enums.EnemyStance.ACTIVE_DODGER:
-			var rem := 3 - enemy.shot_counter
-			if is_stance_hunter:
-				stance_suffix = " [회피 돌격 (전환까지 %d발) ➡️ 물리 장갑 예고]" % rem
-			else:
-				stance_suffix = " [회피 돌격 (전환까지 %d발)]" % rem
+	if enemy.data.archetype == Enums.EnemyArchetype.SCRAMBLER:
+		var rem := 3 - enemy.shot_counter
+		var next_stance_name := "회피 돌격 🎯" if enemy.current_stance == Enums.EnemyStance.IRON_SHIELD else "물리 장갑 🛡️"
+		if rem == 1:
+			stance_suffix = " [🚨 태세전환 1발전 ➡️ %s 예고!]" % next_stance_name
+		else:
+			var current_stance_name := "물리 장갑" if enemy.current_stance == Enums.EnemyStance.IRON_SHIELD else "회피 돌격"
+			stance_suffix = " [%s (전환까지 %d발)]" % [current_stance_name, rem]
+	else:
+		match enemy.current_stance:
+			Enums.EnemyStance.IRON_SHIELD:
+				var rem := 3 - enemy.shot_counter
+				if is_stance_hunter:
+					stance_suffix = " [물리 장갑 (전환까지 %d발) ➡️ 회피 돌격 예고]" % rem
+				else:
+					stance_suffix = " [물리 장갑 (전환까지 %d발)]" % rem
+			Enums.EnemyStance.ACTIVE_DODGER:
+				var rem := 3 - enemy.shot_counter
+				if is_stance_hunter:
+					stance_suffix = " [회피 돌격 (전환까지 %d발) ➡️ 물리 장갑 예고]" % rem
+				else:
+					stance_suffix = " [회피 돌격 (전환까지 %d발)]" % rem
 
 	_enemy_name_label.text = "%s (%s)%s" % [
 		enemy.data.display_name,
 		_archetype_name(enemy.data.archetype),
 		stance_suffix
 	]
-	_enemy_hp_bar.max_value = enemy.data.max_hp
-	_enemy_hp_bar.value = enemy.current_hp
-	_enemy_hp_label.text = "%d/%d" % [enemy.current_hp, enemy.data.max_hp]
+	
+	if enemy.is_stack_sponge:
+		_enemy_hp_bar.max_value = 3
+		_enemy_hp_bar.value = enemy.barrier_cells
+		var barrier_str := ""
+		for i in range(3):
+			if i < enemy.barrier_cells:
+				barrier_str += "◆ "
+			else:
+				barrier_str += "◇ "
+		_enemy_hp_label.text = "SHIELD: %s" % barrier_str.strip_edges()
+	else:
+		_enemy_hp_bar.max_value = enemy.data.max_hp
+		_enemy_hp_bar.value = enemy.current_hp
+		_enemy_hp_label.text = "%d/%d" % [enemy.current_hp, enemy.data.max_hp]
 	
 	# 타겟인 최근접 좀비는 밝게 노출, 대기 좀비들은 약간 어둡고 푸른 톤으로 블렌딩하여 UI 계층 유도
 	for e in _enemy_sprites.keys():
@@ -1537,6 +1580,9 @@ func _archetype_name(arch: Enums.EnemyArchetype) -> String:
 		Enums.EnemyArchetype.RUSHER: return "돌격 요원"
 		Enums.EnemyArchetype.TANK: return "방패 요원"
 		Enums.EnemyArchetype.DODGER: return "침투 요원"
+		Enums.EnemyArchetype.CASTER: return "술사 요원"
+		Enums.EnemyArchetype.ABSORBER: return "흡수 요원"
+		Enums.EnemyArchetype.SCRAMBLER: return "태세 교란병"
 	return "?"
 
 
@@ -1888,11 +1934,14 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 	else:
 		hit_text = "[color=#ff5555][b]빗나감 예고[/b][/color] (0%)\n"
 		
-	hit_text += "사격 예정: [color=#eeaa44]%s[/color]\n명중률(ACC): %d vs 회피값(EVA): %d" % [
-		next_bullet.display_name,
-		acc,
-		eva
-	]
+	if RunManager.infiltration_risk_level >= 2:
+		hit_text += "사격 예정: [color=#eeaa44]%s[/color]\n명중률: [color=#aa8888]??[/color] vs 회피값: [color=#aa8888]??[/color] (센서 노이즈)" % next_bullet.display_name
+	else:
+		hit_text += "사격 예정: [color=#eeaa44]%s[/color]\n명중률(ACC): %d vs 회피값(EVA): %d" % [
+			next_bullet.display_name,
+			acc,
+			eva
+		]
 	_hit_info_label.text = hit_text
 
 
@@ -2053,3 +2102,50 @@ func _start_enemy_idle_shamble(es: TextureRect, base_scale: float = 0.75) -> voi
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.parallel().tween_property(es, "scale:y", scale_y_max, dur)\
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _trigger_perfect_kill_decal() -> void:
+	var decal_panel := PanelContainer.new()
+	decal_panel.custom_minimum_size = Vector2(280, 45)
+	decal_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	decal_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.05, 0.0, 0.85)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.2, 0.9, 0.4)
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
+	decal_panel.add_theme_stylebox_override("panel", style)
+	
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_right", 12)
+	decal_panel.add_child(margin)
+	
+	var label = parent_scene.make_label("DIST_STAT: SECURED (PERFECT)", 11, Color(0.2, 0.9, 0.4))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	margin.add_child(label)
+	
+	add_child(decal_panel)
+	decal_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	decal_panel.position = Vector2((size.x - 280) / 2.0, 80)
+	
+	var tween := create_tween()
+	decal_panel.modulate.a = 0.0
+	tween.tween_property(decal_panel, "modulate:a", 1.0, 0.15)
+	tween.tween_interval(0.8)
+	tween.tween_property(decal_panel, "modulate:a", 0.0, 0.3)
+	tween.tween_callback(decal_panel.queue_free)
+
+
+func _trigger_last_stand_slowmotion() -> void:
+	Engine.time_scale = 0.15
+	var tween := create_tween()
+	tween.tween_property(Engine, "time_scale", 1.0, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)

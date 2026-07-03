@@ -46,9 +46,24 @@ var same_stance_hit_count: int = 0
 var last_stance: Enums.EnemyStance = Enums.EnemyStance.NONE
 var consecutive_caliber_count: int = 0
 var visible_magazine_slots: int = 2
+var final_kill_distance: int = 99
 
 # ── 구경 기반 순서 기억 ──
 var last_fired_caliber: Enums.Caliber = Enums.Caliber.CAL_9MM
+
+# ── 전투 세션 통계 ──
+var battle_stats := {
+	"misses": 0,
+	"zero_damage_hits": 0,
+	"kills_this_turn": 0,
+	"lead_bullets_fired": 0,
+	"shred_only_tank_kills": 0,
+	"stance_kills_without_slow": 0,
+	"max_kills_in_single_turn": 0,
+	"min_dist_allowed": 99,
+	"total_kills": 0,
+	"total_kill_dist_sum": 0.0
+}
 
 
 ## 하위 호환 래퍼: 최근접 적 1마리를 반환한다. (UI 및 레거시 코드와의 호환용)
@@ -97,6 +112,25 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], relics: A
 	double_tap_active = false
 	last_fired_caliber = Enums.Caliber.CAL_9MM
 	
+	# 전투 통계 초기화
+	var init_min_dist = 99
+	for e in enemies:
+		if e.current_distance < init_min_dist:
+			init_min_dist = e.current_distance
+	battle_stats = {
+		"misses": 0,
+		"zero_damage_hits": 0,
+		"kills_this_turn": 0,
+		"lead_bullets_fired": 0,
+		"shred_only_tank_kills": 0,
+		"stance_kills_without_slow": 0,
+		"max_kills_in_single_turn": 0,
+		"min_dist_allowed": init_min_dist,
+		"total_kills": 0,
+		"total_kill_dist_sum": 0.0
+	}
+	final_kill_distance = 99
+	
 	# 파츠 및 기믹 상태 초기화
 	equipped_parts = parts
 	chaser_pen_bonus = 0
@@ -138,11 +172,13 @@ func confirm_loading(bullets: Array[BulletData]) -> void:
 
 ## 발사 — 탄창에서 한 발 꺼내 최근접 적에게 쏜다 (강제 타겟팅).
 func fire() -> void:
+	battle_stats.kills_this_turn = 0
 	if double_tap_active:
 		_fire_double_tap()
 	else:
 		var target := _get_nearest_enemy()
 		_fire_internal(target)
+	battle_stats.max_kills_in_single_turn = maxi(battle_stats.max_kills_in_single_turn, battle_stats.kills_this_turn)
 
 
 func _fire_double_tap() -> void:
@@ -181,7 +217,9 @@ func _fire_double_tap() -> void:
 
 ## 지정 사격 — 특정 적을 지정하여 쏜다 (슬로우 탄 자유 조준 사격용).
 func fire_at_target(target_enemy: EnemyInstance) -> void:
+	battle_stats.kills_this_turn = 0
 	_fire_internal(target_enemy, true)
+	battle_stats.max_kills_in_single_turn = maxi(battle_stats.max_kills_in_single_turn, battle_stats.kills_this_turn)
 
 
 ## 실제 격발 정산 로직
@@ -404,11 +442,13 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				combat_log.emit("   ↳ ⚡ [구경 다름] 직전 구경(%s)과 다름! 추가 대미지 +%d" % [_caliber_name(last_fired_caliber), bonus])
 
 		# ── 3. 대미지 적용 ──
-		target.apply_damage(damage)
+		_apply_damage_to_enemy(target, damage)
+		if damage == 0:
+			battle_stats.zero_damage_hits += 1
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미지" % [bullet.display_name, target.data.display_name, damage])
 		combat_log.emit("   %s" % breakdown)
 		bullet_fired.emit(bullet, true, damage)
-		enemy_damaged.emit(target, damage, target.current_hp)
+		enemy_damaged.emit(target, damage, target.current_hp if not target.is_stack_sponge else target.barrier_cells)
 
 		# ── 중장형(Heavy) 총기 시그니처: 과관통 ──
 		if gun and gun.display_name.contains("중장"):
@@ -425,9 +465,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 						var dmg2 := bullet.damage + part_dmg_bonus
 						if gun: dmg2 += gun.passive_dmg_bonus
 						dmg2 = maxi(dmg2, 1)
-						e2.apply_damage(dmg2)
+						_apply_damage_to_enemy(e2, dmg2)
 						combat_log.emit("   ↳ 🎯 [중장형 과관통] 초과 관통(PEN %d vs DEF %d)으로 [%s] 관통! %d 대미지" % [excess_pen, e2.current_def, e2.data.display_name, dmg2])
-						enemy_damaged.emit(e2, dmg2, e2.current_hp)
+						enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells)
 						if e2.is_dead():
 							combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
 							enemy_killed.emit(e2)
@@ -450,18 +490,18 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				if target_idx + 1 < alive_list.size():
 					var e2: EnemyInstance = alive_list[target_idx + 1]
 					var dmg2: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e2.current_def, gun) * 0.5)))
-					e2.apply_damage(dmg2)
+					_apply_damage_to_enemy(e2, dmg2)
 					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (50%% 감쇄)" % [e2.data.display_name, dmg2])
-					enemy_damaged.emit(e2, dmg2, e2.current_hp)
+					enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells)
 					if e2.is_dead():
 						combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
 						enemy_killed.emit(e2)
 				if target_idx + 2 < alive_list.size():
 					var e3: EnemyInstance = alive_list[target_idx + 2]
 					var dmg3: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e3.current_def, gun) * 0.25)))
-					e3.apply_damage(dmg3)
+					_apply_damage_to_enemy(e3, dmg3)
 					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (75%% 감쇄)" % [e3.data.display_name, dmg3])
-					enemy_damaged.emit(e3, dmg3, e3.current_hp)
+					enemy_damaged.emit(e3, dmg3, e3.current_hp if not e3.is_stack_sponge else e3.barrier_cells)
 					if e3.is_dead():
 						combat_log.emit("💀 [%s] 처치!" % e3.data.display_name)
 						enemy_killed.emit(e3)
@@ -519,6 +559,20 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			combat_log.emit("💀 [%s] 처치!" % target.data.display_name)
 			enemy_killed.emit(target)
 			
+			# 전투 통계 가산
+			battle_stats.total_kills += 1
+			battle_stats.total_kill_dist_sum += target.current_distance
+			battle_stats.kills_this_turn += 1
+			
+			# 탱커 파쇄 처치 판정 (관통이 방어력을 넘지 않았는데 처치)
+			if target.data.archetype == Enums.EnemyArchetype.TANK:
+				if calc_bullet.penetration <= target.current_def:
+					battle_stats.shred_only_tank_kills += 1
+					
+			# 태세병 슬로우 없이 처치 판정
+			if target.current_stance != Enums.EnemyStance.NONE and target.slow_stacks == 0:
+				battle_stats.stance_kills_without_slow += 1
+			
 			# 돌격형(Bruiser) 총기 시그니처: 끌어당김
 			if gun and gun.display_name.contains("돌격"):
 				var alive_list := get_alive_enemies()
@@ -551,6 +605,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			bullet.display_name, target.data.display_name, bullet.accuracy, target.current_evasion
 		])
 		bullet_fired.emit(bullet, false, 0)
+		battle_stats.misses += 1
 
 	# 직전 구경 업데이트
 	last_fired_caliber = bullet.caliber
@@ -561,6 +616,8 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# ── 전체 적 사망 체크 (승리 조건) ──
 	if _check_all_enemies_dead():
 		state = State.WON
+		if target:
+			final_kill_distance = target.current_distance
 		combat_log.emit("★ 모든 적 처치! 승리!")
 		encounter_won.emit()
 		return
@@ -579,6 +636,16 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 탄창 비었으면 알림
 	if magazine.is_empty() and state == State.PLAYER_TURN:
 		combat_log.emit("⚠ 탄창 소진! 리로드가 필요합니다.")
+
+
+
+## 적 대미지 적용 공통 헬퍼 (스택 스펀지 포함)
+func _apply_damage_to_enemy(enemy: EnemyInstance, dmg_amount: int) -> void:
+	if enemy.is_stack_sponge:
+		enemy.barrier_cells = maxi(enemy.barrier_cells - 1, 0)
+		combat_log.emit("   [color=#33ffff]🛡️ 배리어 충전 셀 차감! 남은 보호막: %d/3[/color]" % enemy.barrier_cells)
+	else:
+		enemy.apply_damage(dmg_amount)
 
 
 ## 구경 이름 텍스트 변환
@@ -611,6 +678,10 @@ func request_unload() -> void:
 				
 			magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
 			
+			if RunManager.infiltration_risk_level >= 5:
+				combat_log.emit("🚨 [완벽 봉쇄령] 빼내기 전술 기동의 후폭풍으로 모든 적이 1칸 전진합니다!")
+				_all_enemies_advance()
+			
 			if magazine.is_empty() and state == State.PLAYER_TURN:
 				combat_log.emit("⚠ 탄창 소진! 리로드가 필요합니다.")
 		return
@@ -620,6 +691,10 @@ func request_unload() -> void:
 		combat_log.emit("🗑 [%s] 탄환을 빼내어 이번 인카운터 풀에서 제외(소실)했습니다." % bullet.display_name)
 		bullet_unloaded.emit(bullet)
 		magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
+		
+		if RunManager.infiltration_risk_level >= 5:
+			combat_log.emit("🚨 [완벽 봉쇄령] 빼내기 전술 기동의 후폭풍으로 모든 적이 1칸 전진합니다!")
+			_all_enemies_advance()
 		
 		if magazine.is_empty() and state == State.PLAYER_TURN:
 			combat_log.emit("⚠ 탄창 소진! 리로드가 필요합니다.")
@@ -640,7 +715,8 @@ func request_insert_bullet(bullet: BulletData) -> void:
 		return
 		
 	magazine.insert_bullet(bullet)
-	combat_log.emit("📥 [%s] 탄환을 탄창 맨 위에 장전했습니다. (템포 세금 소모)" % bullet.display_name)
+	battle_stats.lead_bullets_fired += 1
+	combat_log.emit("📥 [%s] 탄환을 탄창 맨 위에 장전했습니다. (템포 세금 소모 / 납탄 발생)" % bullet.display_name)
 
 	# 템포 세금: 모든 적 전진
 	_all_enemies_advance()
@@ -720,6 +796,11 @@ func _all_enemies_advance() -> void:
 				_caster_force_advance_all(2)
 				if state == State.LOST:
 					return
+	
+	var nearest = _get_nearest_enemy()
+	if nearest:
+		battle_stats.min_dist_allowed = mini(battle_stats.min_dist_allowed, nearest.current_distance)
+		
 	all_enemies_moved.emit()
 
 
@@ -737,6 +818,10 @@ func _caster_force_advance_all(amount: int) -> void:
 			combat_log.emit("💀 [%s]가 도달했습니다... 사망!" % e.data.display_name)
 			player_died.emit()
 			return
+			
+	var nearest = _get_nearest_enemy()
+	if nearest:
+		battle_stats.min_dist_allowed = mini(battle_stats.min_dist_allowed, nearest.current_distance)
 
 
 ## 전체 적 사망 검사

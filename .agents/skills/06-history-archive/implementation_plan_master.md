@@ -16,12 +16,14 @@
 | 2026-07-01 | **특수 탄환 가방 미노출 버그 해결** | `820f3ccd` | combat_overlay.gd의 강제 다운캐스팅 치환문을 제거하고, run_manager.deck의 BulletData 인스턴스를 _bullet_pool에 직접 보존/전달하여 UI 렌더링 및 전투 효과 격발 보장 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/820f3ccd-0935-4d7b-bf5c-e814640fb44e/implementation_plan.md) |
 | 2026-07-01 | **속사형 "더블탭" 시그니처 테스트** | `70fd47fc` | 속사형(Tempo) 총기용 더블탭 토글 구현, 연속 2발 사격, 2발째 리듬 챔버 시너지 연동, 1회 전진 및 삽탄과의 상호배제 처리 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/70fd47fc-a52b-4449-9675-a36976f0100e/implementation_plan.md) |
 | 2026-07-02 | **요원 준비실 UI 확장 및 발사 버튼/몬스터 스프라이트/빼내기 밸런스 설계** | `46ca166d` | 준비실 UI 전체 가로 확장, 발사 버튼 모바일 가로 14 크기 제한 및 텍스트 단축, 몬스터 갤러리 이미지 크기 무시 설정 및 icon 폴백 인게임 적용, 빼내기 패널티 삭제 및 전술 장갑 턴 감소 구현 설계 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/46ca166d-2f0e-4374-9d61-863e0f35dfaf/implementation_plan.md) |
+| 2026-07-03 | **보상/해금, 맵, 몬스터 & 반복성/완결 개편** | `64478efc` | TDC 가속 및 8종 총기 영구 해금 연동, 준비실 🔒 잠금 UI 설계. 10층 압축 구조 맵 제너레이터, 2~3갈래 가로 분기 UI 그리기, 미지 노드 스캔 힌트, 조건부 우회로 실시간 개방 및 층 상승 연출 설계. 스택 스펀지(유효타 3회 및 관통 스침) 처치 기믹, ◆ ◆ ◆ 배리어 UI 표시, 태세병 1턴 전 변경 예고 HUD 설계. 5단계 침투 위험도 전술 제약(예고창 가림, 적 전진 배치, 쉴드량 스케일링, 빼내기 시 적 전진), 기밀 파편(Lore Fragment) 20종 도감 우회로 매핑 연동 및 10F 최종 탈출 성공 시 블랙박스 해독 보안 로그 폭로 소프트 엔딩 완결 설계 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/64478efc-e950-4f76-80ad-e56539a2c655/implementation_plan.md) |
 
 ---
 
 ## 🔗 세션별 원본 링크 (References)
 
-* [Session bbacb3ae-bec7-4690-b500-e3c4ec102daf Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/bbacb3ae-bec7-4690-b500-e3c4ec102daf/implementation_plan.md)
+* [Session 64478efc-e950-4f76-80ad-e56539a2c655 Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/64478efc-e950-4f76-80ad-e56539a2c655/implementation_plan.md)
+* [Session 46ca166d-2f0e-4374-9d61-863e0f35dfaf Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/46ca166d-2f0e-4374-9d61-863e0f35dfaf/implementation_plan.md)
 * [Session 287baf0e-2bda-448a-bf37-3a9f62aa7cfe Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/287baf0e-2bda-448a-bf37-3a9f62aa7cfe/implementation_plan.md)
 * [Session 168caff8-edab-4761-b950-f0bd42e12149 Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/168caff8-edab-4761-b950-f0bd42e12149/implementation_plan.md)
 * [Session 8acd207f-7395-4eef-8fdf-3a9dd9f951e9 Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/8acd207f-7395-4eef-8fdf-3a9dd9f951e9/implementation_plan.md)

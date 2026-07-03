@@ -43,6 +43,8 @@ const C_HP_BAR := Color(0.85, 0.20, 0.20)
 const C_DIST_SAFE := Color(0.25, 0.75, 0.40)
 const C_DIST_WARN := Color(0.90, 0.75, 0.15)
 const C_DIST_DANGER := Color(0.95, 0.25, 0.20)
+
+var _current_node: RunManager.RunNode = null
 const C_NEON_GOLD := Color(0.83, 0.69, 0.22, 1.0)
 
 # ── 매니저 인스턴스 ──
@@ -267,9 +269,17 @@ func _show_map_screen() -> void:
 # ── 라우터 콜백들 ──
 
 func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> void:
+	_current_node = selected_node
+	var old_floor = _rm.current_floor
+	var new_floor = selected_node.id / 100
+	_rm.current_floor = new_floor
+	
+	if new_floor > old_floor + 1:
+		_map_overlay.trigger_floor_skip_effect(old_floor, new_floor)
+		
 	var msg := _rm.select_route(route)
 	
-	if selected_node.type_name.contains("전투") or selected_node.type_name.contains("보스"):
+	if selected_node.type_name.contains("전투") or selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss"):
 		# 전투 로그 출력을 위해 Combat Overlay 및 컨테이너를 준비해 둠
 		_combat_margin.visible = true
 		_combat_overlay.visible = true
@@ -361,8 +371,30 @@ func handle_maintenance_finished() -> void:
 		_show_title_screen()
 		return
 		
+	# ── 기밀 파편 수집 연동 ──
+	if _current_node:
+		var fid := 0
+		if _current_node.id == 302:
+			fid = 4
+		elif _current_node.id == 602:
+			fid = 11
+		elif _current_node.id == 802:
+			fid = 18
+		else:
+			if randf() < 0.10:
+				var uncollected: Array[int] = []
+				for i in range(1, 21):
+					if not RunManager.meta_lore_fragments.has(i):
+						uncollected.append(i)
+				if not uncollected.is_empty():
+					fid = uncollected.pick_random()
+					
+		if fid > 0:
+			if _rm.collect_lore_fragment(fid):
+				print("📥 [정비실 정보 복원] 기밀 파편 #%d번 복원!" % fid)
+				
 	_rm.current_floor += 1
-	if _rm.current_floor > 20:
+	if _rm.current_floor > 10:
 		_show_debriefing(true)
 	else:
 		_show_map_screen()
@@ -375,12 +407,55 @@ func handle_combat_finished(is_dead: bool) -> void:
 		_is_shortcut_mode = false
 		_show_title_screen()
 		return
+		
+	# 전투 통계 이전
+	if _cm:
+		_rm.run_stats.lead_bullets_fired += _cm.battle_stats.lead_bullets_fired
+		_rm.run_stats.max_kills_in_single_turn = max(_rm.run_stats.max_kills_in_single_turn, _cm.battle_stats.max_kills_in_single_turn)
+		_rm.run_stats.total_kills += _cm.battle_stats.total_kills
+		_rm.run_stats.total_kill_dist_sum += _cm.battle_stats.total_kill_dist_sum
+		_rm.run_stats.tanks_killed_by_shred_only += _cm.battle_stats.shred_only_tank_kills
+		_rm.run_stats.stance_shifts_killed_without_slow += _cm.battle_stats.stance_kills_without_slow
+		
+		# 최소 접근 거리
+		if _cm.battle_stats.min_dist_allowed < _rm.run_stats.min_dist_allowed:
+			_rm.run_stats.min_dist_allowed = _cm.battle_stats.min_dist_allowed
+			
+		# 완벽 실행 (빗나감과 0뎀 타격이 없고, 최소 1킬 이상 처치)
+		if _cm.battle_stats.misses == 0 and _cm.battle_stats.zero_damage_hits == 0 and _cm.battle_stats.total_kills > 0:
+			_rm.run_stats.perfect_battles_count += 1
+
 	if is_dead:
 		_show_debriefing(false)
 		return
 		
+	# 승리 시 침투 경로별 전술 데이터 코어(TDC) 가산
+	var earned_cores := _rm.record_combat_win(_rm.current_route_type)
+	
+	# ── 기밀 파편 수집 연동 ──
+	if _current_node:
+		var fid := 0
+		if _current_node.id == 302:
+			fid = 4 # 3층 보안 무기고 확정
+		elif _current_node.id == 602:
+			fid = 11 # 6층 가스 제어실 확정
+		elif _current_node.id == 802:
+			fid = 18 # 8층 약실 조율실 확정
+		else:
+			if randf() < 0.30:
+				var uncollected: Array[int] = []
+				for i in range(1, 21):
+					if not RunManager.meta_lore_fragments.has(i):
+						uncollected.append(i)
+				if not uncollected.is_empty():
+					fid = uncollected.pick_random()
+					
+		if fid > 0:
+			if _rm.collect_lore_fragment(fid):
+				_combat_overlay.add_combat_log("[color=#00ff66]📥 [기밀 정보 복원] 우회로 또는 적 데이터 분석을 통해 기밀 파편 #%d번을 회수했습니다![/color]" % fid)
+	
 	_rm.current_floor += 1
-	if _rm.current_floor > 20:
+	if _rm.current_floor > 10:
 		_show_debriefing(true)
 	else:
 		_show_map_screen()
