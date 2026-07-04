@@ -26,6 +26,7 @@ var _animate_last_insert: bool = false
 var _last_bullet_count: int = -1
 var _last_loaded_count: int = 0
 var _current_gun_data: GunData
+var _current_enemy_data: EnemyData
 
 # ── UI 참조 (MainFlow 내부 자식들) ──
 # 1. TopBar
@@ -89,10 +90,24 @@ var _drawer_stack_cap: Label
 var _drawer_undo_btn: Button
 var _drawer_confirm_btn: Button
 
+# ── 결과 및 탄환 드래프트 오버레이 변수 이식 ──
+var _result_overlay: PanelContainer
+var _result_title: Label
+var _result_message: Label
+var _draft_selected: BulletData = null
+var _draft_confirm_btn: Button
+var _draft_container: VBoxContainer
+var _draft_cards_hbox: HBoxContainer
+
+func _exit_tree() -> void:
+	if is_instance_valid(_result_overlay):
+		_result_overlay.queue_free()
+
 func initialize(p_scene: Control, rm: RunManager) -> void:
 	parent_scene = p_scene
 	run_manager = rm
 	_build_ui()
+	_build_result_overlay()
 	
 	# [임시 씬 덤프 코드 추가]
 	(func():
@@ -549,10 +564,10 @@ func _build_ui() -> void:
 	_agent_sprite.offset_top = -40
 	_agent_sprite.offset_bottom = 40
 	
-	# (1-D) ShotLog (PanelContainer → Label) — 사격 로그 한 줄
+	# (1-D) ShotLog (PanelContainer → Label) — 사격 로그 영역 (누적 지원)
 	_shot_log_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
 	_shot_log_panel.name = "ShotLog"
-	_shot_log_panel.custom_minimum_size = Vector2(0, 28)
+	_shot_log_panel.custom_minimum_size = Vector2(0, 80)
 	_shot_log_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_panel_style(_shot_log_panel, Color(0.08, 0.1, 0.15, 0.8))
 	main_flow.add_child(_shot_log_panel)
@@ -566,7 +581,7 @@ func _build_ui() -> void:
 	
 	_shot_log_label = RichTextLabel.new()
 	_shot_log_label.bbcode_enabled = true
-	_shot_log_label.scroll_active = false
+	_shot_log_label.scroll_active = true
 	_shot_log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_shot_log_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_shot_log_label.add_theme_font_size_override("normal_font_size", 12)
@@ -1208,6 +1223,7 @@ func _on_bag_clicked() -> void:
 func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	combat_manager = cm
 	_current_gun_data = gun
+	_current_enemy_data = enemy_list[0] if enemy_list.size() > 0 else null
 	
 	# 각 인스턴스 정보 초기 셋팅 (인벤토리 덱 정보 동기화)
 	_bullet_pool.clear()
@@ -1227,6 +1243,12 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	combat_manager.player_died.connect(_on_player_died)
 	combat_manager.bullet_unloaded.connect(func(b): run_manager.unload_bullet_to_discard(b))
 	combat_manager.bullet_fired.connect(_on_bullet_fired)
+	if combat_manager.has_signal("all_enemies_moved"):
+		combat_manager.all_enemies_moved.connect(_on_all_enemies_moved)
+	if combat_manager.has_signal("loading_phase_started"):
+		combat_manager.loading_phase_started.connect(_on_loading_phase_started)
+	if combat_manager.has_signal("combat_log"):
+		combat_manager.combat_log.connect(_on_combat_log)
 	if combat_manager.has_signal("enemy_killed"):
 		combat_manager.enemy_killed.connect(_on_enemy_killed)
 		
@@ -1760,15 +1782,16 @@ func _update_action_buttons() -> void:
 func _update_phase_state() -> void:
 	if not combat_manager: return
 	
-	_battlefield_container.visible = (combat_manager.state != CombatManager.State.LOADING)
-	_action_row.visible = (combat_manager.state != CombatManager.State.LOADING)
-	_loading_container.visible = (combat_manager.state == CombatManager.State.LOADING)
+	_battlefield_container.visible = true
+	_action_row.visible = true
+	_loading_container.visible = false
 	
 	match combat_manager.state:
 		CombatManager.State.LOADING:
 			_phase_label.text = "탄창 적재 페이즈"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 			_refresh_loading_stack()
+			_refresh_loading_inventory()
 		CombatManager.State.PLAYER_TURN:
 			_phase_label.text = "아군 작전 페이즈"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
@@ -1793,6 +1816,7 @@ func _on_fire_pressed() -> void:
 			_on_loading_confirm()
 			return
 		if combat_manager.state == CombatManager.State.PLAYER_TURN:
+			clear_combat_log()
 			combat_manager.fire()
 			_update_action_buttons()
 
@@ -1910,6 +1934,35 @@ func _on_magazine_updated(remaining: int = 0, capacity: int = 0) -> void:
 
 func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) -> void:
 	add_combat_log("[color=#ffa500]🔫 격발: %s가 격발되었습니다.[/color]" % bullet.display_name)
+	
+	if not _agent_sprite:
+		return
+		
+	var tex = _agent_sprite.texture as AtlasTexture
+	if tex:
+		# 사격 프레임 (4번째 프레임 인덱스 3) 할당: 278 * 3
+		tex.region = Rect2(278 * 3, 0, 278, 278)
+		
+	# Muzzle Flip을 위한 피벗 오프셋 설정
+	_agent_sprite.pivot_offset = Vector2(40, 40)
+	
+	# 반동으로 임시 마진 이동 및 회전
+	_agent_sprite.offset_left = -10
+	_agent_sprite.offset_right = 70
+	_agent_sprite.rotation = -0.06
+	
+	# 트윈으로 원래 상태 복원
+	var tween: Tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(_agent_sprite, "offset_left", 10.0, 0.2)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_property(_agent_sprite, "offset_right", 90.0, 0.2)\
+		.set_trans(Tween.TRANS_BACK)\
+		.set_ease(Tween.EASE_OUT)
+	tween.tween_property(_agent_sprite, "rotation", 0.0, 0.2)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_OUT)
 
 func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 	add_combat_log("[color=#37e0ac]💀 처치: %s를 무력화시켰습니다![/color]" % enemy_inst.data.display_name)
@@ -1919,18 +1972,72 @@ func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 	_update_distance_display(nearest)
 
 func _on_encounter_won() -> void:
-	add_combat_log("[color=#37e0ac]🏆 승리: 복도의 모든 위협이 소멸되었습니다![/color]")
-	parent_scene.handle_combat_finished(true)
+	_result_title.text = "전투 승리!"
+	_result_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+	var enemy_name := "적"
+	if combat_manager.enemy and combat_manager.enemy.data:
+		enemy_name = combat_manager.enemy.data.display_name
+	elif _current_enemy_data:
+		enemy_name = _current_enemy_data.display_name
+	_result_message.text = "%s 처치 완료!\n탄환 1개를 드래프트합니다." % enemy_name
+
+	# 거리 피드백 연출 발동 (라스트 스탠드 및 퍼펙트 킬)
+	if combat_manager:
+		var dist = combat_manager.final_kill_distance
+		if dist == 1:
+			parent_scene.trigger_camera_shake(20.0, 1.2)
+			_trigger_last_stand_slowmotion()
+			add_combat_log("[color=#ff3333][b]🚨 LAST STAND! 🚨[/b] 죽음의 문턱에서 간신히 거리를 지켜내 생존했습니다![/color]")
+		elif dist >= 4 and dist != 99:
+			_trigger_perfect_kill_decal()
+			add_combat_log("[color=#33ff55][b]🛡️ SECURE DISTANCE - PERFECT! 🛡️[/b] 완벽하게 통제된 거리에서 위협을 차단했습니다.[/color]")
+			add_combat_log("[color=#66ffcc]🔊 *깡!- 차가운 전술 차단 금속음*[/color]")
+
+	_draft_selected = null
+	_draft_confirm_btn.disabled = true
+	_draft_container.visible = true
+	for child in _draft_cards_hbox.get_children():
+		child.queue_free()
+	for bullet in _generate_draft_choices():
+		_draft_cards_hbox.add_child(_make_draft_card(bullet))
+
+	_result_overlay.visible = true
 
 func _on_player_died() -> void:
-	add_combat_log("[color=#ff4242]🚨 사망: 생사선이 뚫려 플레이어가 무력화되었습니다.[/color]")
-	parent_scene.handle_combat_finished(false)
+	_fire_btn.disabled = true
+	_unload_btn.disabled = true
+	_reload_btn.disabled = true
+
+	_draft_container.visible = false
+	_draft_confirm_btn.disabled = false
+
+	_result_overlay.visible = true
+
+	if run_manager.hp_buffer > 0:
+		run_manager.hp_buffer -= 1
+		_result_title.text = "비상 철수"
+		_result_title.add_theme_color_override("font_color", parent_scene.C_WARNING)
+		_result_message.text = "비상 장치 가동!\nHP 버퍼 1 감소 (남은 버퍼: %d)\n이전 구역으로 철수합니다." % run_manager.hp_buffer
+	else:
+		_result_title.text = "작전 실패"
+		_result_title.add_theme_color_override("font_color", parent_scene.C_DANGER)
+		_result_message.text = "에이전트가 무력화되었습니다.\n생사선을 확보하지 못해 작전이 종료됩니다."
 
 # ── 헬퍼 메서드 ──
 
 func add_combat_log(text: String) -> void:
 	if _shot_log_label:
-		_shot_log_label.text = text
+		if _shot_log_label.text == "[color=#888888]전투 기록 대기 중...[/color]" or _shot_log_label.text == "":
+			_shot_log_label.text = text
+		else:
+			_shot_log_label.text += "\n" + text
+		
+		# 최신 로그가 바로 보여지도록 최하단 스크롤 강제 (지연 갱신 적용)
+		var callable := func():
+			var scroll = _shot_log_label.get_v_scroll_bar()
+			if scroll:
+				scroll.value = scroll.max_value
+		callable.call_deferred()
 
 func clear_combat_log() -> void:
 	if _shot_log_label:
@@ -1993,7 +2100,6 @@ func _apply_button_style(btn: Button, color: Color) -> void:
 
 # 미사용 오버레이 로딩 호환 메서드 상속
 func _build_loading_overlay() -> void: pass
-func _build_result_overlay() -> void: pass
 func request_insert_bullet(bullet: BulletData) -> void:
 	if not combat_manager or not _current_gun_data:
 		return
@@ -2184,3 +2290,227 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 	vbox.add_child(name_lbl)
 	
 	return slot
+
+# ── 결과 및 탄환 드래프트 오버레이 이식 ──
+
+func _build_result_overlay() -> void:
+	_result_overlay = parent_scene.make_fullscreen_overlay()
+	parent_scene.add_child(_result_overlay)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 32)
+	margin.add_theme_constant_override("margin_right", 32)
+	margin.add_theme_constant_override("margin_top", 48)
+	margin.add_theme_constant_override("margin_bottom", 32)
+	_result_overlay.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 16)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(vbox)
+
+	_result_title = parent_scene.make_label("", 42, parent_scene.C_SUCCESS)
+	_result_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(_result_title)
+
+	_result_message = parent_scene.make_label("", 20, parent_scene.C_DIM)
+	_result_message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_result_message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(_result_message)
+
+	_draft_container = VBoxContainer.new()
+	_draft_container.add_theme_constant_override("separation", 10)
+	_draft_container.visible = false
+	vbox.add_child(_draft_container)
+
+	var draft_title: Label = parent_scene.make_label("탄환 카드 드래프트: 3개 중 1개의 탄환을 덱에 획득하십시오.", 18, parent_scene.C_WARNING)
+	draft_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_draft_container.add_child(draft_title)
+
+	_draft_cards_hbox = HBoxContainer.new()
+	_draft_cards_hbox.add_theme_constant_override("separation", 12)
+	_draft_cards_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	_draft_container.add_child(_draft_cards_hbox)
+
+	var btn_hbox := HBoxContainer.new()
+	btn_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(btn_hbox)
+
+	_draft_confirm_btn = parent_scene.make_button("선택 완료", _on_result_confirmed, parent_scene.C_SUCCESS)
+	_draft_confirm_btn.custom_minimum_size = Vector2(120, 40)
+	_apply_button_style(_draft_confirm_btn, parent_scene.C_SUCCESS)
+	btn_hbox.add_child(_draft_confirm_btn)
+
+	_result_overlay.visible = false
+
+func _generate_draft_choices() -> Array[BulletData]:
+	var pool: Array[BulletData] = []
+	var path: String = "res://resources/bullets/"
+	var dir: DirAccess = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name: String = dir.get_next()
+		while file_name != "":
+			if not file_name.is_empty() and not file_name.ends_with(".import") and file_name.ends_with(".tres"):
+				var res = load(path + file_name)
+				if res is BulletData:
+					pool.append(res)
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	
+	var result: Array[BulletData] = []
+	if pool.is_empty():
+		return result
+	pool.shuffle()
+	for i in range(min(3, pool.size())):
+		result.append(pool[i])
+	return result
+
+func _make_draft_card(bullet: BulletData) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(130, 130)
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var style := StyleBoxFlat.new()
+	style.bg_color = parent_scene.C_PANEL
+	style.corner_radius_bottom_left = 10
+	style.corner_radius_bottom_right = 10
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	card.add_theme_stylebox_override("panel", style)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 5)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(vbox)
+
+	var name_lbl: Label = parent_scene.make_label(bullet.display_name, 15, parent_scene.C_TEXT)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(name_lbl)
+
+	var stats_lbl: Label = parent_scene.make_label(
+		"DMG %d  ACC %d  PEN %d" % [bullet.damage, bullet.accuracy, bullet.penetration],
+		13, parent_scene.C_DIM)
+	stats_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stats_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(stats_lbl)
+
+	if bullet.knockback > 0 or bullet.slow > 0:
+		var util_lbl: Label = parent_scene.make_label(
+			"KB %d  Slow %d" % [bullet.knockback, bullet.slow], 13, parent_scene.C_DIST_SAFE)
+		util_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		util_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vbox.add_child(util_lbl)
+
+	if bullet.effect_type != Enums.BulletEffect.NONE:
+		var eff_lbl: Label = parent_scene.make_label(_bullet_effect_name(bullet.effect_type), 12, parent_scene.C_WARNING)
+		eff_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		eff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vbox.add_child(eff_lbl)
+
+	card.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			_on_draft_card_selected(bullet, card)
+	)
+	return card
+
+func _on_draft_card_selected(bullet: BulletData, selected_card: PanelContainer) -> void:
+	_draft_selected = bullet
+	_draft_confirm_btn.disabled = false
+	for card in _draft_cards_hbox.get_children():
+		var s := StyleBoxFlat.new()
+		s.corner_radius_bottom_left = 10
+		s.corner_radius_bottom_right = 10
+		s.corner_radius_top_left = 10
+		s.corner_radius_top_right = 10
+		if card == selected_card:
+			s.bg_color = parent_scene.C_ACCENT.darkened(0.25)
+			s.border_color = parent_scene.C_ACCENT
+			s.border_width_bottom = 2
+			s.border_width_top = 2
+			s.border_width_left = 2
+			s.border_width_right = 2
+		else:
+			s.bg_color = parent_scene.C_PANEL_DARK
+		card.add_theme_stylebox_override("panel", s)
+
+func _on_result_confirmed() -> void:
+	if _draft_selected:
+		run_manager.add_to_deck(_draft_selected)
+	_draft_selected = null
+	_loaded_bullets.clear()
+	_bullet_pool.clear()
+	_result_overlay.visible = false
+	visible = false
+	var is_dead := (combat_manager.state == CombatManager.State.LOST and run_manager.hp_buffer == 0)
+	parent_scene.handle_combat_finished(is_dead)
+
+func _bullet_effect_name(effect: Enums.BulletEffect) -> String:
+	match effect:
+		Enums.BulletEffect.ARMOR_SHRED: return "[장갑 파쇄]"
+		Enums.BulletEffect.COMBO: return "[콤보 사격]"
+		Enums.BulletEffect.LAST_SHOT: return "[막탄 강화]"
+		Enums.BulletEffect.OPENING_SHOT: return "[선제 사격]"
+	return ""
+
+func _trigger_perfect_kill_decal() -> void:
+	var decal_panel := PanelContainer.new()
+	decal_panel.custom_minimum_size = Vector2(280, 45)
+	decal_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	decal_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.05, 0.0, 0.85)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.2, 0.9, 0.4)
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
+	decal_panel.add_theme_stylebox_override("panel", style)
+	
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_right", 12)
+	decal_panel.add_child(margin)
+	
+	var label = parent_scene.make_label("DIST_STAT: SECURED (PERFECT)", 11, Color(0.2, 0.9, 0.4))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	margin.add_child(label)
+	
+	add_child(decal_panel)
+	decal_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	decal_panel.position = Vector2((size.x - 280) / 2.0, 80)
+	
+	var tween := create_tween()
+	decal_panel.modulate.a = 0.0
+	tween.tween_property(decal_panel, "modulate:a", 1.0, 0.15)
+	tween.tween_interval(0.8)
+	tween.tween_property(decal_panel, "modulate:a", 0.0, 0.3)
+	tween.tween_callback(decal_panel.queue_free)
+
+func _trigger_last_stand_slowmotion() -> void:
+	Engine.time_scale = 0.15
+	var tween := create_tween()
+	tween.tween_property(Engine, "time_scale", 1.0, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+
+func _on_all_enemies_moved() -> void:
+	_update_enemy_position_and_scale(null, true)
+
+func _on_loading_phase_started() -> void:
+	var tex = _agent_sprite.texture as AtlasTexture
+	if tex:
+		# 장전 페이즈 진입 시 대기(Idle) 모션 (프레임 0)
+		tex.region = Rect2(0, 0, 278, 278)
+	_is_bag_expanded = false
+	_update_phase_state()
+
+func _on_combat_log(msg: String) -> void:
+	add_combat_log(msg)
