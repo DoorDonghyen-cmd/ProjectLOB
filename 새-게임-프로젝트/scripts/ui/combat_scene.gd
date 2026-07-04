@@ -61,7 +61,7 @@ var _monster_gallery_overlay: MonsterGalleryOverlay
 var _combat_margin: MarginContainer
 var _combat_overlay: Control
 var _debriefing_overlay: DebriefingOverlay
-var is_v2_ui: bool = false
+var is_v2_ui: bool = true
 var _camera: Camera2D
 
 # ── 현재 상태 ──
@@ -90,11 +90,29 @@ func _build_ui() -> void:
 	# 1. Title Overlay 생성
 	_title_overlay = TitleOverlay.new()
 	add_child(_title_overlay)
+	_title_overlay.anchor_left = 0.0
+	_title_overlay.anchor_top = 0.0
+	_title_overlay.anchor_right = 1.0
+	_title_overlay.anchor_bottom = 1.0
+	_title_overlay.offset_left = 0
+	_title_overlay.offset_top = 0
+	_title_overlay.offset_right = 0
+	_title_overlay.offset_bottom = 0
+	_title_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_title_overlay.initialize(self, _rm)
 	
 	# 2. Map Overlay 생성
 	_map_overlay = MapOverlay.new()
 	add_child(_map_overlay)
+	_map_overlay.anchor_left = 0.0
+	_map_overlay.anchor_top = 0.0
+	_map_overlay.anchor_right = 1.0
+	_map_overlay.anchor_bottom = 1.0
+	_map_overlay.offset_left = 0
+	_map_overlay.offset_top = 0
+	_map_overlay.offset_right = 0
+	_map_overlay.offset_bottom = 0
+	_map_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_map_overlay.initialize(self, _rm)
 	_map_overlay.visible = false
 
@@ -129,23 +147,47 @@ func _build_ui() -> void:
 	# 4. Debriefing Overlay 생성
 	_debriefing_overlay = DebriefingOverlay.new()
 	add_child(_debriefing_overlay)
+	_debriefing_overlay.anchor_left = 0.0
+	_debriefing_overlay.anchor_top = 0.0
+	_debriefing_overlay.anchor_right = 1.0
+	_debriefing_overlay.anchor_bottom = 1.0
+	_debriefing_overlay.offset_left = 0
+	_debriefing_overlay.offset_top = 0
+	_debriefing_overlay.offset_right = 0
+	_debriefing_overlay.offset_bottom = 0
+	_debriefing_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_debriefing_overlay.initialize(self, _rm)
 	_debriefing_overlay.visible = false
 
 	# 5. Combat Overlay 생성 (마진 컨테이너 내부에 들어감)
 	_combat_margin = MarginContainer.new()
-	_combat_margin.set_anchors_preset(PRESET_FULL_RECT)
 	_combat_margin.add_theme_constant_override("margin_left", 24)
 	_combat_margin.add_theme_constant_override("margin_right", 24)
 	_combat_margin.add_theme_constant_override("margin_top", 40)
 	_combat_margin.add_theme_constant_override("margin_bottom", 24)
 	add_child(_combat_margin)
 	
+	_combat_margin.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_combat_margin.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_combat_margin.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_combat_margin.grow_vertical = Control.GROW_DIRECTION_BOTH
+	_combat_margin.anchor_left = 0.0
+	_combat_margin.anchor_top = 0.0
+	_combat_margin.anchor_right = 1.0
+	_combat_margin.anchor_bottom = 1.0
+	_combat_margin.offset_left = 0
+	_combat_margin.offset_top = 0
+	_combat_margin.offset_right = 0
+	_combat_margin.offset_bottom = 0
+	_combat_margin.set_anchors_preset(PRESET_FULL_RECT)
+	
 	if is_v2_ui:
 		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
 	else:
 		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay.tscn").instantiate()
 	_combat_margin.add_child(_combat_overlay)
+	_combat_overlay.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_combat_overlay.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
 	_combat_overlay.initialize(self, _rm)
 	_combat_margin.visible = false
 
@@ -251,6 +293,8 @@ func trigger_v2_ui_test() -> void:
 		
 	_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
 	_combat_margin.add_child(_combat_overlay)
+	_combat_overlay.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_combat_overlay.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
 	_combat_overlay.initialize(self, _rm)
 	
 	_combat_margin.visible = true

@@ -1,8 +1,8 @@
 class_name CombatOverlayV2
-extends VBoxContainer
+extends MarginContainer
 
 ## ═══════════════════════════════════════════════════
-## 🧠 L.O.B 전투 UI V2 데모 오버레이 (목업 기반 설계)
+## 🧠 L.O.B 전투 UI V2 데모 오버레이 (새로운 노드 트리 구조 기반 설계)
 ## ═══════════════════════════════════════════════════
 
 var parent_scene: Control
@@ -26,40 +26,42 @@ var _last_bullet_count: int = -1
 var _last_loaded_count: int = 0
 var _current_gun_data: GunData
 
-# ── UI 참조 (좌측 기둥) ──
+# ── UI 참조 (MainFlow 내부 자식들) ──
+# 1. TopBar
+var _top_log_toast: Label
+var _phase_label: Label
+
+# 2. DistanceLabel (CenterContainer로 래핑됨)
+var _distance_label: Label
+
+# 3. Battlefield
+# LeftColumn
 var _hit_info_panel: PanelContainer
 var _hit_info_label: RichTextLabel
-var _left_magazine_panel: VBoxContainer
-var _mag_tube_container: VBoxContainer
-var _magazine_label: Label
-var _magazine_slots_label: Label
+var _lookahead_container: VBoxContainer
+var _card_next: PanelContainer
+var _card_2: PanelContainer
+var _card_bundle: PanelContainer
 var _agent_sprite: TextureRect
 
-# ── UI 참조 (우측 상단 헤더) ──
-var _lifeline_panel: PanelContainer
-var _distance_label: Label
-var _distance_sub_label: Label
-var _enemy_info_panel: PanelContainer
-var _enemy_name_label: Label
-var _enemy_hp_label: Label
-var _enemy_hp_bar: ProgressBar
-var _enemy_stats_label: Label
-
-# ── UI 참조 (중간 전장 트랙 & 로그) ──
-var _ingame_area: Control
+# Track
+var _track_control: Control
 var _track_line: ColorRect
-var _log_text: RichTextLabel
 
-# ── UI 참조 (하단 버튼 바) ──
+# 4. ShotLog
+var _shot_log_panel: PanelContainer
+var _shot_log_label: RichTextLabel  # 색상 태그 표현을 위해 RichTextLabel 사용
+
+# 5. ActionBar
 var _action_row: HBoxContainer
 var _unload_btn: Button
 var _reload_btn: Button
 var _double_tap_btn: Button
 var _eject_btn: Button
 var _fire_btn: Button
-var _confirm_btn: Button # 대용화되어 사용되진 않으나 호환성 유지
 
-# ── 가방 서랍 오버레이 ──
+# ── MainFlow 외곽 오버레이 ──
+var _floating_layer: Control
 var _drawer_panel: PanelContainer
 var _drawer_tab_item: Button
 var _drawer_tab_ammo: Button
@@ -72,36 +74,109 @@ func initialize(p_scene: Control, rm: RunManager) -> void:
 	_build_ui()
 
 func _ready() -> void:
-	# 부모 뷰포트 가득 채우기 강제
-	self.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	self.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	self.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	self.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+	self.anchor_left = 0.0
+	self.anchor_top = 0.0
+	self.anchor_right = 1.0
+	self.anchor_bottom = 1.0
+	self.offset_left = 0
+	self.offset_top = 0
+	self.offset_right = 0
+	self.offset_bottom = 0
+	self.resized.connect(_on_resized)
+	
+	# 디버깅용 레이아웃 출력
+	print("[LAYOUT_DEBUG] Viewport Size: ", get_viewport().get_visible_rect().size)
+	print("[LAYOUT_DEBUG] CombatUI Anchor: (", anchor_left, ", ", anchor_top, ", ", anchor_right, ", ", anchor_bottom, ")")
+	print("[LAYOUT_DEBUG] CombatUI Offset: (", offset_left, ", ", offset_top, ", ", offset_right, ", ", offset_bottom, ")")
+	
+	# MainFlow 디버깅
+	(func():
+		var mf = get_node_or_null("MainFlow")
+		if mf:
+			print("[LAYOUT_DEBUG] MainFlow Anchor: (", mf.anchor_left, ", ", mf.anchor_top, ", ", mf.anchor_right, ", ", mf.anchor_bottom, ")")
+			print("[LAYOUT_DEBUG] MainFlow Offset: (", mf.offset_left, ", ", mf.offset_top, ", ", mf.offset_right, ", ", mf.offset_bottom, ")")
+			print("[LAYOUT_DEBUG] MainFlow Size: ", mf.size)
+	).call_deferred()
+
+func _on_resized() -> void:
+	if is_instance_valid(_drawer_panel):
+		_toggle_drawer(_is_bag_expanded)
 
 func _build_ui() -> void:
 	for child in get_children():
 		child.queue_free()
 		
-	add_theme_constant_override("separation", 0)
+	# ════ 1. MainFlow (VBoxContainer) ════
+	# anchors: Full Rect 설정 (self Control의 자식이므로 프리셋 할당 가능)
+	var main_flow := VBoxContainer.new()
+	main_flow.name = "MainFlow"
+	main_flow.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	main_flow.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+	main_flow.add_theme_constant_override("separation", 12)
+	add_child(main_flow)
+	main_flow.anchor_left = 0.0
+	main_flow.anchor_top = 0.0
+	main_flow.anchor_right = 1.0
+	main_flow.anchor_bottom = 1.0
+	main_flow.offset_left = 0
+	main_flow.offset_top = 0
+	main_flow.offset_right = 0
+	main_flow.offset_bottom = 0
+	main_flow.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	main_flow.grow_vertical = Control.GROW_DIRECTION_BOTH
 	
-	# 메인 가로 분할
-	var main_hbox := HBoxContainer.new()
-	main_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	main_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	main_hbox.add_theme_constant_override("separation", 12)
-	add_child(main_hbox)
+	# (1-A) TopBar (HBoxContainer)
+	var top_bar := HBoxContainer.new()
+	top_bar.name = "TopBar"
+	top_bar.custom_minimum_size = Vector2(0, 24)
+	top_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	main_flow.add_child(top_bar)
 	
-	# ════ 1. 좌측 기둥 (Left Column) ════
-	var left_vbox := VBoxContainer.new()
-	left_vbox.custom_minimum_size = Vector2(240, 520)
-	left_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	left_vbox.add_theme_constant_override("separation", 8)
-	main_hbox.add_child(left_vbox)
+	_top_log_toast = parent_scene.make_label("준비 완료", 12, parent_scene.C_SUCCESS)
+	_top_log_toast.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_bar.add_child(_top_log_toast)
 	
-	# (1-A) 명중 분석 패널 (이주 완료)
+	_phase_label = parent_scene.make_label("전투 대기 페이즈", 12, parent_scene.C_DIM)
+	_phase_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	top_bar.add_child(_phase_label)
+	
+	# (1-B) DistanceLabel (Label, CenterContainer로 감싸 중앙)
+	var dist_center := CenterContainer.new()
+	dist_center.name = "DistanceContainer"
+	dist_center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dist_center.custom_minimum_size = Vector2(0, 36)
+	main_flow.add_child(dist_center)
+	
+	_distance_label = parent_scene.make_label("12 m", 24, parent_scene.C_WARNING)
+	_distance_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	dist_center.add_child(_distance_label)
+	
+	# (1-C) Battlefield (HBoxContainer)
+	var battlefield := HBoxContainer.new()
+	battlefield.name = "Battlefield"
+	battlefield.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	battlefield.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+	battlefield.add_theme_constant_override("separation", 12)
+	main_flow.add_child(battlefield)
+	
+	# LeftColumn (VBoxContainer, 고정폭 260)
+	var left_col := VBoxContainer.new()
+	left_col.name = "LeftColumn"
+	left_col.custom_minimum_size = Vector2(260, 0)
+	left_col.size_flags_horizontal = Control.SIZE_FILL
+	left_col.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+	left_col.add_theme_constant_override("separation", 8)
+	battlefield.add_child(left_col)
+	
+	# HitAnalysis (PanelContainer) — 명중분석
 	_hit_info_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
-	_hit_info_panel.custom_minimum_size = Vector2(0, 120)
+	_hit_info_panel.name = "HitAnalysis"
+	_hit_info_panel.custom_minimum_size = Vector2(0, 70)
 	_hit_info_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_panel_style(_hit_info_panel, parent_scene.C_ACCENT)
-	left_vbox.add_child(_hit_info_panel)
+	left_col.add_child(_hit_info_panel)
 	
 	var hit_margin := MarginContainer.new()
 	hit_margin.add_theme_constant_override("margin_left", 10)
@@ -113,7 +188,7 @@ func _build_ui() -> void:
 	var hit_vbox := VBoxContainer.new()
 	hit_margin.add_child(hit_vbox)
 	
-	var hit_title: Label = parent_scene.make_label("◎ 다음 격발 분석 (최근접)", 11, parent_scene.C_SUCCESS)
+	var hit_title: Label = parent_scene.make_label("◎ 격발 분석", 11, parent_scene.C_SUCCESS)
 	hit_vbox.add_child(hit_title)
 	
 	_hit_info_label = RichTextLabel.new()
@@ -124,41 +199,63 @@ func _build_ui() -> void:
 	_hit_info_label.text = "대기 중..."
 	hit_vbox.add_child(_hit_info_label)
 	
-	# (1-B) 세로 예고창 패널
-	_left_magazine_panel = VBoxContainer.new()
-	_left_magazine_panel.custom_minimum_size = Vector2(0, 220)
-	_left_magazine_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_left_magazine_panel.add_theme_constant_override("separation", 4)
-	left_vbox.add_child(_left_magazine_panel)
+	# Lookahead (VBoxContainer) — 예고창 세로
+	_lookahead_container = VBoxContainer.new()
+	_lookahead_container.name = "Lookahead"
+	_lookahead_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_lookahead_container.add_theme_constant_override("separation", 4)
+	left_col.add_child(_lookahead_container)
 	
-	var tube_panel := PanelContainer.new()
-	tube_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_left_magazine_panel.add_child(tube_panel)
+	_card_next = PanelContainer.new()
+	_card_next.name = "Card_Next"
+	_card_next.custom_minimum_size = Vector2(0, 38)
+	_card_next.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_lookahead_container.add_child(_card_next)
 	
-	var tube_margin := MarginContainer.new()
-	tube_margin.add_theme_constant_override("margin_left", 6)
-	tube_margin.add_theme_constant_override("margin_right", 6)
-	tube_margin.add_theme_constant_override("margin_top", 4)
-	tube_margin.add_theme_constant_override("margin_bottom", 4)
-	tube_panel.add_child(tube_margin)
+	_card_2 = PanelContainer.new()
+	_card_2.name = "Card_2"
+	_card_2.custom_minimum_size = Vector2(0, 38)
+	_card_2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_lookahead_container.add_child(_card_2)
 	
-	_mag_tube_container = VBoxContainer.new()
-	_mag_tube_container.alignment = BoxContainer.ALIGNMENT_END
-	_mag_tube_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_mag_tube_container.add_theme_constant_override("separation", 6) # 세로 스택 간격
-	tube_margin.add_child(_mag_tube_container)
+	_card_bundle = PanelContainer.new()
+	_card_bundle.name = "Bundle"
+	_card_bundle.custom_minimum_size = Vector2(0, 30)
+	_card_bundle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_lookahead_container.add_child(_card_bundle)
 	
-	_magazine_slots_label = parent_scene.make_label("", 11, parent_scene.C_DIM)
-	_magazine_slots_label.visible = false
-	_mag_tube_container.add_child(_magazine_slots_label)
+	# Track (Control, size_flags: Expand) — 컨테이너가 아님
+	_track_control = Control.new()
+	_track_control.name = "Track"
+	_track_control.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_track_control.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_track_control.custom_minimum_size = Vector2(500, 200)
+	_track_control.clip_contents = true
+	battlefield.add_child(_track_control)
 	
-	_magazine_label = parent_scene.make_label("탄창 (0/6)", 13, parent_scene.C_WARNING)
-	_magazine_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_left_magazine_panel.add_child(_magazine_label)
+	var bg_rect := ColorRect.new()
+	bg_rect.color = Color(0.04, 0.04, 0.06, 1.0)
+	bg_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_track_control.add_child(bg_rect)
 	
-	# (1-C) 요원 캐릭터 스프라이트
+	# 수평 트랙 중심선
+	_track_line = ColorRect.new()
+	_track_line.color = Color(0.18, 0.22, 0.28, 0.6)
+	_track_line.custom_minimum_size = Vector2(0, 4)
+	_track_line.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_track_line.anchor_top = 0.5
+	_track_line.anchor_bottom = 0.5
+	_track_line.offset_top = -2
+	_track_line.offset_bottom = 2
+	_track_line.offset_left = 0
+	_track_line.offset_right = 0
+	_track_control.add_child(_track_line)
+	
+	# Character (TextureRect) — Track 내부 거리 0 지점에 정박 배치
 	_agent_sprite = TextureRect.new()
-	_agent_sprite.custom_minimum_size = Vector2(0, 110)
+	_agent_sprite.name = "Character"
+	_agent_sprite.layout_mode = 1
+	_agent_sprite.custom_minimum_size = Vector2(80, 80)
 	_agent_sprite.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_agent_sprite.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_agent_sprite.texture = load("res://assets/sprites/agent_sheet.png")
@@ -167,142 +264,49 @@ func _build_ui() -> void:
 		atlas.atlas = _agent_sprite.texture
 		atlas.region = Rect2(0, 0, 278, 278)
 		_agent_sprite.texture = atlas
-	left_vbox.add_child(_agent_sprite)
+	_track_control.add_child(_agent_sprite)
 	
-	# ════ 2. 우측 전술 판 (Right Column) ════
-	var right_vbox := VBoxContainer.new()
-	right_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right_vbox.add_theme_constant_override("separation", 10)
-	main_hbox.add_child(right_vbox)
+	_agent_sprite.anchor_left = 0.0
+	_agent_sprite.anchor_right = 0.0
+	_agent_sprite.anchor_top = 0.5
+	_agent_sprite.anchor_bottom = 0.5
+	# 캐릭터가 트랙 왼쪽 경계 밖으로 나가지 않게 10px 마진을 두며 세로 중앙 정착
+	_agent_sprite.offset_left = 10
+	_agent_sprite.offset_right = 90
+	_agent_sprite.offset_top = -40
+	_agent_sprite.offset_bottom = 40
 	
-	# (2-A) 상단 헤더 top_hbox
-	var top_hbox := HBoxContainer.new()
-	top_hbox.custom_minimum_size = Vector2(0, 110)
-	top_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top_hbox.add_theme_constant_override("separation", 10)
-	right_vbox.add_child(top_hbox)
-	
-	# 중앙 생사선 (Lifeline)
-	_lifeline_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
-	_lifeline_panel.custom_minimum_size = Vector2(240, 110)
-	_lifeline_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_panel_style(_lifeline_panel, parent_scene.C_WARNING)
-	top_hbox.add_child(_lifeline_panel)
-	
-	var life_vbox := VBoxContainer.new()
-	life_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	_lifeline_panel.add_child(life_vbox)
-	
-	var life_lbl: Label = parent_scene.make_label("최근접 적 거리 (생사선)", 11, parent_scene.C_DIM)
-	life_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	life_vbox.add_child(life_lbl)
-	
-	_distance_label = parent_scene.make_label("12 m", 38, parent_scene.C_WARNING)
-	_distance_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	life_vbox.add_child(_distance_label)
-	
-	_distance_sub_label = parent_scene.make_label("경계 — 좀비가 다가옵니다", 11, parent_scene.C_DIM)
-	_distance_sub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	life_vbox.add_child(_distance_sub_label)
-	
-	# 우측 적 정보 분석
-	_enemy_info_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
-	_enemy_info_panel.custom_minimum_size = Vector2(240, 110)
-	_enemy_info_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_panel_style(_enemy_info_panel, parent_scene.C_DANGER)
-	top_hbox.add_child(_enemy_info_panel)
-	
-	var enemy_margin := MarginContainer.new()
-	enemy_margin.add_theme_constant_override("margin_left", 12)
-	enemy_margin.add_theme_constant_override("margin_right", 12)
-	enemy_margin.add_theme_constant_override("margin_top", 8)
-	enemy_margin.add_theme_constant_override("margin_bottom", 8)
-	_enemy_info_panel.add_child(enemy_margin)
-	
-	var enemy_vbox := VBoxContainer.new()
-	enemy_vbox.add_theme_constant_override("separation", 4)
-	enemy_margin.add_child(enemy_vbox)
-	
-	_enemy_name_label = parent_scene.make_label("?", 16, parent_scene.C_ACCENT)
-	enemy_vbox.add_child(_enemy_name_label)
-	
-	var hp_hbox := HBoxContainer.new()
-	hp_hbox.add_theme_constant_override("separation", 8)
-	enemy_vbox.add_child(hp_hbox)
-	
-	var hp_title: Label = parent_scene.make_label("HP", 14, parent_scene.C_DIM)
-	hp_hbox.add_child(hp_title)
-	
-	_enemy_hp_bar = ProgressBar.new()
-	_enemy_hp_bar.custom_minimum_size = Vector2(0, 14)
-	_enemy_hp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_enemy_hp_bar.show_percentage = false
-	var hp_style := StyleBoxFlat.new()
-	hp_style.bg_color = parent_scene.C_PANEL_DARK
-	var hp_fill := StyleBoxFlat.new()
-	hp_fill.bg_color = parent_scene.C_HP_BAR
-	_enemy_hp_bar.add_theme_stylebox_override("background", hp_style)
-	_enemy_hp_bar.add_theme_stylebox_override("fill", hp_fill)
-	hp_hbox.add_child(_enemy_hp_bar)
-	
-	_enemy_hp_label = parent_scene.make_label("0/0", 14, parent_scene.C_TEXT)
-	hp_hbox.add_child(_enemy_hp_label)
-	
-	_enemy_stats_label = parent_scene.make_label("DEF ? | PRES ? | EVA ? | SPD ?", 12, parent_scene.C_DIM)
-	enemy_vbox.add_child(_enemy_stats_label)
-	
-	# (2-B) 전술 수평 트랙 뷰포트 (복도 2D 횡 배치)
-	_ingame_area = Control.new()
-	_ingame_area.custom_minimum_size = Vector2(0, 220)
-	_ingame_area.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_ingame_area.clip_contents = true
-	right_vbox.add_child(_ingame_area)
-	
-	var bg_rect := ColorRect.new()
-	bg_rect.color = Color(0.04, 0.04, 0.06, 1.0)
-	bg_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_ingame_area.add_child(bg_rect)
-	
-	# 수평 트랙 중심선
-	_track_line = ColorRect.new()
-	_track_line.color = Color(0.18, 0.22, 0.28, 0.6)
-	_track_line.custom_minimum_size = Vector2(0, 4)
-	_track_line.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_track_line.offset_top = 110
-	_track_line.offset_bottom = -106
-	_ingame_area.add_child(_track_line)
-	
-	# (2-C) 사격 로그 텍스트
-	var log_panel := PanelContainer.new()
-	log_panel.custom_minimum_size = Vector2(0, 60)
-	right_vbox.add_child(log_panel)
-	var log_style := StyleBoxFlat.new()
-	log_style.bg_color = Color(0.03, 0.03, 0.04, 0.9)
-	log_panel.add_theme_stylebox_override("panel", log_style)
+	# (1-D) ShotLog (PanelContainer → Label) — 사격 로그 한 줄
+	_shot_log_panel = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
+	_shot_log_panel.name = "ShotLog"
+	_shot_log_panel.custom_minimum_size = Vector2(0, 28)
+	_shot_log_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_apply_panel_style(_shot_log_panel, Color(0.08, 0.1, 0.15, 0.8))
+	main_flow.add_child(_shot_log_panel)
 	
 	var log_margin := MarginContainer.new()
 	log_margin.add_theme_constant_override("margin_left", 12)
 	log_margin.add_theme_constant_override("margin_right", 12)
 	log_margin.add_theme_constant_override("margin_top", 4)
 	log_margin.add_theme_constant_override("margin_bottom", 4)
-	log_panel.add_child(log_margin)
+	_shot_log_panel.add_child(log_margin)
 	
-	_log_text = RichTextLabel.new()
-	_log_text.bbcode_enabled = true
-	_log_text.scroll_following = true
-	_log_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_log_text.add_theme_font_size_override("normal_font_size", 12)
-	_log_text.add_theme_color_override("default_color", parent_scene.C_DIM)
-	_log_text.text = "대기 중 — 격발 시 분석 로그가 출력됩니다."
-	log_margin.add_child(_log_text)
+	_shot_log_label = RichTextLabel.new()
+	_shot_log_label.bbcode_enabled = true
+	_shot_log_label.scroll_active = false
+	_shot_log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_shot_log_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_shot_log_label.add_theme_font_size_override("normal_font_size", 12)
+	_shot_log_label.text = "[color=#888888]전투 기록 대기 중...[/color]"
+	log_margin.add_child(_shot_log_label)
 	
-	# (2-D) 하단 버튼 바 _action_row
+	# (1-E) ActionBar (HBoxContainer)
 	_action_row = HBoxContainer.new()
+	_action_row.name = "ActionBar"
 	_action_row.add_theme_constant_override("separation", 8)
-	_action_row.custom_minimum_size = Vector2(0, 56)
+	_action_row.custom_minimum_size = Vector2(0, 44)
 	_action_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_vbox.add_child(_action_row)
+	main_flow.add_child(_action_row)
 	
 	_unload_btn = parent_scene.make_button("🗑 빼내기", _on_unload_pressed, parent_scene.C_WARNING)
 	_unload_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -340,30 +344,37 @@ func _build_ui() -> void:
 	_apply_button_style(_fire_btn, parent_scene.C_DANGER)
 	_action_row.add_child(_fire_btn)
 	
-	# (3) 🎒 반투명 가방 서랍 오버레이
+	# ════ 2. FloatingLayer (Control, Full Rect, mouse_filter: Ignore) ════
+	_floating_layer = Control.new()
+	_floating_layer.name = "FloatingLayer"
+	_floating_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_floating_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_floating_layer)
+	
+	# ════ 3. BagDrawer (PanelContainer, anchors: Bottom Wide) ════
 	_build_drawer_panel()
 
 func _build_drawer_panel() -> void:
 	_drawer_panel = PanelContainer.new()
-	_drawer_panel.custom_minimum_size = Vector2(0, 240)
+	_drawer_panel.name = "BagDrawer"
+	_drawer_panel.custom_minimum_size = Vector2(0, 180)
 	_drawer_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(_drawer_panel)
 	
 	var drawer_style := StyleBoxFlat.new()
-	drawer_style.bg_color = Color(0.05, 0.07, 0.11, 0.96) # 반투명 차콜 블루
+	drawer_style.bg_color = Color(0.05, 0.07, 0.11, 0.96)
 	drawer_style.border_width_top = 2
 	drawer_style.border_color = parent_scene.C_SUCCESS
 	_drawer_panel.add_theme_stylebox_override("panel", drawer_style)
 	
-	# 초기 위치는 화면 밖 하단으로 은폐
+	# 초기 위치 설정
 	_drawer_panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	_drawer_panel.position.y = 600
+	_drawer_panel.position.y = size.y if size.y > 0 else 600
 	_drawer_panel.visible = false
 	
 	var drawer_vbox := VBoxContainer.new()
 	_drawer_panel.add_child(drawer_vbox)
 	
-	# 서랍 헤더 및 탭
 	var head_hbox := HBoxContainer.new()
 	head_hbox.add_theme_constant_override("separation", 10)
 	drawer_vbox.add_child(head_hbox)
@@ -384,29 +395,27 @@ func _build_drawer_panel() -> void:
 	var close_btn: Button = parent_scene.make_button("✕ 닫기", func(): _toggle_drawer(false), parent_scene.C_DIM)
 	head_hbox.add_child(close_btn)
 	
-	# 서랍 바디 (소모품 리스트)
 	_drawer_body_item = VBoxContainer.new()
 	_drawer_body_item.add_theme_constant_override("separation", 6)
 	drawer_vbox.add_child(_drawer_body_item)
 	
-	var item1: HBoxContainer = _create_drawer_item("✚ 응급 키트", "체력 회복", true)
+	var item1 := _create_drawer_item("✚ 응급 키트", "체력 회복", true)
 	_drawer_body_item.add_child(item1)
 	
-	var item2: HBoxContainer = _create_drawer_item("◆ 장갑 파쇄액", "DEF 차감 디버프", true)
+	var item2 := _create_drawer_item("◆ 장갑 파쇄액", "DEF 차감 디버프", true)
 	_drawer_body_item.add_child(item2)
 	
-	var item3: HBoxContainer = _create_drawer_item("≈ 둔화 지뢰", "SPD 둔화 장치", true)
+	var item3 := _create_drawer_item("≈ 둔화 지뢰", "SPD 둔화 장치", true)
 	_drawer_body_item.add_child(item3)
 	
-	# 서랍 바디 (탄환 열람)
 	_drawer_body_ammo = VBoxContainer.new()
 	_drawer_body_ammo.add_theme_constant_override("separation", 6)
 	_drawer_body_ammo.visible = false
 	drawer_vbox.add_child(_drawer_body_ammo)
 	
-	var ammo1: HBoxContainer = _create_drawer_item("▮ 9mm 일반탄 x12", "가용 가능", false)
+	var ammo1 := _create_drawer_item("▮ 9mm 일반탄 x12", "가용 가능", false)
 	_drawer_body_ammo.add_child(ammo1)
-	var ammo2: HBoxContainer = _create_drawer_item("▮ 7.62 관통탄 x4", "가용 가능", false)
+	var ammo2 := _create_drawer_item("▮ 7.62 관통탄 x4", "가용 가능", false)
 	_drawer_body_ammo.add_child(ammo2)
 	
 	var note_lbl: Label = parent_scene.make_label("🔒 전투 중 탄환 수정 차단 - 삽탄은 준비실/적재 페이즈에서만 가능합니다.", 11, parent_scene.C_DIM)
@@ -444,9 +453,11 @@ func _switch_drawer_tab(is_item: bool) -> void:
 
 func _toggle_drawer(expand: bool) -> void:
 	_is_bag_expanded = expand
+	if not is_instance_valid(_drawer_panel):
+		return
 	_drawer_panel.visible = expand
 	if expand:
-		_drawer_panel.position.y = size.y - 240
+		_drawer_panel.position.y = size.y - 180
 	else:
 		_drawer_panel.position.y = size.y
 
@@ -459,7 +470,6 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	combat_manager = cm
 	_current_gun_data = gun
 	
-	# 기존 오프닝 탄환 데이터 및 동기화 바인딩
 	combat_manager.encounter_started.connect(_on_encounter_started)
 	combat_manager.enemy_damaged.connect(_on_enemy_damaged)
 	combat_manager.enemy_moved.connect(_on_enemy_moved)
@@ -523,39 +533,40 @@ func _on_encounter_started(enemy_list) -> void:
 				
 		es.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		es.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		es.layout_mode = 1
 		es.custom_minimum_size = Vector2(80, 80)
 		es.pivot_offset = Vector2(40, 40)
 		es.mouse_filter = Control.MOUSE_FILTER_STOP
 		es.gui_input.connect(func(event): _on_enemy_sprite_gui_input(event, enemy))
 		
-		# 머리 위 자물쇠 픽토그램 배지 및 타겟 링 바인딩
-		_ingame_area.add_child(es)
+		# 적 노드를 Track에 탑재
+		_track_control.add_child(es)
 		_enemy_sprites[enemy] = es
 		
 		_build_enemy_badge(es, enemy)
 		
-	_global_max_dist = 12.0
+	_global_max_dist = 20.0
 	var max_found := 0
 	for e in enemy_list:
 		if e.start_distance > max_found:
 			max_found = e.start_distance
 	if max_found > 0:
-		_global_max_dist = float(max_found)
+		_global_max_dist = maxf(float(max_found) + 6.0, 20.0)
 		
 	_update_enemy_position_and_scale(null, false)
 	
 	var nearest = combat_manager.enemy
 	if nearest:
-		_update_enemy_display(nearest)
 		_update_distance_display(nearest)
 		_update_hit_info(nearest)
 	_update_cylinder_visuals()
 	_update_action_buttons()
+	_update_phase_state()
 
 func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	var badge_panel := PanelContainer.new()
 	badge_panel.custom_minimum_size = Vector2(24, 24)
-	badge_panel.position = Vector2(28, -28) # 적 머리 위 중앙 배치
+	badge_panel.position = Vector2(28, -28)
 	es.add_child(badge_panel)
 	
 	var badge_style := StyleBoxFlat.new()
@@ -597,10 +608,6 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	badge_panel.add_child(lbl)
 	
 	# 타겟 지시기 (최근접 링)
-	var ring := ColorRect.new()
-	ring.name = "TargetRing"
-	ring.color = Color(0, 0, 0, 0)
-	ring.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var ring_style := StyleBoxFlat.new()
 	ring_style.bg_color = Color(0,0,0,0)
 	ring_style.border_width_left = 2
@@ -624,10 +631,6 @@ func _update_enemy_position_and_scale(target_enemy: EnemyInstance, animate: bool
 	if not combat_manager:
 		return
 		
-	var size := _ingame_area.size
-	if size.x == 0:
-		size = Vector2(500, 220)
-		
 	var nearest = combat_manager.enemy
 	
 	for e in _enemy_sprites.keys():
@@ -637,46 +640,29 @@ func _update_enemy_position_and_scale(target_enemy: EnemyInstance, animate: bool
 				es.visible = false
 			continue
 			
+		es.visible = true
 		var dist: int = e.current_distance
-		var ratio: float = float(dist) / _global_max_dist if _global_max_dist > 0 else 0.0
+		var ratio: float = float(dist) / _global_max_dist if _global_max_dist > 0.0 else 0.0
 		
-		# 수평 트랙 횡 배치 (요원 60px에서 몹 최대거리까지 가로 나열)
-		var target_x: float = lerp(120.0, size.x - 60.0, ratio)
-		var target_y := 110.0 - 40.0 # 중앙선에 맞춘 스케일 센터
+		# [절대 규칙] anchor_left = 거리 / 최대거리로 수평 자유 배치
+		# 우측 끝 잘림 방지 패딩 보정 (가용 최대 앵커 비율을 0.88로 조율)
+		var anchor_ratio := ratio * 0.88
+		es.anchor_left = anchor_ratio
+		es.anchor_right = anchor_ratio
+		es.anchor_top = 0.5
+		es.anchor_bottom = 0.5
 		
-		var target_pos := Vector2(target_x, target_y)
-		es.position = target_pos
+		# 중심점이 앵커에 오도록 마진 오프셋 계산 (80px 크기)
+		es.offset_left = -40
+		es.offset_right = 40
+		es.offset_top = -40
+		es.offset_bottom = 40
 		es.scale = Vector2(0.8, 0.8)
 		
-		# 타겟 링 가시성 갱신
+		# 타겟 링 표시 갱신
 		var ring = es.get_node_or_null("RingPanel")
 		if ring:
 			ring.visible = (e == nearest)
-
-func _update_enemy_display(enemy: EnemyInstance) -> void:
-	if not enemy or enemy.is_dead():
-		_enemy_name_label.text = "처치 완료 — 대기 중"
-		_enemy_hp_bar.value = 0
-		_enemy_hp_label.text = "0/0"
-		return
-		
-	_enemy_name_label.text = "%s (%s)" % [enemy.data.display_name, _archetype_name(enemy.data.archetype)]
-	_enemy_hp_bar.max_value = enemy.data.max_hp
-	_enemy_hp_bar.value = enemy.current_hp
-	_enemy_hp_label.text = "%d/%d" % [enemy.current_hp, enemy.data.max_hp]
-	
-	_update_enemy_stats_display(enemy)
-	_update_distance_display(enemy)
-	_update_enemy_position_and_scale(enemy, true)
-
-func _update_enemy_stats_display(enemy: EnemyInstance) -> void:
-	if parent_scene.is_goggles_enabled():
-		_enemy_stats_label.text = "DEF %d | PRES %d | EVA %d | SPD %d" % [
-			enemy.current_def, enemy.knockback_resistance,
-			enemy.current_evasion, enemy.current_speed,
-		]
-	else:
-		_enemy_stats_label.text = "DEF ? | PRES ? | EVA ? | SPD ?"
 
 func _update_distance_display(enemy: EnemyInstance) -> void:
 	if not enemy or enemy.is_dead():
@@ -686,73 +672,120 @@ func _update_distance_display(enemy: EnemyInstance) -> void:
 	var dist := enemy.current_distance
 	_distance_label.text = "%d m" % dist
 	
-	# 생사선 위기/경고/안전 연출 분기
+	# 생사선 위험 연출 분기
 	if dist <= 3:
 		_distance_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
-		_distance_sub_label.text = "⚠ 즉사 위험! 다음 턴 진입 시 사망합니다!"
-		_distance_sub_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
+		_top_log_toast.text = "⚠ 즉사 위험! 다음 턴 진입 시 사망합니다!"
+		_top_log_toast.add_theme_color_override("font_color", parent_scene.C_DANGER)
 	elif dist <= 6:
 		_distance_label.add_theme_color_override("font_color", parent_scene.C_WARNING)
-		_distance_sub_label.text = "경고 — 적이 사정거리 안에 들어왔습니다."
-		_distance_sub_label.add_theme_color_override("font_color", parent_scene.C_WARNING)
+		_top_log_toast.text = "경고 — 적이 접근 중입니다."
+		_top_log_toast.add_theme_color_override("font_color", parent_scene.C_WARNING)
 	else:
 		_distance_label.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
-		_distance_sub_label.text = "경계 — 요원 복도 상황 대기 중"
-		_distance_sub_label.add_theme_color_override("font_color", parent_scene.C_DIM)
+		_top_log_toast.text = "상황 대기 중"
+		_top_log_toast.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 
 func _update_cylinder_visuals() -> void:
-	for child in _mag_tube_container.get_children():
-		if child != _magazine_slots_label:
-			_mag_tube_container.remove_child(child)
-			child.queue_free()
-			
 	var bullets: Array[BulletData] = []
 	if combat_manager:
 		bullets = combat_manager.magazine.get_loaded_bullets()
 		
-	_magazine_label.text = "탄창 (%d/%d)" % [bullets.size(), 6]
-	
-	# 예고창 가이드라인: 앞 2발은 선명히, 나머지는 N칸 더 묶어서 덩어리로 표시!
-	var size_to_draw: int = min(bullets.size(), 2)
-	for i in range(size_to_draw):
-		var bullet: BulletData = bullets[i]
-		var card: PanelContainer = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
-		card.custom_minimum_size = Vector2(0, 48)
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		_apply_panel_style(card, _get_bullet_color(bullet))
+	# 1. Card_Next (1번째 발사 예정 탄환)
+	if bullets.size() > 0:
+		_card_next.visible = true
+		_update_card_visual(_card_next, bullets[0], "다음 격발", true)
+	else:
+		_card_next.visible = true
+		_update_card_empty_visual(_card_next, "약실 비어있음")
 		
+	# 2. Card_2 (2번째 탄환)
+	if bullets.size() > 1:
+		_card_2.visible = true
+		_update_card_visual(_card_2, bullets[1], "그다음", false)
+	else:
+		_card_2.visible = false
+		
+	# 3. Bundle (나머지 탄환 더미)
+	if bullets.size() > 2:
+		_card_bundle.visible = true
+		_update_bundle_visual(_card_bundle, bullets.size() - 2)
+	else:
+		_card_bundle.visible = false
+
+func _update_card_visual(card: PanelContainer, bullet: BulletData, label_text: String, is_next: bool) -> void:
+	_apply_panel_style(card, _get_bullet_color(bullet))
+	
+	if card.get_child_count() == 0:
 		var card_vbox := VBoxContainer.new()
 		card_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 		card.add_child(card_vbox)
 		
-		var idx_lbl: Label = parent_scene.make_label("다음 격발" if i == 0 else "그다음", 10, parent_scene.C_SUCCESS if i == 0 else parent_scene.C_DIM)
+		var idx_lbl: Label = parent_scene.make_label(label_text, 10, parent_scene.C_SUCCESS if is_next else parent_scene.C_DIM)
 		idx_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		idx_lbl.name = "IndexLabel"
 		card_vbox.add_child(idx_lbl)
 		
 		var name_lbl: Label = parent_scene.make_label(bullet.display_name, 12, Color.WHITE)
 		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_lbl.name = "NameLabel"
 		card_vbox.add_child(name_lbl)
+	else:
+		var card_vbox = card.get_child(0)
+		var idx_lbl = card_vbox.get_node("IndexLabel") as Label
+		var name_lbl = card_vbox.get_node("NameLabel") as Label
+		idx_lbl.text = label_text
+		idx_lbl.add_theme_color_override("font_color", parent_scene.C_SUCCESS if is_next else parent_scene.C_DIM)
+		name_lbl.text = bullet.display_name
+
+func _update_card_empty_visual(card: PanelContainer, text: String) -> void:
+	_apply_panel_style(card, parent_scene.C_DIM)
+	
+	if card.get_child_count() == 0:
+		var card_vbox := VBoxContainer.new()
+		card_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		card.add_child(card_vbox)
 		
-		_mag_tube_container.add_child(card)
+		var idx_lbl: Label = parent_scene.make_label("약실", 10, parent_scene.C_DIM)
+		idx_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		idx_lbl.name = "IndexLabel"
+		card_vbox.add_child(idx_lbl)
 		
-	if bullets.size() > 2:
-		var bundle := PanelContainer.new()
-		bundle.custom_minimum_size = Vector2(0, 40)
-		var bundle_style := StyleBoxFlat.new()
-		bundle_style.bg_color = Color(0.06, 0.08, 0.12, 0.6)
-		bundle_style.border_width_left = 1
-		bundle_style.border_width_right = 1
-		bundle_style.border_width_top = 1
-		bundle_style.border_width_bottom = 1
-		bundle_style.border_color = parent_scene.C_DIM
-		bundle.add_theme_stylebox_override("panel", bundle_style)
-		
-		var bundle_lbl: Label = parent_scene.make_label("+ %d칸 더 적재됨" % [bullets.size() - 2], 11, parent_scene.C_DIM)
+		var name_lbl: Label = parent_scene.make_label(text, 12, parent_scene.C_DIM)
+		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_lbl.name = "NameLabel"
+		card_vbox.add_child(name_lbl)
+	else:
+		var card_vbox = card.get_child(0)
+		var idx_lbl = card_vbox.get_node("IndexLabel") as Label
+		var name_lbl = card_vbox.get_node("NameLabel") as Label
+		idx_lbl.text = "약실"
+		idx_lbl.add_theme_color_override("font_color", parent_scene.C_DIM)
+		name_lbl.text = text
+
+func _update_bundle_visual(card: PanelContainer, count: int) -> void:
+	var bundle_style := StyleBoxFlat.new()
+	bundle_style.bg_color = Color(0.06, 0.08, 0.12, 0.6)
+	bundle_style.border_width_left = 1
+	bundle_style.border_width_right = 1
+	bundle_style.border_width_top = 1
+	bundle_style.border_width_bottom = 1
+	bundle_style.border_color = parent_scene.C_DIM
+	bundle_style.corner_radius_top_left = 4
+	bundle_style.corner_radius_top_right = 4
+	bundle_style.corner_radius_bottom_left = 4
+	bundle_style.corner_radius_bottom_right = 4
+	card.add_theme_stylebox_override("panel", bundle_style)
+	
+	if card.get_child_count() == 0:
+		var bundle_lbl: Label = parent_scene.make_label("+ %d칸 더 적재됨" % count, 11, parent_scene.C_DIM)
 		bundle_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		bundle_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		bundle.add_child(bundle_lbl)
-		
-		_mag_tube_container.add_child(bundle)
+		bundle_lbl.name = "BundleLabel"
+		card.add_child(bundle_lbl)
+	else:
+		var bundle_lbl = card.get_child(0) as Label
+		bundle_lbl.text = "+ %d칸 더 적재됨" % count
 
 func _get_bullet_color(bullet: BulletData) -> Color:
 	if "AP" in bullet.display_name or "관통" in bullet.display_name:
@@ -798,6 +831,7 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 	]
 
 func _update_action_buttons() -> void:
+	if not combat_manager: return
 	var is_tempo := combat_manager.gun and (combat_manager.gun.display_name.contains("Tempo") or combat_manager.gun.display_name.contains("속사형"))
 	var is_trickster := combat_manager.gun and (combat_manager.gun.display_name.contains("Trickster") or combat_manager.gun.display_name.contains("곡예형"))
 	
@@ -836,6 +870,28 @@ func _update_action_buttons() -> void:
 		_double_tap_btn.disabled = not has_ammo or combat_manager.double_tap_used_this_turn
 		_double_tap_btn.text = "💥 더블탭 ON" if combat_manager.double_tap_active else "💥 더블탭 OFF"
 
+func _update_phase_state() -> void:
+	if not combat_manager: return
+	match combat_manager.state:
+		CombatManager.State.LOADING:
+			_phase_label.text = "탄창 적재 페이즈"
+			_phase_label.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+		CombatManager.State.PLAYER_TURN:
+			_phase_label.text = "아군 작전 페이즈"
+			_phase_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
+		CombatManager.State.RELOADING:
+			_phase_label.text = "탄창 리로드 중"
+			_phase_label.add_theme_color_override("font_color", parent_scene.C_WARNING)
+		CombatManager.State.WON:
+			_phase_label.text = "작전 성공 (WON)"
+			_phase_label.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+		CombatManager.State.LOST:
+			_phase_label.text = "작전 실패 (LOST)"
+			_phase_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
+		_:
+			_phase_label.text = "전투 대기 중"
+			_phase_label.add_theme_color_override("font_color", parent_scene.C_DIM)
+
 # ── 버튼 핸들러 연동 ──
 
 func _on_fire_pressed() -> void:
@@ -848,6 +904,7 @@ func _on_fire_pressed() -> void:
 	parent_scene.trigger_camera_shake(10.0)
 	combat_manager.fire()
 	_update_action_buttons()
+	_update_phase_state()
 
 func _on_unload_pressed() -> void:
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
@@ -875,9 +932,9 @@ func _on_loading_confirm() -> void:
 		_loaded_bullets.clear()
 		_update_cylinder_visuals()
 		_update_action_buttons()
+		_update_phase_state()
 
 func _on_enemy_sprite_gui_input(event: InputEvent, clicked_enemy: EnemyInstance) -> void:
-	# 조준 선택 연동
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
 			var next_bullet := combat_manager.magazine.peek()
@@ -893,8 +950,9 @@ func _on_enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int
 		enemy_inst.data.display_name, damage, remaining_hp
 	])
 	_spawn_damage_text(enemy_inst, "-%d" % damage)
-	_update_enemy_display(combat_manager.enemy)
-	_update_hit_info(combat_manager.enemy)
+	var nearest = combat_manager.enemy
+	_update_hit_info(nearest)
+	_update_distance_display(nearest)
 
 func _on_enemy_moved(enemy_inst: EnemyInstance, new_distance: int, speed_used: int) -> void:
 	add_combat_log("[color=#ffa500]👣 전진: %s가 %d만큼 다가왔습니다. (현재 거리: %d)[/color]" % [
@@ -902,6 +960,7 @@ func _on_enemy_moved(enemy_inst: EnemyInstance, new_distance: int, speed_used: i
 	])
 	_update_enemy_position_and_scale(null, true)
 	_update_distance_display(combat_manager.enemy)
+	_update_phase_state()
 
 func _on_enemy_kb(enemy_inst: EnemyInstance, new_distance: int, amount: int) -> void:
 	add_combat_log("[color=#37e0ac]🛡️ 넉백: %s가 %d만큼 밀려났습니다. (현재 거리: %d)[/color]" % [
@@ -917,7 +976,6 @@ func _on_armor_shredded(enemy_inst: EnemyInstance, new_def: int, amount: int) ->
 
 func _on_enemy_stance_changed(enemy_inst: EnemyInstance, new_stance: Enums.EnemyStance) -> void:
 	add_combat_log("🔄 태세전환: %s가 새로운 태세로 전환되었습니다." % enemy_inst.data.display_name)
-	_update_enemy_display(combat_manager.enemy)
 
 func _on_magazine_updated() -> void:
 	_update_cylinder_visuals()
@@ -932,8 +990,9 @@ func _on_bullet_fired(bullet: BulletData) -> void:
 func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 	add_combat_log("[color=#37e0ac]💀 처치: %s를 무력화시켰습니다![/color]" % enemy_inst.data.display_name)
 	_spawn_damage_text(enemy_inst, "처치!")
-	_update_enemy_display(combat_manager.enemy)
-	_update_hit_info(combat_manager.enemy)
+	var nearest = combat_manager.enemy
+	_update_hit_info(nearest)
+	_update_distance_display(nearest)
 
 func _on_encounter_won() -> void:
 	add_combat_log("[color=#37e0ac]🏆 승리: 복도의 모든 위협이 소멸되었습니다![/color]")
@@ -946,23 +1005,28 @@ func _on_player_died() -> void:
 # ── 헬퍼 메서드 ──
 
 func add_combat_log(text: String) -> void:
-	if _log_text:
-		_log_text.append_text("\n" + text)
+	if _shot_log_label:
+		_shot_log_label.text = text
 
 func clear_combat_log() -> void:
-	if _log_text:
-		_log_text.text = ""
+	if _shot_log_label:
+		_shot_log_label.text = ""
 
 func _spawn_damage_text(es_inst: EnemyInstance, text: String) -> void:
 	var es = _enemy_sprites.get(es_inst)
 	if not is_instance_valid(es): return
 	
+	# FloatingLayer를 사격결과 플로팅 영역으로 사용
 	var lbl: Label = parent_scene.make_label(text, 20, parent_scene.C_DANGER)
-	lbl.position = Vector2(20, -50)
-	es.add_child(lbl)
+	_floating_layer.add_child(lbl)
+	
+	# es의 전역 포지션을 _floating_layer 로컬 포지션으로 변환하여 위치 지정
+	var global_pos = es.global_position
+	var local_pos = _floating_layer.to_local(global_pos)
+	lbl.position = local_pos + Vector2(20, -30)
 	
 	var tween := create_tween()
-	tween.tween_property(lbl, "position", Vector2(20, -100), 1.0)
+	tween.tween_property(lbl, "position", local_pos + Vector2(20, -80), 1.0)
 	tween.parallel().tween_property(lbl, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(lbl.queue_free)
 
@@ -1003,19 +1067,10 @@ func _apply_button_style(btn: Button, color: Color) -> void:
 	disabled.border_color = Color(0.25, 0.25, 0.28)
 	btn.add_theme_stylebox_override("disabled", disabled)
 
-func _archetype_name(arch: int) -> String:
-	match arch:
-		Enums.EnemyArchetype.RUSHER: return "돌격병"
-		Enums.EnemyArchetype.TANK: return "방패병"
-		Enums.EnemyArchetype.DODGER: return "회피병"
-		Enums.EnemyArchetype.SCRAMBLER: return "스펀지"
-		_: return "술사"
-
-# 미인용 오버레이 로딩 호환 메서드 상속
+# 미사용 오버레이 로딩 호환 메서드 상속
 func _build_loading_overlay() -> void: pass
 func _build_result_overlay() -> void: pass
 func request_insert_bullet(bullet: BulletData) -> void:
-	# 적재 모드 시 탄환 드래그/삽탄 연동 처리
 	if _loaded_bullets.size() < 6:
 		_loaded_bullets.append(bullet)
 		_update_cylinder_visuals()
