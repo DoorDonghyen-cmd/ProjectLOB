@@ -1,11 +1,67 @@
 ---
 name: 04-daily-logs
-description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹용 스킬. 대화 및 작업 종료 시 오늘 진행한 작업, 작성한 코드, 해결한 이슈, 다음 할 일 등을 일자별로 정리하여 기록합니다. 트리거: 작업 요약 요청, 오늘 뭐했지?, 데일리 로그 작성, 작업 내역 기록 등.
----
+description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹용 스킬. 대화 및 작업 종료 시 오늘 진행한 작업, 작성한 코드, 해결한 이슈, 다음 할 일 등을 일자별로 정리하여 기록합니다. 트리거: 작업 요약 요청, 오늘 �## 2026-07-05 (Sun) - 거리 표시, 분석 패널 워터마크, 상황 라벨 이동 및 장전 탄환 순서/은폐/아이콘 개선
 
-# 📅 ProjectLoB Daily Logs
+### 🎯 목표
+- 전투 오버레이(v2)에서 거리 표시 UI(`_distance_label`)가 전투 영역(수평 트랙)의 정확한 상단 중앙에 고정되도록 구조와 속성을 개선합니다.
+- 최상단 좌측(`TopBar`)에 존재하던 상황 로그/경고 라벨(`_top_log_toast`)을 전투 영역(`_track_control`) 내부의 **우측 상단**으로 독립하여 이동시킵니다.
+- 좌상단 플로팅 패널인 격발 분석(`_hit_info_panel`)의 가로 너비를 줄여 전투 영역의 공간 가독성을 개선하고, 배경 및 테두리 투명도를 조율하고 마우스 클릭 관통 설정을 적용하여 은은한 **워터마크 스타일**로 재디자인합니다.
+- 공중에 떠 있는 느낌이 들던 플레이어 캐릭터, 몬스터 스프라이트 및 트랙 중심선의 세로축 앵커를 추가 하향 배치(`0.75` 지점)하여 레이아웃 안정감을 유도합니다.
+- **장전된 탄환 목록을 개별 카드 형태로 세로 나열**하되, LIFO(스택) 원리에 따라 가장 마지막에 장전된(가장 먼저 격발될) 탄환이 최상단에 배치되도록 역순 정렬하고 **상위 2개 탄환을 제외한 나머지 깊이의 탄환은 정보를 은폐(???)** 처리하며, **동적 카드 내부에 고유 총알 이미지(아이콘)를 표시**하여 시인성을 높입니다.
 
-이 문서는 프로젝트의 일일 개발 진행 상황, 수정된 주요 파일, 해결된 버그, 그리고 다음 목표를 추적 관리하기 위한 로그입니다.
+### 🛠️ 개발 내역
+**1. 상황 로그 라벨(TopLogToast) 우상단 배치 및 VBox 제거**
+- `_top_log_toast`를 세로정렬 컨테이너에서 제거하고 최상위 전투 영역 컨트롤러(`_track_control`)의 직접 자식으로 탑재했습니다.
+- 프리셋을 `PRESET_TOP_RIGHT`로 설정하고 마진(`offset_right = -12`, `offset_top = 12`) 및 가로 우측 정렬(`HORIZONTAL_ALIGNMENT_RIGHT`)을 주어 우상단에 정확히 오버레이 고정되도록 개선했습니다.
+- 세로정렬용 `DistanceVBox`를 제거하고, `_distance_container` (CenterContainer) 하위에 `_distance_label`이 직접 자식으로 탑재되어 거리 정렬의 균형을 극대화했습니다.
+
+**2. 장전 탄환 카드 내 총알 이미지(아이콘) 렌더링**
+- `_create_dynamic_bullet_card` 함수에서 카드가 은폐 상태가 아닐 때(`is_hidden = false`)에 한하여 `_get_bullet_icon(bullet)` 함수로 텍스트 아이콘을 로드했습니다.
+- 로드된 텍스트 아이콘을 카드 크기에 맞는 `18x18px` 규격의 `TextureRect`로 변환해 HBox 안의 인덱스 라벨과 탄환 이름 라벨 사이에 정렬 삽입했습니다.
+
+**3. 격발 분석 패널(HitAnalysis) 워터마크화**
+- `_hit_info_panel` 스타일박스의 `bg_color` 알파값을 `0.8 ➡️ 0.25`로 변경해 뒷배경이 비치게 했고, 테두리 색상(`border_color`)은 아웃라인 강조를 대폭 죽인 `Color(parent_scene.C_ACCENT, 0.2)`로 약화시켰습니다.
+- `mouse_filter = Control.MOUSE_FILTER_IGNORE` 설정을 부여하여 뒤에 가려진 공간 마우스 클릭을 통과시키는 완벽한 워터마크 연출을 구현했습니다.
+
+**4. 장전 탄환 목록 LIFO 역순 동적 정렬 및 3순위 은폐 적용**
+- `combat_overlay_v2.gd` 내부의 `_build_ui()` 에서 기존 3개 정적 카드 배치 코드를 제거하고, 다량의 카드 나열에 대응할 수 있도록 `ScrollContainer`로 감싼 동적 `Lookahead` VBox 영역을 마련했습니다.
+- `_update_cylinder_visuals()` 함수에서 자식 카드를 모두 클리어한 후, 장전된 모든 탄환에 대해 뒤에서부터 역순으로 루프(`for i in range(bullets.size() - 1, -1, -1)`)를 돌며 개별 `PanelContainer` 카드를 동적으로 렌더링하도록 변경했습니다.
+- 이를 통해 가장 최근에 장전한(가장 먼저 격발될) 탄환이 리스트의 맨 위(1순위)에 오고 깊이 묻힌 탄환들이 하단에 정렬되는 스택 시각화 정합성을 맞추었습니다.
+- 노출 순서 카운터 `display_count >= 2`인 경우(3번째 격발 예정 탄환부터) 은폐 플래그 `is_hidden = true`를 전달하여 탄환 명칭을 `"???"`로, 성능 수치를 `"D? P?"`로 은폐하도록 구현했습니다.
+
+**5. 격발 분석 패널 가로 너비 축소**
+- `_hit_info_panel` 의 `custom_minimum_size`를 가로 `210`에서 `180`으로 축소하여 콤팩트한 레이아웃을 구현했습니다.
+
+**6. 트랙 라인 및 캐릭터/적 하향 배치 고도화**
+- `combat_overlay_v2.gd` 에서 트랙 가로 중심선(`_track_line`), 플레이어 캐릭터(`_agent_sprite`), 몬스터 스프라이트(`es`)의 세로축 앵커(`anchor_top`, `anchor_bottom`)를 기존 `0.5 ➡️ 0.65 ➡️ 0.75`로 최종 하향 조정했습니다.
+- 이를 통해 전투 트랙 영역 하단(세로 75% 지점)에 모든 주요 오브젝트가 정렬되어 배치되도록 디자인 구조를 고도화했습니다.�마크 연출을 구현했습니다.
+
+**3. 장전 탄환 목록 LIFO 역순 동적 정렬 및 3순위 은폐 적용**
+- `combat_overlay_v2.gd` 내부의 `_build_ui()` 에서 기존 3개 정적 카드 배치 코드를 제거하고, 다량의 카드 나열에 대응할 수 있도록 `ScrollContainer`로 감싼 동적 `Lookahead` VBox 영역을 마련했습니다.
+- `_update_cylinder_visuals()` 함수에서 자식 카드를 모두 클리어한 후, 장전된 모든 탄환에 대해 뒤에서부터 역순으로 루프(`for i in range(bullets.size() - 1, -1, -1)`)를 돌며 개별 `PanelContainer` 카드를 동적으로 렌더링하도록 변경했습니다.
+- 이를 통해 가장 최근에 장전한(가장 먼저 격발될) 탄환이 리스트의 맨 위(1순위)에 오고 깊이 묻힌 탄환들이 하단에 정렬되는 스택 시각화 정합성을 맞추었습니다.
+- 노출 순서 카운터 `display_count >= 2`인 경우(3번째 격발 예정 탄환부터) 은폐 플래그 `is_hidden = true`를 전달하여 탄환 명칭을 `"???"`로, 성능 수치를 `"D? P?"`로 은폐하도록 구현했습니다.
+
+**4. _distance_label 및 상황 로그 라벨 통합 배치**
+- `combat_overlay_v2.gd` 에서 `_top_log_toast` 가 `TopBar` 의 자식으로 들어가는 구조를 변경했습니다.
+- `_distance_container` (CenterContainer) 하위에 세로 정렬용 `distance_vbox` (VBoxContainer)를 신설하고, `_distance_label`과 `_top_log_toast`를 순서대로 추가했습니다.
+- 두 라벨 모두 `horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER`를 적용하고 아웃라인 설정을 보강하여, 거리 표시 바로 아래에서 깔끔하게 가로 중앙 정렬을 유지하도록 개선했습니다.
+- `TopBar` 에는 `_top_log_toast` 가 빠지고 빈 스페이스가 배치되어 우측 페이즈 라벨만 남도록 정리했습니다.
+
+**5. 격발 분석 패널 가로 너비 축소**
+- `_hit_info_panel` 의 `custom_minimum_size`를 가로 `210`에서 `180`으로 축소하여 콤팩트한 레이아웃을 구현했습니다.
+
+**6. 트랙 라인 및 캐릭터/적 하향 배치 고도화**
+- `combat_overlay_v2.gd` 에서 트랙 가로 중심선(`_track_line`), 플레이어 캐릭터(`_agent_sprite`), 몬스터 스프라이트(`es`)의 세로축 앵커(`anchor_top`, `anchor_bottom`)를 기존 `0.5 ➡️ 0.65 ➡️ 0.75`로 최종 하향 조정했습니다.
+- 이를 통해 전투 트랙 영역 하단(세로 75% 지점)에 모든 주요 오브젝트가 정렬되어 배치되도록 디자인 구조를 고도화했습니다.
+
+### 📁 수정된 주요 파일
+- [MODIFY] [combat_overlay_v2.gd](file:///c:/Users/도얼동현/.gemini/antigravity-ide/scratch/ProjectLOB/새-게임-프로젝트/scripts/ui/overlays/combat_overlay_v2.gd)
+- [MODIFY] [.agents/skills/06-history-archive/implementation_plan_master.md](file:///c:/Users/도얼동현/.gemini/antigravity-ide/scratch/ProjectLOB/.agents/skills/06-history-archive/implementation_plan_master.md)
+- [MODIFY] [.agents/skills/06-history-archive/walkthrough_master.md](file:///c:/Users/도얼동현/.gemini/antigravity-ide/scratch/ProjectLOB/.agents/skills/06-history-archive/walkthrough_master.md)
+
+### 💡 다음 예정 작업
+- UI 가시성 및 기획 밸런스에 기반한 전투 메커니즘 확장 구현.
 
 ---
 
