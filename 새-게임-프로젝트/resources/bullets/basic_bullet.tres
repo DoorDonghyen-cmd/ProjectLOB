@@ -1,6 +1,6 @@
 [gd_resource type="Resource" format=3]
 
-[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
@@ -13,4 +13,5 @@ knockback = 0
 slow = 0
 effect_type = 0
 effect_value = 0
-weapon_class = 0
+
+caliber = 0

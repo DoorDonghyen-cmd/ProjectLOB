@@ -1,11 +1,11 @@
 [gd_resource type="Resource" format=3]
 
-[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
-display_name = "5.56mm 철갑??
-description = "?�갑 관???�력???�어???�술 ?�환. 방탄조끼�?관?�하�? ?�격???�의 방어??DEF)???�구???�쇄?�니??"
+display_name = "5.56mm 철갑탄"
+description = "피격된 적의 전술 방어구(DEF)를 영구적으로 파쇄하여 약화시킵니다."
 damage = 2
 accuracy = 5
 penetration = 4
@@ -13,5 +13,4 @@ knockback = 0
 slow = 0
 effect_type = 1
 effect_value = 1
-
 weapon_class = 2

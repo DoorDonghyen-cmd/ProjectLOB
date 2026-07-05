@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "7.62mm 결전탄"
-description = "지정사수소총의 한 발을 극대화하여 결정적인 피해를 입히는 결전용 탄환."
-damage = 5
+display_name = "결전용 중탄"
+description = "초장거리 정밀 대형 탄환. 탄창 최하단 최후의 격발 시 위력이 1.5배(150%) 증폭됩니다."
+damage = 4
 accuracy = 6
 penetration = 2
 knockback = 0
 slow = 0
-effect_type = 0
-effect_value = 0
-weapon_class = 3
+effect_type = 3
+effect_value = 150
+caliber = 2

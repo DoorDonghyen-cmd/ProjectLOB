@@ -1,17 +1,16 @@
 [gd_resource type="Resource" format=3]
 
-[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
-display_name = "9mm ?�반??
-description = "?�?�용 ?�지?�을 지???�환. ?�수 방탄 ?�비가 ?�는 ?�에�??�수 물리 ?�미�?�??�힙?�다."
-damage = 3
-accuracy = 7
+display_name = "12게이지 산탄"
+description = "12게이지 산탄총용 펠릿 탄환. 근접에서 적을 강력하게 밀어냅니다."
+damage = 2
+accuracy = 4
 penetration = 0
-knockback = 0
+knockback = 1
 slow = 0
 effect_type = 0
 effect_value = 0
-
 weapon_class = 4

@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "12게이지 장갑파괴탄"
-description = "근접 궤적 전체에 파편을 흩뿌려 적의 장갑(DEF)을 영구히 붕괴시킵니다."
+display_name = "장갑 파괴탄"
+description = "철갑 납작탄. 피격된 적의 방어력(DEF)을 영구적으로 2만큼 파쇄(Shred)하여 다음 공격을 용이하게 합니다."
 damage = 1
 accuracy = 4
 penetration = 3
@@ -13,4 +13,4 @@ knockback = 0
 slow = 0
 effect_type = 1
 effect_value = 2
-weapon_class = 4
+caliber = 2

@@ -1,17 +1,16 @@
 [gd_resource type="Resource" format=3]
 
-[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
-display_name = "9mm ?�반??
-description = "?�?�용 ?�지?�을 지???�환. ?�수 방탄 ?�비가 ?�는 ?�에�??�수 물리 ?�미�?�??�힙?�다."
-damage = 3
-accuracy = 7
-penetration = 0
+display_name = "5.56mm 일반탄"
+description = "방탄 조끼를 가볍게 관통할 수 있는 높은 관통력을 지닌 돌격소총용 표준 탄환."
+damage = 2
+accuracy = 6
+penetration = 1
 knockback = 0
 slow = 0
 effect_type = 0
 effect_value = 0
-
 weapon_class = 2

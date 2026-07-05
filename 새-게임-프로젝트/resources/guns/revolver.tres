@@ -6,9 +6,10 @@
 [resource]
 script = ExtResource("2_script")
 display_name = "전술 리볼버 (Workhorse)"
-description = "표준형 워크호스 총기. 5발의 탄창 용량과 4칸의 일반 파츠 슬롯을 가지며, 고유 내장 파츠 없이 순수한 균형을 제공하는 표준 무기입니다."
+description = "표준형 워크호스 총기. 5발의 탄창 용량과 4칸의 일반 파츠 슬롯을 가지며 고유 내장 파츠 없이 순수한 균형을 제공하는 표준 무기입니다."
 icon = ExtResource("1_icon")
 magazine_capacity = 5
+has_chamber = false
 magazine_structure = 0
 reload_turns = 1
 parts_capacity = 4
@@ -16,4 +17,5 @@ passive_dmg_bonus = 0
 passive_pen_bonus = 0
 passive_knockback_bonus = 0
 passive_acc_bonus = 0
+preview_window_size = 2
 weapon_class = 0

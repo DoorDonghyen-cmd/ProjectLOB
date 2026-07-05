@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "교차 구경탄"
-description = "어떤 클래스의 총기에도 장전 가능한 교차 구경용 범용 탄환입니다."
+description = "이종 급탄용 탄환. 직전 발사된 탄환과 구경(Caliber) 규격이 다를 시 고전압 추가 피해 +4가 발동합니다."
 damage = 2
 accuracy = 5
 penetration = 1
@@ -13,4 +13,4 @@ knockback = 0
 slow = 0
 effect_type = 5
 effect_value = 4
-weapon_class = 5
+caliber = 1

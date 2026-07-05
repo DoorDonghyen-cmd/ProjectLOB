@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "7.62mm 관통저격탄"
-description = "일렬로 늘어선 다수의 적을 일직선으로 과관통하여 다중 타격하는 저격탄."
+display_name = "관통 저격탄"
+description = "초고장력 운동 에너지를 지녀, 일렬로 늘어선 타겟 뒤편의 다수 적까지 함께 뚫고 지나가 피해를 입힙니다."
 damage = 4
 accuracy = 7
 penetration = 3
@@ -13,4 +13,4 @@ knockback = 0
 slow = 0
 effect_type = 6
 effect_value = 1
-weapon_class = 3
+caliber = 2

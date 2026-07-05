@@ -7,9 +7,10 @@
 [resource]
 script = ExtResource("3_script")
 display_name = "브리칭 샷건 (Bruiser)"
-description = "돌격형 브루이저 총기. 슬롯 5칸과 탄창 5발 사양을 가지며, 적과의 거리가 극도로 가까울 때 대미지가 폭증하는 포인트블랭크 장치를 기본 내장하고 있습니다."
+description = "돌격형 브루이저 총기. 슬롯 5칸과 탄창 5발 사양을 가지며 적과의 거리가 극도로 가까울 때 대미지가 폭증하는 포인트블랭크 장치를 기본 내장하고 있습니다."
 icon = ExtResource("1_icon")
 magazine_capacity = 5
+has_chamber = false
 magazine_structure = 0
 reload_turns = 1
 parts_capacity = 5
@@ -18,4 +19,5 @@ passive_dmg_bonus = 0
 passive_pen_bonus = 0
 passive_knockback_bonus = 1
 passive_acc_bonus = 0
+preview_window_size = 2
 weapon_class = 4

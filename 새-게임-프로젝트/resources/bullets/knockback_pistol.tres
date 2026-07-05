@@ -1,11 +1,11 @@
 [gd_resource type="Resource" format=3]
 
-[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
-display_name = "9mm 충격??
-description = "?�지?�이 극�??�된 ?�수 충격?? ?�에�???경직??주어 복도 ??2�?�?밀쳐냅?�다."
+display_name = "9mm 충격탄"
+description = "대량의 화약을 충전하여 타격 시 적을 뒤로 크게 밀어냅니다."
 damage = 1
 accuracy = 4
 penetration = 0
@@ -13,5 +13,4 @@ knockback = 2
 slow = 0
 effect_type = 0
 effect_value = 0
-
 weapon_class = 0

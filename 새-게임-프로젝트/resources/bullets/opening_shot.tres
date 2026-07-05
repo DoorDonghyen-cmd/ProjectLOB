@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "12게이지 선제제압탄"
-description = "전투 진입 후 첫 발을 격발 시 적을 완벽하게 저지하며 압도적으로 제압합니다."
+display_name = "선제 사격탄"
+description = "탄창의 맨 처음(첫 사격)으로 격발 시 폭발적인 가스로 대상을 추가로 2칸 밀쳐냅니다."
 damage = 2
 accuracy = 5
-penetration = 5
+penetration = 1
 knockback = 1
 slow = 0
 effect_type = 4
 effect_value = 2
-weapon_class = 4
+caliber = 0

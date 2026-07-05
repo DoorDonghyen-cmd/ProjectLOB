@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "7.62mm 중화력탄"
-description = "관통 및 대미지 밸런스가 조화로운 7.62mm 중화력 탄환."
-damage = 4
+display_name = "콤보 폭발탄"
+description = "직전 격발한 탄환이 대상에 명중했을 시, 불꽃을 연쇄하여 추가 피해를 3 가산합니다."
+damage = 2
 accuracy = 6
 penetration = 1
 knockback = 0
 slow = 0
-effect_type = 0
-effect_value = 0
-weapon_class = 3
+effect_type = 2
+effect_value = 3
+caliber = 0

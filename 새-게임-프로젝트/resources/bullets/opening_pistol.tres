@@ -1,17 +1,16 @@
 [gd_resource type="Resource" format=3]
 
-[ext_resource type="Script" uid="uid://ciga863h4a5pe" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
 
 [resource]
 script = ExtResource("1_script")
-display_name = "9mm ?�반??
-description = "?�?�용 ?�지?�을 지???�환. ?�수 방탄 ?�비가 ?�는 ?�에�??�수 물리 ?�미�?�??�힙?�다."
-damage = 3
-accuracy = 7
-penetration = 0
-knockback = 0
+display_name = "9mm 견제탄"
+description = "장전된 첫 탄환 발사 시 강력한 경직을 일으켜 적을 넉백시킵니다."
+damage = 2
+accuracy = 5
+penetration = 1
+knockback = 1
 slow = 0
-effect_type = 0
-effect_value = 0
-
+effect_type = 4
+effect_value = 2
 weapon_class = 0

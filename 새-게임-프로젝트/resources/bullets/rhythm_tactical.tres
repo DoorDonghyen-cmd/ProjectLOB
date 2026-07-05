@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "7.62mm 중화력탄"
-description = "관통 및 대미지 밸런스가 조화로운 7.62mm 중화력 탄환."
-damage = 4
+display_name = "리듬 전술탄"
+description = "경량 사격 지원형 탄환. 직전 격발이 명중 상태일 때 연속 피해 +2를 부여합니다."
+damage = 3
 accuracy = 6
 penetration = 1
 knockback = 0
 slow = 0
-effect_type = 0
-effect_value = 0
-weapon_class = 3
+effect_type = 2
+effect_value = 2
+caliber = 0

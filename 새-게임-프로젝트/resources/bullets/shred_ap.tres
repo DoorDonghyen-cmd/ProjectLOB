@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "5.56mm 파쇄철갑탄"
-description = "방어구 파쇄 기능을 극대화하여 적의 장갑을 즉각 무력화시키는 탄환."
+display_name = "파쇄 철갑탄"
+description = "복합식 장갑 파괴형 탄환. 피격된 타겟의 방어력을 3만큼 대폭 영구 삭감합니다."
 damage = 1
 accuracy = 5
 penetration = 4
@@ -13,4 +13,4 @@ knockback = 0
 slow = 0
 effect_type = 1
 effect_value = 3
-weapon_class = 2
+caliber = 1
