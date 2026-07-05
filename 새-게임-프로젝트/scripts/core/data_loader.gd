@@ -24,7 +24,7 @@ static func ensure_loaded() -> void:
 
 ## ── 클래스 문자열 파싱 헬퍼 ──
 static func _parse_class(cls_str: String) -> int:
-	match cls_str.strip_edges().lower():
+	match cls_str.strip_edges().to_lower():
 		"pistol": return Enums.WeaponClass.PISTOL
 		"smg": return Enums.WeaponClass.SMG
 		"rifle": return Enums.WeaponClass.RIFLE
@@ -56,7 +56,7 @@ static func _load_gun_stats() -> void:
 			"display_name": line[1].strip_edges(),
 			"class": _parse_class(line[2]),
 			"magazine_capacity": int(line[3]),
-			"has_chamber": line[4].strip_edges().lower() == "true",
+			"has_chamber": line[4].strip_edges().to_lower() == "true",
 			"reload_turns": int(line[5]),
 			"parts_capacity": int(line[6]),
 			"passive_dmg_bonus": int(line[7]),
