@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_smg_special_orange.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = ".45ACP 콤보탄"
 description = "연속 명중 시 반응 장약이 폭발하여 추가 대미지를 입힙니다."
+icon = ExtResource("2_texture")
 damage = 2
 accuracy = 6
 penetration = 1

@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_universal.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "교차 구경탄"
 description = "어떤 클래스의 총기에도 장전 가능한 교차 구경용 범용 탄환입니다."
+icon = ExtResource("2_texture")
 damage = 2
 accuracy = 5
 penetration = 1

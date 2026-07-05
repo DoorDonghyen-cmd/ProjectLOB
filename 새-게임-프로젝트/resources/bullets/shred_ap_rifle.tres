@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_5_56mm_special_magenta.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "5.56mm 파쇄철갑탄"
 description = "방어구 파쇄 기능을 극대화하여 적의 장갑을 즉각 무력화시키는 탄환."
+icon = ExtResource("2_texture")
 damage = 1
 accuracy = 5
 penetration = 4

@@ -856,7 +856,9 @@ func _build_drawer_panel() -> void:
 	_drawer_confirm_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	drawer_actions.add_child(_drawer_confirm_btn)
 	
-	_refresh_ammo_drawer()
+	# 초기화: 가방/탄약 탭(0)을 강제로 활성화하여 가시성 및 렌더링 동기화
+	_switch_drawer_tab_idx(0)
+
 
 func _create_drawer_item(title: String, desc: String, can_use: bool, click_callback: Callable = Callable()) -> HBoxContainer:
 	var item_hbox := HBoxContainer.new()
@@ -934,7 +936,7 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	if icon_tex:
 		var bg_icon := TextureRect.new()
 		bg_icon.texture = icon_tex
-		bg_icon.custom_minimum_size = Vector2(44, 44) # 큼직하게 44px
+		bg_icon.custom_minimum_size = Vector2(32, 32) # 32px로 축소
 		bg_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		bg_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		bg_icon.modulate = Color(1, 1, 1, 0.45) # 45%의 선명한 불투명도
@@ -944,7 +946,7 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 		bg_icon.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 		bg_icon.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 		bg_icon.grow_vertical = Control.GROW_DIRECTION_BEGIN
-		bg_icon.position = Vector2(82 - 44 - 6, 70 - 44 - 6) # 마진 및 우측 하단 오프셋 조정
+		bg_icon.position = Vector2(82 - 32 - 6, 70 - 32 - 6) # 마진 및 우측 하단 오프셋 조정
 		
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 8)
@@ -1875,21 +1877,32 @@ func _update_phase_state() -> void:
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 			_refresh_loading_stack()
 			_refresh_loading_inventory()
+			_set_agent_frame(0) # 대기/장전 모션 (1번째 프레임)
 		CombatManager.State.PLAYER_TURN:
 			_phase_label.text = "아군 작전 페이즈"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
+			_set_agent_frame(2) # 조준/전투 모션 (3번째 프레임 인덱스 2로 보정)
 		CombatManager.State.RELOADING:
 			_phase_label.text = "탄창 리로드 중"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_WARNING)
+			_set_agent_frame(0)
 		CombatManager.State.WON:
 			_phase_label.text = "교전 승리"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+			_set_agent_frame(0)
 		CombatManager.State.LOST:
 			_phase_label.text = "작전 실패"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
+			_set_agent_frame(0)
 		_:
 			_phase_label.text = "전투 대기 중"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_DIM)
+			_set_agent_frame(0)
+
+func _set_agent_frame(frame_idx: int) -> void:
+	if is_instance_valid(_agent_sprite) and _agent_sprite.texture is AtlasTexture:
+		var atlas := _agent_sprite.texture as AtlasTexture
+		atlas.region = Rect2(278 * frame_idx, 0, 278, 278)
 
 # ── 버튼 핸들러 연동 ──
 
@@ -1966,6 +1979,7 @@ func _on_loading_confirm() -> void:
 		
 		# 장전 완료 후 가방 서랍 닫기
 		_toggle_drawer(false)
+		_set_agent_frame(2) # 강제로 즉각 조준 자세 전환 (상태 전이 딜레이 대응)
 
 func _on_enemy_sprite_gui_input(event: InputEvent, clicked_enemy: EnemyInstance) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -2089,6 +2103,7 @@ func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) ->
 	tween.tween_property(_agent_sprite, "rotation", 0.0, 0.2)\
 		.set_trans(Tween.TRANS_QUAD)\
 		.set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(func(): _set_agent_frame(2)) # 사격 반동 후 조준 자세 복구
 
 func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 	add_combat_log("[color=#37e0ac]💀 처치: %s를 무력화시켰습니다![/color]" % enemy_inst.data.display_name)

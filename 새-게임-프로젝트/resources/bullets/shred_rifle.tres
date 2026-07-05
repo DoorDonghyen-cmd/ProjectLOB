@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_5_56mm_special_cyan.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "5.56mm 철갑탄"
 description = "피격된 적의 전술 방어구(DEF)를 영구적으로 파쇄하여 약화시킵니다."
+icon = ExtResource("2_texture")
 damage = 2
 accuracy = 5
 penetration = 4

@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_7_62mm_special_blue.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "7.62mm 관통저격탄"
 description = "일렬로 늘어선 다수의 적을 일직선으로 과관통하여 다중 타격하는 저격탄."
+icon = ExtResource("2_texture")
 damage = 4
 accuracy = 7
 penetration = 3

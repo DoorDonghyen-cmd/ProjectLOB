@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_7_62mm_special_cyan.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "7.62mm 중화력탄"
 description = "관통 및 대미지 밸런스가 조화로운 7.62mm 중화력 탄환."
+icon = ExtResource("2_texture")
 damage = 4
 accuracy = 6
 penetration = 1

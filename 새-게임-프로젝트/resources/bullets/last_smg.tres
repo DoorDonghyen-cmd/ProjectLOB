@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_smg_special_yellow.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = ".45ACP 연발마무리탄"
 description = "탄창의 마지막을 장식하는 탄환으로 화력이 증폭되어 격발됩니다."
+icon = ExtResource("2_texture")
 damage = 2
 accuracy = 5
 penetration = 2

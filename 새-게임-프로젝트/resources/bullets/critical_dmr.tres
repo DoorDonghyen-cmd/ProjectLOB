@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_7_62mm_special_yellow.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "7.62mm 결전탄"
 description = "지정사수소총의 한 발을 극대화하여 결정적인 피해를 입히는 결전용 탄환."
+icon = ExtResource("2_texture")
 damage = 5
 accuracy = 6
 penetration = 2

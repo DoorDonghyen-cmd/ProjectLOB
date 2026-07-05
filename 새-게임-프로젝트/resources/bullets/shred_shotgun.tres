@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_12g_special_blue.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "12게이지 장갑파괴탄"
 description = "근접 궤적 전체에 파편을 흩뿌려 적의 장갑(DEF)을 영구히 붕괴시킵니다."
+icon = ExtResource("2_texture")
 damage = 1
 accuracy = 4
 penetration = 3

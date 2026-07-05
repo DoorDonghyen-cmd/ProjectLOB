@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_9mm_special_cyan.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = "9mm 충격탄"
 description = "대량의 화약을 충전하여 타격 시 적을 뒤로 크게 밀어냅니다."
+icon = ExtResource("2_texture")
 damage = 1
 accuracy = 4
 penetration = 0

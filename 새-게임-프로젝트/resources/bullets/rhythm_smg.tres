@@ -1,11 +1,13 @@
-[gd_resource type="Resource" format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_smg_special_magenta.png" id="2_texture"]
 
 [resource]
 script = ExtResource("1_script")
 display_name = ".45ACP 리듬탄"
 description = "동일 클래스 탄환을 리듬에 맞춰 연속 격발 시 가산 대미지를 입힙니다."
+icon = ExtResource("2_texture")
 damage = 3
 accuracy = 6
 penetration = 1
