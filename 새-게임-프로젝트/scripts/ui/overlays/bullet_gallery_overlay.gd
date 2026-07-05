@@ -168,13 +168,16 @@ func open_gallery() -> void:
 		var stat_lbl = parent_scene.make_label("DMG:%d ACC:%d PEN:%d" % [b_data.damage, b_data.accuracy, b_data.penetration], 8, parent_scene.C_TEXT)
 		info_vbox.add_child(stat_lbl)
 		
-		# 구경 규격 문자열
+		# 클래스 규격 문자열
 		var cal_name = ""
-		match b_data.caliber:
-			Enums.Caliber.CAL_9MM: cal_name = "9mm"
-			Enums.Caliber.CAL_556: cal_name = "5.56"
-			Enums.Caliber.CAL_762: cal_name = "7.62"
-		var caliber_lbl = parent_scene.make_label("구경: %s / KB:%d / S:%d" % [cal_name, b_data.knockback, b_data.slow], 8, parent_scene.C_DIM)
+		match b_data.weapon_class:
+			Enums.WeaponClass.PISTOL: cal_name = "Pistol(9mm)"
+			Enums.WeaponClass.SMG: cal_name = "SMG(.45)"
+			Enums.WeaponClass.RIFLE: cal_name = "Rifle(5.56)"
+			Enums.WeaponClass.DMR: cal_name = "DMR(7.62)"
+			Enums.WeaponClass.SHOTGUN: cal_name = "Shotgun(12G)"
+			Enums.WeaponClass.UNIVERSAL: cal_name = "Universal"
+		var caliber_lbl = parent_scene.make_label("클래스: %s / KB:%d / S:%d" % [cal_name, b_data.knockback, b_data.slow], 8, parent_scene.C_DIM)
 		info_vbox.add_child(caliber_lbl)
 		
 		if b_data.effect_type != Enums.BulletEffect.NONE:
@@ -184,7 +187,7 @@ func open_gallery() -> void:
 				Enums.BulletEffect.COMBO: eff_name = "콤보 사격"
 				Enums.BulletEffect.LAST_SHOT: eff_name = "막탄 강화"
 				Enums.BulletEffect.OPENING_SHOT: eff_name = "선제 사격"
-				Enums.BulletEffect.CALIBER_DIFF: eff_name = "구경 교차"
+				Enums.BulletEffect.CALIBER_DIFF: eff_name = "클래스 교차"
 				Enums.BulletEffect.PIERCE: eff_name = "관통 다중"
 			var eff_lbl = parent_scene.make_label("★ %s (%d)" % [eff_name, b_data.effect_value], 8, Color(0.3, 0.9, 0.5))
 			info_vbox.add_child(eff_lbl)

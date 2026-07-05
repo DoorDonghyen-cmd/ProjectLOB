@@ -1,3 +1,9 @@
-id,display_name,display_name_eng,capacity,reload_turns,passive_dmg_bonus,passive_pen_bonus,parts_capacity
-workhorse,표준 소총,WORKHORSE,5,2,0,0,3
-marksman,정밀 저격총,MARKSMAN,3,3,1,1,2
+id,display_name,class,magazine_capacity,has_chamber,reload_turns,parts_capacity,passive_dmg_bonus,passive_pen_bonus,passive_knockback_bonus,passive_acc_bonus
+dmr,정밀 지정사수소총 (Marksman),dmr,3,true,1,4,0,0,0,1
+gambler,도박형 기관단총 (Gambler),smg,5,false,2,5,2,0,0,0
+heavy,중장형 소총 (Heavy),rifle,6,false,2,4,1,1,1,-1
+revolver,전술 리볼버 (Workhorse),pistol,5,false,1,4,0,0,0,0
+shotgun,브리칭 샷건 (Bruiser),shotgun,5,false,1,5,0,0,1,0
+smg,전술 기관단총 (Tempo),smg,6,true,2,4,-1,0,0,0
+stance_hunter,태세 사냥꾼 (Stance Hunter),rifle,5,false,2,4,0,0,0,1
+trickster,곡예형 권총 (Trickster),pistol,4,true,1,3,0,0,0,1

@@ -22,6 +22,10 @@ signal player_died()
 signal combat_log(message: String)
 signal magazine_updated(remaining: int, capacity: int)
 signal bullet_unloaded(bullet: BulletData)
+signal bullet_exiled(bullet: BulletData)
+signal draw_pile_updated(bullets: Array[BulletData])
+signal piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletData], exile_pile: Array[BulletData])
+signal buttstroke_triggered(enemy: EnemyInstance, new_distance: int)
 
 # ── 상태 ──
 enum State { INACTIVE, LOADING, PLAYER_TURN, RELOADING, WON, LOST }
@@ -38,6 +42,12 @@ var _insert_seal_active: bool = false
 var double_tap_active: bool = false
 var eject_used_this_turn: bool = false
 
+# ── 순환 탄약 & 긴급 격퇴 가변 상태 ──
+var draw_pile: Array[BulletData] = []
+var discard_pile: Array[BulletData] = []
+var exile_pile: Array[BulletData] = []
+var buttstroke_used_this_encounter: bool = false
+
 # ── 총기 파츠 및 기믹 상태 ──
 var equipped_parts: Array[PartData] = []
 var chaser_pen_bonus: int = 0
@@ -49,7 +59,7 @@ var visible_magazine_slots: int = 2
 var final_kill_distance: int = 99
 
 # ── 구경 기반 순서 기억 ──
-var last_fired_caliber: Enums.Caliber = Enums.Caliber.CAL_9MM
+var last_fired_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 
 # ── 전투 세션 통계 ──
 var battle_stats := {
@@ -94,7 +104,7 @@ func get_alive_enemies() -> Array[EnemyInstance]:
 
 
 ## 인카운터를 시작한다. 총과 적 데이터 배열, 렐릭 및 장착 파츠 목록을 받아 초기화.
-func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], relics: Array[String] = [], parts: Array[PartData] = []) -> void:
+func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bullets: Array[BulletData], relics: Array[String] = [], parts: Array[PartData] = []) -> void:
 	gun = gun_data
 	enemies.clear()
 	var offset := 0
@@ -110,7 +120,15 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], relics: A
 	active_relics = relics
 	_insert_seal_active = false
 	double_tap_active = false
-	last_fired_caliber = Enums.Caliber.CAL_9MM
+	last_fired_class = Enums.WeaponClass.PISTOL
+	
+	# 탄약 순환 자원 데이터 및 긴급 격퇴 초기화
+	draw_pile = deck_bullets.duplicate()
+	discard_pile.clear()
+	exile_pile.clear()
+	buttstroke_used_this_encounter = false
+	draw_pile_updated.emit(draw_pile)
+	piles_updated.emit(draw_pile, discard_pile, exile_pile)
 	
 	# 전투 통계 초기화
 	var init_min_dist = 99
@@ -164,6 +182,16 @@ func confirm_loading(bullets: Array[BulletData]) -> void:
 	if state != State.LOADING:
 		return
 	magazine.load_bullets(bullets)
+	
+	# 장전된 탄환을 가방(draw_pile)에서 제외
+	for b in bullets:
+		for i in range(draw_pile.size()):
+			if draw_pile[i].display_name == b.display_name:
+				draw_pile.remove_at(i)
+				break
+	draw_pile_updated.emit(draw_pile)
+	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	
 	state = State.PLAYER_TURN
 	eject_used_this_turn = false
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
@@ -239,6 +267,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		combat_log.emit("⚠ 타겟이 없습니다.")
 		return
 
+	var is_refunded := false
 	var is_first := magazine.is_next_first_shot()
 	var is_last := magazine.is_next_last_shot()
 	
@@ -334,24 +363,24 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				part_dmg_bonus += deep_bonus
 				combat_log.emit("   ↳ 📥 [딥로더] 탄창 깊이(%d)에 따른 DMG +%d 가산" % [deep_bonus, deep_bonus])
 				
-		# 리듬 챔버 (RHYTHM_CHAMBER): 동일 구경 연속 격발 시 DMG 보너스
+		# 리듬 챔버 (RHYTHM_CHAMBER): 동일 클래스 연속 격발 시 DMG 보너스
 		if _has_part(Enums.PartID.RHYTHM_CHAMBER):
-			if bullet.caliber == last_fired_caliber:
+			if bullet.weapon_class == last_fired_class:
 				consecutive_caliber_count += 1
 			else:
 				consecutive_caliber_count = 1
 			if consecutive_caliber_count >= 2:
 				var rhythm_bonus := consecutive_caliber_count
 				part_dmg_bonus += rhythm_bonus
-				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 구경 %d회 격발! DMG +%d 가산" % [consecutive_caliber_count, rhythm_bonus])
+				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 클래스 %d회 격발! DMG +%d 가산" % [consecutive_caliber_count, rhythm_bonus])
 		else:
 			consecutive_caliber_count = 0
 			
-		# 인터럽터 (INTERRUPTER): 직전 구경과 다를 시 DMG 보너스 (+3)
+		# 인터럽터 (INTERRUPTER): 직전 클래스와 다를 시 DMG 보너스 (+3)
 		if _has_part(Enums.PartID.INTERRUPTER):
-			if bullet.caliber != last_fired_caliber:
+			if bullet.weapon_class != last_fired_class:
 				part_dmg_bonus += 3
-				combat_log.emit("   ↳ 🔀 [인터럽터] 구경 교차 격발! DMG +3 가산")
+				combat_log.emit("   ↳ 🔀 [인터럽터] 클래스 교차 격발! DMG +3 가산")
 				
 		# 언더플로우 (UNDERFLOW): 탄창 가장 마지막 1발(바닥 탄) 발사 시 DMG +5
 		if _has_part(Enums.PartID.UNDERFLOW) and is_last:
@@ -433,17 +462,19 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				breakdown += " + [콤보 보너스] %d" % bullet.effect_value
 				combat_log.emit("   ↳ 🔥 [콤보 사격] 연속 명중 보너스! 추가 대미지 +%d" % bullet.effect_value)
 
-		# ── 2.5 구경 다름 조건부 추가피해 ──
+		# ── 2.5 클래스 다름/교차구경 조건부 추가피해 ──
 		if bullet.effect_type == Enums.BulletEffect.CALIBER_DIFF:
-			if bullet.caliber != last_fired_caliber:
+			if bullet.weapon_class != last_fired_class or bullet.weapon_class == Enums.WeaponClass.UNIVERSAL:
 				var bonus := bullet.effect_value
 				damage += bonus
 				breakdown += " + [구경다름 보너스] %d" % bonus
-				combat_log.emit("   ↳ ⚡ [구경 다름] 직전 구경(%s)과 다름! 추가 대미지 +%d" % [_caliber_name(last_fired_caliber), bonus])
+				combat_log.emit("   ↳ ⚡ [교차 구경] 직전 클래스(%s)와 다름! 추가 대미지 +%d" % [_class_name(last_fired_class), bonus])
 
 		# ── 3. 대미지 적용 ──
 		_apply_damage_to_enemy(target, damage)
-		if damage == 0:
+		if damage > 0:
+			is_refunded = true
+		else:
 			battle_stats.zero_damage_hits += 1
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미지" % [bullet.display_name, target.data.display_name, damage])
 		combat_log.emit("   %s" % breakdown)
@@ -607,8 +638,18 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		bullet_fired.emit(bullet, false, 0)
 		battle_stats.misses += 1
 
-	# 직전 구경 업데이트
-	last_fired_caliber = bullet.caliber
+	# 탄약 순환 자원 정산
+	if is_refunded:
+		discard_pile.append(bullet)
+		combat_log.emit("   ↳ ♻ [순환] 유효 적중! 탄환이 버린 더미로 이동했습니다.")
+	else:
+		exile_pile.append(bullet)
+		bullet_exiled.emit(bullet)
+		combat_log.emit("   ↳ 💀 [소멸] 관통 실패 또는 빗나감! 탄환이 이번 전투에서 소멸(Exile) 처리되었습니다.")
+	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+
+	# 직전 클래스 업데이트
+	last_fired_class = bullet.weapon_class
 
 	# 탄창 상태 갱신
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
@@ -648,12 +689,15 @@ func _apply_damage_to_enemy(enemy: EnemyInstance, dmg_amount: int) -> void:
 		enemy.apply_damage(dmg_amount)
 
 
-## 구경 이름 텍스트 변환
-func _caliber_name(c: Enums.Caliber) -> String:
-	match c:
-		Enums.Caliber.CAL_9MM: return "9mm"
-		Enums.Caliber.CAL_556: return "5.56"
-		Enums.Caliber.CAL_762: return "7.62"
+## 클래스 이름 텍스트 변환
+func _class_name(cls: Enums.WeaponClass) -> String:
+	match cls:
+		Enums.WeaponClass.PISTOL: return "권총(9mm)"
+		Enums.WeaponClass.SMG: return "기관단총(.45ACP)"
+		Enums.WeaponClass.RIFLE: return "소총(5.56mm)"
+		Enums.WeaponClass.DMR: return "지정사수(7.62mm)"
+		Enums.WeaponClass.SHOTGUN: return "샷건(12Gauge)"
+		Enums.WeaponClass.UNIVERSAL: return "교차구경"
 	return "?"
 
 
@@ -674,9 +718,12 @@ func request_unload() -> void:
 			
 			if magazine.get_remaining() > 0:
 				var lost_bullet = magazine._bullets.pop_front() # 탄창 바닥 탄 제거
+				exile_pile.append(lost_bullet)
+				bullet_exiled.emit(lost_bullet)
 				combat_log.emit("   ↳ ⚠ [퀵로드 패널티] 탄창 바닥의 [%s] 탄환이 유실되어 폐기되었습니다." % lost_bullet.display_name)
 				
 			magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
+			piles_updated.emit(draw_pile, discard_pile, exile_pile)
 			
 			if RunManager.infiltration_risk_level >= 5:
 				combat_log.emit("🚨 [완벽 봉쇄령] 빼내기 전술 기동의 후폭풍으로 모든 적이 1칸 전진합니다!")
@@ -688,9 +735,12 @@ func request_unload() -> void:
 		
 	var bullet := magazine.unload()
 	if bullet:
-		combat_log.emit("🗑 [%s] 탄환을 빼내어 이번 인카운터 풀에서 제외(소실)했습니다." % bullet.display_name)
+		exile_pile.append(bullet)
+		bullet_exiled.emit(bullet)
+		combat_log.emit("🗑 [%s] 탄환을 빼내어 이번 인카운터 풀에서 제외(소멸)했습니다." % bullet.display_name)
 		bullet_unloaded.emit(bullet)
 		magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
+		piles_updated.emit(draw_pile, discard_pile, exile_pile)
 		
 		if RunManager.infiltration_risk_level >= 5:
 			combat_log.emit("🚨 [완벽 봉쇄령] 빼내기 전술 기동의 후폭풍으로 모든 적이 1칸 전진합니다!")
@@ -747,7 +797,11 @@ func request_reload() -> void:
 
 	var remaining := magazine.get_remaining()
 	if remaining > 0:
-		combat_log.emit("남은 %d발을 버리고 리로드합니다." % remaining)
+		combat_log.emit("남은 %d발을 가방으로 반환하고 리로드합니다." % remaining)
+		while not magazine.is_empty():
+			var b := magazine.unload()
+			if b:
+				draw_pile.append(b)
 
 	magazine.clear()
 	var turns := gun.reload_turns
@@ -765,10 +819,36 @@ func request_reload() -> void:
 		if state == State.LOST:
 			return
 
+	# 리로드 완료: 버린 카드 더미(discard_pile)를 가방(draw_pile)에 합산 및 셔플
+	if not discard_pile.is_empty():
+		draw_pile.append_array(discard_pile)
+		discard_pile.clear()
+		draw_pile.shuffle()
+		combat_log.emit("♻ 버린 더미의 탄환들이 가방(Draw Pile)으로 셔플 순환되었습니다.")
+	draw_pile_updated.emit(draw_pile)
+	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+
 	reload_finished.emit()
 	combat_log.emit("🔄 리로드 완료!")
 	magazine_updated.emit(0, magazine.get_capacity())
 	_enter_loading_phase()
+
+
+## 거리 1에 다다른 최근접 적에 대해 전투당 1회 무상 자동 격퇴 발동 검사.
+## 격퇴 발동 성공하여 사망 정산을 우회해야 하는 경우 true 반환.
+func _check_and_trigger_buttstroke(e: EnemyInstance) -> bool:
+	if e.current_distance == 1 and not buttstroke_used_this_encounter:
+		buttstroke_used_this_encounter = true
+		
+		# 저항 무시 2칸 강제 넉백 (1 ➡️ 3)
+		e.current_distance = e.current_distance + 2
+		# 1턴 기절 (둔화 99 누적)
+		e.apply_slow(99)
+		
+		combat_log.emit("🛡️ [긴급 격퇴] 적 [%s]이 요원의 거리에 도달했습니다! 개머리판으로 격퇴하여 2m 넉백 및 기절 부여! (남은 생존 장치: 0)" % e.data.display_name)
+		buttstroke_triggered.emit(e, e.current_distance)
+		return true
+	return false
 
 
 ## 모든 생존 적 전진 처리
@@ -782,6 +862,10 @@ func _all_enemies_advance() -> void:
 		if e.data.archetype != Enums.EnemyArchetype.CASTER:
 			enemy_moved.emit(e, e.current_distance, speed_used)
 			combat_log.emit("👣 [%s] 전진 %d칸 → 거리 %d" % [e.data.display_name, speed_used, e.current_distance])
+
+			# 자동 긴급 격퇴 검사 추가
+			if _check_and_trigger_buttstroke(e):
+				continue
 
 			if e.is_at_player():
 				state = State.LOST
@@ -813,6 +897,10 @@ func _caster_force_advance_all(amount: int) -> void:
 		enemy_moved.emit(e, e.current_distance, amount)
 		combat_log.emit("👣 [술사 강제전진] [%s]가 %d칸 강제 이동당했습니다! 거리 %d" % [e.data.display_name, amount, e.current_distance])
 		
+		# 자동 긴급 격퇴 검사 추가
+		if _check_and_trigger_buttstroke(e):
+			continue
+
 		if e.is_at_player():
 			state = State.LOST
 			combat_log.emit("💀 [%s]가 도달했습니다... 사망!" % e.data.display_name)

@@ -9,7 +9,7 @@ extends Resource
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var icon: Texture2D
-@export var caliber: Enums.Caliber = Enums.Caliber.CAL_9MM
+@export var weapon_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 
 @export_group("기본 스탯")
 ## 대미지 (DMG) — 적에게 가하는 기본 피해량

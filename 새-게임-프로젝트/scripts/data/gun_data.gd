@@ -10,6 +10,7 @@ extends Resource
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var icon: Texture2D
+@export var weapon_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 
 @export_group("탄창 규칙")
 ## 탄창 크기 — 한 번에 장전 가능한 최대 총알 수

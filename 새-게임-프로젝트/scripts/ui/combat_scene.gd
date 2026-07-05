@@ -14,9 +14,9 @@ var _gun_trickster: GunData = preload("res://resources/guns/trickster.tres")
 var _gun_gambler: GunData = preload("res://resources/guns/gambler.tres")
 var _gun_stance_hunter: GunData = preload("res://resources/guns/stance_hunter.tres")
 
-var _bullets_basic: BulletData = preload("res://resources/bullets/basic_bullet.tres")
-var _bullets_ap: BulletData = preload("res://resources/bullets/armor_piercing.tres")
-var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_slug.tres")
+var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
+var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
+var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_pistol.tres")
 
 var _enemy_rusher: EnemyData = preload("res://resources/enemies/rusher.tres")
 var _enemy_tank: EnemyData = preload("res://resources/enemies/tank.tres")
@@ -27,7 +27,7 @@ var _enemy_absorber: EnemyData = preload("res://resources/enemies/absorber_mech.
 var _enemy_stalker: EnemyData = preload("res://resources/enemies/nano_stalker.tres")
 var _enemy_scrambler: EnemyData = preload("res://resources/enemies/scrambler_drone.tres")
 var _enemy_neuro_caster: EnemyData = preload("res://resources/enemies/neuro_caster.tres")
-var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_bullet.tres")
+var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
 
 # ── 색상 상수 ──
 const C_BG := Color(0.06, 0.06, 0.10)

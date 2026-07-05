@@ -10,11 +10,11 @@ var run_manager: RunManager
 var combat_manager: CombatManager
 
 # ── 프리로드 리소스 ──
-var _bullets_basic: BulletData = preload("res://resources/bullets/basic_bullet.tres")
-var _bullets_ap: BulletData = preload("res://resources/bullets/armor_piercing.tres")
-var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_slug.tres")
-var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_bullet.tres")
-var _bullets_slow: BulletData = preload("res://resources/bullets/slow_bullet.tres")
+var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
+var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
+var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_pistol.tres")
+var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
+var _bullets_slow: BulletData = preload("res://resources/bullets/slow_pistol.tres")
 var _death_burst_scene = preload("res://scenes/effects/death_burst.tscn")
 var _bullet_trail_scene = preload("res://scenes/effects/bullet_trail.tscn")
 
@@ -817,7 +817,13 @@ func start_combat(gun_data: GunData, enemy_datas: Array[EnemyData], cm: CombatMa
 		var temp_ed := ed.duplicate()
 		temp_ed.start_distance = maxi(ed.start_distance + dist_modifier, 4)
 		enemy_data_list.append(temp_ed)
-	combat_manager.start_encounter(gun_data, enemy_data_list, run_manager.active_relics)
+		
+	var initial_deck: Array[BulletData] = []
+	var relics: Array[String] = []
+	if run_manager:
+		initial_deck = run_manager.deck
+		relics = run_manager.active_relics
+	combat_manager.start_encounter(gun_data, enemy_data_list, initial_deck, relics)
 
 func _connect_signals() -> void:
 	combat_manager.encounter_started.connect(_on_encounter_started)

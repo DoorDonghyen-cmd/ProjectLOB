@@ -111,18 +111,68 @@ func start_new_run(gun: GunData, basic_bullet: BulletData, ap_bullet: BulletData
 	if current_gun != null and current_gun.default_part != null:
 		equipped_parts.append(current_gun.default_part)
 	
-	# 기본 덱 구성 (메타 해금 레벨에 따라 수량 증가)
-	var jhp_count := 5 + meta_backpack_lvl
-	var fmj_count := 2 + (1 if meta_backpack_lvl >= 1 else 0) + (1 if meta_backpack_lvl >= 2 else 0) + (1 if meta_backpack_lvl >= 3 else 0)
-	var kb_count := 1 + (1 if meta_backpack_lvl >= 2 else 0)
-	
-	for i in range(jhp_count):
-		deck.append(basic_bullet.duplicate())
-	for i in range(fmj_count):
-		deck.append(ap_bullet.duplicate())
-	for i in range(kb_count):
-		deck.append(kb_bullet.duplicate())
-		
+	# 기본 덱 구성 (총기 클래스에 따라 동적 매핑)
+	if current_gun != null:
+		var cls: int = current_gun.weapon_class
+		var basic_path := ""
+		var specA_path := ""
+		var specB_path := ""
+		var basic_cnt := 5
+		var specA_cnt := 2
+		var specB_cnt := 1
+
+		match cls:
+			Enums.WeaponClass.PISTOL:
+				basic_path = "res://resources/bullets/basic_pistol.tres"
+				specA_path = "res://resources/bullets/knockback_pistol.tres"
+				specB_path = "res://resources/bullets/opening_pistol.tres"
+				basic_cnt = 5 + meta_backpack_lvl
+				specA_cnt = 2 + (1 if meta_backpack_lvl >= 2 else 0)
+				specB_cnt = 1
+			Enums.WeaponClass.SMG:
+				basic_path = "res://resources/bullets/basic_smg.tres"
+				specA_path = "res://resources/bullets/combo_smg.tres"
+				specB_path = "res://resources/bullets/rhythm_smg.tres"
+				basic_cnt = 6 + meta_backpack_lvl
+				specA_cnt = 2
+				specB_cnt = 1
+			Enums.WeaponClass.RIFLE:
+				basic_path = "res://resources/bullets/basic_rifle.tres"
+				specA_path = "res://resources/bullets/shred_rifle.tres"
+				specB_path = "res://resources/bullets/last_rifle.tres"
+				basic_cnt = 6 + meta_backpack_lvl
+				specA_cnt = 2
+				specB_cnt = 1
+			Enums.WeaponClass.DMR:
+				basic_path = "res://resources/bullets/basic_dmr.tres"
+				specA_path = "res://resources/bullets/heavy_dmr.tres"
+				specB_path = "res://resources/bullets/pierce_dmr.tres"
+				basic_cnt = 3 + meta_backpack_lvl
+				specA_cnt = 2
+				specB_cnt = 1
+			Enums.WeaponClass.SHOTGUN:
+				basic_path = "res://resources/bullets/basic_shotgun.tres"
+				specA_path = "res://resources/bullets/shred_shotgun.tres"
+				specB_path = "res://resources/bullets/heavy_shotgun.tres"
+				basic_cnt = 5 + meta_backpack_lvl
+				specA_cnt = 2
+				specB_cnt = 1
+
+		var b_res: BulletData = load(basic_path)
+		var sa_res: BulletData = load(specA_path)
+		var sb_res: BulletData = load(specB_path)
+
+		if b_res: _sync_bullet_stats_from_csv(b_res)
+		if sa_res: _sync_bullet_stats_from_csv(sa_res)
+		if sb_res: _sync_bullet_stats_from_csv(sb_res)
+
+		for i in range(basic_cnt):
+			if b_res: deck.append(b_res.duplicate())
+		for i in range(specA_cnt):
+			if sa_res: deck.append(sa_res.duplicate())
+		for i in range(specB_cnt):
+			if sb_res: deck.append(sb_res.duplicate())
+			
 	# 맵 데이터 생성 및 조건부 우회 경로 업데이트
 	generate_run_map()
 	update_conditional_paths()
@@ -134,12 +184,15 @@ func _sync_gun_stats_from_csv(g: GunData) -> void:
 	var res_id := g.resource_path.get_file().get_basename()
 	var csv := DataLoader.get_gun(res_id)
 	if not csv.is_empty():
-		g.capacity = csv.capacity
+		g.magazine_capacity = csv.magazine_capacity
+		g.weapon_class = csv.class
 		g.reload_turns = csv.reload_turns
 		g.passive_dmg_bonus = csv.passive_dmg_bonus
 		g.passive_pen_bonus = csv.passive_pen_bonus
+		g.passive_knockback_bonus = csv.passive_knockback_bonus
+		g.passive_acc_bonus = csv.passive_acc_bonus
 		g.parts_capacity = csv.parts_capacity
-		print("DataLoader: 총기 [%s] 스탯 CSV 동기화 완료 (장탄수: %d)" % [res_id, g.capacity])
+		print("DataLoader: 총기 [%s] 스탯 CSV 동기화 완료 (장탄수: %d)" % [res_id, g.magazine_capacity])
 
 
 func _sync_bullet_stats_from_csv(b: BulletData) -> void:
@@ -152,10 +205,10 @@ func _sync_bullet_stats_from_csv(b: BulletData) -> void:
 		b.penetration = csv.penetration
 		b.accuracy = csv.accuracy
 		b.knockback = csv.knockback
-		match csv.caliber:
-			0: b.caliber = Enums.Caliber.CAL_9MM
-			1: b.caliber = Enums.Caliber.CAL_556
-			2: b.caliber = Enums.Caliber.CAL_762
+		b.slow = csv.slow
+		b.weapon_class = csv.class
+		b.effect_type = csv.effect_type
+		b.effect_value = csv.effect_value
 		print("DataLoader: 탄환 [%s] 스탯 CSV 동기화 완료 (DMG: %d, PEN: %d)" % [res_id, b.damage, b.penetration])
 
 
@@ -190,6 +243,17 @@ func unload_bullet_to_discard(bullet: BulletData) -> void:
 	for i in range(deck.size()):
 		if deck[i].display_name == bullet.display_name:
 			discarded_bullets.append(deck[i])
+			deck.remove_at(i)
+			break
+
+
+## 소멸(Exile)되거나 분실된 탄환을 덱에서 영구 제거 (단, 기본 9mm는 리필 보장용으로 제거 생략)
+func exile_bullet_from_deck(bullet: BulletData) -> void:
+	if current_gun != null and bullet.weapon_class == current_gun.weapon_class:
+		return # 전용 탄은 보존 (전투마다 복구)
+		
+	for i in range(deck.size()):
+		if deck[i].display_name == bullet.display_name:
 			deck.remove_at(i)
 			break
 

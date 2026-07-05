@@ -263,6 +263,37 @@ func _build_dev_test_panel() -> void:
 	btn_v2_ui.add_theme_font_size_override("font_size", 13)
 	vbox.add_child(btn_v2_ui)
 	
+	# 4-3. ♻️ 덱 순환(버림/소멸) 테스트 실행 버튼
+	var btn_pile_test = parent_scene.make_button("♻️ 덱 순환(버림/소멸) 테스트 실행", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_v2_ui_test()
+		
+		# 데모 시작 후 즉시 임의의 탄환 소멸/버림 상태 모의 적용 (지연 호출)
+		var t = parent_scene.get_tree().create_timer(0.2)
+		t.timeout.connect(func():
+			var main_scene = parent_scene
+			var cm = main_scene.get_node_or_null("CombatManager")
+			if not cm:
+				cm = main_scene.get_tree().root.find_child("CombatManager", true, false)
+			
+			if cm and cm.draw_pile.size() >= 3:
+				var disc_b = cm.draw_pile.pop_back()
+				cm.discard_pile.append(disc_b)
+				
+				var ex_b1 = cm.draw_pile.pop_back()
+				cm.exile_pile.append(ex_b1)
+				
+				var ex_b2 = cm.draw_pile.pop_back()
+				cm.exile_pile.append(ex_b2)
+				
+				cm.piles_updated.emit(cm.draw_pile, cm.discard_pile, cm.exile_pile)
+				cm.combat_log.emit("⚙️ [디버그 테스트] 임의로 탄환 1발 버림, 2발 소멸 처리되었습니다. (서랍 탭에서 확인 가능)")
+		)
+	, parent_scene.C_SUCCESS)
+	btn_pile_test.custom_minimum_size = Vector2(0, 40)
+	btn_pile_test.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_pile_test)
+	
 	# 5. 해금 및 보상 테스트 숏컷 버튼
 	var btn_unlock_test = parent_scene.make_button("🔑 해금 및 보상 테스트", func():
 		_dev_test_panel.visible = false

@@ -3,11 +3,14 @@ class_name Enums
 ## 게임 전체에서 공유되는 열거형 정의.
 ## 사용법: Enums.BulletEffect.ARMOR_SHRED
 
-## ── 총알 구경 규격 ──
-enum Caliber {
-	CAL_9MM,       ## 9mm 기본형
-	CAL_556,       ## 5.56mm 전술형
-	CAL_762,       ## 7.62mm 중화력형
+## ── 총기 및 탄환 클래스 규격 ──
+enum WeaponClass {
+	PISTOL,        ## 권총 (9mm)
+	SMG,           ## 기관단총 (.45ACP)
+	RIFLE,         ## 소총 (5.56mm)
+	DMR,           ## 지정사수 (.762mm)
+	SHOTGUN,       ## 샷건 (12Gauge)
+	UNIVERSAL,     ## 범용/교차구경
 }
 
 ## ── 총알 순서 의존 효과 ──

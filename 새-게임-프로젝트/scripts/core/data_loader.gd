@@ -22,6 +22,18 @@ static func ensure_loaded() -> void:
 	print("DataLoader: 모든 CSV 전술 스탯 로딩 완료.")
 
 
+## ── 클래스 문자열 파싱 헬퍼 ──
+static func _parse_class(cls_str: String) -> int:
+	match cls_str.strip_edges().lower():
+		"pistol": return Enums.WeaponClass.PISTOL
+		"smg": return Enums.WeaponClass.SMG
+		"rifle": return Enums.WeaponClass.RIFLE
+		"dmr": return Enums.WeaponClass.DMR
+		"shotgun": return Enums.WeaponClass.SHOTGUN
+		"universal": return Enums.WeaponClass.UNIVERSAL
+	return Enums.WeaponClass.PISTOL
+
+
 ## 🔫 총기 스탯 CSV 로드
 static func _load_gun_stats() -> void:
 	var path := "res://data/gun_stats.csv"
@@ -35,19 +47,22 @@ static func _load_gun_stats() -> void:
 	
 	while not file.eof_reached():
 		var line := file.get_csv_line()
-		if line.size() < 8 or line[0] == "":
+		if line.size() < 11 or line[0] == "":
 			continue
 			
 		var id := line[0].strip_edges()
 		var entry := {
 			"id": id,
 			"display_name": line[1].strip_edges(),
-			"display_name_eng": line[2].strip_edges(),
-			"capacity": int(line[3]),
-			"reload_turns": int(line[4]),
-			"passive_dmg_bonus": int(line[5]),
-			"passive_pen_bonus": int(line[6]),
-			"parts_capacity": int(line[7])
+			"class": _parse_class(line[2]),
+			"magazine_capacity": int(line[3]),
+			"has_chamber": line[4].strip_edges().lower() == "true",
+			"reload_turns": int(line[5]),
+			"parts_capacity": int(line[6]),
+			"passive_dmg_bonus": int(line[7]),
+			"passive_pen_bonus": int(line[8]),
+			"passive_knockback_bonus": int(line[9]),
+			"passive_acc_bonus": int(line[10])
 		}
 		_guns[id] = entry
 
@@ -64,18 +79,21 @@ static func _load_bullet_stats() -> void:
 	
 	while not file.eof_reached():
 		var line := file.get_csv_line()
-		if line.size() < 7 or line[0] == "":
+		if line.size() < 10 or line[0] == "":
 			continue
 			
 		var id := line[0].strip_edges()
 		var entry := {
 			"id": id,
 			"display_name": line[1].strip_edges(),
-			"caliber": int(line[2]),
+			"class": _parse_class(line[2]),
 			"damage": int(line[3]),
 			"penetration": int(line[4]),
 			"accuracy": int(line[5]),
-			"knockback": int(line[6])
+			"knockback": int(line[6]),
+			"slow": int(line[7]),
+			"effect_type": int(line[8]),
+			"effect_value": int(line[9])
 		}
 		_bullets[id] = entry
 

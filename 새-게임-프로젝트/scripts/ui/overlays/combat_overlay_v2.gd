@@ -10,10 +10,10 @@ var run_manager: RunManager
 var combat_manager: CombatManager
 
 # ── 프리로드 리소스 ──
-var _bullets_basic: BulletData = preload("res://resources/bullets/basic_bullet.tres")
-var _bullets_ap: BulletData = preload("res://resources/bullets/armor_piercing.tres")
-var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_slug.tres")
-var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_bullet.tres")
+var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
+var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
+var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_pistol.tres")
+var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
 
 # ── 상태 ──
 var _bullet_pool: Dictionary = {}
@@ -81,6 +81,9 @@ var _floating_layer: Control
 var _drawer_panel: PanelContainer
 var _drawer_tab_item: Button
 var _drawer_tab_ammo: Button
+var _drawer_tab_discard: Button
+var _drawer_tab_exile: Button
+var _active_drawer_tab: int = 0 # 0:가방, 1:버림, 2:소멸, 3:소모품
 var _drawer_body_item: Control
 var _drawer_body_ammo: Control
 var _drawer_inventory_grid: HFlowContainer
@@ -89,6 +92,11 @@ var _drawer_stack_vbox: VBoxContainer
 var _drawer_stack_cap: Label
 var _drawer_undo_btn: Button
 var _drawer_confirm_btn: Button
+
+# ── 상시 HUD 카운터 컴포넌트 ──
+var _hud_lbl_draw: Label
+var _hud_lbl_discard: Label
+var _hud_lbl_exile: Label
 
 # ── 결과 및 탄환 드래프트 오버레이 변수 이식 ──
 var _result_overlay: PanelContainer
@@ -108,28 +116,6 @@ func initialize(p_scene: Control, rm: RunManager) -> void:
 	run_manager = rm
 	_build_ui()
 	_build_result_overlay()
-	
-	# [임시 씬 덤프 코드 추가]
-	(func():
-		var queue: Array[Node] = [self]
-		while queue.size() > 0:
-			var curr: Node = queue.pop_back()
-			if curr != self:
-				curr.owner = self
-			for child: Node in curr.get_children():
-				queue.push_back(child)
-		
-		var packed := PackedScene.new()
-		var pack_err := packed.pack(self)
-		if pack_err == OK:
-			var save_err := ResourceSaver.save(packed, "res://scenes/ui/overlays/combat_overlay_v2.tscn")
-			if save_err == OK:
-				print("[DUMP_OK] Exported combat_overlay_v2.tscn successfully!")
-			else:
-				print("[DUMP_ERR] Failed to save tscn: ", save_err)
-		else:
-			print("[DUMP_ERR] Failed to pack scene: ", pack_err)
-	).call_deferred()
 
 func _ready() -> void:
 	self.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
@@ -422,6 +408,47 @@ func _build_ui() -> void:
 	lookahead_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	left_col.add_child(lookahead_scroll)
 	
+	# piles_updated HUD 카운터 컨테이너 추가
+	var hud_pile_panel := PanelContainer.new()
+	var pile_style := StyleBoxFlat.new()
+	pile_style.bg_color = Color(0.06, 0.08, 0.12, 0.8)
+	pile_style.corner_radius_top_left = 6; pile_style.corner_radius_top_right = 6
+	pile_style.corner_radius_bottom_left = 6; pile_style.corner_radius_bottom_right = 6
+	pile_style.content_margin_left = 8; pile_style.content_margin_right = 8
+	pile_style.content_margin_top = 4; pile_style.content_margin_bottom = 4
+	hud_pile_panel.add_theme_stylebox_override("panel", pile_style)
+	left_col.add_child(hud_pile_panel)
+
+	var hud_hbox := HBoxContainer.new()
+	hud_hbox.add_theme_constant_override("separation", 4)
+	hud_pile_panel.add_child(hud_hbox)
+
+	_hud_lbl_draw = parent_scene.make_label("🎒 0", 11.5, parent_scene.C_SUCCESS)
+	_hud_lbl_draw.mouse_filter = Control.MOUSE_FILTER_PASS
+	_hud_lbl_draw.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_hud_lbl_draw.gui_input.connect(func(ev): _on_hud_counter_clicked(ev, 0))
+	hud_hbox.add_child(_hud_lbl_draw)
+
+	var hud_spacer1 := Control.new()
+	hud_spacer1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hud_hbox.add_child(hud_spacer1)
+
+	_hud_lbl_discard = parent_scene.make_label("♻ 0", 11.5, parent_scene.C_WARNING)
+	_hud_lbl_discard.mouse_filter = Control.MOUSE_FILTER_PASS
+	_hud_lbl_discard.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_hud_lbl_discard.gui_input.connect(func(ev): _on_hud_counter_clicked(ev, 1))
+	hud_hbox.add_child(_hud_lbl_discard)
+
+	var hud_spacer2 := Control.new()
+	hud_spacer2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hud_hbox.add_child(hud_spacer2)
+
+	_hud_lbl_exile = parent_scene.make_label("💀 0", 11.5, Color(0.9, 0.3, 0.3))
+	_hud_lbl_exile.mouse_filter = Control.MOUSE_FILTER_PASS
+	_hud_lbl_exile.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_hud_lbl_exile.gui_input.connect(func(ev): _on_hud_counter_clicked(ev, 2))
+	hud_hbox.add_child(_hud_lbl_exile)
+	
 	_lookahead_container = VBoxContainer.new()
 	_lookahead_container.name = "Lookahead"
 	_lookahead_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -672,21 +699,37 @@ func _build_drawer_panel() -> void:
 	tab_hbox.add_theme_constant_override("separation", 0)
 	drawer_vbox.add_child(tab_hbox)
 	
-	_drawer_tab_item = Button.new()
-	_drawer_tab_item.text = "소모품 · 즉발"
-	_drawer_tab_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_drawer_tab_item.focus_mode = Control.FOCUS_NONE
-	_drawer_tab_item.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_drawer_tab_item.pressed.connect(func(): _switch_drawer_tab(true))
-	tab_hbox.add_child(_drawer_tab_item)
-	
 	_drawer_tab_ammo = Button.new()
-	_drawer_tab_ammo.text = "탄환 · 열람"
+	_drawer_tab_ammo.text = "가방"
 	_drawer_tab_ammo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_drawer_tab_ammo.focus_mode = Control.FOCUS_NONE
 	_drawer_tab_ammo.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_drawer_tab_ammo.pressed.connect(func(): _switch_drawer_tab(false))
+	_drawer_tab_ammo.pressed.connect(func(): _switch_drawer_tab_idx(0))
 	tab_hbox.add_child(_drawer_tab_ammo)
+
+	_drawer_tab_discard = Button.new()
+	_drawer_tab_discard.text = "버림"
+	_drawer_tab_discard.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_drawer_tab_discard.focus_mode = Control.FOCUS_NONE
+	_drawer_tab_discard.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_drawer_tab_discard.pressed.connect(func(): _switch_drawer_tab_idx(1))
+	tab_hbox.add_child(_drawer_tab_discard)
+
+	_drawer_tab_exile = Button.new()
+	_drawer_tab_exile.text = "소멸"
+	_drawer_tab_exile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_drawer_tab_exile.focus_mode = Control.FOCUS_NONE
+	_drawer_tab_exile.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_drawer_tab_exile.pressed.connect(func(): _switch_drawer_tab_idx(2))
+	tab_hbox.add_child(_drawer_tab_exile)
+	
+	_drawer_tab_item = Button.new()
+	_drawer_tab_item.text = "소모품"
+	_drawer_tab_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_drawer_tab_item.focus_mode = Control.FOCUS_NONE
+	_drawer_tab_item.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_drawer_tab_item.pressed.connect(func(): _switch_drawer_tab_idx(3))
+	tab_hbox.add_child(_drawer_tab_item)
 	
 	var close_btn := Button.new()
 	close_btn.text = "✕"
@@ -708,8 +751,10 @@ func _build_drawer_panel() -> void:
 	tab_hbox.add_child(close_btn)
 	
 	# 초기 탭 스타일 적용
-	_apply_tab_style(_drawer_tab_item, true)
-	_apply_tab_style(_drawer_tab_ammo, false)
+	_apply_tab_style(_drawer_tab_ammo, true)
+	_apply_tab_style(_drawer_tab_discard, false)
+	_apply_tab_style(_drawer_tab_exile, false)
+	_apply_tab_style(_drawer_tab_item, false)
 	
 	# 본문 마진 컨테이너
 	var body_margin := MarginContainer.new()
@@ -846,11 +891,17 @@ func _create_drawer_item(title: String, desc: String, can_use: bool, click_callb
 		
 	return item_hbox
 
-func _switch_drawer_tab(is_item: bool) -> void:
-	_apply_tab_style(_drawer_tab_item, is_item)
-	_apply_tab_style(_drawer_tab_ammo, not is_item)
-	_drawer_body_item.visible = is_item
-	_drawer_body_ammo.visible = not is_item
+func _switch_drawer_tab_idx(tab_idx: int) -> void:
+	_active_drawer_tab = tab_idx
+	_apply_tab_style(_drawer_tab_ammo, tab_idx == 0)
+	_apply_tab_style(_drawer_tab_discard, tab_idx == 1)
+	_apply_tab_style(_drawer_tab_exile, tab_idx == 2)
+	_apply_tab_style(_drawer_tab_item, tab_idx == 3)
+	
+	_drawer_body_item.visible = (tab_idx == 3)
+	_drawer_body_ammo.visible = (tab_idx != 3)
+	
+	_refresh_ammo_drawer()
 
 func _toggle_drawer(expand: bool) -> void:
 	_is_bag_expanded = expand
@@ -1121,27 +1172,47 @@ func _refresh_ammo_drawer() -> void:
 	else:
 		can_insert = true # 디버그/목업 모드 대비
 		
+	var render_source: Dictionary = {}
+	var is_interactive := false
+	var empty_text := "🎒 가방에 남은 탄환이 없습니다."
+	
+	if _active_drawer_tab == 0:
+		render_source = _bullet_pool
+		is_interactive = can_insert
+		empty_text = "🎒 가방에 남은 탄환이 없습니다."
+	elif _active_drawer_tab == 1:
+		var list = combat_manager.discard_pile if combat_manager else [] as Array[BulletData]
+		for b in list:
+			render_source[b] = render_source.get(b, 0) + 1
+		empty_text = "♻ 버린 더미에 탄환이 없습니다."
+	elif _active_drawer_tab == 2:
+		var list = combat_manager.exile_pile if combat_manager else [] as Array[BulletData]
+		for b in list:
+			render_source[b] = render_source.get(b, 0) + 1
+		empty_text = "💀 소멸된 탄환이 없습니다."
+		
 	# 가방 내 탄환 풀 순회
 	var has_any_bullet := false
-	for bullet: BulletData in _bullet_pool:
-		var count: int = _bullet_pool[bullet]
+	for bullet: BulletData in render_source:
+		var count: int = render_source[bullet]
 		if count <= 0:
 			continue
 		has_any_bullet = true
 		
 		# 삽탄 가능 여부에 따른 콜백 바인딩
 		var card: Control
-		if can_insert:
+		if is_interactive:
 			card = _create_inventory_card(bullet, count, func():
 				request_insert_bullet(bullet)
 			)
 		else:
 			card = _create_inventory_card(bullet, count, Callable())
+			card.modulate = Color(1.0, 1.0, 1.0, 0.45) # 비인터랙티브 탭 카드는 반투명
 			
 		_drawer_inventory_grid.add_child(card)
 		
 	if not has_any_bullet:
-		var empty_lbl: Label = parent_scene.make_label("🎒 가방에 남은 탄환이 없습니다.", 12, parent_scene.C_DIM)
+		var empty_lbl: Label = parent_scene.make_label(empty_text, 12, parent_scene.C_DIM)
 		_drawer_inventory_grid.add_child(empty_lbl)
 		
 	# 서랍장 전용 하단 버튼 상태 동기화
@@ -1242,6 +1313,12 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	combat_manager.encounter_won.connect(_on_encounter_won)
 	combat_manager.player_died.connect(_on_player_died)
 	combat_manager.bullet_unloaded.connect(func(b): run_manager.unload_bullet_to_discard(b))
+	combat_manager.bullet_exiled.connect(func(b): run_manager.exile_bullet_from_deck(b))
+	combat_manager.buttstroke_triggered.connect(_on_buttstroke_triggered)
+	if combat_manager.has_signal("draw_pile_updated"):
+		combat_manager.draw_pile_updated.connect(_on_draw_pile_updated)
+	if combat_manager.has_signal("piles_updated"):
+		combat_manager.piles_updated.connect(_on_piles_updated)
 	combat_manager.bullet_fired.connect(_on_bullet_fired)
 	if combat_manager.has_signal("all_enemies_moved"):
 		combat_manager.all_enemies_moved.connect(_on_all_enemies_moved)
@@ -1274,7 +1351,12 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 		temp_ed.start_distance = maxi(ed.start_distance + dist_modifier, 4)
 		enemy_data_list.append(temp_ed)
 		
-	combat_manager.start_encounter(gun, enemy_data_list, run_manager.active_relics if run_manager else [])
+	var initial_deck: Array[BulletData] = []
+	var relics: Array[String] = []
+	if run_manager:
+		initial_deck = run_manager.deck
+		relics = run_manager.active_relics
+	combat_manager.start_encounter(gun, enemy_data_list, initial_deck, relics)
 
 func _on_encounter_started(enemy_list) -> void:
 	_last_bullet_count = -1
@@ -1313,13 +1395,13 @@ func _on_encounter_started(enemy_list) -> void:
 		
 		_build_enemy_badge(es, enemy)
 		
-	_global_max_dist = 20.0
+	_global_max_dist = 24.0
 	var max_found := 0
 	for e in enemy_list:
 		if e.start_distance > max_found:
 			max_found = e.start_distance
 	if max_found > 0:
-		_global_max_dist = maxf(float(max_found) + 6.0, 20.0)
+		_global_max_dist = maxf(float(max_found) + 2.0, 24.0)
 		
 	_update_enemy_position_and_scale(null, false)
 	
@@ -1413,8 +1495,9 @@ func _update_enemy_position_and_scale(target_enemy: EnemyInstance, animate: bool
 		var ratio: float = float(dist) / _global_max_dist if _global_max_dist > 0.0 else 0.0
 		
 		# [절대 규칙] anchor_left = 거리 / 최대거리로 수평 자유 배치
-		# 우측 끝 잘림 방지 패딩 보정 (가용 최대 앵커 비율을 0.88로 조율)
-		var anchor_ratio := ratio * 0.88
+		# 캐릭터(플레이어)와의 겹침 방지를 위해 최소 앵커 0.16 확보, 최대 앵커 0.88로 조율
+		var min_anchor := 0.16
+		var anchor_ratio := min_anchor + ratio * (0.88 - min_anchor)
 		es.anchor_left = anchor_ratio
 		es.anchor_right = anchor_ratio
 		es.anchor_top = 0.75
@@ -1841,10 +1924,12 @@ func _on_unload_pressed() -> void:
 			add_combat_log("[color=#ff4242]⚠️ 약실이 비어 있어 빼낼 탄환이 없습니다.[/color]")
 		return
 		
-	# PLAYER_TURN 중 빼내기 로직은 유지 (추후 CombatManager 연동 필요)
+	# PLAYER_TURN 중 빼내기 로직 활성화
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
-		# 현재는 단순 경고 메시지 출력 (또는 CombatManager 구현에 따라 호출)
-		add_combat_log("[color=#ff4242]⚠️ 전투 중 임의 배출은 지원되지 않습니다.[/color]")
+		if combat_manager.has_method("request_unload"):
+			combat_manager.request_unload()
+		else:
+			add_combat_log("[color=#ff4242]⚠️ 전투 중 임의 배출은 지원되지 않습니다.[/color]")
 		_update_action_buttons()
 
 func _on_reload_pressed() -> void:
@@ -1916,6 +2001,47 @@ func _on_enemy_kb(enemy_inst: EnemyInstance, new_distance: int, amount: int) -> 
 	])
 	_update_enemy_position_and_scale(null, true)
 	_update_distance_display(combat_manager.enemy)
+
+func _on_buttstroke_triggered(enemy_inst: EnemyInstance, new_distance: int) -> void:
+	add_combat_log("[color=#3df5a6]🛡️ 격퇴: 적 %s를 개머리판으로 후려쳐 2m 넉백시켰습니다! (기절 부여)[/color]" % enemy_inst.data.display_name)
+	_update_enemy_position_and_scale(null, true)
+	_update_distance_display(combat_manager.enemy)
+	# 카메라 셰이크가 구현되어 있을 경우 호출
+	if parent_scene and parent_scene.has_method("shake_camera"):
+		parent_scene.shake_camera()
+
+func _on_draw_pile_updated(draw_pile: Array[BulletData]) -> void:
+	_bullet_pool.clear()
+	for b_data in draw_pile:
+		_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
+	_refresh_ammo_drawer()
+
+func _on_piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletData], exile_pile: Array[BulletData]) -> void:
+	if is_instance_valid(_hud_lbl_draw):
+		_hud_lbl_draw.text = "🎒 %d" % draw_pile.size()
+	if is_instance_valid(_hud_lbl_discard):
+		_hud_lbl_discard.text = "♻ %d" % discard_pile.size()
+	if is_instance_valid(_hud_lbl_exile):
+		_hud_lbl_exile.text = "💀 %d" % exile_pile.size()
+		
+	if is_instance_valid(_drawer_tab_ammo):
+		_drawer_tab_ammo.text = "가방 (%d)" % draw_pile.size()
+	if is_instance_valid(_drawer_tab_discard):
+		_drawer_tab_discard.text = "버림 (%d)" % discard_pile.size()
+	if is_instance_valid(_drawer_tab_exile):
+		_drawer_tab_exile.text = "소멸 (%d)" % exile_pile.size()
+		
+	_bullet_pool.clear()
+	for b_data in draw_pile:
+		_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
+		
+	if _is_bag_expanded:
+		_refresh_ammo_drawer()
+
+func _on_hud_counter_clicked(event: InputEvent, tab_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_toggle_drawer(true)
+		_switch_drawer_tab_idx(tab_idx)
 
 func _on_armor_shredded(enemy_inst: EnemyInstance, new_def: int, amount: int) -> void:
 	add_combat_log("[color=#a878e8] 파쇄: %s의 DEF가 %d 차감되었습니다.[/color]" % [
