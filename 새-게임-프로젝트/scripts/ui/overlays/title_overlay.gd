@@ -294,6 +294,66 @@ func _build_dev_test_panel() -> void:
 	btn_pile_test.add_theme_font_size_override("font_size", 13)
 	vbox.add_child(btn_pile_test)
 	
+	# 4-4. 💥 [Visual] 격발/반동/파티클 테스트 실행 버튼
+	var btn_effect_test = parent_scene.make_button("💥 [Visual] 격발/반동/파티클 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_v2_ui_test()
+		
+		var t = parent_scene.get_tree().create_timer(0.4)
+		t.timeout.connect(func():
+			var main_scene = parent_scene
+			var overlay = main_scene.get_node_or_null("CombatOverlayV2")
+			if not overlay:
+				overlay = main_scene.get_tree().root.find_child("CombatOverlayV2", true, false)
+			
+			if overlay and overlay.has_method("_on_bullet_fired"):
+				var test_bullet = overlay._bullets_basic
+				# bullet, hit, damage
+				overlay._on_bullet_fired(test_bullet, true, 8)
+				overlay.add_combat_log("⚙️ [디버그 테스트] 격발 및 파티클 연쇄 연출이 테스트되었습니다.")
+		)
+	, parent_scene.C_SUCCESS)
+	btn_effect_test.custom_minimum_size = Vector2(0, 40)
+	btn_effect_test.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_effect_test)
+	
+	# 4-5. 👾 [Visual] 몬스터 전진 트윈 테스트 실행 버튼
+	var btn_move_test = parent_scene.make_button("👾 [Visual] 몬스터 전진 트윈 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_v2_ui_test()
+		
+		var t = parent_scene.get_tree().create_timer(0.4)
+		t.timeout.connect(func():
+			var main_scene = parent_scene
+			var cm = main_scene.get_node_or_null("CombatManager")
+			if not cm:
+				cm = main_scene.get_tree().root.find_child("CombatManager", true, false)
+			var overlay = main_scene.get_node_or_null("CombatOverlayV2")
+			if not overlay:
+				overlay = main_scene.get_tree().root.find_child("CombatOverlayV2", true, false)
+				
+			if cm and overlay and cm.enemy:
+				var origin_dist = cm.enemy.current_distance
+				cm.enemy.current_distance = max(1, origin_dist - 3)
+				
+				if overlay._track_control:
+					overlay._track_control.update_enemy_position_and_scale()
+					overlay._track_control.update_distance_display(cm.enemy)
+					overlay.add_combat_log("⚙️ [디버그 테스트] 적 3m 전진에 의한 뒤뚱거림 이동 트윈이 테스트되었습니다.")
+					
+				var t_restore = parent_scene.get_tree().create_timer(1.5)
+				t_restore.timeout.connect(func():
+					cm.enemy.current_distance = origin_dist
+					if overlay._track_control:
+						overlay._track_control.update_enemy_position_and_scale()
+						overlay._track_control.update_distance_display(cm.enemy)
+				)
+		)
+	, parent_scene.C_SUCCESS)
+	btn_move_test.custom_minimum_size = Vector2(0, 40)
+	btn_move_test.add_theme_font_size_override("font_size", 13)
+	vbox.add_child(btn_move_test)
+	
 	# 5. 해금 및 보상 테스트 숏컷 버튼
 	var btn_unlock_test = parent_scene.make_button("🔑 해금 및 보상 테스트", func():
 		_dev_test_panel.visible = false

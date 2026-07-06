@@ -52,6 +52,20 @@ func setup_encounter(enemy_list: Array) -> void:
 		
 		_build_enemy_badge(es, enemy)
 		
+		# [Phase 4] 좀비 대기 숨쉬기/흐느적거림 무한 트윈 루프 적용
+		(func(sprite: TextureRect):
+			var delay_offset := randf() * 0.5
+			# 1. 좌우 흔들림 트윈 (회전)
+			var rot_tween := sprite.create_tween().set_loops()
+			rot_tween.tween_property(sprite, "rotation_degrees", 2.2, 0.8 + delay_offset).set_trans(Tween.TRANS_SINE)
+			rot_tween.tween_property(sprite, "rotation_degrees", -2.2, 0.8 + delay_offset).set_trans(Tween.TRANS_SINE)
+			
+			# 2. 상하 숨쉬기 트윈 (스케일)
+			var scale_tween := sprite.create_tween().set_loops()
+			scale_tween.tween_property(sprite, "scale", Vector2(0.84, 0.76), 0.7 + delay_offset).set_trans(Tween.TRANS_SINE)
+			scale_tween.tween_property(sprite, "scale", Vector2(0.76, 0.84), 0.7 + delay_offset).set_trans(Tween.TRANS_SINE)
+		).call(es)
+		
 	global_max_dist = 24.0
 	var max_found := 0
 	for e in enemy_list:
@@ -156,8 +170,32 @@ func update_enemy_position_and_scale() -> void:
 		# [절대 규칙] anchor_left = 거리 / 최대거리로 수평 자유 배치
 		var min_anchor := 0.16
 		var anchor_ratio := min_anchor + ratio * (0.88 - min_anchor)
-		es.anchor_left = anchor_ratio
-		es.anchor_right = anchor_ratio
+		
+		# [Phase 4] 전진 이동 시 부드러운 트윈 및 뒤뚱거림 모션 구현
+		var old_anchor = es.anchor_left
+		if abs(old_anchor - anchor_ratio) > 0.001:
+			# 이전 이동 트윈 중복 제거
+			if es.has_meta("move_tween"):
+				var old_tween = es.get_meta("move_tween")
+				if old_tween and old_tween.is_valid():
+					old_tween.kill()
+			
+			var move_tween = es.create_tween().set_parallel(true)
+			move_tween.tween_property(es, "anchor_left", anchor_ratio, 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+			move_tween.tween_property(es, "anchor_right", anchor_ratio, 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+			es.set_meta("move_tween", move_tween)
+			
+			# 전진하는 동안 뒤뚱거림(회전 흔들림) 트윈 병행
+			var side := 1.0 if randf() > 0.5 else -1.0
+			var rot_tween = es.create_tween()
+			rot_tween.tween_property(es, "rotation_degrees", 8.0 * side, 0.12).set_trans(Tween.TRANS_SINE)
+			rot_tween.tween_property(es, "rotation_degrees", -6.0 * side, 0.12).set_trans(Tween.TRANS_SINE)
+			rot_tween.tween_property(es, "rotation_degrees", 0.0, 0.11).set_trans(Tween.TRANS_SINE)
+		else:
+			# 즉시 반영 (첫 셋업 시 등)
+			es.anchor_left = anchor_ratio
+			es.anchor_right = anchor_ratio
+			
 		es.anchor_top = 0.75
 		es.anchor_bottom = 0.75
 		
@@ -166,7 +204,6 @@ func update_enemy_position_and_scale() -> void:
 		es.offset_right = 40
 		es.offset_top = -40
 		es.offset_bottom = 40
-		es.scale = Vector2(0.8, 0.8)
 		
 		# 타겟 링 표시 갱신
 		var ring = es.get_node_or_null("RingPanel")

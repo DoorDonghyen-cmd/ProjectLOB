@@ -38,11 +38,20 @@ func update_cylinder_visuals() -> void:
 		add_child(bullet_card)
 		display_count += 1
 		
-	# 피드백을 위한 예고창 전체 스케일 바운스 연출
+	# [Phase 4] 피드백을 위한 실린더 전체 스케일/회전 탄력 바운싱 연출
 	pivot_offset = Vector2(size.x / 2.0, size.y / 2.0)
-	var tween := create_tween()
-	tween.tween_property(self, "scale", Vector2(1.08, 1.08), 0.08).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	
+	# 크기 탄력 바운싱 트윈
+	var scale_tween := create_tween()
+	scale_tween.tween_property(self, "scale", Vector2(1.12, 1.12), 0.07).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	scale_tween.tween_property(self, "scale", Vector2(0.96, 0.96), 0.08).set_trans(Tween.TRANS_CUBIC)
+	scale_tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.18).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	
+	# 실린더 장탄 느낌의 시계 반대 방향 회전 바운싱 트윈
+	var rot_tween := create_tween()
+	rot_tween.tween_property(self, "rotation_degrees", -15.0, 0.07).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	rot_tween.tween_property(self, "rotation_degrees", 4.0, 0.08).set_trans(Tween.TRANS_CUBIC)
+	rot_tween.tween_property(self, "rotation_degrees", 0.0, 0.18).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 
 func _create_dynamic_bullet_card(bullet: BulletData, index: int, is_next: bool, is_hidden: bool = false) -> PanelContainer:
 	var card := PanelContainer.new()

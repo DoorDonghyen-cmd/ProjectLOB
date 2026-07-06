@@ -1384,32 +1384,93 @@ func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) ->
 	if not _agent_sprite:
 		return
 		
+	# 1. 아바타 사격 프레임 적용
 	var tex = _agent_sprite.texture as AtlasTexture
 	if tex:
-		# 사격 프레임 (4번째 프레임 인덱스 3) 할당: 278 * 3
-		tex.region = Rect2(278 * 3, 0, 278, 278)
+		tex.region = Rect2(278 * 3, 0, 278, 278) # 사격 프레임 인덱스 3
 		
-	# Muzzle Flip을 위한 피벗 오프셋 설정
+	# 2. Muzzle Flip 및 반동 트윈
 	_agent_sprite.pivot_offset = Vector2(40, 40)
+	_agent_sprite.offset_left = -14
+	_agent_sprite.offset_right = 66
+	_agent_sprite.rotation = -0.08
 	
-	# 반동으로 임시 마진 이동 및 회전
-	_agent_sprite.offset_left = -10
-	_agent_sprite.offset_right = 70
-	_agent_sprite.rotation = -0.06
-	
-	# 트윈으로 원래 상태 복원
 	var tween: Tween = create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(_agent_sprite, "offset_left", 10.0, 0.2)\
+	tween.tween_property(_agent_sprite, "offset_left", 10.0, 0.18)\
 		.set_trans(Tween.TRANS_BACK)\
 		.set_ease(Tween.EASE_OUT)
-	tween.tween_property(_agent_sprite, "offset_right", 90.0, 0.2)\
+	tween.tween_property(_agent_sprite, "offset_right", 90.0, 0.18)\
 		.set_trans(Tween.TRANS_BACK)\
 		.set_ease(Tween.EASE_OUT)
-	tween.tween_property(_agent_sprite, "rotation", 0.0, 0.2)\
+	tween.tween_property(_agent_sprite, "rotation", 0.0, 0.18)\
 		.set_trans(Tween.TRANS_QUAD)\
 		.set_ease(Tween.EASE_OUT)
-	tween.chain().tween_callback(func(): _set_agent_frame(2)) # 사격 반동 후 조준 자세 복구
+	tween.chain().tween_callback(func(): _set_agent_frame(2)) # 조준 복구
+	
+	# 3. 액션 바 덜컹임 반동 트윈
+	if _action_row:
+		var origin_y = _action_row.position.y
+		_action_row.position.y += 8.0
+		var act_tween := create_tween()
+		act_tween.tween_property(_action_row, "position:y", origin_y, 0.16)\
+			.set_trans(Tween.TRANS_BACK)\
+			.set_ease(Tween.EASE_OUT)
+			
+	# 4. Muzzle Flash 파티클 생성 (총구 부근)
+	var muzzle_pos = _agent_sprite.global_position + Vector2(_agent_sprite.size.x * 0.72, _agent_sprite.size.y * 0.42)
+	_spawn_muzzle_flash_particles(muzzle_pos)
+	
+	# 5. 피격 시 Blood Spurt 파티클 생성 (최근접 적 부근)
+	if hit and combat_manager and combat_manager.enemy:
+		var es = _enemy_sprites.get(combat_manager.enemy)
+		if is_instance_valid(es) and es.visible:
+			var target_pos = es.global_position + es.size / 2.0
+			_spawn_blood_spurt_particles(target_pos)
+
+func _spawn_muzzle_flash_particles(pos: Vector2) -> void:
+	var parts := CPUParticles2D.new()
+	parts.amount = 14
+	parts.lifetime = 0.22
+	parts.one_shot = true
+	parts.explosiveness = 0.98
+	parts.spread = 32.0
+	parts.gravity = Vector2(0, 0)
+	parts.initial_velocity_min = 120.0
+	parts.initial_velocity_max = 200.0
+	parts.color = Color(1.0, 0.65, 0.1)
+	parts.direction = Vector2(1, -0.15)
+	parts.scale_amount_min = 2.0
+	parts.scale_amount_max = 4.5
+	parts.global_position = pos
+	add_child(parts)
+	parts.emitting = true
+	
+	var t := create_tween()
+	t.tween_interval(0.3)
+	t.tween_callback(parts.queue_free)
+
+func _spawn_blood_spurt_particles(pos: Vector2) -> void:
+	var parts := CPUParticles2D.new()
+	parts.amount = 20
+	parts.lifetime = 0.32
+	parts.one_shot = true
+	parts.explosiveness = 0.92
+	parts.spread = 55.0
+	parts.gravity = Vector2(0, 220)
+	parts.initial_velocity_min = 70.0
+	parts.initial_velocity_max = 140.0
+	parts.color = Color(0.2, 0.62, 0.28) # 초록 핏방울
+	parts.direction = Vector2(-0.4, -0.9)
+	parts.scale_amount_min = 3.0
+	parts.scale_amount_max = 6.0
+	parts.global_position = pos
+	add_child(parts)
+	parts.emitting = true
+	
+	var t := create_tween()
+	t.tween_interval(0.4)
+	t.tween_callback(parts.queue_free)
 
 func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 	add_combat_log("[color=#37e0ac]💀 처치: %s를 무력화시켰습니다![/color]" % enemy_inst.data.display_name)
