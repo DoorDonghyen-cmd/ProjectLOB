@@ -1188,6 +1188,7 @@ func _update_phase_state() -> void:
 			_refresh_loading_stack()
 			_refresh_loading_inventory()
 			_set_agent_frame(0) # 대기/장전 모션 (1번째 프레임)
+			_toggle_drawer(true)
 		CombatManager.State.PLAYER_TURN:
 			_phase_label.text = "아군 작전 페이즈"
 			_phase_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)

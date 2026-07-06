@@ -39,6 +39,7 @@ func initialize(p_scene: Control, rm: RunManager, cm: CombatManager, overlay_v2:
 	add_theme_stylebox_override("panel", drawer_style)
 	
 	_build_ui()
+	toggle_drawer(false)
 
 func _build_ui() -> void:
 	custom_minimum_size = Vector2(700, 390)
