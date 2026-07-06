@@ -19,6 +19,7 @@ var _bullets_slow: BulletData = preload("res://resources/bullets/slow_pistol.tre
 # ── 서브 컴포넌트 프리로드 ──
 const CylinderView = preload("res://scripts/ui/components/cylinder_view.gd")
 const EnemyTrackView = preload("res://scripts/ui/components/enemy_track_view.gd")
+const BagInventoryDrawer = preload("res://scripts/ui/components/bag_inventory_drawer.gd")
 
 # ── 상태 ──
 var _bullet_pool: Dictionary = {}
@@ -87,20 +88,22 @@ var _fire_btn: Button
 
 # ── MainFlow 외곽 오버레이 ──
 var _floating_layer: Control
-var _drawer_panel: PanelContainer
-var _drawer_tab_item: Button
-var _drawer_tab_ammo: Button
-var _drawer_tab_discard: Button
-var _drawer_tab_exile: Button
-var _active_drawer_tab: int = 0 # 0:가방, 1:버림, 2:소멸, 3:소모품
-var _drawer_body_item: Control
-var _drawer_body_ammo: Control
-var _drawer_inventory_grid: HFlowContainer
-var _drawer_item_grid: HFlowContainer
-var _drawer_stack_vbox: VBoxContainer
-var _drawer_stack_cap: Label
-var _drawer_undo_btn: Button
-var _drawer_confirm_btn: Button
+var _drawer_panel: BagInventoryDrawer
+var _drawer_tab_ammo: Button:
+	get:
+		if is_instance_valid(_drawer_panel):
+			return _drawer_panel._drawer_tab_ammo
+		return null
+var _drawer_tab_discard: Button:
+	get:
+		if is_instance_valid(_drawer_panel):
+			return _drawer_panel._drawer_tab_discard
+		return null
+var _drawer_tab_exile: Button:
+	get:
+		if is_instance_valid(_drawer_panel):
+			return _drawer_panel._drawer_tab_exile
+		return null
 
 # ── 상시 HUD 카운터 컴포넌트 ──
 var _hud_lbl_draw: Label
@@ -679,195 +682,21 @@ func _build_ui() -> void:
 	_build_drawer_panel()
 
 func _build_drawer_panel() -> void:
-	_drawer_panel = PanelContainer.new()
+	_drawer_panel = BagInventoryDrawer.new()
 	_drawer_panel.name = "BagDrawer"
-	_drawer_panel.custom_minimum_size = Vector2(700, 390)
-	_drawer_panel.mouse_filter = Control.MOUSE_FILTER_PASS
 	_floating_layer.add_child(_drawer_panel)
-	
-	var drawer_style := StyleBoxFlat.new()
-	drawer_style.bg_color = Color(0.05, 0.07, 0.11, 0.96)
-	drawer_style.border_width_top = 2
-	drawer_style.border_width_left = 2
-	drawer_style.border_width_right = 2
-	drawer_style.border_color = parent_scene.C_SUCCESS
-	_drawer_panel.add_theme_stylebox_override("panel", drawer_style)
-	
-	# 초기 위치 설정 (화면 중앙 정렬 기반 반응형 배치)
-	_drawer_panel.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	var target_x := (size.x - 700) / 2.0 if size.x > 700 else 24.0
-	_drawer_panel.position = Vector2(target_x, size.y if size.y > 0 else 600)
-	_drawer_panel.visible = false
-	
-	var drawer_vbox := VBoxContainer.new()
-	drawer_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_drawer_panel.add_child(drawer_vbox)
-	
-	# 탭 바: 패딩 없이 상단 양 끝에 밀착
-	var tab_hbox := HBoxContainer.new()
-	tab_hbox.add_theme_constant_override("separation", 0)
-	drawer_vbox.add_child(tab_hbox)
-	
-	_drawer_tab_ammo = Button.new()
-	_drawer_tab_ammo.text = "가방"
-	_drawer_tab_ammo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_drawer_tab_ammo.focus_mode = Control.FOCUS_NONE
-	_drawer_tab_ammo.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_drawer_tab_ammo.pressed.connect(func(): _switch_drawer_tab_idx(0))
-	tab_hbox.add_child(_drawer_tab_ammo)
 
-	_drawer_tab_discard = Button.new()
-	_drawer_tab_discard.text = "버림"
-	_drawer_tab_discard.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_drawer_tab_discard.focus_mode = Control.FOCUS_NONE
-	_drawer_tab_discard.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_drawer_tab_discard.pressed.connect(func(): _switch_drawer_tab_idx(1))
-	tab_hbox.add_child(_drawer_tab_discard)
+func _toggle_drawer(expand: bool) -> void:
+	if is_instance_valid(_drawer_panel):
+		_drawer_panel.toggle_drawer(expand)
 
-	_drawer_tab_exile = Button.new()
-	_drawer_tab_exile.text = "소멸"
-	_drawer_tab_exile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_drawer_tab_exile.focus_mode = Control.FOCUS_NONE
-	_drawer_tab_exile.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_drawer_tab_exile.pressed.connect(func(): _switch_drawer_tab_idx(2))
-	tab_hbox.add_child(_drawer_tab_exile)
-	
-	_drawer_tab_item = Button.new()
-	_drawer_tab_item.text = "소모품"
-	_drawer_tab_item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_drawer_tab_item.focus_mode = Control.FOCUS_NONE
-	_drawer_tab_item.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	_drawer_tab_item.pressed.connect(func(): _switch_drawer_tab_idx(3))
-	tab_hbox.add_child(_drawer_tab_item)
-	
-	var close_btn := Button.new()
-	close_btn.text = "✕"
-	close_btn.focus_mode = Control.FOCUS_NONE
-	close_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	close_btn.pressed.connect(func(): _toggle_drawer(false))
-	
-	var close_style := StyleBoxFlat.new()
-	close_style.bg_color = Color.TRANSPARENT
-	close_style.border_width_bottom = 1
-	close_style.border_color = Color(0.13, 0.18, 0.24)
-	close_style.content_margin_left = 16
-	close_style.content_margin_right = 16
-	close_btn.add_theme_stylebox_override("normal", close_style)
-	close_btn.add_theme_stylebox_override("hover", close_style)
-	close_btn.add_theme_stylebox_override("pressed", close_style)
-	close_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	close_btn.add_theme_color_override("font_color", parent_scene.C_DIM)
-	tab_hbox.add_child(close_btn)
-	
-	# 초기 탭 스타일 적용
-	_apply_tab_style(_drawer_tab_ammo, true)
-	_apply_tab_style(_drawer_tab_discard, false)
-	_apply_tab_style(_drawer_tab_exile, false)
-	_apply_tab_style(_drawer_tab_item, false)
-	
-	# 본문 마진 컨테이너
-	var body_margin := MarginContainer.new()
-	body_margin.add_theme_constant_override("margin_left", 16)
-	body_margin.add_theme_constant_override("margin_right", 16)
-	body_margin.add_theme_constant_override("margin_top", 8)
-	body_margin.add_theme_constant_override("margin_bottom", 8)
-	body_margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	drawer_vbox.add_child(body_margin)
-	
-	# 좌/우 분할 레이아웃
-	var drawer_main_hbox := HBoxContainer.new()
-	drawer_main_hbox.add_theme_constant_override("separation", 16)
-	drawer_main_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body_margin.add_child(drawer_main_hbox)
-	
-	# 좌측: 서랍용 세로 스택
-	var drawer_stackcol := VBoxContainer.new()
-	drawer_stackcol.custom_minimum_size = Vector2(200, 0)
-	drawer_stackcol.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	drawer_main_hbox.add_child(drawer_stackcol)
-	
-	var d_stack_h := HBoxContainer.new()
-	drawer_stackcol.add_child(d_stack_h)
-	
-	var d_stack_t: Label = parent_scene.make_label("▲ 탄창 상태", 11, parent_scene.C_DIM)
-	d_stack_t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	d_stack_h.add_child(d_stack_t)
-	
-	_drawer_stack_cap = parent_scene.make_label("0/0", 12, parent_scene.C_SUCCESS)
-	d_stack_h.add_child(_drawer_stack_cap)
-	
-	_drawer_stack_vbox = VBoxContainer.new()
-	_drawer_stack_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_drawer_stack_vbox.add_theme_constant_override("separation", 4)
-	drawer_stackcol.add_child(_drawer_stack_vbox)
-	
-	# 우측 본문 VBox (소모품/탄환 그리드용)
-	var right_vbox := VBoxContainer.new()
-	right_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	drawer_main_hbox.add_child(right_vbox)
-	
-	# 소모품 그리드 스크롤 영역
-	var item_scroll := ScrollContainer.new()
-	item_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	item_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	right_vbox.add_child(item_scroll)
-	_drawer_body_item = item_scroll
-	
-	_drawer_item_grid = HFlowContainer.new()
-	_drawer_item_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_drawer_item_grid.add_theme_constant_override("h_separation", 8)
-	_drawer_item_grid.add_theme_constant_override("v_separation", 8)
-	item_scroll.add_child(_drawer_item_grid)
-	
-	var c_item1 := _create_consumable_card("✚ 응급 키트", "HP 회복", func():
-		add_combat_log("[color=#37e0ac]💊 소모품 즉발 사용: 응급 키트 효과가 격발되었습니다.[/color]")
-		_toggle_drawer(false)
-	)
-	_drawer_item_grid.add_child(c_item1)
-	
-	var c_item2 := _create_consumable_card("◆ 파쇄액", "타겟 DEF −", func():
-		add_combat_log("[color=#37e0ac]💊 소모품 즉발 사용: 파쇄액 효과가 격발되었습니다.[/color]")
-		_toggle_drawer(false)
-	)
-	_drawer_item_grid.add_child(c_item2)
-	
-	var c_item3 := _create_consumable_card("≈ 둔화 지뢰", "HP 둔화 장치", func():
-		add_combat_log("[color=#37e0ac]💊 소모품 즉발 사용: 둔화 지뢰 효과가 격발되었습니다.[/color]")
-		_toggle_drawer(false)
-	)
-	_drawer_item_grid.add_child(c_item3)
-	
-	# 탄환 그리드 스크롤 영역
-	var drawer_scroll := ScrollContainer.new()
-	drawer_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	drawer_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	drawer_scroll.visible = false
-	right_vbox.add_child(drawer_scroll)
-	_drawer_body_ammo = drawer_scroll
-	
-	_drawer_inventory_grid = HFlowContainer.new()
-	_drawer_inventory_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_drawer_inventory_grid.add_theme_constant_override("h_separation", 8)
-	_drawer_inventory_grid.add_theme_constant_override("v_separation", 8)
-	drawer_scroll.add_child(_drawer_inventory_grid)
-	
-	# 서랍 하단 조작 버튼 바 추가 (장전 완료 / 납탄 기능 제공)
-	var drawer_actions := HBoxContainer.new()
-	drawer_actions.add_theme_constant_override("separation", 10)
-	right_vbox.add_child(drawer_actions)
-	
-	_drawer_undo_btn = parent_scene.make_button("납탄 (맨 위 제거)", func(): _on_drawer_undo_pressed(), parent_scene.C_WARNING)
-	_drawer_undo_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	drawer_actions.add_child(_drawer_undo_btn)
-	
-	_drawer_confirm_btn = parent_scene.make_button("장전 완료 ▸", func(): _on_drawer_confirm_pressed(), parent_scene.C_SUCCESS)
-	_drawer_confirm_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	drawer_actions.add_child(_drawer_confirm_btn)
-	
-	# 초기화: 가방/탄약 탭(0)을 강제로 활성화하여 가시성 및 렌더링 동기화
-	_switch_drawer_tab_idx(0)
+func _refresh_ammo_drawer() -> void:
+	if is_instance_valid(_drawer_panel):
+		_drawer_panel.refresh_ammo_drawer()
 
+func _switch_drawer_tab_idx(tab_idx: int) -> void:
+	if is_instance_valid(_drawer_panel):
+		_drawer_panel._switch_drawer_tab_idx(tab_idx)
 
 func _create_drawer_item(title: String, desc: String, can_use: bool, click_callback: Callable = Callable()) -> HBoxContainer:
 	var item_hbox := HBoxContainer.new()
@@ -901,32 +730,6 @@ func _create_drawer_item(title: String, desc: String, can_use: bool, click_callb
 		item_hbox.add_child(use_btn)
 		
 	return item_hbox
-
-func _switch_drawer_tab_idx(tab_idx: int) -> void:
-	_active_drawer_tab = tab_idx
-	_apply_tab_style(_drawer_tab_ammo, tab_idx == 0)
-	_apply_tab_style(_drawer_tab_discard, tab_idx == 1)
-	_apply_tab_style(_drawer_tab_exile, tab_idx == 2)
-	_apply_tab_style(_drawer_tab_item, tab_idx == 3)
-	
-	_drawer_body_item.visible = (tab_idx == 3)
-	_drawer_body_ammo.visible = (tab_idx != 3)
-	
-	_refresh_ammo_drawer()
-
-func _toggle_drawer(expand: bool) -> void:
-	_is_bag_expanded = expand
-	if not is_instance_valid(_drawer_panel):
-		return
-	_drawer_panel.visible = expand
-	
-	var target_x := (size.x - 700) / 2.0 if size.x > 700 else 24.0
-	if expand:
-		_drawer_panel.size = Vector2(700, 390)
-		_drawer_panel.position = Vector2(target_x, size.y - 390 - 48) # 바텀 마진 48
-		_refresh_ammo_drawer()
-	else:
-		_drawer_panel.position = Vector2(target_x, size.y)
 
 func _create_inventory_card(bullet: BulletData, count: int, click_callback: Callable = Callable()) -> Control:
 	var card := PanelContainer.new()
@@ -1052,57 +855,6 @@ func _get_bullet_icon(bullet: BulletData) -> Texture2D:
 		return load(img_path) as Texture2D
 	return null
 
-func _refresh_loading_inventory() -> void:
-	if not is_instance_valid(_loading_inventory_grid): return
-	for child in _loading_inventory_grid.get_children():
-		child.queue_free()
-		
-	for bullet: BulletData in _bullet_pool:
-		var count: int = _bullet_pool[bullet]
-		if count <= 0: continue
-		
-		var card := _create_inventory_card(bullet, count, func():
-			request_insert_bullet(bullet)
-		)
-		_loading_inventory_grid.add_child(card)
-		
-	if _loading_inventory_grid.get_child_count() == 0:
-		var empty_lbl = parent_scene.make_label("가방이 비어있습니다.", 16, parent_scene.C_DIM)
-		_loading_inventory_grid.add_child(empty_lbl)
-
-func _switch_loading_tab(is_ammo: bool) -> void:
-	_apply_tab_style(_loading_tab_ammo, is_ammo)
-	_apply_tab_style(_loading_tab_item, not is_ammo)
-	if is_instance_valid(_loading_bag_ammo):
-		_loading_bag_ammo.visible = is_ammo
-	if is_instance_valid(_loading_bag_item):
-		_loading_bag_item.visible = not is_ammo
-
-func _apply_tab_style(btn: Button, is_active: bool) -> void:
-	if not is_instance_valid(btn): return
-	
-	var style := StyleBoxFlat.new()
-	if is_active:
-		style.bg_color = Color(0.09, 0.13, 0.18) # #18222f
-		style.border_width_bottom = 2
-		style.border_color = parent_scene.C_SUCCESS
-	else:
-		style.bg_color = Color.TRANSPARENT
-		style.border_width_bottom = 1
-		style.border_color = Color(0.13, 0.18, 0.24)
-		
-	style.content_margin_top = 11
-	style.content_margin_bottom = 11
-	
-	btn.add_theme_stylebox_override("normal", style)
-	btn.add_theme_stylebox_override("hover", style)
-	btn.add_theme_stylebox_override("pressed", style)
-	btn.add_theme_stylebox_override("disabled", style)
-	btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	
-	btn.add_theme_color_override("font_color", parent_scene.C_TEXT if is_active else parent_scene.C_DIM)
-	btn.add_theme_font_size_override("font_size", 12)
-
 func _create_consumable_card(title: String, desc: String, click_callback: Callable = Callable()) -> Control:
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(126, 80)
@@ -1166,124 +918,57 @@ func _create_consumable_card(title: String, desc: String, click_callback: Callab
 	card.pivot_offset = card.custom_minimum_size / 2.0
 	return card
 
-func _refresh_ammo_drawer() -> void:
-	_refresh_loading_inventory()
-	_refresh_drawer_stack()
-	if not is_instance_valid(_drawer_inventory_grid):
-		return
-		
-	for child in _drawer_inventory_grid.get_children():
+func _refresh_loading_inventory() -> void:
+	if not is_instance_valid(_loading_inventory_grid): return
+	for child in _loading_inventory_grid.get_children():
 		child.queue_free()
 		
-	# 삽탄은 LOADING 페이즈 또는 PLAYER_TURN 페이즈 일 때 가능
-	var can_insert := false
-	if combat_manager:
-		can_insert = (combat_manager.state == CombatManager.State.LOADING 
-			or combat_manager.state == CombatManager.State.PLAYER_TURN)
-	else:
-		can_insert = true # 디버그/목업 모드 대비
+	for bullet: BulletData in _bullet_pool:
+		var count: int = _bullet_pool[bullet]
+		if count <= 0: continue
 		
-	var render_source: Dictionary = {}
-	var is_interactive := false
-	var empty_text := "🎒 가방에 남은 탄환이 없습니다."
-	
-	if _active_drawer_tab == 0:
-		render_source = _bullet_pool
-		is_interactive = can_insert
-		empty_text = "🎒 가방에 남은 탄환이 없습니다."
-	elif _active_drawer_tab == 1:
-		var list = combat_manager.discard_pile if combat_manager else [] as Array[BulletData]
-		for b in list:
-			render_source[b] = render_source.get(b, 0) + 1
-		empty_text = "♻ 버린 더미에 탄환이 없습니다."
-	elif _active_drawer_tab == 2:
-		var list = combat_manager.exile_pile if combat_manager else [] as Array[BulletData]
-		for b in list:
-			render_source[b] = render_source.get(b, 0) + 1
-		empty_text = "💀 소멸된 탄환이 없습니다."
+		var card := _create_inventory_card(bullet, count, func():
+			request_insert_bullet(bullet)
+		)
+		_loading_inventory_grid.add_child(card)
 		
-	# 가방 내 탄환 풀 순회
-	var has_any_bullet := false
-	for bullet: BulletData in render_source:
-		var count: int = render_source[bullet]
-		if count <= 0:
-			continue
-		has_any_bullet = true
-		
-		# 삽탄 가능 여부에 따른 콜백 바인딩
-		var card: Control
-		if is_interactive:
-			card = _create_inventory_card(bullet, count, func():
-				request_insert_bullet(bullet)
-			)
-		else:
-			card = _create_inventory_card(bullet, count, Callable())
-			card.modulate = Color(1.0, 1.0, 1.0, 0.45) # 비인터랙티브 탭 카드는 반투명
-			
-		_drawer_inventory_grid.add_child(card)
-		
-	if not has_any_bullet:
-		var empty_lbl: Label = parent_scene.make_label(empty_text, 12, parent_scene.C_DIM)
-		_drawer_inventory_grid.add_child(empty_lbl)
-		
-	# 서랍장 전용 하단 버튼 상태 동기화
-	if is_instance_valid(_drawer_undo_btn):
-		if combat_manager and combat_manager.state == CombatManager.State.LOADING:
-			_drawer_undo_btn.disabled = _loaded_bullets.is_empty()
-		else:
-			_drawer_undo_btn.disabled = true # 전투 중엔 임의 배출 불가
-			
-	if is_instance_valid(_drawer_confirm_btn):
-		if combat_manager and combat_manager.state == CombatManager.State.LOADING:
-			_drawer_confirm_btn.text = "장전 완료 ▸"
-			_drawer_confirm_btn.disabled = _loaded_bullets.is_empty()
-		else:
-			_drawer_confirm_btn.text = "가방 닫기 ✕"
-			_drawer_confirm_btn.disabled = false
+	if _loading_inventory_grid.get_child_count() == 0:
+		var empty_lbl = parent_scene.make_label("가방이 비어있습니다.", 16, parent_scene.C_DIM)
+		_loading_inventory_grid.add_child(empty_lbl)
 
-func _refresh_drawer_stack() -> void:
-	if not is_instance_valid(_drawer_stack_vbox): return
-	for child in _drawer_stack_vbox.get_children():
-		child.queue_free()
-		
-	var bullets: Array[BulletData] = []
-	var max_cap: int = 5
+func _switch_loading_tab(is_ammo: bool) -> void:
+	_apply_tab_style(_loading_tab_ammo, is_ammo)
+	_apply_tab_style(_loading_tab_item, not is_ammo)
+	if is_instance_valid(_loading_bag_ammo):
+		_loading_bag_ammo.visible = is_ammo
+	if is_instance_valid(_loading_bag_item):
+		_loading_bag_item.visible = not is_ammo
+
+func _apply_tab_style(btn: Button, is_active: bool) -> void:
+	if not is_instance_valid(btn): return
 	
-	if combat_manager:
-		max_cap = combat_manager.gun.magazine_capacity + (1 if combat_manager.gun.has_chamber else 0)
-		if combat_manager.state == CombatManager.State.LOADING:
-			bullets = _loaded_bullets
-		else:
-			bullets = combat_manager.magazine.get_loaded_bullets()
-			
-	var loaded := bullets.size()
+	var style := StyleBoxFlat.new()
+	if is_active:
+		style.bg_color = Color(0.09, 0.13, 0.18) # #18222f
+		style.border_width_bottom = 2
+		style.border_color = parent_scene.C_SUCCESS
+	else:
+		style.bg_color = Color.TRANSPARENT
+		style.border_width_bottom = 1
+		style.border_color = Color(0.13, 0.18, 0.24)
+		
+	style.content_margin_top = 11
+	style.content_margin_bottom = 11
 	
-	# 탄창 크기에 맞춰 VBox의 최소 높이를 사전에 고정하여, 삽탄 애니메이션 시 UI 높이 들썩임 방지
-	_drawer_stack_vbox.custom_minimum_size.y = max_cap * 52 + (max_cap - 1) * 4
-	if is_instance_valid(_drawer_stack_cap):
-		_drawer_stack_cap.text = "%d/%d" % [loaded, max_cap]
-		
-	# 1. 위쪽(비어 있는) 슬롯 먼저 (서랍 스택 너비: 200px 고정)
-	for i in range(max_cap - loaded):
-		var slot := _create_stack_slot(null, -1, 200.0)
-		_drawer_stack_vbox.add_child(slot)
-		
-	# 2. 채워진 슬롯 (서랍 스택 너비: 200px 고정)
-	for i in range(loaded - 1, -1, -1):
-		var pos: int = (loaded - 1) - i
-		var slot := _create_stack_slot(bullets[i], pos, 200.0)
-		_drawer_stack_vbox.add_child(slot)
-		
-		# 방금 삽탄한 경우 최상단 슬롯(pos == 0) 높이 확장 및 페이드인 애니메이션
-		if _animate_last_insert and pos == 0:
-			slot.custom_minimum_size.y = 0
-			slot.modulate.a = 0.0
-			slot.clip_contents = true
-			var tween := create_tween()
-			tween.tween_property(slot, "custom_minimum_size:y", 52.0, 0.25).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-			tween.parallel().tween_property(slot, "modulate:a", 1.0, 0.25)
-			
-	_animate_last_insert = false
+	btn.add_theme_stylebox_override("normal", style)
+	btn.add_theme_stylebox_override("hover", style)
+	btn.add_theme_stylebox_override("pressed", style)
+	btn.add_theme_stylebox_override("disabled", style)
+	btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	
+	btn.add_theme_color_override("font_color", parent_scene.C_TEXT if is_active else parent_scene.C_DIM)
+	btn.add_theme_font_size_override("font_size", 12)
+
 
 func _on_drawer_undo_pressed() -> void:
 	if combat_manager and combat_manager.state == CombatManager.State.LOADING:
@@ -1311,6 +996,8 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 		_lookahead_container.initialize(parent_scene, cm)
 	if is_instance_valid(_track_control):
 		_track_control.initialize(parent_scene, cm, _distance_label, _top_log_toast)
+	if is_instance_valid(_drawer_panel):
+		_drawer_panel.initialize(parent_scene, run_manager, cm, self)
 	
 	# 각 인스턴스 정보 초기 셋팅 (인벤토리 덱 정보 동기화)
 	_bullet_pool.clear()
