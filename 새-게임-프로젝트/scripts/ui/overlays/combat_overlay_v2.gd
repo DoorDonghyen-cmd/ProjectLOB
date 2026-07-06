@@ -18,11 +18,16 @@ var _bullets_slow: BulletData = preload("res://resources/bullets/slow_pistol.tre
 
 # ── 서브 컴포넌트 프리로드 ──
 const CylinderView = preload("res://scripts/ui/components/cylinder_view.gd")
+const EnemyTrackView = preload("res://scripts/ui/components/enemy_track_view.gd")
 
 # ── 상태 ──
 var _bullet_pool: Dictionary = {}
 var _loaded_bullets: Array[BulletData] = []
-var _enemy_sprites: Dictionary = {}
+var _enemy_sprites: Dictionary:
+	get:
+		if is_instance_valid(_track_control):
+			return _track_control.enemy_sprites
+		return {}
 var _global_max_dist: float = 12.0
 var _is_targeting_mode: bool = false
 var _is_bag_expanded: bool = false
@@ -65,7 +70,7 @@ var _card_bundle: PanelContainer
 var _agent_sprite: TextureRect
 
 # Track
-var _track_control: Control
+var _track_control: EnemyTrackView
 var _track_line: ColorRect
 
 # 4. ShotLog
@@ -459,8 +464,8 @@ func _build_ui() -> void:
 	_lookahead_container.add_theme_constant_override("separation", 5)
 	lookahead_scroll.add_child(_lookahead_container)
 	
-	# Track (Control, size_flags: Expand) — 컨테이너가 아님
-	_track_control = Control.new()
+	# Track (EnemyTrackView, size_flags: Expand)
+	_track_control = EnemyTrackView.new()
 	_track_control.name = "Track"
 	_track_control.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
 	_track_control.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
@@ -1304,6 +1309,8 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	
 	if is_instance_valid(_lookahead_container):
 		_lookahead_container.initialize(parent_scene, cm)
+	if is_instance_valid(_track_control):
+		_track_control.initialize(parent_scene, cm, _distance_label, _top_log_toast)
 	
 	# 각 인스턴스 정보 초기 셋팅 (인벤토리 덱 정보 동기화)
 	_bullet_pool.clear()
@@ -1370,181 +1377,24 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 func _on_encounter_started(enemy_list) -> void:
 	_last_bullet_count = -1
 	
-	# 이전 몬스터 노드 정리
-	for key in _enemy_sprites.keys():
-		var es = _enemy_sprites[key]
-		if is_instance_valid(es):
-			es.queue_free()
-	_enemy_sprites.clear()
-	
-	# 수평 트랙 상에 적 리스트 생성 및 정렬
-	for enemy in enemy_list:
-		var es := TextureRect.new()
-		if enemy.data and enemy.data.icon:
-			es.texture = enemy.data.icon
-		else:
-			es.texture = load("res://assets/sprites/zombie_sheet.png")
-			if es.texture:
-				var atlas := AtlasTexture.new()
-				atlas.atlas = es.texture
-				atlas.region = Rect2(0, 0, 380, 380)
-				es.texture = atlas
-				
-		es.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		es.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		es.layout_mode = 1
-		es.custom_minimum_size = Vector2(80, 80)
-		es.pivot_offset = Vector2(40, 40)
-		es.mouse_filter = Control.MOUSE_FILTER_STOP
-		es.gui_input.connect(func(event): _on_enemy_sprite_gui_input(event, enemy))
+	if is_instance_valid(_track_control):
+		_track_control.setup_encounter(enemy_list)
+		_track_control.connect_enemy_gui_input(_on_enemy_sprite_gui_input)
 		
-		# 적 노드를 Track에 탑재
-		_track_control.add_child(es)
-		_enemy_sprites[enemy] = es
-		
-		_build_enemy_badge(es, enemy)
-		
-	_global_max_dist = 24.0
-	var max_found := 0
-	for e in enemy_list:
-		if e.start_distance > max_found:
-			max_found = e.start_distance
-	if max_found > 0:
-		_global_max_dist = maxf(float(max_found) + 2.0, 24.0)
-		
-	_update_enemy_position_and_scale(null, false)
-	
 	var nearest = combat_manager.enemy
 	if nearest:
-		_update_distance_display(nearest)
 		_update_hit_info(nearest)
 	_update_cylinder_visuals()
 	_update_action_buttons()
 	_update_phase_state()
 
-func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
-	var badge_panel := PanelContainer.new()
-	badge_panel.custom_minimum_size = Vector2(24, 24)
-	badge_panel.position = Vector2(28, -28)
-	es.add_child(badge_panel)
-	
-	var badge_style := StyleBoxFlat.new()
-	badge_style.corner_radius_top_left = 12
-	badge_style.corner_radius_top_right = 12
-	badge_style.corner_radius_bottom_left = 12
-	badge_style.corner_radius_bottom_right = 12
-	
-	var txt := "?"
-	var color := Color.GRAY
-	match enemy.data.archetype:
-		Enums.EnemyArchetype.RUSHER:
-			txt = "돌"
-			color = parent_scene.C_DANGER
-		Enums.EnemyArchetype.TANK:
-			txt = "방"
-			color = parent_scene.C_ACCENT
-		Enums.EnemyArchetype.DODGER:
-			txt = "회"
-			color = parent_scene.C_SUCCESS
-		Enums.EnemyArchetype.SCRAMBLER:
-			txt = "스"
-			color = parent_scene.C_NEON_GOLD
-		_:
-			txt = "술"
-			color = parent_scene.C_WARNING
-			
-	badge_style.bg_color = color.darkened(0.3)
-	badge_style.border_width_left = 1
-	badge_style.border_width_right = 1
-	badge_style.border_width_top = 1
-	badge_style.border_width_bottom = 1
-	badge_style.border_color = color
-	badge_panel.add_theme_stylebox_override("panel", badge_style)
-	
-	var lbl: Label = parent_scene.make_label(txt, 11, Color.WHITE)
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	badge_panel.add_child(lbl)
-	
-	# 타겟 지시기 (최근접 링)
-	var ring_style := StyleBoxFlat.new()
-	ring_style.bg_color = Color(0,0,0,0)
-	ring_style.border_width_left = 2
-	ring_style.border_width_right = 2
-	ring_style.border_width_top = 2
-	ring_style.border_width_bottom = 2
-	ring_style.border_color = parent_scene.C_DANGER
-	ring_style.corner_radius_top_left = 40
-	ring_style.corner_radius_top_right = 40
-	ring_style.corner_radius_bottom_left = 40
-	ring_style.corner_radius_bottom_right = 40
-	
-	var ring_panel := PanelContainer.new()
-	ring_panel.name = "RingPanel"
-	ring_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	ring_panel.add_theme_stylebox_override("panel", ring_style)
-	es.add_child(ring_panel)
-	ring_panel.visible = false
-
-func _update_enemy_position_and_scale(target_enemy: EnemyInstance, animate: bool) -> void:
-	if not combat_manager:
-		return
-		
-	var nearest = combat_manager.enemy
-	
-	for e in _enemy_sprites.keys():
-		var es = _enemy_sprites[e]
-		if not is_instance_valid(es) or e.is_dead():
-			if is_instance_valid(es):
-				es.visible = false
-			continue
-			
-		es.visible = true
-		var dist: int = e.current_distance
-		var ratio: float = float(dist) / _global_max_dist if _global_max_dist > 0.0 else 0.0
-		
-		# [절대 규칙] anchor_left = 거리 / 최대거리로 수평 자유 배치
-		# 캐릭터(플레이어)와의 겹침 방지를 위해 최소 앵커 0.16 확보, 최대 앵커 0.88로 조율
-		var min_anchor := 0.16
-		var anchor_ratio := min_anchor + ratio * (0.88 - min_anchor)
-		es.anchor_left = anchor_ratio
-		es.anchor_right = anchor_ratio
-		es.anchor_top = 0.75
-		es.anchor_bottom = 0.75
-		
-		# 중심점이 앵커에 오도록 마진 오프셋 계산 (80px 크기)
-		es.offset_left = -40
-		es.offset_right = 40
-		es.offset_top = -40
-		es.offset_bottom = 40
-		es.scale = Vector2(0.8, 0.8)
-		
-		# 타겟 링 표시 갱신
-		var ring = es.get_node_or_null("RingPanel")
-		if ring:
-			ring.visible = (e == nearest)
+func _update_enemy_position_and_scale(target_enemy = null, animate = false) -> void:
+	if is_instance_valid(_track_control):
+		_track_control.update_enemy_position_and_scale()
 
 func _update_distance_display(enemy: EnemyInstance) -> void:
-	if not enemy or enemy.is_dead():
-		_distance_label.text = "- m"
-		return
-		
-	var dist := enemy.current_distance
-	_distance_label.text = "%d m" % dist
-	
-	# 생사선 위험 연출 분기
-	if dist <= 3:
-		_distance_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
-		_top_log_toast.text = "⚠ 즉사 위험! 다음 턴 진입 시 사망합니다!"
-		_top_log_toast.add_theme_color_override("font_color", parent_scene.C_DANGER)
-	elif dist <= 6:
-		_distance_label.add_theme_color_override("font_color", parent_scene.C_WARNING)
-		_top_log_toast.text = "경고 — 적이 접근 중입니다."
-		_top_log_toast.add_theme_color_override("font_color", parent_scene.C_WARNING)
-	else:
-		_distance_label.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
-		_top_log_toast.text = "상황 대기 중"
-		_top_log_toast.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+	if is_instance_valid(_track_control):
+		_track_control.update_distance_display(enemy)
 
 func _update_cylinder_visuals() -> void:
 	if is_instance_valid(_lookahead_container):
