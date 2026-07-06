@@ -219,6 +219,9 @@ func trigger_camera_shake(intensity: float = 8.0, duration: float = 0.2) -> void
 
 
 func start_run_from_title() -> void:
+	if _combat_overlay:
+		_combat_overlay.queue_free()
+		_combat_overlay = null
 	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	_title_overlay.visible = false
 	_show_map_screen()
@@ -326,6 +329,9 @@ func sync_relics_from_loadout(relics_map: Dictionary) -> void:
 
 
 func _show_title_screen() -> void:
+	if _combat_overlay:
+		_combat_overlay.queue_free()
+		_combat_overlay = null
 	_title_overlay.visible = true
 	_map_overlay.visible = false
 	_maintenance_overlay.visible = false
@@ -534,6 +540,9 @@ func handle_combat_finished(is_dead: bool) -> void:
 
 
 func _show_debriefing(won: bool) -> void:
+	if _combat_overlay:
+		_combat_overlay.queue_free()
+		_combat_overlay = null
 	_debriefing_overlay.show_debriefing(won)
 
 
