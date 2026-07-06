@@ -313,7 +313,7 @@ func _refresh_drawer_stack() -> void:
 	var bullets: Array[BulletData] = []
 	var max_cap: int = 5
 	
-	if combat_manager:
+	if combat_manager and combat_manager.gun:
 		max_cap = combat_manager.gun.magazine_capacity + (1 if combat_manager.gun.has_chamber else 0)
 		if combat_manager.state == CombatManager.State.LOADING:
 			bullets = overlay._loaded_bullets
