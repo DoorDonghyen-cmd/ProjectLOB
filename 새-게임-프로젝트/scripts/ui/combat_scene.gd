@@ -439,9 +439,21 @@ func _start_combat_phase(enemy_datas: Array[EnemyData]) -> void:
 	_cm.name = "CombatManager"
 	add_child(_cm)
 	
+	if not is_instance_valid(_combat_overlay):
+		if is_v2_ui:
+			_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
+		else:
+			_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay.tscn").instantiate()
+		_combat_margin.add_child(_combat_overlay)
+		_combat_overlay.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+		_combat_overlay.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+		_combat_overlay.initialize(self, _rm)
+		
+	_combat_margin.visible = true
+	_combat_overlay.visible = true
+	
 	# 렐릭 동기화는 이제 요원 작전 준비실(LoadoutOverlay) 작전 개시 시점에 _rm.active_relics로 연동 완료되었습니다.
-	if _combat_overlay:
-		_combat_overlay.start_combat(_current_gun_data, enemy_datas, _cm)
+	_combat_overlay.start_combat(_current_gun_data, enemy_datas, _cm)
 
 
 func _start_maintenance_phase(node: RunManager.RunNode) -> void:
