@@ -16,6 +16,9 @@ var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_pistol.
 var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
 var _bullets_slow: BulletData = preload("res://resources/bullets/slow_pistol.tres")
 
+# ── 서브 컴포넌트 프리로드 ──
+const CylinderView = preload("res://scripts/ui/components/cylinder_view.gd")
+
 # ── 상태 ──
 var _bullet_pool: Dictionary = {}
 var _loaded_bullets: Array[BulletData] = []
@@ -55,7 +58,7 @@ var _loading_inventory_grid: HFlowContainer
 # LeftColumn
 var _hit_info_panel: PanelContainer
 var _hit_info_label: RichTextLabel
-var _lookahead_container: VBoxContainer
+var _lookahead_container: CylinderView
 var _card_next: PanelContainer
 var _card_2: PanelContainer
 var _card_bundle: PanelContainer
@@ -450,7 +453,7 @@ func _build_ui() -> void:
 	_hud_lbl_exile.gui_input.connect(func(ev): _on_hud_counter_clicked(ev, 2))
 	hud_hbox.add_child(_hud_lbl_exile)
 	
-	_lookahead_container = VBoxContainer.new()
+	_lookahead_container = CylinderView.new()
 	_lookahead_container.name = "Lookahead"
 	_lookahead_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_lookahead_container.add_theme_constant_override("separation", 5)
@@ -1299,6 +1302,9 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	_current_gun_data = gun
 	_current_enemy_data = enemy_list[0] if enemy_list.size() > 0 else null
 	
+	if is_instance_valid(_lookahead_container):
+		_lookahead_container.initialize(parent_scene, cm)
+	
 	# 각 인스턴스 정보 초기 셋팅 (인벤토리 덱 정보 동기화)
 	_bullet_pool.clear()
 	if run_manager and run_manager.deck:
@@ -1541,248 +1547,8 @@ func _update_distance_display(enemy: EnemyInstance) -> void:
 		_top_log_toast.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 
 func _update_cylinder_visuals() -> void:
-	# 1. 기존 동적 노드들 클리어
-	for child in _lookahead_container.get_children():
-		child.queue_free()
-		
-	var bullets: Array[BulletData] = []
-	if combat_manager:
-		bullets = combat_manager.magazine.get_loaded_bullets()
-		
-	if bullets.size() == 0:
-		var empty_panel := _create_empty_bullet_card("약실 비어있음")
-		_lookahead_container.add_child(empty_panel)
-		return
-		
-	# 2. 장전된 탄환을 역순(LIFO: 가장 마지막에 넣은 탄환이 최상단)으로 빌드
-	var display_count := 0
-	for i in range(bullets.size() - 1, -1, -1):
-		var bullet: BulletData = bullets[i]
-		var is_next: bool = (display_count == 0)
-		var is_hidden: bool = (display_count >= 2)
-		
-		# 카드 번호는 격발될 순서(1, 2, 3...)로 표기
-		var bullet_card := _create_dynamic_bullet_card(bullet, display_count + 1, is_next, is_hidden)
-		_lookahead_container.add_child(bullet_card)
-		display_count += 1
-		
-	# 피드백을 위한 예고창 전체 스케일 바운스 연출
 	if is_instance_valid(_lookahead_container):
-		_lookahead_container.pivot_offset = Vector2(_lookahead_container.size.x / 2.0, _lookahead_container.size.y / 2.0)
-		var tween := create_tween()
-		tween.tween_property(_lookahead_container, "scale", Vector2(1.08, 1.08), 0.08).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		tween.tween_property(_lookahead_container, "scale", Vector2(1.0, 1.0), 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-
-func _create_dynamic_bullet_card(bullet: BulletData, index: int, is_next: bool, is_hidden: bool = false) -> PanelContainer:
-	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(0, 32)
-	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
-	var style := StyleBoxFlat.new()
-	if is_next:
-		style.bg_color = Color(0.12, 0.22, 0.18, 0.9) # 강조 배경 (성공 색조)
-		style.border_width_left = 2; style.border_width_right = 2
-		style.border_width_top = 2; style.border_width_bottom = 2
-		style.border_color = parent_scene.C_SUCCESS
-	else:
-		style.bg_color = Color(0.06, 0.08, 0.12, 0.75) # 기본 어두운 배경
-		style.border_width_left = 1; style.border_width_right = 1
-		style.border_width_top = 1; style.border_width_bottom = 1
-		style.border_color = Color(0.13, 0.18, 0.24)
-	style.corner_radius_top_left = 4; style.corner_radius_top_right = 4
-	style.corner_radius_bottom_left = 4; style.corner_radius_bottom_right = 4
-	card.add_theme_stylebox_override("panel", style)
-	
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 6)
-	margin.add_theme_constant_override("margin_right", 6)
-	card.add_child(margin)
-	
-	var hbox := HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 6)
-	margin.add_child(hbox)
-	
-	# 인덱스 또는 NEXT 표시
-	var index_lbl: Label
-	if is_next:
-		index_lbl = parent_scene.make_label("▶", 10.5, parent_scene.C_SUCCESS)
-	else:
-		index_lbl = parent_scene.make_label(str(index), 10.5, parent_scene.C_DIM)
-	hbox.add_child(index_lbl)
-	
-	# 총알 아이콘 추가 (은폐가 아닐 때에만 렌더링)
-	if not is_hidden:
-		var icon_tex := _get_bullet_icon(bullet)
-		if icon_tex:
-			var icon_rect := TextureRect.new()
-			icon_rect.texture = icon_tex
-			icon_rect.custom_minimum_size = Vector2(18, 18) # 콤팩트 크기
-			icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			icon_rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-			icon_rect.modulate = Color(1, 1, 1, 0.9)
-			hbox.add_child(icon_rect)
-			
-	# 탄환 종류 및 구경 표시 (is_hidden 시 은폐)
-	var display_name := bullet.display_name
-	var name_color := Color.WHITE
-	if is_hidden:
-		display_name = "???"
-		name_color = parent_scene.C_DIM
-		
-	var name_lbl: Label = parent_scene.make_label(display_name, 11, name_color)
-	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hbox.add_child(name_lbl)
-	
-	# 간단한 성능 표시 (is_hidden 시 은폐)
-	var stat_str := "D%d P%d" % [bullet.damage, bullet.penetration]
-	if is_hidden:
-		stat_str = "D? P?"
-		
-	var stat_lbl: Label = parent_scene.make_label(stat_str, 9.5, parent_scene.C_DIM)
-	hbox.add_child(stat_lbl)
-	
-	return card
-
-func _create_empty_bullet_card(text: String) -> PanelContainer:
-	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(0, 32)
-	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.08, 0.08, 0.4)
-	style.border_width_left = 1; style.border_width_right = 1
-	style.border_width_top = 1; style.border_width_bottom = 1
-	style.border_color = Color(0.18, 0.18, 0.18)
-	style.corner_radius_top_left = 4; style.corner_radius_top_right = 4
-	style.corner_radius_bottom_left = 4; style.corner_radius_bottom_right = 4
-	card.add_theme_stylebox_override("panel", style)
-	
-	var lbl: Label = parent_scene.make_label(text, 11.5, parent_scene.C_DIM)
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	card.add_child(lbl)
-	
-	return card
-
-func _update_card_visual(card: PanelContainer, bullet: BulletData, label_text: String, is_next: bool) -> void:
-	_apply_panel_style(card, _get_bullet_color(bullet))
-	
-	# 노드 갱신을 위해 기존 자식들을 싹 비우고 매번 새로 빌드
-	for child in card.get_children():
-		child.queue_free()
-		
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_bottom", 8)
-	card.add_child(margin)
-	
-	# 메인 가로 분할 HBox
-	var hbox := HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 10)
-	margin.add_child(hbox)
-	
-	# 1. 좌측: 36x36px 크기의 컬러 총알 이미지
-	var icon_tex := _get_bullet_icon(bullet)
-	if icon_tex:
-		var icon_rect := TextureRect.new()
-		icon_rect.texture = icon_tex
-		icon_rect.custom_minimum_size = Vector2(36, 36)
-		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon_rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		icon_rect.modulate = Color(1, 1, 1, 0.95) # 95% 선명한 색상 표출
-		hbox.add_child(icon_rect)
-		
-	# 2. 우측: 정보 텍스트 vbox
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 2)
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	hbox.add_child(vbox)
-	
-	# (상단행) 예고 정보 + 이름
-	var top_hbox := HBoxContainer.new()
-	top_hbox.add_theme_constant_override("separation", 8)
-	vbox.add_child(top_hbox)
-	
-	var idx_lbl: Label = parent_scene.make_label(label_text, 10, parent_scene.C_SUCCESS if is_next else parent_scene.C_DIM)
-	top_hbox.add_child(idx_lbl)
-	
-	var bullet_name := bullet.display_name
-	var name_lbl: Label = parent_scene.make_label(bullet_name, 12, Color.WHITE)
-	name_lbl.clip_text = true
-	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	top_hbox.add_child(name_lbl)
-	
-	# (하단행) 5개 스탯 나란히 한 줄 출력
-	var st_str := "DMG %d  ACC %d  PEN %d  KB %d  SL %d" % [
-		bullet.damage, bullet.accuracy, bullet.penetration, bullet.knockback, bullet.slow
-	]
-	var st_lbl: Label = parent_scene.make_label(st_str, 9.5, parent_scene.C_DIM)
-	st_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	st_lbl.add_theme_constant_override("outline_size", 2)
-	vbox.add_child(st_lbl)
-
-func _update_card_empty_visual(card: PanelContainer, text: String) -> void:
-	_apply_panel_style(card, parent_scene.C_DIM)
-	
-	if card.get_child_count() == 0:
-		var card_vbox := VBoxContainer.new()
-		card_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		card.add_child(card_vbox)
-		
-		var idx_lbl: Label = parent_scene.make_label("약실", 10, parent_scene.C_DIM)
-		idx_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		idx_lbl.name = "IndexLabel"
-		card_vbox.add_child(idx_lbl)
-		
-		var name_lbl: Label = parent_scene.make_label(text, 12, parent_scene.C_DIM)
-		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		name_lbl.name = "NameLabel"
-		card_vbox.add_child(name_lbl)
-	else:
-		var card_vbox = card.get_child(0)
-		var idx_lbl = card_vbox.get_node("IndexLabel") as Label
-		var name_lbl = card_vbox.get_node("NameLabel") as Label
-		idx_lbl.text = "약실"
-		idx_lbl.add_theme_color_override("font_color", parent_scene.C_DIM)
-		name_lbl.text = text
-
-func _update_bundle_visual(card: PanelContainer, count: int) -> void:
-	var bundle_style := StyleBoxFlat.new()
-	bundle_style.bg_color = Color(0.06, 0.08, 0.12, 0.6)
-	bundle_style.border_width_left = 1
-	bundle_style.border_width_right = 1
-	bundle_style.border_width_top = 1
-	bundle_style.border_width_bottom = 1
-	bundle_style.border_color = parent_scene.C_DIM
-	bundle_style.corner_radius_top_left = 4
-	bundle_style.corner_radius_top_right = 4
-	bundle_style.corner_radius_bottom_left = 4
-	bundle_style.corner_radius_bottom_right = 4
-	card.add_theme_stylebox_override("panel", bundle_style)
-	
-	if card.get_child_count() == 0:
-		var bundle_lbl: Label = parent_scene.make_label("+ %d칸 더 적재됨" % count, 11, parent_scene.C_DIM)
-		bundle_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		bundle_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		bundle_lbl.name = "BundleLabel"
-		card.add_child(bundle_lbl)
-	else:
-		var bundle_lbl = card.get_child(0) as Label
-		bundle_lbl.text = "+ %d칸 더 적재됨" % count
-
-func _get_bullet_color(bullet: BulletData) -> Color:
-	if "AP" in bullet.display_name or "관통" in bullet.display_name:
-		return parent_scene.C_SUCCESS
-	elif "KB" in bullet.display_name or "넉백" in bullet.display_name:
-		return parent_scene.C_WARNING
-	elif "HEAVY" in bullet.display_name or "중장" in bullet.display_name:
-		return parent_scene.C_NEON_GOLD
-	return parent_scene.C_DIM
+		_lookahead_container.update_cylinder_visuals()
 
 func _update_hit_info(enemy: EnemyInstance) -> void:
 	if not enemy or enemy.is_dead():
