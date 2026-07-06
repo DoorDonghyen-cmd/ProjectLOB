@@ -275,9 +275,10 @@ func trigger_double_tap_test() -> void:
 	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	
 	_combat_margin.visible = true
-	_combat_overlay.visible = true
-	_combat_overlay.clear_combat_log()
-	_combat_overlay.add_combat_log("[color=#ffff66]🛠️ 더블탭 전투 테스트 시작! (속사형 SMG 탑재)[/color]")
+	if _combat_overlay:
+		_combat_overlay.visible = true
+		_combat_overlay.clear_combat_log()
+		_combat_overlay.add_combat_log("[color=#ffff66]🛠️ 더블탭 전투 테스트 시작! (속사형 SMG 탑재)[/color]")
 	
 	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_tank]
 	_start_combat_phase(enemy_list)
@@ -301,9 +302,10 @@ func trigger_v2_ui_test() -> void:
 	_combat_overlay.initialize(self, _rm)
 	
 	_combat_margin.visible = true
-	_combat_overlay.visible = true
-	_combat_overlay.clear_combat_log()
-	_combat_overlay.add_combat_log("[color=#37e0ac]🔥 목업 기반 신규 전투 UI V2 데모 모드 개시![/color]")
+	if _combat_overlay:
+		_combat_overlay.visible = true
+		_combat_overlay.clear_combat_log()
+		_combat_overlay.add_combat_log("[color=#37e0ac]🔥 목업 기반 신규 전투 UI V2 데모 모드 개시![/color]")
 	
 	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_tank, _enemy_dodger, _enemy_drone, _enemy_caster]
 	_start_combat_phase(enemy_list)
@@ -360,9 +362,10 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 	if selected_node.type_name.contains("전투") or selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss"):
 		# 전투 로그 출력을 위해 Combat Overlay 및 컨테이너를 준비해 둠
 		_combat_margin.visible = true
-		_combat_overlay.visible = true
-		_combat_overlay.clear_combat_log()
-		_combat_overlay.add_combat_log("[color=#ffff66]%s[/color]" % msg)
+		if _combat_overlay:
+			_combat_overlay.visible = true
+			_combat_overlay.clear_combat_log()
+			_combat_overlay.add_combat_log("[color=#ffff66]%s[/color]" % msg)
 		var enemy_list: Array[EnemyData] = []
 		var floor_num := _rm.current_floor
 		
@@ -424,7 +427,8 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		_start_combat_phase(enemy_list)
 	else:
 		_combat_margin.visible = false
-		_combat_overlay.visible = false
+		if _combat_overlay:
+			_combat_overlay.visible = false
 		_start_maintenance_phase(selected_node)
 
 
@@ -436,7 +440,8 @@ func _start_combat_phase(enemy_datas: Array[EnemyData]) -> void:
 	add_child(_cm)
 	
 	# 렐릭 동기화는 이제 요원 작전 준비실(LoadoutOverlay) 작전 개시 시점에 _rm.active_relics로 연동 완료되었습니다.
-	_combat_overlay.start_combat(_current_gun_data, enemy_datas, _cm)
+	if _combat_overlay:
+		_combat_overlay.start_combat(_current_gun_data, enemy_datas, _cm)
 
 
 func _start_maintenance_phase(node: RunManager.RunNode) -> void:
@@ -480,7 +485,8 @@ func handle_maintenance_finished() -> void:
 
 func handle_combat_finished(is_dead: bool) -> void:
 	_combat_margin.visible = false
-	_combat_overlay.visible = false
+	if _combat_overlay:
+		_combat_overlay.visible = false
 	if _is_shortcut_mode:
 		_is_shortcut_mode = false
 		_show_title_screen()
@@ -530,7 +536,8 @@ func handle_combat_finished(is_dead: bool) -> void:
 					
 		if fid > 0:
 			if _rm.collect_lore_fragment(fid):
-				_combat_overlay.add_combat_log("[color=#00ff66]📥 [기밀 정보 복원] 우회로 또는 적 데이터 분석을 통해 기밀 파편 #%d번을 회수했습니다![/color]" % fid)
+				if _combat_overlay:
+					_combat_overlay.add_combat_log("[color=#00ff66]📥 [기밀 정보 복원] 우회로 또는 적 데이터 분석을 통해 기밀 파편 #%d번을 회수했습니다![/color]" % fid)
 	
 	_rm.current_floor += 1
 	if _rm.current_floor > 10:
