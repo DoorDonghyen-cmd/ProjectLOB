@@ -14,6 +14,7 @@ var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.t
 var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
 var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_pistol.tres")
 var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
+var _bullets_slow: BulletData = preload("res://resources/bullets/slow_pistol.tres")
 
 # ── 상태 ──
 var _bullet_pool: Dictionary = {}
@@ -2492,19 +2493,23 @@ func _generate_draft_choices() -> Array[BulletData]:
 		dir.list_dir_begin()
 		var file_name: String = dir.get_next()
 		while file_name != "":
-			if not file_name.is_empty() and not file_name.ends_with(".import") and file_name.ends_with(".tres"):
-				var res = load(path + file_name)
-				if res is BulletData:
-					pool.append(res)
+			if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
+				if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
+					var clean_name: String = file_name.replace(".remap", "")
+					var res = load(path + clean_name)
+					if res is BulletData:
+						pool.append(res)
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	
-	var result: Array[BulletData] = []
 	if pool.is_empty():
-		return result
+		# 폴백 안전 처리
+		pool = [_bullets_basic, _bullets_ap, _bullets_kb, _bullets_heavy, _bullets_slow]
+	
+	var result: Array[BulletData] = []
 	pool.shuffle()
 	for i in range(min(3, pool.size())):
-		result.append(pool[i])
+		result.append(pool[i].duplicate())
 	return result
 
 func _make_draft_card(bullet: BulletData) -> PanelContainer:
