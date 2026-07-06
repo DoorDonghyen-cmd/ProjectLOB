@@ -15,6 +15,7 @@ func initialize(p_scene: Control, cm: CombatManager) -> void:
 func update_cylinder_visuals() -> void:
 	# 1. 기존 동적 노드들 클리어
 	for child in get_children():
+		remove_child(child)
 		child.queue_free()
 		
 	var bullets: Array[BulletData] = []

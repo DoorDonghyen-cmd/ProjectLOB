@@ -50,6 +50,7 @@ func show_draft(confirm_btn: Button) -> void:
 	visible = true
 	
 	for child in _draft_cards_hbox.get_children():
+		_draft_cards_hbox.remove_child(child)
 		child.queue_free()
 		
 	for bullet in _generate_draft_choices():

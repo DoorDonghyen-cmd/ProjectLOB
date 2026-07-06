@@ -312,6 +312,7 @@ func refresh_ammo_drawer() -> void:
 func _refresh_drawer_stack() -> void:
 	if not is_instance_valid(_drawer_stack_vbox): return
 	for child in _drawer_stack_vbox.get_children():
+		_drawer_stack_vbox.remove_child(child)
 		child.queue_free()
 		
 	var bullets: Array[BulletData] = []
