@@ -30,12 +30,9 @@ var _enemy_sprites: Dictionary:
 		if is_instance_valid(_track_control):
 			return _track_control.enemy_sprites
 		return {}
-var _global_max_dist: float = 12.0
-var _is_targeting_mode: bool = false
 var _is_bag_expanded: bool = false
 var _animate_last_insert: bool = false
 var _last_bullet_count: int = -1
-var _last_loaded_count: int = 0
 var _current_gun_data: GunData
 var _current_enemy_data: EnemyData
 
@@ -66,9 +63,6 @@ var _loading_inventory_grid: HFlowContainer
 var _hit_info_panel: PanelContainer
 var _hit_info_label: RichTextLabel
 var _lookahead_container: CylinderView
-var _card_next: PanelContainer
-var _card_2: PanelContainer
-var _card_bundle: PanelContainer
 var _agent_sprite: TextureRect
 
 # Track
