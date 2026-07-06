@@ -27,14 +27,15 @@ func initialize(p_scene: Control, rm: RunManager, overlay_v2: Control) -> void:
 	
 	add_theme_constant_override("separation", 10)
 	
-	var draft_title: Label = parent_scene.make_label("탄환 카드 드래프트: 3개 중 1개의 탄환을 덱에 획득하십시오.", 18, parent_scene.C_WARNING)
-	draft_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(draft_title)
-	
-	_draft_cards_hbox = HBoxContainer.new()
-	_draft_cards_hbox.add_theme_constant_override("separation", 12)
-	_draft_cards_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	add_child(_draft_cards_hbox)
+	if get_child_count() == 0:
+		var draft_title: Label = parent_scene.make_label("탄환 카드 드래프트: 3개 중 1개의 탄환을 덱에 획득하십시오.", 18, parent_scene.C_WARNING)
+		draft_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		add_child(draft_title)
+		
+		_draft_cards_hbox = HBoxContainer.new()
+		_draft_cards_hbox.add_theme_constant_override("separation", 12)
+		_draft_cards_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		add_child(_draft_cards_hbox)
 
 func setup_choices(b_basic: BulletData, b_ap: BulletData, b_kb: BulletData, b_heavy: BulletData, b_slow: BulletData) -> void:
 	_bullets_basic = b_basic

@@ -38,7 +38,8 @@ func initialize(p_scene: Control, rm: RunManager, cm: CombatManager, overlay_v2:
 	drawer_style.border_color = parent_scene.C_SUCCESS
 	add_theme_stylebox_override("panel", drawer_style)
 	
-	_build_ui()
+	if get_child_count() == 0:
+		_build_ui()
 	toggle_drawer(false)
 
 func _build_ui() -> void:
