@@ -1717,6 +1717,11 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 		slot.add_child(lbl)
 		return slot
 		
+	# [Phase 4] 은폐성 규칙 판정: LOADING 페이즈가 아니고, 깊이가 3번째 이상(pos >= 2)이면 정보 은폐
+	var is_hidden := false
+	if combat_manager and combat_manager.state != CombatManager.State.LOADING:
+		is_hidden = (pos >= 2)
+		
 	if pos == 0:
 		style.border_color = parent_scene.C_SUCCESS
 		style.shadow_color = Color(parent_scene.C_SUCCESS.r, parent_scene.C_SUCCESS.g, parent_scene.C_SUCCESS.b, 0.25)
@@ -1738,16 +1743,22 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 	slot_hbox.add_theme_constant_override("separation", 10)
 	margin.add_child(slot_hbox)
 	
-	# 좌측: 32x32 대형 컬러 총알 아이콘
-	var icon_tex := _get_bullet_icon(bullet)
-	if icon_tex:
-		var icon_rect := TextureRect.new()
-		icon_rect.texture = icon_tex
-		icon_rect.custom_minimum_size = Vector2(32, 32)
-		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon_rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		slot_hbox.add_child(icon_rect)
+	# 좌측: 32x32 대형 컬러 총알 아이콘 (은폐 시에는 렌더링 생략)
+	if not is_hidden:
+		var icon_tex := _get_bullet_icon(bullet)
+		if icon_tex:
+			var icon_rect := TextureRect.new()
+			icon_rect.texture = icon_tex
+			icon_rect.custom_minimum_size = Vector2(32, 32)
+			icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon_rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			slot_hbox.add_child(icon_rect)
+	else:
+		# 은폐 시 레이아웃 정렬 유지를 위해 32x32 빈 공간 배치
+		var empty_spacer := Control.new()
+		empty_spacer.custom_minimum_size = Vector2(32, 32)
+		slot_hbox.add_child(empty_spacer)
 		
 	# 우측: 정보 텍스트 vbox
 	var vbox := VBoxContainer.new()
@@ -1768,7 +1779,7 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 	var role_str = ""
 	if pos == 0: role_str = "다음 발사"
 	elif pos == 1: role_str = "그다음"
-	elif pos == _loaded_bullets.size() - 1: role_str = "바닥"
+	elif pos == _loaded_bullets.size() - 1 and not is_hidden: role_str = "바닥"
 	
 	var role_lbl: Label = parent_scene.make_label(role_str, 9, parent_scene.C_SUCCESS if pos == 0 else parent_scene.C_DIM)
 	top_hbox.add_child(role_lbl)
@@ -1778,20 +1789,29 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 	top_hbox.add_child(top_spacer)
 	
 	var spec_str := ""
-	if bullet.penetration > 0:
-		spec_str = "PEN %d" % bullet.penetration
-	elif bullet.knockback > 0:
-		spec_str = "KB %d" % bullet.knockback
-	elif bullet.slow > 0:
-		spec_str = "SL %d" % bullet.slow
+	if not is_hidden:
+		if bullet.penetration > 0:
+			spec_str = "PEN %d" % bullet.penetration
+		elif bullet.knockback > 0:
+			spec_str = "KB %d" % bullet.knockback
+		elif bullet.slow > 0:
+			spec_str = "SL %d" % bullet.slow
+		else:
+			spec_str = "DMG %d" % bullet.damage
 	else:
-		spec_str = "DMG %d" % bullet.damage
+		spec_str = "???"
 		
 	var st_lbl: Label = parent_scene.make_label(spec_str, 9.5, parent_scene.C_DIM)
 	top_hbox.add_child(st_lbl)
 	
 	# 하단 행 (탄환 이름)
-	var name_lbl: Label = parent_scene.make_label(bullet.display_name, 12.5, Color.WHITE)
+	var display_name := bullet.display_name
+	var name_color := Color.WHITE
+	if is_hidden:
+		display_name = "??? [정보 은폐]"
+		name_color = parent_scene.C_DIM
+		
+	var name_lbl: Label = parent_scene.make_label(display_name, 12.5, name_color)
 	name_lbl.clip_text = true
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_child(name_lbl)
