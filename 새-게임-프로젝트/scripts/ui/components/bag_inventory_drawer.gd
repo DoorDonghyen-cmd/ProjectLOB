@@ -215,13 +215,16 @@ func toggle_drawer(expand: bool) -> void:
 	overlay._is_bag_expanded = expand
 	visible = expand
 	
-	var target_x := (overlay.size.x - 700) / 2.0 if overlay.size.x > 700 else 24.0
+	var overlay_w = overlay.size.x if overlay.size.x > 100 else get_viewport_rect().size.x
+	var overlay_h = overlay.size.y if overlay.size.y > 100 else get_viewport_rect().size.y
+	
+	var target_x = (overlay_w - 700) / 2.0 if overlay_w > 700 else 24.0
 	if expand:
 		size = Vector2(700, 390)
-		position = Vector2(target_x, overlay.size.y - 390 - 48)
+		position = Vector2(target_x, overlay_h - 390 - 48)
 		refresh_ammo_drawer()
 	else:
-		position = Vector2(target_x, overlay.size.y)
+		position = Vector2(target_x, overlay_h)
 
 func _switch_drawer_tab_idx(tab_idx: int) -> void:
 	_active_drawer_tab = tab_idx

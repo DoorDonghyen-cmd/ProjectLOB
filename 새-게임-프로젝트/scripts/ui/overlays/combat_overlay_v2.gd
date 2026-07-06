@@ -160,10 +160,14 @@ func _ready() -> void:
 
 func _on_resized() -> void:
 	if is_instance_valid(_drawer_panel):
+		var overlay_w = size.x if size.x > 100 else get_viewport_rect().size.x
+		var overlay_h = size.y if size.y > 100 else get_viewport_rect().size.y
+		var target_x = (overlay_w - 700) / 2.0 if overlay_w > 700 else 24.0
+		
 		if _is_bag_expanded:
-			_drawer_panel.position = Vector2(24, size.y - 360 - 64)
+			_drawer_panel.position = Vector2(target_x, overlay_h - 390 - 48)
 		else:
-			_drawer_panel.position = Vector2(24, size.y)
+			_drawer_panel.position = Vector2(target_x, overlay_h)
 
 func _build_ui() -> void:
 	for child in get_children():
