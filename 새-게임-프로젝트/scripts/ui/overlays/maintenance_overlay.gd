@@ -616,10 +616,13 @@ func _refresh_parts_modification_ui() -> void:
 
 ## 1. 장착 및 교체 (Equip)
 func _on_parts_equip_pressed() -> void:
-	if _new_discovered_part == null:
+	if _new_discovered_part == null or run_manager == null:
 		return
 		
 	var gun = run_manager.current_gun
+	if gun == null:
+		return
+		
 	if run_manager.equipped_parts.size() < gun.parts_capacity:
 		# 빈 슬롯이 있으면 즉시 장착
 		run_manager.equip_part_to_slot(_new_discovered_part)

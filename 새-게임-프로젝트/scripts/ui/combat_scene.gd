@@ -230,6 +230,8 @@ func start_run_from_title() -> void:
 func trigger_parts_test_ui() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
+	if _rm and _rm.current_gun == null:
+		_rm.current_gun = _gun_revolver
 	var test_node = RunManager.RunNode.new(999, "무기 캐비닛 (테스트)", "숏컷 테스트 구역", [])
 	_start_maintenance_phase(test_node)
 

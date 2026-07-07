@@ -173,7 +173,7 @@ func _on_dev_test_pressed() -> void:
 ## 개발자 테스트 팝업 패널 빌드
 func _build_dev_test_panel() -> void:
 	_dev_test_panel = PanelContainer.new()
-	_dev_test_panel.custom_minimum_size = Vector2(340, 520)
+	_dev_test_panel.custom_minimum_size = Vector2(720, 380) # 3열 슬롯 가로 와이드 비율
 	_dev_test_panel.visible = false
 	
 	# 화면 정중앙 팝업 스타일
@@ -204,67 +204,83 @@ func _build_dev_test_panel() -> void:
 	_dev_test_panel.add_child(margin)
 	
 	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 14)
+	vbox.add_theme_constant_override("separation", 10)
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	margin.add_child(vbox)
 	
-	vbox.add_child(parent_scene.make_label("🛠️ 개발자 디버그 테스트", 20, parent_scene.C_WARNING))
+	vbox.add_child(parent_scene.make_label("🛠️ 개발자 디버그 테스트", 16, parent_scene.C_WARNING))
 	
-	# 1. 파츠 개조 UI 테스트 숏컷 버튼
-	var btn_parts = parent_scene.make_button("🔧 파츠 개조 UI 테스트", func():
+	# 3열 바둑판식 슬롯 GridContainer 생성
+	var grid := GridContainer.new()
+	grid.columns = 3
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(grid)
+	
+	# 1. 무기 캐비닛 (파츠 획득) 테스트 숏컷 버튼
+	var btn_parts = parent_scene.make_button("🔧 무기 캐비닛 (파츠 획득)", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_parts_test_ui()
 	, parent_scene.C_ACCENT)
-	btn_parts.custom_minimum_size = Vector2(0, 40)
-	vbox.add_child(btn_parts)
+	btn_parts.custom_minimum_size = Vector2(0, 36)
+	btn_parts.add_theme_font_size_override("font_size", 11)
+	btn_parts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_parts)
 	
 	# 2. 요원 준비실 UI 테스트 숏컷 버튼
 	var btn_loadout = parent_scene.make_button("🎒 요원 준비실 UI 테스트", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_loadout_test_ui()
 	, parent_scene.C_ACCENT)
-	btn_loadout.custom_minimum_size = Vector2(0, 40)
-	btn_loadout.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_loadout)
+	btn_loadout.custom_minimum_size = Vector2(0, 36)
+	btn_loadout.add_theme_font_size_override("font_size", 11)
+	btn_loadout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_loadout)
 	
 	# 3. 탄환 이미지 갤러리 테스트 숏컷 버튼
 	var btn_gallery = parent_scene.make_button("🔴 탄환 이미지 갤러리 테스트", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_bullet_gallery_ui()
 	, parent_scene.C_ACCENT)
-	btn_gallery.custom_minimum_size = Vector2(0, 40)
-	btn_gallery.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_gallery)
+	btn_gallery.custom_minimum_size = Vector2(0, 36)
+	btn_gallery.add_theme_font_size_override("font_size", 11)
+	btn_gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_gallery)
 	
 	# 3-2. 몬스터 이미지 갤러리 테스트 숏컷 버튼
 	var btn_monster_gallery = parent_scene.make_button("👾 몬스터 갤러리 테스트", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_monster_gallery_ui()
 	, parent_scene.C_ACCENT)
-	btn_monster_gallery.custom_minimum_size = Vector2(0, 40)
-	btn_monster_gallery.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_monster_gallery)
+	btn_monster_gallery.custom_minimum_size = Vector2(0, 36)
+	btn_monster_gallery.add_theme_font_size_override("font_size", 11)
+	btn_monster_gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_monster_gallery)
 	
 	# 4. 더블탭 전투 테스트 숏컷 버튼
 	var btn_double_tap = parent_scene.make_button("🔫 더블탭 전투 테스트", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_double_tap_test()
 	, parent_scene.C_ACCENT)
-	btn_double_tap.custom_minimum_size = Vector2(0, 40)
-	btn_double_tap.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_double_tap)
+	btn_double_tap.custom_minimum_size = Vector2(0, 36)
+	btn_double_tap.add_theme_font_size_override("font_size", 11)
+	btn_double_tap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_double_tap)
 	
 	# 4-2. 🔥 새 전투 UI 데모 (v2) 실행 버튼
-	var btn_v2_ui = parent_scene.make_button("🔥 새 전투 UI 데모 (v2) 실행", func():
+	var btn_v2_ui = parent_scene.make_button("🔥 새 전투 UI 데모 (v2)", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_v2_ui_test()
 	, parent_scene.C_SUCCESS)
-	btn_v2_ui.custom_minimum_size = Vector2(0, 40)
-	btn_v2_ui.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_v2_ui)
+	btn_v2_ui.custom_minimum_size = Vector2(0, 36)
+	btn_v2_ui.add_theme_font_size_override("font_size", 11)
+	btn_v2_ui.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_v2_ui)
 	
 	# 4-3. ♻️ 덱 순환(버림/소멸) 테스트 실행 버튼
-	var btn_pile_test = parent_scene.make_button("♻️ 덱 순환(버림/소멸) 테스트 실행", func():
+	var btn_pile_test = parent_scene.make_button("♻️ 덱 순환 테스트 실행", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_v2_ui_test()
 		
@@ -290,12 +306,13 @@ func _build_dev_test_panel() -> void:
 				cm.combat_log.emit("⚙️ [디버그 테스트] 임의로 탄환 1발 버림, 2발 소멸 처리되었습니다. (서랍 탭에서 확인 가능)")
 		)
 	, parent_scene.C_SUCCESS)
-	btn_pile_test.custom_minimum_size = Vector2(0, 40)
-	btn_pile_test.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_pile_test)
+	btn_pile_test.custom_minimum_size = Vector2(0, 36)
+	btn_pile_test.add_theme_font_size_override("font_size", 11)
+	btn_pile_test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_pile_test)
 	
 	# 4-4. 💥 [Visual] 격발/반동/파티클 테스트 실행 버튼
-	var btn_effect_test = parent_scene.make_button("💥 [Visual] 격발/반동/파티클 테스트", func():
+	var btn_effect_test = parent_scene.make_button("💥 격발/반동/파티클 테스트", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_v2_ui_test()
 		
@@ -313,12 +330,37 @@ func _build_dev_test_panel() -> void:
 				overlay.add_combat_log("⚙️ [디버그 테스트] 격발 및 파티클 연쇄 연출이 테스트되었습니다.")
 		)
 	, parent_scene.C_SUCCESS)
-	btn_effect_test.custom_minimum_size = Vector2(0, 40)
-	btn_effect_test.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_effect_test)
+	btn_effect_test.custom_minimum_size = Vector2(0, 36)
+	btn_effect_test.add_theme_font_size_override("font_size", 11)
+	btn_effect_test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_effect_test)
+	
+	# 4-4-2. ♻️ [Visual] 탄환 반환 플로팅 테스트 실행 버튼
+	var btn_refund_test = parent_scene.make_button("♻️ 탄환 반환 플로팅 테스트", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_v2_ui_test()
+		
+		var t = parent_scene.get_tree().create_timer(0.4)
+		t.timeout.connect(func():
+			var main_scene = parent_scene
+			var overlay = main_scene.get_node_or_null("CombatOverlayV2")
+			if not overlay:
+				overlay = main_scene.get_tree().root.find_child("CombatOverlayV2", true, false)
+			
+			if overlay and overlay.has_method("_on_bullet_fired"):
+				var test_bullet = overlay._bullets_basic
+				# bullet, hit, damage
+				overlay._on_bullet_fired(test_bullet, true, 5)
+				overlay.add_combat_log("⚙️ [디버그 테스트] 탄환 적중 반환 UI 플로팅 연출이 테스트되었습니다.")
+		)
+	, parent_scene.C_SUCCESS)
+	btn_refund_test.custom_minimum_size = Vector2(0, 36)
+	btn_refund_test.add_theme_font_size_override("font_size", 11)
+	btn_refund_test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_refund_test)
 	
 	# 4-5. 👾 [Visual] 몬스터 전진 트윈 테스트 실행 버튼
-	var btn_move_test = parent_scene.make_button("👾 [Visual] 몬스터 전진 트윈 테스트", func():
+	var btn_move_test = parent_scene.make_button("👾 몬스터 전진 트윈 테스트", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_v2_ui_test()
 		
@@ -350,9 +392,10 @@ func _build_dev_test_panel() -> void:
 				)
 		)
 	, parent_scene.C_SUCCESS)
-	btn_move_test.custom_minimum_size = Vector2(0, 40)
-	btn_move_test.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_move_test)
+	btn_move_test.custom_minimum_size = Vector2(0, 36)
+	btn_move_test.add_theme_font_size_override("font_size", 11)
+	btn_move_test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_move_test)
 	
 	# 5. 해금 및 보상 테스트 숏컷 버튼
 	var btn_unlock_test = parent_scene.make_button("🔑 해금 및 보상 테스트", func():
@@ -374,17 +417,19 @@ func _build_dev_test_panel() -> void:
 		_refresh_shop_ui()
 		parent_scene.trigger_loadout_test_ui()
 	, parent_scene.C_WARNING)
-	btn_unlock_test.custom_minimum_size = Vector2(0, 40)
-	btn_unlock_test.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_unlock_test)
+	btn_unlock_test.custom_minimum_size = Vector2(0, 36)
+	btn_unlock_test.add_theme_font_size_override("font_size", 11)
+	btn_unlock_test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_unlock_test)
 	
 	# 6. 📊 밸런스 매트릭스 뷰 버튼
 	var btn_matrix = parent_scene.make_button("📊 밸런스 매트릭스 뷰", func():
 		_show_balance_matrix_popup()
 	, parent_scene.C_ACCENT)
-	btn_matrix.custom_minimum_size = Vector2(0, 40)
-	btn_matrix.add_theme_font_size_override("font_size", 13)
-	vbox.add_child(btn_matrix)
+	btn_matrix.custom_minimum_size = Vector2(0, 36)
+	btn_matrix.add_theme_font_size_override("font_size", 11)
+	btn_matrix.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_matrix)
 	
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -394,7 +439,8 @@ func _build_dev_test_panel() -> void:
 	var btn_close = parent_scene.make_button("❌ 닫기", func():
 		_dev_test_panel.visible = false
 	, parent_scene.C_DANGER)
-	btn_close.custom_minimum_size = Vector2(0, 36)
+	btn_close.custom_minimum_size = Vector2(240, 36)
+	btn_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	vbox.add_child(btn_close)
 
 

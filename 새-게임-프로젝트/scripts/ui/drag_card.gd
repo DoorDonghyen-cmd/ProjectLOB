@@ -50,15 +50,16 @@ func initialize(b_data: BulletData, ref, count: int) -> void:
 	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(vbox)
 	
-	# 탄환 스프라이트 텍스처 (크기를 20x20으로 더욱 축소)
+	# 탄환 스프라이트 텍스처 (크기를 30x30으로 설정 및 세로 확장 방지)
 	var tex: Texture2D = _get_bullet_icon(bullet_data.display_name)
 	if tex:
 		var tr := TextureRect.new()
 		tr.texture = tex
-		tr.custom_minimum_size = Vector2(20, 20)
+		tr.custom_minimum_size = Vector2(30, 30)
 		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		tr.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		tr.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		tr.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vbox.add_child(tr)
 		

@@ -1425,12 +1425,16 @@ func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) ->
 	var muzzle_pos = _agent_sprite.global_position + Vector2(_agent_sprite.size.x * 0.72, _agent_sprite.size.y * 0.42)
 	_spawn_muzzle_flash_particles(muzzle_pos)
 	
-	# 5. 피격 시 Blood Spurt 파티클 생성 (최근접 적 부근)
+	# 5. 피격 시 Blood Spurt 파티클 생성 및 탄환 반환 UI 플로팅 연출
 	if hit and combat_manager and combat_manager.enemy:
 		var es = _enemy_sprites.get(combat_manager.enemy)
 		if is_instance_valid(es) and es.visible:
 			var target_pos = es.global_position + es.size / 2.0
 			_spawn_blood_spurt_particles(target_pos)
+		
+		# 유효 적중(damage > 0) 시 탄환 반환 플로팅 연출 트리거
+		if damage > 0:
+			_spawn_bullet_refund_floating(combat_manager.enemy, bullet)
 
 func _spawn_muzzle_flash_particles(pos: Vector2) -> void:
 	var parts := CPUParticles2D.new()
@@ -1567,6 +1571,45 @@ func _spawn_damage_text(es_inst: EnemyInstance, text: String) -> void:
 	tween.tween_property(lbl, "position", local_pos + Vector2(20, -80), 1.0)
 	tween.parallel().tween_property(lbl, "modulate:a", 0.0, 1.0)
 	tween.tween_callback(lbl.queue_free)
+
+func _spawn_bullet_refund_floating(es_inst: EnemyInstance, bullet: BulletData) -> void:
+	var es = _enemy_sprites.get(es_inst)
+	if not is_instance_valid(es): return
+	
+	var container := HBoxContainer.new()
+	container.alignment = BoxContainer.ALIGNMENT_CENTER
+	_floating_layer.add_child(container)
+	
+	# 1. 탄환 아이콘 추가
+	if bullet and bullet.icon:
+		var tex_rect := TextureRect.new()
+		tex_rect.texture = bullet.icon
+		tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		tex_rect.custom_minimum_size = Vector2(24, 24)
+		container.add_child(tex_rect)
+		
+	# 2. 반환 텍스트 레이블 (밝은 초록색)
+	var text_color = parent_scene.C_SUCCESS if parent_scene else Color(0.3, 1.0, 0.5)
+	var lbl = parent_scene.make_label("♻ 반환", 16, text_color) if parent_scene else Label.new()
+	if not parent_scene:
+		lbl.text = "♻ 반환"
+		lbl.add_theme_color_override("font_color", text_color)
+	container.add_child(lbl)
+	
+	# 3. 위치 지정
+	var global_pos = es.global_position
+	var local_pos = global_pos - _floating_layer.global_position
+	container.position = local_pos + Vector2(es.size.x + 10, es.size.y * 0.3)
+	
+	# 4. 애니메이션 연출 (우상단 사선 이동 + Fade Out)
+	var tween := create_tween()
+	var target_pos = container.position + Vector2(30, -50)
+	tween.tween_property(container, "position", target_pos, 0.8)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(container, "modulate:a", 0.0, 0.8)
+	tween.tween_callback(container.queue_free)
 
 func _apply_panel_style(panel: PanelContainer, color: Color) -> void:
 	var style := StyleBoxFlat.new()
