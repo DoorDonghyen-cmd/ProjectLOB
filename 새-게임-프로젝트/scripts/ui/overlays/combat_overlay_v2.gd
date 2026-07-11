@@ -108,7 +108,7 @@ var _hud_lbl_exile: Label
 # ── 결과 및 탄환 드래프트 오버레이 변수 이식 ──
 var _result_overlay: PanelContainer
 var _result_title: Label
-var _result_message: Label
+var _result_message: RichTextLabel
 var _draft_selected: BulletData:
 	get:
 		if is_instance_valid(_draft_container):
@@ -695,6 +695,9 @@ func _build_drawer_panel() -> void:
 func _toggle_drawer(expand: bool) -> void:
 	if is_instance_valid(_drawer_panel):
 		_drawer_panel.toggle_drawer(expand)
+	
+	if not expand and combat_manager:
+		combat_manager.apply_bullet_insertion_tax()
 
 func _refresh_ammo_drawer() -> void:
 	if is_instance_valid(_drawer_panel):
@@ -1490,12 +1493,47 @@ func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 func _on_encounter_won() -> void:
 	_result_title.text = "전투 승리!"
 	_result_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+
+	# 탄약 효율성 평가 등급 산출
+	var total_kills = combat_manager.battle_stats.total_kills
+	var shots_fired = combat_manager.battle_stats.lead_bullets_fired
+	var efficiency = 100
+	if shots_fired > 0:
+		efficiency = clampi(int(round((float(total_kills) / float(shots_fired)) * 100.0)), 0, 100)
+		
+	var grade = "B"
+	var earned_credits = 20
+	var grade_desc = "표준 전투 범주 내 소비율 확인."
+	
+	if efficiency >= 95:
+		grade = "S"
+		earned_credits = 50
+		grade_desc = "합리적 자원 통제 확인. 기업 크레딧 배급 한도 증액 승인. 요원의 생존 가능성을 극도로 높게 평가합니다."
+	elif efficiency >= 80:
+		grade = "A"
+		earned_credits = 35
+		grade_desc = "자원 통제 수준 우수. 배급 한도가 임시 증액되었습니다. 귀하의 생존 효율은 자산 가치에 부합합니다."
+	elif efficiency >= 60:
+		grade = "B"
+		earned_credits = 20
+		grade_desc = "표준 전투 범주 내 소비율 확인. 기본 배급 절차를 실행합니다."
+	elif efficiency >= 40:
+		grade = "C"
+		earned_credits = 10
+		grade_desc = "탄약 사용 편차 누적 감지. 표준 배급량이 삭감 적용됩니다."
+	else:
+		grade = "D"
+		earned_credits = 5
+		grade_desc = "주의: 극심한 탄약 남용이 감지되었습니다. 시설 보급 한계치 임박. 탄약 절약이 강제 권고됩니다."
+
 	var enemy_name := "적"
 	if combat_manager.enemy and combat_manager.enemy.data:
 		enemy_name = combat_manager.enemy.data.display_name
 	elif _current_enemy_data:
 		enemy_name = _current_enemy_data.display_name
-	_result_message.text = "%s 처치 완료!\n탄환 1개를 드래프트합니다." % enemy_name
+
+	if _result_message:
+		_result_message.text = "[center]%s 처치 완료!\n[color=#ffff44]탄약 효율: %d%% [%s등급][/color]\n%s[/center]" % [enemy_name, efficiency, grade, grade_desc]
 
 	# 거리 피드백 연출 발동 (라스트 스탠드 및 퍼펙트 킬)
 	if combat_manager:
@@ -1510,7 +1548,7 @@ func _on_encounter_won() -> void:
 			add_combat_log("[color=#66ffcc]🔊 *깡!- 차가운 전술 차단 금속음*[/color]")
 
 	if is_instance_valid(_draft_container):
-		_draft_container.show_draft(_draft_confirm_btn)
+		_draft_container.show_draft(_draft_confirm_btn, efficiency, grade, earned_credits)
 
 	_result_overlay.visible = true
 
@@ -1883,9 +1921,12 @@ func _build_result_overlay() -> void:
 	_result_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(_result_title)
 
-	_result_message = parent_scene.make_label("", 20, parent_scene.C_DIM)
-	_result_message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_result_message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_result_message = RichTextLabel.new()
+	_result_message.bbcode_enabled = true
+	_result_message.fit_content = true
+	_result_message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_result_message.add_theme_font_size_override("normal_font_size", 16)
+	_result_message.add_theme_color_override("default_color", parent_scene.C_DIM)
 	vbox.add_child(_result_message)
 
 	_draft_container = RewardDraftPanel.new()
@@ -1909,9 +1950,17 @@ func _build_result_overlay() -> void:
 
 
 func _on_result_confirmed() -> void:
-	if _draft_selected:
+	if _draft_container and _draft_container.is_credit_selected:
+		var earned = _draft_container.earned_credits
+		run_manager.credits += earned
+		add_combat_log("[color=#37e0ac]💳 기업 크레딧 보상 획득: +%d Cr (보유 크레딧: %d)[/color]" % [earned, run_manager.credits])
+	elif _draft_selected:
 		run_manager.add_to_deck(_draft_selected)
+		add_combat_log("[color=#3df5a6]📥 탄환 드래프트 획득: %s[/color]" % _draft_selected.display_name)
+		
 	_draft_selected = null
+	if _draft_container:
+		_draft_container.clear_selected()
 	_loaded_bullets.clear()
 	_bullet_pool.clear()
 	_result_overlay.visible = false

@@ -41,6 +41,7 @@ var unload_penalty_waived: bool = false
 var _insert_seal_active: bool = false
 var double_tap_active: bool = false
 var eject_used_this_turn: bool = false
+var has_inserted_bullet_this_turn: bool = false
 
 # ── 순환 탄약 & 긴급 격퇴 가변 상태 ──
 var draw_pile: Array[BulletData] = []
@@ -120,6 +121,7 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 	active_relics = relics
 	_insert_seal_active = false
 	double_tap_active = false
+	has_inserted_bullet_this_turn = false
 	last_fired_class = Enums.WeaponClass.PISTOL
 	
 	# 탄약 순환 자원 데이터 및 긴급 격퇴 초기화
@@ -766,16 +768,23 @@ func request_insert_bullet(bullet: BulletData) -> void:
 		
 	magazine.insert_bullet(bullet)
 	battle_stats.lead_bullets_fired += 1
-	combat_log.emit("📥 [%s] 탄환을 탄창 맨 위에 장전했습니다. (템포 세금 소모 / 납탄 발생)" % bullet.display_name)
+	combat_log.emit("📥 [%s] 탄환을 탄창 맨 위에 장전했습니다. (가방을 닫으면 템포 세금이 적용됩니다)" % bullet.display_name)
 
-	# 템포 세금: 모든 적 전진
-	_all_enemies_advance()
+	# 템포 세금 플래그 활성화 (모든 적 1회 전진 보장용)
+	has_inserted_bullet_this_turn = true
 
 	# 납탄 봉인
 	if state == State.PLAYER_TURN:
 		_insert_seal_active = true
 
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
+
+## 가방 닫힘 시 템포 세금 정산 (적이 단 한 번만 전진하도록 보장)
+func apply_bullet_insertion_tax() -> void:
+	if has_inserted_bullet_this_turn:
+		combat_log.emit("🚨 [템포 세금] 납탄 장전 완료로 인해 모든 적이 1칸 전진합니다!")
+		_all_enemies_advance()
+		has_inserted_bullet_this_turn = false
 
 
 func _check_enemy_stance_shift(target: EnemyInstance) -> void:

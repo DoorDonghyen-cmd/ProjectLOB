@@ -230,8 +230,15 @@ func start_run_from_title() -> void:
 func trigger_parts_test_ui() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
-	if _rm and _rm.current_gun == null:
+	if _rm:
 		_rm.current_gun = _gun_revolver
+		_rm.credits = 75
+		_rm.backpack_items.clear()
+		var rc_part = load("res://resources/parts/rhythm_chamber.tres")
+		if rc_part: _rm.backpack_items.append(rc_part)
+		var pb_part = load("res://resources/parts/point_blank.tres")
+		if pb_part: _rm.backpack_items.append(pb_part)
+		
 	var test_node = RunManager.RunNode.new(999, "무기 캐비닛 (테스트)", "숏컷 테스트 구역", [])
 	_start_maintenance_phase(test_node)
 

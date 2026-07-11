@@ -2,695 +2,989 @@ class_name MaintenanceOverlay
 extends PanelContainer
 
 ## ═══════════════════════════════════════════════════
-## 정비실 오버레이 (무기 캐비닛 및 대피소 통합 뷰 - HTML 이식 버전)
+## 듀얼 스크린 복합 무기고 단말기 오버레이 (상점/장비 탭 우측 가방 인벤토리 상시 노출)
 ## ═══════════════════════════════════════════════════
+
+const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
 
 var parent_scene: Control
 var run_manager: RunManager
 var current_node: RunManager.RunNode
 
-# ── 1. 기존 덱 정비 UI 변수 ──
-var _deck_maint_layout: HBoxContainer
-var _maint_title_label: Label
-var _maint_desc_label: Label
-var _maint_buttons_container: VBoxContainer
-var _maint_deck_list: VBoxContainer
-var _maint_confirm_btn: Button
-var _deck_select_callback: Callable = func(idx): pass
+# ── 전역 가변 상태 ──
+var _active_tab: int = 0 # 0: 보급 단말(Shop), 1: 무기 장비(Equip)
+var _reroll_count: int = 0
+var _shop_items: Array = [] # { "item": Resource, "price": int, "sold_out": bool }
+var _selected_bag_idx: int = -1
 
-# ── 2. 신규 파츠 개조 UI 변수 (HTML 프로토타입 이식) ──
-var _parts_maint_layout: VBoxContainer
-var _weapon_preview_name: Label
-var _weapon_preview_cap: Label
-var _weapon_icon_rect: TextureRect
-var _parts_stack_row: HBoxContainer
-var _parts_hold_row: HBoxContainer
+# ── UI 컨테이너 및 참조 ──
+var _tab_nav_hbox: HBoxContainer
+var _tab_content_panel: PanelContainer
+var _reroll_cost_btn: Button
+var _tab_btns: Array[Button] = []
 
-# 우측 발견 카드 변수
-var _new_part_title: Label
-var _new_part_icon: Label
-var _new_part_desc: Label
-var _new_part_spec: Label
-var _new_discovered_part: PartData = null
+# 1. 🛒 보급 단말 탭 UI 참조
+var _shop_vbox: VBoxContainer
+var _shop_credit_lbl: Label
+var _shop_grid: HBoxContainer
+var _shop_bag_grid_container: GridContainer
+var _shop_bag_capacity_lbl: Label
+# 상점 탭 우측 물자 상세 패널
+var _shop_bag_detail_panel: PanelContainer
+var _shop_bag_detail_title: Label
+var _shop_bag_detail_type: Label
+var _shop_bag_detail_desc: Label
+var _shop_bag_action_btn: Button
+var _shop_bag_discard_btn: Button
 
-# 하단 예상 변화 및 경고 변수
-var _proj_base_dmg: Label
-var _proj_stack_mode: Label
-var _proj_warning_msg: Label
-
-# 파츠 버튼들
-var _part_btn_equip: Button
-var _part_btn_hold: Button
-var _part_btn_discard: Button
+# 2. 🛡️ 무기 장비 탭 UI 참조
+var _equip_vbox: VBoxContainer
+var _equip_weapon_title: Label
+var _equip_weapon_icon: TextureRect
+var _equip_slots_hbox: HBoxContainer
+var _equip_bag_grid_container: GridContainer
+var _equip_bag_capacity_lbl: Label
+# 무기 예상 스탯 변화 게이지바 및 수치 레이블
+var _stat_dmg_bar: ProgressBar
+var _stat_dmg_val: Label
+var _stat_kb_bar: ProgressBar
+var _stat_kb_val: Label
+var _stat_reload_bar: ProgressBar
+var _stat_reload_val: Label
 
 # ── 색상 상수 ──
-const C_BG_COLOR := Color(0.05, 0.05, 0.05, 0.95)
-const C_PANEL_BG := Color(0.1, 0.1, 0.1, 1.0)
-const C_BORDER := Color(0.2, 0.2, 0.2, 1.0)
-const C_GOLD := Color(0.83, 0.69, 0.22, 1.0)
-const C_RED := Color(1.0, 0.2, 0.2, 1.0)
-const C_GREEN := Color(0.3, 0.69, 0.31, 1.0)
-const C_SLOT_BG := Color(0.13, 0.13, 0.13, 1.0)
+const C_BG_COLOR := Color(0.05, 0.06, 0.09, 0.97)
+const C_PANEL_BG := Color(0.08, 0.10, 0.15, 1.0)
+const C_BORDER := Color(0.18, 0.23, 0.32, 1.0)
+const C_GOLD := Color(0.92, 0.76, 0.20, 1.0)
+const C_CYAN := Color(0.00, 0.86, 1.00, 1.0)
+const C_BLUE := Color(0.00, 0.40, 1.00, 1.0)
+const C_RED := Color(0.95, 0.26, 0.26, 1.0)
+const C_GREEN := Color(0.22, 0.85, 0.45, 1.0)
+const C_SLOT_BG := Color(0.12, 0.15, 0.22, 1.0)
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
 	parent_scene = p_scene
 	run_manager = rm
 	
-	# 풀 화면 960x540 해상도를 꽉 채우기 위한 앵커 및 사이즈 플래그 명시
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
-	custom_minimum_size = Vector2(960, 540) # 960x540 강제 최소 크기 고정으로 쏠림 방지
+	custom_minimum_size = Vector2(960, 540)
 	
 	var style := StyleBoxFlat.new()
 	style.bg_color = C_BG_COLOR
 	add_theme_stylebox_override("panel", style)
 	
-	_build_ui()
+	if get_child_count() == 0:
+		_build_ui()
+	
+	mouse_filter = Control.MOUSE_FILTER_STOP
 
 
 func _build_ui() -> void:
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 24)
 	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_top", 12)
-	margin.add_theme_constant_override("margin_bottom", 12)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 16)
 	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_child(margin)
 
 	var main_vbox := VBoxContainer.new()
-	main_vbox.add_theme_constant_override("separation", 8)
+	main_vbox.add_theme_constant_override("separation", 10)
 	main_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(main_vbox)
 
-	# ── 헤더 (Header) ──
+	# ── [1] 상단 헤더 & 탭 네비게이션 (2탭 간결화) ──
 	var header_hbox := HBoxContainer.new()
+	header_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_vbox.add_child(header_hbox)
 	
-	var title_lbl = parent_scene.make_label("PARTS MODIFICATION", 16, parent_scene.C_TEXT)
-	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header_hbox.add_child(title_lbl)
+	_tab_nav_hbox = HBoxContainer.new()
+	_tab_nav_hbox.add_theme_constant_override("separation", 0)
+	header_hbox.add_child(_tab_nav_hbox)
 	
-	var phase_lbl = parent_scene.make_label("[ SAFE ZONE : COMMIT PENDING ]", 11, parent_scene.C_DIM)
-	header_hbox.add_child(phase_lbl)
+	var tab_shop = Button.new()
+	tab_shop.text = "🛒 보급 단말 (Shop)"
+	tab_shop.focus_mode = Control.FOCUS_NONE
+	tab_shop.pressed.connect(func(): _switch_tab(0))
+	_tab_nav_hbox.add_child(tab_shop)
+	_tab_btns.append(tab_shop)
 	
+	var tab_equip = Button.new()
+	tab_equip.text = "🛡️ 무기 장비 (Equip)"
+	tab_equip.focus_mode = Control.FOCUS_NONE
+	tab_equip.pressed.connect(func(): _switch_tab(1))
+	_tab_nav_hbox.add_child(tab_equip)
+	_tab_btns.append(tab_equip)
+	
+	# 중앙 우측 스페이스 및 리롤 버튼
+	var spacer_h := Control.new()
+	spacer_h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header_hbox.add_child(spacer_h)
+	
+	_reroll_cost_btn = parent_scene.make_button("📡 주파수 재요청 (3c)", _on_reroll_pressed, parent_scene.C_WARNING)
+	_reroll_cost_btn.custom_minimum_size = Vector2(180, 36)
+	_reroll_cost_btn.add_theme_font_size_override("font_size", 11)
+	header_hbox.add_child(_reroll_cost_btn)
+
 	# 구분선
 	var separator = ColorRect.new()
 	separator.color = C_BORDER
 	separator.custom_minimum_size = Vector2(0, 2)
 	main_vbox.add_child(separator)
 
-	# ── 레이아웃 분기 컨테이너들 ──
-	# A) 기존 덱 관리 정비 레이아웃
-	_deck_maint_layout = HBoxContainer.new()
-	_deck_maint_layout.add_theme_constant_override("separation", 28)
-	_deck_maint_layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	main_vbox.add_child(_deck_maint_layout)
-	_build_deck_maintenance_layout(_deck_maint_layout)
+	# ── [2] 메인 컨텐츠 영역 (탭별 좌우 2분할 듀얼 스크린 배치) ──
+	_tab_content_panel = PanelContainer.new()
+	_tab_content_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_tab_content_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	
+	var content_style := StyleBoxEmpty.new()
+	_tab_content_panel.add_theme_stylebox_override("panel", content_style)
+	main_vbox.add_child(_tab_content_panel)
 
-	# B) 신규 파츠 개조 레이아웃 (HTML 이식)
-	_parts_maint_layout = VBoxContainer.new()
-	_parts_maint_layout.add_theme_constant_override("separation", 16)
-	_parts_maint_layout.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_parts_maint_layout.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	main_vbox.add_child(_parts_maint_layout)
-	_build_parts_maintenance_layout(_parts_maint_layout)
+	# 탭 구조물 생성
+	_build_shop_layout()
+	_build_equip_layout()
+	
+	# ── [3] 하단 네비게이션 액션 바 ──
+	var footer_hbox := HBoxContainer.new()
+	footer_hbox.alignment = BoxContainer.ALIGNMENT_END
+	main_vbox.add_child(footer_hbox)
+	
+	var exit_btn = parent_scene.make_button("계속 탐색 (Proceed) ▸", _on_exit_pressed, parent_scene.C_SUCCESS)
+	exit_btn.custom_minimum_size = Vector2(180, 40)
+	exit_btn.add_theme_font_size_override("font_size", 14)
+	footer_hbox.add_child(exit_btn)
 
 
-## 기존 탄환 덱 강화/폐기용 레이아웃 생성
-func _build_deck_maintenance_layout(parent: HBoxContainer) -> void:
-	# 좌측 VBox
+# ── 각 탭 레이아웃 빌딩 함수 ──
+
+## 1. 🛒 보급 단말 탭 빌드 (좌: 상점 진열대 / 우: 8칸 가방 & 상세패널)
+func _build_shop_layout() -> void:
+	_shop_vbox = VBoxContainer.new()
+	_shop_vbox.add_theme_constant_override("separation", 10)
+	_shop_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_shop_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_tab_content_panel.add_child(_shop_vbox)
+
+	var split_hbox := HBoxContainer.new()
+	split_hbox.add_theme_constant_override("separation", 20)
+	split_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	split_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_shop_vbox.add_child(split_hbox)
+
+	# 1) 좌측: 상점 진열 영역
 	var left_vbox := VBoxContainer.new()
-	left_vbox.add_theme_constant_override("separation", 16)
+	left_vbox.add_theme_constant_override("separation", 10)
 	left_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left_vbox.size_flags_stretch_ratio = 0.5
-	left_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	parent.add_child(left_vbox)
+	left_vbox.size_flags_stretch_ratio = 0.55
+	split_hbox.add_child(left_vbox)
 
-	_maint_title_label = parent_scene.make_label("구역 이름", 26, parent_scene.C_WARNING)
-	_maint_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	left_vbox.add_child(_maint_title_label)
+	var info_hbox := HBoxContainer.new()
+	left_vbox.add_child(info_hbox)
+	
+	var desc_lbl = parent_scene.make_label("보급 단말기: 기업 크레딧으로 파츠/탄환을 구매하고 가방으로 자동 이송시킵니다.", 12, parent_scene.C_DIM)
+	desc_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_hbox.add_child(desc_lbl)
+	
+	_shop_credit_lbl = parent_scene.make_label("보유 크레딧: 0 Cr", 15, C_GOLD)
+	info_hbox.add_child(_shop_credit_lbl)
 
-	_maint_desc_label = parent_scene.make_label("상호작용 설명", 16, parent_scene.C_DIM)
-	_maint_desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_maint_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	left_vbox.add_child(_maint_desc_label)
+	_shop_grid = HBoxContainer.new()
+	_shop_grid.add_theme_constant_override("separation", 12)
+	_shop_grid.alignment = BoxContainer.ALIGNMENT_CENTER
+	_shop_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	left_vbox.add_child(_shop_grid)
 
-	_maint_buttons_container = VBoxContainer.new()
-	_maint_buttons_container.add_theme_constant_override("separation", 8)
-	left_vbox.add_child(_maint_buttons_container)
+	# 2) 우측: 상점 탭 우측 가방 인벤토리
+	var right_panel = PanelContainer.new()
+	right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right_panel.size_flags_stretch_ratio = 0.45
+	_apply_custom_panel_style(right_panel, C_PANEL_BG, C_BORDER)
+	split_hbox.add_child(right_panel)
+	
+	var right_margin := MarginContainer.new()
+	right_margin.add_theme_constant_override("margin_left", 12)
+	right_margin.add_theme_constant_override("margin_right", 12)
+	right_margin.add_theme_constant_override("margin_top", 12)
+	right_margin.add_theme_constant_override("margin_bottom", 12)
+	right_panel.add_child(right_margin)
+	
+	var right_vbox := VBoxContainer.new()
+	right_vbox.add_theme_constant_override("separation", 10)
+	right_margin.add_child(right_vbox)
+
+	var title_hbox := HBoxContainer.new()
+	right_vbox.add_child(title_hbox)
+	title_hbox.add_child(parent_scene.make_label("🎒 가방 보관함 (상시 대조)", 14, parent_scene.C_TEXT))
+	var spacer_b := Control.new(); spacer_b.size_flags_horizontal = Control.SIZE_EXPAND_FILL; title_hbox.add_child(spacer_b)
+	_shop_bag_capacity_lbl = parent_scene.make_label("(0/8)", 12, C_GREEN)
+	title_hbox.add_child(_shop_bag_capacity_lbl)
+
+	# 가방 8칸 그리드
+	_shop_bag_grid_container = GridContainer.new()
+	_shop_bag_grid_container.columns = 4
+	_shop_bag_grid_container.add_theme_constant_override("h_separation", 8)
+	_shop_bag_grid_container.add_theme_constant_override("v_separation", 8)
+	right_vbox.add_child(_shop_bag_grid_container)
+
+	# 가방 상세 정보 패널
+	_shop_bag_detail_panel = PanelContainer.new()
+	_apply_custom_panel_style(_shop_bag_detail_panel, Color(0.06, 0.08, 0.12), C_BORDER)
+	_shop_bag_detail_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right_vbox.add_child(_shop_bag_detail_panel)
+	
+	var d_margin := MarginContainer.new()
+	d_margin.add_theme_constant_override("margin_left", 10)
+	d_margin.add_theme_constant_override("margin_right", 10)
+	d_margin.add_theme_constant_override("margin_top", 10)
+	d_margin.add_theme_constant_override("margin_bottom", 10)
+	_shop_bag_detail_panel.add_child(d_margin)
+	
+	var d_vbox := VBoxContainer.new()
+	d_vbox.add_theme_constant_override("separation", 6)
+	d_margin.add_child(d_vbox)
+
+	_shop_bag_detail_title = parent_scene.make_label("물자를 선택해 주십시오", 13, C_GOLD)
+	d_vbox.add_child(_shop_bag_detail_title)
+
+	_shop_bag_detail_type = parent_scene.make_label("-", 9.5, parent_scene.C_DIM)
+	d_vbox.add_child(_shop_bag_detail_type)
+
+	_shop_bag_detail_desc = parent_scene.make_label("가방 속 물건을 클릭하면 상세 설명 및 덱 추가/사용 버튼이 여기에 활성화됩니다.", 10.5, parent_scene.C_DIM)
+	_shop_bag_detail_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_shop_bag_detail_desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	d_vbox.add_child(_shop_bag_detail_desc)
+
+	var action_hbox := HBoxContainer.new()
+	action_hbox.add_theme_constant_override("separation", 8)
+	d_vbox.add_child(action_hbox)
+
+	_shop_bag_action_btn = parent_scene.make_button("물자 사용 / 덱 추가", _on_bag_action_pressed, C_GOLD)
+	_shop_bag_action_btn.custom_minimum_size = Vector2(0, 30)
+	_shop_bag_action_btn.add_theme_font_size_override("font_size", 9.5)
+	_shop_bag_action_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_shop_bag_action_btn.disabled = true
+	action_hbox.add_child(_shop_bag_action_btn)
+
+	_shop_bag_discard_btn = parent_scene.make_button("버리기", _on_bag_discard_pressed, C_RED)
+	_shop_bag_discard_btn.custom_minimum_size = Vector2(0, 30)
+	_shop_bag_discard_btn.add_theme_font_size_override("font_size", 9.5)
+	_shop_bag_discard_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_shop_bag_discard_btn.disabled = true
+	action_hbox.add_child(_shop_bag_discard_btn)
+
+
+## 2. 🛡️ 무기 장비 탭 빌드 (좌: 파츠 장착 및 스탯 시뮬레이션 / 우: 가방 내 파츠 퀵 스왑 장착)
+func _build_equip_layout() -> void:
+	_equip_vbox = VBoxContainer.new()
+	_equip_vbox.add_theme_constant_override("separation", 10)
+	_equip_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_equip_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_equip_vbox.visible = false
+	_tab_content_panel.add_child(_equip_vbox)
+
+	var split_hbox := HBoxContainer.new()
+	split_hbox.add_theme_constant_override("separation", 20)
+	split_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	split_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_equip_vbox.add_child(split_hbox)
+
+	# 1) 좌측: 무기 개조 및 성능 시뮬레이터
+	var left_panel = PanelContainer.new()
+	left_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_panel.size_flags_stretch_ratio = 0.55
+	_apply_custom_panel_style(left_panel, C_PANEL_BG, C_BORDER)
+	split_hbox.add_child(left_panel)
+	
+	var left_margin := MarginContainer.new()
+	left_margin.add_theme_constant_override("margin_left", 14)
+	left_margin.add_theme_constant_override("margin_right", 14)
+	left_margin.add_theme_constant_override("margin_top", 14)
+	left_margin.add_theme_constant_override("margin_bottom", 14)
+	left_panel.add_child(left_margin)
+	
+	var left_vbox := VBoxContainer.new()
+	left_vbox.add_theme_constant_override("separation", 10)
+	left_margin.add_child(left_vbox)
+
+	_equip_weapon_title = parent_scene.make_label("장착 총기: MK.4 리볼버", 15, C_GOLD)
+	left_vbox.add_child(_equip_weapon_title)
+
+	_equip_weapon_icon = TextureRect.new()
+	_equip_weapon_icon.custom_minimum_size = Vector2(160, 60)
+	_equip_weapon_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_equip_weapon_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_equip_weapon_icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	left_vbox.add_child(_equip_weapon_icon)
+
+	left_vbox.add_child(parent_scene.make_label("현재 장착된 전술 개조 파츠 (LIFO 스택 역순 작동)", 11, parent_scene.C_DIM))
+
+	_equip_slots_hbox = HBoxContainer.new()
+	_equip_slots_hbox.add_theme_constant_override("separation", 16)
+	left_vbox.add_child(_equip_slots_hbox)
 
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	left_vbox.add_child(spacer)
 
-	_maint_confirm_btn = parent_scene.make_button("작전 구역 계속 탐색", _on_maint_confirm_pressed, parent_scene.C_ACCENT)
-	_maint_confirm_btn.custom_minimum_size = Vector2(0, 44)
-	left_vbox.add_child(_maint_confirm_btn)
-
-	# 우측 VBox
-	var right_vbox := VBoxContainer.new()
-	right_vbox.add_theme_constant_override("separation", 10)
-	right_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_vbox.size_flags_stretch_ratio = 0.5
-	parent.add_child(right_vbox)
-
-	right_vbox.add_child(parent_scene.make_label("🗃 보유 전술 탄환 덱 목록", 18, parent_scene.C_DIM))
-
-	var list_panel: PanelContainer = parent_scene.make_panel(parent_scene.C_PANEL_DARK)
-	list_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right_vbox.add_child(list_panel)
-
-	var list_margin := MarginContainer.new()
-	list_margin.add_theme_constant_override("margin_left", 12)
-	list_margin.add_theme_constant_override("margin_right", 12)
-	list_margin.add_theme_constant_override("margin_top", 12)
-	list_margin.add_theme_constant_override("margin_bottom", 12)
-	list_panel.add_child(list_margin)
-
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	list_margin.add_child(scroll)
-
-	_maint_deck_list = VBoxContainer.new()
-	_maint_deck_list.add_theme_constant_override("separation", 4)
-	_maint_deck_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(_maint_deck_list)
-
-
-## 신규 파츠 개조 UI 레이아웃 생성
-func _build_parts_maintenance_layout(parent: VBoxContainer) -> void:
-	var split_hbox := HBoxContainer.new()
-	split_hbox.add_theme_constant_override("separation", 24)
-	split_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	split_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	parent.add_child(split_hbox)
-
-	# ── 1. 좌측 패널 (Equipped Weapon & Stack) ──
-	var left_panel: PanelContainer = parent_scene.make_panel(C_PANEL_BG)
-	_apply_custom_panel_style(left_panel, C_PANEL_BG, C_BORDER)
-	left_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left_panel.size_flags_stretch_ratio = 0.5
-	split_hbox.add_child(left_panel)
+	# 스탯 시뮬레이터 계측 영역 통합
+	var stats_panel := PanelContainer.new()
+	_apply_custom_panel_style(stats_panel, Color(0.06, 0.08, 0.12), C_BORDER)
+	left_vbox.add_child(stats_panel)
 	
-	var left_margin := MarginContainer.new()
-	left_margin.add_theme_constant_override("margin_left", 12)
-	left_margin.add_theme_constant_override("margin_right", 12)
-	left_margin.add_theme_constant_override("margin_top", 10)
-	left_margin.add_theme_constant_override("margin_bottom", 10)
-	left_panel.add_child(left_margin)
+	var stats_margin := MarginContainer.new()
+	stats_margin.add_theme_constant_override("margin_left", 12)
+	stats_margin.add_theme_constant_override("margin_right", 12)
+	stats_margin.add_theme_constant_override("margin_top", 10)
+	stats_margin.add_theme_constant_override("margin_bottom", 10)
+	stats_panel.add_child(stats_margin)
 	
-	var left_vbox := VBoxContainer.new()
-	left_vbox.add_theme_constant_override("separation", 6)
-	left_margin.add_child(left_vbox)
+	var stats_vbox := VBoxContainer.new()
+	stats_vbox.add_theme_constant_override("separation", 8)
+	stats_margin.add_child(stats_vbox)
 
-	# 1a) Equipped Weapon 프리뷰 영역
-	left_vbox.add_child(parent_scene.make_label("Equipped Weapon", 11, parent_scene.C_DIM))
-	
-	var weapon_preview_panel = PanelContainer.new()
-	weapon_preview_panel.custom_minimum_size = Vector2(0, 52)
-	_apply_custom_panel_style(weapon_preview_panel, Color(0.07, 0.07, 0.08), Color(0.25, 0.25, 0.28))
-	left_vbox.add_child(weapon_preview_panel)
-	
-	var wp_margin := MarginContainer.new()
-	wp_margin.add_theme_constant_override("margin_left", 10)
-	wp_margin.add_theme_constant_override("margin_right", 10)
-	wp_margin.add_theme_constant_override("margin_top", 4)
-	wp_margin.add_theme_constant_override("margin_bottom", 4)
-	weapon_preview_panel.add_child(wp_margin)
-	
-	var wp_hbox := HBoxContainer.new()
-	wp_margin.add_child(wp_hbox)
-	
-	var wp_info_vbox := VBoxContainer.new()
-	wp_info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	wp_info_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	wp_hbox.add_child(wp_info_vbox)
-	
-	_weapon_preview_name = parent_scene.make_label("MK.4 리볼버", 13, C_GOLD)
-	wp_info_vbox.add_child(_weapon_preview_name)
-	
-	_weapon_preview_cap = parent_scene.make_label("CAPACITY: 6", 10, parent_scene.C_DIM)
-	wp_info_vbox.add_child(_weapon_preview_cap)
-	
-	_weapon_icon_rect = TextureRect.new()
-	_weapon_icon_rect.custom_minimum_size = Vector2(70, 36)
-	_weapon_icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_weapon_icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	wp_hbox.add_child(_weapon_icon_rect)
+	stats_vbox.add_child(parent_scene.make_label("📈 개조 파츠 적용에 따른 스탯 변화 실시간 계측", 12, parent_scene.C_TEXT))
 
-	# 1b) Current Stack (LIFO) 슬롯 영역
-	left_vbox.add_child(parent_scene.make_label("Current Stack (LIFO)", 11, parent_scene.C_DIM))
-	
-	_parts_stack_row = HBoxContainer.new()
-	_parts_stack_row.add_theme_constant_override("separation", 8)
-	left_vbox.add_child(_parts_stack_row)
+	# 스탯 1: 데미지
+	var dmg_vbox := VBoxContainer.new()
+	stats_vbox.add_child(dmg_vbox)
+	var dmg_title_hbox := HBoxContainer.new()
+	dmg_vbox.add_child(dmg_title_hbox)
+	dmg_title_hbox.add_child(parent_scene.make_label("기본 피해량 (Base Damage)", 10, parent_scene.C_DIM))
+	var spacer1 := Control.new(); spacer1.size_flags_horizontal = Control.SIZE_EXPAND_FILL; dmg_title_hbox.add_child(spacer1)
+	_stat_dmg_val = parent_scene.make_label("10 (+2)", 10, C_CYAN)
+	dmg_title_hbox.add_child(_stat_dmg_val)
+	_stat_dmg_bar = ProgressBar.new()
+	_stat_dmg_bar.max_value = 30
+	_stat_dmg_bar.custom_minimum_size = Vector2(0, 10)
+	_stat_dmg_bar.show_percentage = false
+	dmg_vbox.add_child(_stat_dmg_bar)
 
-	# 1c) Hold Buffer 영역
-	left_vbox.add_child(parent_scene.make_label("Hold Buffer", 11, parent_scene.C_DIM))
-	
-	_parts_hold_row = HBoxContainer.new()
-	_parts_hold_row.add_theme_constant_override("separation", 8)
-	left_vbox.add_child(_parts_hold_row)
+	# 스탯 2: 넉백
+	var kb_vbox := VBoxContainer.new()
+	stats_vbox.add_child(kb_vbox)
+	var kb_title_hbox := HBoxContainer.new()
+	kb_vbox.add_child(kb_title_hbox)
+	kb_title_hbox.add_child(parent_scene.make_label("격퇴력 (Knockback Force)", 10, parent_scene.C_DIM))
+	var spacer2 := Control.new(); spacer2.size_flags_horizontal = Control.SIZE_EXPAND_FILL; kb_title_hbox.add_child(spacer2)
+	_stat_kb_val = parent_scene.make_label("1 (+1)", 10, C_CYAN)
+	kb_title_hbox.add_child(_stat_kb_val)
+	_stat_kb_bar = ProgressBar.new()
+	_stat_kb_bar.max_value = 6
+	_stat_kb_bar.custom_minimum_size = Vector2(0, 10)
+	_stat_kb_bar.show_percentage = false
+	kb_vbox.add_child(_stat_kb_bar)
 
-	# ── 2. 우측 패널 (New Part Discovered) ──
-	var right_panel: PanelContainer = parent_scene.make_panel(Color.TRANSPARENT)
+	# 스탯 3: 장전 딜레이
+	var reload_vbox := VBoxContainer.new()
+	stats_vbox.add_child(reload_vbox)
+	var reload_title_hbox := HBoxContainer.new()
+	reload_vbox.add_child(reload_title_hbox)
+	reload_title_hbox.add_child(parent_scene.make_label("장전 소요 턴수 (Reload Turns)", 10, parent_scene.C_DIM))
+	var spacer3 := Control.new(); spacer3.size_flags_horizontal = Control.SIZE_EXPAND_FILL; reload_title_hbox.add_child(spacer3)
+	_stat_reload_val = parent_scene.make_label("4 (0)", 10, parent_scene.C_TEXT)
+	reload_title_hbox.add_child(_stat_reload_val)
+	_stat_reload_bar = ProgressBar.new()
+	_stat_reload_bar.max_value = 8
+	_stat_reload_bar.custom_minimum_size = Vector2(0, 10)
+	_stat_reload_bar.show_percentage = false
+	reload_vbox.add_child(_stat_reload_bar)
+
+	# 2) 우측: 장비 탭 우측 가방 영역 (파츠 퀵 스왑 장착용)
+	var right_panel = PanelContainer.new()
 	right_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_panel.size_flags_stretch_ratio = 0.5
+	right_panel.size_flags_stretch_ratio = 0.45
+	_apply_custom_panel_style(right_panel, C_PANEL_BG, C_BORDER)
 	split_hbox.add_child(right_panel)
 	
+	var right_margin := MarginContainer.new()
+	right_margin.add_theme_constant_override("margin_left", 12)
+	right_margin.add_theme_constant_override("margin_right", 12)
+	right_margin.add_theme_constant_override("margin_top", 12)
+	right_margin.add_theme_constant_override("margin_bottom", 12)
+	right_panel.add_child(right_margin)
+	
 	var right_vbox := VBoxContainer.new()
 	right_vbox.add_theme_constant_override("separation", 10)
-	right_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	right_panel.add_child(right_vbox)
-	
-	right_vbox.add_child(parent_scene.make_label("New Part Discovered", 11, parent_scene.C_DIM))
+	right_margin.add_child(right_vbox)
 
-	# 새 파츠 카드 (New Part Card)
-	var new_card_panel = PanelContainer.new()
-	new_card_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_apply_custom_panel_style(new_card_panel, Color(0.08, 0.08, 0.06), C_GOLD)
-	right_vbox.add_child(new_card_panel)
-	
-	var nc_margin := MarginContainer.new()
-	nc_margin.add_theme_constant_override("margin_left", 12)
-	nc_margin.add_theme_constant_override("margin_right", 12)
-	nc_margin.add_theme_constant_override("margin_top", 12)
-	nc_margin.add_theme_constant_override("margin_bottom", 12)
-	new_card_panel.add_child(nc_margin)
-	
-	var nc_vbox := VBoxContainer.new()
-	nc_vbox.add_theme_constant_override("separation", 8)
-	nc_margin.add_child(nc_vbox)
-	
-	var nc_header := HBoxContainer.new()
-	nc_vbox.add_child(nc_header)
-	
-	_new_part_title = parent_scene.make_label("리듬 챔버", 13, C_GOLD)
-	_new_part_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	nc_header.add_child(_new_part_title)
-	
-	_new_part_icon = parent_scene.make_label("🥁", 16, parent_scene.C_TEXT)
-	nc_header.add_child(_new_part_icon)
-	
-	_new_part_desc = parent_scene.make_label("", 10, parent_scene.C_TEXT)
-	_new_part_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_new_part_desc.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	nc_vbox.add_child(_new_part_desc)
-	
-	# 스펙 박스 (Stat Box)
-	var spec_panel = PanelContainer.new()
-	_apply_custom_panel_style(spec_panel, Color(0.05, 0.05, 0.05), C_GOLD)
-	nc_vbox.add_child(spec_panel)
-	
-	var spec_margin := MarginContainer.new()
-	spec_margin.add_theme_constant_override("margin_left", 8)
-	spec_margin.add_theme_constant_override("margin_right", 8)
-	spec_margin.add_theme_constant_override("margin_top", 8)
-	spec_margin.add_theme_constant_override("margin_bottom", 8)
-	spec_panel.add_child(spec_margin)
-	
-	_new_part_spec = parent_scene.make_label("", 9, parent_scene.C_TEXT)
-	_new_part_spec.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	spec_margin.add_child(_new_part_spec)
+	var title_hbox_eq := HBoxContainer.new()
+	right_vbox.add_child(title_hbox_eq)
+	title_hbox_eq.add_child(parent_scene.make_label("🎒 가방 보관함 (파츠 퀵 장착)", 14, parent_scene.C_TEXT))
+	var spacer_b_eq := Control.new(); spacer_b_eq.size_flags_horizontal = Control.SIZE_EXPAND_FILL; title_hbox_eq.add_child(spacer_b_eq)
+	_equip_bag_capacity_lbl = parent_scene.make_label("(0/8)", 12, C_GREEN)
+	title_hbox_eq.add_child(_equip_bag_capacity_lbl)
 
-	# ── 3. 하단 예상 변화 및 경고 패널 (Projection Panel) ──
-	var projection_panel = PanelContainer.new()
-	projection_panel.custom_minimum_size = Vector2(0, 30)
-	_apply_custom_panel_style(projection_panel, Color.BLACK, C_BORDER)
-	parent.add_child(projection_panel)
-	
-	var proj_margin := MarginContainer.new()
-	proj_margin.add_theme_constant_override("margin_left", 14)
-	proj_margin.add_theme_constant_override("margin_right", 14)
-	proj_margin.add_theme_constant_override("margin_top", 5)
-	proj_margin.add_theme_constant_override("margin_bottom", 5)
-	projection_panel.add_child(proj_margin)
-	
-	var proj_hbox := HBoxContainer.new()
-	proj_margin.add_child(proj_hbox)
-	
-	var proj_stats_hbox := HBoxContainer.new()
-	proj_stats_hbox.add_theme_constant_override("separation", 16)
-	proj_stats_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	proj_hbox.add_child(proj_stats_hbox)
-	
-	_proj_base_dmg = parent_scene.make_label("Base DMG: 15", 11, parent_scene.C_TEXT)
-	proj_stats_hbox.add_child(_proj_base_dmg)
-	
-	_proj_stack_mode = parent_scene.make_label("Stack Mode: None", 11, C_GOLD)
-	proj_stats_hbox.add_child(_proj_stack_mode)
-	
-	_proj_warning_msg = parent_scene.make_label("", 11, C_RED)
-	proj_hbox.add_child(_proj_warning_msg)
+	# 가방 8칸 그리드
+	_equip_bag_grid_container = GridContainer.new()
+	_equip_bag_grid_container.columns = 4
+	_equip_bag_grid_container.add_theme_constant_override("h_separation", 8)
+	_equip_bag_grid_container.add_theme_constant_override("v_separation", 8)
+	right_vbox.add_child(_equip_bag_grid_container)
 
-	# ── 4. 하단 액션 버튼 그룹 (Actions) ──
-	var action_hbox := HBoxContainer.new()
-	action_hbox.add_theme_constant_override("separation", 10)
-	parent.add_child(action_hbox)
+	# 안내 스펙 패널
+	var help_panel = PanelContainer.new()
+	_apply_custom_panel_style(help_panel, Color(0.06, 0.08, 0.12), C_BORDER)
+	help_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right_vbox.add_child(help_panel)
 	
-	_part_btn_equip = parent_scene.make_button("장착 및 교체 (Equip)", _on_parts_equip_pressed, C_GOLD)
-	_part_btn_equip.custom_minimum_size = Vector2(0, 32)
-	_part_btn_equip.add_theme_font_size_override("font_size", 10)
-	_part_btn_equip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	action_hbox.add_child(_part_btn_equip)
+	var h_margin := MarginContainer.new()
+	h_margin.add_theme_constant_override("margin_left", 10)
+	h_margin.add_theme_constant_override("margin_right", 10)
+	h_margin.add_theme_constant_override("margin_top", 10)
+	h_margin.add_theme_constant_override("margin_bottom", 10)
+	help_panel.add_child(h_margin)
 	
-	_part_btn_hold = parent_scene.make_button("임시 보관 (Hold Swap)", _on_parts_hold_pressed, parent_scene.C_TEXT)
-	_part_btn_hold.custom_minimum_size = Vector2(0, 32)
-	_part_btn_hold.add_theme_font_size_override("font_size", 10)
-	_part_btn_hold.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	action_hbox.add_child(_part_btn_hold)
-	
-	_part_btn_discard = parent_scene.make_button("버리기 (Discard)", _on_parts_discard_pressed, C_RED)
-	_part_btn_discard.custom_minimum_size = Vector2(0, 32)
-	_part_btn_discard.add_theme_font_size_override("font_size", 10)
-	_part_btn_discard.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	action_hbox.add_child(_part_btn_discard)
-	
-	# 계속 탐색 (Proceed) 버튼을 네 번째 칼럼으로 이관
-	var exit_btn: Button = parent_scene.make_button("계속 탐색 (Proceed)", _on_maint_confirm_pressed, parent_scene.C_ACCENT)
-	exit_btn.custom_minimum_size = Vector2(0, 32)
-	exit_btn.add_theme_font_size_override("font_size", 10)
-	exit_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	action_hbox.add_child(exit_btn)
+	var h_vbox := VBoxContainer.new()
+	h_vbox.add_theme_constant_override("separation", 6)
+	h_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	h_margin.add_child(h_vbox)
+
+	h_vbox.add_child(parent_scene.make_label("💡 개조 전술 가이드", 13, C_GOLD))
+	var help_txt = parent_scene.make_label("1. 가방 속 개조 파츠를 클릭하면 비어 있는 장착 슬롯에 즉시 조립됩니다.\n\n2. 장착 슬롯이 가득 찬 상태에서 다른 파츠를 장착 신청하면, 1번 슬롯의 이전 파츠가 가방으로 탈거되면서 스왑됩니다.\n\n3. 장착 파츠별 실제 성능 시뮬레이션 결과가 좌측 하단 게이지 바에 실시간 집계됩니다.", 10.5, parent_scene.C_DIM)
+	help_txt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	h_vbox.add_child(help_txt)
 
 
-## 정비실 페이즈 개시
+# ── 데이터 로드 및 상태 동기화 ──
+
 func start_maintenance_phase(node: RunManager.RunNode) -> void:
 	visible = true
 	current_node = node
 	
-	# 노드 타입에 따라 레이아웃 토글
-	if node.type_name.contains("무기 캐비닛"):
-		_deck_maint_layout.visible = false
-		_parts_maint_layout.visible = true
-		
-		# 데모용: 상자에서 발견된 파츠 랜덤 지정 (리듬 챔버 고정 / 샷건일 땐 포인트블랭크)
-		if run_manager.current_gun and run_manager.current_gun.display_name.contains("샷건"):
-			_new_discovered_part = load("res://resources/parts/point_blank.tres")
-		else:
-			_new_discovered_part = load("res://resources/parts/rhythm_chamber.tres")
-			
-		_refresh_parts_modification_ui()
-	else:
-		_deck_maint_layout.visible = true
-		_parts_maint_layout.visible = false
-		
-		_maint_title_label.text = node.type_name
-		_maint_desc_label.text = node.description
-		
-		# 3버튼 초기화 및 재생성
-		for child in _maint_buttons_container.get_children():
-			child.queue_free()
-			
-		_refresh_maintenance_deck_list()
-		_build_deck_maintenance_buttons(node)
-
-
-## 기존 덱 관련 정비 버튼 빌드
-func _build_deck_maintenance_buttons(node: RunManager.RunNode) -> void:
-	if node.type_name.contains("보급 캐비닛"):
-		var btn_up: Button = parent_scene.make_button("장약 보강 (탄환 DMG+1)", func():
-			_maint_desc_label.text = "장약 보강할 덱 탄환 카드를 아래 목록에서 클릭하세요."
-			_maint_deck_list.visible = true
-			_set_deck_list_callback(func(idx):
-				run_manager.upgrade_bullet_in_deck(idx, "dmg")
-				_maint_desc_label.text = "탄환 장약을 강화했습니다!"
-				_refresh_maintenance_deck_list()
-			)
-		, parent_scene.C_ACCENT)
-		_maint_buttons_container.add_child(btn_up)
-		
-		var btn_pol: Button = parent_scene.make_button("약실 소탕 (리로드면제)", func():
-			run_manager.has_chamber_polish = true
-			_maint_desc_label.text = "총기 약실 소탕 완료! 다음 전투에서 리로드 1회가 즉시 완료됩니다."
-		, parent_scene.C_WARNING)
-		_maint_buttons_container.add_child(btn_pol)
-		
-		var btn_disc: Button = parent_scene.make_button("탄환 폐기 (덱 압축)", func():
-			_maint_desc_label.text = "폐기하여 녹여버릴 탄환 카드를 아래 목록에서 선택하세요."
-			_maint_deck_list.visible = true
-			_set_deck_list_callback(func(idx):
-				run_manager.discard_bullet_from_deck(idx)
-				_maint_desc_label.text = "탄환 카드를 덱에서 완전히 삭제했습니다."
-				_refresh_maintenance_deck_list()
-			)
-		, parent_scene.C_DANGER)
-		_maint_buttons_container.add_child(btn_disc)
-		
-	elif node.type_name.contains("대피소"):
-		var btn_heal: Button = parent_scene.make_button("체력 아머 보급 (HP 버퍼 +1)", func():
-			run_manager.hp_buffer = mini(run_manager.hp_buffer + 1, 3)
-			_maint_desc_label.text = "의료 키트를 보급하여 HP 버퍼가 회복되었습니다. (현재 버퍼: %d)" % run_manager.hp_buffer
-		, parent_scene.C_SUCCESS)
-		_maint_buttons_container.add_child(btn_heal)
-		
-		var btn_rec: Button = parent_scene.make_button("소실 탄환 복구", func():
-			var recovered := run_manager.recover_discarded_bullets()
-			_maint_desc_label.text = "이전 전투에서 Unload하여 분실했던 탄환 %d발을 무사히 복구했습니다!" % recovered
-			_refresh_maintenance_deck_list()
-		, parent_scene.C_ACCENT)
-		_maint_buttons_container.add_child(btn_rec)
-		
-	elif node.type_name.contains("보안 통제실"):
-		var btn_hack: Button = parent_scene.make_button("터미널 보안 해킹 개시", func():
-			parent_scene.force_goggles_on_title()
-			_maint_desc_label.text = "보안 터미널 해킹 완료! [스마트 센서 고글] 렐릭이 강제로 장착되어 적 정보가 투명하게 공개됩니다."
-		, parent_scene.C_ACCENT)
-		_maint_buttons_container.add_child(btn_hack)
-
-
-# ── 파츠 개조 전용 UI 갱신 로직 ──
-func _refresh_parts_modification_ui() -> void:
-	if run_manager == null or run_manager.current_gun == null:
-		return
-		
-	var gun := run_manager.current_gun
-	_weapon_preview_name.text = gun.display_name
-	_weapon_preview_cap.text = "CAPACITY: %d" % gun.parts_capacity
-	_weapon_icon_rect.texture = gun.icon
+	_reroll_count = 0
+	_selected_bag_idx = -1
 	
-	# 1. 장착 LIFO 스택 슬롯 빌드
-	for child in _parts_stack_row.get_children():
+	_generate_shop_items()
+	_switch_tab(0)
+
+
+func _switch_tab(tab_idx: int) -> void:
+	_active_tab = tab_idx
+	
+	for i in range(_tab_btns.size()):
+		_apply_tab_style(_tab_btns[i], i == tab_idx)
+		
+	_shop_vbox.visible = (tab_idx == 0)
+	_equip_vbox.visible = (tab_idx == 1)
+	
+	_reroll_cost_btn.visible = (tab_idx == 0)
+	_refresh_current_tab_ui()
+
+
+func _refresh_current_tab_ui() -> void:
+	if run_manager == null: return
+	
+	_shop_credit_lbl.text = "보유 크레딧: %d Cr" % run_manager.credits
+	_reroll_cost_btn.text = "📡 주파수 재요청 (%dc)" % (3 * (_reroll_count + 1))
+	_reroll_cost_btn.disabled = run_manager.credits < (3 * (_reroll_count + 1))
+	
+	match _active_tab:
+		0:
+			_refresh_shop_tab()
+			_refresh_backpack_view(_shop_bag_grid_container, _shop_bag_capacity_lbl, false)
+		1:
+			_refresh_equip_tab()
+			_refresh_backpack_view(_equip_bag_grid_container, _equip_bag_capacity_lbl, true)
+
+
+# ── 각 탭별 세부 렌더링 로직 ──
+
+## 1) 🛒 보급 단말 탭 진열대 그리기
+func _refresh_shop_tab() -> void:
+	for child in _shop_grid.get_children():
 		child.queue_free()
 		
-	# 안티시너지 충돌 상태 판별 (리듬챔버 + 인터럽터 공존 검증)
+	for i in range(_shop_items.size()):
+		var slot_data = _shop_items[i]
+		var item: Resource = slot_data.item
+		var price: int = slot_data.price
+		var sold_out: bool = slot_data.sold_out
+		
+		var card := PanelContainer.new()
+		card.custom_minimum_size = Vector2(175, 260) # 듀얼 스크린화에 따른 슬림 조율
+		_apply_custom_panel_style(card, C_PANEL_BG, C_GOLD if not sold_out else C_BORDER)
+		_shop_grid.add_child(card)
+		
+		var margin := MarginContainer.new()
+		margin.add_theme_constant_override("margin_left", 10)
+		margin.add_theme_constant_override("margin_right", 10)
+		margin.add_theme_constant_override("margin_top", 10)
+		margin.add_theme_constant_override("margin_bottom", 10)
+		card.add_child(margin)
+		
+		var vbox := VBoxContainer.new()
+		vbox.add_theme_constant_override("separation", 6)
+		margin.add_child(vbox)
+		
+		var display_name := ""
+		var type_str := ""
+		var desc_str := ""
+		var icon_emoji := "📦"
+		
+		if item is BulletData:
+			display_name = item.display_name
+			type_str = "특수 탄환 Box"
+			desc_str = "DMG:%d ACC:%d PEN:%d\n효과: %s" % [item.damage, item.accuracy, item.penetration, _get_bullet_effect_desc(item)]
+			icon_emoji = "🔴"
+		elif item is PartData:
+			display_name = item.display_name
+			type_str = "개조 파츠"
+			desc_str = item.description
+			icon_emoji = _get_part_emoji(item.part_id)
+		elif item is ConsumableItem:
+			display_name = item.display_name
+			type_str = "소모성 물자"
+			desc_str = item.description
+			icon_emoji = item.icon_text
+			
+		var title_lbl = parent_scene.make_label("%s %s" % [icon_emoji, display_name.split(" ")[0]], 12.5, parent_scene.C_TEXT)
+		title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(title_lbl)
+		
+		var type_lbl = parent_scene.make_label(type_str, 9, C_CYAN)
+		type_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(type_lbl)
+
+		# 아이콘 이미지 렌더링
+		var img_rect: Control
+		
+		if item is BulletData and item.icon:
+			var tr := TextureRect.new()
+			tr.texture = item.icon
+			tr.custom_minimum_size = Vector2(80, 52)
+			tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tr.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			img_rect = tr
+		elif item is PartData and item.icon:
+			var tr := TextureRect.new()
+			tr.texture = item.icon
+			tr.custom_minimum_size = Vector2(80, 52)
+			tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tr.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tr.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			img_rect = tr
+		else:
+			var placeholder_style := StyleBoxFlat.new()
+			placeholder_style.bg_color = Color(0.15, 0.18, 0.24, 0.4)
+			placeholder_style.corner_radius_top_left = 4; placeholder_style.corner_radius_top_right = 4
+			placeholder_style.corner_radius_bottom_left = 4; placeholder_style.corner_radius_bottom_right = 4
+			
+			var p_container := PanelContainer.new()
+			p_container.custom_minimum_size = Vector2(80, 52)
+			p_container.add_theme_stylebox_override("panel", placeholder_style)
+			p_container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			
+			var p_lbl = parent_scene.make_label(icon_emoji, 20, Color.WHITE)
+			p_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			p_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+			p_container.add_child(p_lbl)
+			img_rect = p_container
+			
+		vbox.add_child(img_rect)
+		
+		var desc_lbl = parent_scene.make_label(desc_str, 9.5, parent_scene.C_DIM)
+		desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		desc_lbl.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vbox.add_child(desc_lbl)
+		
+		var btn_buy: Button
+		if sold_out:
+			btn_buy = parent_scene.make_button("SOLD OUT", func(): pass, parent_scene.C_PANEL)
+			btn_buy.disabled = true
+		else:
+			btn_buy = parent_scene.make_button("💳 구매 (%d)" % price, func(): _on_buy_item_pressed(i), C_GOLD)
+			btn_buy.disabled = run_manager.credits < price
+			
+		btn_buy.custom_minimum_size = Vector2(0, 32)
+		btn_buy.add_theme_font_size_override("font_size", 9.5)
+		vbox.add_child(btn_buy)
+
+
+## 2) 🛡️ 무기 장비 탭 좌측 스택 렌더링
+func _refresh_equip_tab() -> void:
+	if run_manager == null or run_manager.current_gun == null: return
+	
+	var gun := run_manager.current_gun
+	_equip_weapon_title.text = "장착 총기: %s (최대 개조슬롯: %d칸)" % [gun.display_name, gun.parts_capacity]
+	
+	if is_instance_valid(_equip_weapon_icon):
+		_equip_weapon_icon.texture = gun.icon
+	
+	# 장착된 파츠 슬롯 렌더링
+	for child in _equip_slots_hbox.get_children():
+		child.queue_free()
+		
 	var has_rhythm := false
 	var has_interrupter := false
-	
-	# 발견된 파츠 포함 공존 여부
-	var temp_all_parts := run_manager.equipped_parts.duplicate()
-	for p in temp_all_parts:
-		if p.part_id == 2: has_rhythm = true
-		if p.part_id == 3: has_interrupter = true
-		
-	var is_conflict := has_rhythm and has_interrupter
-	
+	for p in run_manager.equipped_parts:
+		if p.part_id == Enums.PartID.RHYTHM_CHAMBER: has_rhythm = true
+		if p.part_id == Enums.PartID.INTERRUPTER: has_interrupter = true
+	var is_conflict = has_rhythm and has_interrupter
+
 	for i in range(gun.parts_capacity):
-		var slot_panel = PanelContainer.new()
-		slot_panel.custom_minimum_size = Vector2(64, 76)
+		var slot := PanelContainer.new()
+		slot.custom_minimum_size = Vector2(80, 90)
 		
-		# 장착 여부 확인
 		var is_equipped := i < run_manager.equipped_parts.size()
-		var slot_color := C_SLOT_BG
-		var border_color := C_BORDER
+		var slot_color = C_SLOT_BG
+		var border_color = C_BORDER
 		
-		# 충돌 시 붉은색 테두리
 		if is_equipped:
 			var part = run_manager.equipped_parts[i]
-			var is_part_conflict = is_conflict and (part.part_id == 2 or part.part_id == 3)
-			border_color = C_RED if is_part_conflict else Color(0.35, 0.35, 0.35)
+			var is_part_conflict = is_conflict and (part.part_id == Enums.PartID.RHYTHM_CHAMBER or part.part_id == Enums.PartID.INTERRUPTER)
+			border_color = C_RED if is_part_conflict else C_GOLD
+			
+		_apply_custom_panel_style(slot, slot_color, border_color)
+		_equip_slots_hbox.add_child(slot)
 		
-		_apply_custom_panel_style(slot_panel, slot_color, border_color)
-		_parts_stack_row.add_child(slot_panel)
-		
-		# 슬롯 넘버링 라벨
-		var num_margin := MarginContainer.new()
-		num_margin.add_theme_constant_override("margin_left", 3)
-		num_margin.add_theme_constant_override("margin_top", 3)
-		slot_panel.add_child(num_margin)
-		
-		var num_lbl = parent_scene.make_label(str(i + 1), 8, parent_scene.C_DIM)
-		num_margin.add_child(num_lbl)
-		
-		# 슬롯 내부 vbox
 		var svbox := VBoxContainer.new()
-		svbox.add_theme_constant_override("separation", 2)
 		svbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		slot_panel.add_child(svbox)
+		slot.add_child(svbox)
 		
 		if is_equipped:
 			var part = run_manager.equipped_parts[i]
-			var icon_emoji := _get_part_emoji(part.part_id)
-			svbox.add_child(parent_scene.make_label(icon_emoji, 18, parent_scene.C_TEXT))
+			var emoji = _get_part_emoji(part.part_id)
+			svbox.add_child(parent_scene.make_label(emoji, 20, parent_scene.C_TEXT))
 			
-			var name_lbl = parent_scene.make_label(part.display_name.split(" ")[0], 8, parent_scene.C_TEXT)
-			name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			svbox.add_child(name_lbl)
-		else:
-			svbox.add_child(parent_scene.make_label("", 18, parent_scene.C_DIM))
-			var name_lbl = parent_scene.make_label("[ EMPTY ]", 8, parent_scene.C_DIM)
+			var name_lbl = parent_scene.make_label(part.display_name.split(" ")[0], 9, parent_scene.C_TEXT)
 			name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			svbox.add_child(name_lbl)
 			
-	# 2. Hold 슬롯 빌드
-	for child in _parts_hold_row.get_children():
-		child.queue_free()
-		
-	var hold_panel = PanelContainer.new()
-	hold_panel.custom_minimum_size = Vector2(64, 76)
-	
-	var hold_border = C_GOLD if run_manager.hold_part else Color(0.2, 0.2, 0.2, 0.5)
-	_apply_custom_panel_style(hold_panel, C_SLOT_BG, hold_border)
-	_parts_hold_row.add_child(hold_panel)
-	
-	# H 라벨
-	var hold_num_margin := MarginContainer.new()
-	hold_num_margin.add_theme_constant_override("margin_left", 3)
-	hold_num_margin.add_theme_constant_override("margin_top", 3)
-	hold_panel.add_child(hold_num_margin)
-	hold_num_margin.add_child(parent_scene.make_label("H", 8, parent_scene.C_DIM))
-	
-	var hold_vbox := VBoxContainer.new()
-	hold_vbox.add_theme_constant_override("separation", 2)
-	hold_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	hold_panel.add_child(hold_vbox)
-	
-	if run_manager.hold_part:
-		var part = run_manager.hold_part
-		hold_vbox.add_child(parent_scene.make_label(_get_part_emoji(part.part_id), 18, parent_scene.C_TEXT))
-		var name_lbl = parent_scene.make_label(part.display_name.split(" ")[0], 8, parent_scene.C_TEXT)
-		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		hold_vbox.add_child(name_lbl)
-	else:
-		hold_vbox.add_child(parent_scene.make_label("🔒", 18, parent_scene.C_DIM))
-		var name_lbl = parent_scene.make_label("비활성화 됨", 8, parent_scene.C_DIM)
-		name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		hold_vbox.add_child(name_lbl)
-
-	# 3. 우측 발견 카드 내용 업데이트
-	if _new_discovered_part:
-		_new_part_title.text = _new_discovered_part.display_name
-		_new_part_icon.text = _get_part_emoji(_new_discovered_part.part_id)
-		_new_part_desc.text = _new_discovered_part.description
-		
-		# 스펙 명세 파싱
-		if _new_discovered_part.part_id == 2: # 리듬챔버
-			_new_part_spec.text = "• 조건: 직전 탄환과 동일 구경\n• 효과: 격발당 DMG +3 누적 증가\n• 슬롯: 층위 1 (스택 레이어)"
-		elif _new_discovered_part.part_id == 6: # 포인트블랭크
-			_new_part_spec.text = "• 조건: 타겟과의 거리 DIST 1~2\n• 효과: 근접 타격 시 DMG +4 가산\n• 슬롯: 층위 2 (거리 레이어)"
+			if part.part_id != Enums.PartID.POINT_BLANK:
+				var idx = i
+				var btn_deq = parent_scene.make_button("탈거", func(): _on_dequip_part_pressed(idx), C_RED)
+				btn_deq.custom_minimum_size = Vector2(50, 20)
+				btn_deq.add_theme_font_size_override("font_size", 8)
+				svbox.add_child(btn_deq)
+			else:
+				var lbl_fixed = parent_scene.make_label("[고정]", 8, parent_scene.C_DIM)
+				lbl_fixed.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				svbox.add_child(lbl_fixed)
 		else:
-			_new_part_spec.text = "• 조건: 기본 장착\n• 효과: 고유 시그니처 혜택 부여\n• 슬롯: 전용 내장 슬롯"
-	else:
-		_new_part_title.text = "발견된 파츠 없음"
-		_new_part_icon.text = "📦"
-		_new_part_desc.text = "캐비닛이 텅 비어 있습니다."
-		_new_part_spec.text = "-"
-
-	# 4. 예상 변화 및 안티시너지 경고 업데이트
-	_proj_base_dmg.text = "Base DMG: %d" % (10 + (run_manager.equipped_parts.size() * 2))
+			svbox.add_child(parent_scene.make_label("🔧", 20, parent_scene.C_DIM))
+			var name_lbl = parent_scene.make_label("[ 슬롯 비어있음 ]", 8, parent_scene.C_DIM)
+			name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			svbox.add_child(name_lbl)
+			
+	# 실시간 스탯 변화량 시뮬레이션
+	var base_dmg = 10
+	var kb_force = 1
+	var reload_turns = gun.reload_turns
 	
-	if has_rhythm:
-		_proj_stack_mode.text = "Stack Mode: Combo"
-	elif has_interrupter:
-		_proj_stack_mode.text = "Stack Mode: Alternate"
-	else:
-		_proj_stack_mode.text = "Stack Mode: Normal"
-		
-	if is_conflict:
-		_proj_warning_msg.text = "안티시너지 경고: '인터럽터(교차 교대)'와 상극입니다!"
-		_proj_warning_msg.visible = true
-	else:
-		_proj_warning_msg.visible = false
+	for part in run_manager.equipped_parts:
+		if part.part_id == Enums.PartID.SHRED_MUZZLE or part.part_id == 7: # 고정밀총열
+			base_dmg += 4
+		if part.part_id == Enums.PartID.RECOIL_PUSH or part.part_id == Enums.PartID.POINT_BLANK:
+			kb_force += 1
+		if part.part_id == Enums.PartID.DEEP_LOADER:
+			reload_turns = maxi(reload_turns - 1, 2)
+			
+	_stat_dmg_bar.value = base_dmg
+	var dmg_diff = base_dmg - 10
+	_stat_dmg_val.text = "%d (%s%d)" % [base_dmg, "+" if dmg_diff >= 0 else "", dmg_diff]
+	_stat_dmg_bar.modulate = C_CYAN if dmg_diff > 0 else Color.WHITE
 
-	# 버튼 상태 최적화
-	_part_btn_equip.disabled = _new_discovered_part == null
-	_part_btn_hold.disabled = _new_discovered_part == null
-	_part_btn_discard.disabled = _new_discovered_part == null
+	_stat_kb_bar.value = kb_force
+	var kb_diff = kb_force - 1
+	_stat_kb_val.text = "%d (%s%d)" % [kb_force, "+" if kb_diff >= 0 else "", kb_diff]
+	_stat_kb_bar.modulate = C_CYAN if kb_diff > 0 else Color.WHITE
 
-
-# ── 파츠 전용 상호작용 액션 버튼 함수들 ──
-
-## 1. 장착 및 교체 (Equip)
-func _on_parts_equip_pressed() -> void:
-	if _new_discovered_part == null or run_manager == null:
-		return
-		
-	var gun = run_manager.current_gun
-	if gun == null:
-		return
-		
-	if run_manager.equipped_parts.size() < gun.parts_capacity:
-		# 빈 슬롯이 있으면 즉시 장착
-		run_manager.equip_part_to_slot(_new_discovered_part)
-		_new_discovered_part = null
-	else:
-		# 슬롯이 가득 찼으면 첫 번째 파츠를 덮어쓰며 파괴
-		run_manager.replace_equipped_part(0, _new_discovered_part)
-		_new_discovered_part = null
-		
-	_refresh_parts_modification_ui()
+	_stat_reload_bar.value = reload_turns
+	var reload_diff = reload_turns - gun.reload_turns
+	_stat_reload_val.text = "%d (%s%d)" % [reload_turns, "+" if reload_diff > 0 else "", reload_diff]
+	_stat_reload_bar.modulate = C_CYAN if reload_diff < 0 else Color.WHITE
 
 
-## 2. 임시 보관 (Hold Swap)
-func _on_parts_hold_pressed() -> void:
-	if _new_discovered_part == null:
-		return
-		
-	# Hold 슬롯에 이미 파츠가 들어 있다면 맞바꿈(스왑)
-	var old_hold = run_manager.store_in_hold(_new_discovered_part)
-	_new_discovered_part = old_hold # 밀려난 파츠를 우측 발견 카드로 돌림
-	_refresh_parts_modification_ui()
-
-
-## 3. 버리기 (Discard)
-func _on_parts_discard_pressed() -> void:
-	# 프로토타입: 발견된 새 파츠를 영구 파괴
-	_new_discovered_part = null
-	_refresh_parts_modification_ui()
-
-
-# ── 보조 및 기존 공통 메서드들 ──
-
-func _refresh_maintenance_deck_list() -> void:
-	for child in _maint_deck_list.get_children():
+## 3) 🎒 공통 가방 인벤토리 그리드 렌더링 헬퍼
+func _refresh_backpack_view(grid_container: GridContainer, cap_label: Label, is_equip_mode: bool) -> void:
+	if not is_instance_valid(grid_container): return
+	
+	for child in grid_container.get_children():
 		child.queue_free()
 		
-	for i in range(run_manager.deck.size()):
-		var b := run_manager.deck[i]
-		var label_text := "%d. %s  DMG:%d ACC:%d PEN:%d" % [
-			i + 1, b.display_name, b.damage, b.accuracy, b.penetration
+	var bag_size = run_manager.backpack_items.size()
+	cap_label.text = "(%d / %d)" % [bag_size, run_manager.BACKPACK_CAPACITY]
+	if bag_size >= run_manager.BACKPACK_CAPACITY:
+		cap_label.add_theme_color_override("font_color", C_RED)
+	else:
+		cap_label.add_theme_color_override("font_color", C_GREEN)
+		
+	# 8개 그리드 슬롯 고정 렌더링
+	for i in range(run_manager.BACKPACK_CAPACITY):
+		var slot := PanelContainer.new()
+		slot.custom_minimum_size = Vector2(64, 64) # 슬림 레이아웃 조율
+		
+		var has_item = i < bag_size
+		var is_selected = (not is_equip_mode) and (i == _selected_bag_idx)
+		
+		var border_color = C_CYAN if is_selected else C_BORDER
+		_apply_custom_panel_style(slot, C_SLOT_BG, border_color)
+		grid_container.add_child(slot)
+		
+		var svbox := VBoxContainer.new()
+		svbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		slot.add_child(svbox)
+		
+		if has_item:
+			var item = run_manager.backpack_items[i]
+			var emoji = "📦"
+			var name_str = item.display_name.split(" ")[0]
+			
+			if item is BulletData:
+				emoji = "🔴"
+			elif item is PartData:
+				emoji = _get_part_emoji(item.part_id)
+			elif item is ConsumableItem:
+				emoji = item.icon_text
+				
+			svbox.add_child(parent_scene.make_label(emoji, 18, parent_scene.C_TEXT))
+			
+			var name_lbl = parent_scene.make_label(name_str, 8.5, parent_scene.C_TEXT)
+			name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			svbox.add_child(name_lbl)
+			
+			var idx = i
+			slot.gui_input.connect(func(event: InputEvent) -> void:
+				if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+					if is_equip_mode:
+						# 장비 탭: 클릭 시 즉각 슬롯에 장착/스왑 처리
+						_on_equip_part_from_bag(idx)
+					else:
+						# 상점 탭: 클릭 시 상세 패널 로드 및 액션 버튼 대기
+						_on_bag_slot_selected(idx)
+			)
+		else:
+			svbox.add_child(parent_scene.make_label("-", 14, parent_scene.C_DIM))
+			var name_lbl = parent_scene.make_label("[ 비어있음 ]", 8, parent_scene.C_DIM)
+			name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			svbox.add_child(name_lbl)
+
+	if not is_equip_mode:
+		_refresh_bag_detail_panel()
+
+
+## 가방 상세설명 리프레시 (상점 탭 전용)
+func _refresh_bag_detail_panel() -> void:
+	if _selected_bag_idx < 0 or _selected_bag_idx >= run_manager.backpack_items.size():
+		_shop_bag_detail_title.text = "가방 내 물자를 선택해 주십시오"
+		_shop_bag_detail_type.text = "-"
+		_shop_bag_detail_desc.text = "인벤토리 슬롯을 클릭하면 해당 물자의 전술 스펙과 액션이 활성화됩니다."
+		_shop_bag_action_btn.disabled = true
+		_shop_bag_discard_btn.disabled = true
+		return
+		
+	var item = run_manager.backpack_items[_selected_bag_idx]
+	_shop_bag_discard_btn.disabled = false
+	_shop_bag_action_btn.disabled = false
+	
+	if item is BulletData:
+		_shop_bag_detail_title.text = "🔴 " + item.display_name
+		_shop_bag_detail_type.text = "소지 유형: 특수 전술 탄환 상자"
+		_shop_bag_detail_desc.text = "DMG: %d  ACC: %d%%  PEN: %d\n효과: %s\n\n[ 즉발 덱 장전 ]\n상자를 뜯어 획득한 특수탄을 1발 전술 덱에 즉시 편입시킵니다." % [
+			item.damage, item.accuracy, item.penetration, _get_bullet_effect_desc(item)
 		]
-		if b.knockback > 0: label_text += " KB:%d" % b.knockback
+		_shop_bag_action_btn.text = "🔴 덱에 탄환 추가 (Add)"
 		
-		var l: Label = parent_scene.make_label(label_text, 18, parent_scene.C_TEXT)
-		_maint_deck_list.add_child(l)
-
-
-func _set_deck_list_callback(cb: Callable) -> void:
-	_deck_select_callback = cb
-	for child in _maint_deck_list.get_children():
-		child.queue_free()
+	elif item is PartData:
+		_shop_bag_detail_title.text = _get_part_emoji(item.part_id) + " " + item.display_name
+		_shop_bag_detail_type.text = "소지 유형: 총기 개조 파츠 (Tier %d)" % item.tier
+		_shop_bag_detail_desc.text = item.description + "\n\n[ 조작 안내 ]\n본 파츠를 총기에 결합하려면 상단의 '무기 장비 (Equip)' 탭으로 이동하여 가방 슬롯 속 이 파츠를 눌러 조립하십시오."
+		_shop_bag_action_btn.text = "🛡️ 장비 탭으로 장착 가이드"
 		
-	for i in range(run_manager.deck.size()):
-		var b := run_manager.deck[i]
-		var btn_text := "%d. %s (선택)" % [i + 1, b.display_name]
-		var idx := i
-		var btn: Button = parent_scene.make_button(btn_text, func(): _deck_select_callback.call(idx), parent_scene.C_PANEL)
-		btn.add_theme_font_size_override("font_size", 16)
-		btn.custom_minimum_size = Vector2(0, 36)
-		_maint_deck_list.add_child(btn)
+	elif item is ConsumableItem:
+		_shop_bag_detail_title.text = item.icon_text + " " + item.display_name
+		_shop_bag_detail_type.text = "소지 유형: 전술 소모성 즉발 물자"
+		_shop_bag_detail_desc.text = item.description + "\n\n[ 즉발 물자 사용 ]\n소모품을 격발하여 즉시 해당 전술 효과를 얻고 가방에서 소진시킵니다."
+		_shop_bag_action_btn.text = "✚ 물자 즉발 사용 (Use)"
 
 
-func _on_maint_confirm_pressed() -> void:
+# ── 버튼 상호작용 콜백 함수들 ──
+
+## 1. 상점 리롤 버튼 클릭 시
+func _on_reroll_pressed() -> void:
+	var cost = 3 * (_reroll_count + 1)
+	if run_manager.spend_credits(cost):
+		_reroll_count += 1
+		_generate_shop_items()
+		_refresh_current_tab_ui()
+
+
+## 2. 상점 품목 구매 버튼 클릭 시
+func _on_buy_item_pressed(slot_idx: int) -> void:
+	if slot_idx < 0 or slot_idx >= _shop_items.size(): return
+	var slot_data = _shop_items[slot_idx]
+	var item = slot_data.item
+	var price = slot_data.price
+	
+	if run_manager.backpack_items.size() >= run_manager.BACKPACK_CAPACITY:
+		print("❌ 가방 용량 부족! 구매할 수 없습니다.")
+		return
+		
+	if run_manager.spend_credits(price):
+		run_manager.add_to_backpack(item)
+		_shop_items[slot_idx].sold_out = true
+		_refresh_current_tab_ui()
+
+
+## 3. 파츠 장착 해제 (탈거)
+func _on_dequip_part_pressed(part_idx: int) -> void:
+	if run_manager.backpack_items.size() >= run_manager.BACKPACK_CAPACITY:
+		print("❌ 가방 용량이 꽉 차 파츠를 탈거할 수 없습니다.")
+		return
+		
+	if part_idx >= 0 and part_idx < run_manager.equipped_parts.size():
+		var removed_part = run_manager.equipped_parts[part_idx]
+		run_manager.equipped_parts.remove_at(part_idx)
+		run_manager.add_to_backpack(removed_part)
+		_refresh_current_tab_ui()
+
+
+## 4. 가방 퀵 파츠 장착 (Equip 탭 우측 가방에서 클릭 시 호출)
+func _on_equip_part_from_bag(bag_item_idx: int) -> void:
+	if bag_item_idx < 0 or bag_item_idx >= run_manager.backpack_items.size(): return
+	var item = run_manager.backpack_items[bag_item_idx]
+	if not (item is PartData): return
+	
+	var gun = run_manager.current_gun
+	if gun == null: return
+	
+	if run_manager.equipped_parts.size() < gun.parts_capacity:
+		run_manager.equipped_parts.append(item)
+		run_manager.remove_from_backpack_at(bag_item_idx)
+	else:
+		var old_equipped = run_manager.equipped_parts[0]
+		run_manager.equipped_parts[0] = item
+		run_manager.backpack_items[bag_item_idx] = old_equipped
+		
+	_refresh_current_tab_ui()
+
+
+## 5. 가방 슬롯 선택 시 (상점 탭 우측)
+func _on_bag_slot_selected(idx: int) -> void:
+	_selected_bag_idx = idx
+	_refresh_current_tab_ui()
+
+
+## 6. 가방 사용/장착 버튼 클릭 시 (상점 탭 우측 상세)
+func _on_bag_action_pressed() -> void:
+	if _selected_bag_idx < 0 or _selected_bag_idx >= run_manager.backpack_items.size(): return
+	var item = run_manager.backpack_items[_selected_bag_idx]
+	
+	if item is BulletData:
+		run_manager.add_to_deck(item)
+		run_manager.remove_from_backpack_at(_selected_bag_idx)
+		_selected_bag_idx = -1
+		_refresh_current_tab_ui()
+		
+	elif item is PartData:
+		# 장비 탭으로 장착 가이드 안내 전환
+		_switch_tab(1)
+			
+	elif item is ConsumableItem:
+		if item.type == "heal":
+			run_manager.hp_buffer = mini(run_manager.hp_buffer + 1, 3)
+			print("💊 소모품 즉발 사용: HP 버퍼가 회복되었습니다.")
+		elif item.type == "shred":
+			print("💊 소모품 즉발 사용: 타겟 파쇄액 투척 효과 발동!")
+		
+		run_manager.remove_from_backpack_at(_selected_bag_idx)
+		_selected_bag_idx = -1
+		_refresh_current_tab_ui()
+
+
+## 7. 가방 버리기 버튼 클릭 시 (상점 탭 우측 상세)
+func _on_bag_discard_pressed() -> void:
+	if _selected_bag_idx < 0 or _selected_bag_idx >= run_manager.backpack_items.size(): return
+	run_manager.remove_from_backpack_at(_selected_bag_idx)
+	_selected_bag_idx = -1
+	_refresh_current_tab_ui()
+
+
+## 8. 무기고 이탈 (정비 종료)
+func _on_exit_pressed() -> void:
 	visible = false
 	parent_scene.handle_maintenance_finished()
 
 
-## 테마 스타일 지정 헬퍼
+# ── 무작위 상점 진열 생성 ──
+func _generate_shop_items() -> void:
+	_shop_items.clear()
+	
+	var bullet_paths := [
+		"res://resources/bullets/shred_rifle.tres",
+		"res://resources/bullets/heavy_dmr.tres",
+		"res://resources/bullets/slow_pistol.tres",
+		"res://resources/bullets/knockback_pistol.tres"
+	]
+	var bullet_res = load(bullet_paths.pick_random())
+	_shop_items.append({ "item": bullet_res, "price": randi_range(20, 25), "sold_out": false })
+
+	var part_paths := [
+		"res://resources/parts/rhythm_chamber.tres",
+		"res://resources/parts/deep_loader.tres",
+		"res://resources/parts/point_blank.tres",
+		"res://resources/parts/recoil_push.tres",
+		"res://resources/parts/marksman_scope.tres",
+		"res://resources/parts/shred_muzzle.tres"
+	]
+	var part_res = load(part_paths.pick_random())
+	_shop_items.append({ "item": part_res, "price": randi_range(30, 45), "sold_out": false })
+
+	var c1 := ConsumableItem.new()
+	c1.display_name = "응급 아머 키트"
+	c1.description = "요원의 외골격 아머를 즉시 긴급 정비합니다.\n[즉발 효과] 보유 HP 버퍼가 +1 충전됩니다 (최대 3)."
+	c1.price = 20
+	c1.type = "heal"
+	c1.icon_text = "✚"
+
+	var c2 := ConsumableItem.new()
+	c2.display_name = "부식성 전술 파쇄액"
+	c2.description = "화학 산화 약제가 들어있는 투척 플라스크입니다.\n[전투 예비] 적 장갑을 일시적으로 부식시켜 교전 돌입 시 적 수비를 감쇄합니다."
+	c2.price = 15
+	c2.type = "shred"
+	c2.icon_text = "◆"
+	
+	var c_res = c1 if randf() < 0.5 else c2
+	_shop_items.append({ "item": c_res, "price": c_res.price, "sold_out": false })
+
+
+# ── 기타 헬퍼 유틸리티 함수 ──
+
+func _get_bullet_effect_desc(bullet: BulletData) -> String:
+	match bullet.effect_type:
+		Enums.BulletEffect.ARMOR_SHRED: return "타격 시 적 장갑 영구 파쇄"
+		Enums.BulletEffect.COMBO: return "연속 적중 시 콤보 피해"
+		Enums.BulletEffect.LAST_SHOT: return "탄창 마지막 탄 위력 극대화"
+		Enums.BulletEffect.OPENING_SHOT: return "첫 사격 시 기습 치명상"
+	return "없음"
+
+func _apply_tab_style(btn: Button, active: bool) -> void:
+	var style := StyleBoxFlat.new()
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.bg_color = C_PANEL_BG if active else Color(0.04, 0.05, 0.08)
+	style.border_width_bottom = 2 if active else 1
+	style.border_color = C_GOLD if active else C_BORDER
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	
+	btn.add_theme_stylebox_override("normal", style)
+	btn.add_theme_stylebox_override("hover", style)
+	btn.add_theme_stylebox_override("pressed", style)
+	
+	var text_color = Color.WHITE if active else parent_scene.C_DIM
+	btn.add_theme_color_override("font_color", text_color)
+
 func _apply_custom_panel_style(panel: PanelContainer, bg: Color, border: Color) -> void:
 	var style := StyleBoxFlat.new()
 	style.bg_color = bg
@@ -699,22 +993,20 @@ func _apply_custom_panel_style(panel: PanelContainer, bg: Color, border: Color) 
 	style.border_width_top = 1
 	style.border_width_bottom = 1
 	style.border_color = border
-	style.corner_radius_bottom_left = 4
-	style.corner_radius_bottom_right = 4
-	style.corner_radius_top_left = 4
-	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
 	panel.add_theme_stylebox_override("panel", style)
 
-
-## 파츠 ID에 대응하는 이모지 헬퍼
 func _get_part_emoji(part_id: int) -> String:
 	match part_id:
-		1: return "📥" # 딥로더
-		2: return "🥁" # 리듬챔버
-		3: return "⚡" # 인터럽터
-		4: return "🔽" # 언더플로우
-		5: return "⛓" # 체이서
-		6: return "💥" # 포인트블랭크
-		7: return "🎯" # 고정밀총열
-		23: return "🔒" # 저격경
+		Enums.PartID.DEEP_LOADER: return "📥"
+		Enums.PartID.RHYTHM_CHAMBER: return "🥁"
+		Enums.PartID.INTERRUPTER: return "⚡"
+		Enums.PartID.UNDERFLOW: return "🔽"
+		Enums.PartID.CHASER: return "⛓"
+		Enums.PartID.POINT_BLANK: return "💥"
+		Enums.PartID.HIGH_PRECISION: return "🎯"
+		Enums.PartID.MARKSMAN_SCOPE: return "🔬"
 	return "🔧"

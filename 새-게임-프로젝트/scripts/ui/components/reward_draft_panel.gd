@@ -12,6 +12,8 @@ var overlay: Control
 var _draft_selected: BulletData = null
 var _draft_cards_hbox: HBoxContainer
 var _draft_confirm_btn: Button
+var is_credit_selected: bool = false
+var earned_credits: int = 20
 
 # 폴백용 기본 탄환 리소스들
 var _bullets_basic: BulletData
@@ -44,9 +46,11 @@ func setup_choices(b_basic: BulletData, b_ap: BulletData, b_kb: BulletData, b_he
 	_bullets_heavy = b_heavy
 	_bullets_slow = b_slow
 
-func show_draft(confirm_btn: Button) -> void:
+func show_draft(confirm_btn: Button, efficiency: int = 100, grade: String = "B", credits: int = 20) -> void:
 	_draft_confirm_btn = confirm_btn
 	_draft_selected = null
+	is_credit_selected = false
+	earned_credits = credits
 	_draft_confirm_btn.disabled = true
 	visible = true
 	
@@ -54,8 +58,13 @@ func show_draft(confirm_btn: Button) -> void:
 		_draft_cards_hbox.remove_child(child)
 		child.queue_free()
 		
-	for bullet in _generate_draft_choices():
+	# 무작위 호환 탄환 2개 생성
+	var bullets = _generate_draft_choices()
+	for bullet in bullets:
 		_draft_cards_hbox.add_child(_make_draft_card(bullet))
+		
+	# 3번째 카드: 기업 크레딧 보상 카드
+	_draft_cards_hbox.add_child(_make_credit_card(earned_credits))
 
 func get_selected_bullet() -> BulletData:
 	return _draft_selected
@@ -85,7 +94,7 @@ func _generate_draft_choices() -> Array[BulletData]:
 		
 	var result: Array[BulletData] = []
 	pool.shuffle()
-	for i in range(min(3, pool.size())):
+	for i in range(min(2, pool.size())):
 		result.append(pool[i].duplicate())
 	return result
 
@@ -144,11 +153,59 @@ func vbox_layout_init(card: PanelContainer) -> VBoxContainer:
 	card.add_child(vbox)
 	return vbox
 
-func _on_draft_card_selected(bullet: BulletData, selected_card: PanelContainer) -> void:
-	_draft_selected = bullet
+func _make_credit_card(credits_amt: int) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(130, 130)
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = parent_scene.C_PANEL
+	style.corner_radius_bottom_left = 10
+	style.corner_radius_bottom_right = 10
+	style.corner_radius_top_left = 10
+	style.corner_radius_top_right = 10
+	card.add_theme_stylebox_override("panel", style)
+	
+	var vbox := vbox_layout_init(card)
+	
+	var title_lbl: Label = parent_scene.make_label("💳 기업 크레딧", 15, parent_scene.C_WARNING)
+	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(title_lbl)
+	
+	var amount_lbl: Label = parent_scene.make_label("+%d Cr" % credits_amt, 18, Color(0.9, 0.8, 0.2))
+	amount_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	amount_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(amount_lbl)
+	
+	var desc_lbl: Label = parent_scene.make_label("표준 배급 자금\n(무기고 구매용)", 11, parent_scene.C_DIM)
+	desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(desc_lbl)
+	
+	card.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			_on_credit_card_selected(card)
+	)
+	return card
+
+func _on_credit_card_selected(selected_card: PanelContainer) -> void:
+	_draft_selected = null
+	is_credit_selected = true
 	if is_instance_valid(_draft_confirm_btn):
 		_draft_confirm_btn.disabled = false
 		
+	_highlight_selected_card(selected_card)
+
+func _on_draft_card_selected(bullet: BulletData, selected_card: PanelContainer) -> void:
+	_draft_selected = bullet
+	is_credit_selected = false
+	if is_instance_valid(_draft_confirm_btn):
+		_draft_confirm_btn.disabled = false
+		
+	_highlight_selected_card(selected_card)
+
+func _highlight_selected_card(selected_card: PanelContainer) -> void:
 	for card in _draft_cards_hbox.get_children():
 		var s := StyleBoxFlat.new()
 		s.corner_radius_bottom_left = 10

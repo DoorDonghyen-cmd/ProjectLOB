@@ -219,8 +219,8 @@ func _build_dev_test_panel() -> void:
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(grid)
 	
-	# 1. 무기 캐비닛 (파츠 획득) 테스트 숏컷 버튼
-	var btn_parts = parent_scene.make_button("🔧 무기 캐비닛 (파츠 획득)", func():
+	# 1. 무기고 3탭 단말기 테스트 숏컷 버튼
+	var btn_parts = parent_scene.make_button("🛠️ 무기고 3탭 단말기 테스트", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_parts_test_ui()
 	, parent_scene.C_ACCENT)

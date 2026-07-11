@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무기고 종합 제어 단말 UI 목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090e;
+    --panel: #0d121b;
+    --panel-border: #1a2436;
+    --line: #223046;
+    --ink: #e6edf4;
+    --muted: #62778f;
+    --safe: #00dcff; /* 일렉트릭 시안 */
+    --danger: #ff4500; /* 네온 오렌지 */
+    --gold: #ffd700; /* 일렉트릭 옐로우/골드 */
+    --dim: #1d2b3e;
+    --accent: #ff00ff; /* 네온 마젠타 */
+    --stat-green: #37e0ac;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(120% 90% at 50% 0%, #0c1322 0%, var(--bg) 70%);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 900px;
+  }
+
+  /* 시뮬레이터 제어부 */
+  .ctrl {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    width: 100%;
+  }
+  .ctrl label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .btn {
+    font-family: 'Inter';
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #182231;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .btn:hover {
+    border-color: var(--safe);
+    background: var(--dim);
+  }
+
+  /* 메인 게임 화면 모방 */
+  .screen {
+    position: relative;
+    background: linear-gradient(180deg, #0e1624 0%, #06090f 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    min-height: 550px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* 상단 탑바 */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .topbar-title {
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar-title h2 {
+    font-family: 'Oswald';
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .topbar-title span {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .credit-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 215, 0, 0.06);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+  }
+  .credit-lbl {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .credit-val {
+    font-family: 'Oswald';
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  /* 탭 네비게이션 */
+  .tabs-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 8px;
+  }
+  .tab-btn {
+    font-family: 'Inter';
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .tab-btn:hover {
+    color: var(--ink);
+    background: rgba(255,255,255,0.03);
+  }
+  .tab-btn.active {
+    color: var(--safe);
+    background: rgba(0, 220, 255, 0.08);
+    border-color: rgba(0, 220, 255, 0.25);
+  }
+  .tab-btn.active.shop {
+    color: var(--gold);
+    background: rgba(255, 215, 0, 0.08);
+    border-color: rgba(255, 215, 0, 0.25);
+  }
+
+  /* 탭별 컨텐츠 래퍼 */
+  .tab-content {
+    display: none;
+    flex: 1;
+  }
+  .tab-content.active {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 기본 박스 스타일 */
+  .section-box {
+    background: rgba(13, 18, 27, 0.6);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .box-title {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding-bottom: 6px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ================= 탭 1: 장비 탭 스타일 ================= */
+  .equip-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 16px;
+  }
+  .weapon-spec-card {
+    background: rgba(24, 34, 49, 0.2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .weapon-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .weapon-icon-box {
+    width: 48px;
+    height: 48px;
+    background: var(--dim);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .weapon-name-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .weapon-name {
+    font-family: 'Oswald';
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .weapon-class {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* 무기 스탯 목록 */
+  .stat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-lbl-val {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .stat-name { color: var(--muted); }
+  .stat-val { font-family: monospace; font-weight: bold; }
+  .stat-diff { font-size: 11px; margin-left: 6px; font-weight: bold; }
+  .stat-diff.plus { color: var(--stat-green); }
+  .stat-diff.minus { color: var(--danger); }
+  
+  .stat-bar-bg {
+    height: 6px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .stat-bar-fill {
+    height: 100%;
+    background: var(--safe);
+    border-radius: 3px;
+    transition: width 0.3s;
+    position: absolute;
+    left: 0; top: 0;
+  }
+  .stat-bar-fill.bonus {
+    background: var(--stat-green);
+    opacity: 0.6;
+    transition: width 0.3s;
+  }
+
+  /* 장착 슬롯 */
+  .parts-slots-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .part-slot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(13, 18, 27, 0.4);
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  .part-slot.empty {
+    justify-content: center;
+    font-style: italic;
+    color: var(--muted);
+    border-style: dashed;
+    background: transparent;
+  }
+  .part-slot-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .part-slot-name { font-weight: 700; color: var(--ink); }
+  .part-slot-desc { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  /* ================= 탭 2: 가방 탭 스타일 ================= */
+  .bag-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 16px;
+  }
+  .bag-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+    height: 180px;
+  }
+  .bag-slot {
+    background: rgba(13, 18, 27, 0.8);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .bag-slot:hover {
+    border-color: var(--safe);
+    background: var(--dim);
+  }
+  .bag-slot.active {
+    border-color: var(--safe);
+    box-shadow: 0 0 10px rgba(0, 220, 255, 0.2);
+  }
+  .bag-slot.empty {
+    border-style: dashed;
+    background: transparent;
+    cursor: default;
+  }
+  .bag-slot.empty:hover {
+    border-color: var(--line);
+    background: transparent;
+  }
+  .bag-slot-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bag-slot-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: #182231;
+    color: var(--ink);
+    font-size: 9px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+    border: 1px solid var(--line);
+  }
+
+  /* 아이템 상세설명 패널 */
+  .item-detail-panel {
+    background: rgba(24, 34, 49, 0.2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+  }
+  .detail-empty-msg {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 12.5px;
+    text-align: center;
+    margin: auto 0;
+  }
+  .detail-header {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  .detail-title {
+    font-family: 'Oswald';
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .detail-type {
+    font-size: 9.5px;
+    color: var(--safe);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 1px;
+  }
+  .detail-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    flex: 1;
+  }
+  .detail-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  /* ================= 탭 3: 상점 탭 스타일 ================= */
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .shop-card {
+    background: rgba(24, 34, 49, 0.3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 190px;
+    transition: 0.15s;
+  }
+  .shop-card:hover {
+    background: rgba(24, 34, 49, 0.6);
+    border-color: var(--gold);
+  }
+  .shop-card.soldout {
+    opacity: 0.35;
+    border-color: var(--line) !important;
+    background: rgba(0,0,0,0.2) !important;
+    pointer-events: none;
+  }
+  .shop-card-icon {
+    width: 48px;
+    height: 48px;
+    margin: 4px auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .shop-info-box {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .shop-name {
+    font-family: 'Oswald';
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .shop-desc {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 3px;
+    line-height: 1.3;
+  }
+  .shop-buy-btn {
+    width: 100%;
+    background: #1b2535;
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    border-radius: 6px;
+    padding: 6px 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .shop-buy-btn:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: var(--gold);
+  }
+  .shop-buy-btn .price {
+    font-family: 'Oswald';
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--gold);
+  }
+  .shop-buy-btn .lbl {
+    font-size: 9.5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .shop-card.soldout .shop-buy-btn {
+    background: transparent;
+    border-color: var(--line);
+  }
+  .shop-card.soldout .shop-buy-btn .price {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .shop-card.soldout .shop-buy-btn .lbl { display: none; }
+
+  /* 하단 공통 제어 */
+  .terminal-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    margin-top: 16px;
+  }
+  .reroll-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 0, 255, 0.05);
+    border: 1px solid rgba(255, 0, 255, 0.2);
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--ink);
+    transition: 0.15s;
+  }
+  .reroll-btn:hover {
+    background: rgba(255, 0, 255, 0.15);
+    border-color: var(--accent);
+  }
+  .reroll-btn .r-cost {
+    font-family: 'Oswald';
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .btn-submit {
+    background: var(--safe);
+    color: #04120d;
+    border: 1px solid var(--safe);
+    font-family: 'Inter';
+    font-weight: 700;
+    font-size: 13.5px;
+    border-radius: 6px;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .btn-submit:hover {
+    background: #00b8d4;
+    border-color: #00b8d4;
+    box-shadow: 0 0 15px rgba(0, 220, 255, 0.35);
+  }
+
+  /* 로그 패널 */
+  .log-panel {
+    position: absolute;
+    bottom: 80px;
+    left: 24px;
+    right: 24px;
+    background: rgba(7, 9, 14, 0.95);
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 11.5px;
+    color: var(--safe);
+    display: none;
+    font-family: monospace;
+    z-index: 5;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- 시뮬레이터 제어부 -->
+  <div class="ctrl">
+    <span class="tag" style="font-size:11px; color:var(--muted); font-weight:bold; letter-spacing:0.1em; margin-right:8px;">시뮬레이션 제어:</span>
+    <button class="btn" id="addCreditBtn">크레딧 충전 (+50c)</button>
+    <button class="btn" id="resetBtn">단말 전체 초기화</button>
+  </div>
+
+  <!-- 인게임 스크린 모방 -->
+  <div class="screen">
+    
+    <!-- 실시간 로그 창 -->
+    <div class="log-panel" id="logPanel">> 단말기 온라인. 시스템 평가 완료.</div>
+
+    <!-- 1) 헤더 (보유 크레딧) -->
+    <div class="topbar">
+      <div class="topbar-title">
+        <h2>Corporate Armory Terminal</h2>
+        <span>요원 정비 및 시설 배급 통합 제어 단말</span>
+      </div>
+      
+      <!-- 보유 크레딧 -->
+      <div class="credit-display">
+        <span class="credit-lbl">보유 크레딧</span>
+        <span class="credit-val" id="creditVal">75c</span>
+      </div>
+    </div>
+
+    <!-- 2) 탭 메뉴 네비게이션 -->
+    <div class="tabs-nav">
+      <button class="tab-btn shop active" data-tab="shop">🛒 보급 단말 (Shop)</button>
+      <button class="tab-btn" data-tab="equip">🛡️ 무기 장비 (Equip)</button>
+      <button class="tab-btn" data-tab="bag">🎒 가방 보관함 (Bag) <span id="bagCountBadge">(2/8)</span></button>
+    </div>
+
+    <!-- 3) 탭 1: 무기 장비 (Equip) -->
+    <div class="tab-content" id="tab-equip">
+      <div class="equip-layout">
+        <!-- 스펙 카드 -->
+        <div class="col">
+          <div class="section-box" style="margin-bottom:0; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+            <div class="box-title">장착 중인 총기 성능 명세</div>
+            
+            <div class="weapon-spec-card">
+              <div class="weapon-header">
+                <div class="weapon-icon-box">
+                  <svg viewBox="0 0 32 32" width="28" height="28" stroke="var(--safe)" stroke-width="1.5" fill="none">
+                    <!-- DMR 아이콘 -->
+                    <path d="M4 22 L8 22 L10 18 L28 18 L28 20 M12 18 L12 14 L20 14 L20 18 M16 14 L16 10 L19 10" stroke-linecap="round"/>
+                    <rect x="22" y="21" width="4" height="2" fill="var(--safe)"/>
+                  </svg>
+                </div>
+                <div class="weapon-name-info">
+                  <span class="weapon-name">DMR-7 Tactical</span>
+                  <span class="weapon-class">지정사수소총 (7.62mm)</span>
+                </div>
+              </div>
+
+              <!-- 스탯 목록 -->
+              <div class="stat-list">
+                <!-- 대미지 -->
+                <div class="stat-row">
+                  <div class="stat-lbl-val">
+                    <span class="stat-name">대미지 (Damage)</span>
+                    <span><span class="stat-val" id="stat-dmg">10</span><span class="stat-diff" id="diff-dmg"></span></span>
+                  </div>
+                  <div class="stat-bar-bg">
+                    <div class="stat-bar-fill" id="bar-dmg-base" style="width: 50%;"></div>
+                    <div class="stat-bar-fill bonus" id="bar-dmg-bonus" style="width: 0%;"></div>
+                  </div>
+                </div>
+                <!-- 넉백력 -->
+                <div class="stat-row">
+                  <div class="stat-lbl-val">
+                    <span class="stat-name">넉백 거리 (Knockback)</span>
+                    <span><span class="stat-val" id="stat-kb">2</span><span class="stat-diff" id="diff-kb"></span></span>
+                  </div>
+                  <div class="stat-bar-bg">
+                    <div class="stat-bar-fill" id="bar-kb-base" style="width: 40%;"></div>
+                    <div class="stat-bar-fill bonus" id="bar-kb-bonus" style="width: 0%;"></div>
+                  </div>
+                </div>
+                <!-- 장전 딜레이 -->
+                <div class="stat-row">
+                  <div class="stat-lbl-val">
+                    <span class="stat-name">장전 시간 (Reload Time)</span>
+                    <span><span class="stat-val" id="stat-rt">2.0s</span><span class="stat-diff" id="diff-rt"></span></span>
+                  </div>
+                  <div class="stat-bar-bg">
+                    <!-- 시간은 줄어야 이득이므로 비율 반전 계산 -->
+                    <div class="stat-bar-fill" id="bar-rt-base" style="width: 60%;"></div>
+                    <div class="stat-bar-fill bonus" id="bar-rt-bonus" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="font-size: 11px; color: var(--muted); margin-top:10px; text-align:center;">
+              * 장착 파츠에 따른 가산 성능이 초록색 바 및 수치로 시각화됩니다.
+            </div>
+          </div>
+        </div>
+
+        <!-- 파츠 장착 슬롯 및 퀵 인벤토리 -->
+        <div class="col">
+          <div class="section-box" style="flex:1;">
+            <div class="box-title">총기 개조 파츠 슬롯 (최대 2)</div>
+            <div class="parts-slots-container" id="equipSlotList">
+              <!-- 동적 생성 -->
+            </div>
+          </div>
+
+          <div class="section-box" style="margin-bottom:0; max-height: 180px; overflow-y: auto;">
+            <div class="box-title">퀵 가방 정비 (소지 파츠 즉시 장착)</div>
+            <div id="quickPartList" style="display:flex; flex-direction:column; gap:6px;">
+              <!-- 동적 생성 -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4) 탭 2: 가방 보관함 (Bag) -->
+    <div class="tab-content" id="tab-bag">
+      <div class="bag-layout">
+        <!-- 인벤토리 그리드 -->
+        <div class="col">
+          <div class="section-box" style="margin-bottom:0; flex:1;">
+            <div class="box-title">가방 인벤토리 슬롯 (최대 8)</div>
+            <div class="bag-grid" id="bagGrid">
+              <!-- 8칸 그리드 동적 생성 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 선택 아이템 상세 패널 -->
+        <div class="col">
+          <div class="section-box" style="margin-bottom:0; flex:1; display:flex; flex-direction:column;">
+            <div class="box-title">보관 물자 상세 정보</div>
+            <div class="item-detail-panel" id="itemDetailPanel">
+              <div class="detail-empty-msg" id="detailEmptyMsg">가방의 아이템을 선택하면 상세 정보 및 정비 옵션이 출력됩니다.</div>
+              <div id="detailInfoContent" style="display:none; flex:1; display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+                <div class="detail-header">
+                  <div class="detail-title" id="detailTitle">중량형 보정기</div>
+                  <div class="detail-type" id="detailType">장비 파츠</div>
+                </div>
+                <div class="detail-desc" id="detailDesc">넉백 저항 감산 +1 효과를 추가합니다. DMR에 권장되는 헤비 머즐 파츠입니다.</div>
+                <div class="detail-actions" id="detailActions">
+                  <!-- 장착/사용 액션 버튼 동적 변경 -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5) 탭 3: 보급 단말 (Shop) -->
+    <div class="tab-content active" id="tab-shop">
+      <div class="shop-grid" id="shopGrid">
+        <!-- 3개 보급 물자 카드 동적 생성 -->
+      </div>
+    </div>
+
+    <!-- 6) 하단 단말 제어 액션 -->
+    <div class="terminal-actions">
+      <!-- 리롤 버튼 (상점 탭에서만 활성화, 타 탭에서는 disabled/hidden 처리) -->
+      <button class="reroll-btn" id="rerollBtn" style="visibility: visible;">
+        <span>단말기 신호 재요청</span>
+        <span class="r-cost" id="rerollCost">3c</span>
+      </button>
+
+      <!-- 작전 계속하기 -->
+      <button class="btn-submit" id="submitBtn">정비 완료 및 작전 복귀</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // 게임 상태 정의
+  let state = {
+    credit: 75,
+    rerollCount: 0,
+    rerollPrice: 3,
+    
+    // 무기 기본 스탯
+    baseStats: {
+      dmg: 10,
+      kb: 2,
+      rt: 2.0 // 초
+    },
+
+    // 현재 장착된 파츠 (최대 2)
+    equippedParts: [
+      { id: 'part_A', name: '중량형 보정기', type: 'part', desc: '넉백 저항 감산 +1', stats: { kb: 1 }, detail: '사격 시 총구의 가스 배출을 제어하여 넉백 충격량을 증대시킵니다.' }
+    ],
+
+    // 가방 인벤토리 (최대 8)
+    bag: [
+      { id: 'part_B', name: '경량 가스 조절기', type: 'part', desc: '장전 시간 -0.3s', stats: { rt: -0.3 }, detail: '가스 튜브 구조를 가볍게 개선하여 노리쇠 왕복 및 탄약 탑재 딜레이를 낮춥니다.' },
+      { id: 'ammo_A', name: '5.56mm 넉백탄 Box', type: 'ammo', desc: '넉백 +1 패시브 탄환 x4', count: 4, detail: '인게임 장전 시 스택에 탄두 넉백 효과를 얹을 수 있는 5.56mm 탄환 상자입니다.' }
+    ],
+
+    // 상점 품목 (3개)
+    shopItems: [],
+
+    // 현재 가방에서 선택된 아이템의 ID
+    selectedItemId: null
+  };
+
+  // 상점 상품 풀
+  const productPool = [
+    { name: '5.56mm 넉백탄 Box', type: 'ammo', desc: '넉백 +1 패시브 탄환 x4', iconType: 'ammo', price: 20, detail: '탄두 영역을 일렉트릭 시안으로 특수 코팅하여 피격 대상에게 강한 충격을 줍니다.' },
+    { name: '9mm 슬로우탄 Box', type: 'ammo', desc: '슬로우 +1 패시브 탄환 x5', iconType: 'ammo', price: 15, detail: '특수 끈적거리는 전도성 젤이 포함되어 적의 복도 이동 거리를 강제로 둔화시킵니다.' },
+    { name: '7.62mm 관통탄 Box', type: 'ammo', desc: '관통 1층 획득 탄환 x3', iconType: 'ammo', price: 25, detail: '강화 나노 세라믹 팁이 장착된 파괴탄으로 다수의 적을 관통하여 뚫을 수 있습니다.' },
+    { name: '속사 반동 스프링', type: 'part', desc: '장전 시간 -0.5s', stats: { rt: -0.5 }, iconType: 'part', price: 40, detail: '장전 기구를 인장력이 우수한 탄소 합금 스프링으로 개조하여 재적재 속도를 획기적으로 낮춥니다.' },
+    { name: '나노 합금 총열', type: 'part', desc: '대미지 +3', stats: { dmg: 3 }, iconType: 'part', price: 45, detail: '총열의 강선을 나노 분말 코팅하여 탄환의 추진 압력을 극대화하여 대미지를 상승시킵니다.' },
+    { name: '전술 소음기', type: 'part', desc: '넉백 +1 / 대미지 -1', stats: { kb: 1, dmg: -1 }, iconType: 'part', price: 30, detail: '소음을 감쇄하되 가스압을 탄환 전방으로 분사하여 대미지는 소폭 감소하지만 충격 넉백력을 추가합니다.' },
+    { name: '휴대용 배터리 팩', type: 'consumable', desc: '스캐너 스캔량 완충', iconType: 'utility', price: 12, detail: '시설 보안망 해킹이나 미지 노드 스캔을 위해 스캐너 전력을 100% 보충해 주는 고용량 전원 셀입니다.' },
+    { name: '화학 지혈 스프레이', type: 'consumable', desc: '요원 HP 완충 구호품', iconType: 'utility', price: 15, detail: '기업 요원들이 비상 수해 구역에서 즉각적인 외상 처리를 위해 지참하는 전술 스프레이 킷입니다.' }
+  ];
+
+  // DOM 선언
+  const creditVal = document.getElementById('creditVal');
+  const bagCountBadge = document.getElementById('bagCountBadge');
+  const logPanel = document.getElementById('logPanel');
+  const rerollBtn = document.getElementById('rerollBtn');
+  const rerollCost = document.getElementById('rerollCost');
+  const submitBtn = document.getElementById('submitBtn');
+  const addCreditBtn = document.getElementById('addCreditBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  // ================= 로그 유틸 =================
+  function writeLog(text, isError = false) {
+    logPanel.style.display = 'block';
+    logPanel.textContent = `> ${text}`;
+    logPanel.style.color = isError ? 'var(--danger)' : 'var(--safe)';
+    setTimeout(() => {
+      if (logPanel.textContent === `> ${text}`) {
+        logPanel.style.display = 'none';
+      }
+    }, 4000);
+  }
+
+  // ================= 탭 전환 처리 =================
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      btn.classList.add('active');
+      const tabId = btn.getAttribute('data-tab');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+
+      // 화면 리랜더링 동기화
+      renderAll();
+    });
+  });
+
+  // ================= 크레딧 충전 및 초기화 =================
+  addCreditBtn.addEventListener('click', () => {
+    state.credit += 50;
+    writeLog('보안 터미널 우회: 요원 크레딧 +50c 충전.');
+    renderAll();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    state.credit = 75;
+    state.rerollCount = 0;
+    state.rerollPrice = 3;
+    state.equippedParts = [
+      { id: 'part_A', name: '중량형 보정기', type: 'part', desc: '넉백 저항 감산 +1', stats: { kb: 1 }, detail: '사격 시 총구의 가스 배출을 제어하여 넉백 충격량을 증대시킵니다.' }
+    ];
+    state.bag = [
+      { id: 'part_B', name: '경량 가스 조절기', type: 'part', desc: '장전 시간 -0.3s', stats: { rt: -0.3 }, detail: '가스 튜브 구조를 가볍게 개선하여 노리쇠 왕복 및 탄약 탑재 딜레이를 낮춥니다.' },
+      { id: 'ammo_A', name: '5.56mm 넉백탄 Box', type: 'ammo', desc: '넉백 +1 패시브 탄환 x4', count: 4, detail: '인게임 장전 시 스택에 탄두 넉백 효과를 얹을 수 있는 5.56mm 탄환 상자입니다.' }
+    ];
+    state.selectedItemId = null;
+    generateShopItems();
+    writeLog('단말 리부팅 완료. 초기 정보가 재적재되었습니다.');
+    renderAll();
+  });
+
+  submitBtn.addEventListener('click', () => {
+    writeLog('단말 오프라인 전환. 요원의 무기고 정비 작전이 종료되었습니다.');
+  });
+
+  // ================= 비주얼 SVG 생성기 =================
+  function getSVGIcon(type) {
+    if (type === 'ammo') {
+      return `
+        <svg viewBox="0 0 64 64" width="40" height="40">
+          <g transform="rotate(45 32 32)">
+            <path d="M24 28 H40 V52 C40 54, 38 56, 36 56 H28 C26 56, 24 54, 24 52 Z" fill="#cfd8dc" stroke="#101721" stroke-width="2.5"/>
+            <path d="M24 28 C24 20, 32 8, 32 8 C32 8, 40 20, 40 28 Z" fill="#ff4500" stroke="#101721" stroke-width="2.5"/>
+          </g>
+        </svg>
+      `;
+    } else if (type === 'part') {
+      return `
+        <svg viewBox="0 0 64 64" width="40" height="40" stroke="var(--safe)" stroke-width="2" fill="none">
+          <rect x="16" y="24" width="32" height="16" rx="2"/>
+          <circle cx="24" cy="32" r="3" fill="var(--safe)"/>
+          <line x1="36" y1="28" x2="42" y2="28" />
+          <line x1="36" y1="36" x2="42" y2="36" />
+        </svg>
+      `;
+    } else { // utility / consumable
+      return `
+        <svg viewBox="0 0 64 64" width="40" height="40" stroke="var(--gold)" stroke-width="2" fill="none">
+          <rect x="20" y="16" width="24" height="36" rx="4"/>
+          <line x1="32" y1="26" x2="32" y2="42" stroke-width="3" stroke-linecap="round"/>
+          <line x1="24" y1="34" x2="40" y2="34" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      `;
+    }
+  }
+
+  // ================= 렌더링 로직 총괄 =================
+  function renderAll() {
+    // 1) 크레딧 및 가방 카운트 동기화
+    creditVal.textContent = state.credit + 'c';
+    bagCountBadge.textContent = `(${state.bag.length}/8)`;
+    rerollCost.textContent = state.rerollPrice + 'c';
+
+    // 2) 각 활성화 탭 렌더링
+    const activeTab = document.querySelector('.tab-btn.active').getAttribute('data-tab');
+    
+    // 리롤 버튼 가시성 제어
+    if (activeTab === 'shop') {
+      rerollBtn.style.visibility = 'visible';
+    } else {
+      rerollBtn.style.visibility = 'hidden';
+    }
+
+    if (activeTab === 'equip') {
+      renderEquipTab();
+    } else if (activeTab === 'bag') {
+      renderBagTab();
+    } else if (activeTab === 'shop') {
+      renderShopTab();
+    }
+  }
+
+  // ================= [1. 장비 탭 렌더링] =================
+  function renderEquipTab() {
+    // A. 스탯 성능 계산
+    let dmgBonus = 0;
+    let kbBonus = 0;
+    let rtBonus = 0;
+
+    state.equippedParts.forEach(p => {
+      if (p.stats) {
+        if (p.stats.dmg) dmgBonus += p.stats.dmg;
+        if (p.stats.kb) kbBonus += p.stats.kb;
+        if (p.stats.rt) rtBonus += p.stats.rt;
+      }
+    });
+
+    const finalDmg = state.baseStats.dmg + dmgBonus;
+    const finalKb = state.baseStats.kb + kbBonus;
+    const finalRt = state.baseStats.rt + rtBonus; //rt는 작아져야 함
+
+    // 스탯 수치 대입
+    document.getElementById('stat-dmg').textContent = finalDmg;
+    document.getElementById('stat-kb').textContent = finalKb;
+    document.getElementById('stat-rt').textContent = finalRt.toFixed(1) + 's';
+
+    // 플러스 마이너스 차이값 표기
+    const diffDmg = document.getElementById('diff-dmg');
+    if (dmgBonus > 0) { diffDmg.textContent = `(+${dmgBonus})`; diffDmg.className = 'stat-diff plus'; }
+    else if (dmgBonus < 0) { diffDmg.textContent = `(${dmgBonus})`; diffDmg.className = 'stat-diff minus'; }
+    else { diffDmg.textContent = ''; }
+
+    const diffKb = document.getElementById('diff-kb');
+    if (kbBonus > 0) { diffKb.textContent = `(+${kbBonus})`; diffKb.className = 'stat-diff plus'; }
+    else if (kbBonus < 0) { diffKb.textContent = `(${kbBonus})`; diffKb.className = 'stat-diff minus'; }
+    else { diffKb.textContent = ''; }
+
+    const diffRt = document.getElementById('diff-rt');
+    if (rtBonus < 0) { diffRt.textContent = `(${rtBonus.toFixed(1)}s)`; diffRt.className = 'stat-diff plus'; } // 시간 감소는 이득
+    else if (rtBonus > 0) { diffRt.textContent = `(+${rtBonus.toFixed(1)}s)`; diffRt.className = 'stat-diff minus'; }
+    else { diffRt.textContent = ''; }
+
+    // 스탯 바 비례 렌더링
+    // dmg: max 20 기준
+    const baseDmgPct = (state.baseStats.dmg / 20) * 100;
+    const bonusDmgPct = (dmgBonus / 20) * 100;
+    document.getElementById('bar-dmg-base').style.width = baseDmgPct + '%';
+    document.getElementById('bar-dmg-bonus').style.width = (bonusDmgPct > 0 ? bonusDmgPct : 0) + '%';
+    document.getElementById('bar-dmg-bonus').style.left = baseDmgPct + '%';
+
+    // kb: max 5 기준
+    const baseKbPct = (state.baseStats.kb / 5) * 100;
+    const bonusKbPct = (kbBonus / 5) * 100;
+    document.getElementById('bar-kb-base').style.width = baseKbPct + '%';
+    document.getElementById('bar-kb-bonus').style.width = (bonusKbPct > 0 ? bonusKbPct : 0) + '%';
+    document.getElementById('bar-kb-bonus').style.left = baseKbPct + '%';
+
+    // rt: max 3.0s 기준 (줄어야 이득이므로 반대로 렌더링)
+    // rt 0.5s일 때 거의 다 참, rt 3s일 때 거의 비어 있음
+    const calcRtBasePct = ((3.0 - state.baseStats.rt) / 2.5) * 100;
+    const calcRtBonusPct = ((-rtBonus) / 2.5) * 100; // 음수 딜레이 삭감이 이득
+    document.getElementById('bar-rt-base').style.width = calcRtBasePct + '%';
+    document.getElementById('bar-rt-bonus').style.width = (calcRtBonusPct > 0 ? calcRtBonusPct : 0) + '%';
+    document.getElementById('bar-rt-bonus').style.left = calcRtBasePct + '%';
+
+
+    // B. 장착 슬롯 빌드
+    const equipSlotList = document.getElementById('equipSlotList');
+    equipSlotList.innerHTML = '';
+
+    for (let i = 0; i < 2; i++) {
+      const part = state.equippedParts[i];
+      if (part) {
+        const slotEl = document.createElement('div');
+        slotEl.className = 'part-slot';
+        slotEl.innerHTML = `
+          <div class="part-slot-info">
+            <span class="part-slot-name">${part.name}</span>
+            <span class="part-slot-desc">${part.desc}</span>
+          </div>
+          <button class="btn" style="padding: 4px 8px; font-size:11px;" onclick="unequipPart('${part.id}')">해제</button>
+        `;
+        equipSlotList.appendChild(slotEl);
+      } else {
+        const emptyEl = document.createElement('div');
+        emptyEl.className = 'part-slot empty';
+        emptyEl.textContent = `슬롯 ${i + 1} - 비어 있음`;
+        equipSlotList.appendChild(emptyEl);
+      }
+    }
+
+    // C. 퀵 가방 리스트
+    const quickPartList = document.getElementById('quickPartList');
+    quickPartList.innerHTML = '';
+    
+    const bagParts = state.bag.filter(item => item.type === 'part');
+    if (bagParts.length === 0) {
+      quickPartList.innerHTML = '<span style="font-size:12px; color:var(--muted); font-style:italic; text-align:center; padding:10px 0;">장착 가능한 파츠가 가방에 없습니다.</span>';
+    } else {
+      bagParts.forEach(part => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:6px 10px; border-radius:5px; border:1px solid rgba(255,255,255,0.04);';
+        row.innerHTML = `
+          <div style="display:flex; flex-direction:column; font-size:12px;">
+            <span style="font-weight:bold; color:var(--ink);">${part.name}</span>
+            <span style="font-size:10px; color:var(--muted);">${part.desc}</span>
+          </div>
+          <button class="btn" style="padding: 3px 6px; font-size:10px; border-color:var(--safe);" onclick="equipPart('${part.id}')">장착</button>
+        `;
+        quickPartList.appendChild(row);
+      });
+    }
+  }
+
+  // 장착 & 해제 핸들러
+  window.equipPart = function(id) {
+    if (state.equippedParts.length >= 2) {
+      writeLog('장비 불가: 무기 파츠 슬롯이 가득 찼습니다.', true);
+      return;
+    }
+    const idx = state.bag.findIndex(item => item.id === id);
+    if (idx !== -1) {
+      const part = state.bag.splice(idx, 1)[0];
+      state.equippedParts.push(part);
+      writeLog(`정비 실행: [${part.name}]을(를) 총기에 장착했습니다. 성능이 보정됩니다.`);
+      
+      // 혹시 상세정보 열어뒀다면 선택 제거
+      if (state.selectedItemId === id) state.selectedItemId = null;
+
+      renderAll();
+    }
+  };
+
+  window.unequipPart = function(id) {
+    if (state.bag.length >= 8) {
+      writeLog('해제 불가: 가방 인벤토리가 가득 찼습니다.', true);
+      return;
+    }
+    const idx = state.equippedParts.findIndex(item => item.id === id);
+    if (idx !== -1) {
+      const part = state.equippedParts.splice(idx, 1)[0];
+      state.bag.push(part);
+      writeLog(`정비 실행: [${part.name}]을(를) 장착 해제하여 가방으로 보냈습니다.`);
+      renderAll();
+    }
+  };
+
+
+  // ================= [2. 가방 탭 렌더링] =================
+  function renderBagTab() {
+    const bagGrid = document.getElementById('bagGrid');
+    bagGrid.innerHTML = '';
+
+    // 8칸의 그리드 렌더링
+    for (let i = 0; i < 8; i++) {
+      const item = state.bag[i];
+      const slotEl = document.createElement('div');
+      
+      if (item) {
+        slotEl.className = `bag-slot ${state.selectedItemId === item.id ? 'active' : ''}`;
+        
+        // 아이콘 타입
+        let iconType = 'ammo';
+        if (item.type === 'part') iconType = 'part';
+        else if (item.type === 'consumable') iconType = 'utility';
+
+        slotEl.innerHTML = `
+          <div class="bag-slot-icon">${getSVGIcon(iconType)}</div>
+          ${item.count ? `<span class="bag-slot-badge">x${item.count}</span>` : ''}
+        `;
+        slotEl.addEventListener('click', () => {
+          state.selectedItemId = item.id;
+          renderAll();
+        });
+      } else {
+        slotEl.className = 'bag-slot empty';
+      }
+      bagGrid.appendChild(slotEl);
+    }
+
+    // 상세 패널 동기화
+    const detailEmptyMsg = document.getElementById('detailEmptyMsg');
+    const detailInfoContent = document.getElementById('detailInfoContent');
+    
+    if (state.selectedItemId) {
+      const selectedItem = state.bag.find(item => item.id === state.selectedItemId);
+      if (!selectedItem) {
+        state.selectedItemId = null;
+        detailEmptyMsg.style.display = 'block';
+        detailInfoContent.style.display = 'none';
+        return;
+      }
+
+      detailEmptyMsg.style.display = 'none';
+      detailInfoContent.style.display = 'flex';
+
+      document.getElementById('detailTitle').textContent = selectedItem.name;
+      
+      let typeLabel = '장비 개조 파츠';
+      let actionBtnHTML = '';
+
+      if (selectedItem.type === 'part') {
+        typeLabel = '무기 장착용 파츠';
+        actionBtnHTML = `<button class="btn-submit" style="font-size:12px; padding:6px 14px;" onclick="equipPart('${selectedItem.id}')">무기에 장착하기</button>`;
+      } else if (selectedItem.type === 'ammo') {
+        typeLabel = '예비 특수 탄환';
+        actionBtnHTML = `<span style="font-size:11.5px; color:var(--muted); line-height:2.2;">* 전투 턴 개시 시 적재 가능</span>`;
+      } else {
+        typeLabel = '유틸리티 소모 보급품';
+        actionBtnHTML = `<button class="btn-submit" style="font-size:12px; padding:6px 14px; background:var(--gold); border-color:var(--gold); color:#000;" onclick="useItem('${selectedItem.id}')">즉시 사용하기</button>`;
+      }
+
+      document.getElementById('detailType').textContent = typeLabel;
+      document.getElementById('detailDesc').innerHTML = `
+        <b>효과</b>: ${selectedItem.desc}<br><br>
+        ${selectedItem.detail || '상세 사양이 등록되지 않은 물자입니다.'}
+      `;
+
+      const detailActions = document.getElementById('detailActions');
+      detailActions.innerHTML = `
+        ${actionBtnHTML}
+        <button class="btn" style="border-color:var(--danger); color:var(--danger); font-size:12px; padding:6px 14px;" onclick="discardItem('${selectedItem.id}')">물자 버리기</button>
+      `;
+    } else {
+      detailEmptyMsg.style.display = 'block';
+      detailInfoContent.style.display = 'none';
+    }
+  }
+
+  // 가방 아이템 액션
+  window.useItem = function(id) {
+    const idx = state.bag.findIndex(item => item.id === id);
+    if (idx !== -1) {
+      const item = state.bag[idx];
+      writeLog(`소모품 사용: [${item.name}]을(를) 즉각 소모하여 효과를 취했습니다.`);
+      state.bag.splice(idx, 1);
+      state.selectedItemId = null;
+      renderAll();
+    }
+  };
+
+  window.discardItem = function(id) {
+    const idx = state.bag.findIndex(item => item.id === id);
+    if (idx !== -1) {
+      const item = state.bag[idx];
+      if (confirm(`정말로 보급 물자 [${item.name}]을(를) 폐기 처분하시겠습니까? 되돌릴 수 없습니다.`)) {
+        writeLog(`물자 폐기: [${item.name}]을(를) 인벤토리에서 버렸습니다.`);
+        state.bag.splice(idx, 1);
+        state.selectedItemId = null;
+        renderAll();
+      }
+    }
+  };
+
+
+  // ================= [3. 상점 탭 렌더링] =================
+  function renderShopTab() {
+    const shopGrid = document.getElementById('shopGrid');
+    shopGrid.innerHTML = '';
+
+    state.shopItems.forEach((item, index) => {
+      const cardEl = document.createElement('div');
+      cardEl.className = `shop-card ${item.sold ? 'soldout' : ''}`;
+      
+      let iconType = 'ammo';
+      if (item.type === 'part') iconType = 'part';
+      else if (item.type === 'consumable') iconType = 'utility';
+
+      cardEl.innerHTML = `
+        <div class="shop-card-icon">${getSVGIcon(iconType)}</div>
+        <div class="shop-info-box">
+          <span class="shop-name">${item.name}</span>
+          <span class="shop-desc">${item.desc}</span>
+        </div>
+        <div class="shop-buy-btn" onclick="buyItem(${index})">
+          <span class="price">${item.sold ? '배급 완료' : item.price + 'c'}</span>
+          <span class="lbl">${item.sold ? '' : '크레딧 인계'}</span>
+        </div>
+      `;
+      shopGrid.appendChild(cardEl);
+    });
+  }
+
+  // 상점 물자 구매
+  window.buyItem = function(idx) {
+    const item = state.shopItems[idx];
+    if (item.sold) return;
+
+    if (state.credit < item.price) {
+      writeLog('배급 거부: 기업 크레딧 잔액이 부족합니다.', true);
+      return;
+    }
+    if (state.bag.length >= 8) {
+      writeLog('보급 실패: 요원의 가방 인벤토리가 가득 차 더 이상 보급품을 적재할 수 없습니다.', true);
+      return;
+    }
+
+    state.credit -= item.price;
+    item.sold = true;
+
+    // 가방으로 신규 물자 생성
+    const newItem = {
+      id: 'bought_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+      name: item.name,
+      type: item.type,
+      desc: item.desc,
+      detail: item.detail
+    };
+    if (item.stats) newItem.stats = item.stats;
+    if (item.type === 'ammo') newItem.count = 4; // 탄 box 기본 4발
+
+    state.bag.push(newItem);
+    writeLog(`보급 완료: [${item.name}]이(가) 가방 인벤토리로 이송되었습니다.`);
+    renderAll();
+  };
+
+  // 상점 품목 생성 (무작위 3종)
+  function generateShopItems() {
+    let pool = [...productPool];
+    let selected = [];
+    for (let i = 0; i < 3; i++) {
+      if (pool.length === 0) break;
+      const rIdx = Math.floor(Math.random() * pool.length);
+      const item = pool.splice(rIdx, 1)[0];
+      selected.push({
+        ...item,
+        sold: false
+      });
+    }
+    state.shopItems = selected;
+  }
+
+  // 상점 리롤
+  function rerollShop() {
+    if (state.credit < state.rerollPrice) {
+      writeLog('리롤 실패: 주파수 대역 요청을 위한 크레딧이 부족합니다.', true);
+      return;
+    }
+
+    state.credit -= state.rerollPrice;
+    state.rerollCount++;
+    state.rerollPrice = 3 + (state.rerollCount * 3); // 누진 비용 3, 6, 9...
+    
+    generateShopItems();
+    writeLog('단말 신호 재갱신: 새로운 보급 물자가 위성으로부터 단말기로 적재되었습니다.');
+    renderAll();
+  }
+
+  rerollBtn.addEventListener('click', rerollShop);
+
+  // 최초 초기화
+  generateShopItems();
+  renderAll();
+</script>
+
+</body>
+</html>

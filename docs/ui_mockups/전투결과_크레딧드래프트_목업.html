@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전투 결과 및 보상 드래프트 목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090e;
+    --panel: #0d121b;
+    --panel-border: #1a2436;
+    --line: #223046;
+    --ink: #e6edf4;
+    --muted: #62778f;
+    --safe: #00dcff; /* 일렉트릭 시안 */
+    --danger: #ff4500; /* 네온 오렌지 */
+    --gold: #ffd700; /* 일렉트릭 옐로우/골드 */
+    --dim: #1d2b3e;
+    --accent: #ff00ff; /* 네온 마젠타 */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(120% 90% at 50% 0%, #0c1322 0%, var(--bg) 70%);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 800px;
+  }
+
+  /* 시뮬레이터 제어부 */
+  .ctrl {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    width: 100%;
+  }
+  .ctrl label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .ctrl input[type="range"] {
+    flex: 1;
+    accent-color: var(--safe);
+    cursor: pointer;
+  }
+  .ctrl-val {
+    font-family: 'Oswald';
+    font-size: 18px;
+    color: var(--safe);
+    width: 50px;
+    text-align: right;
+  }
+  .btn {
+    font-family: 'Inter';
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #182231;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .btn:hover {
+    border-color: var(--safe);
+    background: var(--dim);
+  }
+
+  /* 메인 게임 화면 모방 */
+  .screen {
+    position: relative;
+    background: linear-gradient(180deg, #0e1624 0%, #06090f 100%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    min-height: 500px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* 상단 타이틀 및 모니터링 데칼 */
+  .header {
+    text-align: center;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 16px;
+  }
+  .header h2 {
+    font-family: 'Oswald';
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(230,237,244,0.2);
+  }
+  .header .subtitle {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* 효율성 및 등급 평가 패널 */
+  .eval-panel {
+    background: rgba(13, 18, 27, 0.85);
+    border: 1px solid var(--panel-border);
+    border-left: 4px solid var(--safe);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(4px);
+    transition: border-left-color 0.3s;
+  }
+  .eval-info {
+    flex: 1;
+  }
+  .eval-info .row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 6px;
+  }
+  .eval-lbl {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .eval-val {
+    font-family: 'Oswald';
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .eval-msg {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 6px;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  
+  .eval-grade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    border: 2px solid var(--safe);
+    background: rgba(0, 220, 255, 0.05);
+    transition: all 0.3s;
+  }
+  .eval-grade .g-letter {
+    font-family: 'Oswald';
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 1;
+    color: var(--safe);
+  }
+  .eval-grade .g-lbl {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* 하단 드래프트 패널 */
+  .draft-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .draft-title {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .card {
+    background: rgba(24, 34, 49, 0.4);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 230px;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 4px rgba(0,0,0,0.5));
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--muted);
+    transition: background 0.2s;
+  }
+  .card:hover {
+    background: rgba(24, 34, 49, 0.8);
+    border-color: var(--safe);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(0, 220, 255, 0.15);
+  }
+  .card:hover::before {
+    background: var(--safe);
+  }
+
+  /* 카드별 타입별 상징색 */
+  .card.ammo::before { background: var(--muted); }
+  .card.credit::before { background: var(--gold); }
+  .card.credit:hover::before { background: var(--gold); }
+  .card.credit:hover {
+    border-color: var(--gold);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.15);
+  }
+
+  .card-type {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  
+  .card-title {
+    font-family: 'Oswald';
+    font-size: 20px;
+    font-weight: 600;
+    margin: 8px 0;
+    text-align: center;
+    color: var(--ink);
+  }
+  .card.credit .card-title {
+    color: var(--gold);
+  }
+  
+  .card-desc {
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .card-credit-bonus {
+    font-size: 10px;
+    color: var(--gold);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  /* 오버레이 팝업 메인터넌스 */
+  .alert-box {
+    position: absolute;
+    inset: 0;
+    background: rgba(7, 9, 14, 0.95);
+    backdrop-filter: blur(8px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    text-align: center;
+    padding: 40px;
+  }
+  .alert-box.show {
+    display: flex;
+  }
+  .alert-box h3 {
+    font-family: 'Oswald';
+    font-size: 28px;
+    color: var(--safe);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .alert-box p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    max-width: 400px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- 시뮬레이터 컨트롤부 -->
+  <div class="ctrl">
+    <span class="tag" style="font-size:11px; color:var(--muted); font-weight:bold; letter-spacing:0.1em; margin-right:8px;">시뮬레이터 제어:</span>
+    <label for="effRange">탄약 효율성:</label>
+    <input type="range" id="effRange" min="20" max="100" value="82">
+    <span class="ctrl-val" id="effVal">82%</span>
+    <button class="btn" id="resetBtn">시뮬레이션 초기화</button>
+  </div>
+
+  <!-- 인게임 스크린 모방 -->
+  <div class="screen" id="mainScreen">
+    
+    <!-- 정산 오버레이 팝업 (선택 완료 시 노출) -->
+    <div class="alert-box" id="alertBox">
+      <h3 id="alertTitle">보상 수령 완료</h3>
+      <p id="alertDesc">요원의 생존 자원이 성공적으로 확보되었습니다. 다음 정박지(런 맵)로 진입합니다.</p>
+      <button class="btn" id="nextRunBtn" style="font-size:14px; padding:10px 24px;">작전 맵으로 복귀</button>
+    </div>
+
+    <!-- 1) 헤더 (전투 종료) -->
+    <div class="header">
+      <h2>Battle Completed</h2>
+      <div class="subtitle">작전 구역 정리 완료 - 정산 대기</div>
+    </div>
+
+    <!-- 2) 효율 및 등급 평가 패널 -->
+    <div class="eval-panel" id="evalPanel">
+      <div class="eval-info">
+        <div class="row">
+          <div>
+            <div class="eval-lbl">탄약 소모율</div>
+            <div class="eval-val" id="evalEfficiency">82%</div>
+          </div>
+          <div style="border-left: 1px solid var(--line); padding-left: 16px;">
+            <div class="eval-lbl">소모 탄량 / 명중 탄량</div>
+            <div class="eval-val" id="evalCount">11발 / 9발</div>
+          </div>
+        </div>
+        <div class="eval-msg" id="evalMessage">"자원 통제 수준 우수. 배급 한도가 임시 증액되었습니다. 귀하의 생존 효율은 자산 가치에 부합합니다."</div>
+      </div>
+      
+      <div class="eval-grade" id="evalGrade">
+        <span class="g-letter" id="gradeLetter">A</span>
+        <span class="g-lbl">배급 등급</span>
+      </div>
+    </div>
+
+    <!-- 3) 보상 드래프트 영역 -->
+    <div class="draft-container">
+      <div class="draft-title">획득 보상 드래프트 (이하 보급품 중 하나만 선택 승인)</div>
+      
+      <div class="cards-grid">
+        <!-- 카드 1 -->
+        <div class="card ammo" data-reward="ammoA">
+          <div class="card-icon">
+            <svg viewBox="0 0 64 64" width="64" height="64">
+              <g transform="rotate(45 32 32)">
+                <path d="M24 28 H40 V52 C40 54, 38 56, 36 56 H28 C26 56, 24 54, 24 52 Z" fill="#78909c" stroke="#101721" stroke-width="2.5"/>
+                <rect x="22" y="52" width="20" height="4" rx="1" fill="#455a64" stroke="#101721" stroke-width="2"/>
+                <path d="M24 28 C24 20, 32 8, 32 8 C32 8, 40 20, 40 28 Z" fill="#cfd8dc" stroke="#101721" stroke-width="2.5"/>
+                <path d="M28 20 C30 15, 32 12, 32 12" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+              </g>
+            </svg>
+          </div>
+          <span class="card-type">호환 탄환 A</span>
+          <span class="card-title">9mm FMJ</span>
+          <span class="card-desc">기본형 호환탄 x4<br><span style="color:var(--muted); font-size:10px;">약실/스택 적재용</span></span>
+        </div>
+        
+        <!-- 카드 2 -->
+        <div class="card ammo" data-reward="ammoB">
+          <div class="card-icon">
+            <svg viewBox="0 0 64 64" width="64" height="64">
+              <g transform="rotate(45 32 32)">
+                <path d="M24 28 H40 V52 C40 54, 38 56, 36 56 H28 C26 56, 24 54, 24 52 Z" fill="#546e7a" stroke="#101721" stroke-width="2.5"/>
+                <rect x="22" y="52" width="20" height="4" rx="1" fill="#37474f" stroke="#101721" stroke-width="2"/>
+                <path d="M24 28 C24 24, 26 22, 32 20 C38 22, 40 24, 40 28 Z" fill="#b0bec5" stroke="#101721" stroke-width="2.5"/>
+                <path d="M25.5 22 C28 17, 32 8, 32 8 C32 8, 36 17, 38.5 22 C32 20, 32 20, 25.5 22 Z" fill="#00dcff" stroke="#101721" stroke-width="2"/>
+                <path d="M32 8 V20" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+              </g>
+            </svg>
+          </div>
+          <span class="card-type">호환 탄환 B</span>
+          <span class="card-title">5.56mm AP</span>
+          <span class="card-desc">관통형 호환탄 x2<br><span style="color:var(--safe); font-size:10px;">◆ 관통 1층 관문 통과</span></span>
+        </div>
+        
+        <!-- 카드 3 -->
+        <div class="card credit" data-reward="credit">
+          <div class="card-icon">
+            <svg viewBox="0 0 64 64" width="64" height="64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="#ffd700" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
+              <path d="M32 8 L52 20 V44 L32 56 L12 44 V20 Z" fill="rgba(255, 215, 0, 0.1)" stroke="#ffd700" stroke-width="2.5"/>
+              <path d="M32 16 L44 23 V37 L32 44 L20 37 V23 Z" fill="none" stroke="#ffd700" stroke-width="1.5" opacity="0.7"/>
+              <path d="M36 26 C34 24, 28 24, 28 32 C28 40, 34 40, 36 38" fill="none" stroke="#ffd700" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="32" cy="8" r="3" fill="#ffffff"/>
+              <circle cx="32" cy="56" r="3" fill="#ffffff" opacity="0.7"/>
+            </svg>
+          </div>
+          <span class="card-type" style="color:var(--gold);">기업 배급</span>
+          <span class="card-title" id="creditVal">+35 Credits</span>
+          <span class="card-desc">단말기 충전식 크레딧<br><span class="card-credit-bonus" id="creditBonus">(+5 보너스 포함)</span></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const effRange = document.getElementById('effRange');
+  const effVal = document.getElementById('effVal');
+  const evalEfficiency = document.getElementById('evalEfficiency');
+  const evalCount = document.getElementById('evalCount');
+  const evalMessage = document.getElementById('evalMessage');
+  const gradeLetter = document.getElementById('gradeLetter');
+  const creditVal = document.getElementById('creditVal');
+  const creditBonus = document.getElementById('creditBonus');
+  
+  const evalPanel = document.getElementById('evalPanel');
+  const evalGrade = document.getElementById('evalGrade');
+  const alertBox = document.getElementById('alertBox');
+  const alertTitle = document.getElementById('alertTitle');
+  const alertDesc = document.getElementById('alertDesc');
+  const resetBtn = document.getElementById('resetBtn');
+  const nextRunBtn = document.getElementById('nextRunBtn');
+
+  // 효율에 따른 등급 및 데이터 테이블
+  function updateUI(eff) {
+    effVal.textContent = eff + '%';
+    evalEfficiency.textContent = eff + '%';
+
+    let grade = 'D';
+    let baseCredit = 5;
+    let bonusCredit = 0;
+    let msg = '';
+    let themeColor = '#ff4500'; // D등급 오렌지 계열
+    let totalSpent = Math.ceil(100 / (eff / 10)); // 역산으로 소모량 가공
+    let totalHit = 9;
+    
+    if (eff >= 95) {
+      grade = 'S';
+      baseCredit = 30;
+      bonusCredit = 20;
+      msg = '"합리적 자원 통제 확인. 기업 크레딧 배급 한도 증액 승인. 요원의 생존 가능성을 극도로 높게 평가합니다."';
+      themeColor = '#ffd700'; // S등급 골드
+      totalSpent = 9;
+    } else if (eff >= 80) {
+      grade = 'A';
+      baseCredit = 30;
+      bonusCredit = 5;
+      msg = '"자원 통제 수준 우수. 배급 한도가 임시 증액되었습니다. 귀하의 생존 효율은 자산 가치에 부합합니다."';
+      themeColor = '#00dcff'; // A등급 시안
+      totalSpent = 11;
+    } else if (eff >= 60) {
+      grade = 'B';
+      baseCredit = 20;
+      bonusCredit = 0;
+      msg = '"표준 전투 범주 내 소비율 확인. 기본 배급 절차를 실행합니다."';
+      themeColor = '#00dcff'; // B등급 시안
+      totalSpent = 14;
+    } else if (eff >= 40) {
+      grade = 'C';
+      baseCredit = 10;
+      bonusCredit = 0;
+      msg = '"탄약 사용 편차 누적 감지. 표준 배급량이 삭감 적용됩니다."';
+      themeColor = '#62778f'; // C등급 뮤트그레이
+      totalSpent = 20;
+    } else {
+      grade = 'D';
+      baseCredit = 5;
+      bonusCredit = 0;
+      msg = '"주의: 극심한 탄약 남용이 감지되었습니다. 시설 보급 한계치 임박. 탄약 절약이 강제 권고됩니다."';
+      themeColor = '#ff4500'; // D등급 레드/오렌지
+      totalSpent = 32;
+    }
+
+    evalCount.textContent = `${totalSpent}발 / ${totalHit}발`;
+    evalMessage.textContent = msg;
+    gradeLetter.textContent = grade;
+    
+    // 크레딧 텍스트 변경
+    let totalCredit = baseCredit + bonusCredit;
+    creditVal.textContent = `+${totalCredit} Credits`;
+    
+    if (bonusCredit > 0) {
+      creditBonus.textContent = `(+${bonusCredit} 보너스 포함)`;
+      creditBonus.style.display = 'block';
+    } else {
+      creditBonus.style.display = 'none';
+    }
+
+    // 테마 컬러 적용
+    evalPanel.style.borderLeftColor = themeColor;
+    evalGrade.style.borderColor = themeColor;
+    gradeLetter.style.color = themeColor;
+  }
+
+  // 슬라이더 조절 이벤트
+  effRange.addEventListener('input', (e) => {
+    updateUI(parseInt(e.target.value));
+  });
+
+  // 드래프트 카드 클릭 시 팝업 액션
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      const rewardType = card.getAttribute('data-reward');
+      let selectName = '';
+      
+      if (rewardType === 'ammoA') selectName = '9mm FMJ (실탄 x4)';
+      else if (rewardType === 'ammoB') selectName = '5.56mm AP (실탄 x2)';
+      else selectName = creditVal.textContent + ' (기업 크레딧)';
+
+      alertTitle.textContent = '보급 수령 승인';
+      alertDesc.innerHTML = `요원이 선택한 보상 <b>[${selectName}]</b>이(가) 인벤토리에 성공적으로 배급되었습니다.<br>시설 네트워크 단말이 닫히며 런 맵으로 복귀합니다.`;
+      alertBox.classList.add('show');
+    });
+  });
+
+  // 닫기/초기화 이벤트
+  nextRunBtn.addEventListener('click', () => {
+    alertBox.classList.remove('show');
+  });
+
+  resetBtn.addEventListener('click', () => {
+    effRange.value = 82;
+    updateUI(82);
+    alertBox.classList.remove('show');
+  });
+
+  // 초기화 실행
+  updateUI(82);
+</script>
+
+</body>
+</html>

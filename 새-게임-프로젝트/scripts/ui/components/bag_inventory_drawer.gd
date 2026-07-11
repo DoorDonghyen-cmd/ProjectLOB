@@ -5,6 +5,8 @@ extends PanelContainer
 ## 인벤토리 드로어 UI 컴포넌트 (가방/버림/소멸/소모품 탭 렌더링)
 ## ═══════════════════════════════════════════════════
 
+const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
+
 var parent_scene: Control
 var run_manager: RunManager
 var combat_manager: CombatManager
@@ -166,23 +168,7 @@ func _build_ui() -> void:
 	_drawer_item_grid.add_theme_constant_override("v_separation", 8)
 	item_scroll.add_child(_drawer_item_grid)
 	
-	var c_item1 := _create_consumable_card("✚ 응급 키트", "HP 회복", func():
-		overlay.add_combat_log("[color=#37e0ac]💊 소모품 즉발 사용: 응급 키트 효과가 격발되었습니다.[/color]")
-		toggle_drawer(false)
-	)
-	_drawer_item_grid.add_child(c_item1)
-	
-	var c_item2 := _create_consumable_card("◆ 파쇄액", "타겟 DEF −", func():
-		overlay.add_combat_log("[color=#37e0ac]💊 소모품 즉발 사용: 파쇄액 효과가 격발되었습니다.[/color]")
-		toggle_drawer(false)
-	)
-	_drawer_item_grid.add_child(c_item2)
-	
-	var c_item3 := _create_consumable_card("≈ 둔화 지뢰", "HP 둔화 장치", func():
-		overlay.add_combat_log("[color=#37e0ac]💊 소모품 즉발 사용: 둔화 지뢰 효과가 격발되었습니다.[/color]")
-		toggle_drawer(false)
-	)
-	_drawer_item_grid.add_child(c_item3)
+	# 전투 진입 시 동적으로 가방 데이터를 로드하므로 초기 더미 데이터 삭제
 	
 	# 탄환 그리드 스크롤
 	var drawer_scroll := ScrollContainer.new()
@@ -242,6 +228,11 @@ func _switch_drawer_tab_idx(tab_idx: int) -> void:
 
 func refresh_ammo_drawer() -> void:
 	_refresh_drawer_stack()
+	
+	if _active_drawer_tab == 3:
+		_refresh_consumables_drawer()
+		return
+		
 	if not is_instance_valid(_drawer_inventory_grid):
 		return
 		
@@ -548,3 +539,58 @@ func _on_drawer_undo_pressed() -> void:
 
 func _on_drawer_confirm_pressed() -> void:
 	overlay._on_drawer_confirm_pressed()
+
+# ── 전투 씬 가방 소모품 동적 연동 및 격발 ──
+
+func _refresh_consumables_drawer() -> void:
+	if not is_instance_valid(_drawer_item_grid):
+		return
+		
+	for child in _drawer_item_grid.get_children():
+		child.queue_free()
+		
+	var has_consumable := false
+	if run_manager and run_manager.backpack_items:
+		for i in range(run_manager.backpack_items.size()):
+			var item = run_manager.backpack_items[i]
+			if item is ConsumableItem:
+				has_consumable = true
+				var idx = i
+				var card = _create_consumable_card(
+					"%s %s" % [item.icon_text, item.display_name],
+					item.description,
+					func(): _on_use_consumable_in_combat(idx)
+				)
+				_drawer_item_grid.add_child(card)
+				
+	if not has_consumable:
+		var empty_lbl = parent_scene.make_label("🎒 가방에 사용 가능한 소모품이 없습니다.", 12, parent_scene.C_DIM)
+		_drawer_item_grid.add_child(empty_lbl)
+
+func _on_use_consumable_in_combat(idx: int) -> void:
+	if idx < 0 or idx >= run_manager.backpack_items.size():
+		return
+	var item = run_manager.backpack_items[idx]
+	if not (item is ConsumableItem):
+		return
+		
+	# 1. 실제 전투 효과 격발
+	if item.type == "heal":
+		# 아머(HP 버퍼) 보급
+		run_manager.hp_buffer = mini(run_manager.hp_buffer + 1, 3)
+		overlay.add_combat_log("[color=#37e0ac]💊 소모품 격발: %s 사용! HP 버퍼 +1 증가. (현재 버퍼: %d)[/color]" % [item.display_name, run_manager.hp_buffer])
+	elif item.type == "shred":
+		# 현재 조준 대상 적 수비(DEF) 2 차감
+		var target_enemy = combat_manager.enemy
+		if target_enemy and not target_enemy.is_dead():
+			target_enemy.current_def = max(target_enemy.current_def - 2, 0)
+			overlay.add_combat_log("[color=#a878e8]💊 소모품 격발: %s 투척! 적 %s의 방어막(DEF) 2 차감. (남은 DEF: %d)[/color]" % [item.display_name, target_enemy.data.display_name, target_enemy.current_def])
+		else:
+			overlay.add_combat_log("[color=#ff6666]⚠️ 격발 실패: 전투장에 생존해 있는 타겟 적이 없습니다.[/color]")
+			
+	# 2. 전역 가방 데이터에서 소모품 소진 제거
+	run_manager.remove_from_backpack_at(idx)
+	
+	# 3. 드로어 상태 갱신 및 닫기
+	_refresh_consumables_drawer()
+	toggle_drawer(false)

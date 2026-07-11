@@ -21,6 +21,8 @@ var equipped_parts: Array[PartData] = []        # 현재 장착된 총기 파츠
 var hold_part: PartData = null                  # 임시 보관 파츠 (최대 1칸)
 var hp_buffer: int = 1
 var credits: int = 0
+const BACKPACK_CAPACITY: int = 8
+var backpack_items: Array[Resource] = []
 var current_floor: int = 1
 var current_route_type: String = "stairs" # "stairs", "air_duct", "shaft"
 var has_chamber_polish: bool = false     # 약실 소탕 리로드 면제 버프
@@ -82,6 +84,7 @@ func start_new_run(gun: GunData, basic_bullet: BulletData, ap_bullet: BulletData
 	current_floor = 1
 	hp_buffer = 1 + meta_hp_armor_lvl
 	credits = 0
+	backpack_items.clear()
 	deck.clear()
 	discarded_bullets.clear()
 	active_relics.clear()
@@ -620,3 +623,28 @@ func swap_equipped_parts(idx1: int, idx2: int) -> void:
 	var temp = equipped_parts[idx1]
 	equipped_parts[idx1] = equipped_parts[idx2]
 	equipped_parts[idx2] = temp
+
+
+# ── 가방 인벤토리 및 크레딧 조작 제어 ──
+
+## 가방의 빈 슬롯이 있으면 아이템(개조 파츠/소모품/탄약박스 등)을 보관한다. 성공 시 true, 슬롯 가득 찬 경우 false 반환.
+func add_to_backpack(item: Resource) -> bool:
+	if backpack_items.size() < BACKPACK_CAPACITY:
+		backpack_items.append(item)
+		return true
+	return false
+
+## 지정 인덱스의 아이템을 가방에서 추출 및 제거하여 반환한다.
+func remove_from_backpack_at(index: int) -> Resource:
+	if index >= 0 and index < backpack_items.size():
+		var item = backpack_items[index]
+		backpack_items.remove_at(index)
+		return item
+	return null
+
+## 크레딧을 소비한다. 잔액이 충족되면 차감 후 true 반환, 부족하면 false 반환.
+func spend_credits(amount: int) -> bool:
+	if credits >= amount:
+		credits -= amount
+		return true
+	return false
