@@ -25,11 +25,17 @@
 | 2026-07-06 | **V2 전투 UI 컴포넌트 분할 리팩토링** | `c3f9c023` | `combat_overlay_v2.gd` 거대 UI 스크립트(God Object)를 4대 독립 서브 뷰 컴포넌트(`CylinderView`, `EnemyTrackView`, `BagInventoryDrawer`, `RewardDraftPanel`)로 분할하여 결합도 하향 및 확장성 확보. 빌드본 호환성 및 보상 드래프트 락 버그 해결 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/c3f9c023-2d6f-4c73-86ee-661f3c2221e8/walkthrough.md) |
 | 2026-07-06 | **Phase 4: Visual & Map 연출 고도화** | `2a3802e2` | 총기 격발 반동 및 액션바 덜컹임 트윈, 탄창 실린더 Elastic 바운스/회전, 몬스터 대기 숨쉬기 및 이동 뒤뚱거림 모션 구현. 격발(Muzzle Flash) 및 피격(Blood Spurt) 2D 파티클 이펙트 개발자 팝업 숏컷 연동 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/2a3802e2-7bad-40e1-a189-cac0623ac593/walkthrough.md) |
 | 2026-07-07 | **탄환 반환 플로팅 UI 및 개발자 테스트 3열 개편** | `2a7f1e25` | 유효 적중(damage > 0) 시 몬스터 옆에 탄환 아이콘 및 ♻ 반환 마크 플로팅 연출 적용, 개발자 팝업 3열 GridContainer 슬롯 정렬 개편(Vector2(720, 380)), 무기 캐비닛 숏컷 및 널 크래시(Nil current_gun) 오류 해결 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/2a7f1e25-5d85-42cc-a209-fa37ce653956/walkthrough.md) |
+| 2026-07-12 | **맵 · 레벨 구조 개정안 GDD 반영** | `ffd285f8` | 15노드(전투 10, 상점 3, 히든 2) 3구역 구조, 보상 드래프트 방안 A, 히든 노드 위험 완충, 매판 종료 시 크레딧 이월/작전 보급금 보너스 정책 기획서 공식 반영 완료 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/ffd285f8-d243-4078-8f8b-4340ac3f48b8/walkthrough.md) |
+| 2026-07-12 | **맵 · 레벨 구조 및 경제 개정 기획 인게임 연동 구현** | `16ba329e` | 15노드 맵 제너레이터 개편, 맵 UI 15층 확장, 보상 드래프트 3탄환 교체(Swap) 기능, 스타팅 보증금/금고 크레딧 이월, 히든 노드 안전 완충망 구현 완료 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/16ba329e-a924-4c77-947c-907545fa1730/walkthrough.md) |
+| 2026-07-12 | **작전 침투 구역 순차 해금 및 노드 완결 구조 구현** | `afaad6f3` | 5개 작전 침투 구역(섹션 A~E)의 순차 해금 조건 및 10~15층 완결 노드 구조를 인게임 진행과 로비 UI에 완전히 연동 완료, 타이틀 ➡️ 구역 선택 ➡️ 요원 준비실 UI/UX 전환 흐름 개편 적용 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/walkthrough.md) |
 
 ---
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session afaad6f3-77c6-4268-acfb-c7f4a2acdd2c Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/walkthrough.md)
+* [Session ffd285f8-d243-4078-8f8b-4340ac3f48b8 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/ffd285f8-d243-4078-8f8b-4340ac3f48b8/walkthrough.md)
+* [Session 16ba329e-a924-4c77-947c-907545fa1730 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/16ba329e-a924-4c77-947c-907545fa1730/walkthrough.md)
 * [Session 2a7f1e25-5d85-42cc-a209-fa37ce653956 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/2a7f1e25-5d85-42cc-a209-fa37ce653956/walkthrough.md)
 * [Session 2a3802e2-7bad-40e1-a189-cac0623ac593 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/2a3802e2-7bad-40e1-a189-cac0623ac593/walkthrough.md)
 * [Session c3f9c023-2d6f-4c73-86ee-661f3c2221e8 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/c3f9c023-2d6f-4c73-86ee-661f3c2221e8/walkthrough.md)

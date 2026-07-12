@@ -15,6 +15,7 @@ var _lore_fragment_label: Label
 var _meta_backpack_btn: Button
 var _meta_hp_armor_btn: Button
 var _meta_discount_btn: Button
+var _meta_vault_btn: Button
 
 var _dev_test_panel: PanelContainer
 
@@ -116,6 +117,10 @@ func _build_ui() -> void:
 	_meta_discount_btn.custom_minimum_size = Vector2(0, 36)
 	shop_vbox.add_child(_meta_discount_btn)
 
+	_meta_vault_btn = parent_scene.make_button("전술 금고 해금 (30 Cr)", _on_upgrade_vault_pressed, parent_scene.C_PANEL)
+	_meta_vault_btn.custom_minimum_size = Vector2(0, 36)
+	shop_vbox.add_child(_meta_vault_btn)
+
 	# 메타 해금 상점 아래의 무기 및 렐릭 설정란은 로드아웃 오버레이로 통합되어 이곳에서 제거되었습니다.
 
 
@@ -145,6 +150,23 @@ func _refresh_shop_ui() -> void:
 		_meta_discount_btn.text = "암시장 커넥션 해금 (30 Cr)"
 		_meta_discount_btn.disabled = RunManager.meta_credits < 30
 
+	var vault_cost := 0
+	match RunManager.meta_vault_lvl:
+		0: vault_cost = 30
+		1: vault_cost = 45
+		2: vault_cost = 60
+		
+	if RunManager.meta_vault_lvl >= 3:
+		_meta_vault_btn.text = "전술 금고 (크레딧 이월) Lv.3 [최대 레벨]"
+		_meta_vault_btn.disabled = true
+	else:
+		_meta_vault_btn.text = "전술 금고 (크레딧 이월) Lv.%d -> Lv.%d (%d Cr)" % [
+			RunManager.meta_vault_lvl,
+			RunManager.meta_vault_lvl + 1,
+			vault_cost
+		]
+		_meta_vault_btn.disabled = RunManager.meta_credits < vault_cost
+
 
 func _on_upgrade_backpack_pressed() -> void:
 	if RunManager.upgrade_meta_backpack():
@@ -161,8 +183,13 @@ func _on_upgrade_discount_pressed() -> void:
 		_refresh_shop_ui()
 
 
+func _on_upgrade_vault_pressed() -> void:
+	if RunManager.upgrade_meta_vault():
+		_refresh_shop_ui()
+
+
 func _on_start_run_pressed() -> void:
-	parent_scene.show_loadout_screen()
+	parent_scene.show_section_selector()
 
 
 func _on_dev_test_pressed() -> void:
@@ -407,13 +434,16 @@ func _build_dev_test_panel() -> void:
 		if not RunManager.meta_unlocked_weapons.has("tempo"):
 			RunManager.meta_unlocked_weapons.append("tempo")
 		
+		# 모든 작전 구역 해금 연동
+		RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"]
+		
 		# 기밀 정보 파편 19개 수집 상태 프리셋 (엔딩 및 도감 테스트 가시화)
 		RunManager.meta_lore_fragments.clear()
 		for i in range(1, 20):
 			RunManager.meta_lore_fragments.append(i)
 		
 		# 준비실을 열기 전에 알림
-		print("디버그: TDC 10개 가산, 2개 무기 해금 및 기밀 파편 19개(1~19F)가 테스트 프리셋되었습니다.")
+		print("디버그: TDC 10개 가산, 2개 무기 해금, 모든 작전 구역 해금 및 기밀 파편 19개(1~19F)가 테스트 프리셋되었습니다.")
 		_refresh_shop_ui()
 		parent_scene.trigger_loadout_test_ui()
 	, parent_scene.C_WARNING)
@@ -430,6 +460,67 @@ func _build_dev_test_panel() -> void:
 	btn_matrix.add_theme_font_size_override("font_size", 11)
 	btn_matrix.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_matrix)
+	
+	# 7. 🗺️ 모든 작전 구역 해금 디버그 숏컷
+	var btn_unlock_zones = parent_scene.make_button("🔓 모든 작전 지역 해금", func():
+		RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"]
+		print("디버그: 모든 작전 침투 구역 해금 완료!")
+	, parent_scene.C_WARNING)
+	btn_unlock_zones.custom_minimum_size = Vector2(0, 36)
+	btn_unlock_zones.add_theme_font_size_override("font_size", 11)
+	btn_unlock_zones.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_unlock_zones)
+	
+	# 8. 🔒 작전 구역 초기화 디버그 숏컷
+	var btn_lock_zones = parent_scene.make_button("🔒 작전 구역 초기화", func():
+		RunManager.meta_unlocked_sections = ["section_a"]
+		print("디버그: 작전 구역 초기화 완료 (지하 주차장만 활성)!")
+	, parent_scene.C_WARNING)
+	btn_lock_zones.custom_minimum_size = Vector2(0, 36)
+	btn_lock_zones.add_theme_font_size_override("font_size", 11)
+	btn_lock_zones.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_lock_zones)
+	
+	# ── 보스 전투 테스트 숏컷 ──
+	# 보스 #1: 디렉터 강 (구역 1 보스)
+	var btn_boss1 = parent_scene.make_button("🔴 보스: 디렉터 강", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_boss_test("boss_director")
+	, parent_scene.C_DANGER)
+	btn_boss1.custom_minimum_size = Vector2(0, 36)
+	btn_boss1.add_theme_font_size_override("font_size", 11)
+	btn_boss1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_boss1)
+	
+	# 보스 #2: 세라프 프로토콜 (구역 2 보스)
+	var btn_boss2 = parent_scene.make_button("🟡 보스: 세라프", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_boss_test("boss_seraph")
+	, parent_scene.C_DANGER)
+	btn_boss2.custom_minimum_size = Vector2(0, 36)
+	btn_boss2.add_theme_font_size_override("font_size", 11)
+	btn_boss2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_boss2)
+	
+	# 보스 #3: 실험체 Ω (구역 3 보스)
+	var btn_boss3 = parent_scene.make_button("🟠 보스: 실험체 Ω", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_boss_test("boss_omega")
+	, parent_scene.C_DANGER)
+	btn_boss3.custom_minimum_size = Vector2(0, 36)
+	btn_boss3.add_theme_font_size_override("font_size", 11)
+	btn_boss3.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_boss3)
+	
+	# 최종 보스: L.O.B 코어
+	var btn_boss4 = parent_scene.make_button("🔵 최종: L.O.B 코어", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_boss_test("boss_lob_core")
+	, parent_scene.C_DANGER)
+	btn_boss4.custom_minimum_size = Vector2(0, 36)
+	btn_boss4.add_theme_font_size_override("font_size", 11)
+	btn_boss4.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_boss4)
 	
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL

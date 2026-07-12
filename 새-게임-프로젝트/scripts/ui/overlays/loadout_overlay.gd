@@ -20,6 +20,7 @@ var _gun_stance_hunter: GunData
 
 # ── 선택 상태 변수 ──
 var selected_weapon_key: String = "workhorse"
+var selected_section_key: String = "section_a"
 var active_relics := {
 	"gloves": false,
 	"valve": false,
@@ -29,6 +30,7 @@ var active_relics := {
 # ── UI 노드 레퍼런스 ──
 var _weapon_cards: Dictionary = {}
 var _relic_cards: Dictionary = {}
+var _target_zone_label: Label
 
 var _gun_icon_rect: TextureRect
 var _cap_slots_hbox: HBoxContainer
@@ -40,6 +42,7 @@ var _lbl_calibers: Label
 var _lbl_passive_desc: Label
 var _lbl_penalty_desc: Label
 var _btn_start_run: Button
+var _bonus_popup: PanelContainer
 
 # ── 테마 컬러 ──
 const C_BG_CHARCOAL := Color(0.07, 0.07, 0.08, 0.98)
@@ -50,6 +53,15 @@ const C_NEON_GOLD_DIM := Color(0.83, 0.69, 0.22, 0.25)
 const C_ALERT_RED := Color(1.0, 0.27, 0.27, 1.0)
 const C_ALERT_RED_BG := Color(1.0, 0.27, 0.27, 0.08)
 const C_BUFF_GREEN := Color(0.0, 1.0, 0.0, 1.0)
+
+# ── 작전 구역 프로필 데이터 맵 ──
+const SECTION_PROFILES := {
+	"section_a": {"name": "지하 주차장", "emoji": "🚗", "desc": "10층 구조 - 입문 난이도"},
+	"section_b": {"name": "사무동 하층", "emoji": "🏢", "desc": "12층 구조 - 초급 난이도"},
+	"section_c": {"name": "연구소 중층", "emoji": "🧪", "desc": "12층 구조 - 중급 난이도"},
+	"section_d": {"name": "펜트하우스", "emoji": "🌇", "desc": "15층 구조 - 상급 난이도"},
+	"section_e": {"name": "무한 루프", "emoji": "♾️", "desc": "15층 구조 - 도전 난이도"}
+}
 
 # ── 총기 프로필 데이터 맵 (GDD/HTML 기반 정합성 스펙) ──
 const WEAPON_PROFILES := {
@@ -190,6 +202,7 @@ func initialize(p_scene: Control, rm: RunManager) -> void:
 	add_theme_stylebox_override("panel", style)
 	
 	_build_ui()
+	_build_starting_bonus_popup()
 
 
 func _build_ui() -> void:
@@ -215,6 +228,9 @@ func _build_ui() -> void:
 	
 	var title_lbl = parent_scene.make_label("🛠️ AGENT TACTICAL LOADOUT", 20, C_NEON_GOLD)
 	header_hbox.add_child(title_lbl)
+	
+	_target_zone_label = parent_scene.make_label(" [TARGET: 지하 주차장]", 14, parent_scene.C_TEXT)
+	header_hbox.add_child(_target_zone_label)
 	
 	# 스캔라인 디스플레이 연출용 실선
 	var scan_line = ColorRect.new()
@@ -369,6 +385,7 @@ func _build_ui() -> void:
 				_toggle_relic(r_key)
 		)
 
+
 	# B) 우측 패널 (전술 상세 명세 - 62% 폭)
 	var right_panel := PanelContainer.new()
 	_apply_custom_panel_style(right_panel, C_PANEL_BG, Color(0.2, 0.2, 0.25))
@@ -513,12 +530,18 @@ func _build_ui() -> void:
 
 	# 초기 바인딩 시점 트리거
 	_select_weapon("workhorse")
+	_select_section(selected_section_key)
 
 
 ## 런타임에 오버레이를 열고 초기 바인딩 수행
-func open_loadout_overlay() -> void:
+func open_loadout_overlay(section_key: String) -> void:
 	visible = true
 	_select_weapon(selected_weapon_key)
+	_select_section(section_key)
+	
+	if RunManager.starting_bonus_available and _bonus_popup:
+		_bonus_popup.visible = true
+		_btn_start_run.disabled = true
 
 
 ## 무기 선택 로직
@@ -660,3 +683,103 @@ func _apply_custom_panel_style(panel: PanelContainer, bg: Color, border: Color) 
 	style.corner_radius_top_left = 4
 	style.corner_radius_top_right = 4
 	panel.add_theme_stylebox_override("panel", style)
+
+func _build_starting_bonus_popup() -> void:
+	_bonus_popup = PanelContainer.new()
+	_bonus_popup.custom_minimum_size = Vector2(460, 240)
+	_bonus_popup.visible = false
+	
+	add_child(_bonus_popup)
+	
+	_bonus_popup.set_anchors_preset(Control.PRESET_CENTER)
+	_bonus_popup.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_bonus_popup.grow_vertical = Control.GROW_DIRECTION_BOTH
+	
+	_apply_custom_panel_style(_bonus_popup, Color(0.08, 0.08, 0.12, 0.98), C_NEON_GOLD)
+	
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	_bonus_popup.add_child(margin)
+	
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(vbox)
+	
+	var title = parent_scene.make_label("📥 본부 작전 스타팅 보증 보급", 18, C_NEON_GOLD)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+	
+	var desc = parent_scene.make_label("이전 작전의 구역 1 돌파를 격려하여\n본부에서 다음 보너스 중 1개를 지원합니다.", 12, parent_scene.C_TEXT)
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(desc)
+	
+	var btn_hbox := HBoxContainer.new()
+	btn_hbox.add_theme_constant_override("separation", 16)
+	btn_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(btn_hbox)
+	
+	var btn_cr = parent_scene.make_button("💳 보급금 (+50 Cr)", _on_bonus_credits_selected, parent_scene.C_SUCCESS)
+	btn_cr.custom_minimum_size = Vector2(180, 44)
+	btn_cr.add_theme_font_size_override("font_size", 12)
+	btn_hbox.add_child(btn_cr)
+	
+	var btn_part = parent_scene.make_button("🛠️ 무작위 1티어 파츠", _on_bonus_part_selected, parent_scene.C_WARNING)
+	btn_part.custom_minimum_size = Vector2(180, 44)
+	btn_part.add_theme_font_size_override("font_size", 12)
+	btn_hbox.add_child(btn_part)
+
+func _on_bonus_credits_selected() -> void:
+	if run_manager:
+		run_manager.credits += 50
+		print("디버그: 스타팅 보증 크레딧 +50 Cr 획득!")
+	_close_bonus_popup()
+
+func _on_bonus_part_selected() -> void:
+	if run_manager:
+		var path := "res://resources/parts/"
+		var dir := DirAccess.open(path)
+		var parts_pool: Array[PartData] = []
+		if dir:
+			dir.list_dir_begin()
+			var file_name = dir.get_next()
+			while file_name != "":
+				if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
+					if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
+						var clean_name = file_name.replace(".remap", "")
+						var res = load(path + clean_name)
+						if res is PartData:
+							parts_pool.append(res)
+				file_name = dir.get_next()
+			dir.list_dir_end()
+			
+		if not parts_pool.is_empty():
+			var chosen = parts_pool.pick_random().duplicate() as PartData
+			var success = run_manager.add_to_backpack(chosen)
+			if success:
+				print("디버그: 스타팅 보증 무작위 1티어 파츠 획득! (%s)" % chosen.display_name)
+			else:
+				run_manager.credits += 50
+				print("디버그: 가방이 가득 차 파츠 대신 +50 Cr로 보증금이 대체 지급되었습니다.")
+		else:
+			run_manager.credits += 50
+			print("디버그: 파츠 풀이 비어있어 +50 Cr로 대체 지급되었습니다.")
+	_close_bonus_popup()
+
+func _close_bonus_popup() -> void:
+	if _bonus_popup:
+		_bonus_popup.visible = false
+	RunManager.starting_bonus_available = false
+	_refresh_stats_ui()
+
+
+## 🗺️ 작전 구역 설정 연동
+func _select_section(sec_key: String) -> void:
+	selected_section_key = sec_key
+	var profile = SECTION_PROFILES.get(sec_key, {"name": sec_key})
+	if _target_zone_label:
+		_target_zone_label.text = " [TARGET: %s]" % profile.name
+

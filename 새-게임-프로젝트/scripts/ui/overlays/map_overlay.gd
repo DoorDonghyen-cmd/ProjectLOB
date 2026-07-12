@@ -21,6 +21,7 @@ var _node_buttons: Dictionary = {}
 
 var _scan_hint_panel: PanelContainer
 var _scan_hint_lbl: Label
+var _hp_buffer_label: Label
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
@@ -38,8 +39,16 @@ func initialize(p_scene: Control, rm: RunManager) -> void:
 	offset_bottom = 0
 	custom_minimum_size = Vector2(960, 540)
 	
+	# 2차 폴리싱: 네온 블루 보더가 가미된 홀로그램 스타일 패널
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.04, 0.04, 0.08, 0.95)
+	style.bg_color = Color(0.02, 0.04, 0.08, 0.96)
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.border_color = Color(0.0, 0.55, 1.0, 0.8) # 네온 블루 테두리
+	style.shadow_color = Color(0.0, 0.55, 1.0, 0.15)
+	style.shadow_size = 12
 	add_theme_stylebox_override("panel", style)
 	
 	_build_ui()
@@ -70,13 +79,29 @@ func _build_ui() -> void:
 	main_vbox.add_child(map_header_hbox)
 
 	_map_floor_label = parent_scene.make_label("빌딩 침투 지도 (1층)", 24, parent_scene.C_ACCENT)
-	_map_floor_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map_header_hbox.add_child(_map_floor_label)
+	
+	# HP 아머 다이아몬드 게이지 컨테이너 (HBox 헤더 우측 및 층수 라벨 사이에 배치)
+	var hp_hbox := HBoxContainer.new()
+	hp_hbox.alignment = BoxContainer.ALIGNMENT_END
+	hp_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hp_hbox.add_theme_constant_override("separation", 6)
+	map_header_hbox.add_child(hp_hbox)
+	
+	var hp_title_lbl: Label = parent_scene.make_label("HP ARMOR", 11, parent_scene.C_DIM)
+	hp_hbox.add_child(hp_title_lbl)
+	
+	_hp_buffer_label = parent_scene.make_label("◆ ◆ ◇", 16, parent_scene.C_DANGER)
+	hp_hbox.add_child(_hp_buffer_label)
+	
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(24, 0)
+	hp_hbox.add_child(spacer)
 	
 	var btn_exit_run: Button = parent_scene.make_button("❌ 작전 포기", _on_exit_run_pressed, parent_scene.C_DANGER)
 	btn_exit_run.custom_minimum_size = Vector2(120, 36)
 	btn_exit_run.add_theme_font_size_override("font_size", 13)
-	map_header_hbox.add_child(btn_exit_run)
+	hp_hbox.add_child(btn_exit_run)
 
 	var desc: Label = parent_scene.make_label("다음 진입할 구역(방 노드)을 선택하세요.", 15, parent_scene.C_DIM)
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -148,6 +173,16 @@ func show_map_screen() -> void:
 	visible = true
 	_map_floor_label.text = "빌딩 침투 지도 (%d층)" % run_manager.current_floor
 	
+	# 2차 폴리싱: HP 아머 다이아몬드 HUD 갱신 (예: ◆ ◆ ◇)
+	if _hp_buffer_label:
+		var hp_text := ""
+		for i in range(3): # 최대 3칸 기준 시각화
+			if i < run_manager.hp_buffer:
+				hp_text += "◆ "
+			else:
+				hp_text += "◇ "
+		_hp_buffer_label.text = hp_text
+	
 	# Clear previous rows
 	for child in _floors_vbox.get_children():
 		child.queue_free()
@@ -155,7 +190,8 @@ func show_map_screen() -> void:
 	_node_buttons.clear()
 	
 	var start_floor = 1
-	var end_floor = 10
+	var end_floor = 15
+	var active_floor_row: Control = null
 	
 	# Loop from end_floor down to start_floor (top-down visual stacking)
 	for f in range(end_floor, start_floor - 1, -1):
@@ -163,6 +199,9 @@ func show_map_screen() -> void:
 		floor_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		floor_row.add_theme_constant_override("separation", 24)
 		_floors_vbox.add_child(floor_row)
+		
+		if f == run_manager.current_floor:
+			active_floor_row = floor_row
 		
 		# Floor Indicator Label Panel
 		var floor_panel := PanelContainer.new()
@@ -191,7 +230,7 @@ func show_map_screen() -> void:
 		var fp_label: Label = parent_scene.make_label("%dF" % f, 18, parent_scene.C_TEXT)
 		if f == run_manager.current_floor:
 			fp_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
-		elif f == 5 or f == 10:
+		elif f == 15:
 			fp_label.text = "%dF\nBOSS" % f
 			fp_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
 		else:
@@ -225,16 +264,40 @@ func show_map_screen() -> void:
 			normal_style.corner_radius_top_right = 6
 			
 			if f == run_manager.current_floor:
-				normal_style.bg_color = parent_scene.C_PANEL.darkened(0.2)
-				normal_style.border_color = parent_scene.C_WARNING if node.type_name.contains("보스") else parent_scene.C_ACCENT
+				normal_style.bg_color = parent_scene.C_PANEL.darkened(0.3)
+				
+				# 2차 폴리싱: 통로 유형 및 노드 특성에 따른 전술적 네온 테두리 지정
+				var border_col: Color = parent_scene.C_ACCENT
+				if node.type_name.contains("보스"):
+					border_col = parent_scene.C_DANGER
+				elif node.connected_routes.has("shaft"):
+					border_col = parent_scene.C_DANGER
+				elif node.connected_routes.has("air_duct"):
+					border_col = parent_scene.C_WARNING
+				elif node.connected_routes.has("stairs"):
+					border_col = parent_scene.C_SUCCESS
+					
+				normal_style.border_color = border_col
 				normal_style.border_width_bottom = 2
 				normal_style.border_width_top = 2
 				normal_style.border_width_left = 2
 				normal_style.border_width_right = 2
+				
+				# 네온 발광(Glow) 효과 모사
+				normal_style.shadow_color = Color(border_col.r, border_col.g, border_col.b, 0.25)
+				normal_style.shadow_size = 6
+				
 				btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 				btn.pressed.connect(func(): _on_node_selected(node))
 			else:
 				normal_style.bg_color = parent_scene.C_PANEL_DARK
+				# 비활성 노드는 차분하고 얇은 전술 외곽선으로 시각 정돈
+				normal_style.border_color = Color(0.12, 0.18, 0.26, 0.4)
+				normal_style.border_width_bottom = 1
+				normal_style.border_width_top = 1
+				normal_style.border_width_left = 1
+				normal_style.border_width_right = 1
+				
 				btn.disabled = true
 				if f < run_manager.current_floor:
 					btn.modulate = Color(0.4, 0.4, 0.4, 0.6) # Past floors
@@ -248,6 +311,7 @@ func show_map_screen() -> void:
 			if f == run_manager.current_floor:
 				var hover_style := normal_style.duplicate() as StyleBoxFlat
 				hover_style.bg_color = parent_scene.C_PANEL
+				hover_style.shadow_size = 10 # 호버 시 발광 증폭
 				btn.add_theme_stylebox_override("hover", hover_style)
 				btn.add_theme_stylebox_override("pressed", hover_style)
 			
@@ -287,34 +351,60 @@ func show_map_screen() -> void:
 			content_vbox.add_child(desc_lbl)
 			
 	_lines_drawer.queue_redraw()
+	
+	# 수직 카메라 스크롤 트윈 적용
+	if active_floor_row != null:
+		await parent_scene.get_tree().process_frame
+		# 타겟 스크롤 계산 (뷰포트 중앙에 활성 행이 정렬되도록 보정)
+		var target_y = active_floor_row.position.y - (_map_scroll.size.y / 2.0) + (active_floor_row.size.y / 2.0)
+		var max_scroll = _map_scroll.get_v_scroll_bar().max_value - _map_scroll.size.y
+		target_y = clamp(target_y, 0, max_scroll)
+		
+		# 트윈 애니메이션
+		var tween = parent_scene.create_tween()
+		tween.tween_property(_map_scroll, "scroll_vertical", int(target_y), 0.6)\
+			.set_trans(Tween.TRANS_SINE)\
+			.set_ease(Tween.EASE_OUT)
+
 
 
 func _on_node_selected(node: RunManager.RunNode) -> void:
 	_selected_node = node
 	_map_route_selector.visible = true
 	
-	# 통로 버튼들
+	# 통로 버튼들 초기화
 	for child in _map_route_container.get_children():
 		child.queue_free()
+		
+	# 상단에 선택된 노드 타이틀과 기본 정보 추가
+	var node_info_lbl := Label.new()
+	node_info_lbl.text = "🎯 진입 타겟: %s\n(%s)" % [node.type_name, node.description]
+	node_info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	node_info_lbl.add_theme_font_size_override("font_size", 12)
+	node_info_lbl.add_theme_color_override("font_color", parent_scene.C_DIM)
+	_map_route_container.add_child(node_info_lbl)
 		
 	for route in node.connected_routes:
 		var r_name := ""
 		var color: Color = parent_scene.C_ACCENT
 		match route:
 			"stairs":
-				r_name = "비상계단 (Stairs) - 무난함"
+				r_name = "🚶 비상계단 (Stairs)\n안정적 1F 상승 · 표준 대치 (리스크 없음)"
 				color = parent_scene.C_SUCCESS
 			"air_duct":
-				r_name = "환기구 (Air Duct) - [패널티] 시작 거리 -2"
+				r_name = "🕳️ 환기구 (Air Duct)\n은밀 침투 · 전투 횟수 감소 [🚨 적 시작 거리 -2m]"
 				color = parent_scene.C_WARNING
 			"shaft":
-				r_name = "엘리베이터 샤프트 (Shaft) - [위험] 버퍼 소실 or 초근접"
+				r_name = "⚡ 엘리베이터 샤프트 (Shaft)\n고속 스킵 [💥 30% 확률로 HP 버퍼 1 소실 또는 초근접 대치]"
 				color = parent_scene.C_DANGER
 				
 		var b := route
 		var btn: Button = parent_scene.make_button(r_name, func(): _on_route_selected(b), color)
-		btn.add_theme_font_size_override("font_size", 16)
+		btn.add_theme_font_size_override("font_size", 12)
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD
+		btn.custom_minimum_size = Vector2(0, 48)
 		_map_route_container.add_child(btn)
+
 
 
 func _on_route_selected(route: String) -> void:
@@ -333,7 +423,7 @@ func _draw_lines(drawer: Control) -> void:
 		return
 		
 	var start_floor = 1
-	var end_floor = 10
+	var end_floor = 15
 	
 	# Draw horizontal floor division lines (building floors)
 	for f in range(start_floor, end_floor + 1):

@@ -13,6 +13,10 @@ extends Resource
 @export var sprite_sheet: Texture2D
 ## 아키타입 — 속도↔방어 역상관 축 위의 위치
 @export var archetype: Enums.EnemyArchetype = Enums.EnemyArchetype.RUSHER
+## 보스 여부 — true면 보스 전용 로직(페이즈 전환, 태세 주기 등) 활성화
+@export var is_boss: bool = false
+## 태세 전환 주기 — 이 횟수만큼 피격 후 태세를 교대한다 (기본 3발)
+@export_range(1, 10) var stance_shift_interval: int = 3
 
 @export_group("전투 스탯")
 ## 체력 (HP) — 0이 되면 처치

@@ -20,10 +20,24 @@ var knockback_resistance: int = 0
 # ── 술사형(CASTER) 차징 변수 ──
 var charge_turns_max: int = 3
 var charge_turns_current: int = 0
+## 차징 활성 여부 — 술사형 및 보스 차징 기믹 공유 플래그
+var is_charger: bool = false
 
 # ── 스택 스펀지(ABSORBER) 변수 ──
 var is_stack_sponge: bool = false
 var barrier_cells: int = 3
+
+# ── 보스 전용 변수 ──
+## 현재 페이즈 (1 = 기본, 2 = 코어 노출 등)
+var current_phase: int = 1
+## 태세 전환 주기 (피격 N회마다 전환)
+var stance_shift_interval: int = 3
+## 보스 여부
+var is_boss: bool = false
+## 3단 태세 순환 여부 (실험체 Ω 전용)
+var has_triple_stance: bool = false
+## 페이즈 2 실체 HP (최종 보스용)
+var phase2_hp: int = 0
 
 
 func _init(enemy_data: EnemyData) -> void:
@@ -54,12 +68,18 @@ func _init(enemy_data: EnemyData) -> void:
 		current_distance = maxi(current_distance - 1, 1)
 	start_distance = current_distance
 	
+	# 데이터에서 보스/태세 전환 주기 읽기
+	is_boss = data.is_boss
+	stance_shift_interval = data.stance_shift_interval
+	
+	# ── 일반 아키타입 초기화 ──
 	if current_arch == Enums.EnemyArchetype.TANK:
 		current_stance = Enums.EnemyStance.IRON_SHIELD
 	elif current_arch == Enums.EnemyArchetype.DODGER:
 		current_stance = Enums.EnemyStance.ACTIVE_DODGER
 	elif current_arch == Enums.EnemyArchetype.CASTER:
 		current_speed = 0 # 술사는 전진하지 않고 원거리 차징에 전념
+		is_charger = true
 	elif current_arch == Enums.EnemyArchetype.ABSORBER:
 		is_stack_sponge = true
 		barrier_cells = 3
@@ -71,6 +91,37 @@ func _init(enemy_data: EnemyData) -> void:
 		current_def = 4
 		current_evasion = 1
 		current_speed = 1
+	
+	# ── 보스 아키타입 초기화 ──
+	elif current_arch == Enums.EnemyArchetype.BOSS_TANK_DODGE:
+		# 보스 #1: 디렉터 강 — 방패↔회피 태세 전환 (3발 주기)
+		current_stance = Enums.EnemyStance.IRON_SHIELD
+		
+	elif current_arch == Enums.EnemyArchetype.BOSS_CASTER_SPONGE:
+		# 보스 #2: 세라프 프로토콜 — 배리어 + 차징 동시 활성화
+		is_stack_sponge = true
+		barrier_cells = 4
+		current_hp = 99
+		is_charger = true
+		current_speed = 0
+		charge_turns_max = 4
+		
+	elif current_arch == Enums.EnemyArchetype.BOSS_SCRAMBLER:
+		# 보스 #3: 실험체 Ω — 3단 태세 순환 (방패→회피→돌격, 2발 주기)
+		current_stance = Enums.EnemyStance.IRON_SHIELD
+		has_triple_stance = true
+		stance_shift_interval = 2
+		
+	elif current_arch == Enums.EnemyArchetype.BOSS_FINAL:
+		# 최종 보스: L.O.B 코어 — 페이즈 1: 배리어(5) + 차징
+		current_phase = 1
+		is_stack_sponge = true
+		barrier_cells = 5
+		current_hp = 99
+		is_charger = true
+		current_speed = 0
+		charge_turns_max = 3
+		phase2_hp = 30
 
 
 ## 대미지 적용. HP는 0 미만으로 내려가지 않는다.
@@ -79,9 +130,9 @@ func apply_damage(amount: int) -> void:
 
 
 ## 적 전진. 둔화 적용 후 소비. 실제 이동한 칸 수를 반환한다.
-## 술사는 전진하지 않고 0을 반환한다.
+## 술사 및 고정 유닛(SPD 0)은 전진하지 않고 0을 반환한다.
 func advance() -> int:
-	if data.archetype == Enums.EnemyArchetype.CASTER:
+	if current_speed == 0:
 		return 0
 		
 	var effective_speed := maxi(current_speed - slow_stacks, 0)
@@ -90,10 +141,11 @@ func advance() -> int:
 	return effective_speed
 
 
-## 술사 차징 카운터 진행. 차징 완료되어 격발 시 true 반환.
+## 차징 카운터 진행. 차징 완료되어 격발 시 true 반환.
 ## 둔화(slow_stacks) 상태일 경우 차징이 1턴 지연된다.
+## 술사형 및 보스 차징 기믹 모두 이 함수를 공유한다.
 func advance_charger() -> bool:
-	if data.archetype != Enums.EnemyArchetype.CASTER:
+	if not is_charger:
 		return false
 		
 	if slow_stacks > 0:
@@ -143,14 +195,24 @@ func apply_shot_and_check_shift() -> bool:
 		return false
 		
 	shot_counter += 1
-	if shot_counter >= 3:
+	if shot_counter >= stance_shift_interval:
 		shot_counter = 0
 		_shift_stance()
 		return true
 	return false
 
 
+## 태세 교대 처리.
+## 3단 순환(실험체 Ω)과 2단 순환(일반/보스 #1)을 분기한다.
 func _shift_stance() -> void:
+	if has_triple_stance:
+		_shift_stance_triple()
+	else:
+		_shift_stance_dual()
+
+
+## 2단 태세 순환: IRON_SHIELD ↔ ACTIVE_DODGER
+func _shift_stance_dual() -> void:
 	if current_stance == Enums.EnemyStance.IRON_SHIELD:
 		current_stance = Enums.EnemyStance.ACTIVE_DODGER
 		current_def = 0
@@ -161,3 +223,48 @@ func _shift_stance() -> void:
 		current_def = 4
 		current_evasion = 1
 		current_speed = 1
+
+
+## 3단 태세 순환: IRON_SHIELD → ACTIVE_DODGER → RUSH_CHARGE → 반복
+## 실험체 Ω(보스 #3) 전용.
+func _shift_stance_triple() -> void:
+	if current_stance == Enums.EnemyStance.IRON_SHIELD:
+		current_stance = Enums.EnemyStance.ACTIVE_DODGER
+		current_def = 0
+		current_evasion = 7
+		current_speed = 2
+	elif current_stance == Enums.EnemyStance.ACTIVE_DODGER:
+		current_stance = Enums.EnemyStance.RUSH_CHARGE
+		current_def = 1
+		current_evasion = 2
+		current_speed = 4
+	elif current_stance == Enums.EnemyStance.RUSH_CHARGE:
+		current_stance = Enums.EnemyStance.IRON_SHIELD
+		current_def = 5
+		current_evasion = 1
+		current_speed = 1
+
+
+## 최종 보스 전용: 배리어 소거 완료 시 페이즈 2로 전환한다.
+## 페이즈 2에서는 배리어 모드 해제, 실체 HP 노출, 전진+태세 전환 시작.
+## 전환 성공 시 true를 반환한다.
+func check_phase_transition() -> bool:
+	if data.archetype != Enums.EnemyArchetype.BOSS_FINAL:
+		return false
+	if current_phase != 1:
+		return false
+	if barrier_cells > 0:
+		return false
+	
+	# 페이즈 2 전환: 코어 노출
+	current_phase = 2
+	is_stack_sponge = false
+	current_hp = phase2_hp
+	current_speed = 1
+	knockback_resistance = 2
+	# 태세 전환 시작 (방패↔회피, 3발 주기)
+	current_stance = Enums.EnemyStance.IRON_SHIELD
+	current_def = 3
+	current_evasion = 1
+	# 차징은 계속 유지 (is_charger = true)
+	return true

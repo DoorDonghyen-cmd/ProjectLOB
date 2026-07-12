@@ -104,7 +104,7 @@ func show_debriefing(won: bool) -> void:
 	log_text += "다음 작전을 준비하기 위해 준비실에서 해금된 총기를 선택해 작전을 개시하세요."
 	
 	# ── 100% 정보 도감 해독 완료 엔딩 (소프트 엔딩) ──
-	if won and run_manager.current_floor >= 10 and RunManager.meta_lore_fragments.size() == 20:
+	if won and run_manager.current_floor >= 15 and RunManager.meta_lore_fragments.size() == 20:
 		log_text += "\n\n"
 		log_text += "[color=#33ffff]📥 🚨 기밀 통신망 복원 완료 - [PROJECT L.O.B] 블랙박스 파일 해독 완료 🚨[/color]\n"
 		log_text += "[color=#00ff66][b]보안 등급 5 (RESTRICTED LOG):[/b][/color]\n"

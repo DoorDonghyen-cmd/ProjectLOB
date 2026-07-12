@@ -27,7 +27,13 @@ var _enemy_absorber: EnemyData = preload("res://resources/enemies/absorber_mech.
 var _enemy_stalker: EnemyData = preload("res://resources/enemies/nano_stalker.tres")
 var _enemy_scrambler: EnemyData = preload("res://resources/enemies/scrambler_drone.tres")
 var _enemy_neuro_caster: EnemyData = preload("res://resources/enemies/neuro_caster.tres")
+# ── 보스 몬스터 ──
+var _boss_director: EnemyData = preload("res://resources/enemies/boss_director.tres")
+var _boss_seraph: EnemyData = preload("res://resources/enemies/boss_seraph.tres")
+var _boss_omega: EnemyData = preload("res://resources/enemies/boss_omega.tres")
+var _boss_lob_core: EnemyData = preload("res://resources/enemies/boss_lob_core.tres")
 var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
+var _font_neodgm: Font = load("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 
 # ── 색상 상수 ──
 const C_BG := Color(0.06, 0.06, 0.10)
@@ -56,6 +62,7 @@ var _title_overlay: TitleOverlay
 var _map_overlay: MapOverlay
 var _maintenance_overlay: MaintenanceOverlay
 var _loadout_overlay: LoadoutOverlay
+var _section_selector_overlay: Control
 var _bullet_gallery_overlay: BulletGalleryOverlay
 var _monster_gallery_overlay: MonsterGalleryOverlay
 var _combat_margin: MarginContainer
@@ -129,6 +136,13 @@ func _build_ui() -> void:
 	_loadout_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_loadout_overlay.initialize(self, _rm)
 	_loadout_overlay.visible = false
+
+	# 3-2-2. Section Selector Overlay 생성
+	_section_selector_overlay = preload("res://scripts/ui/overlays/section_selector_overlay.gd").new()
+	add_child(_section_selector_overlay)
+	_section_selector_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_section_selector_overlay.initialize(self, _rm)
+	_section_selector_overlay.visible = false
 
 	# 3-3. Bullet Gallery Overlay 생성
 	_bullet_gallery_overlay = BulletGalleryOverlay.new()
@@ -222,7 +236,7 @@ func start_run_from_title() -> void:
 	if _combat_overlay:
 		_combat_overlay.queue_free()
 		_combat_overlay = null
-	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	_rm.start_new_run("section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	_title_overlay.visible = false
 	_show_map_screen()
 
@@ -243,15 +257,30 @@ func trigger_parts_test_ui() -> void:
 	_start_maintenance_phase(test_node)
 
 
-func show_loadout_screen() -> void:
+func show_section_selector() -> void:
 	_title_overlay.visible = false
-	_loadout_overlay.open_loadout_overlay()
+	if _section_selector_overlay:
+		_section_selector_overlay.refresh_unlocked_sections()
+		_section_selector_overlay.visible = true
+
+
+func handle_section_selector_closed() -> void:
+	_is_shortcut_mode = false
+	_show_title_screen()
+
+
+func show_loadout_screen(section_key: String) -> void:
+	_title_overlay.visible = false
+	if _section_selector_overlay:
+		_section_selector_overlay.visible = false
+	if _loadout_overlay:
+		_loadout_overlay.open_loadout_overlay(section_key)
 
 
 func trigger_loadout_test_ui() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
-	_loadout_overlay.open_loadout_overlay()
+	_loadout_overlay.open_loadout_overlay("section_a")
 
 
 func trigger_bullet_gallery_ui() -> void:
@@ -281,7 +310,7 @@ func trigger_double_tap_test() -> void:
 	_title_overlay.visible = false
 	_current_gun_data = _gun_smg
 	
-	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	_rm.start_new_run("section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	
 	_combat_margin.visible = true
 	if _combat_overlay:
@@ -299,7 +328,7 @@ func trigger_v2_ui_test() -> void:
 	_title_overlay.visible = false
 	_current_gun_data = _gun_smg
 	
-	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	_rm.start_new_run("section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	
 	if _combat_overlay:
 		_combat_overlay.queue_free()
@@ -320,6 +349,58 @@ func trigger_v2_ui_test() -> void:
 	_start_combat_phase(enemy_list)
 
 
+## 🛠️ 보스 전투 테스트 — 개발자 테스트 메뉴에서 보스전을 즉시 실행한다.
+## boss_id에 따라 해당 보스와 호위 대열을 조합하여 전투를 개시한다.
+func trigger_boss_test(boss_id: String) -> void:
+	self.is_v2_ui = true
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_current_gun_data = _gun_smg
+	
+	_rm.start_new_run("section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	
+	if _combat_overlay:
+		_combat_overlay.queue_free()
+		
+	_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
+	_combat_margin.add_child(_combat_overlay)
+	_combat_overlay.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_combat_overlay.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
+	_combat_overlay.initialize(self, _rm)
+	
+	_combat_margin.visible = true
+	if _combat_overlay:
+		_combat_overlay.visible = true
+		_combat_overlay.clear_combat_log()
+	
+	var enemy_list: Array[EnemyData] = []
+	var boss_name := ""
+	
+	match boss_id:
+		"boss_director":
+			# 보스 #1: 디렉터 강 (단독 보스전)
+			enemy_list = [_boss_director]
+			boss_name = "디렉터 강"
+		"boss_seraph":
+			# 보스 #2: 세라프 프로토콜 (호위: rusher + tank)
+			enemy_list = [_enemy_rusher, _enemy_tank, _boss_seraph]
+			boss_name = "세라프 프로토콜"
+		"boss_omega":
+			# 보스 #3: 실험체 Ω (단독 보스전)
+			enemy_list = [_boss_omega]
+			boss_name = "실험체 Ω"
+		"boss_lob_core":
+			# 최종 보스: L.O.B 코어 (호위: rusher + dodger + tank)
+			enemy_list = [_enemy_rusher, _enemy_dodger, _enemy_tank, _boss_lob_core]
+			boss_name = "L.O.B 코어"
+		_:
+			enemy_list = [_boss_director]
+			boss_name = "보스 테스트"
+	
+	_combat_overlay.add_combat_log("[color=#ff4444]⚠️ 보스전 테스트 개시: %s[/color]" % boss_name)
+	_start_combat_phase(enemy_list)
+
+
 func handle_loadout_finished() -> void:
 	if _is_shortcut_mode:
 		_is_shortcut_mode = false
@@ -327,7 +408,10 @@ func handle_loadout_finished() -> void:
 		return
 		
 	# 실제 런(Run) 개시
-	_rm.start_new_run(_current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	var section_id := "section_a"
+	if _loadout_overlay:
+		section_id = _loadout_overlay.selected_section_key
+	_rm.start_new_run(section_id, _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	_show_map_screen()
 
 
@@ -368,70 +452,106 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		
 	var msg := _rm.select_route(route)
 	
-	if selected_node.type_name.contains("전투") or selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss"):
+	# 미지 노드 위험 완충망 처리
+	var triggered_safeguard := false
+	if selected_node.type_name.begins_with("???") and selected_node.hidden_type == "사무실 (전투)":
+		if randf() < 0.3:
+			triggered_safeguard = true
+			if randf() < 0.5:
+				_trigger_safehouse_event()
+			else:
+				_trigger_blackmarket_event()
+				
+	if triggered_safeguard:
+		return
+		
+	var target_type := selected_node.type_name
+	if selected_node.type_name.begins_with("???"):
+		target_type = selected_node.hidden_type
+		
+	if target_type.contains("전투") or target_type.contains("보스") or target_type.contains("Boss"):
 		# 전투 로그 출력을 위해 Combat Overlay 및 컨테이너를 준비해 둠
 		_combat_margin.visible = true
 		if _combat_overlay:
 			_combat_overlay.visible = true
 			_combat_overlay.clear_combat_log()
 			_combat_overlay.add_combat_log("[color=#ffff66]%s[/color]" % msg)
-		var enemy_list: Array[EnemyData] = []
+		var enemy_list: Array = []
 		var floor_num := _rm.current_floor
+		var section := _rm.current_section
 		
 		if selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss") or selected_node.type_name.contains("boss"):
-			# 보스전: 층이 높아질수록 편대가 강화됨 (신규 몬스터 기믹 대량 반영)
-			if floor_num <= 5:
-				enemy_list = [_enemy_tank, _enemy_neuro_caster]
-			elif floor_num <= 10:
-				enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_neuro_caster]
-			elif floor_num <= 15:
-				enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_neuro_caster, _enemy_scrambler]
+			if section == "section_a":
+				# 지하 주차장 보스: 탱크 + 회피 (1지역 보스 유형)
+				enemy_list = [_enemy_tank, _enemy_dodger]
+			elif section == "section_b":
+				# 사무동 하층 보스: 탱크 + 술사
+				enemy_list = [_enemy_tank, _enemy_caster]
+			elif section == "section_c":
+				# 연구소 중층 보스: 흡수(스펀지) + 술사
+				enemy_list = [_enemy_absorber, _enemy_caster]
 			else:
-				enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_scrambler, _enemy_neuro_caster]
+				# 펜트하우스/무한루프 보스
+				if floor_num <= 5:
+					enemy_list = [_enemy_tank, _enemy_neuro_caster]
+				elif floor_num <= 10:
+					enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_neuro_caster]
+				else:
+					enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_neuro_caster, _enemy_scrambler]
 		else:
-			# 일반전: 층(current_floor) 구간별 난이도 점진적 증가
-			if floor_num <= 3:
-				# 1~3층: 1~2마리 (쉬움)
-				if randf() < 0.5:
-					enemy_list = [_enemy_rusher]
+			# 일반전 스폰 분기
+			if section == "section_a":
+				# 지하 주차장: 입문 (1~10층) - 기본 3종만 스폰
+				if floor_num <= 3:
+					enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
+				elif floor_num <= 6:
+					enemy_list = [_enemy_rusher, _enemy_tank] if randf() < 0.5 else [_enemy_dodger, _enemy_tank]
 				else:
+					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
+			elif section == "section_b":
+				# 사무동 하층: 초급 (1~12층) - 술사(Caster), 드론(Drone) 유입
+				if floor_num <= 4:
 					enemy_list = [_enemy_rusher, _enemy_dodger]
-			elif floor_num <= 6:
-				# 4~6층: 2~3마리 (보통)
-				var r := randf()
-				if r < 0.33:
-					enemy_list = [_enemy_rusher, _enemy_tank]
-				elif r < 0.66:
-					enemy_list = [_enemy_rusher, _enemy_drone, _enemy_caster]
+				elif floor_num <= 8:
+					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_drone]
 				else:
-					enemy_list = [_enemy_scrambler, _enemy_dodger]
-			elif floor_num <= 10:
-				# 7~10층: 3마리 (어려움)
-				var r := randf()
-				if r < 0.33:
-					enemy_list = [_enemy_tank, _enemy_dodger, _enemy_caster]
-				elif r < 0.66:
-					enemy_list = [_enemy_scrambler, _enemy_drone, _enemy_caster]
+					enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
+			elif section == "section_c":
+				# 연구소 중층: 중급 (1~12층) - 스펀지(Absorber) 유입
+				if floor_num <= 4:
+					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
+				elif floor_num <= 8:
+					enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
 				else:
-					enemy_list = [_enemy_stalker, _enemy_scrambler, _enemy_tank]
-			elif floor_num <= 15:
-				# 11~15층: 3~4마리 (매우 어려움)
-				var r := randf()
-				if r < 0.33:
-					enemy_list = [_enemy_absorber, _enemy_scrambler, _enemy_neuro_caster]
-				elif r < 0.66:
-					enemy_list = [_enemy_tank, _enemy_stalker, _enemy_caster]
-				else:
-					enemy_list = [_enemy_rusher, _enemy_stalker, _enemy_drone, _enemy_neuro_caster]
+					enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_caster]
 			else:
-				# 16~19층: 4마리 고정 (극한)
-				var r := randf()
-				if r < 0.33:
-					enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_scrambler, _enemy_neuro_caster]
-				elif r < 0.66:
-					enemy_list = [_enemy_tank, _enemy_rusher, _enemy_dodger, _enemy_caster]
+				# 펜트하우스 & 무한 루프: 상급/도전 (기존 하드코딩된 전체 층 테이블 활용)
+				if floor_num <= 3:
+					enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
+				elif floor_num <= 6:
+					var r := randf()
+					if r < 0.33:
+						enemy_list = [_enemy_rusher, _enemy_tank]
+					elif r < 0.66:
+						enemy_list = [_enemy_rusher, _enemy_drone, _enemy_caster]
+					else:
+						enemy_list = [_enemy_scrambler, _enemy_dodger]
+				elif floor_num <= 10:
+					var r := randf()
+					if r < 0.33:
+						enemy_list = [_enemy_tank, _enemy_dodger, _enemy_caster]
+					elif r < 0.66:
+						enemy_list = [_enemy_scrambler, _enemy_drone, _enemy_caster]
+					else:
+						enemy_list = [_enemy_stalker, _enemy_scrambler, _enemy_tank]
 				else:
-					enemy_list = [_enemy_absorber, _enemy_drone, _enemy_neuro_caster, _enemy_stalker]
+					var r := randf()
+					if r < 0.33:
+						enemy_list = [_enemy_absorber, _enemy_scrambler, _enemy_neuro_caster]
+					elif r < 0.66:
+						enemy_list = [_enemy_tank, _enemy_stalker, _enemy_caster]
+					else:
+						enemy_list = [_enemy_rusher, _enemy_stalker, _enemy_drone, _enemy_neuro_caster]
 				
 		_start_combat_phase(enemy_list)
 	else:
@@ -441,7 +561,7 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		_start_maintenance_phase(selected_node)
 
 
-func _start_combat_phase(enemy_datas: Array[EnemyData]) -> void:
+func _start_combat_phase(enemy_datas: Array) -> void:
 	if _cm:
 		_cm.queue_free()
 	_cm = CombatManager.new()
@@ -461,8 +581,11 @@ func _start_combat_phase(enemy_datas: Array[EnemyData]) -> void:
 	_combat_margin.visible = true
 	_combat_overlay.visible = true
 	
+	var typed_enemies: Array[EnemyData] = []
+	typed_enemies.assign(enemy_datas)
+	
 	# 렐릭 동기화는 이제 요원 작전 준비실(LoadoutOverlay) 작전 개시 시점에 _rm.active_relics로 연동 완료되었습니다.
-	_combat_overlay.start_combat(_current_gun_data, enemy_datas, _cm)
+	_combat_overlay.start_combat(_current_gun_data, typed_enemies, _cm)
 
 
 func _start_maintenance_phase(node: RunManager.RunNode) -> void:
@@ -498,7 +621,7 @@ func handle_maintenance_finished() -> void:
 				print("📥 [정비실 정보 복원] 기밀 파편 #%d번 복원!" % fid)
 				
 	_rm.current_floor += 1
-	if _rm.current_floor > 10:
+	if _rm.current_floor > 15:
 		_show_debriefing(true)
 	else:
 		_show_map_screen()
@@ -561,7 +684,7 @@ func handle_combat_finished(is_dead: bool) -> void:
 					_combat_overlay.add_combat_log("[color=#00ff66]📥 [기밀 정보 복원] 우회로 또는 적 데이터 분석을 통해 기밀 파편 #%d번을 회수했습니다![/color]" % fid)
 	
 	_rm.current_floor += 1
-	if _rm.current_floor > 10:
+	if _rm.current_floor > 15:
 		_show_debriefing(true)
 	else:
 		_show_map_screen()
@@ -585,6 +708,8 @@ func handle_debrief_confirmed() -> void:
 func make_label(text: String, size: int = 24, color: Color = C_TEXT) -> Label:
 	var label := Label.new()
 	label.text = text
+	if _font_neodgm != null:
+		label.add_theme_font_override("font", _font_neodgm)
 	label.add_theme_font_size_override("font_size", size)
 	label.add_theme_color_override("font_color", color)
 	return label
@@ -593,6 +718,8 @@ func make_label(text: String, size: int = 24, color: Color = C_TEXT) -> Label:
 func make_button(text: String, callback: Callable, color: Color = C_ACCENT) -> Button:
 	var btn := Button.new()
 	btn.text = text
+	if _font_neodgm != null:
+		btn.add_theme_font_override("font", _font_neodgm)
 	btn.add_theme_font_size_override("font_size", 22)
 	btn.custom_minimum_size = Vector2(0, 52)
 
@@ -659,3 +786,178 @@ func make_fullscreen_overlay() -> PanelContainer:
 	style.bg_color = Color(0.04, 0.04, 0.08, 0.95)
 	panel.add_theme_stylebox_override("panel", style)
 	return panel
+
+func _trigger_safehouse_event() -> void:
+	# 안전 가옥 (Safe House)
+	# HP 버퍼 +1 회복 (최대치 한도 내)
+	var max_hp = 1 + RunManager.meta_hp_armor_lvl
+	_rm.hp_buffer = mini(_rm.hp_buffer + 1, max_hp)
+	var recovered_bullets = _rm.recover_discarded_bullets()
+	
+	var popup := PanelContainer.new()
+	popup.custom_minimum_size = Vector2(460, 240)
+	add_child(popup)
+	popup.set_anchors_preset(Control.PRESET_CENTER)
+	popup.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	popup.grow_vertical = Control.GROW_DIRECTION_BOTH
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.05, 0.08, 0.98)
+	style.border_width_left = 2; style.border_width_right = 2
+	style.border_width_top = 2; style.border_width_bottom = 2
+	style.border_color = C_SUCCESS
+	style.corner_radius_top_left = 6; style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6; style.corner_radius_bottom_right = 6
+	popup.add_theme_stylebox_override("panel", style)
+	
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	popup.add_child(margin)
+	
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(vbox)
+	
+	var title = make_label("🏡 [위험 완충] 안전 가옥 조우", 18, C_SUCCESS)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+	
+	var text_content = "구역 2/3의 연속된 교전 도중 기적적으로 안전 가옥을 발견했습니다.\n"
+	text_content += "- [치료] 소실된 HP 버퍼가 1 회복되었습니다. (현재 버퍼: %d)\n" % _rm.hp_buffer
+	text_content += "- [복원] 빼내기(Unload)로 잃었던 탄환 %d발이 가방으로 안전 복구되었습니다." % recovered_bullets
+	
+	var desc = make_label(text_content, 12, C_TEXT)
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(desc)
+	
+	var btn = make_button("작전 계속", func():
+		popup.queue_free()
+		_rm.current_floor += 1
+		if _rm.current_floor > 15:
+			_show_debriefing(true)
+		else:
+			_show_map_screen()
+	, C_SUCCESS)
+	btn.custom_minimum_size = Vector2(160, 36)
+	btn.add_theme_font_size_override("font_size", 12)
+	vbox.add_child(btn)
+
+func _trigger_blackmarket_event() -> void:
+	# 암시장 상인 (Black Market)
+	var popup := PanelContainer.new()
+	popup.custom_minimum_size = Vector2(480, 260)
+	add_child(popup)
+	popup.set_anchors_preset(Control.PRESET_CENTER)
+	popup.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	popup.grow_vertical = Control.GROW_DIRECTION_BOTH
+	
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.05, 0.08, 0.98)
+	style.border_width_left = 2; style.border_width_right = 2
+	style.border_width_top = 2; style.border_width_bottom = 2
+	style.border_color = C_WARNING
+	style.corner_radius_top_left = 6; style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6; style.corner_radius_bottom_right = 6
+	popup.add_theme_stylebox_override("panel", style)
+	
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	popup.add_child(margin)
+	
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(vbox)
+	
+	var title = make_label("🕵️ [위험 완충] 암시장 상인과 조우", 18, C_WARNING)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+	
+	var desc = make_label("교전 위험 지대 사이에서 밀수업자를 만났습니다. (보유 크레딧: %d Cr)" % _rm.credits, 12, C_TEXT)
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(desc)
+	
+	var btn_hbox := HBoxContainer.new()
+	btn_hbox.add_theme_constant_override("separation", 12)
+	btn_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(btn_hbox)
+	
+	var btn_part = make_button("파츠 밀수 (30 Cr)", func():
+		if _rm.spend_credits(30):
+			var path := "res://resources/parts/"
+			var dir := DirAccess.open(path)
+			var parts_pool: Array[PartData] = []
+			if dir:
+				dir.list_dir_begin()
+				var file_name = dir.get_next()
+				while file_name != "":
+					if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
+						if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
+							var clean_name = file_name.replace(".remap", "")
+							var res = load(path + clean_name)
+							if res is PartData:
+								parts_pool.append(res)
+					file_name = dir.get_next()
+				dir.list_dir_end()
+			if not parts_pool.is_empty():
+				var chosen = parts_pool.pick_random().duplicate() as PartData
+				_rm.add_to_backpack(chosen)
+				print("🕵️ 암시장 파츠 구매: %s" % chosen.display_name)
+			popup.queue_free()
+			_blackmarket_close_transition()
+	, C_WARNING)
+	btn_part.custom_minimum_size = Vector2(150, 40)
+	btn_part.add_theme_font_size_override("font_size", 11)
+	btn_part.disabled = _rm.credits < 30
+	btn_hbox.add_child(btn_part)
+	
+	var btn_bullet = make_button("탄환 밀수 (15 Cr)", func():
+		if _rm.spend_credits(15):
+			var path := "res://resources/bullets/"
+			var dir := DirAccess.open(path)
+			var bullets_pool: Array[BulletData] = []
+			if dir:
+				dir.list_dir_begin()
+				var file_name = dir.get_next()
+				while file_name != "":
+					if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
+						if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
+							var clean_name = file_name.replace(".remap", "")
+							var res = load(path + clean_name)
+							if res is BulletData:
+								bullets_pool.append(res)
+					file_name = dir.get_next()
+				dir.list_dir_end()
+			if not bullets_pool.is_empty():
+				var chosen = bullets_pool.pick_random().duplicate() as BulletData
+				_rm.add_to_deck(chosen)
+				print("🕵️ 암시장 탄환 구매: %s" % chosen.display_name)
+			popup.queue_free()
+			_blackmarket_close_transition()
+	, C_WARNING)
+	btn_bullet.custom_minimum_size = Vector2(150, 40)
+	btn_bullet.add_theme_font_size_override("font_size", 11)
+	btn_bullet.disabled = _rm.credits < 15
+	btn_hbox.add_child(btn_bullet)
+	
+	var btn_pass = make_button("지나친다", func():
+		popup.queue_free()
+		_blackmarket_close_transition()
+	, C_PANEL)
+	btn_pass.custom_minimum_size = Vector2(100, 40)
+	btn_pass.add_theme_font_size_override("font_size", 11)
+	btn_hbox.add_child(btn_pass)
+
+func _blackmarket_close_transition() -> void:
+	_rm.current_floor += 1
+	if _rm.current_floor > 15:
+		_show_debriefing(true)
+	else:
+		_show_map_screen()

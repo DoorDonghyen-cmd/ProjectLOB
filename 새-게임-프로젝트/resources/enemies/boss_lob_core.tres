@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_boss_lob_core.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "L.O.B 코어 \"프로젝트 라스트\""
+description = "건물 전체의 나노 오염을 지휘하는 중앙 AI 코어. 기업의 기밀 병기 프로젝트 'Last on Board'의 핵심으로, 이것을 파괴해야 블랙박스를 회수하고 탈출할 수 있습니다."
+icon = ExtResource("1_icon")
+archetype = 9
+is_boss = true
+stance_shift_interval = 3
+max_hp = 30
+defense = 3
+evasion = 1
+speed = 0
+start_distance = 15
+knockback_resistance = 3

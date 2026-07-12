@@ -1,0 +1,18 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_boss_seraph.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "세라프 프로토콜"
+description = "연구동 전체의 자동 방어 시스템 AI 코어. 봉쇄 이후 '모든 생명체 = 오염 위협'으로 판정하여 방어 프로토콜을 무한 루프 실행 중. 나노 배리어와 에너지 차징을 동시 가동합니다."
+icon = ExtResource("1_icon")
+archetype = 7
+is_boss = true
+max_hp = 15
+defense = 2
+evasion = 1
+speed = 0
+start_distance = 15
+knockback_resistance = 3

@@ -1,6 +1,68 @@
 ---
 name: 04-daily-logs
-description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹용 스킬. 대화 및 작업 종료 시 오늘 진행한 작업, 작성한 코드, 해결한 이슈, 다음 할 일 등을 일자별로 정리하여 기록합니다. 트리거: 작업 요약 요청, 오늘 �## 2026-07-05 (Sun) - 거리 표시, 분석 패널 워터마크, 상황 라벨 이동 및 장전 탄환 순서/은폐/아이콘 개선
+description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹용 스킬. 대화 및 작업 종료 시 오늘 진행한 작업, 작성한 코드, 해결한 이슈, 다음 할 일 등을 일자별로 정리하여 기록합니다.
+---
+
+## 2026-07-12 (Sun) - 맵 · 레벨 구조 및 경제 개정 기획 인게임 연동 구현
+
+### 🎯 목표
+- "10노드가 짧다"는 플레이 성장 피드백을 기반으로 런의 길이와 전투 밀도, 비전투 배치 및 성장 곡선을 재설계합니다.
+- GDD `08_meta_progression.md`에 개정 반영된 15층 맵 구조, 보상 드래프트 (Add/Swap/Skip), 스타팅 보증금/금고 크레딧 이월 기능, 그리고 히든 노드 안전 완충망을 실제 인게임 코드와 연동하는 작업을 완성합니다.
+
+### 🛠️ 개발 내역
+**1. 15노드 및 3구역(Act) 구조 반영**
+- `run_manager.gd`의 `generate_run_map()` 함수를 개편하여 총 15개 층의 가로 분기 구조를 구축했습니다 (Act 1~3 매핑).
+- `map_overlay.gd`의 최대 층수 한계를 `15`로 확장하고, 보스 표시 조건을 `15F`로 갱신했습니다.
+- `combat_scene.gd`와 `debriefing_overlay.gd`에서 런 완료/종료 한계를 `15F`로 통일했습니다.
+**2. 드래프트 보상 (방안 B) 및 덱 교체 (Swap) UI 구현**
+- `reward_draft_panel.gd`에서 드래프트 구성을 2개의 무작위 탄환 카드와 1개의 보너스 기업 크레딧 카드로 변경했습니다 (방안 B 복합 매핑 적용).
+- 크레딧 카드 획득 시 런 보유 크레딧이 정상 가산되며, 이때는 `[교체]` 버튼이 비활성화되도록 방어했습니다.
+- 드래프트가 끝나는 공통 마감 시점(`_finish_draft_flow()`)에 전투 클리어 효율 등급에 따른 **기본 전투 보상 크레딧**이 플레이어의 보유금에 누적 가산되도록 수정했습니다.
+- `[교체]` 버튼 조작 시 덱 리스트를 스크롤 뷰로 노출하는 `DeckSwapModal` 플로팅 팝업을 화면 중앙에 정렬되도록 구현했습니다.
+**3. 스타팅 보증 및 전술 금고 이월 기능**
+- `run_manager.gd`에 `meta_vault_lvl`, `saved_vault_credits`, `starting_bonus_available` 변수를 선언하고 `end_run()`과 `start_new_run()` 시 정산을 처리했습니다.
+- `loadout_overlay.gd`에 `StartingBonusPopup`을 추가하여 런 시작 시 보증금이 유효하면 "+50 Cr" 또는 "무작위 1티어 파츠 1개" 선택지를 제공하고 연동을 마쳤습니다.
+- `title_overlay.gd`에 영구 업그레이드 상점 항목으로 "전술 금고" 업그레이드 버튼을 추가했습니다.
+**4. 히든 노드 위험 완충 안전망**
+- `combat_scene.gd`의 `handle_route_selected()`에서 미지 노드가 전투일 때 30% 확률로 **안전 가옥** 또는 **암시장 상인**을 조우하도록 구현했습니다.
+- 안전 가옥에서는 HP 버퍼를 회복하고 잃어버린 탄을 복구하며, 암시장에서는 크레딧을 소비해 파츠나 탄환을 밀수할 수 있습니다.
+
+### 📁 수정된 주요 파일
+- [run_manager.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/core/run_manager.gd)
+- [map_overlay.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/overlays/map_overlay.gd)
+- [combat_scene.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/combat_scene.gd)
+- [debriefing_overlay.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/overlays/debriefing_overlay.gd)
+- [reward_draft_panel.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/components/reward_draft_panel.gd)
+- [combat_overlay_v2.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/overlays/combat_overlay_v2.gd)
+- [loadout_overlay.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/overlays/loadout_overlay.gd)
+- [title_overlay.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/overlays/title_overlay.gd)
+
+### 💡 다음 예정 작업
+- 메타 진행 데이터 저장/로드 및 영구 데이터 직렬화 로직 보완.
+
+## 2026-07-11 (Sat) - 기업 크레딧 경제 시스템 및 무기고 보급단말기 상점 연동 구현 완결
+
+### 🎯 목표
+- 전투 종료 시 탄 소모율 기반 효율 평가 등급과 연동되는 기업 크레딧 획득 시스템을 구축합니다.
+- 무기고 보급단말기 상점을 통해 탄환 및 소모품 구매, 리롤 기믹을 구현하여 '탄환 vs 크레딧'의 경제 선택을 완성합니다.
+
+### 🛠️ 개발 내역
+**1. 경제 기획서 및 UI 요청서 수립**
+- `docs/gdd/16_economy_and_armory.md` 및 `docs/gdd/17_ui_request_economy_shop.md` 작성 및 HTML 인터랙티브 목업 추가.
+**2. 소모품 데이터 구조 신설**
+- 소모품 데이터 클래스(`consumable_item.gd`)를 추가하여 의료 킷 등의 인게임 정비 아이템 관리 기틀 마련.
+**3. 핵심 비즈니스 로직 및 UI 연동**
+- `run_manager.gd`, `combat_manager.gd`, `combat_scene.gd`, `reward_draft_panel.gd` 등에 크레딧 정산, 등급 계산, 무기고 상점 내 구매 및 리롤 동작 구현 완결.
+
+### 📁 수정된 주요 파일
+- [16_economy_and_armory.md](file:///d:/ProjectLoB/docs/gdd/16_economy_and_armory.md)
+- [17_ui_request_economy_shop.md](file:///d:/ProjectLoB/docs/gdd/17_ui_request_economy_shop.md)
+- [reward_draft_panel.gd](file:///d:/ProjectLoB/새-게임-프로젝트/scripts/ui/components/reward_draft_panel.gd)
+- [run_manager.gd](file:///d:/ProjectLoB/새-게임-프로젝트/scripts/managers/run_manager.gd)
+- [combat_manager.gd](file:///d:/ProjectLoB/새-게임-프로젝트/scripts/managers/combat_manager.gd)
+
+
+## 2026-07-05 (Sun) - 거리 표시, 분석 패널 워터마크, 상황 라벨 이동 및 장전 탄환 순서/은폐/아이콘 개선
 
 ### 🎯 목표
 - 전투 오버레이(v2)에서 거리 표시 UI(`_distance_label`)가 전투 영역(수평 트랙)의 정확한 상단 중앙에 고정되도록 구조와 속성을 개선합니다.
@@ -34,7 +96,7 @@ description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹�
 
 **6. 트랙 라인 및 캐릭터/적 하향 배치 고도화**
 - `combat_overlay_v2.gd` 에서 트랙 가로 중심선(`_track_line`), 플레이어 캐릭터(`_agent_sprite`), 몬스터 스프라이트(`es`)의 세로축 앵커(`anchor_top`, `anchor_bottom`)를 기존 `0.5 ➡️ 0.65 ➡️ 0.75`로 최종 하향 조정했습니다.
-- 이를 통해 전투 트랙 영역 하단(세로 75% 지점)에 모든 주요 오브젝트가 정렬되어 배치되도록 디자인 구조를 고도화했습니다.�마크 연출을 구현했습니다.
+- 이를 통해 전투 트랙 영역 하단(세로 75% 지점)에 모든 주요 오브젝트가 정렬되어 배치되도록 디자인 구조를 고도화했습니다.마크 연출을 구현했습니다.
 
 **3. 장전 탄환 목록 LIFO 역순 동적 정렬 및 3순위 은폐 적용**
 - `combat_overlay_v2.gd` 내부의 `_build_ui()` 에서 기존 3개 정적 카드 배치 코드를 제거하고, 다량의 카드 나열에 대응할 수 있도록 `ScrollContainer`로 감싼 동적 `Lookahead` VBox 영역을 마련했습니다.

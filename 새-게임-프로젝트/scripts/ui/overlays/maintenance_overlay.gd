@@ -680,12 +680,23 @@ func _refresh_equip_tab() -> void:
 	var reload_turns = gun.reload_turns
 	
 	for part in run_manager.equipped_parts:
-		if part.part_id == Enums.PartID.SHRED_MUZZLE or part.part_id == 7: # 고정밀총열
-			base_dmg += 4
-		if part.part_id == Enums.PartID.RECOIL_PUSH or part.part_id == Enums.PartID.POINT_BLANK:
-			kb_force += 1
-		if part.part_id == Enums.PartID.DEEP_LOADER:
-			reload_turns = maxi(reload_turns - 1, 2)
+		# 1) 대미지 보정 파츠 시뮬레이션
+		if part.part_id == Enums.PartID.SHRED_MUZZLE:
+			base_dmg += 2 # 적 방어력 영구 파쇄 기여 반영
+		elif part.part_id == Enums.PartID.POINT_BLANK:
+			base_dmg += 4 # 초근접 DMG +4 반영
+		elif part.part_id == Enums.PartID.LONG_SHOT:
+			base_dmg += 3 # 원거리 DMG 비례 가산 평균 반영
+		elif part.part_id == Enums.PartID.DEEP_LOADER:
+			base_dmg += 3 # 바닥 탄 DMG 가산 평균 반영
+		elif part.part_id == Enums.PartID.RHYTHM_CHAMBER:
+			base_dmg += 2 # 연속 격발 DMG 가산 평균 반영
+			
+		# 2) 넉백 보정 파츠 시뮬레이션
+		if part.part_id == Enums.PartID.RECOIL_PUSH:
+			kb_force += 1 # 처치 시 연쇄 넉백 반영
+		elif part.part_id == Enums.PartID.SPREAD_SHOT:
+			kb_force += 1 # 확산 격발 넉백 분산 반영
 			
 	_stat_dmg_bar.value = base_dmg
 	var dmg_diff = base_dmg - 10
@@ -860,9 +871,21 @@ func _on_equip_part_from_bag(bag_item_idx: int) -> void:
 		run_manager.equipped_parts.append(item)
 		run_manager.remove_from_backpack_at(bag_item_idx)
 	else:
-		var old_equipped = run_manager.equipped_parts[0]
-		run_manager.equipped_parts[0] = item
-		run_manager.backpack_items[bag_item_idx] = old_equipped
+		# 교체 가능한 일반 파츠(탈거 불가인 POINT_BLANK, SPREAD_SHOT이 아닌 파츠) 찾기
+		var target_idx := -1
+		for i in range(run_manager.equipped_parts.size()):
+			var p = run_manager.equipped_parts[i]
+			if p != null and p.part_id != Enums.PartID.POINT_BLANK and p.part_id != Enums.PartID.SPREAD_SHOT:
+				target_idx = i
+				break
+		
+		if target_idx != -1:
+			var old_equipped = run_manager.equipped_parts[target_idx]
+			run_manager.equipped_parts[target_idx] = item
+			run_manager.backpack_items[bag_item_idx] = old_equipped
+		else:
+			print("⚠ 모든 슬롯에 해제 불가능한 고유 파츠가 장착되어 있어 파츠를 장착할 수 없습니다.")
+			return
 		
 	_refresh_current_tab_ui()
 

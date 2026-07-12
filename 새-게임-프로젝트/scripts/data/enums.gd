@@ -32,6 +32,10 @@ enum EnemyArchetype {
 	CASTER,    ## 술사형 — 전진하지 않고 원거리 차징 공격
 	ABSORBER,  ## 스택 스펀지 — 유효 격발 횟수로 처치 (3회)
 	SCRAMBLER, ## 태세 전환병 — 3발 주기 자물쇠 교체
+	BOSS_TANK_DODGE,    ## 보스: 디렉터 강 — 방패↔회피 태세 전환
+	BOSS_CASTER_SPONGE, ## 보스: 세라프 프로토콜 — 배리어+차징+호위
+	BOSS_SCRAMBLER,     ## 보스: 실험체 Ω — 3단 태세 순환(방패→회피→돌격)
+	BOSS_FINAL,         ## 최종 보스: L.O.B 코어 — 2페이즈(배리어→태세+차징)
 }
 
 ## ── 적 전투 중 태세 (Stance) ──
@@ -39,6 +43,7 @@ enum EnemyStance {
 	NONE,            ## 기본 태세 (상태 변화 없음)
 	IRON_SHIELD,     ## 물리 장갑 태세 — 방어 높음, 속도 느림
 	ACTIVE_DODGER,   ## 회피 돌격 태세 — 회피 높음, 속도 빠름
+	RUSH_CHARGE,     ## 돌격 태세 — 초고속 전진, 넉백 필수 (실험체 Ω 전용)
 }
 
 ## ── 총기 파츠 고유 ID ──

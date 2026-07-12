@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>층별 침투 맵 UI 목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06090e;
+    --panel: #0d131f;
+    --panel-2: #090e16;
+    --line: #1b2635;
+    --ink: #e2eaf3;
+    --muted: #5f758e;
+    --safe: #37e0ac;
+    --danger: #ff4545;
+    --amber: #f5a623;
+    --steel: #4a90e2;
+    --neon-blue: #00dcff;
+    --dim: #253346;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(120% 90% at 50% 0%, #0c1524 0%, var(--bg) 70%);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  
+  .ctrl {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  .ctrl .tag { font-size: 11px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+  .ctrl .hint { font-size: 11px; color: var(--safe); margin-left: auto; }
+
+  .screen {
+    position: relative;
+    background: #080d16;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 520px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  /* 1. 상단 HUD 바 */
+  .hud-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(13, 19, 31, 0.85);
+    border-bottom: 1px solid var(--line);
+    z-index: 10;
+  }
+  .hud-left { display: flex; align-items: baseline; gap: 14px; }
+  .hud-left .floor { font-family: 'Oswald'; font-size: 24px; font-weight: 700; color: var(--safe); text-shadow: 0 0 10px rgba(55,224,172,0.4); }
+  .hud-left .area { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  
+  .hud-center { display: flex; gap: 20px; }
+  .hud-stat { font-size: 13px; color: var(--muted); }
+  .hud-stat b { font-family: 'Oswald'; font-size: 15px; color: var(--ink); margin-left: 5px; }
+  .hud-stat b.cr { color: var(--amber); }
+
+  .hud-right { display: flex; align-items: center; gap: 6px; }
+  .hud-right .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-right: 4px; }
+  .hp-cell { width: 14px; height: 14px; background: var(--danger); transform: rotate(45deg); margin: 0 2px; box-shadow: 0 0 5px rgba(255,69,69,0.5); }
+  .hp-cell.empty { background: transparent; border: 1.5px solid var(--dim); box-shadow: none; }
+
+  /* 2. 맵 뷰포트 (스크롤 영역) */
+  .map-viewport {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background: 
+      linear-gradient(rgba(27, 38, 53, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(27, 38, 53, 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  .map-container {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column-reverse; /* 아래층에서 위층으로 정렬 */
+    gap: 40px;
+  }
+
+  /* 층별 행 */
+  .floor-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 70px;
+  }
+  .floor-label {
+    position: absolute;
+    left: 20px;
+    font-family: 'Oswald';
+    font-size: 14px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+  .floor-row.active .floor-label { color: var(--safe); }
+
+  .nodes-wrap {
+    display: flex;
+    gap: 70px;
+    z-index: 2;
+  }
+
+  /* 연결선 SVG */
+  .connection-svg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .link-line { stroke: var(--line); stroke-width: 2; fill: none; stroke-dasharray: 4; }
+  .link-line.active { stroke: var(--safe); stroke-width: 2.5; stroke-dasharray: none; }
+
+  /* 노드 버튼 */
+  .node {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #0f1825;
+    border: 2px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  .node:hover {
+    border-color: var(--safe);
+    box-shadow: 0 0 12px rgba(55,224,172,0.3);
+    transform: scale(1.08);
+  }
+  .node.current {
+    border-color: var(--safe);
+    background: radial-gradient(circle, rgba(55,224,172,0.2) 0%, #0f1825 80%);
+    box-shadow: 0 0 15px rgba(55,224,172,0.4);
+  }
+  .node.locked {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .node.locked:hover { transform: none; box-shadow: none; }
+  
+  .node-icon { font-size: 16px; margin-bottom: 2px; }
+  .node-tag { font-size: 8px; text-transform: uppercase; color: var(--muted); font-weight: 700; letter-spacing: 0.05em; }
+  .node.current .node-tag { color: var(--safe); }
+  
+  /* 노드별 장식 배지 */
+  .node.stairs { border-color: var(--steel); }
+  .node.vent { border-color: var(--amber); }
+  .node.shaft { border-color: var(--danger); }
+
+  /* 3. 하단 세부 정보 패널 */
+  .details-panel {
+    padding: 14px 20px;
+    background: var(--panel);
+    border-top: 1px solid var(--line);
+    z-index: 10;
+    min-height: 70px;
+  }
+  .details-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+  .details-desc { font-size: 12px; color: var(--ink); line-height: 1.5; }
+  .details-desc b { color: var(--safe); }
+
+  /* 4. 정보 스캐너 팝업 (mouse_filter = MOUSE_FILTER_IGNORE 모의) */
+  .scanner-popup {
+    position: absolute;
+    width: 210px;
+    background: rgba(13, 22, 35, 0.95);
+    border: 1px solid var(--safe);
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 4px 15px rgba(0,220,255,0.2);
+    display: none;
+    z-index: 100;
+    pointer-events: none; /* MOUSE_FILTER_IGNORE 구현 */
+  }
+  .scanner-header { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--safe); letter-spacing: 0.1em; margin-bottom: 5px; }
+  .scanner-body { font-size: 11px; color: var(--ink); line-height: 1.4; }
+  
+  /* 5. 침투 승인 팝업 */
+  .modal-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(4, 7, 12, 0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+  }
+  .modal-box {
+    width: 320px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .modal-box.danger-style { border-color: var(--danger); }
+  .modal-box.warn-style { border-color: var(--amber); }
+
+  .modal-h { font-size: 14px; font-weight: 700; color: var(--ink); text-align: center; }
+  .modal-body { font-size: 11.5px; color: var(--muted); text-align: center; line-height: 1.5; }
+  .modal-body b { color: var(--ink); }
+  .modal-penalty { background: rgba(0,0,0,0.2); padding: 8px 10px; border-radius: 6px; font-size: 11px; text-align: left; }
+  
+  .modal-actions { display: flex; gap: 8px; margin-top: 5px; }
+  .mbtn { flex: 1; padding: 8px 0; font-size: 12px; font-weight: 700; border-radius: 6px; cursor: pointer; border: 1px solid var(--line); background: #151f2b; color: var(--ink); }
+  .mbtn.confirm { background: var(--safe); color: #04120d; border-color: var(--safe); }
+  .mbtn.confirm.danger { background: var(--danger); color: var(--ink); border-color: var(--danger); }
+
+  /* 설명 창 */
+  .legend {
+    margin-top: 14px;
+    padding: 14px 16px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .legend h4 { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
+  .lrow { display: flex; gap: 10px; align-items: baseline; font-size: 12.5px; margin: 6px 0; color: #c2ccd6; }
+  .lrow .n { font-family: 'Oswald'; font-weight: 700; color: var(--safe); width: 110px; flex-shrink: 0; }
+  .lrow b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ctrl">
+    <span class="tag">층별 침투 맵 — 비상계단 / 환기구 / 샤프트 기회비용 분기</span>
+    <span class="hint">노드를 클릭하여 기회비용 팝업 호출 · 미지(?) 노드 호버 시 정보 스캐너 가동</span>
+  </div>
+
+  <div class="screen" id="screen">
+    
+    <!-- 1. 상단 HUD 바 -->
+    <div class="hud-bar">
+      <div class="hud-left">
+        <span class="floor" id="floorText">3F</span>
+        <span class="area" id="areaText">구역 1: 보안 경비층</span>
+      </div>
+      <div class="hud-center">
+        <div class="hud-stat">크레딧 <b class="cr">120 Cr</b></div>
+        <div class="hud-stat">해금 데이터 <b style="color:var(--safe)">14/20</b></div>
+      </div>
+      <div class="hud-right">
+        <span class="lbl">HP 아머</span>
+        <div class="hp-cell"></div>
+        <div class="hp-cell"></div>
+        <div class="hp-cell empty"></div>
+      </div>
+    </div>
+
+    <!-- 2. 맵 뷰포트 (수직 노드 격자) -->
+    <div class="map-viewport">
+      
+      <!-- 연결선 렌더링 SVG -->
+      <svg class="connection-svg">
+        <!-- 3F -> 4F -->
+        <line class="link-line active" x1="500" y1="460" x2="380" y2="350"></line>
+        <line class="link-line" x1="500" y1="460" x2="620" y2="350"></line>
+        <!-- 4F -> 5F -->
+        <line class="link-line" x1="380" y1="350" x2="380" y2="240"></line>
+        <line class="link-line" x1="620" y1="350" x2="500" y2="240"></line>
+        <!-- 5F -> 6F -->
+        <line class="link-line" x1="380" y1="240" x2="500" y2="130"></line>
+        <line class="link-line" x1="500" y1="240" x2="500" y2="130"></line>
+        <!-- 6F -> 7F (샤프트 점프) -->
+        <line class="link-line" x1="500" y1="130" x2="500" y2="20"></line>
+      </svg>
+
+      <div class="map-container" id="mapContainer" style="transform: translateY(0px);">
+        
+        <!-- 7F (구역 2 진입부) -->
+        <div class="floor-row" id="frow-7">
+          <span class="floor-label">7F</span>
+          <div class="nodes-wrap">
+            <div class="node locked" data-type="shop"><span class="node-icon">🛒</span><span class="node-tag">상점</span></div>
+          </div>
+        </div>
+
+        <!-- 6F (보스 바로 직전) -->
+        <div class="floor-row" id="frow-6">
+          <span class="floor-label">6F</span>
+          <div class="nodes-wrap">
+            <div class="node locked" data-type="boss"><span class="node-icon">💀</span><span class="node-tag">BOSS</span></div>
+          </div>
+        </div>
+
+        <!-- 5F -->
+        <div class="floor-row" id="frow-5">
+          <span class="floor-label">5F</span>
+          <div class="nodes-wrap">
+            <div class="node locked" data-type="rest"><span class="node-icon">✚</span><span class="node-tag">대피소</span></div>
+            <div class="node locked" data-type="shop"><span class="node-icon">🛒</span><span class="node-tag">무기고</span></div>
+          </div>
+        </div>
+
+        <!-- 4F (다음 선택 노드) -->
+        <div class="floor-row" id="frow-4">
+          <span class="floor-label">4F</span>
+          <div class="nodes-wrap">
+            <div class="node stairs" data-type="stairs" onclick="openGate('stairs')" onmouseenter="showScan('stairs', event)" onmouseleave="hideScan()">
+              <span class="node-icon">🚶</span><span class="node-tag">계단</span>
+            </div>
+            <div class="node vent" data-type="vent" onclick="openGate('vent')" onmouseenter="showScan('vent', event)" onmouseleave="hideScan()">
+              <span class="node-icon">🕳️</span><span class="node-tag">환기구</span>
+            </div>
+            <div class="node shaft" data-type="shaft" onclick="openGate('shaft')" onmouseenter="showScan('shaft', event)" onmouseleave="hideScan()">
+              <span class="node-icon">?</span><span class="node-tag">미지</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3F (현재 층) -->
+        <div class="floor-row active" id="frow-3">
+          <span class="floor-label">3F (현재)</span>
+          <div class="nodes-wrap">
+            <div class="node current"><span class="node-icon">🤖</span><span class="node-tag">요원</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 4. 정보 스캐너 팝업 -->
+      <div class="scanner-popup" id="scannerPopup">
+        <div class="scanner-header">🔍 전술 스캐너 작동 중</div>
+        <div class="scanner-body" id="scannerBody"></div>
+      </div>
+
+    </div>
+
+    <!-- 3. 하단 세부 정보 패널 -->
+    <div class="details-panel">
+      <div class="details-title" id="detailsTitle">작전 구역 정보</div>
+      <div class="details-desc" id="detailsDesc">진입할 노드를 선택하여 침투 경로를 승인해 주십시오. 마우스 호버 시 <b>스캐너 힌트</b>가 작동합니다.</div>
+    </div>
+
+    <!-- 5. 침투 승인 팝업 -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-box" id="modalBox">
+        <div class="modal-h" id="mTitle">침투 승인 확인</div>
+        <div class="modal-body" id="mDesc"></div>
+        <div class="modal-penalty" id="mPenalty" style="color:var(--danger)"></div>
+        <div class="modal-actions">
+          <button class="mbtn" onclick="closeGate()">작전 취소</button>
+          <button class="mbtn confirm" id="mConfirm" onclick="commitInfiltration()">경로 진입 승인</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 설명 창 -->
+  <div class="legend">
+    <h4>층별 침투 맵 — 기회비용 및 스캔 연출 설계</h4>
+    <div class="lrow"><span class="n">비상계단</span><span>안정적 1층씩 상승. 위험 페널티가 없어 가장 <b>보수적이고 안전한 경로</b>.</span></div>
+    <div class="lrow"><span class="n">환기구</span><span>은밀 침투. 전투 횟수가 대폭 감소하나 협소한 공간의 한계로 <b>전투 시 적 시작 거리 -2m 패널티</b> 적용.</span></div>
+    <div class="lrow"><span class="n">샤프트</span><span>엘리베이터 통로 돌파. 2층 이상 고속 상승 가능하나 <b>30% 확률로 HP 버퍼 영구 소실 또는 시작 거리 4m 대치</b> 위험 감수.</span></div>
+    <div class="lrow"><span class="n">스캐너 팝업</span><span>미지(?) 노드에 마우스 호버 시 힌트 렌더링. <b>MOUSE_FILTER_IGNORE</b> 원칙으로 뒷배경 터치 방해하지 않음.</span></div>
+  </div>
+
+</div>
+
+<script>
+  let selectedRoute = '';
+  let currentFloor = 3;
+
+  const routeDetails = {
+    stairs: {
+      name: "비상계단 (Stairs)",
+      desc: "표준 정면 돌파. 일반적인 빌딩 1개 층을 오릅니다. 어떠한 전술적 패시브나 디버프 패널티 없이 안정적인 전투를 진행할 수 있습니다.",
+      penalty: "⚠️ 발생 리스크 없음 (표준 전장 대치)"
+    },
+    vent: {
+      name: "환기구 (Air Duct)",
+      desc: "은밀한 보안 우회로. 적 순찰을 피해 전투 횟수를 스킵하고 렐릭 보급품 획득 기회가 많아집니다. 단, 협소한 공간의 한계로 인해 전투 시 적들의 시작 거리가 대폭 좁아집니다.",
+      penalty: "🚨 공간의 제약: 전투 인카운터 시 적 시작 거리 −2m 단축"
+    },
+    shaft: {
+      name: "엘리베이터 샤프트 (Shaft)",
+      desc: "최고 리스크 초고속 돌파. 2개 층을 한 번에 스킵하여 6F(보스층)로 즉시 건너뛸 수 있지만, 추락 위험과 매복 적들의 위험에 상시 노출됩니다.",
+      penalty: "💥 강습 위험: 30% 확률로 HP 아머 1 영구 소실 또는 시작 거리 4m 초근접 대치 시작"
+    }
+  };
+
+  const scannerHints = {
+    stairs: "📡 비상계단 통로 관측.<br><b>[안정적인 신호 유지]</b><br>특수 변수 없음. 표준 진입 경로.",
+    vent: "📡 환기통 열풍 통로 관측.<br><b>[생체 신호 다수 감지]</b><br>좁은 통로 특유의 고밀도 대치 주의.",
+    shaft: "📡 엘리베이터 와이어 파괴 상태.<br><b>[초고주파 신호 감지]</b><br>특수 데이터 코어 획득 기회 유력."
+  };
+
+  function openGate(route) {
+    selectedRoute = route;
+    const detail = routeDetails[route];
+    
+    document.getElementById('mTitle').innerText = detail.name + " 경로 승인";
+    document.getElementById('mDesc').innerHTML = `이 경로로 침투하시겠습니까?<br><b>${detail.desc}</b>`;
+    document.getElementById('mPenalty').innerText = detail.penalty;
+    
+    const mBox = document.getElementById('modalBox');
+    const mConfirm = document.getElementById('mConfirm');
+    mBox.className = 'modal-box';
+    mConfirm.className = 'mbtn confirm';
+    
+    if (route === 'vent') {
+      mBox.classList.add('warn-style');
+    } else if (route === 'shaft') {
+      mBox.classList.add('danger-style');
+      mConfirm.classList.add('danger');
+    }
+
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+
+  function closeGate() {
+    document.getElementById('modalOverlay').style.display = 'none';
+  }
+
+  function commitInfiltration() {
+    closeGate();
+    if (selectedRoute === 'shaft') {
+      currentFloor = 6;
+      document.getElementById('mapContainer').style.transform = 'translateY(-220px)';
+    } else {
+      currentFloor = 4;
+      document.getElementById('mapContainer').style.transform = 'translateY(-110px)';
+    }
+    
+    setTimeout(() => {
+      document.getElementById('floorText').innerText = currentFloor + "F";
+      if (currentFloor === 6) {
+        document.getElementById('areaText').innerText = "구역 1: 통제센터 보안 격리구역";
+      } else {
+        document.getElementById('areaText').innerText = "구역 1: 4층 사무실";
+      }
+      
+      // 노드 활성화/현재위치 갱신 연출
+      const row = document.getElementById('frow-' + currentFloor);
+      document.querySelectorAll('.floor-row').forEach(r => r.classList.remove('active'));
+      row.classList.add('active');
+      
+      const nodeHtml = row.querySelector('.node');
+      nodeHtml.className = 'node current';
+      nodeHtml.innerHTML = '<span class="node-icon">🤖</span><span class="node-tag">요원</span>';
+      
+      document.getElementById('detailsTitle').innerText = "침투 완료";
+      document.getElementById('detailsDesc').innerHTML = `요원이 <b>${currentFloor}F</b>에 도달했습니다. 복도 내부 교전 인카운터 장전(Loading) 대기 중...`;
+    }, 800);
+  }
+
+  function showScan(route, e) {
+    const popup = document.getElementById('scannerPopup');
+    const body = document.getElementById('scannerBody');
+    body.innerHTML = scannerHints[route] || "데이터 없음";
+    
+    popup.style.display = 'block';
+    
+    // 마우스 좌표 근처에 팝업 띄우기 (Null 가드 적용)
+    const screenEl = document.getElementById('screen');
+    if (screenEl) {
+      const rect = screenEl.getBoundingClientRect();
+      const x = e.clientX - rect.left + 15;
+      const y = e.clientY - rect.top + 15;
+      popup.style.left = x + 'px';
+      popup.style.top = y + 'px';
+    } else {
+      popup.style.left = (e.clientX + 15) + 'px';
+      popup.style.top = (e.clientY + 15) + 'px';
+    }
+
+    // 하단 정보창 실시간 연동
+    const detail = routeDetails[route];
+    if (detail) {
+      document.getElementById('detailsTitle').innerText = detail.name;
+      document.getElementById('detailsDesc').innerText = detail.desc;
+    }
+  }
+
+  function hideScan() {
+    document.getElementById('scannerPopup').style.display = 'none';
+    document.getElementById('detailsTitle').innerText = "작전 구역 정보";
+    document.getElementById('detailsDesc').innerText = "진입할 노드를 선택하여 침투 경로를 승인해 주십시오. 마우스 호버 시 스캐너 힌트가 작동합니다.";
+  }mentById('areaText').innerText = "구역 1: 4층 사무실";
+      }
+      
+      // 노드 활성화/현재위치 갱신 연출
+      const row = document.getElementById('frow-' + currentFloor);
+      document.querySelectorAll('.floor-row').forEach(r => r.classList.remove('active'));
+      row.classList.add('active');
+      
+      const nodeHtml = row.querySelector('.node');
+      nodeHtml.className = 'node current';
+      nodeHtml.innerHTML = '<span class="node-icon">🤖</span><span class="node-tag">요원</span>';
+      
+      document.getElementById('detailsTitle').innerText = "침투 완료";
+      document.getElementById('detailsDesc').innerHTML = `요원이 <b>${currentFloor}F</b>에 도달했습니다. 복도 내부 교전 인카운터 장전(Loading) 대기 중...`;
+    }, 800);
+  }
+
+  function showScan(route, e) {
+    const popup = document.getElementById('scannerPopup');
+    const body = document.getElementById('scannerBody');
+    body.innerHTML = scannerHints[route];
+    
+    popup.style.display = 'block';
+    // 마우스 좌표 근처에 팝업 띄우기
+    const rect = document.getElementById('screen').getBoundingClientRect();
+    const x = e.clientX - rect.left + 15;
+    const y = e.clientY - rect.top + 15;
+    popup.style.left = x + 'px';
+    popup.style.top = y + 'px';
+
+    // 하단 정보창 실시간 연동
+    const detail = routeDetails[route];
+    document.getElementById('detailsTitle').innerText = detail.name;
+    document.getElementById('detailsDesc').innerText = detail.desc;
+  }
+
+  function hideScan() {
+    document.getElementById('scannerPopup').style.display = 'none';
+    document.getElementById('detailsTitle').innerText = "작전 구역 정보";
+    document.getElementById('detailsDesc').innerText = "진입할 노드를 선택하여 침투 경로를 승인해 주십시오. 마우스 호버 시 스캐너 힌트가 작동합니다.";
+  }
+</script>
+</body>
+</html>

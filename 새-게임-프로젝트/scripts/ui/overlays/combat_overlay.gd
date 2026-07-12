@@ -1181,6 +1181,7 @@ func _on_player_died() -> void:
 
 	_draft_container.visible = false
 	_draft_confirm_btn.disabled = false
+	_draft_confirm_btn.visible = true
 
 	_result_overlay.visible = true
 

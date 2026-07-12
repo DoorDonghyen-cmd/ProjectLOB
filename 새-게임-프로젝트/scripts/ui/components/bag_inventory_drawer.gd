@@ -346,7 +346,7 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 
 func _create_inventory_card(bullet: BulletData, count: int, click_callback: Callable = Callable()) -> Control:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(82, 70)
+	card.custom_minimum_size = Vector2(120, 72)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.11, 0.16)
 	style.border_width_left = 1; style.border_width_right = 1
@@ -358,19 +358,20 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	
 	var icon_tex = overlay._get_bullet_icon(bullet)
 	if icon_tex:
+		var wrapper := Control.new()
+		wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(wrapper)
+		
 		var bg_icon := TextureRect.new()
 		bg_icon.texture = icon_tex
-		bg_icon.custom_minimum_size = Vector2(32, 32)
 		bg_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		bg_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		bg_icon.modulate = Color(1, 1, 1, 0.45)
 		bg_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		card.add_child(bg_icon)
+		wrapper.add_child(bg_icon)
 		
-		bg_icon.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		bg_icon.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-		bg_icon.grow_vertical = Control.GROW_DIRECTION_BEGIN
-		bg_icon.position = Vector2(82 - 32 - 6, 70 - 32 - 6)
+		bg_icon.size = Vector2(32, 32)
+		bg_icon.position = Vector2(120 - 32 - 6, 72 - 32 - 6)
 		
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 8)
@@ -392,27 +393,71 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	else:
 		caliber_str = bullet.display_name
 		
-	var st_str1 := "DMG %d  ACC %d" % [bullet.damage, bullet.accuracy]
-	var st_str2 := "PEN %d  KB %d  SL %d" % [bullet.penetration, bullet.knockback, bullet.slow]
+	# 5차 폴리싱: 타이틀과 구경/타입 병합 및 행 감축 (세로 4행 -> 3행 정돈)
+	var title_hbox := HBoxContainer.new()
+	title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_child(title_hbox)
 	
+	var title_text := "%s %s" % [caliber_str, type_name]
 	var cal_color = parent_scene.C_WARNING if bullet.penetration > 0 else Color.WHITE
-	var cal_lbl: Label = parent_scene.make_label(caliber_str, 12, cal_color)
-	vbox.add_child(cal_lbl)
+	var title_lbl: Label = parent_scene.make_label(title_text, 11.5, cal_color)
+	title_lbl.clip_text = true
+	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	title_lbl.add_theme_constant_override("outline_size", 3)
+	title_hbox.add_child(title_lbl)
 	
-	var st_lbl1: Label = parent_scene.make_label(st_str1, 9.5, Color.WHITE)
-	st_lbl1.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	st_lbl1.add_theme_constant_override("outline_size", 3)
-	vbox.add_child(st_lbl1)
+	# 수량이 2개 이상일 때만 수량 표기 노출 (1개 이하일 때는 직관성을 위해 완전히 숨김)
+	if count > 1:
+		var count_lbl: Label = parent_scene.make_label("x%d" % count, 9.5, parent_scene.C_DIM)
+		count_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+		count_lbl.add_theme_constant_override("outline_size", 3)
+		title_hbox.add_child(count_lbl)
 	
-	var st_lbl2: Label = parent_scene.make_label(st_str2, 8.5, parent_scene.C_DIM)
-	st_lbl2.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	st_lbl2.add_theme_constant_override("outline_size", 3)
-	vbox.add_child(st_lbl2)
+	# 1행 HBox (DMG, ACC) - 가독 한계 크기 10.5 확보 및 정식 명칭 사용
+	var row1_hbox := HBoxContainer.new()
+	row1_hbox.add_theme_constant_override("separation", 10)
+	vbox.add_child(row1_hbox)
 	
-	var count_lbl: Label = parent_scene.make_label("%s ×%d" % [type_name, count], 9.5, parent_scene.C_DIM)
-	count_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	count_lbl.add_theme_constant_override("outline_size", 3)
-	vbox.add_child(count_lbl)
+	# DMG (대미지)
+	var dmg_color = Color.WHITE if bullet.damage > 0 else parent_scene.C_DIM.darkened(0.2)
+	var dmg_lbl = parent_scene.make_label("DMG %d" % bullet.damage, 10.5, dmg_color)
+	dmg_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	dmg_lbl.add_theme_constant_override("outline_size", 3)
+	row1_hbox.add_child(dmg_lbl)
+	
+	# ACC (명중률)
+	var acc_color = Color.WHITE if bullet.accuracy > 0 else parent_scene.C_DIM.darkened(0.2)
+	var acc_lbl = parent_scene.make_label("ACC %d" % bullet.accuracy, 10.5, acc_color)
+	acc_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	acc_lbl.add_theme_constant_override("outline_size", 3)
+	row1_hbox.add_child(acc_lbl)
+	
+	# 2행 HBox (PEN, KB, SLOW) - 폰트 크기를 10.5로 통일
+	var row2_hbox := HBoxContainer.new()
+	row2_hbox.add_theme_constant_override("separation", 6)
+	vbox.add_child(row2_hbox)
+	
+	# PEN (관통)
+	var pen_color = Color(0.3, 0.9, 0.6) if bullet.penetration > 0 else parent_scene.C_DIM.darkened(0.4)
+	var pen_lbl = parent_scene.make_label("PEN %d" % bullet.penetration, 10.5, pen_color)
+	pen_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	pen_lbl.add_theme_constant_override("outline_size", 3)
+	row2_hbox.add_child(pen_lbl)
+	
+	# KB (넉백)
+	var kb_color = Color(1.0, 0.6, 0.2) if bullet.knockback > 0 else parent_scene.C_DIM.darkened(0.4)
+	var kb_lbl = parent_scene.make_label("KB %d" % bullet.knockback, 10.5, kb_color)
+	kb_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	kb_lbl.add_theme_constant_override("outline_size", 3)
+	row2_hbox.add_child(kb_lbl)
+	
+	# SLOW (슬로우)
+	var slow_color = Color(0.2, 0.6, 1.0) if bullet.slow > 0 else parent_scene.C_DIM.darkened(0.4)
+	var slow_lbl = parent_scene.make_label("SLOW %d" % bullet.slow, 10.5, slow_color)
+	slow_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	slow_lbl.add_theme_constant_override("outline_size", 3)
+	row2_hbox.add_child(slow_lbl)
 		
 	if click_callback.is_valid():
 		var btn := Button.new()

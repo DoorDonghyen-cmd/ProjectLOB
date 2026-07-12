@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/zombie_boss_director.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "보안부장 \"디렉터 강\""
+description = "빌딩 1~4층 경비를 총괄하던 기업 보안부장. 나노 감염 초기에 부하들을 대피시키다 감염되었으나, 전술 훈련의 근육 기억이 남아있어 방탄 방패 기동과 회피 롤을 교대로 구사합니다."
+icon = ExtResource("1_icon")
+archetype = 6
+is_boss = true
+stance_shift_interval = 3
+max_hp = 20
+defense = 4
+evasion = 1
+speed = 1
+start_distance = 12
+knockback_resistance = 1
