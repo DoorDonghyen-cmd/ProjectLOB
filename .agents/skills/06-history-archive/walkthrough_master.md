@@ -8,6 +8,7 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-17 | **렐릭 시스템 전면 제거** | `codex0717` | 문자열 기반 렐릭 상태·전투 효과·로드아웃 UI·정산·맵 조건을 제거하고 가스 우회로를 일반 경로로 전환, 현행 GDD와 프로젝트 지침 동기화 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_relic_system_removal_2026-07-17.md) |
 | 2026-06-27 | **에이전트 지침 이식** | `2bed5975` | 새로운 프로젝트에 맞춘 범용 SOP 및 템플릿 환경 구축 | [이식 가이드](#) |
 | 2026-07-04 | **CombatOverlayV2 삽탄 오류 수정 및 가방 연동** | `4948a7e9` | 가방 내 잔여 탄환 풀 연동, 동적 탄창 용량 계산 및 플레이어 턴 삽탄 로직 이식, 준비단계 삽탄 취소(Undo) 구현 완료 | [walkthrough.md](file:///C:/Users/도얼동현/.gemini/antigravity-ide/brain/4948a7e9-5ecb-4e3a-8f7a-cbfe2a652b65/walkthrough.md) |
 | 2026-07-04 | **전투 화면 UI V2 전면 재구축** | `f67c8c81` | 기획 지침 노드 트리 구조 및 절대 규칙(컨테이너 앵커 배제, Track 앵커 비율 동적 배치, BagDrawer 오버레이, FloatingLayer 적용) 전면 리모델링 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/f67c8c81-36ad-4694-9a43-bf26cd183c8c/walkthrough.md) |
@@ -28,11 +29,14 @@
 | 2026-07-12 | **맵 · 레벨 구조 개정안 GDD 반영** | `ffd285f8` | 15노드(전투 10, 상점 3, 히든 2) 3구역 구조, 보상 드래프트 방안 A, 히든 노드 위험 완충, 매판 종료 시 크레딧 이월/작전 보급금 보너스 정책 기획서 공식 반영 완료 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/ffd285f8-d243-4078-8f8b-4340ac3f48b8/walkthrough.md) |
 | 2026-07-12 | **맵 · 레벨 구조 및 경제 개정 기획 인게임 연동 구현** | `16ba329e` | 15노드 맵 제너레이터 개편, 맵 UI 15층 확장, 보상 드래프트 3탄환 교체(Swap) 기능, 스타팅 보증금/금고 크레딧 이월, 히든 노드 안전 완충망 구현 완료 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/16ba329e-a924-4c77-947c-907545fa1730/walkthrough.md) |
 | 2026-07-12 | **작전 침투 구역 순차 해금 및 노드 완결 구조 구현** | `afaad6f3` | 5개 작전 침투 구역(섹션 A~E)의 순차 해금 조건 및 10~15층 완결 노드 구조를 인게임 진행과 로비 UI에 완전히 연동 완료, 타이틀 ➡️ 구역 선택 ➡️ 요원 준비실 UI/UX 전환 흐름 개편 적용 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/walkthrough.md) |
+| 2026-07-18 | **통로 분기 목적지 가격 구조 구현** | `codex0718` | 목적지 클릭 한 번으로 통로 확정, 연결 노드 제한, 환기구 `-2m` 다음 전투 이월·비중첩, 무기고 통로 가변 배치, 층 스킵·통로 보상 제거 및 GDD/목업 동기화 완료 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_route_branching_2026-07-18.md) |
 
 ---
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0718 Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_route_branching_2026-07-18.md)
+* [Session codex0717 Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_relic_system_removal_2026-07-17.md)
 * [Session afaad6f3-77c6-4268-acfb-c7f4a2acdd2c Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/walkthrough.md)
 * [Session ffd285f8-d243-4078-8f8b-4340ac3f48b8 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/ffd285f8-d243-4078-8f8b-4340ac3f48b8/walkthrough.md)
 * [Session 16ba329e-a924-4c77-947c-907545fa1730 Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/16ba329e-a924-4c77-947c-907545fa1730/walkthrough.md)

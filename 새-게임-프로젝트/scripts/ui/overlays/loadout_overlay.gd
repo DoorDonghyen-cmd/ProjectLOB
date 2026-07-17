@@ -21,23 +21,14 @@ var _gun_stance_hunter: GunData
 # ── 선택 상태 변수 ──
 var selected_weapon_key: String = "workhorse"
 var selected_section_key: String = "section_a"
-var active_relics := {
-	"gloves": false,
-	"valve": false,
-	"goggles": false
-}
-
 # ── UI 노드 레퍼런스 ──
 var _weapon_cards: Dictionary = {}
-var _relic_cards: Dictionary = {}
 var _target_zone_label: Label
 
 var _gun_icon_rect: TextureRect
 var _cap_slots_hbox: HBoxContainer
 var _lbl_ammo_size: Label
-var _lbl_ammo_buff: Label
 var _lbl_prev_size: Label
-var _lbl_prev_buff: Label
 var _lbl_calibers: Label
 var _lbl_passive_desc: Label
 var _lbl_penalty_desc: Label
@@ -52,7 +43,6 @@ const C_NEON_GOLD := Color(0.83, 0.69, 0.22, 1.0)
 const C_NEON_GOLD_DIM := Color(0.83, 0.69, 0.22, 0.25)
 const C_ALERT_RED := Color(1.0, 0.27, 0.27, 1.0)
 const C_ALERT_RED_BG := Color(1.0, 0.27, 0.27, 0.08)
-const C_BUFF_GREEN := Color(0.0, 1.0, 0.0, 1.0)
 
 # ── 작전 구역 프로필 데이터 맵 ──
 const SECTION_PROFILES := {
@@ -100,7 +90,7 @@ const WEAPON_PROFILES := {
 		"ammo": 5,
 		"prev": 2,
 		"calibers": "[12Gauge] [Slug] [전 구경]",
-		"passive": "- 포인트블랭크 렐릭 기본 탑재 (근접 DMG 폭증)\n- 격발 당 근접 타격 넉백 거리 극대화 (+1 KB)",
+		"passive": "- 포인트블랭크 고유 파츠 기본 탑재 (근접 DMG 폭증)\n- 격발 당 근접 타격 넉백 거리 극대화 (+1 KB)",
 		"penalty": "- 기본 명중(ACC) 보정 게이트가 매우 낮음\n- 원거리 (DIST 4 이상) 타겟 대상 명중률 하락",
 		"unlock_desc": "[처치 연쇄] 한 턴 3마리 이상의 적 처치"
 	},
@@ -253,7 +243,7 @@ func _build_ui() -> void:
 	split_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	main_vbox.add_child(split_hbox)
 
-	# A) 좌측 패널 (로스터 선택 및 렐릭 - 38% 폭)
+	# A) 좌측 패널 (로스터 및 무기 선택 - 38% 폭)
 	var left_panel := VBoxContainer.new()
 	left_panel.add_theme_constant_override("separation", 8)
 	left_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -328,64 +318,6 @@ func _build_ui() -> void:
 				_select_weapon(w_key)
 		)
 
-	# 렐릭 섹션
-	left_panel.add_child(parent_scene.make_label("▶ TACTICAL RELICS", 12, parent_scene.C_DIM))
-	
-	var relic_panel_bg := PanelContainer.new()
-	_apply_custom_panel_style(relic_panel_bg, C_PANEL_BG, Color(0.2, 0.2, 0.25))
-	left_panel.add_child(relic_panel_bg)
-	
-	var relic_margin := MarginContainer.new()
-	relic_margin.add_theme_constant_override("margin_left", 8)
-	relic_margin.add_theme_constant_override("margin_right", 8)
-	relic_margin.add_theme_constant_override("margin_top", 6)
-	relic_margin.add_theme_constant_override("margin_bottom", 6)
-	relic_panel_bg.add_child(relic_margin)
-	
-	var relic_hbox := HBoxContainer.new()
-	relic_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	relic_hbox.add_theme_constant_override("separation", 24)
-	relic_margin.add_child(relic_hbox)
-	
-	var relic_defs = [
-		{"key": "gloves", "emoji": "🧤", "name": "전술 장갑", "tip": "재장전 턴 감소"},
-		{"key": "valve", "emoji": "🎛️", "name": "압력 밸브", "tip": "무기 탄창 +2"},
-		{"key": "goggles", "emoji": "🥽", "name": "스마트 고글", "tip": "예고창 시야 +1"}
-	]
-	
-	for r_def in relic_defs:
-		var r_key = r_def.key
-		var r_vbox := VBoxContainer.new()
-		r_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		r_vbox.add_theme_constant_override("separation", 4)
-		r_vbox.mouse_filter = Control.MOUSE_FILTER_STOP
-		relic_hbox.add_child(r_vbox)
-		_relic_cards[r_key] = r_vbox
-		
-		# 아이콘 테두리용 패널
-		var icon_panel := PanelContainer.new()
-		icon_panel.custom_minimum_size = Vector2(36, 36)
-		_apply_custom_panel_style(icon_panel, Color.BLACK, Color(0.3, 0.3, 0.3))
-		r_vbox.add_child(icon_panel)
-		
-		var r_icon_lbl = parent_scene.make_label(r_def.emoji, 14, parent_scene.C_TEXT)
-		r_icon_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		r_icon_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		icon_panel.add_child(r_icon_lbl)
-		
-		var r_name_lbl = parent_scene.make_label(r_def.name, 9, Color(0.66, 0.66, 0.7))
-		r_name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		r_vbox.add_child(r_name_lbl)
-		
-		r_vbox.tooltip_text = r_def.tip
-		
-		# 클릭 시 토글
-		r_vbox.gui_input.connect(func(event: InputEvent):
-			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-				_toggle_relic(r_key)
-		)
-
-
 	# B) 우측 패널 (전술 상세 명세 - 62% 폭)
 	var right_panel := PanelContainer.new()
 	_apply_custom_panel_style(right_panel, C_PANEL_BG, Color(0.2, 0.2, 0.25))
@@ -443,9 +375,6 @@ func _build_ui() -> void:
 	_lbl_ammo_size = parent_scene.make_label("4", 11, parent_scene.C_TEXT)
 	ammo_val_hbox.add_child(_lbl_ammo_size)
 	
-	_lbl_ammo_buff = parent_scene.make_label("", 10, C_BUFF_GREEN)
-	ammo_val_hbox.add_child(_lbl_ammo_buff)
-
 	# B4) PREVIEW SIZE 로우
 	var prev_row := HBoxContainer.new()
 	right_vbox.add_child(prev_row)
@@ -460,9 +389,6 @@ func _build_ui() -> void:
 	_lbl_prev_size = parent_scene.make_label("2", 11, parent_scene.C_TEXT)
 	prev_val_hbox.add_child(_lbl_prev_size)
 	
-	_lbl_prev_buff = parent_scene.make_label("", 10, C_BUFF_GREEN)
-	prev_val_hbox.add_child(_lbl_prev_buff)
-
 	# B5) CALIBERS 로우
 	var cal_row := HBoxContainer.new()
 	right_vbox.add_child(cal_row)
@@ -559,25 +485,7 @@ func _select_weapon(w_key: String) -> void:
 	_refresh_stats_ui()
 
 
-## 렐릭 선택 토글
-func _toggle_relic(r_key: String) -> void:
-	active_relics[r_key] = not active_relics[r_key]
-	
-	# 비주얼 활성도 강제 조절
-	var relic_vbox: VBoxContainer = _relic_cards[r_key]
-	var icon_panel: PanelContainer = relic_vbox.get_child(0)
-	
-	if active_relics[r_key]:
-		relic_vbox.modulate = Color.WHITE
-		_apply_custom_panel_style(icon_panel, Color(0.25, 0.20, 0.12), C_NEON_GOLD)
-	else:
-		relic_vbox.modulate = Color(1.0, 1.0, 1.0, 0.5)
-		_apply_custom_panel_style(icon_panel, Color.BLACK, Color(0.3, 0.3, 0.3))
-		
-	_refresh_stats_ui()
-
-
-## 스탯 수치 리프레시 및 렐릭 시뮬레이션
+## 스탯 수치 리프레시
 func _refresh_stats_ui() -> void:
 	var profile = WEAPON_PROFILES[selected_weapon_key]
 	
@@ -592,43 +500,24 @@ func _refresh_stats_ui() -> void:
 	if target_gun:
 		_gun_icon_rect.texture = target_gun.icon
 		
-	# 2. CAPACITY SLOTS 렌더링 (압력 밸브 장착 시 슬롯 용량 +1)
+	# 2. CAPACITY SLOTS 렌더링
 	for child in _cap_slots_hbox.get_children():
 		child.queue_free()
 		
 	var base_cap: int = profile.cap
-	var final_cap := base_cap
-	if active_relics.valve:
-		final_cap += 1
-		
-	for i in range(final_cap):
+	for i in range(base_cap):
 		var cap_box = PanelContainer.new()
 		cap_box.custom_minimum_size = Vector2(16, 16)
-		
-		# 추가 가산된 슬롯은 녹색 테두리로 가시성 분리
-		var border = C_BUFF_GREEN if i >= base_cap else C_NEON_GOLD
-		var bg = Color(0.0, 1.0, 0.0, 0.1) if i >= base_cap else Color(0.83, 0.69, 0.22, 0.2)
-		
-		_apply_custom_panel_style(cap_box, bg, border)
+		_apply_custom_panel_style(cap_box, Color(0.83, 0.69, 0.22, 0.2), C_NEON_GOLD)
 		_cap_slots_hbox.add_child(cap_box)
 		
-	# 3. AMMO SIZE 스탯 (압력 밸브 장착 시 탄창 크기 +2)
+	# 3. AMMO SIZE 스탯
 	var base_ammo: int = profile.ammo
 	_lbl_ammo_size.text = str(base_ammo)
-	if active_relics.valve:
-		_lbl_ammo_buff.text = "→ %d (+2)" % (base_ammo + 2)
-		_lbl_ammo_buff.visible = true
-	else:
-		_lbl_ammo_buff.visible = false
 		
-	# 4. PREVIEW SIZE 스탯 (스마트 고글 장착 시 예고창 크기 +1)
+	# 4. PREVIEW SIZE 스탯
 	var base_prev: int = profile.prev
 	_lbl_prev_size.text = str(base_prev)
-	if active_relics.goggles:
-		_lbl_prev_buff.text = "→ %d (+1)" % (base_prev + 1)
-		_lbl_prev_buff.visible = true
-	else:
-		_lbl_prev_buff.visible = false
 		
 	# 5. 구경 및 설명 텍스트
 	_lbl_calibers.text = profile.calibers
@@ -662,9 +551,6 @@ func _on_start_run_pressed() -> void:
 	if target_gun:
 		parent_scene.set_current_gun(target_gun)
 		
-	# 렐릭 활성 여부를 타이틀의 체크 버튼 상태에도 연동 동기화해 줌
-	parent_scene.sync_relics_from_loadout(active_relics)
-	
 	visible = false
 	parent_scene.handle_loadout_finished()
 
@@ -782,4 +668,3 @@ func _select_section(sec_key: String) -> void:
 	var profile = SECTION_PROFILES.get(sec_key, {"name": sec_key})
 	if _target_zone_label:
 		_target_zone_label.text = " [TARGET: %s]" % profile.name
-

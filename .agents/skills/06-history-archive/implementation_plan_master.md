@@ -8,6 +8,7 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-17 | **렐릭 시스템 전면 제거** | `codex0717` | 런타임 상태·호출 계약·UI·맵 조건·정산을 함께 제거하고 포인트블랭크 파츠 및 기존 맵 연결 구조는 보존 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_relic_system_removal_2026-07-17.md) |
 | 2026-06-27 | **에이전트 지침 및 매니지먼트 이식** | `2bed5975` | D:\ProjectLoB 내 범용 매니지먼트 환경 직접 구축 설계 | [계획서 없음](#) |
 | 2026-06-28 | **combat_scene.gd 리팩토링** | `bbacb3ae` | 씬 라우터 및 5대 독립 서브 오버레이 컴포넌트 모듈 분리 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/bbacb3ae-bec7-4690-b500-e3c4ec102daf/implementation_plan.md) |
 | 2026-06-28 | **미드저니 MCP 서버 연동** | `287baf0e` | python-uv 및 mcp_config.json 구성을 통한 midjourney-mcp 연결 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/287baf0e-2bda-448a-bf37-3a9f62aa7cfe/implementation_plan.md) |
@@ -25,11 +26,14 @@
 | 2026-07-12 | **맵 · 레벨 구조 개정안 GDD 반영** | `ffd285f8` | 15노드(전투 10, 상점 3, 히든 2) 3구역 구조, 보상 드래프트 방안 A, 히든 노드 위험 완충, 매판 종료 시 크레딧 이월/작전 보급금 보너스 정책 기획서 반영 설계 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/ffd285f8-d243-4078-8f8b-4340ac3f48b8/implementation_plan.md) |
 | 2026-07-12 | **맵 · 레벨 구조 및 경제 개정 기획 인게임 연동 구현** | `16ba329e` | 15노드 맵 구조 개편, 보상 드래프트 3탄환 교체(Swap) 기능, 스타팅 보증금/금고 크레딧 이월, 히든 노드 안전 완충망 연동 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/16ba329e-a924-4c77-947c-907545fa1730/implementation_plan.md) |
 | 2026-07-12 | **작전 침투 구역 순차 해금 및 노드 완결 구조 구현** | `afaad6f3` | 5개 침투 구역 순차 해금, current_section 및 10~15층 동적 맵 생성, 구역별 적 스폰 및 숏컷 연동, 타이틀 ➡️ 구역 선택 ➡️ 요원 준비실 UI/UX 전환 흐름 개편 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/implementation_plan.md) |
+| 2026-07-18 | **통로 분기 목적지 가격 구조 구현** | `codex0718` | 계단·환기구 2종화, 목적지 1회 선택, 실제 연결 노드 제한, 환기 압박 다음 전투 이월·비중첩, 무기고 통로 가변 배치 및 층 스킵 통로 제거 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_route_branching_2026-07-18.md) |
 
 ---
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0718 Plan](file:///D:/ProjectLoB/docs/implementation_plan_route_branching_2026-07-18.md)
+* [Session codex0717 Plan](file:///D:/ProjectLoB/docs/implementation_plan_relic_system_removal_2026-07-17.md)
 * [Session afaad6f3-77c6-4268-acfb-c7f4a2acdd2c Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/implementation_plan.md)
 * [Session ffd285f8-d243-4078-8f8b-4340ac3f48b8 Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/ffd285f8-d243-4078-8f8b-4340ac3f48b8/implementation_plan.md)
 * [Session 16ba329e-a924-4c77-947c-907545fa1730 Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/16ba329e-a924-4c77-947c-907545fa1730/implementation_plan.md)

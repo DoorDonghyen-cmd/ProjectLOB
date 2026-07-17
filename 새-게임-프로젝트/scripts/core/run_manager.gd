@@ -29,7 +29,11 @@ const BACKPACK_CAPACITY: int = 8
 var backpack_items: Array[Resource] = []
 var current_floor: int = 1
 var current_section: String = "section_a"        # 현재 런의 작전 구역 ID
-var current_route_type: String = "stairs" # "stairs", "air_duct", "shaft"
+const AIR_DUCT_DISTANCE_PENALTY: int = -2
+
+var current_route_type: String = "stairs" # "stairs", "air_duct"
+var current_node_id: int = 0
+var pending_combat_distance_modifier: int = 0
 var has_chamber_polish: bool = false     # 약실 소탕 리로드 면제 버프
 var visible_magazine_slots: int = 2      # 전투 중 보여질 예고창 탄환 개수 (기본 2칸)
 var tactical_data_cores: int = 0         # 이번 런에서 획득한 전술 데이터 코어 수
@@ -50,8 +54,6 @@ var run_stats := {
 
 var deck: Array[BulletData] = []
 var discarded_bullets: Array[BulletData] = [] # Unload로 버려져 소실 위기에 놓인 탄환들
-var active_relics: Array[String] = []
-
 # ── 맵 구조 데이터 ──
 var map_nodes: Dictionary = {}         # id(int) -> RunNode
 var floor_connections: Dictionary = {} # floor(int) -> Array[int] (노드 ID 목록)
@@ -61,13 +63,13 @@ class RunNode:
 	var id: int
 	var type_name: String
 	var description: String
-	var connected_routes: Array[String] # 연결되는 통로들: "stairs", "air_duct", "shaft"
+	var connected_routes: Array[String] # 레거시 노드 태그: "stairs", "air_duct"
 	
 	# 신설 필드
 	var connected_node_ids: Array = [] # 다음 층의 타겟 노드 ID들
-	var connected_node_routes: Dictionary = {} # target_node_id(int) -> route_type(String, "stairs", "air_duct", "shaft")
+	var connected_node_routes: Dictionary = {} # target_node_id(int) -> route_type(String, "stairs", "air_duct")
 	var is_hidden: bool = false            # 조건부 노출 여부
-	var unlock_condition_type: String = ""  # "caliber_762", "gas_valve", "chamber_polish", ""
+	var unlock_condition_type: String = ""  # "caliber_762", "chamber_polish", ""
 	var hidden_type: String = ""            # ??? 노드 내부의 진짜 타입
 	var scan_hint: String = ""              # 전술 스캔 힌트
 	
@@ -94,9 +96,10 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 	backpack_items.clear()
 	deck.clear()
 	discarded_bullets.clear()
-	active_relics.clear()
 	has_chamber_polish = false
 	current_route_type = "stairs"
+	current_node_id = 0
+	pending_combat_distance_modifier = 0
 	visible_magazine_slots = 2
 	tactical_data_cores = 0
 	
@@ -230,15 +233,50 @@ func select_route(route: String) -> String:
 		"stairs":
 			return "비상계단을 통해 조용히 전진합니다. 패널티가 없습니다."
 		"air_duct":
-			return "좁은 환기구를 포복 전진합니다.\n[패널티] 공간의 제약으로 인해 전투 진입 시 적과의 시작 거리가 2칸 단축됩니다!"
-		"shaft":
-			# 와이어 끊어짐 확률 30%
-			if randf() < 0.3:
-				hp_buffer = maxi(hp_buffer - 1, 0)
-				return "샤프트 와이어가 끊어지며 동체가 추락했습니다!\n[피해] 비상 제동 장치가 작동했으나 HP 버퍼가 1 소실되었습니다!"
-			else:
-				return "엘리베이터 샤프트 로프를 타고 고속 침투합니다.\n[패널티] 적의 급습으로 인해 전투 진입 시 거리 4칸의 초근접 대치가 시작됩니다!"
+			pending_combat_distance_modifier = AIR_DUCT_DISTANCE_PENALTY
+			return "좁은 환기구를 포복 전진합니다.\n[환기 압박] 다음 교전의 적 시작 거리가 2m 단축됩니다. 비전투 노드를 지나도 유지됩니다."
 	return ""
+
+
+## 환기구에서 누적된 다음 교전 거리 비용을 1회 반환하고 소멸시킨다.
+func consume_pending_combat_distance_modifier() -> int:
+	var modifier := pending_combat_distance_modifier
+	pending_combat_distance_modifier = 0
+	return modifier
+
+
+## 현재 위치에서 목적지 노드로 연결된 통로를 반환한다.
+func get_route_to_node(target_node_id: int) -> String:
+	if current_node_id == 0 or not map_nodes.has(current_node_id):
+		if map_nodes.has(target_node_id):
+			var entry_node: RunNode = map_nodes[target_node_id]
+			if not entry_node.connected_routes.is_empty():
+				return entry_node.connected_routes[0]
+		return "stairs"
+	var current_node: RunNode = map_nodes[current_node_id]
+	return current_node.connected_node_routes.get(target_node_id, "stairs")
+
+
+## 첫 층은 모두 선택 가능하며, 이후에는 현재 노드의 실제 연결선만 허용한다.
+func is_node_reachable(target_node_id: int) -> bool:
+	if current_node_id == 0 or not map_nodes.has(current_node_id):
+		return true
+	var current_node: RunNode = map_nodes[current_node_id]
+	return current_node.connected_node_ids.has(target_node_id)
+
+
+## 통로가 아닌 목적지의 위험도에 따라 TDC를 지급한다.
+func record_node_clear(node: RunNode) -> int:
+	if node == null:
+		return 0
+	var earned := 0
+	var resolved_type := node.hidden_type if node.type_name.begins_with("???") else node.type_name
+	if resolved_type.contains("보스") or resolved_type.contains("Boss"):
+		earned = 2
+	elif node.type_name.begins_with("???") or resolved_type.contains("우회") or resolved_type.contains("보급"):
+		earned = 1
+	tactical_data_cores += earned
+	return earned
 
 
 ## 전투 완료 시 드래프트 추가
@@ -296,7 +334,7 @@ func discard_bullet_from_deck(index: int) -> void:
 ## 런 정산 및 크레딧 환전
 func end_run(won: bool) -> int:
 	var won_bonus := 50 if won else 0
-	var earned := (current_floor * 15) + (active_relics.size() * 20) + won_bonus
+	var earned := (current_floor * 15) + won_bonus
 	meta_credits += earned
 	
 	# 전술 데이터 코어 영구 누적
@@ -317,21 +355,6 @@ func end_run(won: bool) -> int:
 	saved_vault_credits = clampi(int(credits * ratio), 0, 100)
 	
 	return earned
-
-
-## 전투 승리 시 침투 경로별 전술 데이터 코어(TDC) 가산
-func record_combat_win(route_type: String) -> int:
-	var earned_cores = 0
-	match route_type:
-		"air_duct":
-			earned_cores = 1
-		"shaft":
-			earned_cores = 2
-	
-	tactical_data_cores += earned_cores
-	if earned_cores > 0:
-		run_stats.hard_zones_cleared += 1
-	return earned_cores
 
 
 ## 이번 런 통계를 검토하여 영구 해금될 무기들을 체크 및 해금
@@ -446,7 +469,7 @@ func generate_run_map() -> void:
 				n.scan_hint = "스캔: 다수의 생체 신호 감지 (위험도 HIGH)"
 			elif r < 0.7:
 				n.hidden_type = "보급 캐비닛 (정비)"
-				n.scan_hint = "스캔: 렐릭 에너지 반응 감지 (보급고 유력)"
+				n.scan_hint = "스캔: 군수 보급품 반응 감지 (보급고 유력)"
 			else:
 				n.hidden_type = "보안 통제실 (이벤트)"
 				n.scan_hint = "스캔: 미세 전자기기 노이즈 감지 (상점 유력)"
@@ -464,14 +487,14 @@ func generate_run_map() -> void:
 		add_node.call(2, 201, "주차장 구역 A (전투)", "경보 장치가 삼엄한 구역", ["stairs", "air_duct"])
 		add_node.call(2, 202, "??? (미지)", "어두운 지하실 코너", ["air_duct"])
 		add_node.call(3, 301, "대기실 (전투)", "경찰 방패 좀비 포진", ["stairs"])
-		add_node.call(3, 302, "보안 무기고 (보급)", "🔑 [구경 보안 게이트] 대구경 화기 전용 탄약 보급실", ["shaft"], true, "caliber_762")
+		add_node.call(3, 302, "보안 무기고 (보급)", "🔑 [구경 보안 게이트] 대구경 화기 전용 탄약 보급실", ["air_duct"], true, "caliber_762")
 		add_node.call(4, 401, "무기 캐비닛 (상점)", "구역 A 무기고 상점 단말기", ["stairs"])
 		add_node.call(5, 501, "물류 구역 (전투)", "좀비 떼 출몰", ["stairs", "air_duct"])
 		add_node.call(5, 502, "환기 통로 (전투)", "돌발 매복 경비병", ["air_duct"])
 		add_node.call(6, 601, "복도 A (전투)", "방패 요원이 전술 대기 중", ["stairs", "air_duct"])
 		add_node.call(6, 602, "??? (미지)", "센서 교란 구역", ["air_duct"])
 		add_node.call(7, 701, "??? (미지)", "센서 교란 구역", ["stairs"])
-		add_node.call(7, 702, "가스 제어실 (우회)", "🔑 [가스 제어 통로] 독가스 면제 우회 통로", ["air_duct"], true, "gas_valve")
+		add_node.call(7, 702, "가스 제어실 (우회)", "환기 설비를 이용한 독가스 차단 우회 통로", ["air_duct"])
 		add_node.call(8, 801, "전력 제어실 (전투)", "전력 차단 복구 구역", ["stairs"])
 		add_node.call(9, 901, "무기 캐비닛 (상점)", "구역 A 최종 무기고 상점 단말기", ["stairs"])
 		add_node.call(10, 1001, "지하 출구 (보스)", "지하 주차장을 통제하는 핵심 병력", ["stairs"])
@@ -483,13 +506,13 @@ func generate_run_map() -> void:
 		map_nodes[102].connected_node_routes[202] = "air_duct"
 		map_nodes[201].connected_node_ids = [301, 302]
 		map_nodes[201].connected_node_routes[301] = "stairs"
-		map_nodes[201].connected_node_routes[302] = "shaft"
+		map_nodes[201].connected_node_routes[302] = "air_duct"
 		map_nodes[202].connected_node_ids = [301]
 		map_nodes[202].connected_node_routes[301] = "air_duct"
 		map_nodes[301].connected_node_ids = [401]
 		map_nodes[301].connected_node_routes[401] = "stairs"
 		map_nodes[302].connected_node_ids = [401]
-		map_nodes[302].connected_node_routes[401] = "shaft"
+		map_nodes[302].connected_node_routes[401] = "air_duct"
 		map_nodes[401].connected_node_ids = [501, 502]
 		map_nodes[401].connected_node_routes[501] = "stairs"
 		map_nodes[401].connected_node_routes[502] = "air_duct"
@@ -519,14 +542,14 @@ func generate_run_map() -> void:
 		add_node.call(2, 201, "2층 복도 (전투)", "경보 센서 작동 중", ["stairs", "air_duct"])
 		add_node.call(2, 202, "??? (미지)", "어두운 코너 서버실", ["air_duct"])
 		add_node.call(3, 301, "3층 보급실 (보급)", "🔑 [구경 보안 게이트] 대구경 화기 보급실", ["stairs"], true, "caliber_762")
-		add_node.call(3, 302, "3층 대기실 (전투)", "술사 기동 대기 중", ["shaft"])
+		add_node.call(3, 302, "3층 대기실 (전투)", "술사 기동 대기 중", ["air_duct"])
 		add_node.call(4, 401, "4층 사무공간 (전투)", "중장갑 좀비 포진", ["stairs"])
 		add_node.call(5, 501, "5층 복도 (전투)", "경보 울린 보안 격실", ["stairs", "air_duct"])
 		add_node.call(6, 601, "무기 캐비닛 (상점)", "구역 B/C 무기고 상점", ["stairs"])
 		add_node.call(7, 701, "7층 통로 (전투)", "돌격 좀비 떼 발견", ["stairs", "air_duct"])
 		add_node.call(7, 702, "??? (미지)", "독가스 누출 흔적", ["air_duct"])
-		add_node.call(8, 801, "가스 제어실 (우회)", "🔑 [가스 제어 통로] 독가스 우회로", ["stairs"], true, "gas_valve")
-		add_node.call(8, 802, "8층 실험동 (전투)", "방패병과 드론 경비대", ["shaft"])
+		add_node.call(8, 801, "가스 제어실 (우회)", "환기 설비를 이용한 독가스 차단 우회 통로", ["stairs"])
+		add_node.call(8, 802, "8층 실험동 (전투)", "방패병과 드론 경비대", ["air_duct"])
 		add_node.call(9, 901, "9층 회랑 (전투)", "포위 요격 대기 중", ["stairs"])
 		add_node.call(10, 1001, "약실 조율실 (정비)", "🔑 [약실 조율] 정밀 정비실", ["stairs"], true, "chamber_polish")
 		add_node.call(10, 1002, "10층 통제실 (전투)", "최종 방어 병력 대치", ["air_duct"])
@@ -540,13 +563,13 @@ func generate_run_map() -> void:
 		map_nodes[102].connected_node_routes[202] = "air_duct"
 		map_nodes[201].connected_node_ids = [301, 302]
 		map_nodes[201].connected_node_routes[301] = "stairs"
-		map_nodes[201].connected_node_routes[302] = "shaft"
+		map_nodes[201].connected_node_routes[302] = "air_duct"
 		map_nodes[202].connected_node_ids = [302]
 		map_nodes[202].connected_node_routes[302] = "air_duct"
 		map_nodes[301].connected_node_ids = [401]
 		map_nodes[301].connected_node_routes[401] = "stairs"
 		map_nodes[302].connected_node_ids = [401]
-		map_nodes[302].connected_node_routes[401] = "shaft"
+		map_nodes[302].connected_node_routes[401] = "air_duct"
 		map_nodes[401].connected_node_ids = [501]
 		map_nodes[401].connected_node_routes[501] = "stairs"
 		map_nodes[501].connected_node_ids = [601]
@@ -556,13 +579,13 @@ func generate_run_map() -> void:
 		map_nodes[601].connected_node_routes[702] = "air_duct"
 		map_nodes[701].connected_node_ids = [801, 802]
 		map_nodes[701].connected_node_routes[801] = "stairs"
-		map_nodes[701].connected_node_routes[802] = "shaft"
+		map_nodes[701].connected_node_routes[802] = "air_duct"
 		map_nodes[702].connected_node_ids = [802]
 		map_nodes[702].connected_node_routes[802] = "air_duct"
 		map_nodes[801].connected_node_ids = [901]
 		map_nodes[801].connected_node_routes[901] = "stairs"
 		map_nodes[802].connected_node_ids = [901]
-		map_nodes[802].connected_node_routes[901] = "shaft"
+		map_nodes[802].connected_node_routes[901] = "air_duct"
 		map_nodes[901].connected_node_ids = [1001, 1002]
 		map_nodes[901].connected_node_routes[1001] = "stairs"
 		map_nodes[901].connected_node_routes[1002] = "air_duct"
@@ -577,29 +600,29 @@ func generate_run_map() -> void:
 		# 펜트하우스 및 무한 루프 (상급/도전 - 15층 구조 / 보스 15층)
 		# 기존 15층 레이아웃 유지
 		add_node.call(1, 101, "사무실 (전투)", "무장 순찰 경비 대기 중", ["stairs", "air_duct"])
-		add_node.call(1, 102, "환기 서버실 (전투)", "침투 드론 경비대 순찰 중", ["air_duct", "shaft"])
+		add_node.call(1, 102, "환기 서버실 (전투)", "침투 드론 경비대 순찰 중", ["air_duct"])
 		add_node.call(2, 201, "연구실 복도 (전투)", "경보 장치가 삼엄한 복도", ["stairs", "air_duct"])
-		add_node.call(2, 202, "??? (미지)", "센서 교란 구역", ["air_duct", "shaft"])
+		add_node.call(2, 202, "??? (미지)", "센서 교란 구역", ["air_duct"])
 		add_node.call(3, 301, "보안 대기실 (전투)", "정찰 경비대 순찰 중", ["stairs"])
-		add_node.call(3, 302, "보안 무기고 (보급)", "🔑 [구경 보안 게이트] 대구경 화기 전용 탄약 보급실", ["shaft"], true, "caliber_762")
+		add_node.call(3, 302, "보안 무기고 (보급)", "🔑 [구경 보안 게이트] 대구경 화기 전용 탄약 보급실", ["air_duct"], true, "caliber_762")
 		add_node.call(4, 401, "무기 캐비닛 (상점)", "구역 D/E 무기고 상점 단말기", ["stairs"])
 		add_node.call(5, 501, "물류 창고 (전투)", "순찰 중인 경보 공중 드론 발견", ["stairs", "air_duct"])
-		add_node.call(5, 502, "환기 대피소 (전투)", "돌발 공격대 매복 중", ["air_duct", "shaft"])
+		add_node.call(5, 502, "환기 대피소 (전투)", "돌발 공격대 매복 중", ["air_duct"])
 		add_node.call(6, 601, "실험실 복도 (전투)", "방패 요원이 전술 대기 중", ["stairs", "air_duct"])
-		add_node.call(6, 602, "??? (미지)", "센서 교란 구역", ["air_duct", "shaft"])
+		add_node.call(6, 602, "??? (미지)", "센서 교란 구역", ["air_duct"])
 		add_node.call(7, 701, "??? (미지)", "센서 교란 구역", ["stairs"])
-		add_node.call(7, 702, "가스 제어실 (우회)", "🔑 [가스 제어 통로] 독가스 면제 우회 통로", ["air_duct"], true, "gas_valve")
+		add_node.call(7, 702, "가스 제어실 (우회)", "환기 설비를 이용한 독가스 차단 우회 통로", ["air_duct"])
 		add_node.call(8, 801, "전력 제어실 (전투)", "전력 복구를 방해하는 적 발견", ["stairs", "air_duct"])
-		add_node.call(8, 802, "??? (미지)", "센서 교란 구역", ["stairs", "shaft"])
+		add_node.call(8, 802, "??? (미지)", "센서 교란 구역", ["stairs", "air_duct"])
 		add_node.call(9, 901, "무기 캐비닛 (상점)", "구역 D/E 중층 무기고 상점 단말기", ["stairs"])
 		add_node.call(10, 1001, "서버 보관실 (전투)", "중장갑 순찰대 경비 대기 중", ["stairs", "air_duct"])
-		add_node.call(10, 1002, "보안실 통로 (전투)", "포위 공격대 대기 중", ["air_duct", "shaft"])
+		add_node.call(10, 1002, "보안실 통로 (전투)", "포위 공격대 대기 중", ["air_duct"])
 		add_node.call(11, 1101, "연구동 회랑 (전투)", "정밀 센서 감지 삼엄한 구역", ["stairs", "air_duct"])
-		add_node.call(11, 1102, "??? (미지)", "센서 교란 구역", ["air_duct", "shaft"])
+		add_node.call(11, 1102, "??? (미지)", "센서 교란 구역", ["air_duct"])
 		add_node.call(12, 1201, "??? (미지)", "센서 교란 구역", ["stairs"])
 		add_node.call(12, 1202, "약실 조율실 (정비)", "🔑 [약실 조율 구역] 정밀 소탕 조율실", ["air_duct"], true, "chamber_polish")
 		add_node.call(13, 1301, "헬리패드 계단 (전투)", "최종 방어 병력 포진 구역", ["stairs", "air_duct"])
-		add_node.call(13, 1302, "??? (미지)", "센서 교란 구역", ["stairs", "shaft"])
+		add_node.call(13, 1302, "??? (미지)", "센서 교란 구역", ["stairs", "air_duct"])
 		add_node.call(14, 1401, "무기 캐비닛 (상점)", "구역 D/E 최종 무기고 상점 단말기", ["stairs"])
 		add_node.call(15, 1501, "옥상 헬리패드 (최종 보스)", "탈출을 가로막는 최종 병기 조우", ["stairs"])
 
@@ -610,13 +633,13 @@ func generate_run_map() -> void:
 		map_nodes[102].connected_node_routes[202] = "air_duct"
 		map_nodes[201].connected_node_ids = [301, 302]
 		map_nodes[201].connected_node_routes[301] = "stairs"
-		map_nodes[201].connected_node_routes[302] = "shaft"
+		map_nodes[201].connected_node_routes[302] = "air_duct"
 		map_nodes[202].connected_node_ids = [301]
 		map_nodes[202].connected_node_routes[301] = "air_duct"
 		map_nodes[301].connected_node_ids = [401]
 		map_nodes[301].connected_node_routes[401] = "stairs"
 		map_nodes[302].connected_node_ids = [401]
-		map_nodes[302].connected_node_routes[401] = "shaft"
+		map_nodes[302].connected_node_routes[401] = "air_duct"
 		map_nodes[401].connected_node_ids = [501, 502]
 		map_nodes[401].connected_node_routes[501] = "stairs"
 		map_nodes[401].connected_node_routes[502] = "air_duct"
@@ -664,6 +687,37 @@ func generate_run_map() -> void:
 		map_nodes[1401].connected_node_ids = [1501]
 		map_nodes[1401].connected_node_routes[1501] = "stairs"
 
+	_finalize_route_graph()
+
+
+## 상점 진입 가격(계단/환기구)을 런마다 배치한다.
+## 상점이 2개 이상이면 최소 1개는 계단, 최소 1개는 환기구가 된다.
+func _finalize_route_graph() -> void:
+	var armory_ids: Array[int] = []
+	for node_id in map_nodes.keys():
+		var node: RunNode = map_nodes[node_id]
+		if node.type_name.contains("상점"):
+			armory_ids.append(node_id)
+
+	if armory_ids.size() < 2:
+		return
+
+	armory_ids.shuffle()
+	var air_duct_count := randi_range(1, armory_ids.size() - 1)
+	var air_duct_armories: Array[int] = []
+	for i in range(air_duct_count):
+		air_duct_armories.append(armory_ids[i])
+
+	for incoming_id in map_nodes.keys():
+		var incoming_node: RunNode = map_nodes[incoming_id]
+		for target_id in incoming_node.connected_node_routes.keys():
+			if not armory_ids.has(target_id):
+				continue
+			var route := "air_duct" if air_duct_armories.has(target_id) else "stairs"
+			incoming_node.connected_node_routes[target_id] = route
+			var target_node: RunNode = map_nodes[target_id]
+			target_node.connected_routes = [route]
+
 
 ## 조건부 우회 경로 실시간 해제 검사
 func update_conditional_paths() -> void:
@@ -674,9 +728,6 @@ func update_conditional_paths() -> void:
 			var can_unlock = false
 			if cond == "caliber_762":
 				if current_gun and (current_gun.display_name.to_upper().contains("HEAVY") or "7.62" in current_gun.display_name or "중장형" in current_gun.display_name):
-					can_unlock = true
-			elif cond == "gas_valve":
-				if active_relics.has("gas_valve"):
 					can_unlock = true
 			elif cond == "chamber_polish":
 				if has_chamber_polish:

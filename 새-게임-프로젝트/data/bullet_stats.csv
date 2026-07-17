@@ -2,7 +2,7 @@ id,display_name,class,damage,penetration,accuracy,knockback,slow,effect_type,eff
 basic_pistol,9mm 일반탄,pistol,3,0,7,0,0,0,0,대인용 저지력을 지닌 탄환. 특수 방탄 장비가 없는 적에게 순수 물리 대미지를 입힙니다.
 knockback_pistol,9mm 충격탄,pistol,1,0,4,2,0,0,0,대량의 화약을 충전하여 타격 시 적을 뒤로 크게 밀어냅니다.
 slow_pistol,9mm 슬로우탄,pistol,1,0,8,0,2,0,0,특수 점착 성분을 묻혀 피격된 적의 이동 속도를 한시적으로 저하시킵니다.
-opening_pistol,9mm 견제탄,pistol,2,1,5,1,0,4,2,장전된 첫 탄환 발사 시 강력한 경직을 일으켜 적을 넉백시킵니다.
+opening_pistol,9mm 견제탄,pistol,2,1,5,1,0,4,2,장전된 첫 탄환 발사 시 강력한 경직을 일으켜 적을 넉백시키고 방어(DEF)를 영구히 -1 파쇄합니다.
 basic_smg,.45ACP 일반탄,smg,2,0,6,0,0,0,0,연사 화기 전용 표준 탄환. 빠르게 화력을 누적시키기에 적합합니다.
 combo_smg,.45ACP 콤보탄,smg,2,1,6,0,0,2,3,연속 명중 시 반응 장약이 폭발하여 추가 대미지를 입힙니다.
 rhythm_smg,.45ACP 리듬탄,smg,3,1,6,0,0,2,2,동일 클래스 탄환을 리듬에 맞춰 연속 격발 시 가산 대미지를 입힙니다.

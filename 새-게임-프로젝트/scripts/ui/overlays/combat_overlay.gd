@@ -798,20 +798,24 @@ func start_combat(gun_data: GunData, enemy_datas: Array[EnemyData], cm: CombatMa
 	# 시뮬레이터 시작
 	var enemy_data_list: Array[EnemyData] = []
 	var floor_num := run_manager.current_floor if run_manager else 1
-	var dist_modifier := 0
+	var floor_dist_modifier := 0
 	if floor_num <= 3:
-		dist_modifier = 6
+		floor_dist_modifier = 6
 	elif floor_num <= 7:
-		dist_modifier = 4
+		floor_dist_modifier = 4
 	elif floor_num <= 10:
-		dist_modifier = 2
+		floor_dist_modifier = 2
 	elif floor_num >= 15:
-		dist_modifier = -2
+		floor_dist_modifier = -2
 
-	if dist_modifier > 0:
-		add_combat_log("[color=#88ff88]ℹ️ 초반 보너스: 적 소환 거리가 %dm 멀어집니다.[/color]" % dist_modifier)
-	elif dist_modifier < 0:
-		add_combat_log("[color=#ff8888]ℹ️ 종반 패널티: 적 소환 거리가 %dm 좁혀집니다.[/color]" % abs(dist_modifier))
+	var route_dist_modifier := run_manager.consume_pending_combat_distance_modifier() if run_manager else 0
+	var dist_modifier := floor_dist_modifier + route_dist_modifier
+	if floor_dist_modifier > 0:
+		add_combat_log("[color=#88ff88]ℹ️ 초반 보너스: 적 소환 거리가 %dm 멀어집니다.[/color]" % floor_dist_modifier)
+	elif floor_dist_modifier < 0:
+		add_combat_log("[color=#ff8888]ℹ️ 종반 패널티: 적 소환 거리가 %dm 좁혀집니다.[/color]" % abs(floor_dist_modifier))
+	if route_dist_modifier < 0:
+		add_combat_log("[color=#ffcc44]🕳️ 환기 압박 적용: 이번 교전의 적 시작 거리가 2m 좁혀집니다.[/color]")
 
 	for ed in enemy_datas:
 		var temp_ed := ed.duplicate()
@@ -819,11 +823,9 @@ func start_combat(gun_data: GunData, enemy_datas: Array[EnemyData], cm: CombatMa
 		enemy_data_list.append(temp_ed)
 		
 	var initial_deck: Array[BulletData] = []
-	var relics: Array[String] = []
 	if run_manager:
 		initial_deck = run_manager.deck
-		relics = run_manager.active_relics
-	combat_manager.start_encounter(gun_data, enemy_data_list, initial_deck, relics)
+	combat_manager.start_encounter(gun_data, enemy_data_list, initial_deck)
 
 func _connect_signals() -> void:
 	combat_manager.encounter_started.connect(_on_encounter_started)
@@ -1547,13 +1549,10 @@ func _update_enemy_display(enemy: EnemyInstance) -> void:
 	_update_distance_display(enemy)
 
 func _update_enemy_stats_display(enemy: EnemyInstance) -> void:
-	if parent_scene.is_goggles_enabled():
-		_enemy_stats_label.text = "DEF %d | PRES %d | EVA %d | SPD %d" % [
-			enemy.current_def, enemy.knockback_resistance,
-			enemy.current_evasion, enemy.current_speed,
-		]
-	else:
-		_enemy_stats_label.text = "DEF ? | PRES ? | EVA ? | SPD ?"
+	_enemy_stats_label.text = "DEF %d | PRES %d | EVA %d | SPD %d" % [
+		enemy.current_def, enemy.knockback_resistance,
+		enemy.current_evasion, enemy.current_speed,
+	]
 
 
 func _on_enemy_stance_changed(enemy_inst: EnemyInstance, new_stance: Enums.EnemyStance) -> void:

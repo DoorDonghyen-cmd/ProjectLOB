@@ -212,16 +212,6 @@ func set_current_gun(gun: GunData) -> void:
 	_current_gun_data = gun
 
 
-func force_goggles_on_title() -> void:
-	if _loadout_overlay:
-		_loadout_overlay.active_relics.goggles = true
-		_loadout_overlay._refresh_stats_ui()
-
-
-func is_goggles_enabled() -> bool:
-	return _loadout_overlay and _loadout_overlay.active_relics.goggles
-
-
 func trigger_camera_shake(intensity: float = 8.0, duration: float = 0.2) -> void:
 	if not _camera:
 		return
@@ -415,14 +405,6 @@ func handle_loadout_finished() -> void:
 	_show_map_screen()
 
 
-func sync_relics_from_loadout(relics_map: Dictionary) -> void:
-	var list: Array[String] = []
-	if relics_map.gloves: list.append("tactical_gloves")
-	if relics_map.valve: list.append("gas_valve")
-	if relics_map.goggles: list.append("smart_sensor_goggles")
-	_rm.active_relics = list
-
-
 func _show_title_screen() -> void:
 	if _combat_overlay:
 		_combat_overlay.queue_free()
@@ -443,6 +425,7 @@ func _show_map_screen() -> void:
 
 func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> void:
 	_current_node = selected_node
+	_rm.current_node_id = selected_node.id
 	var old_floor = _rm.current_floor
 	var new_floor = selected_node.id / 100
 	_rm.current_floor = new_floor
@@ -584,7 +567,6 @@ func _start_combat_phase(enemy_datas: Array) -> void:
 	var typed_enemies: Array[EnemyData] = []
 	typed_enemies.assign(enemy_datas)
 	
-	# 렐릭 동기화는 이제 요원 작전 준비실(LoadoutOverlay) 작전 개시 시점에 _rm.active_relics로 연동 완료되었습니다.
 	_combat_overlay.start_combat(_current_gun_data, typed_enemies, _cm)
 
 
@@ -597,6 +579,8 @@ func handle_maintenance_finished() -> void:
 		_is_shortcut_mode = false
 		_show_title_screen()
 		return
+
+	_rm.record_node_clear(_current_node)
 		
 	# ── 기밀 파편 수집 연동 ──
 	if _current_node:
@@ -656,10 +640,9 @@ func handle_combat_finished(is_dead: bool) -> void:
 	if is_dead:
 		_show_debriefing(false)
 		return
+
+	_rm.record_node_clear(_current_node)
 		
-	# 승리 시 침투 경로별 전술 데이터 코어(TDC) 가산
-	var earned_cores := _rm.record_combat_win(_rm.current_route_type)
-	
 	# ── 기밀 파편 수집 연동 ──
 	if _current_node:
 		var fid := 0

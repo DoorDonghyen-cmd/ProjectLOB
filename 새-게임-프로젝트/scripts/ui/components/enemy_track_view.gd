@@ -88,6 +88,7 @@ func connect_enemy_gui_input(callback: Callable) -> void:
 
 func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	var badge_panel := PanelContainer.new()
+	badge_panel.name = "BadgePanel"
 	badge_panel.custom_minimum_size = Vector2(24, 24)
 	badge_panel.position = Vector2(28, -28)
 	es.add_child(badge_panel)
@@ -129,6 +130,35 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	badge_panel.add_child(lbl)
+	
+	# 신규 방어도 배지 (자물쇠 배지 바로 옆에 배치)
+	var def_panel := PanelContainer.new()
+	def_panel.name = "DefPanel"
+	def_panel.custom_minimum_size = Vector2(36, 24)
+	def_panel.position = Vector2(56, -28) # 28 + 24 + 4 = 56
+	es.add_child(def_panel)
+	
+	var def_style := StyleBoxFlat.new()
+	def_style.bg_color = Color(0.08, 0.09, 0.13, 0.85)
+	def_style.border_width_left = 1; def_style.border_width_right = 1
+	def_style.border_width_top = 1; def_style.border_width_bottom = 1
+	def_style.border_color = Color(0.24, 0.29, 0.36, 0.9)
+	def_style.corner_radius_top_left = 6; def_style.corner_radius_top_right = 6
+	def_style.corner_radius_bottom_left = 6; def_style.corner_radius_bottom_right = 6
+	def_panel.add_theme_stylebox_override("panel", def_style)
+	
+	var def_hbox := HBoxContainer.new()
+	def_hbox.name = "DefHBox"
+	def_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	def_hbox.add_theme_constant_override("separation", 2)
+	def_panel.add_child(def_hbox)
+	
+	var def_icon: Label = parent_scene.make_label("🛡️", 9, Color.WHITE)
+	def_hbox.add_child(def_icon)
+	
+	var def_lbl: Label = parent_scene.make_label(str(enemy.current_def), 10, Color.WHITE)
+	def_lbl.name = "DefLabel"
+	def_hbox.add_child(def_lbl)
 	
 	# 타겟 지시기 (최근접 링)
 	var ring_style := StyleBoxFlat.new()
@@ -231,3 +261,63 @@ func update_distance_display(enemy: EnemyInstance) -> void:
 		distance_label.add_theme_color_override("font_color", parent_scene.C_DIST_SAFE)
 		top_log_toast.text = "상황 대기 중"
 		top_log_toast.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+
+func update_penetration_indicators(next_bullet: BulletData) -> void:
+	var total_pen: int = 0
+	var has_bullet: bool = false
+	if next_bullet:
+		has_bullet = true
+		total_pen = next_bullet.penetration
+		var b_csv: Dictionary = DataLoader.get_bullet(next_bullet.resource_path.get_file().get_basename())
+		if not b_csv.is_empty():
+			total_pen = b_csv.penetration
+			
+		var current_gun = combat_manager.gun if combat_manager else null
+		if current_gun:
+			var g_csv: Dictionary = DataLoader.get_gun(current_gun.resource_path.get_file().get_basename())
+			var pen_bonus: int = current_gun.passive_pen_bonus
+			if not g_csv.is_empty():
+				pen_bonus = g_csv.passive_pen_bonus
+			total_pen += pen_bonus
+
+	var c_dim = parent_scene.C_DIM if parent_scene and "C_DIM" in parent_scene else Color(0.55, 0.55, 0.65)
+	var c_success = parent_scene.C_SUCCESS if parent_scene and "C_SUCCESS" in parent_scene else Color(0.30, 1.0, 0.50)
+	var c_danger = parent_scene.C_DANGER if parent_scene and "C_DANGER" in parent_scene else Color(1.0, 0.30, 0.30)
+
+	for enemy in enemy_sprites.keys():
+		var es = enemy_sprites[enemy]
+		if not is_instance_valid(es) or enemy.is_dead():
+			continue
+			
+		var badge_panel = es.get_node_or_null("BadgePanel")
+		if badge_panel:
+			var new_style := StyleBoxFlat.new()
+			new_style.corner_radius_top_left = 12
+			new_style.corner_radius_top_right = 12
+			new_style.corner_radius_bottom_left = 12
+			new_style.corner_radius_bottom_right = 12
+			new_style.border_width_left = 1
+			new_style.border_width_right = 1
+			new_style.border_width_top = 1
+			new_style.border_width_bottom = 1
+			
+			if not has_bullet:
+				new_style.bg_color = c_dim.darkened(0.4)
+				new_style.border_color = c_dim
+			else:
+				var can_pierce: bool = total_pen >= enemy.current_def
+				if can_pierce:
+					new_style.bg_color = c_success.darkened(0.4)
+					new_style.border_color = c_success
+				else:
+					new_style.bg_color = c_danger.darkened(0.4)
+					new_style.border_color = c_danger
+			badge_panel.add_theme_stylebox_override("panel", new_style)
+			
+		# 실시간 방어력 수치 갱신
+		var def_panel = es.get_node_or_null("DefPanel")
+		if def_panel:
+			var def_lbl = def_panel.get_node_or_null("DefHBox/DefLabel") as Label
+			if def_lbl:
+				def_lbl.text = str(enemy.current_def)
+

@@ -35,6 +35,7 @@ var _animate_last_insert: bool = false
 var _last_bullet_count: int = -1
 var _current_gun_data: GunData
 var _current_enemy_data: EnemyData
+var _slow_target_enemy: EnemyInstance = null
 
 # ── UI 참조 (MainFlow 내부 자식들) ──
 # 1. TopBar
@@ -1084,20 +1085,24 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 		combat_manager.enemy_killed.connect(_on_enemy_killed)
 		
 	var floor_num := run_manager.current_floor if run_manager else 1
-	var dist_modifier := 0
+	var floor_dist_modifier := 0
 	if floor_num <= 3:
-		dist_modifier = 6
+		floor_dist_modifier = 6
 	elif floor_num <= 7:
-		dist_modifier = 4
+		floor_dist_modifier = 4
 	elif floor_num <= 10:
-		dist_modifier = 2
+		floor_dist_modifier = 2
 	elif floor_num >= 15:
-		dist_modifier = -2
+		floor_dist_modifier = -2
 
-	if dist_modifier > 0:
-		add_combat_log("[color=#88ff88]ℹ️ 초반 보너스: 적 소환 거리가 %dm 멀어집니다.[/color]" % dist_modifier)
-	elif dist_modifier < 0:
-		add_combat_log("[color=#ff8888]ℹ️ 종반 패널티: 적 소환 거리가 %dm 좁혀집니다.[/color]" % abs(dist_modifier))
+	var route_dist_modifier := run_manager.consume_pending_combat_distance_modifier() if run_manager else 0
+	var dist_modifier := floor_dist_modifier + route_dist_modifier
+	if floor_dist_modifier > 0:
+		add_combat_log("[color=#88ff88]ℹ️ 초반 보너스: 적 소환 거리가 %dm 멀어집니다.[/color]" % floor_dist_modifier)
+	elif floor_dist_modifier < 0:
+		add_combat_log("[color=#ff8888]ℹ️ 종반 패널티: 적 소환 거리가 %dm 좁혀집니다.[/color]" % abs(floor_dist_modifier))
+	if route_dist_modifier < 0:
+		add_combat_log("[color=#ffcc44]🕳️ 환기 압박 적용: 이번 교전의 적 시작 거리가 2m 좁혀집니다.[/color]")
 
 	var enemy_data_list: Array[EnemyData] = []
 	for ed in enemy_list:
@@ -1106,11 +1111,9 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 		enemy_data_list.append(temp_ed)
 		
 	var initial_deck: Array[BulletData] = []
-	var relics: Array[String] = []
 	if run_manager:
 		initial_deck = run_manager.deck
-		relics = run_manager.active_relics
-	combat_manager.start_encounter(gun, enemy_data_list, initial_deck, relics)
+	combat_manager.start_encounter(gun, enemy_data_list, initial_deck)
 
 func _on_encounter_started(enemy_list) -> void:
 	_last_bullet_count = -1
@@ -1125,6 +1128,7 @@ func _on_encounter_started(enemy_list) -> void:
 	_update_cylinder_visuals()
 	_update_action_buttons()
 	_update_phase_state()
+	_update_penetration_indicators()
 
 func _update_enemy_position_and_scale(target_enemy = null, animate = false) -> void:
 	if is_instance_valid(_track_control):
@@ -1137,6 +1141,17 @@ func _update_distance_display(enemy: EnemyInstance) -> void:
 func _update_cylinder_visuals() -> void:
 	if is_instance_valid(_lookahead_container):
 		_lookahead_container.update_cylinder_visuals()
+	_update_penetration_indicators()
+
+func _update_penetration_indicators() -> void:
+	if not is_instance_valid(_track_control):
+		return
+		
+	var next_bullet: BulletData = null
+	if combat_manager and not combat_manager.magazine.is_empty():
+		next_bullet = combat_manager.magazine.peek()
+		
+	_track_control.update_penetration_indicators(next_bullet)
 
 func _update_hit_info(enemy: EnemyInstance) -> void:
 	if not enemy or enemy.is_dead():
@@ -1268,7 +1283,14 @@ func _on_fire_pressed() -> void:
 			return
 		if combat_manager.state == CombatManager.State.PLAYER_TURN:
 			clear_combat_log()
-			combat_manager.fire()
+			
+			var next_bullet := combat_manager.magazine.peek()
+			if next_bullet and next_bullet.slow > 0 and is_instance_valid(_slow_target_enemy) and not _slow_target_enemy.is_dead():
+				combat_manager.fire_at_target(_slow_target_enemy)
+			else:
+				combat_manager.fire()
+				
+			_slow_target_enemy = null
 			_update_action_buttons()
 
 func _on_unload_pressed() -> void:
@@ -1341,7 +1363,7 @@ func _on_enemy_sprite_gui_input(event: InputEvent, clicked_enemy: EnemyInstance)
 		if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
 			var next_bullet := combat_manager.magazine.peek()
 			if next_bullet and next_bullet.slow > 0:
-				combat_manager.slow_target_enemy = clicked_enemy
+				_slow_target_enemy = clicked_enemy
 				add_combat_log("[color=#37e0ac]🎯 조준 완료: %s를 조준 지목했습니다.[/color]" % clicked_enemy.data.display_name)
 				_update_hit_info(clicked_enemy)
 
@@ -1416,9 +1438,11 @@ func _on_armor_shredded(enemy_inst: EnemyInstance, new_def: int, amount: int) ->
 	add_combat_log("[color=#a878e8] 파쇄: %s의 DEF가 %d 차감되었습니다.[/color]" % [
 		enemy_inst.data.display_name, amount
 	])
+	_update_penetration_indicators()
 
 func _on_enemy_stance_changed(enemy_inst: EnemyInstance, new_stance: Enums.EnemyStance) -> void:
 	add_combat_log("🔄 태세전환: %s가 새로운 태세로 전환되었습니다." % enemy_inst.data.display_name)
+	_update_penetration_indicators()
 
 func _on_magazine_updated(remaining: int = 0, capacity: int = 0) -> void:
 	_update_cylinder_visuals()
@@ -1426,6 +1450,7 @@ func _on_magazine_updated(remaining: int = 0, capacity: int = 0) -> void:
 	if nearest:
 		_update_hit_info(nearest)
 	_update_action_buttons()
+	_update_penetration_indicators()
 
 func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) -> void:
 	add_combat_log("[color=#ffa500]🔫 격발: %s가 격발되었습니다.[/color]" % bullet.display_name)

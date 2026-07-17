@@ -177,7 +177,6 @@
   /* 노드별 장식 배지 */
   .node.stairs { border-color: var(--steel); }
   .node.vent { border-color: var(--amber); }
-  .node.shaft { border-color: var(--danger); }
 
   /* 3. 하단 세부 정보 패널 */
   .details-panel {
@@ -260,8 +259,8 @@
 <div class="wrap">
 
   <div class="ctrl">
-    <span class="tag">층별 침투 맵 — 비상계단 / 환기구 / 샤프트 기회비용 분기</span>
-    <span class="hint">노드를 클릭하여 기회비용 팝업 호출 · 미지(?) 노드 호버 시 정보 스캐너 가동</span>
+    <span class="tag">층별 침투 맵 — 목적지에 붙은 비상계단 / 환기구 가격</span>
+    <span class="hint">노드 클릭 한 번으로 목적지와 통로 확정 · 미지(?) 노드도 통로 가격은 공개</span>
   </div>
 
   <div class="screen" id="screen">
@@ -298,7 +297,7 @@
         <!-- 5F -> 6F -->
         <line class="link-line" x1="380" y1="240" x2="500" y2="130"></line>
         <line class="link-line" x1="500" y1="240" x2="500" y2="130"></line>
-        <!-- 6F -> 7F (샤프트 점프) -->
+        <!-- 6F -> 7F -->
         <line class="link-line" x1="500" y1="130" x2="500" y2="20"></line>
       </svg>
 
@@ -333,14 +332,11 @@
         <div class="floor-row" id="frow-4">
           <span class="floor-label">4F</span>
           <div class="nodes-wrap">
-            <div class="node stairs" data-type="stairs" onclick="openGate('stairs')" onmouseenter="showScan('stairs', event)" onmouseleave="hideScan()">
-              <span class="node-icon">🚶</span><span class="node-tag">계단</span>
+            <div class="node stairs" data-type="stairs" onclick="commitInfiltration('stairs')" onmouseenter="showScan('stairs', event)" onmouseleave="hideScan()">
+              <span class="node-icon">⚔</span><span class="node-tag">전투 · 계단 무료</span>
             </div>
-            <div class="node vent" data-type="vent" onclick="openGate('vent')" onmouseenter="showScan('vent', event)" onmouseleave="hideScan()">
-              <span class="node-icon">🕳️</span><span class="node-tag">환기구</span>
-            </div>
-            <div class="node shaft" data-type="shaft" onclick="openGate('shaft')" onmouseenter="showScan('shaft', event)" onmouseleave="hideScan()">
-              <span class="node-icon">?</span><span class="node-tag">미지</span>
+            <div class="node vent" data-type="vent" onclick="commitInfiltration('vent')" onmouseenter="showScan('vent', event)" onmouseleave="hideScan()">
+              <span class="node-icon">🛒</span><span class="node-tag">무기고 · 환기 -2m</span>
             </div>
           </div>
         </div>
@@ -369,27 +365,14 @@
       <div class="details-desc" id="detailsDesc">진입할 노드를 선택하여 침투 경로를 승인해 주십시오. 마우스 호버 시 <b>스캐너 힌트</b>가 작동합니다.</div>
     </div>
 
-    <!-- 5. 침투 승인 팝업 -->
-    <div class="modal-overlay" id="modalOverlay">
-      <div class="modal-box" id="modalBox">
-        <div class="modal-h" id="mTitle">침투 승인 확인</div>
-        <div class="modal-body" id="mDesc"></div>
-        <div class="modal-penalty" id="mPenalty" style="color:var(--danger)"></div>
-        <div class="modal-actions">
-          <button class="mbtn" onclick="closeGate()">작전 취소</button>
-          <button class="mbtn confirm" id="mConfirm" onclick="commitInfiltration()">경로 진입 승인</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <!-- 설명 창 -->
   <div class="legend">
     <h4>층별 침투 맵 — 기회비용 및 스캔 연출 설계</h4>
     <div class="lrow"><span class="n">비상계단</span><span>안정적 1층씩 상승. 위험 페널티가 없어 가장 <b>보수적이고 안전한 경로</b>.</span></div>
-    <div class="lrow"><span class="n">환기구</span><span>은밀 침투. 전투 횟수가 대폭 감소하나 협소한 공간의 한계로 <b>전투 시 적 시작 거리 -2m 패널티</b> 적용.</span></div>
-    <div class="lrow"><span class="n">샤프트</span><span>엘리베이터 통로 돌파. 2층 이상 고속 상승 가능하나 <b>30% 확률로 HP 버퍼 영구 소실 또는 시작 거리 4m 대치</b> 위험 감수.</span></div>
+    <div class="lrow"><span class="n">환기구</span><span>목적지의 확정 비용. 비전투 노드를 거쳐도 <b>다음 전투 시작 거리 -2m</b> 상태가 유지되며 중첩하지 않음.</span></div>
+    <div class="lrow"><span class="n">선택 규칙</span><span>통로는 별도 선택지가 아니다. <b>목적지 클릭 한 번</b>으로 연결 통로와 비용을 함께 확정.</span></div>
     <div class="lrow"><span class="n">스캐너 팝업</span><span>미지(?) 노드에 마우스 호버 시 힌트 렌더링. <b>MOUSE_FILTER_IGNORE</b> 원칙으로 뒷배경 터치 방해하지 않음.</span></div>
   </div>
 
@@ -407,66 +390,24 @@
     },
     vent: {
       name: "환기구 (Air Duct)",
-      desc: "은밀한 보안 우회로. 적 순찰을 피해 전투 횟수를 스킵하고 렐릭 보급품 획득 기회가 많아집니다. 단, 협소한 공간의 한계로 인해 전투 시 적들의 시작 거리가 대폭 좁아집니다.",
-      penalty: "🚨 공간의 제약: 전투 인카운터 시 적 시작 거리 −2m 단축"
-    },
-    shaft: {
-      name: "엘리베이터 샤프트 (Shaft)",
-      desc: "최고 리스크 초고속 돌파. 2개 층을 한 번에 스킵하여 6F(보스층)로 즉시 건너뛸 수 있지만, 추락 위험과 매복 적들의 위험에 상시 노출됩니다.",
-      penalty: "💥 강습 위험: 30% 확률로 HP 아머 1 영구 소실 또는 시작 거리 4m 초근접 대치 시작"
+      desc: "무기고로 이어지는 좁은 진입로입니다. 무기고 이용 뒤에도 환기 압박은 다음 전투까지 유지됩니다.",
+      penalty: "🚨 환기 압박: 다음 전투 시작 거리 −2m"
     }
   };
 
   const scannerHints = {
     stairs: "📡 비상계단 통로 관측.<br><b>[안정적인 신호 유지]</b><br>특수 변수 없음. 표준 진입 경로.",
-    vent: "📡 환기통 열풍 통로 관측.<br><b>[생체 신호 다수 감지]</b><br>좁은 통로 특유의 고밀도 대치 주의.",
-    shaft: "📡 엘리베이터 와이어 파괴 상태.<br><b>[초고주파 신호 감지]</b><br>특수 데이터 코어 획득 기회 유력."
+    vent: "📡 환기통 열풍 통로 관측.<br><b>[다음 교전 거리 -2m]</b><br>목적지는 무기고. 비용은 교전까지 이월."
   };
 
-  function openGate(route) {
+  function commitInfiltration(route) {
     selectedRoute = route;
-    const detail = routeDetails[route];
-    
-    document.getElementById('mTitle').innerText = detail.name + " 경로 승인";
-    document.getElementById('mDesc').innerHTML = `이 경로로 침투하시겠습니까?<br><b>${detail.desc}</b>`;
-    document.getElementById('mPenalty').innerText = detail.penalty;
-    
-    const mBox = document.getElementById('modalBox');
-    const mConfirm = document.getElementById('mConfirm');
-    mBox.className = 'modal-box';
-    mConfirm.className = 'mbtn confirm';
-    
-    if (route === 'vent') {
-      mBox.classList.add('warn-style');
-    } else if (route === 'shaft') {
-      mBox.classList.add('danger-style');
-      mConfirm.classList.add('danger');
-    }
-
-    document.getElementById('modalOverlay').style.display = 'flex';
-  }
-
-  function closeGate() {
-    document.getElementById('modalOverlay').style.display = 'none';
-  }
-
-  function commitInfiltration() {
-    closeGate();
-    if (selectedRoute === 'shaft') {
-      currentFloor = 6;
-      document.getElementById('mapContainer').style.transform = 'translateY(-220px)';
-    } else {
-      currentFloor = 4;
-      document.getElementById('mapContainer').style.transform = 'translateY(-110px)';
-    }
+    currentFloor = 4;
+    document.getElementById('mapContainer').style.transform = 'translateY(-110px)';
     
     setTimeout(() => {
       document.getElementById('floorText').innerText = currentFloor + "F";
-      if (currentFloor === 6) {
-        document.getElementById('areaText').innerText = "구역 1: 통제센터 보안 격리구역";
-      } else {
-        document.getElementById('areaText').innerText = "구역 1: 4층 사무실";
-      }
+      document.getElementById('areaText').innerText = selectedRoute === 'vent' ? "구역 1: 4층 무기고" : "구역 1: 4층 사무실";
       
       // 노드 활성화/현재위치 갱신 연출
       const row = document.getElementById('frow-' + currentFloor);
@@ -508,46 +449,6 @@
       document.getElementById('detailsTitle').innerText = detail.name;
       document.getElementById('detailsDesc').innerText = detail.desc;
     }
-  }
-
-  function hideScan() {
-    document.getElementById('scannerPopup').style.display = 'none';
-    document.getElementById('detailsTitle').innerText = "작전 구역 정보";
-    document.getElementById('detailsDesc').innerText = "진입할 노드를 선택하여 침투 경로를 승인해 주십시오. 마우스 호버 시 스캐너 힌트가 작동합니다.";
-  }mentById('areaText').innerText = "구역 1: 4층 사무실";
-      }
-      
-      // 노드 활성화/현재위치 갱신 연출
-      const row = document.getElementById('frow-' + currentFloor);
-      document.querySelectorAll('.floor-row').forEach(r => r.classList.remove('active'));
-      row.classList.add('active');
-      
-      const nodeHtml = row.querySelector('.node');
-      nodeHtml.className = 'node current';
-      nodeHtml.innerHTML = '<span class="node-icon">🤖</span><span class="node-tag">요원</span>';
-      
-      document.getElementById('detailsTitle').innerText = "침투 완료";
-      document.getElementById('detailsDesc').innerHTML = `요원이 <b>${currentFloor}F</b>에 도달했습니다. 복도 내부 교전 인카운터 장전(Loading) 대기 중...`;
-    }, 800);
-  }
-
-  function showScan(route, e) {
-    const popup = document.getElementById('scannerPopup');
-    const body = document.getElementById('scannerBody');
-    body.innerHTML = scannerHints[route];
-    
-    popup.style.display = 'block';
-    // 마우스 좌표 근처에 팝업 띄우기
-    const rect = document.getElementById('screen').getBoundingClientRect();
-    const x = e.clientX - rect.left + 15;
-    const y = e.clientY - rect.top + 15;
-    popup.style.left = x + 'px';
-    popup.style.top = y + 'px';
-
-    // 하단 정보창 실시간 연동
-    const detail = routeDetails[route];
-    document.getElementById('detailsTitle').innerText = detail.name;
-    document.getElementById('detailsDesc').innerText = detail.desc;
   }
 
   function hideScan() {

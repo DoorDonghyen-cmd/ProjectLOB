@@ -160,10 +160,11 @@ func advance_charger() -> bool:
 
 
 
-## 넉백. 거리를 증가시킨다 (= 생존 자원 회복).
-func apply_knockback(amount: int) -> void:
+## 넉백. 거리를 증가시킨다 (= 생존 자원 회복). 실제 적용된 넉백 칸 수를 반환한다.
+func apply_knockback(amount: int) -> int:
 	var effective_kb := maxi(amount - knockback_resistance, 0)
 	current_distance += effective_kb
+	return effective_kb
 
 
 ## 둔화 누적. 다음 advance()에서 적용된다.

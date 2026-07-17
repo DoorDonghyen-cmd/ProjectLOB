@@ -9,14 +9,11 @@ var parent_scene: Control
 var run_manager: RunManager
 
 var _map_floor_label: Label
+var _route_pressure_label: Label
 var _map_scroll: ScrollContainer
 var _scroll_content: Control
 var _floors_vbox: VBoxContainer
 var _lines_drawer: Control
-var _map_route_selector: PanelContainer
-var _map_route_container: VBoxContainer
-
-var _selected_node: RunManager.RunNode = null
 var _node_buttons: Dictionary = {}
 
 var _scan_hint_panel: PanelContainer
@@ -80,6 +77,10 @@ func _build_ui() -> void:
 
 	_map_floor_label = parent_scene.make_label("빌딩 침투 지도 (1층)", 24, parent_scene.C_ACCENT)
 	map_header_hbox.add_child(_map_floor_label)
+
+	_route_pressure_label = parent_scene.make_label("", 12, parent_scene.C_WARNING)
+	_route_pressure_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	map_header_hbox.add_child(_route_pressure_label)
 	
 	# HP 아머 다이아몬드 게이지 컨테이너 (HBox 헤더 우측 및 층수 라벨 사이에 배치)
 	var hp_hbox := HBoxContainer.new()
@@ -139,39 +140,11 @@ func _build_ui() -> void:
 		_lines_drawer.queue_redraw()
 	)
 
-	# ── 통로 선택 서브 오버레이 ──
-	_map_route_selector = PanelContainer.new()
-	_map_route_selector.custom_minimum_size = Vector2(380, 240)
-	_map_route_selector.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_map_route_selector.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	add_child(_map_route_selector)
-
-	var sel_margin := MarginContainer.new()
-	sel_margin.add_theme_constant_override("margin_left", 16)
-	sel_margin.add_theme_constant_override("margin_right", 16)
-	sel_margin.add_theme_constant_override("margin_top", 16)
-	sel_margin.add_theme_constant_override("margin_bottom", 16)
-	_map_route_selector.add_child(sel_margin)
-
-	var sel_vbox := VBoxContainer.new()
-	sel_vbox.add_theme_constant_override("separation", 12)
-	sel_margin.add_child(sel_vbox)
-
-	sel_vbox.add_child(parent_scene.make_label("🚪 침투 경로 기회비용 선택", 20, parent_scene.C_WARNING))
-	
-	_map_route_container = VBoxContainer.new()
-	_map_route_container.add_theme_constant_override("separation", 8)
-	sel_vbox.add_child(_map_route_container)
-
-	var cancel_route_btn: Button = parent_scene.make_button("취소", func(): _map_route_selector.visible = false, parent_scene.C_PANEL)
-	sel_vbox.add_child(cancel_route_btn)
-
-	_map_route_selector.visible = false
-
-
 func show_map_screen() -> void:
 	visible = true
 	_map_floor_label.text = "빌딩 침투 지도 (%d층)" % run_manager.current_floor
+	_route_pressure_label.visible = run_manager.pending_combat_distance_modifier < 0
+	_route_pressure_label.text = "  ⚠ 환기 압박: 다음 교전 시작 거리 -2m" if _route_pressure_label.visible else ""
 	
 	# 2차 폴리싱: HP 아머 다이아몬드 HUD 갱신 (예: ◆ ◆ ◇)
 	if _hp_buffer_label:
@@ -250,10 +223,12 @@ func show_map_screen() -> void:
 		for node in nodes:
 			if node.is_hidden:
 				continue # 조건부 개방 전 숨김 노드는 렌더링 패스
+			var is_reachable := run_manager.is_node_reachable(node.id)
+			var route_to_node := run_manager.get_route_to_node(node.id)
 				
 			# Rich button card representing a room
 			var btn := Button.new()
-			btn.custom_minimum_size = Vector2(240, 64)
+			btn.custom_minimum_size = Vector2(240, 80)
 			btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			
 			# Card style box overrides
@@ -263,18 +238,16 @@ func show_map_screen() -> void:
 			normal_style.corner_radius_top_left = 6
 			normal_style.corner_radius_top_right = 6
 			
-			if f == run_manager.current_floor:
+			if f == run_manager.current_floor and is_reachable:
 				normal_style.bg_color = parent_scene.C_PANEL.darkened(0.3)
 				
-				# 2차 폴리싱: 통로 유형 및 노드 특성에 따른 전술적 네온 테두리 지정
+				# 목적지에 붙은 진입 통로 가격을 네온 테두리로 표시
 				var border_col: Color = parent_scene.C_ACCENT
 				if node.type_name.contains("보스"):
 					border_col = parent_scene.C_DANGER
-				elif node.connected_routes.has("shaft"):
-					border_col = parent_scene.C_DANGER
-				elif node.connected_routes.has("air_duct"):
+				elif route_to_node == "air_duct":
 					border_col = parent_scene.C_WARNING
-				elif node.connected_routes.has("stairs"):
+				else:
 					border_col = parent_scene.C_SUCCESS
 					
 				normal_style.border_color = border_col
@@ -308,7 +281,7 @@ func show_map_screen() -> void:
 			btn.add_theme_stylebox_override("disabled", normal_style)
 			
 			# Hover highlight for active buttons
-			if f == run_manager.current_floor:
+			if f == run_manager.current_floor and is_reachable:
 				var hover_style := normal_style.duplicate() as StyleBoxFlat
 				hover_style.bg_color = parent_scene.C_PANEL
 				hover_style.shadow_size = 10 # 호버 시 발광 증폭
@@ -349,6 +322,16 @@ func show_map_screen() -> void:
 			var desc_lbl: Label = parent_scene.make_label(node.description, 11, parent_scene.C_DIM)
 			desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			content_vbox.add_child(desc_lbl)
+
+			if f == run_manager.current_floor and is_reachable:
+				var route_text := "🚶 비상계단 · 비용 없음"
+				var route_color: Color = parent_scene.C_SUCCESS
+				if route_to_node == "air_duct":
+					route_text = "🕳️ 환기구 · 다음 교전 시작 거리 -2m"
+					route_color = parent_scene.C_WARNING
+				var route_lbl: Label = parent_scene.make_label(route_text, 10, route_color)
+				route_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				content_vbox.add_child(route_lbl)
 			
 	_lines_drawer.queue_redraw()
 	
@@ -369,48 +352,9 @@ func show_map_screen() -> void:
 
 
 func _on_node_selected(node: RunManager.RunNode) -> void:
-	_selected_node = node
-	_map_route_selector.visible = true
-	
-	# 통로 버튼들 초기화
-	for child in _map_route_container.get_children():
-		child.queue_free()
-		
-	# 상단에 선택된 노드 타이틀과 기본 정보 추가
-	var node_info_lbl := Label.new()
-	node_info_lbl.text = "🎯 진입 타겟: %s\n(%s)" % [node.type_name, node.description]
-	node_info_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	node_info_lbl.add_theme_font_size_override("font_size", 12)
-	node_info_lbl.add_theme_color_override("font_color", parent_scene.C_DIM)
-	_map_route_container.add_child(node_info_lbl)
-		
-	for route in node.connected_routes:
-		var r_name := ""
-		var color: Color = parent_scene.C_ACCENT
-		match route:
-			"stairs":
-				r_name = "🚶 비상계단 (Stairs)\n안정적 1F 상승 · 표준 대치 (리스크 없음)"
-				color = parent_scene.C_SUCCESS
-			"air_duct":
-				r_name = "🕳️ 환기구 (Air Duct)\n은밀 침투 · 전투 횟수 감소 [🚨 적 시작 거리 -2m]"
-				color = parent_scene.C_WARNING
-			"shaft":
-				r_name = "⚡ 엘리베이터 샤프트 (Shaft)\n고속 스킵 [💥 30% 확률로 HP 버퍼 1 소실 또는 초근접 대치]"
-				color = parent_scene.C_DANGER
-				
-		var b := route
-		var btn: Button = parent_scene.make_button(r_name, func(): _on_route_selected(b), color)
-		btn.add_theme_font_size_override("font_size", 12)
-		btn.autowrap_mode = TextServer.AUTOWRAP_WORD
-		btn.custom_minimum_size = Vector2(0, 48)
-		_map_route_container.add_child(btn)
-
-
-
-func _on_route_selected(route: String) -> void:
-	_map_route_selector.visible = false
+	var route := run_manager.get_route_to_node(node.id)
 	visible = false
-	parent_scene.handle_route_selected(_selected_node, route)
+	parent_scene.handle_route_selected(node, route)
 
 
 func _on_exit_run_pressed() -> void:
@@ -479,18 +423,14 @@ func _draw_lines(drawer: Control) -> void:
 						match route:
 							"stairs": color = parent_scene.C_SUCCESS
 							"air_duct": color = parent_scene.C_WARNING
-							"shaft": color = parent_scene.C_DANGER
 							
-						if f - 1 != run_manager.current_floor and f != run_manager.current_floor:
-							color.a = 0.25
+						# 현재 층에서 선택 가능한 목적지의 통로 가격은 모두 미리 보인다.
+						if f - 1 == run_manager.current_floor:
+							color.a = 1.0
+						elif f == run_manager.current_floor:
+							color.a = 0.65
 						else:
-							if f == run_manager.current_floor:
-								if route == run_manager.current_route_type:
-									color.a = 1.0
-								else:
-									color.a = 0.15
-							else:
-								color.a = 0.65
+							color.a = 0.25
 								
 						drawer.draw_line(local_start, local_end, color, 3.5, true)
 

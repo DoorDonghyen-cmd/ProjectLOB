@@ -77,7 +77,6 @@ func show_debriefing(won: bool) -> void:
 	
 	var log_text := "── 작전 디브리핑 정산 내역 ──\n\n"
 	log_text += "- 도달한 층수: %d 층 (x15 Cr) = %d Cr\n" % [run_manager.current_floor, run_manager.current_floor * 15]
-	log_text += "- 보유한 렐릭 보너스: %d 개 (x20 Cr) = %d Cr\n" % [run_manager.active_relics.size(), run_manager.active_relics.size() * 20]
 	if won:
 		log_text += "- 헬기 보딩 성공 보너스 = 50 Cr\n"
 	log_text += "- 획득한 전술 데이터 코어 (TDC): %d 개\n" % run_manager.tactical_data_cores

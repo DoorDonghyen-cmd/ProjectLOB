@@ -121,7 +121,7 @@ func _build_ui() -> void:
 	_meta_vault_btn.custom_minimum_size = Vector2(0, 36)
 	shop_vbox.add_child(_meta_vault_btn)
 
-	# 메타 해금 상점 아래의 무기 및 렐릭 설정란은 로드아웃 오버레이로 통합되어 이곳에서 제거되었습니다.
+	# 무기 설정은 요원 작전 준비실(LoadoutOverlay)로 통합되어 있습니다.
 
 
 

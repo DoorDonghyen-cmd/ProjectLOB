@@ -36,12 +36,11 @@ var magazine: Magazine
 var enemies: Array[EnemyInstance] = []
 var last_shot_hit: bool = false
 var reload_turns_remaining: int = 0
-var active_relics: Array[String] = []
-var unload_penalty_waived: bool = false
 var _insert_seal_active: bool = false
 var double_tap_active: bool = false
 var eject_used_this_turn: bool = false
 var has_inserted_bullet_this_turn: bool = false
+var is_magazine_first_shot: bool = true
 
 # ── 순환 탄약 & 긴급 격퇴 가변 상태 ──
 var draw_pile: Array[BulletData] = []
@@ -104,8 +103,8 @@ func get_alive_enemies() -> Array[EnemyInstance]:
 	return alive
 
 
-## 인카운터를 시작한다. 총과 적 데이터 배열, 렐릭 및 장착 파츠 목록을 받아 초기화.
-func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bullets: Array[BulletData], relics: Array[String] = [], parts: Array[PartData] = []) -> void:
+## 인카운터를 시작한다. 총과 적 데이터 배열, 장착 파츠 목록을 받아 초기화.
+func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bullets: Array[BulletData], parts: Array[PartData] = []) -> void:
 	gun = gun_data
 	enemies.clear()
 	var offset := 0
@@ -118,11 +117,11 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 		offset += 2
 	magazine = Magazine.new(gun)
 	last_shot_hit = false
-	active_relics = relics
 	_insert_seal_active = false
 	double_tap_active = false
 	has_inserted_bullet_this_turn = false
 	last_fired_class = Enums.WeaponClass.PISTOL
+	is_magazine_first_shot = true
 	
 	# 탄약 순환 자원 데이터 및 긴급 격퇴 초기화
 	draw_pile = deck_bullets.duplicate()
@@ -197,6 +196,7 @@ func confirm_loading(bullets: Array[BulletData]) -> void:
 	state = State.PLAYER_TURN
 	eject_used_this_turn = false
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
+	is_magazine_first_shot = true
 	combat_log.emit("── 탄창 장전 완료! %d발 ──" % magazine.get_remaining())
 
 
@@ -270,7 +270,8 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		return
 
 	var is_refunded := false
-	var is_first := magazine.is_next_first_shot()
+	var is_first := is_magazine_first_shot
+	is_magazine_first_shot = false
 	var is_last := magazine.is_next_last_shot()
 	
 	# 격발 직전 탄창의 잔탄 개수
@@ -545,20 +546,19 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		calc_bullet_kb.penetration += part_pen_bonus
 		
 		var kb := DamageCalculator.calculate_knockback(calc_bullet_kb, gun)
-		if active_relics.has("gas_valve") and kb > 0:
-			kb += 1
-			combat_log.emit("   ↳ 🛡 [가스 밸브] 넉백 +1 증가")
-			
 		# 언더플로우 (UNDERFLOW): 피날레 넉백 2배 증폭
 		if _has_part(Enums.PartID.UNDERFLOW) and is_last and kb > 0:
 			kb *= 2
 			combat_log.emit("   ↳ 💥 [언더플로우] 피날레 넉백 2배 증폭 적용!")
 			
 		if kb > 0:
-			target.apply_knockback(kb)
-			enemy_knocked_back.emit(target, target.current_distance, kb)
-			combat_log.emit("   ↳ 넉백 %d칸 → 거리 %d" % [kb, target.current_distance])
-			
+			var eff_kb := target.apply_knockback(kb)
+			if eff_kb > 0:
+				enemy_knocked_back.emit(target, target.current_distance, eff_kb)
+				combat_log.emit("   ↳ 넉백 %d칸 → 거리 %d" % [eff_kb, target.current_distance])
+			else:
+				combat_log.emit("   ↳ 넉백 저항! 적의 저항으로 밀려나지 않음 (저항 %d)" % target.knockback_resistance)
+				
 			# 확산 격발 장치 (SPREAD_SHOT - 샷건 고유): 주 타겟 양옆의 적들에게도 넉백 전파
 			if _has_part(Enums.PartID.SPREAD_SHOT):
 				var alive_list := get_alive_enemies()
@@ -568,14 +568,16 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 					var splash_kb: int = maxi(1, int(kb / 2))
 					if idx > 0:
 						var prev_e: EnemyInstance = alive_list[idx - 1]
-						prev_e.apply_knockback(splash_kb)
-						enemy_knocked_back.emit(prev_e, prev_e.current_distance, splash_kb)
-						combat_log.emit("     ↳ ☄ [확산 격발] 인접 적 [%s]에게 넉백 %d 전파" % [prev_e.data.display_name, splash_kb])
+						var eff_prev_kb := prev_e.apply_knockback(splash_kb)
+						if eff_prev_kb > 0:
+							enemy_knocked_back.emit(prev_e, prev_e.current_distance, eff_prev_kb)
+							combat_log.emit("     ↳ ☄ [확산 격발] 인접 적 [%s]에게 넉백 %d 전파" % [prev_e.data.display_name, eff_prev_kb])
 					if idx + 1 < alive_list.size():
 						var next_e: EnemyInstance = alive_list[idx + 1]
-						next_e.apply_knockback(splash_kb)
-						enemy_knocked_back.emit(next_e, next_e.current_distance, splash_kb)
-						combat_log.emit("     ↳ ☄ [확산 격발] 인접 적 [%s]에게 넉백 %d 전파" % [next_e.data.display_name, splash_kb])
+						var eff_next_kb := next_e.apply_knockback(splash_kb)
+						if eff_next_kb > 0:
+							enemy_knocked_back.emit(next_e, next_e.current_distance, eff_next_kb)
+							combat_log.emit("     ↳ ☄ [확산 격발] 인접 적 [%s]에게 넉백 %d 전파" % [next_e.data.display_name, eff_next_kb])
 
 		# ── 6. 둔화 ──
 		var slow_val := bullet.slow
@@ -814,9 +816,6 @@ func request_reload() -> void:
 
 	magazine.clear()
 	var turns := gun.reload_turns
-	if active_relics.has("tactical_gloves"):
-		turns = maxi(turns - 1, 1)
-		combat_log.emit("🧤 [전술 장갑] 신속한 재장전 동작으로 리로드 소요 시간이 단축되었습니다!")
 	reload_turns_remaining = turns
 	state = State.RELOADING
 	reload_started.emit(reload_turns_remaining)
@@ -939,9 +938,17 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 				bullet.effect_value, target.current_def
 			])
 		Enums.BulletEffect.OPENING_SHOT:
+			target.apply_armor_shred(1)
+			armor_shredded.emit(target, target.current_def, 1)
 			if is_first:
-				target.apply_knockback(bullet.effect_value)
-				combat_log.emit("   ↳ 선제 사격! 추가 넉백 +%d" % bullet.effect_value)
+				var eff_kb := target.apply_knockback(bullet.effect_value)
+				if eff_kb > 0:
+					enemy_knocked_back.emit(target, target.current_distance, eff_kb)
+					combat_log.emit("   ↳ 선제 사격! 추가 넉백 +%d 및 장갑 파쇄 -1 적용 (실제 밀려남: %d칸)" % [bullet.effect_value, eff_kb])
+				else:
+					combat_log.emit("   ↳ 선제 사격! 넉백 저항으로 밀려나지 않음 (저항 %d, 장갑 파쇄 -1만 적용)" % target.knockback_resistance)
+			else:
+				combat_log.emit("   ↳ 견제 사격! 장갑 파쇄 -1 적용")
 		_:
 			pass
 

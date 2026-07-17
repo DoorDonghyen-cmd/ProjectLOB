@@ -86,7 +86,7 @@
         min-height: 0; 
     }
 
-    /* 좌측 40%: 로스터 & 렐릭 */
+    /* 좌측 40%: 로스터 & 무기 선택 */
     .left-panel {
         flex: 0 0 38%;
         display: flex;
@@ -129,38 +129,6 @@
     .weapon-name-kor { font-size: 1.1rem; color: #fff; margin-bottom: 2px; display: block; }
     .weapon-name-eng { font-size: 0.8rem; color: var(--neon-gold); }
 
-    /* 렐릭 토글 (HBox) */
-    .relic-container {
-        background: var(--panel-bg);
-        border: 2px solid #333;
-        padding: 8px 12px; /* 상하 패딩 축소 */
-        display: flex;
-        justify-content: space-between;
-    }
-    .relic-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        cursor: pointer;
-        position: relative;
-        opacity: 0.5;
-        transition: opacity 0.2s;
-    }
-    .relic-item:hover { opacity: 0.8; }
-    .relic-item.active { opacity: 1; }
-    .relic-item.active .relic-icon {
-        border-color: var(--neon-gold);
-        color: var(--neon-gold);
-    }
-    .relic-icon {
-        width: 36px; height: 36px;
-        border: 2px solid #555;
-        display: flex; justify-content: center; align-items: center;
-        font-size: 1.1rem; background: #000;
-    }
-    .relic-name { font-size: 0.75rem; color: #aaa; }
-
     /* 우측 60%: 전술 프로필 */
     .right-panel {
         flex: 0 0 calc(62% - 16px);
@@ -200,7 +168,6 @@
     }
     
     .stat-value { color: #fff; display: flex; align-items: center; gap: 8px;}
-    .stat-buff { color: var(--buff-green); font-size: 0.9rem; font-weight: bold; }
 
     /* 시그니처 & 페널티 박스 */
     .info-box {
@@ -247,7 +214,7 @@
     </div>
 
     <div class="main-content">
-        <!-- 좌측: 무기 리스트 & 렐릭 -->
+        <!-- 좌측: 무기 리스트 -->
         <div class="left-panel">
             <div class="section-title">▶ FIREARM SELECTION</div>
             <div class="weapon-list">
@@ -280,22 +247,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="section-title">▶ TACTICAL RELICS</div>
-            <div class="relic-container">
-                <div class="relic-item" data-relic="glove" title="장전 속도 증가">
-                    <div class="relic-icon">🧤</div>
-                    <div class="relic-name">전술 장갑</div>
-                </div>
-                <div class="relic-item" data-relic="valve" title="탄창 한도 +1">
-                    <div class="relic-icon">🎛️</div>
-                    <div class="relic-name">압력 밸브</div>
-                </div>
-                <div class="relic-item" data-relic="goggles" title="예고창 시야 +1">
-                    <div class="relic-icon">🥽</div>
-                    <div class="relic-name">스마트 고글</div>
-                </div>
-            </div>
         </div>
 
         <!-- 우측: 프로필 패널 -->
@@ -311,12 +262,12 @@
             
             <div class="stat-row">
                 <div class="stat-label">■ AMMO SIZE</div>
-                <div class="stat-value">🔋 <span id="ui-ammo">4</span> <span class="stat-buff" id="buff-ammo"></span></div>
+                <div class="stat-value">🔋 <span id="ui-ammo">4</span></div>
             </div>
             
             <div class="stat-row">
                 <div class="stat-label">■ PREVIEW SIZE</div>
-                <div class="stat-value">👁️ <span id="ui-prev">2</span> <span class="stat-buff" id="buff-prev"></span></div>
+                <div class="stat-value">👁️ <span id="ui-prev">2</span></div>
             </div>
 
             <div class="stat-row" style="margin-bottom: 12px;">
@@ -351,10 +302,7 @@
     };
 
     let currentWeapon = 'workhorse';
-    const activeRelics = { glove: false, valve: false, goggles: false };
-
     const cards = document.querySelectorAll('.weapon-card');
-    const relicItems = document.querySelectorAll('.relic-item');
     const profilePanel = document.getElementById('profile-panel');
     
     function updateUI() {
@@ -364,9 +312,8 @@
         
         setTimeout(() => {
             let slotHtml = '';
-            const totalCap = activeRelics.valve ? data.cap + 1 : data.cap;
-            for(let i=0; i<totalCap; i++) {
-                slotHtml += `<div class="cap-slot" ${i >= data.cap ? 'style="border-color:#00ff00; background:rgba(0,255,0,0.1);"' : ''}></div>`;
+            for(let i=0; i<data.cap; i++) {
+                slotHtml += `<div class="cap-slot"></div>`;
             }
             document.getElementById('ui-cap-slots').innerHTML = slotHtml;
 
@@ -375,9 +322,6 @@
             document.getElementById('ui-calibers').textContent = data.calibers;
             document.getElementById('ui-passive').textContent = data.passive;
             document.getElementById('ui-penalty').textContent = data.penalty;
-
-            document.getElementById('buff-ammo').textContent = activeRelics.valve ? '→ +2' : '';
-            document.getElementById('buff-prev').textContent = activeRelics.goggles ? '→ +1' : '';
 
             profilePanel.style.opacity = '1';
         }, 150);
@@ -388,15 +332,6 @@
             cards.forEach(c => c.classList.remove('active'));
             this.classList.add('active');
             currentWeapon = this.getAttribute('data-weapon');
-            updateUI();
-        });
-    });
-
-    relicItems.forEach(item => {
-        item.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const relic = this.getAttribute('data-relic');
-            activeRelics[relic] = this.classList.contains('active');
             updateUI();
         });
     });
