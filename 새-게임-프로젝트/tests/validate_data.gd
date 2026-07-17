@@ -98,9 +98,11 @@ static func _validate_enemies(t) -> void:
 		# 구조적 범위(FAIL)
 		var arch := int(r[2]); var hp := int(r[3]); var def_v := int(r[4]); var eva := int(r[5])
 		t.check(arch >= 0 and arch < arch_count, "enemy '%s' archetype %d ∈ [0,%d)" % [id, arch, arch_count])
-		t.check(eva >= 0 and eva <= 8, "enemy '%s' EVA %d ∈ [0,8]" % [id, eva])
+		t.check(eva >= 0 and eva <= 12, "enemy '%s' EVA %d ∈ [0,12] (구조 상한)" % [id, eva])
 		t.check(def_v >= 0 and def_v <= 10, "enemy '%s' DEF %d ∈ [0,10]" % [id, def_v])
 		t.check(hp >= 1, "enemy '%s' HP %d >= 1" % [id, hp])
+		# EVA 밴드(0~8): 초과 시 탄환 ACC 상한(8)으로 명중 불가 위험 → 경보
+		t.warn(eva <= 8, "enemy '%s' EVA %d 밴드(0~8) — 초과 시 명중 불가 위험" % [id, eva])
 		if id != "":
 			t.warn(tres.has(id), "enemy '%s' → resources/enemies/%s.tres 존재" % [id, id])
 		# 밸런스 밴드(WARN): HP 6~30 / SPD 0~7 (보스 포함)

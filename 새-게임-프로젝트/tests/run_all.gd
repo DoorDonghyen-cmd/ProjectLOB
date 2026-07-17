@@ -11,6 +11,8 @@ const ValidateData := preload("res://tests/validate_data.gd")
 const SimHarness := preload("res://tests/sim_harness.gd")
 const SuiteRunFlow := preload("res://tests/suite_run_flow.gd")
 const SuiteSaveLoad := preload("res://tests/suite_save_load.gd")
+const SuiteBossGimmicks := preload("res://tests/suite_boss_gimmicks.gd")
+const SuiteFullRun := preload("res://tests/suite_full_run.gd")
 
 
 func _initialize() -> void:
@@ -28,6 +30,8 @@ func _initialize() -> void:
 	SimHarness.run(t)       # 결정론 전투 시뮬레이션
 	SuiteRunFlow.run(t)     # 플레이 흐름 통합(무기→맵→노드→전투→클리어→정산)
 	SuiteSaveLoad.run(t)    # 메타 세이브/로드 영속화
+	SuiteBossGimmicks.run(t) # 보스/특수 기믹 유닛(앱소버·캐스터·삼단태세·페이즈전환)
+	SuiteFullRun.run(t)     # 풀 런 통합 스캔(맵 도달성 + 전투 크래시 스캔)
 
 	# 테스트 임시 세이브 정리 및 오버라이드 해제
 	DirAccess.remove_absolute(override_path)
