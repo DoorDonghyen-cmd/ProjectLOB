@@ -9,6 +9,7 @@ const SuiteMagazine := preload("res://tests/suite_magazine.gd")
 const SuiteEnemy := preload("res://tests/suite_enemy.gd")
 const ValidateData := preload("res://tests/validate_data.gd")
 const SimHarness := preload("res://tests/sim_harness.gd")
+const SuiteRunFlow := preload("res://tests/suite_run_flow.gd")
 
 
 func _initialize() -> void:
@@ -20,6 +21,7 @@ func _initialize() -> void:
 	SuiteEnemy.run(t)       # 적 태세 전환 · 거리 계산
 	ValidateData.run(t)     # CSV 데이터 정합성
 	SimHarness.run(t)       # 결정론 전투 시뮬레이션
+	SuiteRunFlow.run(t)     # 플레이 흐름 통합(무기→맵→노드→전투→클리어→정산)
 
 	var code := t.summary()
 	print("╚═════════════════════════════════════╝")
