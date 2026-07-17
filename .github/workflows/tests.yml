@@ -1,0 +1,38 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  headless-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # 조정 지점 1: Godot 버전 (project.godot의 config/features와 일치)
+      GODOT_VERSION: "4.7-stable"
+      # 조정 지점 2: Godot 프로젝트 폴더 (레포 루트 기준)
+      PROJECT_DIR: "새-게임-프로젝트"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Godot (headless editor build)
+        run: |
+          set -euo pipefail
+          URL="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          echo "Downloading $URL"
+          curl -fL -o godot.zip "$URL"
+          unzip -o godot.zip
+          mv "Godot_v${GODOT_VERSION}_linux.x86_64" godot
+          chmod +x godot
+          ./godot --version
+
+      - name: Import project (build global class cache)
+        # 최초 임포트로 .godot 캐시와 class_name 전역 등록을 생성한다.
+        run: ./godot --headless --path "$PROJECT_DIR" --import
+        continue-on-error: true
+
+      - name: Run headless tests
+        run: ./godot --headless --path "$PROJECT_DIR" --script res://tests/run_all.gd
