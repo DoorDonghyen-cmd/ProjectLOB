@@ -35,21 +35,24 @@
 - [x] 총기 반동, 탄창 실린더 바운싱, 좀비 흐느적 걷기 트윈 모션 연출
 - [x] 격발/피격 피자말 2D 파티클 이펙트
 
-### Phase 5: Content & Boss (마일스톤 2)
-- [ ] 5층 보스 좀비 설계 및 보스 리소스 구현
-- [ ] 몬스터 속성 베리에이션(방어막, 순간회피 등) 추가
-- [ ] 4대 총기 패시브 아키타입(리볼버, 샷건, SMG, DMR) 완성
-- [ ] 구경별 탄환 다양화
+### Phase 5: Content & Boss (마일스톤 2) — ✅ 완료
+- [x] 몬스터 13종 구현 (일반 6종 + 변종 3종 + 보스 4종) — enemy_stats.csv / boss_*.tres
+- [x] 총기 8종 아키타입 및 고유 패시브 구현 (revolver·smg·rifle·dmr·shotgun·gambler·heavy·trickster·stance_hunter)
+- [x] 구경별 탄환 22종 다양화 구현 (bullet_stats.csv)
+- [x] 개발자 디버그 테스트 메뉴(보스+호위 대열 즉시 스폰 QA 숏컷)
 
 ### Phase 6: Meta Progress & Nodes (마일스톤 3)
-- [ ] 요원 영구 데이터 세이브/로드 (user://meta_save.cfg) 연동
-- [ ] 약실 소탕(Chamber Polish) 및 덱 압축 정비 노드, 보안실 해킹 이벤트 스크립트화
+- [ ] **요원 영구 데이터 세이브/로드 (user://meta_save.cfg) 연동  ← 다음 작업**
+- [ ] 정비소 노드 3종: 무기 캐비닛(탄환 개조/폐기), 대피소(HP·소실탄 회복), 보안 통제실(해킹 이벤트)
 
 ### Phase 7: Simulation Tuning (마일스톤 4)
+- [ ] 보스 대열/통로 비용 밸런싱 (Combat Simulator·헤드리스 시뮬 하니스 활용)
 - [ ] 자동 시뮬레이션 기반 밸런스 튜닝 및 가격 곡선 최적화
 
-### Phase 8: Audio & Beta (마일스톤 5)
-- [ ] 오디오 SFX/BGM 리소스 연동 및 베타 독립 패키징(apk, exe) 추출
+### Phase 8: Audio & Polish & Beta (마일스톤 5)
+- [ ] 드래프트/장전 연출 폴리싱 (카드 3D 틸트, 자석 스냅, 삽탄/격발 SFX)
+- [ ] 오디오 SFX/BGM 리소스 연동 (레트로 신스웨이브)
+- [ ] 베타 독립 패키징(apk, exe) 추출
 
 
 
@@ -58,6 +61,8 @@
 ## 🏗️ doing-task (진행 중인 일감)
 *현재 작업 중이거나 검증 단계에 있는 태스크들입니다.*
 
+- [ ] **메타 세이브/로드 구현** (Phase 6) — RunManager 정적 메타를 `user://meta_save.cfg`(ConfigFile)로 영속화. 저장: end_run·upgrade_meta_*, 로드: 진입 씬 _ready. suite_save_load 테스트 포함.
+- [ ] 보스전 대열 밸런싱 QA (세라프/L.O.B 코어 호위 넉백 정산 — Combat Simulator 활용)
 
 ---
 

@@ -353,7 +353,8 @@ func end_run(won: bool) -> int:
 		2: ratio = 0.15
 		3: ratio = 0.20
 	saved_vault_credits = clampi(int(credits * ratio), 0, 100)
-	
+
+	save_meta()
 	return earned
 
 
@@ -404,6 +405,7 @@ static func upgrade_meta_backpack() -> bool:
 	if meta_credits >= 40 and meta_backpack_lvl < 3:
 		meta_credits -= 40
 		meta_backpack_lvl += 1
+		save_meta()
 		return true
 	return false
 
@@ -411,6 +413,7 @@ static func upgrade_meta_hp_armor() -> bool:
 	if meta_credits >= 50 and meta_hp_armor_lvl < 2:
 		meta_credits -= 50
 		meta_hp_armor_lvl += 1
+		save_meta()
 		return true
 	return false
 
@@ -418,6 +421,7 @@ static func upgrade_meta_discount() -> bool:
 	if meta_credits >= 30 and not meta_discount_unlocked:
 		meta_credits -= 30
 		meta_discount_unlocked = true
+		save_meta()
 		return true
 	return false
 
@@ -432,8 +436,80 @@ static func upgrade_meta_vault() -> bool:
 	if meta_credits >= cost:
 		meta_credits -= cost
 		meta_vault_lvl += 1
+		save_meta()
 		return true
 	return false
+
+
+# ══════════════════════════════════════════════════
+# 메타 영속화 (세이브/로드) — user://meta_save.cfg (ConfigFile)
+# ══════════════════════════════════════════════════
+const DEFAULT_SAVE_PATH := "user://meta_save.cfg"
+const SAVE_VERSION := 1
+## 저장/로드 경로 오버라이드 (테스트·멀티슬롯용). ""이면 기본 경로 사용.
+static var save_path_override: String = ""
+
+
+static func _resolve_save_path(path: String) -> String:
+	if path != "":
+		return path
+	if save_path_override != "":
+		return save_path_override
+	return DEFAULT_SAVE_PATH
+
+
+## 메타 영속 데이터를 저장한다. (path 미지정 시 기본/오버라이드 경로)
+static func save_meta(path := "") -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value("meta", "version", SAVE_VERSION)
+	cfg.set_value("meta", "credits", meta_credits)
+	cfg.set_value("meta", "backpack_lvl", meta_backpack_lvl)
+	cfg.set_value("meta", "hp_armor_lvl", meta_hp_armor_lvl)
+	cfg.set_value("meta", "discount_unlocked", meta_discount_unlocked)
+	cfg.set_value("meta", "tactical_data_cores", meta_tactical_data_cores)
+	cfg.set_value("meta", "vault_lvl", meta_vault_lvl)
+	cfg.set_value("meta", "saved_vault_credits", saved_vault_credits)
+	cfg.set_value("meta", "starting_bonus_available", starting_bonus_available)
+	cfg.set_value("meta", "unlocked_weapons", meta_unlocked_weapons)
+	cfg.set_value("meta", "unlocked_sections", meta_unlocked_sections)
+	cfg.set_value("meta", "lore_fragments", meta_lore_fragments)
+	cfg.set_value("meta", "infiltration_risk_level", infiltration_risk_level)
+	cfg.save(_resolve_save_path(path))
+
+
+## 메타 영속 데이터를 불러온다. 파일이 없으면 현재(기본)값을 유지한다.
+static func load_meta(path := "") -> void:
+	var cfg := ConfigFile.new()
+	if cfg.load(_resolve_save_path(path)) != OK:
+		return
+	meta_credits = int(cfg.get_value("meta", "credits", meta_credits))
+	meta_backpack_lvl = int(cfg.get_value("meta", "backpack_lvl", meta_backpack_lvl))
+	meta_hp_armor_lvl = int(cfg.get_value("meta", "hp_armor_lvl", meta_hp_armor_lvl))
+	meta_discount_unlocked = bool(cfg.get_value("meta", "discount_unlocked", meta_discount_unlocked))
+	meta_tactical_data_cores = int(cfg.get_value("meta", "tactical_data_cores", meta_tactical_data_cores))
+	meta_vault_lvl = int(cfg.get_value("meta", "vault_lvl", meta_vault_lvl))
+	saved_vault_credits = int(cfg.get_value("meta", "saved_vault_credits", saved_vault_credits))
+	starting_bonus_available = bool(cfg.get_value("meta", "starting_bonus_available", starting_bonus_available))
+	meta_unlocked_weapons = _as_string_array(cfg.get_value("meta", "unlocked_weapons", meta_unlocked_weapons))
+	meta_unlocked_sections = _as_string_array(cfg.get_value("meta", "unlocked_sections", meta_unlocked_sections))
+	meta_lore_fragments = _as_int_array(cfg.get_value("meta", "lore_fragments", meta_lore_fragments))
+	infiltration_risk_level = int(cfg.get_value("meta", "infiltration_risk_level", infiltration_risk_level))
+
+
+static func _as_string_array(v) -> Array[String]:
+	var out: Array[String] = []
+	if v is Array:
+		for x in v:
+			out.append(String(x))
+	return out
+
+
+static func _as_int_array(v) -> Array[int]:
+	var out: Array[int] = []
+	if v is Array:
+		for x in v:
+			out.append(int(x))
+	return out
 
 
 ## 층별 생성된 노드 정보 반환 (맵 구조 기반)

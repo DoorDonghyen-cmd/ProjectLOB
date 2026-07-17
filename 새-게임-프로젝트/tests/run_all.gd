@@ -10,10 +10,15 @@ const SuiteEnemy := preload("res://tests/suite_enemy.gd")
 const ValidateData := preload("res://tests/validate_data.gd")
 const SimHarness := preload("res://tests/sim_harness.gd")
 const SuiteRunFlow := preload("res://tests/suite_run_flow.gd")
+const SuiteSaveLoad := preload("res://tests/suite_save_load.gd")
 
 
 func _initialize() -> void:
 	print("\n╔══════ Last on Board · 자동 검증 ══════╗")
+	# 테스트 중 메타 저장이 실제 세이브(user://meta_save.cfg)를 덮어쓰지 않도록 임시 경로로 리다이렉트
+	var override_path := "user://__test_meta_override.cfg"
+	RunManager.save_path_override = override_path
+
 	var t := LobTest.new()
 
 	SuiteDamage.run(t)      # 전투 수식(관통 게이트 · 명중 임계값)
@@ -22,6 +27,11 @@ func _initialize() -> void:
 	ValidateData.run(t)     # CSV 데이터 정합성
 	SimHarness.run(t)       # 결정론 전투 시뮬레이션
 	SuiteRunFlow.run(t)     # 플레이 흐름 통합(무기→맵→노드→전투→클리어→정산)
+	SuiteSaveLoad.run(t)    # 메타 세이브/로드 영속화
+
+	# 테스트 임시 세이브 정리 및 오버라이드 해제
+	DirAccess.remove_absolute(override_path)
+	RunManager.save_path_override = ""
 
 	var code := t.summary()
 	print("╚═════════════════════════════════════╝")

@@ -77,6 +77,7 @@ var _is_shortcut_mode: bool = false
 
 
 func _ready() -> void:
+	RunManager.load_meta()   # 메타 영속 데이터 로드 (세이브 없으면 기본값 유지)
 	_current_gun_data = _gun_revolver
 	_build_ui()
 	_show_title_screen()
