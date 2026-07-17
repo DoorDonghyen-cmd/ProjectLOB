@@ -7,7 +7,7 @@ class_name DamageCalculator
 ##
 ## 사용법:
 ##   var hit = DamageCalculator.check_hit(bullet, enemy_eva)
-##   var dmg = DamageCalculator.calculate_damage(bullet, enemy_def, enemy_pres, gun)
+##   var dmg = DamageCalculator.calculate_damage(bullet, enemy_def, gun)
 
 
 ## 명중 판정 (결정론적 임계값 비교)
@@ -27,12 +27,11 @@ static func check_hit(bullet: BulletData, enemy_evasion: int, gun: GunData = nul
 	return total_acc >= enemy_evasion
 
 
-## 대미지 계산
-## 1) 유효 관통 = PEN - PRES   (최소 0)
-## 2) 실 대미지 = DMG + 유효 관통 - DEF
-## 3) 최종 대미지 = max(실 대미지, 0)
+## 대미지 계산 (이진 관통 게이트)
+## 1) PEN < DEF 이면 최종 대미지 = 0 (장갑에 튕김)
+## 2) PEN ≥ DEF 이면 최종 대미지 = DMG 전량 (장갑 무력화)
 ##
-## gun이 주어지면 패시브 보너스를 가산한다.
+## gun이 주어지면 패시브 DMG/PEN 보너스를 가산한 뒤 게이트를 판정한다.
 static func calculate_damage(
 	bullet: BulletData,
 	enemy_def: int,

@@ -9,17 +9,19 @@ description: 게임 'Last on Board'의 AD(Art Director) 역할을 수행하며, 
 
 ---
 
-## 📐 1. 비주얼 컨셉 및 스타일 디렉션 (AD Cinematic Pixel Style Guide)
+## 📐 1. 비주얼 컨셉 및 스타일 디렉션 (AD Minimalist Pixel Style Guide)
 
-클래식 서바이벌 호러의 긴장감과 전술적인 피아 식별을 돕기 위해, **시네마틱 고대비 픽셀 아트(Cinematic High-Contrast Pixel Art)**를 기본 스타일로 채택합니다.
+> **정본**: 본 섹션은 GDD [12_art_style_manifesto.md](file:///d:/ProjectLoB/docs/gdd/12_art_style_manifesto.md)를 최종 정본으로 따른다. 충돌 시 매니페스토가 우선한다.
 
-### 1) 캐릭터 및 크리처 비례 (Realistic 5~6 Head-Tall Proportions)
-* **요원 (Agent)**: 레퍼런스 이미지([temp_character_monster_visual.png](file:///d:/ProjectLoB/temp_Image/temp_character_monster_visual.png)) 스타일을 추종하여 **5~6등신의 리얼 가깝고 날렵한 등신대 비례**를 적용합니다. 택티컬 가죽 재킷, 전술 배낭, 언더컷 머리스타일을 강조하여 진지하고 긴장감 넘치는 전술 요원의 분위기를 극대화합니다.
-* **몬스터 (Monsters/Zombies)**: 좀비 및 기괴한 크리처들 역시 마른 골격의 **5~6등신 실사 비례**로 디자인하여 기괴함을 유도하며, 황색/주황색 화염 조명을 받는 전면부와 반대편의 어두운 명암 및 **붉게 빛나는 안광(Glowing Eyes)**을 강조합니다.
+긴박한 테라-호러 무드와 전술적 피아 식별을 위해, **미니멀 16-bit 레트로 픽셀 아트(Minimalist 16-bit Pixel Art)**를 기본 스타일로 채택합니다. 외곽선 없이 명확한 실루엣 면과 플랫한 2톤 명암, 극도로 제한된 뮤트 톤 팔레트가 핵심입니다.
+
+### 1) 캐릭터 및 크리처 비례 (Minimalist 5 Head-Tall Proportions)
+* **요원 (Agent)**: **5등신의 미니멀 리얼 비례**를 적용합니다. 어두운 전술 장비를 착용하고 우측을 겨냥하는 사이드 프로필 실루엣. 그레이·다크 그린 중심의 제한된 뮤트 톤과 플랫한 2톤 명암으로 투박하고 직관적인 형태를 묘사합니다. **검은색 외곽선 금지.**
+* **몬스터 (감염된 보안/연구 인력)**: 몬스터는 단순 판타지 좀비가 아니라 **감염되거나 나노 기술에 지배당한 전술 요원·연구원**입니다(참조: [09-creative-director](file:///d:/ProjectLoB/.agents/skills/09-creative-director/SKILL.md)). 찢어진 방탄조끼·연구실 가운·깨진 고글·점멸하는 사이버네틱 임플란트 요소를 녹인 기괴한 5등신 실루엣으로 디자인하며, 브라운·다크 레드·뮤트 그린 중심의 제한된 2톤 명암 대비를 적용합니다. **검은색 외곽선 금지.**
 
 ---
 
-## 🎨 2. 이미지 생성 프롬프트 디렉션 (AD Cinematic Prompt Book)
+## 🎨 2. 이미지 생성 프롬프트 디렉션 (AD Minimalist Prompt Book)
 
 이미지를 AI를 통해 생성하거나 에셋을 다듬을 때, 다음 템플릿 공식을 반드시 준수하여 아트 스타일의 일관성을 강제합니다.
 
@@ -30,11 +32,11 @@ description: 게임 'Last on Board'의 AD(Art Director) 역할을 수행하며, 
   A minimalist retro low-res pixel art game sprite of a tactical agent from the side profile facing right, 5-head-tall proportion, wearing dark tactical gear, holding a weapon. Very limited muted color palette (grays, dark greens), flat 2-tone shading, strictly no outlines, blocky pixels, highly stylized and simple silhouette. Isolated on a solid medium-gray background, flat 2D game asset style, nearest neighbor scaling effect --v 6.1
   ```
 
-### ② 좀비 및 크리처 스프라이트 (Monster Sprites)
-* **AD 가이드**: 5등신 비례. 측면(Side profile)에서 좌측을 바라보는 구도. 극단적으로 제한된 뮤트 톤 색상과 플랫한 2톤 명암. **검은색 외곽선 금지**. 단색 회색 배경. 기괴하고 미니멀한 투박한 실루엣.
+### ② 몬스터 스프라이트 (감염된 보안/연구 인력, Infected Personnel Sprites)
+* **AD 가이드**: 5등신 비례. 측면(Side profile)에서 좌측을 바라보는 구도. 극단적으로 제한된 뮤트 톤 색상과 플랫한 2톤 명암. **검은색 외곽선 금지**. 단색 회색 배경. **감염된 전술 요원/연구원** 테마 — 찢어진 방탄조끼, 연구실 가운, 깨진 고글, 사이버네틱 임플란트 등의 기괴하고 미니멀한 투박한 실루엣.
 * **프롬프트 공식**:
   ```
-  A minimalist retro low-res pixel art game sprite of a grotesque zombie monster from the side profile facing left, 5-head-tall proportion. Very limited muted color palette (browns, dark reds, muted greens), flat 2-tone shading, strictly no outlines, blocky pixels, highly stylized and simple silhouette. Isolated on a solid medium-gray background, flat 2D game asset style, nearest neighbor scaling effect --v 6.1
+  A minimalist retro low-res pixel art game sprite of a grotesque infected tactical operative (nano-corrupted security guard / lab researcher) from the side profile facing left, 5-head-tall proportion, torn tactical vest or lab coat, cracked goggles, faint cybernetic implants. Very limited muted color palette (browns, dark reds, muted greens), flat 2-tone shading, strictly no outlines, blocky pixels, highly stylized and simple silhouette. Isolated on a solid medium-gray background, flat 2D game asset style, nearest neighbor scaling effect --v 6.1
   ```
 
 ### ③ 종합 대치 씬 및 배경 (Cinematic Combat Scene)
@@ -45,7 +47,9 @@ description: 게임 'Last on Board'의 AD(Art Director) 역할을 수행하며, 
   ```
 
 ### ④ UI/UX 픽셀 리소스 (UI/UX Pixel HUD Resources)
-* **AD 가이드**: 메인 화풍(32-bit 전술 픽셀아트, 림 라이팅, 디더링 명암)을 적용한 복고풍 HUD/UI 에셋.
+> **비트수 구분**: 캐릭터·크리처·배경 스프라이트는 **16-bit풍 미니멀 플랫**(§1 정본), HUD/UI 아이콘 계열만 **32-bit풍**(림 라이팅·디더링 명암 허용)으로 밀도를 높인다. 두 밀도를 혼동하지 않는다.
+
+* **AD 가이드**: HUD/UI 전용 화풍(32-bit풍 전술 픽셀아트, 림 라이팅, 디더링 명암)을 적용한 복고풍 HUD/UI 에셋.
 * **프롬프트 공식**:
   - **발사 버튼 타겟팅 액센트**:
     ```
@@ -72,6 +76,9 @@ description: 게임 'Last on Board'의 AD(Art Director) 역할을 수행하며, 
     - 팔레트에 불필요하게 미세한 중간색 색조가 너무 많이 들어가 도트 본연의 맛을 흐리는 경우, 팔레트 수를 16색~32색 한도로 제한하도록 재가공합니다.
 4.  **배경 투명성(Alpha Channel) 통과**:
     - 모든 단독 스프라이트 및 UI 요소는 **배경이 없는 투명(Alpha) 상태의 PNG 포맷**이어야 하며, 단색(검은색, 차콜색) 박스 테두리가 잔존해서는 안 됩니다.
+5.  **외곽선 원칙 적용 범위 (Outline Scope)**:
+    - **검은색 외곽선 절대 금지** 원칙은 **캐릭터·크리처·배경 스프라이트에만** 적용됩니다. 실루엣과 플랫 명암으로 형태를 잡는 대상입니다.
+    - **예외 — 탄환 투사체 아이콘**: 탄환 아이콘은 어두운 전투 트랙 위에서 가독성을 확보해야 하는 소형 HUD 아이콘이므로, [AGENTS.md](file:///d:/ProjectLoB/.agents/AGENTS.md) 탄환 규칙에 따라 **1px 두께의 선명한 검은색 아웃라인을 의무 적용**합니다. 이는 캐릭터 no-outline 원칙과 별개의 탄환 전용 규격입니다.
 
 ---
 
