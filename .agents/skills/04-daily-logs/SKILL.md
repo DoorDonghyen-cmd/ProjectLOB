@@ -3,6 +3,48 @@ name: 04-daily-logs
 description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹용 스킬. 대화 및 작업 종료 시 오늘 진행한 작업, 작성한 코드, 해결한 이슈, 다음 할 일 등을 일자별로 정리하여 기록합니다.
 ---
 
+## 2026-07-18 (Sat) #2 - 스킬 지침 정합 · 자동 검증/CI 구축 · 메타 세이브로드 · 프리프로덕션 하드닝
+
+### 🎯 목표
+- 프로젝트 스킬 지침의 모순을 정본에 정합시키고, 완료 기능/테스트를 자동 검증하는 파이프라인을 구축한다.
+- 메타 진행 영속성(세이브/로드) 공백을 메우고, 프로토타입→프로덕션 전환 판단을 위한 하드닝을 수행한다.
+
+### 🛠️ 개발 내역
+**1. 스킬 지침 모순 4건 정합**
+- balance-designer·combat-simulator: 대미지 공식을 이진 관통 게이트로, 명중을 `ACC≥EVA` 정수 임계값으로 통일(확률 % 제거), 수치를 실제 CSV 밴드로 교체. damage_calculator.gd 스테일 주석 정정.
+- art-resource-manager: 화풍을 미니멀 16-bit 플랫으로 단일화(§1↔§2 모순 해소), 몬스터를 "감염된 보안/연구 인력"으로 명기, 탄환 아이콘 아웃라인 예외 명문화.
+- work.md·AGENTS.md: 세션 종료 절차를 Phase 4로 통합(문서→커밋→푸시 승인 게이트).
+- work.md·07-notion-sync: 스킬 07~14 워크플로우 연결, 노션 도구명 현행화(post-page→notion-create-pages).
+
+**2. 헤드리스 자동 검증 스타터 + CI 구축**
+- `tests/` 신설: 전투 수식(이진 관통 게이트·ACC≥EVA)·탄창 LIFO·적 태세/거리·CSV 정합·결정론 전투 시뮬 스위트 + 미니 assert 하니스 + 로컬 러너(run.ps1).
+- `.github/workflows/tests.yml`: push/PR 시 Godot 4.7 헤드리스로 자동 실행(초록 확인).
+
+**3. 플레이 흐름 통합 + 메타 세이브/로드**
+- suite_run_flow: 무기→맵→노드→실제 CombatManager 전투→클리어→정산 완주 검증.
+- RunManager.save_meta/load_meta(user://meta_save.cfg, ConfigFile) 신설. 저장: end_run·upgrade_meta_*, 로드: combat_scene._ready. save_path_override로 테스트 격리. suite_save_load 추가.
+
+**4. 프리프로덕션 하드닝 (풀 런 스캔 + 보스 기믹 커버리지 + 적 데이터 일원화)**
+- suite_full_run: 맵 BFS 도달성(랜덤 5회, 데드엔드 0) + 전투 크래시 스캔(일반6+보스4, 크래시/행 0).
+- suite_boss_gimmicks: 앱소버 배리어·캐스터 차징·삼단 태세·최종보스 페이즈 전환(함수 단위) 검증.
+- sentry_drone·nano_stalker·neuro_caster 3종을 enemy_stats.csv로 편입(동작 무변화).
+- **자동 발견 이슈**: ① 최종보스 페이즈2 미작동(check_phase_transition 미호출) ② 맵 실측 10층 vs 문서 15층 드리프트 ③ nano_stalker EVA9 > ACC상한8 명중 불가. → task_tracker 등록.
+- 최종 검증: 638개 체크 그린(경보 3), 로컬·CI exit 0.
+
+### 📁 수정된 주요 파일
+- [.agents/skills/ (10·12·08·07·00·work.md·AGENTS.md)](file:///d:/ProjectLoB/.agents/) — 스킬 지침 정합
+- [새-게임-프로젝트/tests/](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/tests/) — 자동 검증 스위트 8종 + 러너
+- [.github/workflows/tests.yml](file:///d:/ProjectLoB/.github/workflows/tests.yml) — CI
+- [run_manager.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/core/run_manager.gd) — 세이브/로드 API + 훅
+- [combat_scene.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/combat_scene.gd) — 부팅 시 load_meta
+- [enemy_stats.csv](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/data/enemy_stats.csv) — 적 3종 편입
+
+### 💡 다음 예정 작업
+- **풀 런 플레이테스트**로 "재미 관문" 확인(프로덕션 전환 판단).
+- 등록된 이슈 정리: 🔴 최종보스 페이즈2, 🟡 맵 10 vs 15층 확정, 🟡 nano_stalker EVA9 밸런스.
+
+---
+
 ## 2026-07-18 (Sat) - 통로 분기 목적지 가격 구조 구현
 
 ### 🎯 목표
