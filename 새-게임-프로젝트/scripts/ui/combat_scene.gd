@@ -68,7 +68,6 @@ var _monster_gallery_overlay: MonsterGalleryOverlay
 var _combat_margin: MarginContainer
 var _combat_overlay: Control
 var _debriefing_overlay: DebriefingOverlay
-var is_v2_ui: bool = true
 var _camera: Camera2D
 
 # ── 현재 상태 ──
@@ -196,10 +195,7 @@ func _build_ui() -> void:
 	_combat_margin.offset_bottom = 0
 	_combat_margin.set_anchors_preset(PRESET_FULL_RECT)
 	
-	if is_v2_ui:
-		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
-	else:
-		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay.tscn").instantiate()
+	_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
 	_combat_margin.add_child(_combat_overlay)
 	_combat_overlay.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
 	_combat_overlay.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
@@ -314,7 +310,6 @@ func trigger_double_tap_test() -> void:
 
 
 func trigger_v2_ui_test() -> void:
-	self.is_v2_ui = true
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
 	_current_gun_data = _gun_smg
@@ -343,7 +338,6 @@ func trigger_v2_ui_test() -> void:
 ## 🛠️ 보스 전투 테스트 — 개발자 테스트 메뉴에서 보스전을 즉시 실행한다.
 ## boss_id에 따라 해당 보스와 호위 대열을 조합하여 전투를 개시한다.
 func trigger_boss_test(boss_id: String) -> void:
-	self.is_v2_ui = true
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
 	_current_gun_data = _gun_smg
@@ -553,10 +547,7 @@ func _start_combat_phase(enemy_datas: Array) -> void:
 	add_child(_cm)
 	
 	if not is_instance_valid(_combat_overlay):
-		if is_v2_ui:
-			_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
-		else:
-			_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay.tscn").instantiate()
+		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
 		_combat_margin.add_child(_combat_overlay)
 		_combat_overlay.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_FILL
 		_combat_overlay.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_FILL
