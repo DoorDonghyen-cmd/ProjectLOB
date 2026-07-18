@@ -1111,9 +1111,11 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 		enemy_data_list.append(temp_ed)
 		
 	var initial_deck: Array[BulletData] = []
+	var equipped_parts: Array[PartData] = []
 	if run_manager:
 		initial_deck = run_manager.deck
-	combat_manager.start_encounter(gun, enemy_data_list, initial_deck)
+		equipped_parts = run_manager.equipped_parts
+	combat_manager.start_encounter(gun, enemy_data_list, initial_deck, equipped_parts)
 
 func _on_encounter_started(enemy_list) -> void:
 	_last_bullet_count = -1

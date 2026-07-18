@@ -13,6 +13,7 @@ const SuiteRunFlow := preload("res://tests/suite_run_flow.gd")
 const SuiteSaveLoad := preload("res://tests/suite_save_load.gd")
 const SuiteBossGimmicks := preload("res://tests/suite_boss_gimmicks.gd")
 const SuiteFullRun := preload("res://tests/suite_full_run.gd")
+const SuiteParts := preload("res://tests/suite_parts.gd")
 
 
 func _initialize() -> void:
@@ -32,6 +33,7 @@ func _initialize() -> void:
 	SuiteSaveLoad.run(t)    # 메타 세이브/로드 영속화
 	SuiteBossGimmicks.run(t) # 보스/특수 기믹 유닛(앱소버·캐스터·삼단태세·페이즈전환)
 	SuiteFullRun.run(t)     # 풀 런 통합 스캔(맵 도달성 + 전투 크래시 스캔)
+	SuiteParts.run(t)       # 파츠 적용 회귀(파츠 전달 시 전투 효과 반영)
 
 	# 테스트 임시 세이브 정리 및 오버라이드 해제
 	DirAccess.remove_absolute(override_path)
