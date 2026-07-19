@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "언더플로우 (Underflow)"
+description = "탄창의 마지막 1발(바닥 탄)을 격발할 때 DMG +5가 가산되고 넉백이 2배로 증폭됩니다. 탄창을 끝까지 비우는 운용에 보상합니다."
+part_id = 4
+tier = 1

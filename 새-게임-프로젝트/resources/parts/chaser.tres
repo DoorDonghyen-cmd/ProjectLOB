@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "체이서 (Chaser)"
+description = "적을 처치할 때마다 관통력 PEN +2가 누적 충전되어 이후 격발에 적용됩니다. 연쇄 처치로 중장갑을 뚫는 가속 설계입니다."
+part_id = 5
+tier = 3

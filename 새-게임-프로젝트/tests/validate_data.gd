@@ -37,6 +37,37 @@ static func run(t) -> void:
 	t.section("DataValidation")
 	_validate_bullets(t)
 	_validate_enemies(t)
+	_validate_parts(t)
+
+
+## 파츠 리소스 검증 — 로드 가능·part_id 유효/유니크·tier 범위.
+static func _validate_parts(t) -> void:
+	var dir := DirAccess.open("res://resources/parts")
+	t.check(dir != null, "resources/parts 디렉터리 접근")
+	if dir == null:
+		return
+
+	var pid_count := Enums.PartID.size()
+	var seen_ids := {}
+	var total := 0
+	dir.list_dir_begin()
+	var fn := dir.get_next()
+	while fn != "":
+		if fn.ends_with(".tres"):
+			total += 1
+			var res = load("res://resources/parts/" + fn)
+			var base := fn.get_basename()
+			t.check(res != null, "part '%s' 로드 가능" % base)
+			if res != null:
+				var pid: int = res.part_id
+				t.check(pid > 0 and pid < pid_count, "part '%s' part_id %d ∈ (0,%d)" % [base, pid, pid_count])
+				t.check(not seen_ids.has(pid), "part '%s' part_id %d 유니크" % [base, pid])
+				seen_ids[pid] = base
+				t.check(res.tier >= 1 and res.tier <= 5, "part '%s' tier %d ∈ [1,5]" % [base, res.tier])
+				t.check(res.display_name != "", "part '%s' 표기명 존재" % base)
+		fn = dir.get_next()
+	dir.list_dir_end()
+	t.check(total > 0, "파츠 리소스 %d종 발견" % total)
 
 
 static func _validate_bullets(t) -> void:

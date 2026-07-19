@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "연동 조준 (Chain Sight)"
+description = "직전 격발이 명중했을 경우 이번 격발의 명중 ACC +2가 가산됩니다. 명중을 이어갈수록 안정되는 연쇄 조준 장치입니다."
+part_id = 15
+tier = 3

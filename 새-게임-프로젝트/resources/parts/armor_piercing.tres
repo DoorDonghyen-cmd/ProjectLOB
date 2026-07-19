@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "철갑 총열 (Armor Piercing Barrel)"
+description = "모든 격발의 관통력 PEN +1이 상시 가산됩니다. 이진 관통 게이트를 한 단계 넘겨 중장갑 적의 도탄을 방지합니다."
+part_id = 11
+tier = 3

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "처형자 (Executioner)"
+description = "거리 1m 이하에서 잔여 체력 3 이하인 적을 격발하면 방어를 무시하고 즉사 처형합니다. 최후방어선까지 끌어들이는 고위험 운용의 보상입니다."
+part_id = 8
+tier = 2

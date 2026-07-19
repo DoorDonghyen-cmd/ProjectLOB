@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "표적 지시기 (Target Indicator)"
+description = "턴당 최초 1회 격발에 한해 적의 회피(EVA)를 0으로 고정하여 확정 명중시킵니다. 회피형 적을 상대로 첫 탄을 반드시 꽂아 넣습니다."
+part_id = 14
+tier = 3

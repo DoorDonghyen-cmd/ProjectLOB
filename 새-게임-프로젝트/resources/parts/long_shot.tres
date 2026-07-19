@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "롱샷 (Long Shot)"
+description = "적과의 거리가 3m 이상일 때 거리에 비례해 DMG가 상승합니다 (가산량 = 거리 - 2). 적을 밀어내며 원거리를 유지하는 운용에 보상합니다."
+part_id = 7
+tier = 2

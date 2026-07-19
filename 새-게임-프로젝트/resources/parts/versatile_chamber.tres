@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "만능 약실 (Versatile Chamber)"
+description = "모든 격발에 명중 ACC +1과 관통 PEN +1이 동시에 가산됩니다. 특화는 없지만 명중·관통 양쪽 게이트를 고르게 보정합니다."
+part_id = 13
+tier = 3

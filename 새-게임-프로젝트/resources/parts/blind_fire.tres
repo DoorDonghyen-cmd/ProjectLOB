@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "블라인드파이어 (Blind Fire)"
+description = "모든 격발 DMG +2를 얻는 대신, 탄창 예고창이 1칸 줄어 다음 탄 정보가 은폐됩니다. 정보를 대가로 화력을 사는 거래입니다."
+part_id = 20
+tier = 5

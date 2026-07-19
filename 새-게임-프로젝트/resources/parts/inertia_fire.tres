@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "관성 격발 (Inertia Fire)"
+description = "적이 같은 태세를 유지하는 동안 연속 명중시키면 DMG가 1씩 누적 가산됩니다. 태세가 바뀌면 누적이 초기화됩니다."
+part_id = 18
+tier = 4

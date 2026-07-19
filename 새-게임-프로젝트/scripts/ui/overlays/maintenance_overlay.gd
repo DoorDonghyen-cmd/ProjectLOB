@@ -956,7 +956,21 @@ func _generate_shop_items() -> void:
 		"res://resources/parts/point_blank.tres",
 		"res://resources/parts/recoil_push.tres",
 		"res://resources/parts/marksman_scope.tres",
-		"res://resources/parts/shred_muzzle.tres"
+		"res://resources/parts/shred_muzzle.tres",
+		# ── 신규 편입 파츠 (전투 로직 기구현분 리소스화) ──
+		"res://resources/parts/interrupter.tres",
+		"res://resources/parts/underflow.tres",
+		"res://resources/parts/chaser.tres",
+		"res://resources/parts/long_shot.tres",
+		"res://resources/parts/executioner.tres",
+		"res://resources/parts/high_precision.tres",
+		"res://resources/parts/armor_piercing.tres",
+		"res://resources/parts/versatile_chamber.tres",
+		"res://resources/parts/target_indicator.tres",
+		"res://resources/parts/chain_acc.tres",
+		"res://resources/parts/inertia_fire.tres",
+		"res://resources/parts/blind_fire.tres",
+		"res://resources/parts/quick_load.tres"
 	]
 	var part_res = load(part_paths.pick_random())
 	_shop_items.append({ "item": part_res, "price": randi_range(30, 45), "sold_out": false })
