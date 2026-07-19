@@ -142,7 +142,14 @@ func _build_ui() -> void:
 
 func show_map_screen() -> void:
 	visible = true
-	_map_floor_label.text = "상승 경로 (%d층)" % run_manager.current_floor
+	# 구역명 · 구역 내 진행도 · 도시 전체 기준 절대 고도(약 3000층 규모의 한 조각임을 전달)
+	var sec_info := MapGenerator.section_info(run_manager.current_section)
+	_map_floor_label.text = "%s · %d/%d · LV.%04d" % [
+		sec_info.name,
+		run_manager.current_floor,
+		int(sec_info.floors),
+		MapGenerator.absolute_level(run_manager.current_section, run_manager.current_floor)
+	]
 	_route_pressure_label.visible = run_manager.pending_combat_distance_modifier < 0
 	_route_pressure_label.text = "  ⚠ 환기 압박: 다음 교전 시작 거리 -2m" if _route_pressure_label.visible else ""
 	

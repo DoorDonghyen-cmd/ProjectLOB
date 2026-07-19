@@ -28,6 +28,32 @@ static func run(t) -> void:
 		t.check(report.all_reachable, "맵#%d: 1~%d층 전부 도달 가능(데드엔드 없음)%s" % [
 			iter + 1, report.max_floor, report.detail])
 
+	# ── 1-B) 전 구역 맵 생성 검증 ──
+	# 계층별 명칭 테이블(_names_b/c/d/e)에 키가 누락되면 해당 구역 생성 시 즉시 실패한다.
+	# section_a 외 구역은 플레이 경로가 길어 수동 확인이 어려우므로 여기서 강제 구동한다.
+	for sec in ["section_a", "section_b", "section_c", "section_d", "section_e"]:
+		var rm_s := RunManager.new()
+		rm_s.start_new_run(sec, gun, load(B_BASIC), load(B_KB), load(B_OPEN))
+		var rep := _map_reachability(rm_s)
+		t.check(rep.all_reachable, "%s: 1~%d층 도달 가능%s" % [sec, rep.max_floor, rep.detail])
+
+		# 노드 명칭이 비어 있지 않고, 기능 접미사(로직 분기용)가 보존되었는지 확인
+		var has_boss := false
+		var has_shop := false
+		for nid in rm_s.map_nodes.keys():
+			var tn: String = rm_s.map_nodes[nid].type_name
+			t.check(tn.strip_edges() != "", "%s 노드 %d: 명칭 비어있지 않음" % [sec, nid])
+			if tn.contains("보스"):
+				has_boss = true
+			if tn.contains("상점"):
+				has_shop = true
+		t.check(has_boss, "%s: 보스 노드 존재(전투 라우팅 보존)" % sec)
+		t.check(has_shop, "%s: 상점 노드 존재(통로 배치 로직 보존)" % sec)
+
+		# 구역 메타데이터 정합 (표시 고도)
+		var info := MapGenerator.section_info(sec)
+		t.eq(int(info.floors), rep.max_floor, "%s: section_info 층수와 실제 생성 층수 일치" % sec)
+
 	# ── 2) 전투 크래시 스캔 ──
 	# 승리 확인(약하고 명중 가능): 러셔
 	t.eq(_encounter(gun, "res://resources/enemies/rusher.tres", B_BASIC).result, "won",
