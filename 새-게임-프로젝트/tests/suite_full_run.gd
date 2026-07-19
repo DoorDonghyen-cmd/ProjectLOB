@@ -33,9 +33,10 @@ static func run(t) -> void:
 	t.eq(_encounter(gun, "res://resources/enemies/rusher.tres", B_BASIC).result, "won",
 		"러셔 기본 전투 승리(전투 루프 정상)")
 
-	# nano_stalker: EVA 9 > 탄환 ACC 상한(8) → 명중 불가(밸런스 이상 문서화)
+	# nano_stalker: EVA 9 > 탄환 ACC 상한(8) → 일반 총기로는 원천 명중 불가(의도된 스텔스 설계).
+	# 전용 카운터(DMR 저격 시그니처 등)는 suite_gun_signatures에서 검증한다.
 	t.eq(_encounter(gun, "res://resources/enemies/nano_stalker.tres", B_MAXACC).result, "out_of_ammo",
-		"나노 스토커 EVA9 — 최대 ACC(8)로도 명중 불가(설계/밸런스 이슈)")
+		"나노 스토커 EVA9 — 일반 총기 최대 ACC(8)로는 명중 불가(카운터 필수 설계)")
 
 	# 크래시/행 없이 종결되는지 스캔 (일반 특수 적 + 보스 4종 = 보스 전용 코드 경로 구동)
 	var scan := [
