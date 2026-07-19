@@ -549,6 +549,14 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		calc_bullet_kb.penetration += part_pen_bonus
 		
 		var kb := DamageCalculator.calculate_knockback(calc_bullet_kb, gun)
+
+		# 돌격형(샷건) 시그니처 보호: 초근접 보너스 구간(거리 <= 2)에서는 자체 패시브 넉백을 제외한다.
+		# 제외하지 않으면 샷건이 자기 사격으로 적을 보너스 구간 밖으로 밀어내
+		# 초근접 특화가 첫 발에만 적용되고 이후 원거리 페널티까지 받는 자기모순이 발생한다.
+		# (탄환 자체 넉백은 플레이어의 의도적 선택이므로 그대로 유지)
+		if gun and _gun_is("shotgun") and target.current_distance <= 2:
+			kb = maxi(kb - gun.passive_knockback_bonus, 0)
+
 		# 언더플로우 (UNDERFLOW): 피날레 넉백 2배 증폭
 		if _has_part(Enums.PartID.UNDERFLOW) and is_last and kb > 0:
 			kb *= 2
