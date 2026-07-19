@@ -4,10 +4,49 @@ extends RefCounted
 ## 주의: check_phase_transition은 "함수 자체"가 정상임을 검증한다.
 ##       실제 전투에서 호출되지 않는 통합 버그는 별건(task_tracker Backlog 등록)이다.
 
+const CombatManagerScript := preload("res://scripts/core/combat_manager.gd")
+const GUN := "res://resources/guns/revolver.tres"
+const BOSS_FINAL_RES := "res://resources/enemies/boss_lob_core.tres"
+const B_PIERCE := "res://resources/bullets/pierce_dmr.tres" # DMG4 / ACC7 / PEN3 — DEF3 게이트 통과
+
+
 static func _enemy(arch: int) -> EnemyInstance:
 	var d := EnemyData.new()
 	d.archetype = arch
 	return EnemyInstance.new(d)
+
+
+## 최종 보스를 실제 CombatManager로 구동해 지정 발수만큼 격발한 뒤 상태를 반환한다.
+static func _run_final_boss(shots: int) -> Dictionary:
+	var cm = CombatManagerScript.new()
+	var won := [false]
+	cm.encounter_won.connect(func(): won[0] = true)
+
+	var gun: GunData = load(GUN)
+	var loadout: Array[BulletData] = []
+	for i in range(shots):
+		loadout.append((load(B_PIERCE) as BulletData).duplicate())
+	var enemies: Array[EnemyData] = [load(BOSS_FINAL_RES) as EnemyData]
+	var no_parts: Array[PartData] = []
+
+	cm.start_encounter(gun, enemies, loadout, no_parts)
+	cm.confirm_loading(loadout)
+	var guard := 0
+	while not cm.magazine.is_empty() and guard < 20:
+		guard += 1
+		cm.fire()
+
+	var boss = cm.enemies[0]
+	var res := {
+		"phase": boss.current_phase,
+		"sponge": boss.is_stack_sponge,
+		"hp": boss.current_hp,
+		"barrier": boss.barrier_cells,
+		"dead": boss.is_dead(),
+		"won": won[0],
+	}
+	cm.free()
+	return res
 
 
 static func run(t) -> void:
@@ -52,3 +91,17 @@ static func run(t) -> void:
 	t.eq(fb.current_phase, 2, "페이즈 2 진입")
 	t.check(not fb.is_stack_sponge, "페이즈2 배리어 해제")
 	t.eq(fb.current_hp, 30, "페이즈2 실체 HP 30 노출")
+
+	# ── 최종 보스 페이즈 전환 [실제 전투 통합] ──
+	# 회귀: combat_manager가 배리어 소진 시 check_phase_transition을 호출하지 않아
+	#       페이즈2에 도달하지 못하고 즉사하던 버그(2026-07-18 수정).
+	var r4 := _run_final_boss(4)
+	t.eq(r4.phase, 1, "[전투] 배리어 1셀 잔존(4타) → 페이즈 1 유지")
+	t.check(r4.sponge, "[전투] 페이즈1 배리어 모드 유지")
+
+	var r5 := _run_final_boss(5)
+	t.eq(r5.phase, 2, "[전투] 배리어 소진(5타) → 페이즈 2 전환")
+	t.check(not r5.sponge, "[전투] 페이즈2에서 배리어 모드 해제")
+	t.eq(r5.hp, 30, "[전투] 페이즈2 실체 HP 30 노출")
+	t.check(not r5.dead, "[전투] 페이즈2 진입 — 즉사하지 않음")
+	t.check(not r5.won, "[전투] 배리어 소진만으로 전투가 종료되지 않음")

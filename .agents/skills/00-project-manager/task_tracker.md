@@ -68,8 +68,6 @@
 ## ⏳ 보류 및 연기된 일감 (Backlog)
 - [ ] **무기 캐비닛 (정비) 노드 기획 및 인게임 연동**
   - *사유*: 덱 정제(Modify/Clone/Remove) 기획 사상은 우수하나, 사용자의 15층 침투 맵에 직접 강제 배치하지 않고 추후 필요성 검토 후 이관하기 위해 보류 처리함.
-- [ ] **[버그] 최종 보스(L.O.B 코어) 2페이즈 전환 미작동**
-  - *내용*: `enemy_instance.check_phase_transition()`이 어디서도 호출되지 않아, 배리어(5셀) 소진 시 페이즈 2로 전환되지 않고 즉시 사망 처리됨. 기획된 2페이즈 결전이 도달 불가. combat_manager 배리어 차감 직후 전환 호출 연동 + 회귀 테스트 필요. (2026-07-18 코드 감사에서 발견)
 - [ ] **[문서↔코드 드리프트] 맵 층수 10 vs 15 불일치** — generate_run_map은 실제 10층 생성(run_manager.gd:449 "10층 압축 구조")이나 로드맵·GDD는 "15층" 표기. 15층으로 확장할지/문서를 10층으로 정정할지 결정 필요. (2026-07-18 풀 런 스캔에서 발견)
 - [ ] **[밸런스] nano_stalker EVA 9 명중 불가** — 탄환 ACC 상한(8) < EVA 9라 정상 수단으로 명중 불가. 전용 카운터(파츠/특수탄) 도입 또는 EVA 하향 결정 필요.
 - [x] **[데이터] 적 3종(sentry_drone·nano_stalker·neuro_caster) enemy_stats.csv 편입 완료** — .tres 값 그대로 CSV 이관(게임 동작 무변화), validate_data 자동 커버 확보.
@@ -82,6 +80,7 @@
 ## ✅ complete-task (완료된 일감)
 *결과가 확인되어 개발 및 검증이 완료된 태스크들입니다.*
 
+- [x] 최종 보스 2페이즈 전환 버그 수정 완료 (배리어 소진 시 check_phase_transition 미호출로 즉사하던 문제. _apply_damage_to_enemy에 전환 연동 → 코어 노출 페이즈2 정상 진입. 실전투 회귀 테스트 7건 추가)
 - [x] 파츠 미적용 버그 수정 완료 (combat_overlay_v2가 start_encounter에 parts 누락 → equipped_parts 항상 []. 장착 파츠·총기 고유 파츠 전부 미발동하던 문제. run_manager.equipped_parts 전달로 수정, suite_parts 회귀 테스트 추가)
 - [x] 리팩토링(저위험 2건) 완료 (v1 죽은 오버레이 combat_overlay + dump툴 6파일 삭제 ~3080줄 순감, generate_run_map을 map_generator.gd로 SRP 분리 927→659줄)
 - [x] 자동 검증 파이프라인 구축 완료 (헤드리스 테스트 스위트 9종 642체크 + GitHub Actions CI. 전투수식·탄창·적/보스기믹·CSV정합·전투시뮬·플레이흐름·세이브로드·풀런 스캔·파츠적용 커버)
@@ -110,7 +109,7 @@
 | 날짜 | 이슈 | 상태 | 비고 |
 |------|------|------|------|
 | 2026-07-18 | 파츠가 전투에 적용되지 않음 | ✅ 해결 | combat_overlay_v2가 start_encounter에 parts 인자 누락 → equipped_parts 항상 []. run_manager.equipped_parts 전달로 수정, suite_parts 회귀 테스트 추가 |
-| 2026-07-18 | 최종 보스 L.O.B 코어 2페이즈 전환 미작동 | 🔴 열림 | check_phase_transition() 미호출 → 배리어 소진 시 즉사, 페이즈2 도달 불가. Backlog 등록 |
+| 2026-07-18 | 최종 보스 L.O.B 코어 2페이즈 전환 미작동 | ✅ 해결 | check_phase_transition() 미호출 → 배리어 소진 시 즉사하던 문제. _apply_damage_to_enemy 배리어 차감 직후 전환 호출 연동, 실전투 회귀 테스트 추가(649체크) |
 | 2026-07-18 | 맵 층수 10 vs 문서 15 드리프트 | 🟡 열림 | generate_run_map 실측 10층, 로드맵/GDD "15층". 확장/정정 결정 필요 |
 | 2026-07-18 | nano_stalker EVA9 명중 불가 | 🟡 열림 | 탄환 ACC 상한 8 < EVA 9. 전용 카운터 또는 EVA 하향 결정 필요 |
 | 2026-07-12 | 확산 격발 장치 ID 누락 및 스탯 시뮬레이션, 퀵 장착 버그 | ✅ 해결 | spread_shot.tres ID 추가, UI 스탯 계산식 정합, 퀵 장착 고유 파츠 교체 보호 적용 |

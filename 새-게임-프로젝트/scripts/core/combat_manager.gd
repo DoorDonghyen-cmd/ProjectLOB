@@ -689,6 +689,11 @@ func _apply_damage_to_enemy(enemy: EnemyInstance, dmg_amount: int) -> void:
 	if enemy.is_stack_sponge:
 		enemy.barrier_cells = maxi(enemy.barrier_cells - 1, 0)
 		combat_log.emit("   [color=#33ffff]🛡️ 배리어 충전 셀 차감! 남은 보호막: %d/3[/color]" % enemy.barrier_cells)
+		# 최종 보스: 배리어 소진 시 페이즈 2(코어 노출)로 전환한다.
+		# 전환에 성공하면 is_stack_sponge가 해제되고 실체 HP가 노출되어 사망 처리되지 않는다.
+		if enemy.check_phase_transition():
+			combat_log.emit("   [color=#ff5555]⚠️ 배리어 붕괴! 코어 노출 — 페이즈 2 개시! (실체 HP %d)[/color]" % enemy.current_hp)
+			enemy_stance_changed.emit(enemy, enemy.current_stance)
 	else:
 		enemy.apply_damage(dmg_amount)
 
