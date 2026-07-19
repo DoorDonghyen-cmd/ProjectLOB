@@ -339,6 +339,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		combat_log.emit("   ↳ ⚠ [돌격형 페널티] 원거리 조준 불안정으로 이번 사격 ACC -4 감소!")
 
 	var hit := DamageCalculator.check_hit(calc_bullet_acc, target_evasion, gun)
+	# 콤보 판정은 "직전 격발"의 명중 여부를 봐야 하므로 덮어쓰기 전에 보존한다.
+	# (보존하지 않으면 현재 격발의 명중 여부를 읽어 첫 발부터 항상 발동하는 버그가 된다)
+	var prev_shot_hit := last_shot_hit
 	last_shot_hit = hit
 
 	if hit:
@@ -459,7 +462,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				combat_log.emit("   ↳ 🎯 [막탄 강화] 탄창 최종 격발! 대미지 %d → %d" % [base_dmg, damage])
 
 		# ── 2.4 연발 콤보 (Combo Shot) 대미지 가산 적용 ──
-		if bullet.effect_type == Enums.BulletEffect.COMBO and last_shot_hit:
+		if bullet.effect_type == Enums.BulletEffect.COMBO and prev_shot_hit:
 			if damage > 0:
 				damage += bullet.effect_value
 				breakdown += " + [콤보 보너스] %d" % bullet.effect_value
