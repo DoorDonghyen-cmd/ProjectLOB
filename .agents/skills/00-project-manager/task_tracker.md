@@ -42,7 +42,7 @@
 - [x] 개발자 디버그 테스트 메뉴(보스+호위 대열 즉시 스폰 QA 숏컷)
 
 ### Phase 6: Meta Progress & Nodes (마일스톤 3)
-- [ ] **요원 영구 데이터 세이브/로드 (user://meta_save.cfg) 연동  ← 다음 작업**
+- [x] 요원 영구 데이터 세이브/로드 (user://meta_save.cfg) 연동 — RunManager save_meta/load_meta
 - [ ] 정비소 노드 3종: 무기 캐비닛(탄환 개조/폐기), 대피소(HP·소실탄 회복), 보안 통제실(해킹 이벤트)
 
 ### Phase 7: Simulation Tuning (마일스톤 4)
@@ -73,6 +73,7 @@
 - [ ] **[문서↔코드 드리프트] 맵 층수 10 vs 15 불일치** — generate_run_map은 실제 10층 생성(run_manager.gd:449 "10층 압축 구조")이나 로드맵·GDD는 "15층" 표기. 15층으로 확장할지/문서를 10층으로 정정할지 결정 필요. (2026-07-18 풀 런 스캔에서 발견)
 - [ ] **[밸런스] nano_stalker EVA 9 명중 불가** — 탄환 ACC 상한(8) < EVA 9라 정상 수단으로 명중 불가. 전용 카운터(파츠/특수탄) 도입 또는 EVA 하향 결정 필요.
 - [x] **[데이터] 적 3종(sentry_drone·nano_stalker·neuro_caster) enemy_stats.csv 편입 완료** — .tres 값 그대로 CSV 이관(게임 동작 무변화), validate_data 자동 커버 확보.
+- [ ] **[콘텐츠] 파츠 ~13종 `.tres` 미생성 (획득 불가)** — combat_manager에 전투 로직은 있으나 resources/parts/에 리소스가 없어 플레이어가 획득/장착 불가(현재 tres 8종만 존재). 미완성 파츠 리소스 제작 필요.
 - [ ] **에셋 파일명 `zombie_*.png` → 보안요원 테마 리네이밍**
   - *사유*: 2026-07-18 아트 방향 확정(감염된 보안/연구 인력)에 따라 `zombie_rusher/tank/dodger.png` 등 에셋 파일명이 enemy_stats.csv 표기명("폭동 돌격병" 등)과 불일치. 리네이밍은 `.tres`/코드 참조 경로에 영향을 주므로 별도 과제로 분리. 참조: 메모리 art_direction.md.
 
@@ -81,7 +82,9 @@
 ## ✅ complete-task (완료된 일감)
 *결과가 확인되어 개발 및 검증이 완료된 태스크들입니다.*
 
-- [x] 자동 검증 파이프라인 구축 완료 (헤드리스 테스트 스위트 8종 638체크 + GitHub Actions CI. 전투수식·탄창·적/보스기믹·CSV정합·전투시뮬·플레이흐름 통합·세이브로드·풀런 스캔 커버)
+- [x] 파츠 미적용 버그 수정 완료 (combat_overlay_v2가 start_encounter에 parts 누락 → equipped_parts 항상 []. 장착 파츠·총기 고유 파츠 전부 미발동하던 문제. run_manager.equipped_parts 전달로 수정, suite_parts 회귀 테스트 추가)
+- [x] 리팩토링(저위험 2건) 완료 (v1 죽은 오버레이 combat_overlay + dump툴 6파일 삭제 ~3080줄 순감, generate_run_map을 map_generator.gd로 SRP 분리 927→659줄)
+- [x] 자동 검증 파이프라인 구축 완료 (헤드리스 테스트 스위트 9종 642체크 + GitHub Actions CI. 전투수식·탄창·적/보스기믹·CSV정합·전투시뮬·플레이흐름·세이브로드·풀런 스캔·파츠적용 커버)
 - [x] 메타 세이브/로드 영속화 완료 (RunManager save_meta/load_meta, user://meta_save.cfg, end_run·upgrade_meta_* 저장 / combat_scene._ready 로드, 테스트 격리 오버라이드)
 - [x] 프로젝트 스킬 지침 모순 정합 완료 (밸런스 공식·AD 화풍·세션종료 절차·스킬 워크플로/노션 도구명 정본화)
 - [x] 프리프로덕션 하드닝 완료 (풀 런 통합 스캔, 보스 기믹 커버리지, 적 3종 CSV 데이터 일원화)
@@ -106,6 +109,7 @@
 
 | 날짜 | 이슈 | 상태 | 비고 |
 |------|------|------|------|
+| 2026-07-18 | 파츠가 전투에 적용되지 않음 | ✅ 해결 | combat_overlay_v2가 start_encounter에 parts 인자 누락 → equipped_parts 항상 []. run_manager.equipped_parts 전달로 수정, suite_parts 회귀 테스트 추가 |
 | 2026-07-18 | 최종 보스 L.O.B 코어 2페이즈 전환 미작동 | 🔴 열림 | check_phase_transition() 미호출 → 배리어 소진 시 즉사, 페이즈2 도달 불가. Backlog 등록 |
 | 2026-07-18 | 맵 층수 10 vs 문서 15 드리프트 | 🟡 열림 | generate_run_map 실측 10층, 로드맵/GDD "15층". 확장/정정 결정 필요 |
 | 2026-07-18 | nano_stalker EVA9 명중 불가 | 🟡 열림 | 탄환 ACC 상한 8 < EVA 9. 전용 카운터 또는 EVA 하향 결정 필요 |
@@ -127,6 +131,7 @@
 
 | 날짜 | 작업 내용 |
 |------|----------|
+| 2026-07-18 | 리팩토링(v1 죽은 오버레이 6파일 삭제 ~3080줄 순감, 맵 생성 map_generator.gd 분리 927→659줄) 및 파츠 미적용 버그 수정(start_encounter parts 전달 누락 → 장착 파츠 전부 미발동하던 문제 해결, suite_parts 회귀 테스트 추가, 642체크 그린) |
 | 2026-07-18 | 스킬 지침 모순 정합 · 헤드리스 자동 검증(638체크)+CI 구축 · 메타 세이브/로드 영속화 · 프리프로덕션 하드닝(풀런 스캔·보스 기믹 커버리지·적3종 CSV 일원화). 자동 발견 이슈 3건(최종보스 페이즈2·맵10vs15·EVA9) 등록 |
 | 2026-07-17 | 렐릭 시스템 전면 제거 완료 (런타임 상태·전투 효과·로드아웃 UI·정산 보너스·가스 밸브 해금 조건 삭제, 가스 우회로 일반 공개 전환, 현행 GDD/로드맵/목업 및 프로젝트 전용 스킬 동기화, 잔존 참조·HTML JS·diff 정적 검증 완료) |
 | 2026-07-12 | 총기 파츠 장착 동작 검증 및 3대 버그 수정 완료 (확산 격발 장치 ID 누락 해결, 무기고 스탯 시뮬레이션 공식과 실제 인게임 정합, 고유 파츠 퀵 장착 보호 추가) |

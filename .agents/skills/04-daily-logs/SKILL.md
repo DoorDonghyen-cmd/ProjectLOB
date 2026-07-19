@@ -3,6 +3,37 @@ name: 04-daily-logs
 description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹용 스킬. 대화 및 작업 종료 시 오늘 진행한 작업, 작성한 코드, 해결한 이슈, 다음 할 일 등을 일자별로 정리하여 기록합니다.
 ---
 
+## 2026-07-18 (Sat) #3 - 리팩토링(죽은 코드 제거·맵 생성 분리) 및 파츠 미적용 버그 수정
+
+### 🎯 목표
+- 본격 제작 전환 판단의 일환으로 리팩토링 필요성을 진단하고, 저위험·고효용 항목만 정리한다.
+- 파츠 시스템이 실제로 무기에 적용되는지 점검하고 결함을 수정한다.
+
+### 🛠️ 개발 내역
+**1. 리팩토링 진단 및 실행 (저위험 2건)**
+- 규모 진단: combat_overlay.gd(2167줄)가 `is_v2_ui` 상시 true로 **도달 불가한 죽은 코드**임을 확인.
+- v1 죽은 오버레이 제거: combat_overlay.gd/tscn(v1) + dump_ui.gd/dump_tool.tscn(v1 전용 덤프툴) 6파일 삭제(~3080줄 순감).
+- 맵 생성 분리: `generate_run_map` 본문 + `_finalize_route_graph`를 `map_generator.gd`(MapGenerator)로 추출, RunManager는 위임 래퍼로 축소(927→659줄). SRP 개선.
+- 리팩토링 중 유입된 타입 코어싱 버그(connected_routes)를 테스트 안전망(suite_full_run)이 즉시 포착 → 명시적 Array[String] 할당으로 수정.
+- (섹션별 층수 확인: section_a=10 / b·c=12 / 그 외=15층. "15층" 문서 표기의 실체.)
+
+**2. 파츠 미적용 버그 수정 (🔴 실게임 영향)**
+- 원인: combat_overlay_v2가 `start_encounter`에 4번째 인자 `parts`를 누락 → `equipped_parts`가 항상 [] → 장착 파츠(~21종 효과)·총기 고유 내장 파츠가 실게임에서 전혀 발동하지 않음.
+- 수정: `run_manager.equipped_parts`를 전달하도록 1곳 수정.
+- suite_parts 회귀 테스트 추가: HIGH_PRECISION(ACC+2) 장착 시 ACC6<EVA7 빗나감이 명중으로 뒤집혀 HP 20→5 발생함을 검증.
+
+### 📁 수정된 주요 파일
+- [map_generator.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/core/map_generator.gd) (신설), [run_manager.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/core/run_manager.gd), [combat_scene.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/combat_scene.gd)
+- [combat_overlay_v2.gd](file:///d:/ProjectLoB/%EC%83%88-%EA%B2%8C%EC%9E%84-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/scripts/ui/overlays/combat_overlay_v2.gd) (파츠 전달 수정)
+- tests/ (suite_parts 추가, 총 642 체크)
+- 삭제: combat_overlay.gd/tscn, dump_ui.gd, dump_tool.tscn
+
+### 💡 다음 예정 작업
+- 풀 런 플레이테스트(재미 관문) — 파츠 체감 포함.
+- 미해결: 최종보스 페이즈2, 맵 10 vs 15 확정, nano_stalker EVA9, 파츠 ~13종 .tres 미생성(획득 불가).
+
+---
+
 ## 2026-07-18 (Sat) #2 - 스킬 지침 정합 · 자동 검증/CI 구축 · 메타 세이브로드 · 프리프로덕션 하드닝
 
 ### 🎯 목표
