@@ -303,7 +303,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	
 	# ── 저격형(Marksman) 총기 시그니처: 명중 게이트 무시 (거리 > 1) ──
 	var is_marksman_ignore_eva := false
-	if gun and gun.display_name.contains("저격"):
+	if _gun_is("dmr"):
 		if target.current_distance > 1:
 			target_evasion = 0
 			is_marksman_ignore_eva = true
@@ -324,7 +324,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 
 	# ── 태세 사냥꾼(Stance Hunter) 총기 시그니처: 파훼 ──
 	var is_stance_hunter_bypass := false
-	if gun and gun.display_name.contains("태세") and target.current_stance != Enums.EnemyStance.NONE:
+	if _gun_is("stance_hunter") and target.current_stance != Enums.EnemyStance.NONE:
 		if target.shot_counter == 2:
 			is_stance_hunter_bypass = true
 			target_evasion = 0
@@ -334,7 +334,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	calc_bullet_acc.accuracy += part_acc_bonus
 
 	# ── 돌격형(Bruiser) 총기 페널티: 원거리 조준 불안정 ──
-	if gun and gun.display_name.contains("돌격") and target.current_distance >= 4:
+	if _gun_is("shotgun") and target.current_distance >= 4:
 		calc_bullet_acc.accuracy -= 4
 		combat_log.emit("   ↳ ⚠ [돌격형 페널티] 원거리 조준 불안정으로 이번 사격 ACC -4 감소!")
 
@@ -391,7 +391,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			combat_log.emit("   ↳ 💥 [언더플로우] 피날레 격발! DMG +5 가산")
 
 		# 포인트블랭크 (POINT_BLANK): 거리 1~2칸 초근접 시 DMG +4 (돌격형 총기 기본 내장)
-		if (_has_part(Enums.PartID.POINT_BLANK) or (gun and gun.display_name.contains("돌격"))) and target.current_distance <= 2:
+		if (_has_part(Enums.PartID.POINT_BLANK) or _gun_is("shotgun")) and target.current_distance <= 2:
 			part_dmg_bonus += 4
 			combat_log.emit("   ↳ ⚡ [돌격형 시그니처] 초근접(DIST %dm) 보너스로 DMG +4 가산!" % target.current_distance)
 			
@@ -422,12 +422,12 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			part_pen_bonus += 99
 
 		# 저격형(Marksman) 근거리 패널티 (DIST <= 1)
-		if gun and gun.display_name.contains("저격") and target.current_distance <= 1:
+		if _gun_is("dmr") and target.current_distance <= 1:
 			part_dmg_bonus -= 2
 			combat_log.emit("   ↳ ⚠ [저격형 페널티] 초근접(DIST <= 1m) 사격 패널티로 DMG -2 감쇄!")
 
 		# 도박형(Gambler) 올인 데미지 가산
-		if gun and gun.display_name.contains("도박"):
+		if _gun_is("gambler"):
 			var depth := remaining_before_fire - 1
 			var gambler_bonus := depth * 2
 			part_dmg_bonus += gambler_bonus
@@ -485,7 +485,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		enemy_damaged.emit(target, damage, target.current_hp if not target.is_stack_sponge else target.barrier_cells)
 
 		# ── 중장형(Heavy) 총기 시그니처: 과관통 ──
-		if gun and gun.display_name.contains("중장"):
+		if _gun_is("heavy"):
 			var total_pen := bullet.penetration + part_pen_bonus
 			if gun: total_pen += gun.passive_pen_bonus
 			var excess_pen := total_pen - target.current_def
@@ -609,7 +609,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				battle_stats.stance_kills_without_slow += 1
 			
 			# 돌격형(Bruiser) 총기 시그니처: 끌어당김
-			if gun and gun.display_name.contains("돌격"):
+			if _gun_is("shotgun"):
 				var alive_list := get_alive_enemies()
 				var next_enemy: EnemyInstance = null
 				var min_dist := 999
@@ -956,6 +956,14 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 				combat_log.emit("   ↳ 견제 사격! 장갑 파쇄 -1 적용")
 		_:
 			pass
+
+
+## 총기 시그니처 판정 — 표시명(문구 변경·현지화에 취약) 대신 리소스 ID로 안정 판정한다.
+## 예: _gun_is("dmr") → res://resources/guns/dmr.tres
+func _gun_is(gun_id: String) -> bool:
+	if gun == null:
+		return false
+	return gun.resource_path.get_file().get_basename() == gun_id
 
 
 ## 파츠 장착 여부 검사
