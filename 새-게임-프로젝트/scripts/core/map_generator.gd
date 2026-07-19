@@ -28,14 +28,15 @@ static func generate(section: String) -> Dictionary:
 		if type.begins_with("???"):
 			var r = randf()
 			if r < 0.35:
-				n.hidden_type = "사무실 (전투)"
-				n.scan_hint = "스캔: 다수의 생체 신호 감지 (위험도 HIGH)"
+				# ⚠️ 이 문자열은 combat_scene.gd의 정확 일치 검사와 연동됨. 함께 수정할 것.
+				n.hidden_type = "매복 구획 (전투)"
+				n.scan_hint = "스캔: 다수의 열원 감지 (위험도 HIGH)"
 			elif r < 0.7:
-				n.hidden_type = "보급 캐비닛 (정비)"
-				n.scan_hint = "스캔: 군수 보급품 반응 감지 (보급고 유력)"
+				n.hidden_type = "은닉 물자고 (정비)"
+				n.scan_hint = "스캔: 밀봉된 보급 용기 반응 (물자고 유력)"
 			else:
-				n.hidden_type = "보안 통제실 (이벤트)"
-				n.scan_hint = "스캔: 미세 전자기기 노이즈 감지 (상점 유력)"
+				n.hidden_type = "방치된 단말 (이벤트)"
+				n.scan_hint = "스캔: 미약한 전자 노이즈 감지 (거래 단말 유력)"
 
 		map_nodes[id] = n
 		if not floor_connections.has(f):
@@ -44,23 +45,24 @@ static func generate(section: String) -> Dictionary:
 		return n
 
 	if section == "section_a":
-		# 지하 주차장 (입문 - 10층 구조 / 보스 10층)
-		add_node.call(1, 101, "사무실 (전투)", "무장 순찰 경비 대기 중", ["stairs", "air_duct"])
-		add_node.call(1, 102, "환기 서버실 (전투)", "침투 드론 경비대 순찰 중", ["air_duct"])
-		add_node.call(2, 201, "주차장 구역 A (전투)", "경보 장치가 삼엄한 구역", ["stairs", "air_duct"])
-		add_node.call(2, 202, "??? (미지)", "어두운 지하실 코너", ["air_duct"])
-		add_node.call(3, 301, "대기실 (전투)", "경찰 방패 좀비 포진", ["stairs"])
-		add_node.call(3, 302, "보안 무기고 (보급)", "🔑 [구경 보안 게이트] 대구경 화기 전용 탄약 보급실", ["air_duct"], true, "caliber_762")
-		add_node.call(4, 401, "무기 캐비닛 (상점)", "구역 A 무기고 상점 단말기", ["stairs"])
-		add_node.call(5, 501, "물류 구역 (전투)", "좀비 떼 출몰", ["stairs", "air_duct"])
-		add_node.call(5, 502, "환기 통로 (전투)", "돌발 매복 경비병", ["air_duct"])
-		add_node.call(6, 601, "복도 A (전투)", "방패 요원이 전술 대기 중", ["stairs", "air_duct"])
-		add_node.call(6, 602, "??? (미지)", "센서 교란 구역", ["air_duct"])
-		add_node.call(7, 701, "??? (미지)", "센서 교란 구역", ["stairs"])
-		add_node.call(7, 702, "가스 제어실 (우회)", "환기 설비를 이용한 독가스 차단 우회 통로", ["air_duct"])
-		add_node.call(8, 801, "전력 제어실 (전투)", "전력 차단 복구 구역", ["stairs"])
-		add_node.call(9, 901, "무기 캐비닛 (상점)", "구역 A 최종 무기고 상점 단말기", ["stairs"])
-		add_node.call(10, 1001, "지하 출구 (보스)", "지하 주차장을 통제하는 핵심 병력", ["stairs"])
+		# 🟤 침전 거주구 (입문 - 10층 구조 / 보스 10층)
+		# 위층이 버린 것들이 쌓여 만들어진 층. 개조받지 못한 순수 인간들의 거주구.
+		add_node.call(1, 101, "폐수로 (전투)", "상층에서 흘러내린 오수가 고인 수로", ["stairs", "air_duct"])
+		add_node.call(1, 102, "판자촌 골목 (전투)", "폐자재로 세운 거처들이 빽빽한 통로", ["air_duct"])
+		add_node.call(2, 201, "고철 야적장 (전투)", "위에서 떨어진 폐기물이 산처럼 쌓인 구역", ["stairs", "air_duct"])
+		add_node.call(2, 202, "??? (미지)", "빛이 닿지 않는 구석", ["air_duct"])
+		add_node.call(3, 301, "배관 미로 (전투)", "낡은 급배수관이 얽힌 좁은 통로", ["stairs"])
+		add_node.call(3, 302, "밀수 창고 (보급)", "🔑 [구경 보안 게이트] 대구경 화기 전용 탄약이 숨겨진 창고", ["air_duct"], true, "caliber_762")
+		add_node.call(4, 401, "고물상 (상점)", "주워온 것들을 사고파는 하층 노점", ["stairs"])
+		add_node.call(5, 501, "침수 구획 (전투)", "배수가 끊겨 물이 차오른 거주 구역", ["stairs", "air_duct"])
+		add_node.call(5, 502, "폐수로 지선 (전투)", "본류에서 갈라진 좁은 수로", ["air_duct"])
+		add_node.call(6, 601, "판자촌 상단 (전투)", "위태롭게 층층이 얹힌 거처들", ["stairs", "air_duct"])
+		add_node.call(6, 602, "??? (미지)", "신호가 잡히지 않는 구획", ["air_duct"])
+		add_node.call(7, 701, "??? (미지)", "신호가 잡히지 않는 구획", ["stairs"])
+		add_node.call(7, 702, "배수 터널 (우회)", "오래전 말라붙은 배수로를 통한 우회 통로", ["air_duct"])
+		add_node.call(8, 801, "정전 구획 (전투)", "전력이 끊긴 채 방치된 구역", ["stairs"])
+		add_node.call(9, 901, "고물상 (상점)", "침전 거주구 최상단의 마지막 노점", ["stairs"])
+		add_node.call(10, 1001, "승강기 관문 (보스)", "위층으로 오르는 유일한 통로를 막아선 것", ["stairs"])
 
 		map_nodes[101].connected_node_ids = [201, 202]
 		map_nodes[101].connected_node_routes[201] = "stairs"

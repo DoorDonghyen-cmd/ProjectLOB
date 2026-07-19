@@ -432,7 +432,8 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 	
 	# 미지 노드 위험 완충망 처리
 	var triggered_safeguard := false
-	if selected_node.type_name.begins_with("???") and selected_node.hidden_type == "사무실 (전투)":
+	# ⚠️ hidden_type 문자열은 map_generator.gd의 ??? 노드 생성부와 정확히 일치해야 한다.
+	if selected_node.type_name.begins_with("???") and selected_node.hidden_type == "매복 구획 (전투)":
 		if randf() < 0.3:
 			triggered_safeguard = true
 			if randf() < 0.5:

@@ -75,7 +75,7 @@ func _build_ui() -> void:
 	var map_header_hbox := HBoxContainer.new()
 	main_vbox.add_child(map_header_hbox)
 
-	_map_floor_label = parent_scene.make_label("빌딩 침투 지도 (1층)", 24, parent_scene.C_ACCENT)
+	_map_floor_label = parent_scene.make_label("상승 경로 (1층)", 24, parent_scene.C_ACCENT)
 	map_header_hbox.add_child(_map_floor_label)
 
 	_route_pressure_label = parent_scene.make_label("", 12, parent_scene.C_WARNING)
@@ -142,7 +142,7 @@ func _build_ui() -> void:
 
 func show_map_screen() -> void:
 	visible = true
-	_map_floor_label.text = "빌딩 침투 지도 (%d층)" % run_manager.current_floor
+	_map_floor_label.text = "상승 경로 (%d층)" % run_manager.current_floor
 	_route_pressure_label.visible = run_manager.pending_combat_distance_modifier < 0
 	_route_pressure_label.text = "  ⚠ 환기 압박: 다음 교전 시작 거리 -2m" if _route_pressure_label.visible else ""
 	
