@@ -16,6 +16,7 @@ const SuiteFullRun := preload("res://tests/suite_full_run.gd")
 const SuiteParts := preload("res://tests/suite_parts.gd")
 const SuiteGunSignatures := preload("res://tests/suite_gun_signatures.gd")
 const SuiteBulletEffects := preload("res://tests/suite_bullet_effects.gd")
+const SuiteWeaponUnlock := preload("res://tests/suite_weapon_unlock.gd")
 
 
 func _initialize() -> void:
@@ -38,6 +39,7 @@ func _initialize() -> void:
 	SuiteParts.run(t)       # 파츠 적용 회귀(파츠 전달 시 전투 효과 반영)
 	SuiteGunSignatures.run(t) # 총기 시그니처 발동 회귀(리소스 ID 판정)
 	SuiteBulletEffects.run(t) # 탄환 특수효과 발동 실증
+	SuiteWeaponUnlock.run(t)  # 무기 해금 조건 판정 + 영속화
 
 	# 테스트 임시 세이브 정리 및 오버라이드 해제
 	DirAccess.remove_absolute(override_path)

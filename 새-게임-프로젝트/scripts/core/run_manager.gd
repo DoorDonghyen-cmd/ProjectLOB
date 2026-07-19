@@ -397,6 +397,13 @@ func check_weapon_unlocks() -> Array[String]:
 		
 	for weapon in newly_unlocked:
 		meta_unlocked_weapons.append(weapon)
+
+	# 해금은 영구 데이터이므로 즉시 저장한다.
+	# (디브리핑은 end_run() → check_weapon_unlocks() 순서로 호출하는데,
+	#  end_run 내부 save_meta()가 먼저 실행되므로 여기서 저장하지 않으면
+	#  "신규 해금" 표시를 보고도 재시작 시 해금이 유실된다)
+	if not newly_unlocked.is_empty():
+		save_meta()
 	return newly_unlocked
 
 
