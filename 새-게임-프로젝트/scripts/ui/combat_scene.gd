@@ -596,12 +596,8 @@ func handle_maintenance_finished() -> void:
 		if fid > 0:
 			if _rm.collect_lore_fragment(fid):
 				print("📥 [정비실 정보 복원] 기밀 파편 #%d번 복원!" % fid)
-				
-	_rm.current_floor += 1
-	if _rm.current_floor > 15:
-		_show_debriefing(true)
-	else:
-		_show_map_screen()
+
+	_advance_floor_or_finish()
 
 
 func handle_combat_finished(is_dead: bool) -> void:
@@ -658,9 +654,18 @@ func handle_combat_finished(is_dead: bool) -> void:
 			if _rm.collect_lore_fragment(fid):
 				if _combat_overlay:
 					_combat_overlay.add_combat_log("[color=#00ff66]📥 [기밀 정보 복원] 우회로 또는 적 데이터 분석을 통해 기밀 파편 #%d번을 회수했습니다![/color]" % fid)
-	
+
+	_advance_floor_or_finish()
+
+
+## 다음 층으로 진행하거나, 현재 구역의 최종 층을 넘었으면 완주 처리한다.
+## ⚠️ 구역마다 층수가 다르므로(a:10 / b·c:12 / d·e:15) 반드시 section_info를 참조할 것.
+##    과거 `> 15` 하드코딩 탓에 10·12층 구역이 완주되지 않고 존재하지 않는 층의
+##    빈 맵으로 이동해 진행이 막히는 버그가 있었다.
+func _advance_floor_or_finish() -> void:
 	_rm.current_floor += 1
-	if _rm.current_floor > 15:
+	var max_floor: int = int(MapGenerator.section_info(_rm.current_section).floors)
+	if _rm.current_floor > max_floor:
 		_show_debriefing(true)
 	else:
 		_show_map_screen()
@@ -812,11 +817,7 @@ func _trigger_safehouse_event() -> void:
 	
 	var btn = make_button("작전 계속", func():
 		popup.queue_free()
-		_rm.current_floor += 1
-		if _rm.current_floor > 15:
-			_show_debriefing(true)
-		else:
-			_show_map_screen()
+		_advance_floor_or_finish()
 	, C_SUCCESS)
 	btn.custom_minimum_size = Vector2(160, 36)
 	btn.add_theme_font_size_override("font_size", 12)
@@ -932,8 +933,4 @@ func _trigger_blackmarket_event() -> void:
 	btn_hbox.add_child(btn_pass)
 
 func _blackmarket_close_transition() -> void:
-	_rm.current_floor += 1
-	if _rm.current_floor > 15:
-		_show_debriefing(true)
-	else:
-		_show_map_screen()
+	_advance_floor_or_finish()

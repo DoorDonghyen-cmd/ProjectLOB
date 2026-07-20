@@ -74,6 +74,7 @@ func show_debriefing(won: bool) -> void:
 		
 	var earned := run_manager.end_run(won)
 	var unlocked_weapons := run_manager.check_weapon_unlocks()
+	var unlocked_sections := run_manager.check_section_unlocks(won)
 	
 	var log_text := "── 작전 디브리핑 정산 내역 ──\n\n"
 	log_text += "- 도달한 층수: %d 층 (x15 Cr) = %d Cr\n" % [run_manager.current_floor, run_manager.current_floor * 15]
@@ -100,6 +101,13 @@ func show_debriefing(won: bool) -> void:
 			log_text += "  ★ [b]%s[/b]이(가) 무기 캐비닛에 영구 추가되었습니다!\n" % name_kor
 		log_text += "\n"
 	
+	if not unlocked_sections.is_empty():
+		log_text += "[color=#66ccff][b]🔓 상위 구역 접근 권한 확보! 🔓[/b][/color]\n"
+		for s_key in unlocked_sections:
+			var sec_name: String = MapGenerator.section_info(s_key).name
+			log_text += "  ▲ [b]%s[/b] 구역으로 오를 수 있게 되었습니다.\n" % sec_name
+		log_text += "\n"
+
 	log_text += "다음 작전을 준비하기 위해 준비실에서 해금된 총기를 선택해 작전을 개시하세요."
 	
 	# ── 100% 정보 도감 해독 완료 엔딩 (소프트 엔딩) ──

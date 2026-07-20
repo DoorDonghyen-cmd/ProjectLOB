@@ -358,6 +358,32 @@ func end_run(won: bool) -> int:
 	return earned
 
 
+## 작전 구역 해금 순서 — 앞 구역을 완주하면 다음 구역이 열린다.
+const SECTION_ORDER: Array[String] = ["section_a", "section_b", "section_c", "section_d", "section_e"]
+
+
+## 런을 완주(구역 보스 처치)했을 때 다음 작전 구역을 영구 해금한다.
+## 반환: 새로 해금된 구역 ID 배열 (없으면 빈 배열)
+func check_section_unlocks(won: bool) -> Array[String]:
+	var newly: Array[String] = []
+	if not won:
+		return newly
+
+	var idx := SECTION_ORDER.find(current_section)
+	if idx < 0 or idx + 1 >= SECTION_ORDER.size():
+		return newly  # 미등록 구역이거나 마지막 구역이면 해금할 다음이 없다
+
+	var next_section: String = SECTION_ORDER[idx + 1]
+	if not meta_unlocked_sections.has(next_section):
+		meta_unlocked_sections.append(next_section)
+		newly.append(next_section)
+		# 해금은 영구 데이터이므로 즉시 저장한다.
+		# (디브리핑은 end_run() → 해금 순서로 호출하는데 end_run 내부 save_meta()가
+		#  먼저 실행되므로, 여기서 저장하지 않으면 재시작 시 해금이 유실된다)
+		save_meta()
+	return newly
+
+
 ## 이번 런 통계를 검토하여 영구 해금될 무기들을 체크 및 해금
 func check_weapon_unlocks() -> Array[String]:
 	var newly_unlocked: Array[String] = []
