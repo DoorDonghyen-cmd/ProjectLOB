@@ -16,10 +16,16 @@ var current_node: RunManager.RunNode
 ## (과거에는 node를 받고도 무시해 상점/정비/보급/우회가 전부 같은 화면이었다)
 enum NodeKind { SHOP, SERVICE, SUPPLY, BYPASS }
 
-# ── 정비 요금표 ──
-const COST_UPGRADE := 25   # 탄환 장약 보강 (DMG/KB +1)
-const COST_DISCARD := 10   # 탄환 폐기 (덱 압축) — meta_discount_unlocked 시 면제
-const COST_POLISH := 30    # 약실 소탕 (리로드 1회 면제 버프)
+# ── 분해 환급표 ──
+## 상점가(탄환 20~25 / 파츠 30~45)의 약 45%를 환급한다.
+## 100% 환급이면 "구매 → 분해" 순환으로 무한 이득이 나므로 반드시 구매가보다 낮아야 한다.
+## ⚠️ 덱 정제(장약 보강·덱 압축 폐기)는 GDD 08_meta_progression §②에서 [보류] 처리된 기능이다.
+##    분해는 "덱 품질 개선"이 아니라 "자원 전환"이므로 별개 개념이며 보류 대상이 아니다.
+const REFUND_BULLET := 10
+const REFUND_PART := 18
+const REFUND_CONSUMABLE := 8
+## 메타 업그레이드(구 "폐기 수수료 면제")를 분해 환급 증가로 재정의
+const REFUND_BONUS_MULT := 1.5
 
 # ── 전역 가변 상태 ──
 var _active_tab: int = 0 # 0: 보급 단말(Shop), 1: 무기 장비(Equip), 2: 정비(Service)
@@ -27,7 +33,7 @@ var _reroll_count: int = 0
 var _shop_items: Array = [] # { "item": Resource, "price": int, "sold_out": bool }
 var _selected_bag_idx: int = -1
 var _node_kind: int = NodeKind.SHOP
-var _selected_deck_idx: int = -1
+var _selected_service_idx: int = -1  # 정비 탭에서 선택한 가방 물자 인덱스
 
 # 3. 🔧 정비 탭 UI 참조
 var _service_vbox: VBoxContainer
@@ -35,7 +41,6 @@ var _service_desc_lbl: Label
 var _service_credit_lbl: Label
 var _service_deck_list: VBoxContainer
 var _service_action_hbox: HBoxContainer
-var _service_polish_btn: Button
 var _service_log_lbl: Label
 
 # ── UI 컨테이너 및 참조 ──
@@ -191,11 +196,11 @@ func _build_ui() -> void:
 	footer_hbox.add_child(exit_btn)
 
 
-# ── 🔧 정비 탭 ──
+# ── 🔧 정비 탭 (보급 + 분해) ──
 
-## 3. 정비 탭 빌드 — 탄환 장약 보강 / 폐기(덱 압축) / 약실 소탕
-## RunManager의 upgrade_bullet_in_deck · discard_bullet_from_deck · has_chamber_polish를 연결한다.
-## (이 함수들은 구현돼 있었으나 호출부가 없어 사장된 상태였다)
+## 3. 정비 탭 빌드 — 소실탄 보급 / 가방 물자 분해(크레딧 전환)
+## ⚠️ 덱 정제(장약 보강·덱 압축 폐기)는 GDD 08_meta_progression §②에서 [보류]된 기능이므로
+##    여기서 되살리지 않는다. 분해는 "덱 품질 개선"이 아닌 "자원 전환"으로 별개 개념이다.
 func _build_service_layout() -> void:
 	_service_vbox = VBoxContainer.new()
 	_service_vbox.add_theme_constant_override("separation", 10)
@@ -207,23 +212,16 @@ func _build_service_layout() -> void:
 	_service_vbox.add_child(info_hbox)
 
 	_service_desc_lbl = parent_scene.make_label(
-		"정비 단말: 탄환을 개조하거나 폐기해 탄고를 정제합니다.", 12, parent_scene.C_DIM)
+		"정비 단말: 물자를 보급받고, 쓰지 않는 장비를 분해해 크레딧으로 전환합니다.", 12, parent_scene.C_DIM)
 	_service_desc_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info_hbox.add_child(_service_desc_lbl)
 
 	_service_credit_lbl = parent_scene.make_label("보유 크레딧: 0 Cr", 15, C_GOLD)
 	info_hbox.add_child(_service_credit_lbl)
 
-	# 약실 소탕 (런 1회 버프)
-	_service_polish_btn = parent_scene.make_button(
-		"⚙️ 약실 소탕 (%dc) — 다음 리로드 1회 면제" % COST_POLISH,
-		_on_polish_pressed, parent_scene.C_ACCENT)
-	_service_polish_btn.custom_minimum_size = Vector2(0, 34)
-	_service_polish_btn.add_theme_font_size_override("font_size", 12)
-	_service_vbox.add_child(_service_polish_btn)
-
-	# 덱 목록 (스크롤)
-	_service_vbox.add_child(parent_scene.make_label("▶ 탄고 (탄환을 선택하세요)", 12, parent_scene.C_DIM))
+	# 분해 대상 목록 (가방)
+	_service_vbox.add_child(parent_scene.make_label(
+		"▶ 분해 가능 물자 (가방) — 장착 중인 파츠는 분해되지 않습니다", 12, parent_scene.C_DIM))
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -236,118 +234,90 @@ func _build_service_layout() -> void:
 	_service_deck_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(_service_deck_list)
 
-	# 선택 탄환 액션
 	_service_action_hbox = HBoxContainer.new()
 	_service_action_hbox.add_theme_constant_override("separation", 8)
 	_service_action_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	_service_vbox.add_child(_service_action_hbox)
 
-	var btn_dmg = parent_scene.make_button("🔺 DMG +1 (%dc)" % COST_UPGRADE,
-		func(): _on_upgrade_pressed("dmg"), parent_scene.C_SUCCESS)
-	btn_dmg.custom_minimum_size = Vector2(150, 34)
-	btn_dmg.add_theme_font_size_override("font_size", 12)
-	_service_action_hbox.add_child(btn_dmg)
-
-	var btn_kb = parent_scene.make_button("💥 넉백 +1 (%dc)" % COST_UPGRADE,
-		func(): _on_upgrade_pressed("kb"), parent_scene.C_SUCCESS)
-	btn_kb.custom_minimum_size = Vector2(150, 34)
-	btn_kb.add_theme_font_size_override("font_size", 12)
-	_service_action_hbox.add_child(btn_kb)
-
-	var btn_discard = parent_scene.make_button("🗑 폐기 (덱 압축)",
-		_on_discard_pressed, parent_scene.C_DANGER)
-	btn_discard.custom_minimum_size = Vector2(150, 34)
-	btn_discard.add_theme_font_size_override("font_size", 12)
-	_service_action_hbox.add_child(btn_discard)
+	var btn_break = parent_scene.make_button("♻️ 분해하여 크레딧 회수",
+		_on_disassemble_pressed, parent_scene.C_WARNING)
+	btn_break.custom_minimum_size = Vector2(220, 36)
+	btn_break.add_theme_font_size_override("font_size", 12)
+	_service_action_hbox.add_child(btn_break)
 
 	_service_log_lbl = parent_scene.make_label("", 12, parent_scene.C_SUCCESS)
 	_service_log_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_service_vbox.add_child(_service_log_lbl)
 
 
-## 정비 탭 갱신 — 덱 목록·요금·버튼 상태
+## 물자 종류별 분해 환급액 (메타 업그레이드 시 증액)
+func _refund_value_of(item: Resource) -> int:
+	var base := REFUND_BULLET
+	if item is PartData:
+		base = REFUND_PART
+	elif item is ConsumableItem:
+		base = REFUND_CONSUMABLE
+	if RunManager.meta_discount_unlocked:
+		base = int(round(base * REFUND_BONUS_MULT))
+	return base
+
+
+## 정비 탭 갱신 — 가방 물자 목록과 환급액 표시
 func _refresh_service_tab() -> void:
 	if run_manager == null:
 		return
 
 	_service_credit_lbl.text = "보유 크레딧: %d Cr" % run_manager.credits
 
-	# 약실 소탕: 이미 적용됐거나 크레딧 부족이면 비활성
-	if run_manager.has_chamber_polish:
-		_service_polish_btn.text = "⚙️ 약실 소탕 적용됨 (다음 리로드 1회 면제)"
-		_service_polish_btn.disabled = true
-	else:
-		_service_polish_btn.text = "⚙️ 약실 소탕 (%dc) — 다음 리로드 1회 면제" % COST_POLISH
-		_service_polish_btn.disabled = run_manager.credits < COST_POLISH
-
 	for child in _service_deck_list.get_children():
 		child.queue_free()
 
-	for i in range(run_manager.deck.size()):
-		var b: BulletData = run_manager.deck[i]
+	if run_manager.backpack_items.is_empty():
+		_service_deck_list.add_child(parent_scene.make_label(
+			"가방이 비어 있습니다. 분해할 물자가 없습니다.", 12, parent_scene.C_DIM))
+		return
+
+	for i in range(run_manager.backpack_items.size()):
+		var item: Resource = run_manager.backpack_items[i]
+		var kind := "탄환"
+		if item is PartData:
+			kind = "파츠"
+		elif item is ConsumableItem:
+			kind = "소모품"
+
 		var row := Button.new()
 		row.focus_mode = Control.FOCUS_NONE
 		row.custom_minimum_size = Vector2(0, 30)
 		row.add_theme_font_size_override("font_size", 12)
-		row.text = "%s   DMG %d · ACC %d · PEN %d · KB %d" % [
-			b.display_name, b.damage, b.accuracy, b.penetration, b.knockback]
-		if i == _selected_deck_idx:
+		row.text = "[%s] %s   →  +%d Cr" % [kind, item.display_name, _refund_value_of(item)]
+		if i == _selected_service_idx:
 			row.modulate = C_CYAN
 		var idx := i
 		row.pressed.connect(func():
-			_selected_deck_idx = idx
+			_selected_service_idx = idx
 			_refresh_service_tab()
 		)
 		_service_deck_list.add_child(row)
 
 
-func _on_upgrade_pressed(property: String) -> void:
-	if _selected_deck_idx < 0 or _selected_deck_idx >= run_manager.deck.size():
-		_service_log_lbl.text = "⚠ 개조할 탄환을 먼저 선택하세요."
-		return
-	if not run_manager.spend_credits(COST_UPGRADE):
-		_service_log_lbl.text = "⚠ 크레딧이 부족합니다. (%d Cr 필요)" % COST_UPGRADE
+## 선택한 가방 물자를 분해해 크레딧으로 전환한다.
+func _on_disassemble_pressed() -> void:
+	if _selected_service_idx < 0 or _selected_service_idx >= run_manager.backpack_items.size():
+		_service_log_lbl.text = "⚠ 분해할 물자를 먼저 선택하세요."
 		return
 
-	var name_before: String = run_manager.deck[_selected_deck_idx].display_name
-	run_manager.upgrade_bullet_in_deck(_selected_deck_idx, property)
-	var label := "DMG" if property == "dmg" else "넉백"
-	_service_log_lbl.text = "✅ [%s] 장약 보강 완료 — %s +1" % [name_before, label]
+	var item: Resource = run_manager.backpack_items[_selected_service_idx]
+	var refund := _refund_value_of(item)
+	var item_name: String = item.display_name
+
+	run_manager.remove_from_backpack_at(_selected_service_idx)
+	run_manager.credits += refund
+	_selected_service_idx = -1
+
+	var bonus_txt := " (정제 효율 강화 적용)" if RunManager.meta_discount_unlocked else ""
+	_service_log_lbl.text = "♻️ [%s] 분해 완료 — %d Cr 회수%s" % [item_name, refund, bonus_txt]
 	_refresh_service_tab()
 
-
-func _on_discard_pressed() -> void:
-	if _selected_deck_idx < 0 or _selected_deck_idx >= run_manager.deck.size():
-		_service_log_lbl.text = "⚠ 폐기할 탄환을 먼저 선택하세요."
-		return
-	# 덱이 너무 얇아지면 전투가 불가능해지므로 최소 수량을 보장한다.
-	if run_manager.deck.size() <= 3:
-		_service_log_lbl.text = "⚠ 탄고가 너무 얇습니다. 최소 3발은 유지해야 합니다."
-		return
-
-	# 폐기 수수료는 메타 업그레이드(폐기 수수료 면제)로 감면된다.
-	var fee := 0 if RunManager.meta_discount_unlocked else COST_DISCARD
-	if fee > 0 and not run_manager.spend_credits(fee):
-		_service_log_lbl.text = "⚠ 폐기 수수료가 부족합니다. (%d Cr 필요)" % fee
-		return
-
-	var name_before: String = run_manager.deck[_selected_deck_idx].display_name
-	run_manager.discard_bullet_from_deck(_selected_deck_idx)
-	_selected_deck_idx = -1
-	var fee_txt := "수수료 면제" if fee == 0 else "수수료 %d Cr" % fee
-	_service_log_lbl.text = "🗑 [%s] 폐기 완료 (%s) — 탄고가 압축되었습니다." % [name_before, fee_txt]
-	_refresh_service_tab()
-
-
-func _on_polish_pressed() -> void:
-	if run_manager.has_chamber_polish:
-		return
-	if not run_manager.spend_credits(COST_POLISH):
-		_service_log_lbl.text = "⚠ 크레딧이 부족합니다. (%d Cr 필요)" % COST_POLISH
-		return
-	run_manager.has_chamber_polish = true
-	_service_log_lbl.text = "⚙️ 약실 소탕 완료 — 다음 전투에서 리로드 1회가 면제됩니다."
-	_refresh_service_tab()
 
 
 # ── 각 탭 레이아웃 빌딩 함수 ──
@@ -648,7 +618,7 @@ func start_maintenance_phase(node: RunManager.RunNode) -> void:
 
 	_reroll_count = 0
 	_selected_bag_idx = -1
-	_selected_deck_idx = -1
+	_selected_service_idx = -1
 	_node_kind = _resolve_node_kind(node)
 	_service_log_lbl.text = ""
 
