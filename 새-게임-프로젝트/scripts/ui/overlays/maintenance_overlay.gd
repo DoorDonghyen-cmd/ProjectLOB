@@ -11,11 +11,32 @@ var parent_scene: Control
 var run_manager: RunManager
 var current_node: RunManager.RunNode
 
+# ── 노드 종류 ──
+## 비전투 노드는 종류에 따라 제공 기능이 다르다.
+## (과거에는 node를 받고도 무시해 상점/정비/보급/우회가 전부 같은 화면이었다)
+enum NodeKind { SHOP, SERVICE, SUPPLY, BYPASS }
+
+# ── 정비 요금표 ──
+const COST_UPGRADE := 25   # 탄환 장약 보강 (DMG/KB +1)
+const COST_DISCARD := 10   # 탄환 폐기 (덱 압축) — meta_discount_unlocked 시 면제
+const COST_POLISH := 30    # 약실 소탕 (리로드 1회 면제 버프)
+
 # ── 전역 가변 상태 ──
-var _active_tab: int = 0 # 0: 보급 단말(Shop), 1: 무기 장비(Equip)
+var _active_tab: int = 0 # 0: 보급 단말(Shop), 1: 무기 장비(Equip), 2: 정비(Service)
 var _reroll_count: int = 0
 var _shop_items: Array = [] # { "item": Resource, "price": int, "sold_out": bool }
 var _selected_bag_idx: int = -1
+var _node_kind: int = NodeKind.SHOP
+var _selected_deck_idx: int = -1
+
+# 3. 🔧 정비 탭 UI 참조
+var _service_vbox: VBoxContainer
+var _service_desc_lbl: Label
+var _service_credit_lbl: Label
+var _service_deck_list: VBoxContainer
+var _service_action_hbox: HBoxContainer
+var _service_polish_btn: Button
+var _service_log_lbl: Label
 
 # ── UI 컨테이너 및 참조 ──
 var _tab_nav_hbox: HBoxContainer
@@ -121,6 +142,13 @@ func _build_ui() -> void:
 	tab_equip.pressed.connect(func(): _switch_tab(1))
 	_tab_nav_hbox.add_child(tab_equip)
 	_tab_btns.append(tab_equip)
+
+	var tab_service = Button.new()
+	tab_service.text = "🔧 정비 (Service)"
+	tab_service.focus_mode = Control.FOCUS_NONE
+	tab_service.pressed.connect(func(): _switch_tab(2))
+	_tab_nav_hbox.add_child(tab_service)
+	_tab_btns.append(tab_service)
 	
 	# 중앙 우측 스페이스 및 리롤 버튼
 	var spacer_h := Control.new()
@@ -150,6 +178,7 @@ func _build_ui() -> void:
 	# 탭 구조물 생성
 	_build_shop_layout()
 	_build_equip_layout()
+	_build_service_layout()
 	
 	# ── [3] 하단 네비게이션 액션 바 ──
 	var footer_hbox := HBoxContainer.new()
@@ -160,6 +189,165 @@ func _build_ui() -> void:
 	exit_btn.custom_minimum_size = Vector2(180, 40)
 	exit_btn.add_theme_font_size_override("font_size", 14)
 	footer_hbox.add_child(exit_btn)
+
+
+# ── 🔧 정비 탭 ──
+
+## 3. 정비 탭 빌드 — 탄환 장약 보강 / 폐기(덱 압축) / 약실 소탕
+## RunManager의 upgrade_bullet_in_deck · discard_bullet_from_deck · has_chamber_polish를 연결한다.
+## (이 함수들은 구현돼 있었으나 호출부가 없어 사장된 상태였다)
+func _build_service_layout() -> void:
+	_service_vbox = VBoxContainer.new()
+	_service_vbox.add_theme_constant_override("separation", 10)
+	_service_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_service_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_tab_content_panel.add_child(_service_vbox)
+
+	var info_hbox := HBoxContainer.new()
+	_service_vbox.add_child(info_hbox)
+
+	_service_desc_lbl = parent_scene.make_label(
+		"정비 단말: 탄환을 개조하거나 폐기해 탄고를 정제합니다.", 12, parent_scene.C_DIM)
+	_service_desc_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_hbox.add_child(_service_desc_lbl)
+
+	_service_credit_lbl = parent_scene.make_label("보유 크레딧: 0 Cr", 15, C_GOLD)
+	info_hbox.add_child(_service_credit_lbl)
+
+	# 약실 소탕 (런 1회 버프)
+	_service_polish_btn = parent_scene.make_button(
+		"⚙️ 약실 소탕 (%dc) — 다음 리로드 1회 면제" % COST_POLISH,
+		_on_polish_pressed, parent_scene.C_ACCENT)
+	_service_polish_btn.custom_minimum_size = Vector2(0, 34)
+	_service_polish_btn.add_theme_font_size_override("font_size", 12)
+	_service_vbox.add_child(_service_polish_btn)
+
+	# 덱 목록 (스크롤)
+	_service_vbox.add_child(parent_scene.make_label("▶ 탄고 (탄환을 선택하세요)", 12, parent_scene.C_DIM))
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_service_vbox.add_child(scroll)
+
+	_service_deck_list = VBoxContainer.new()
+	_service_deck_list.add_theme_constant_override("separation", 4)
+	_service_deck_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(_service_deck_list)
+
+	# 선택 탄환 액션
+	_service_action_hbox = HBoxContainer.new()
+	_service_action_hbox.add_theme_constant_override("separation", 8)
+	_service_action_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	_service_vbox.add_child(_service_action_hbox)
+
+	var btn_dmg = parent_scene.make_button("🔺 DMG +1 (%dc)" % COST_UPGRADE,
+		func(): _on_upgrade_pressed("dmg"), parent_scene.C_SUCCESS)
+	btn_dmg.custom_minimum_size = Vector2(150, 34)
+	btn_dmg.add_theme_font_size_override("font_size", 12)
+	_service_action_hbox.add_child(btn_dmg)
+
+	var btn_kb = parent_scene.make_button("💥 넉백 +1 (%dc)" % COST_UPGRADE,
+		func(): _on_upgrade_pressed("kb"), parent_scene.C_SUCCESS)
+	btn_kb.custom_minimum_size = Vector2(150, 34)
+	btn_kb.add_theme_font_size_override("font_size", 12)
+	_service_action_hbox.add_child(btn_kb)
+
+	var btn_discard = parent_scene.make_button("🗑 폐기 (덱 압축)",
+		_on_discard_pressed, parent_scene.C_DANGER)
+	btn_discard.custom_minimum_size = Vector2(150, 34)
+	btn_discard.add_theme_font_size_override("font_size", 12)
+	_service_action_hbox.add_child(btn_discard)
+
+	_service_log_lbl = parent_scene.make_label("", 12, parent_scene.C_SUCCESS)
+	_service_log_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_service_vbox.add_child(_service_log_lbl)
+
+
+## 정비 탭 갱신 — 덱 목록·요금·버튼 상태
+func _refresh_service_tab() -> void:
+	if run_manager == null:
+		return
+
+	_service_credit_lbl.text = "보유 크레딧: %d Cr" % run_manager.credits
+
+	# 약실 소탕: 이미 적용됐거나 크레딧 부족이면 비활성
+	if run_manager.has_chamber_polish:
+		_service_polish_btn.text = "⚙️ 약실 소탕 적용됨 (다음 리로드 1회 면제)"
+		_service_polish_btn.disabled = true
+	else:
+		_service_polish_btn.text = "⚙️ 약실 소탕 (%dc) — 다음 리로드 1회 면제" % COST_POLISH
+		_service_polish_btn.disabled = run_manager.credits < COST_POLISH
+
+	for child in _service_deck_list.get_children():
+		child.queue_free()
+
+	for i in range(run_manager.deck.size()):
+		var b: BulletData = run_manager.deck[i]
+		var row := Button.new()
+		row.focus_mode = Control.FOCUS_NONE
+		row.custom_minimum_size = Vector2(0, 30)
+		row.add_theme_font_size_override("font_size", 12)
+		row.text = "%s   DMG %d · ACC %d · PEN %d · KB %d" % [
+			b.display_name, b.damage, b.accuracy, b.penetration, b.knockback]
+		if i == _selected_deck_idx:
+			row.modulate = C_CYAN
+		var idx := i
+		row.pressed.connect(func():
+			_selected_deck_idx = idx
+			_refresh_service_tab()
+		)
+		_service_deck_list.add_child(row)
+
+
+func _on_upgrade_pressed(property: String) -> void:
+	if _selected_deck_idx < 0 or _selected_deck_idx >= run_manager.deck.size():
+		_service_log_lbl.text = "⚠ 개조할 탄환을 먼저 선택하세요."
+		return
+	if not run_manager.spend_credits(COST_UPGRADE):
+		_service_log_lbl.text = "⚠ 크레딧이 부족합니다. (%d Cr 필요)" % COST_UPGRADE
+		return
+
+	var name_before: String = run_manager.deck[_selected_deck_idx].display_name
+	run_manager.upgrade_bullet_in_deck(_selected_deck_idx, property)
+	var label := "DMG" if property == "dmg" else "넉백"
+	_service_log_lbl.text = "✅ [%s] 장약 보강 완료 — %s +1" % [name_before, label]
+	_refresh_service_tab()
+
+
+func _on_discard_pressed() -> void:
+	if _selected_deck_idx < 0 or _selected_deck_idx >= run_manager.deck.size():
+		_service_log_lbl.text = "⚠ 폐기할 탄환을 먼저 선택하세요."
+		return
+	# 덱이 너무 얇아지면 전투가 불가능해지므로 최소 수량을 보장한다.
+	if run_manager.deck.size() <= 3:
+		_service_log_lbl.text = "⚠ 탄고가 너무 얇습니다. 최소 3발은 유지해야 합니다."
+		return
+
+	# 폐기 수수료는 메타 업그레이드(폐기 수수료 면제)로 감면된다.
+	var fee := 0 if RunManager.meta_discount_unlocked else COST_DISCARD
+	if fee > 0 and not run_manager.spend_credits(fee):
+		_service_log_lbl.text = "⚠ 폐기 수수료가 부족합니다. (%d Cr 필요)" % fee
+		return
+
+	var name_before: String = run_manager.deck[_selected_deck_idx].display_name
+	run_manager.discard_bullet_from_deck(_selected_deck_idx)
+	_selected_deck_idx = -1
+	var fee_txt := "수수료 면제" if fee == 0 else "수수료 %d Cr" % fee
+	_service_log_lbl.text = "🗑 [%s] 폐기 완료 (%s) — 탄고가 압축되었습니다." % [name_before, fee_txt]
+	_refresh_service_tab()
+
+
+func _on_polish_pressed() -> void:
+	if run_manager.has_chamber_polish:
+		return
+	if not run_manager.spend_credits(COST_POLISH):
+		_service_log_lbl.text = "⚠ 크레딧이 부족합니다. (%d Cr 필요)" % COST_POLISH
+		return
+	run_manager.has_chamber_polish = true
+	_service_log_lbl.text = "⚙️ 약실 소탕 완료 — 다음 전투에서 리로드 1회가 면제됩니다."
+	_refresh_service_tab()
 
 
 # ── 각 탭 레이아웃 빌딩 함수 ──
@@ -457,12 +645,76 @@ func _build_equip_layout() -> void:
 func start_maintenance_phase(node: RunManager.RunNode) -> void:
 	visible = true
 	current_node = node
-	
+
 	_reroll_count = 0
 	_selected_bag_idx = -1
-	
+	_selected_deck_idx = -1
+	_node_kind = _resolve_node_kind(node)
+	_service_log_lbl.text = ""
+
 	_generate_shop_items()
-	_switch_tab(0)
+	_apply_entry_effects()
+	_apply_node_kind_ui()
+
+
+## 노드 표시명에서 종류를 판별한다. (??? 미지 노드는 밝혀진 실제 타입을 사용)
+## ⚠️ 기능 접미사 (상점)(정비)(보급)(우회)는 map_generator의 노드 명칭과 연동된다.
+func _resolve_node_kind(node: RunManager.RunNode) -> int:
+	if node == null:
+		return NodeKind.SHOP
+	var tn: String = node.type_name
+	if tn.begins_with("???") and node.hidden_type != "":
+		tn = node.hidden_type
+	if tn.contains("정비"):
+		return NodeKind.SERVICE
+	if tn.contains("보급"):
+		return NodeKind.SUPPLY
+	if tn.contains("우회"):
+		return NodeKind.BYPASS
+	return NodeKind.SHOP
+
+
+## 노드 진입 즉시 발생하는 효과 (보급·우회)
+func _apply_entry_effects() -> void:
+	match _node_kind:
+		NodeKind.SUPPLY:
+			# 보급: 전투 중 Unload로 잃었던 탄환을 회수한다.
+			var recovered := run_manager.recover_discarded_bullets()
+			if recovered > 0:
+				_service_log_lbl.text = "📦 보급 완료 — 소실했던 탄환 %d발을 탄고로 회수했습니다." % recovered
+			else:
+				_service_log_lbl.text = "📦 회수할 소실 탄환이 없습니다."
+		NodeKind.BYPASS:
+			# 우회: 교전을 피해 지나가며 소량의 물자를 확보한다.
+			run_manager.credits += 8
+			_service_log_lbl.text = "🚧 우회로 통과 — 교전을 피하고 물자 8 Cr을 확보했습니다."
+
+
+## 노드 종류에 따라 탭 노출과 기본 탭을 결정한다.
+func _apply_node_kind_ui() -> void:
+	# 탭 인덱스: 0 상점 / 1 장비 / 2 정비
+	var show_shop := _node_kind == NodeKind.SHOP
+	var show_service := _node_kind != NodeKind.SHOP  # 정비·보급·우회는 정비 단말 제공
+
+	_tab_btns[0].visible = show_shop
+	_tab_btns[2].visible = show_service
+	# 장비 탭은 어느 노드에서든 사용 가능(파츠 재배치는 상시 허용)
+	_tab_btns[1].visible = true
+
+	# 리롤은 상점 전용
+	_reroll_cost_btn.visible = show_shop
+
+	match _node_kind:
+		NodeKind.SERVICE:
+			_service_desc_lbl.text = "정비 단말: 탄환을 개조하거나 폐기해 탄고를 정제합니다."
+		NodeKind.SUPPLY:
+			_service_desc_lbl.text = "보급고: 소실 탄환을 회수했습니다. 추가 정비도 가능합니다."
+		NodeKind.BYPASS:
+			_service_desc_lbl.text = "우회로: 교전을 피해 지나갑니다. 간이 정비가 가능합니다."
+		_:
+			_service_desc_lbl.text = "정비 단말: 탄환을 개조하거나 폐기해 탄고를 정제합니다."
+
+	_switch_tab(0 if show_shop else 2)
 
 
 func _switch_tab(tab_idx: int) -> void:
@@ -473,8 +725,10 @@ func _switch_tab(tab_idx: int) -> void:
 		
 	_shop_vbox.visible = (tab_idx == 0)
 	_equip_vbox.visible = (tab_idx == 1)
-	
-	_reroll_cost_btn.visible = (tab_idx == 0)
+	_service_vbox.visible = (tab_idx == 2)
+
+	# 리롤은 상점 탭 전용이며, 상점 노드가 아닐 때는 애초에 노출되지 않는다.
+	_reroll_cost_btn.visible = (tab_idx == 0 and _node_kind == NodeKind.SHOP)
 	_refresh_current_tab_ui()
 
 
@@ -492,6 +746,8 @@ func _refresh_current_tab_ui() -> void:
 		1:
 			_refresh_equip_tab()
 			_refresh_backpack_view(_equip_bag_grid_container, _equip_bag_capacity_lbl, true)
+		2:
+			_refresh_service_tab()
 
 
 # ── 각 탭별 세부 렌더링 로직 ──
