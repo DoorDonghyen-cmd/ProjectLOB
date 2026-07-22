@@ -14,7 +14,15 @@ var current_node: RunManager.RunNode
 # ── 노드 종류 ──
 ## 비전투 노드는 종류에 따라 제공 기능이 다르다.
 ## (과거에는 node를 받고도 무시해 상점/정비/보급/우회가 전부 같은 화면이었다)
-enum NodeKind { SHOP, SERVICE, SUPPLY, BYPASS }
+enum NodeKind { SHOP, SERVICE, SUPPLY, BYPASS, EVENT }
+
+# ── 이벤트 노드(방치된 단말) 선택지 수치 ──
+## ⚠️ 결정론 원칙: 확률 판정을 쓰지 않는다. 모든 선택지는 "확정 이득 ↔ 확정 대가"이며
+##    선택 전에 정확한 수치를 공개한다. (GDD 01_game_overview 디자인 필라 2)
+const EVENT_SIPHON_CREDITS := 40   # 자원 인출: 크레딧 ↔ 다음 교전 시작거리 -2m
+const EVENT_SIPHON_DIST := -2
+const EVENT_PURGE_TDC := 1         # 기록 말소: TDC ↔ 크레딧 지불
+const EVENT_PURGE_COST := 25
 
 # ── 분해 환급표 ──
 ## 상점가(탄환 20~25 / 파츠 30~45)의 약 45%를 환급한다.
@@ -42,6 +50,13 @@ var _service_credit_lbl: Label
 var _service_deck_list: VBoxContainer
 var _service_action_hbox: HBoxContainer
 var _service_log_lbl: Label
+
+# 4. 📡 단말(이벤트) 탭 UI 참조
+var _event_vbox: VBoxContainer
+var _event_desc_lbl: Label
+var _event_choice_vbox: VBoxContainer
+var _event_log_lbl: Label
+var _event_used: bool = false
 
 # ── UI 컨테이너 및 참조 ──
 var _tab_nav_hbox: HBoxContainer
@@ -154,6 +169,13 @@ func _build_ui() -> void:
 	tab_service.pressed.connect(func(): _switch_tab(2))
 	_tab_nav_hbox.add_child(tab_service)
 	_tab_btns.append(tab_service)
+
+	var tab_event = Button.new()
+	tab_event.text = "📡 단말 (Terminal)"
+	tab_event.focus_mode = Control.FOCUS_NONE
+	tab_event.pressed.connect(func(): _switch_tab(3))
+	_tab_nav_hbox.add_child(tab_event)
+	_tab_btns.append(tab_event)
 	
 	# 중앙 우측 스페이스 및 리롤 버튼
 	var spacer_h := Control.new()
@@ -184,6 +206,7 @@ func _build_ui() -> void:
 	_build_shop_layout()
 	_build_equip_layout()
 	_build_service_layout()
+	_build_event_layout()
 	
 	# ── [3] 하단 네비게이션 액션 바 ──
 	var footer_hbox := HBoxContainer.new()
@@ -318,6 +341,135 @@ func _on_disassemble_pressed() -> void:
 	_service_log_lbl.text = "♻️ [%s] 분해 완료 — %d Cr 회수%s" % [item_name, refund, bonus_txt]
 	_refresh_service_tab()
 
+
+
+# ── 📡 단말(이벤트) 탭 ──
+
+## 4. 이벤트 탭 빌드 — 방치된 단말의 결정론적 트레이드오프 선택지
+## ⚠️ 확률 판정을 쓰지 않는다. 모든 선택지는 "확정 이득 ↔ 확정 대가"이며
+##    수치를 선택 전에 전부 공개한다. (기존 기획의 "해킹 확률 미니게임"은
+##    본작의 결정론 정체성과 충돌하므로 채택하지 않았다)
+func _build_event_layout() -> void:
+	_event_vbox = VBoxContainer.new()
+	_event_vbox.add_theme_constant_override("separation", 12)
+	_event_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_event_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_tab_content_panel.add_child(_event_vbox)
+
+	_event_desc_lbl = parent_scene.make_label(
+		"방치된 단말: 아직 살아 있는 회선을 찾았습니다. 대가를 치르면 무언가를 얻을 수 있습니다.",
+		12, parent_scene.C_DIM)
+	_event_desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_event_vbox.add_child(_event_desc_lbl)
+
+	_event_vbox.add_child(parent_scene.make_label(
+		"▶ 단말 조작 (하나만 선택할 수 있습니다)", 12, C_CYAN))
+
+	_event_choice_vbox = VBoxContainer.new()
+	_event_choice_vbox.add_theme_constant_override("separation", 8)
+	_event_choice_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_event_vbox.add_child(_event_choice_vbox)
+
+	_event_log_lbl = parent_scene.make_label("", 12, parent_scene.C_SUCCESS)
+	_event_log_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_event_vbox.add_child(_event_log_lbl)
+
+
+## 이벤트 탭 갱신 — 선택지 카드 렌더링
+func _refresh_event_tab() -> void:
+	if run_manager == null:
+		return
+
+	for child in _event_choice_vbox.get_children():
+		child.queue_free()
+
+	if _event_used:
+		_event_choice_vbox.add_child(parent_scene.make_label(
+			"단말 조작을 완료했습니다. 회선이 차단되었습니다.", 13, parent_scene.C_DIM))
+		return
+
+	# ① 자원 인출 — 크레딧 획득 ↔ 다음 교전 시작거리 단축
+	_add_event_choice(
+		"⚡ 전력 인출 (%d Cr 획득)" % EVENT_SIPHON_CREDITS,
+		"단말의 잔여 전력을 크레딧으로 환전합니다.\n[대가] 경보가 울려 다음 교전의 적 시작 거리가 %dm 좁혀집니다." % abs(EVENT_SIPHON_DIST),
+		true,
+		_on_event_siphon)
+
+	# ② 기록 말소 — 크레딧 지불 ↔ 전술 데이터 코어 획득
+	var can_afford := run_manager.credits >= EVENT_PURGE_COST
+	_add_event_choice(
+		"🗄 기록 말소 (%d Cr 지불 → TDC +%d)" % [EVENT_PURGE_COST, EVENT_PURGE_TDC],
+		"당신의 접근 기록을 지우고 열람 권한을 확보합니다.\n[대가] 크레딧 %d를 소모합니다.%s" % [
+			EVENT_PURGE_COST, "" if can_afford else "\n⚠ 크레딧이 부족합니다."],
+		can_afford,
+		_on_event_purge)
+
+	# ③ 회선 차단 — 아무것도 하지 않고 안전하게 통과
+	_add_event_choice(
+		"🚪 회선 차단 (그냥 지나간다)",
+		"단말을 건드리지 않고 지나갑니다. 얻는 것도 잃는 것도 없습니다.",
+		true,
+		_on_event_skip)
+
+
+## 선택지 카드 하나를 생성한다.
+func _add_event_choice(title: String, desc: String, enabled: bool, cb: Callable) -> void:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = C_PANEL_BG
+	style.border_color = C_BORDER
+	style.set_border_width_all(1)
+	style.set_corner_radius_all(4)
+	style.set_content_margin_all(10)
+	panel.add_theme_stylebox_override("panel", style)
+	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_event_choice_vbox.add_child(panel)
+
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 4)
+	panel.add_child(vb)
+
+	var btn = parent_scene.make_button(title, cb, C_GOLD if enabled else parent_scene.C_DIM)
+	btn.custom_minimum_size = Vector2(0, 34)
+	btn.add_theme_font_size_override("font_size", 13)
+	btn.disabled = not enabled
+	vb.add_child(btn)
+
+	var desc_lbl: Label = parent_scene.make_label(desc, 11, parent_scene.C_DIM)
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vb.add_child(desc_lbl)
+
+
+func _on_event_siphon() -> void:
+	if _event_used:
+		return
+	_event_used = true
+	run_manager.credits += EVENT_SIPHON_CREDITS
+	# 다음 교전 시작 거리 단축 — 환기구 압박과 동일한 경로로 누적된다.
+	run_manager.pending_combat_distance_modifier += EVENT_SIPHON_DIST
+	_event_log_lbl.text = "⚡ 전력 인출 완료 — %d Cr 확보. 경보로 다음 교전 시작 거리가 %dm 좁혀집니다." % [
+		EVENT_SIPHON_CREDITS, abs(EVENT_SIPHON_DIST)]
+	_refresh_event_tab()
+
+
+func _on_event_purge() -> void:
+	if _event_used:
+		return
+	if not run_manager.spend_credits(EVENT_PURGE_COST):
+		_event_log_lbl.text = "⚠ 크레딧이 부족합니다. (%d Cr 필요)" % EVENT_PURGE_COST
+		return
+	_event_used = true
+	run_manager.tactical_data_cores += EVENT_PURGE_TDC
+	_event_log_lbl.text = "🗄 기록 말소 완료 — 전술 데이터 코어 +%d 확보." % EVENT_PURGE_TDC
+	_refresh_event_tab()
+
+
+func _on_event_skip() -> void:
+	if _event_used:
+		return
+	_event_used = true
+	_event_log_lbl.text = "🚪 단말을 건드리지 않고 지나갑니다."
+	_refresh_event_tab()
 
 
 # ── 각 탭 레이아웃 빌딩 함수 ──
@@ -621,6 +773,8 @@ func start_maintenance_phase(node: RunManager.RunNode) -> void:
 	_selected_service_idx = -1
 	_node_kind = _resolve_node_kind(node)
 	_service_log_lbl.text = ""
+	_event_used = false
+	_event_log_lbl.text = ""
 
 	_generate_shop_items()
 	_apply_entry_effects()
@@ -628,7 +782,7 @@ func start_maintenance_phase(node: RunManager.RunNode) -> void:
 
 
 ## 노드 표시명에서 종류를 판별한다. (??? 미지 노드는 밝혀진 실제 타입을 사용)
-## ⚠️ 기능 접미사 (상점)(정비)(보급)(우회)는 map_generator의 노드 명칭과 연동된다.
+## ⚠️ 기능 접미사 (상점)(정비)(보급)(우회)(이벤트)는 map_generator의 노드 명칭과 연동된다.
 func _resolve_node_kind(node: RunManager.RunNode) -> int:
 	if node == null:
 		return NodeKind.SHOP
@@ -641,6 +795,8 @@ func _resolve_node_kind(node: RunManager.RunNode) -> int:
 		return NodeKind.SUPPLY
 	if tn.contains("우회"):
 		return NodeKind.BYPASS
+	if tn.contains("이벤트"):
+		return NodeKind.EVENT
 	return NodeKind.SHOP
 
 
@@ -662,12 +818,15 @@ func _apply_entry_effects() -> void:
 
 ## 노드 종류에 따라 탭 노출과 기본 탭을 결정한다.
 func _apply_node_kind_ui() -> void:
-	# 탭 인덱스: 0 상점 / 1 장비 / 2 정비
+	# 탭 인덱스: 0 상점 / 1 장비 / 2 정비 / 3 단말(이벤트)
 	var show_shop := _node_kind == NodeKind.SHOP
-	var show_service := _node_kind != NodeKind.SHOP  # 정비·보급·우회는 정비 단말 제공
+	var show_event := _node_kind == NodeKind.EVENT
+	# 정비·보급·우회는 정비 단말 제공 (상점·이벤트 노드는 제외)
+	var show_service := not show_shop and not show_event
 
 	_tab_btns[0].visible = show_shop
 	_tab_btns[2].visible = show_service
+	_tab_btns[3].visible = show_event
 	# 장비 탭은 어느 노드에서든 사용 가능(파츠 재배치는 상시 허용)
 	_tab_btns[1].visible = true
 
@@ -676,15 +835,21 @@ func _apply_node_kind_ui() -> void:
 
 	match _node_kind:
 		NodeKind.SERVICE:
-			_service_desc_lbl.text = "정비 단말: 탄환을 개조하거나 폐기해 탄고를 정제합니다."
+			_service_desc_lbl.text = "정비 단말: 물자를 보급받고, 쓰지 않는 장비를 분해해 크레딧으로 전환합니다."
 		NodeKind.SUPPLY:
-			_service_desc_lbl.text = "보급고: 소실 탄환을 회수했습니다. 추가 정비도 가능합니다."
+			_service_desc_lbl.text = "보급고: 소실 탄환을 회수했습니다. 여분 장비 분해도 가능합니다."
 		NodeKind.BYPASS:
-			_service_desc_lbl.text = "우회로: 교전을 피해 지나갑니다. 간이 정비가 가능합니다."
+			_service_desc_lbl.text = "우회로: 교전을 피해 지나갑니다. 간이 분해가 가능합니다."
 		_:
-			_service_desc_lbl.text = "정비 단말: 탄환을 개조하거나 폐기해 탄고를 정제합니다."
+			_service_desc_lbl.text = "정비 단말: 물자를 보급받고, 쓰지 않는 장비를 분해해 크레딧으로 전환합니다."
 
-	_switch_tab(0 if show_shop else 2)
+	# 기본 탭: 상점 노드는 상점, 이벤트 노드는 단말, 그 외는 정비
+	if show_shop:
+		_switch_tab(0)
+	elif show_event:
+		_switch_tab(3)
+	else:
+		_switch_tab(2)
 
 
 func _switch_tab(tab_idx: int) -> void:
@@ -696,6 +861,7 @@ func _switch_tab(tab_idx: int) -> void:
 	_shop_vbox.visible = (tab_idx == 0)
 	_equip_vbox.visible = (tab_idx == 1)
 	_service_vbox.visible = (tab_idx == 2)
+	_event_vbox.visible = (tab_idx == 3)
 
 	# 리롤은 상점 탭 전용이며, 상점 노드가 아닐 때는 애초에 노출되지 않는다.
 	_reroll_cost_btn.visible = (tab_idx == 0 and _node_kind == NodeKind.SHOP)
@@ -718,6 +884,8 @@ func _refresh_current_tab_ui() -> void:
 			_refresh_backpack_view(_equip_bag_grid_container, _equip_bag_capacity_lbl, true)
 		2:
 			_refresh_service_tab()
+		3:
+			_refresh_event_tab()
 
 
 # ── 각 탭별 세부 렌더링 로직 ──
