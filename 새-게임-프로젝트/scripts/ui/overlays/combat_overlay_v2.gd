@@ -385,7 +385,10 @@ func _build_ui() -> void:
 	_loading_bag_item.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	bag_body_margin.add_child(_loading_bag_item)
 	
-	var bag_hint_item: Label = parent_scene.make_label("소모품 — 즉발 사용 (미구현)", 12, parent_scene.C_DIM)
+	# 소모품 사용은 교전 페이즈의 가방 드로어(소모품 탭)에서 수행한다.
+	var bag_hint_item: Label = parent_scene.make_label(
+		"소모품은 교전 중 가방 서랍의 [소모품] 탭에서 즉발 사용합니다.", 12, parent_scene.C_DIM)
+	bag_hint_item.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_loading_bag_item.add_child(bag_hint_item)
 	
 	# 하단 액션 버튼

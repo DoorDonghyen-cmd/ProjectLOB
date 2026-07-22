@@ -1196,7 +1196,9 @@ func _generate_shop_items() -> void:
 		"res://resources/parts/chain_acc.tres",
 		"res://resources/parts/inertia_fire.tres",
 		"res://resources/parts/blind_fire.tres",
-		"res://resources/parts/quick_load.tres"
+		"res://resources/parts/quick_load.tres",
+		"res://resources/parts/stance_foresight.tres",
+		"res://resources/parts/stance_lock.tres"
 	]
 	var part_res = load(part_paths.pick_random())
 	_shop_items.append({ "item": part_res, "price": randi_range(30, 45), "sold_out": false })

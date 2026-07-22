@@ -59,6 +59,31 @@ static func _fire_and_get_hp(gun: GunData, enemy_data: EnemyData, parts: Array[P
 	return hp
 
 
+## 탱크형(태세 3발 주기) 적에게 지정 발수를 격발한 뒤 현재 태세를 반환한다.
+static func _tank_stance_after_shots(gun: GunData, parts: Array[PartData], shots: int) -> int:
+	var cm = CombatManagerScript.new()
+	var d := EnemyData.new()
+	d.archetype = Enums.EnemyArchetype.TANK  # 시작 IRON_SHIELD, 3발마다 전환
+	d.max_hp = 99
+	d.defense = 0
+	d.evasion = 0
+	d.speed = 0
+	d.start_distance = 12
+	var loadout: Array[BulletData] = []
+	for i in range(shots):
+		loadout.append(_bullet(1, 7, 0))
+	var enemies: Array[EnemyData] = [d]
+	cm.start_encounter(gun, enemies, loadout, parts)
+	cm.confirm_loading(loadout)
+	var guard := 0
+	while not cm.magazine.is_empty() and guard < 20:
+		guard += 1
+		cm.fire()
+	var stance: int = cm.enemies[0].current_stance
+	cm.free()
+	return stance
+
+
 static func run(t) -> void:
 	t.section("Parts(application)")
 	RunManager.infiltration_risk_level = 1
@@ -108,6 +133,13 @@ static func run(t) -> void:
 	var ls_on := _fire_and_get_hp(gun, _enemy(80, 0, 0), [_part(Enums.PartID.LONG_SHOT)] as Array[PartData], 3, 7, 0, 5)
 	t.eq(ls_off, 65, "롱샷 미장착: 3×5=15 대미지 (HP 80→65)")
 	t.check(ls_on < ls_off, "롱샷 장착: 원거리 비례 보너스로 추가 대미지 발생 (%d < %d)" % [ls_on, ls_off])
+
+	# ── 태세 고정(STANCE_LOCK): 전투당 1회 태세 전환을 차단 ──
+	# 탱크형(3발 주기)에 4발을 쏴서, 파츠 없으면 전환(EVA 1→7) / 있으면 유지되는지 확인
+	var tank_off := _tank_stance_after_shots(gun, none_parts, 4)
+	var tank_on := _tank_stance_after_shots(gun, [_part(Enums.PartID.STANCE_LOCK)] as Array[PartData], 4)
+	t.eq(tank_off, Enums.EnemyStance.ACTIVE_DODGER, "태세 고정 미장착: 3발 주기로 전환 발생")
+	t.eq(tank_on, Enums.EnemyStance.IRON_SHIELD, "태세 고정 장착: 전환이 차단되어 태세 유지")
 
 	# 표적 지시기(턴 최초 1회 EVA 0): ACC6 vs EVA8 → 최소 1발은 확정 명중
 	var ti_off := _fire_and_get_hp(gun, _enemy(20, 0, 8), none_parts, 3, 6, 0, 5)

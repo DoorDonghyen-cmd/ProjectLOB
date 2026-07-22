@@ -76,6 +76,10 @@ var battle_stats := {
 }
 
 
+## 태세 고정(STANCE_LOCK) 사용 여부 — 전투당 1회
+var _stance_lock_used: bool = false
+
+
 ## 하위 호환 래퍼: 최근접 적 1마리를 반환한다. (UI 및 레거시 코드와의 호환용)
 var enemy: EnemyInstance:
 	get:
@@ -165,6 +169,17 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 	if _has_part(Enums.PartID.BLIND_FIRE):
 		visible_magazine_slots = max(1, visible_magazine_slots - 1)
 		
+	_stance_lock_used = false
+
+	# 태세 예지 (STANCE_FORESIGHT): 전투 개시 시 태세 전환 주기를 미리 공개한다.
+	# 전환 타이밍을 알면 LIFO 적재 순서를 그에 맞춰 설계할 수 있다.
+	if _has_part(Enums.PartID.STANCE_FORESIGHT):
+		for e in enemies:
+			if e.current_stance != Enums.EnemyStance.NONE:
+				combat_log.emit("🔮 [태세 예지] [%s]는 %d발마다 태세를 교대합니다. (다음 전환까지 %d발)" % [
+					e.data.display_name, e.stance_shift_interval,
+					maxi(e.stance_shift_interval - e.shot_counter, 1)])
+
 	encounter_started.emit(enemies)
 	_enter_loading_phase()
 
@@ -806,6 +821,15 @@ func apply_bullet_insertion_tax() -> void:
 
 
 func _check_enemy_stance_shift(target: EnemyInstance) -> void:
+	# 태세 고정 (STANCE_LOCK): 전투당 1회, 적의 태세 전환을 무효화해 현재 태세를 유지시킨다.
+	# 태세 전환병(Scrambler) 축의 카운터 — 준비한 관통/명중 계획이 뒤집히는 것을 막는다.
+	if _has_part(Enums.PartID.STANCE_LOCK) and not _stance_lock_used:
+		if target.shot_counter + 1 >= target.stance_shift_interval and target.current_stance != Enums.EnemyStance.NONE:
+			_stance_lock_used = true
+			target.shot_counter = 0  # 전환 직전 카운터를 되돌려 이번 전환을 무효화
+			combat_log.emit("   ↳ 🔒 [태세 고정] 전환 신호를 차단했습니다! [%s]의 태세가 유지됩니다." % target.data.display_name)
+			return
+
 	if target.apply_shot_and_check_shift():
 		var stance_str := ""
 		match target.current_stance:

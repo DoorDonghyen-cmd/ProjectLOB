@@ -1,0 +1,10 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "태세 고정 (Stance Lock)"
+description = "교전당 1회, 적의 태세 전환 신호를 차단해 현재 태세를 유지시킵니다. 준비한 관통·명중 계획이 전환으로 무력화되는 것을 막습니다."
+part_id = 17
+tier = 4
