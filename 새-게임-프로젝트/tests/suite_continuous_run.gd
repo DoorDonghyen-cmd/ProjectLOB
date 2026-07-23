@@ -109,6 +109,47 @@ static func run(t) -> void:
 	rm5.current_floor = int(MapGenerator.section_info("section_e").floors)
 	t.eq(rm5.total_floors_climbed(), 35, "정점 최상층 = 누적 35층 (런 완주)")
 
+	# ── 교전 거리 보정은 런 진척도를 따라 단조 감소해야 한다 ──
+	# 회귀 배경: 보정이 계층 내 층 번호 기준이라 계층마다 리셋됐다.
+	#   정점 1층에서도 초반 보너스 +6m가 붙고, 종반 패널티 구간(구 `>= 15`)은 도달 불가였다.
+	_unlock(["section_a", "section_b", "section_c", "section_d", "section_e"])
+	var rm6 := _fresh_run()
+	t.eq(rm6.total_run_length(), 35, "전체 해금 시 런 길이 = 35층")
+
+	rm6.current_floor = 1
+	var mod_first: int = rm6.floor_distance_modifier()
+	t.eq(mod_first, 6, "런 첫 층: 초반 보너스 +6m")
+
+	rm6.enter_section("section_e")
+	rm6.current_floor = 1
+	var mod_peak_first: int = rm6.floor_distance_modifier()
+	t.check(mod_peak_first < mod_first, "⭐ 정점 1층은 침전 1층보다 불리해야 함 (계층별 리셋 없음), 실제=%dm" % mod_peak_first)
+
+	rm6.current_floor = int(MapGenerator.section_info("section_e").floors)
+	t.eq(rm6.floor_distance_modifier(), -2, "런 최종층: 종반 패널티 -2m (도달 가능)")
+
+	# 진척도가 오를수록 보정이 절대 증가하지 않는다(단조 감소).
+	var prev_mod := 99
+	var monotonic := true
+	var ramp_track: Array[String] = []
+	for sec in RunManager.SECTION_ORDER:
+		rm6.enter_section(String(sec))
+		for f in range(1, int(MapGenerator.section_info(sec).floors) + 1):
+			rm6.current_floor = f
+			var m: int = rm6.floor_distance_modifier()
+			if m > prev_mod:
+				monotonic = false
+			prev_mod = m
+			ramp_track.append("%d" % m)
+	t.check(monotonic, "거리 보정 단조 감소: %s" % " ".join(ramp_track))
+
+	# 짧은 런(침전만 해금)에서도 종반 압박이 실제로 걸려야 한다.
+	_unlock(["section_a"])
+	var rm7 := _fresh_run()
+	t.eq(rm7.total_run_length(), 6, "침전만 해금 시 런 길이 = 6층")
+	rm7.current_floor = 6
+	t.eq(rm7.floor_distance_modifier(), -2, "⭐ 짧은 런에서도 최종층 압박이 걸림(비율 기준)")
+
 	# ── 해금 진행에 따른 런 길이 램프 ──
 	var ramp := 0
 	var ramp_desc: Array[String] = []

@@ -459,83 +459,82 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		var floor_num := _rm.current_floor
 		var section := _rm.current_section
 		
-		# ⚠️ 층수 압축(64→35층) 이후 아래 층 임계값들은 구 층수 기준으로 남아 있다.
-		#    예: 관리/정점 보스 분기의 `floor_num <= 10`은 현행 7·8층에서 항상 참이라
-		#    최상위 보스 구성이 실질적으로 도달 불가다.
-		#    35층 기준 난이도 곡선 재설계 시 함께 정리할 것 (task_tracker 등재됨).
+		# 보스는 계층마다 하나뿐이므로 층이 아니라 **계층**으로 분기한다.
+		# (과거 관리/정점 보스를 층수로 갈랐는데, 보스 층이 7·8층이라 `floor_num <= 10`이
+		#  항상 참이 되어 최종 보스 구성이 영영 등장하지 않았다.)
 		if selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss") or selected_node.type_name.contains("boss"):
-			if section == "section_a":
-				# 침전 거주구 보스: 탱크 + 회피
-				enemy_list = [_enemy_tank, _enemy_dodger]
-			elif section == "section_b":
-				# 공역 보스: 탱크 + 술사
-				enemy_list = [_enemy_tank, _enemy_caster]
-			elif section == "section_c":
-				# 정비 계층 보스: 흡수(스펀지) + 술사
-				enemy_list = [_enemy_absorber, _enemy_caster]
-			else:
-				# 관리 계층 / 정점 보스
-				if floor_num <= 5:
-					enemy_list = [_enemy_tank, _enemy_neuro_caster]
-				elif floor_num <= 10:
+			match section:
+				"section_a":
+					# 침전 거주구: 탱크 + 회피
+					enemy_list = [_enemy_tank, _enemy_dodger]
+				"section_b":
+					# 공역: 탱크 + 술사
+					enemy_list = [_enemy_tank, _enemy_caster]
+				"section_c":
+					# 정비 계층: 흡수(스펀지) + 술사
+					enemy_list = [_enemy_absorber, _enemy_caster]
+				"section_d":
+					# 관리 계층: 흡수 + 돌격 + 신경술사
 					enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_neuro_caster]
-				else:
+				_:
+					# 정점(최종): 흡수 + 추적 + 신경술사 + 교란
 					enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_neuro_caster, _enemy_scrambler]
 		else:
-			# 일반전 스폰 분기
-			if section == "section_a":
-				# 침전 거주구: 입문 - 기본 3종만 스폰
-				if floor_num <= 3:
-					enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
-				elif floor_num <= 6:
-					enemy_list = [_enemy_rusher, _enemy_tank] if randf() < 0.5 else [_enemy_dodger, _enemy_tank]
-				else:
-					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
-			elif section == "section_b":
-				# 공역: 초급 - 술사(Caster), 드론(Drone) 유입
-				if floor_num <= 4:
-					enemy_list = [_enemy_rusher, _enemy_dodger]
-				elif floor_num <= 8:
-					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_drone]
-				else:
-					enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
-			elif section == "section_c":
-				# 정비 계층: 중급 - 스펀지(Absorber) 유입
-				if floor_num <= 4:
-					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
-				elif floor_num <= 8:
-					enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
-				else:
-					enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_caster]
-			else:
-				# 관리 계층 & 정점: 상급/도전
-				if floor_num <= 3:
-					enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
-				elif floor_num <= 6:
-					var r := randf()
-					if r < 0.33:
-						enemy_list = [_enemy_rusher, _enemy_tank]
-					elif r < 0.66:
-						enemy_list = [_enemy_rusher, _enemy_drone, _enemy_caster]
+			# 일반전 스폰 분기.
+			# 구간은 계층 층수에 비례한다(MapGenerator.floor_tier). 절대 층 번호로 가르면
+			# 층수가 적은 계층에서 종반 구성이 통째로 도달 불가가 된다.
+			var tier := MapGenerator.floor_tier(section, floor_num)
+			match section:
+				"section_a":
+					# 침전 거주구: 입문 - 기본 3종만 스폰
+					if tier == 0:
+						enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
+					elif tier == 1:
+						enemy_list = [_enemy_rusher, _enemy_tank] if randf() < 0.5 else [_enemy_dodger, _enemy_tank]
 					else:
-						enemy_list = [_enemy_scrambler, _enemy_dodger]
-				elif floor_num <= 10:
-					var r := randf()
-					if r < 0.33:
-						enemy_list = [_enemy_tank, _enemy_dodger, _enemy_caster]
-					elif r < 0.66:
-						enemy_list = [_enemy_scrambler, _enemy_drone, _enemy_caster]
+						enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
+				"section_b":
+					# 공역: 초급 - 술사(Caster), 드론(Drone) 유입
+					if tier == 0:
+						enemy_list = [_enemy_rusher, _enemy_dodger]
+					elif tier == 1:
+						enemy_list = [_enemy_rusher, _enemy_tank, _enemy_drone]
 					else:
-						enemy_list = [_enemy_stalker, _enemy_scrambler, _enemy_tank]
-				else:
-					var r := randf()
-					if r < 0.33:
-						enemy_list = [_enemy_absorber, _enemy_scrambler, _enemy_neuro_caster]
-					elif r < 0.66:
-						enemy_list = [_enemy_tank, _enemy_stalker, _enemy_caster]
+						enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
+				"section_c":
+					# 정비 계층: 중급 - 스펀지(Absorber) 유입
+					if tier == 0:
+						enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
+					elif tier == 1:
+						enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
 					else:
-						enemy_list = [_enemy_rusher, _enemy_stalker, _enemy_drone, _enemy_neuro_caster]
-				
+						enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_caster]
+				_:
+					# 관리 계층 & 정점: 상급/도전.
+					# 이 계층에 도달했다면 이미 20층 이상 오른 상태라 입문 구성은 두지 않는다.
+					var r := randf()
+					if tier == 0:
+						if r < 0.33:
+							enemy_list = [_enemy_rusher, _enemy_tank]
+						elif r < 0.66:
+							enemy_list = [_enemy_rusher, _enemy_drone, _enemy_caster]
+						else:
+							enemy_list = [_enemy_scrambler, _enemy_dodger]
+					elif tier == 1:
+						if r < 0.33:
+							enemy_list = [_enemy_tank, _enemy_dodger, _enemy_caster]
+						elif r < 0.66:
+							enemy_list = [_enemy_scrambler, _enemy_drone, _enemy_caster]
+						else:
+							enemy_list = [_enemy_stalker, _enemy_scrambler, _enemy_tank]
+					else:
+						if r < 0.33:
+							enemy_list = [_enemy_absorber, _enemy_scrambler, _enemy_neuro_caster]
+						elif r < 0.66:
+							enemy_list = [_enemy_tank, _enemy_stalker, _enemy_caster]
+						else:
+							enemy_list = [_enemy_rusher, _enemy_stalker, _enemy_drone, _enemy_neuro_caster]
+
 		_start_combat_phase(enemy_list)
 	else:
 		_combat_margin.visible = false

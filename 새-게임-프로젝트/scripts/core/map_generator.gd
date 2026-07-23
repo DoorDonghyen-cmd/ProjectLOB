@@ -45,6 +45,21 @@ static func absolute_level(section: String, floor_num: int) -> int:
 	return int(section_info(section).base_level) + floor_num - 1
 
 
+## 계층 안에서의 층 위치를 3구간으로 나눈다. 0 = 초반, 1 = 중반, 2 = 종반.
+##
+## ⚠️ 절대 층 번호로 구간을 가르지 말 것. 계층마다 층수가 다르고(6/7/7/7/8),
+##    과거 `floor_num <= 8` 같은 구 층수(10~15층) 기준 임계값이 남아 있어
+##    각 계층의 종반 스폰 구성이 통째로 도달 불가였다.
+##    (정비 계층은 "스펀지 유입"이 설계 의도였는데 일반전에 한 번도 등장하지 않았다.)
+static func floor_tier(section: String, floor_num: int) -> int:
+	var floors := int(section_info(section).floors)
+	if floor_num > floors * 2 / 3:
+		return 2
+	if floor_num > floors / 3:
+		return 1
+	return 0
+
+
 # ══════════════════════════════════════════════════
 # 계층별 노드 명칭 테이블
 # 레이아웃(노드 ID·연결 구조)은 층수가 같으면 공유하고, 명칭·설명만 계층 테마로 교체한다.

@@ -1087,16 +1087,10 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	if combat_manager.has_signal("enemy_killed"):
 		combat_manager.enemy_killed.connect(_on_enemy_killed)
 		
-	var floor_num := run_manager.current_floor if run_manager else 1
-	var floor_dist_modifier := 0
-	if floor_num <= 3:
-		floor_dist_modifier = 6
-	elif floor_num <= 7:
-		floor_dist_modifier = 4
-	elif floor_num <= 10:
-		floor_dist_modifier = 2
-	elif floor_num >= 15:
-		floor_dist_modifier = -2
+	# 정본은 RunManager.floor_distance_modifier() — 누적 등반 층수 비율 기준이다.
+	# (과거 이 자리에 계층 내 층 번호 기반 하드코딩이 있어, 정점 1층에서도 초반 보너스가
+	#  붙고 종반 패널티 구간은 도달조차 되지 않았다.)
+	var floor_dist_modifier: int = run_manager.floor_distance_modifier() if run_manager else 0
 
 	var route_dist_modifier := run_manager.consume_pending_combat_distance_modifier() if run_manager else 0
 	var dist_modifier := floor_dist_modifier + route_dist_modifier

@@ -346,6 +346,34 @@ func total_floors_climbed() -> int:
 	return total + current_floor
 
 
+## 이번 런의 총 길이(해금된 계층까지의 층수 합). 진척도 비율 계산의 분모다.
+func total_run_length() -> int:
+	var total := 0
+	for sec in SECTION_ORDER:
+		if not meta_unlocked_sections.has(sec):
+			break
+		total += int(MapGenerator.section_info(sec).floors)
+	return maxi(total, 1)
+
+
+## 층 진척도에 따른 교전 시작 거리 보정(m).
+## 초반에는 적이 멀리서 나타나 탄창을 정리할 여유를 주고, 종반에는 거리를 좁혀 압박한다.
+##
+## ⚠️ 기준은 **누적 등반 층수의 비율**이다. 계층 내 층 번호(current_floor)를 쓰면
+##    계층마다 난이도가 리셋되어 정점 1층에서도 초반 보너스 +6m가 붙는다.
+##    또한 런 길이는 해금 상태에 따라 6~35층으로 변하므로, 절대 층수가 아니라
+##    비율로 판정해야 짧은 런에서도 종반 압박이 실제로 걸린다.
+##
+## 구간 비율은 구 15층 구역 기준 램프(20%/47%/67%/93%)를 그대로 옮긴 것이다.
+func floor_distance_modifier() -> int:
+	var progress := float(total_floors_climbed()) / float(total_run_length())
+	if progress <= 0.20: return 6
+	if progress <= 0.47: return 4
+	if progress <= 0.67: return 2
+	if progress <= 0.93: return 0
+	return -2
+
+
 ## 런 정산 및 크레딧 환전
 func end_run(won: bool) -> int:
 	var won_bonus := 50 if won else 0
