@@ -23,7 +23,8 @@ const RETIRED_TERMS := [
 
 ## 이 표식이 있는 줄은 검사에서 제외한다.
 ## "되살리지 말 것" 주석처럼 폐기어를 **의도적으로** 적어 둔 자리를 위한 탈출구다.
-const ALLOW_MARK := "[drift-allow]"
+## GDScript에서는 `[drift-allow]`, 마크다운에서는 `<!-- drift-allow -->` 형태로 쓴다.
+const ALLOW_MARK := "drift-allow"
 
 
 static func _gd_files(dir_path: String, out: Array[String]) -> void:
