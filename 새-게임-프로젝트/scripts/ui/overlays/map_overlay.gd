@@ -169,8 +169,9 @@ func show_map_screen() -> void:
 		
 	_node_buttons.clear()
 	
-	var start_floor = 1
-	var end_floor = 15
+	# ⚠️ 층수는 계층마다 다르다(6/7/7/7/8). 하드코딩하지 말고 MapGenerator에서 읽을 것.
+	var start_floor := 1
+	var end_floor := int(sec_info.floors)
 	var active_floor_row: Control = null
 	
 	# Loop from end_floor down to start_floor (top-down visual stacking)
@@ -210,7 +211,7 @@ func show_map_screen() -> void:
 		var fp_label: Label = parent_scene.make_label("%dF" % f, 18, parent_scene.C_TEXT)
 		if f == run_manager.current_floor:
 			fp_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
-		elif f == 15:
+		elif f == end_floor:
 			fp_label.text = "%dF\nBOSS" % f
 			fp_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
 		else:
@@ -373,9 +374,10 @@ func _draw_lines(drawer: Control) -> void:
 	if not run_manager or _node_buttons.is_empty():
 		return
 		
-	var start_floor = 1
-	var end_floor = 15
-	
+	# 표시 루프와 같은 근거(현재 계층의 층수)를 써야 연결선이 층 수와 어긋나지 않는다.
+	var start_floor := 1
+	var end_floor := int(MapGenerator.section_info(run_manager.current_section).floors)
+
 	# Draw horizontal floor division lines (building floors)
 	for f in range(start_floor, end_floor + 1):
 		var nodes = run_manager.get_nodes_for_floor(f)

@@ -30,7 +30,7 @@ const OVERRIDE_PATH := "user://__test_meta_override.cfg"
 ## _initialize() 시점에는 root Window가 아직 트리에 들어가지 않아 자식의 _ready()가 호출되지 않고,
 ## 오버레이 참조가 전부 null인 상태에서 검사하게 된다. 그래서 첫 프레임 이후로 미룬다.
 var _t
-var _ui_done := false
+var _frame := 0
 
 
 func _initialize() -> void:
@@ -61,13 +61,14 @@ func _initialize() -> void:
 	# SuiteUISmoke는 _process()에서 — 트리 가동 후에 실행해야 한다.
 
 
-## 첫 프레임: 씬 트리가 살아 있으므로 이제 UI를 실제로 띄워 볼 수 있다.
+## 1프레임: UI 스모크(트리가 살아 있어야 _ready가 돈다).
+## 2프레임: 종료. 스모크가 예약한 queue_free가 처리된 뒤에 끝내야 엔진이 크래시하지 않는다.
 func _process(_delta: float) -> bool:
-	if _ui_done:
-		return true
-	_ui_done = true
+	_frame += 1
 
-	SuiteUISmoke.run(_t, self) # 메인 씬 실제 인스턴스화 + 오버레이 호출(런타임 오류 검출)
+	if _frame == 1:
+		SuiteUISmoke.run(_t, self) # 메인 씬 실제 인스턴스화 + 오버레이 호출(런타임 오류 검출)
+		return false
 
 	# 테스트 임시 세이브 정리 및 오버라이드 해제
 	DirAccess.remove_absolute(OVERRIDE_PATH)

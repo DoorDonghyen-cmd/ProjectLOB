@@ -55,8 +55,30 @@ static func run(t, tree: SceneTree) -> void:
 	scene.show_loadout_screen(str(RunManager.SECTION_ORDER[0]))
 	t.check(true, "요원 준비실 진입 + 시작 계층 표기 갱신 정상")
 
+	# ── 지도: 표시되는 층 수가 계층별 실제 층수와 일치하는가 ──
+	# 과거 map_overlay가 end_floor를 15로 하드코딩해, 6층짜리 침전 거주구 지도에
+	# 15개 층이 그려지고 9개 층은 빈 채로 남았다(보스 표시도 15F에 붙었다).
+	# 숫자 리터럴이라 소스 검사(suite_ui_data_drift)로는 잡히지 않으므로 실제로 그려 본다.
+	RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"]
+	scene.handle_loadout_finished()  # 런 개시 → 지도 표시
+
+	for sec in RunManager.SECTION_ORDER:
+		var sec_key: String = str(sec)
+		var expected: int = int(MapGenerator.section_info(sec_key).floors)
+		scene._rm.enter_section(sec_key)
+		scene._show_map_screen()
+
+		# queue_free()된 이전 행은 아직 트리에 남아 있으므로 제외하고 센다.
+		var rows := 0
+		for row in scene._map_overlay._floors_vbox.get_children():
+			if not row.is_queued_for_deletion():
+				rows += 1
+		t.eq(rows, expected, "%s 지도 층 표시 수" % str(MapGenerator.section_info(sec_key).name))
+
 	# ── 정리 ──
+	# free()는 쓰지 않는다. 지도 갱신이 이전 층 행들을 queue_free()로 예약해 두므로,
+	# 삭제 대기 중인 자식을 가진 씬을 즉시 free()하면 엔진이 종료 시 크래시한다(signal 11).
+	# queue_free()로 넘기고, 호출부가 다음 프레임에 종료하도록 한다.
 	RunManager.meta_unlocked_sections = prev_unlocked
-	tree.root.remove_child(scene)
-	scene.free()
-	t.check(true, "메인 씬 정리 완료")
+	scene.queue_free()
+	t.check(true, "메인 씬 정리 예약 완료")
