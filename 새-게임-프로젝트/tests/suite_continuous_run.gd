@@ -92,6 +92,23 @@ static func run(t) -> void:
 		total += int(MapGenerator.section_info(sec).floors)
 	t.eq(total, 35, "연속 런 총 층수 = 35층 (설계 목표)")
 
+	# ── 정산은 누적 등반 층수 기준이어야 한다 (계층 내 층 번호가 아니라) ──
+	# 회귀 배경: end_run이 current_floor를 쓰면 계층이 바뀔 때 1로 리셋되므로,
+	# 더 높이 오른 플레이어가 보상을 적게 받는 역전이 생긴다.
+	_unlock(["section_a", "section_b", "section_c", "section_d", "section_e"])
+	var rm5 := _fresh_run()
+	rm5.current_floor = 5
+	t.eq(rm5.total_floors_climbed(), 5, "침전 5층 = 누적 5층")
+
+	rm5.enter_section("section_b")
+	rm5.current_floor = 2
+	t.eq(rm5.total_floors_climbed(), 8, "공역 2층 = 누적 8층 (침전 6 + 2)")
+	t.check(rm5.total_floors_climbed() > 5, "⭐ 더 높이 오른 쪽이 더 큰 값 — 보상 역전 없음")
+
+	rm5.enter_section("section_e")
+	rm5.current_floor = int(MapGenerator.section_info("section_e").floors)
+	t.eq(rm5.total_floors_climbed(), 35, "정점 최상층 = 누적 35층 (런 완주)")
+
 	# ── 해금 진행에 따른 런 길이 램프 ──
 	var ramp := 0
 	var ramp_desc: Array[String] = []

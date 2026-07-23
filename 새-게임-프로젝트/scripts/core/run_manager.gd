@@ -331,17 +331,32 @@ func discard_bullet_from_deck(index: int) -> void:
 	deck.remove_at(index)
 
 
+## 이번 런에서 오른 누적 층수.
+##
+## ⚠️ `current_floor`는 **계층 안에서의 층 번호**라 계층이 바뀔 때마다 1로 리셋된다.
+##    연속 런에서 진척도를 재는 값은 이쪽이다. 정산에 current_floor를 쓰면
+##    "공역 2층에서 죽은 사람(8층 등반)"이 "침전 5층에서 죽은 사람(5층 등반)"보다
+##    보상을 적게 받는 역전이 생긴다.
+func total_floors_climbed() -> int:
+	var total := 0
+	for sec in SECTION_ORDER:
+		if sec == current_section:
+			break
+		total += int(MapGenerator.section_info(sec).floors)
+	return total + current_floor
+
+
 ## 런 정산 및 크레딧 환전
 func end_run(won: bool) -> int:
 	var won_bonus := 50 if won else 0
-	var earned := (current_floor * 15) + won_bonus
+	var earned := (total_floors_climbed() * 15) + won_bonus
 	meta_credits += earned
-	
+
 	# 전술 데이터 코어 영구 누적
 	meta_tactical_data_cores += tactical_data_cores
-	
-	# 스타팅 보증금 보상 체크 (구역 1 이상 돌파 = 4층 상점 도달 이상)
-	if current_floor >= 4:
+
+	# 스타팅 보증금 보상 체크 (4층 상점 도달 이상)
+	if total_floors_climbed() >= 4:
 		starting_bonus_available = true
 	else:
 		starting_bonus_available = false

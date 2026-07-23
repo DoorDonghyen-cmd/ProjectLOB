@@ -77,7 +77,9 @@ func show_debriefing(won: bool) -> void:
 	var unlocked_sections := run_manager.check_section_unlocks(won)
 	
 	var log_text := "── 작전 디브리핑 정산 내역 ──\n\n"
-	log_text += "- 도달한 층수: %d 층 (x15 Cr) = %d Cr\n" % [run_manager.current_floor, run_manager.current_floor * 15]
+	# 연속 런이므로 계층 내 층 번호(current_floor)가 아니라 누적 등반 층수로 정산한다.
+	var climbed: int = run_manager.total_floors_climbed()
+	log_text += "- 오른 층수: %d 층 (x15 Cr) = %d Cr\n" % [climbed, climbed * 15]
 	if won:
 		log_text += "- 헬기 보딩 성공 보너스 = 50 Cr\n"
 	log_text += "- 획득한 전술 데이터 코어 (TDC): %d 개\n" % run_manager.tactical_data_cores
@@ -111,7 +113,9 @@ func show_debriefing(won: bool) -> void:
 	log_text += "다음 작전을 준비하기 위해 준비실에서 해금된 총기를 선택해 작전을 개시하세요."
 	
 	# ── 100% 정보 도감 해독 완료 엔딩 (소프트 엔딩) ──
-	if won and run_manager.current_floor >= 15 and RunManager.meta_lore_fragments.size() == 20:
+	# 조건은 "런 완주 + 로어 20개". won == true 자체가 정점까지 올라 더 오를 곳이 없다는 뜻이다.
+	# (과거 `current_floor >= 15` 조건은 계층당 최대 8층이 된 뒤로 영영 만족될 수 없었다.)
+	if won and RunManager.meta_lore_fragments.size() == 20:
 		log_text += "\n\n"
 		log_text += "[color=#33ffff]📥 🚨 기밀 통신망 복원 완료 - [PROJECT L.O.B] 블랙박스 파일 해독 완료 🚨[/color]\n"
 		log_text += "[color=#00ff66][b]보안 등급 5 (RESTRICTED LOG):[/b][/color]\n"
