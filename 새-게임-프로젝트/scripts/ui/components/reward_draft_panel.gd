@@ -305,6 +305,7 @@ func _build_swap_modal() -> void:
 	vbox.add_child(title)
 	
 	var scroll = ScrollContainer.new()
+	DragScroll.attach(scroll)  # 버튼 위에서도 끌어서 스크롤
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	vbox.add_child(scroll)

@@ -366,6 +366,7 @@ func _build_ui() -> void:
 	
 	# 세로 스크롤 가능한 스크롤 영역 생성
 	var scroll = ScrollContainer.new()
+	DragScroll.attach(scroll)  # 버튼 위에서도 끌어서 스크롤
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	_loading_bag_ammo.add_child(scroll)
@@ -426,6 +427,7 @@ func _build_ui() -> void:
 	
 	# Lookahead 영역을 ScrollContainer로 감싸서 스택이 길어져도 스크롤 대응
 	var lookahead_scroll := ScrollContainer.new()
+	DragScroll.attach(lookahead_scroll)  # 버튼 위에서도 끌어서 스크롤
 	lookahead_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	lookahead_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	left_col.add_child(lookahead_scroll)

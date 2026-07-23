@@ -110,6 +110,7 @@ func _build_ui() -> void:
 
 	# Scroll area for vertical building section
 	_map_scroll = ScrollContainer.new()
+	DragScroll.attach(_map_scroll)  # 버튼 위에서도 끌어서 스크롤
 	_map_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_map_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_map_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

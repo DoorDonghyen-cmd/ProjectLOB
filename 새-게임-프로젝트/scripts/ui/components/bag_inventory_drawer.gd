@@ -157,6 +157,7 @@ func _build_ui() -> void:
 	
 	# 소모품 스크롤
 	var item_scroll := ScrollContainer.new()
+	DragScroll.attach(item_scroll)  # 버튼 위에서도 끌어서 스크롤
 	item_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	item_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	right_vbox.add_child(item_scroll)
@@ -172,6 +173,7 @@ func _build_ui() -> void:
 	
 	# 탄환 그리드 스크롤
 	var drawer_scroll := ScrollContainer.new()
+	DragScroll.attach(drawer_scroll)  # 버튼 위에서도 끌어서 스크롤
 	drawer_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	drawer_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	drawer_scroll.visible = false

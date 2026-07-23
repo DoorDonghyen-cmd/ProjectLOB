@@ -4,6 +4,7 @@ extends SceneTree
 ## 종료 코드 0 = 전체 통과, 1 = 실패 있음 (CI 연동 가능).
 
 const LobTest := preload("res://tests/lob_test.gd")
+const SuiteScriptParse := preload("res://tests/suite_script_parse.gd")
 const SuiteDamage := preload("res://tests/suite_damage.gd")
 const SuiteMagazine := preload("res://tests/suite_magazine.gd")
 const SuiteEnemy := preload("res://tests/suite_enemy.gd")
@@ -24,6 +25,7 @@ const SuiteSpawnTiers := preload("res://tests/suite_spawn_tiers.gd")
 const SuiteUIDataDrift := preload("res://tests/suite_ui_data_drift.gd")
 const SuiteDocDrift := preload("res://tests/suite_doc_drift.gd")
 const SuiteUISmoke := preload("res://tests/suite_ui_smoke.gd")
+const SuiteDragScroll := preload("res://tests/suite_drag_scroll.gd")
 
 
 const OVERRIDE_PATH := "user://__test_meta_override.cfg"
@@ -42,6 +44,9 @@ func _initialize() -> void:
 
 	var t := LobTest.new()
 	_t = t
+
+	# ⚠️ 가장 먼저 — 스크립트가 깨져 있으면 뒤의 결과는 전부 의미가 없다.
+	SuiteScriptParse.run(t) # 전 스크립트·씬 컴파일 성공 여부
 
 	SuiteDamage.run(t)      # 전투 수식(관통 게이트 · 명중 임계값)
 	SuiteMagazine.run(t)    # 탄창 LIFO
@@ -71,7 +76,8 @@ func _process(_delta: float) -> bool:
 	_frame += 1
 
 	if _frame == 1:
-		SuiteUISmoke.run(_t, self) # 메인 씬 실제 인스턴스화 + 오버레이 호출(런타임 오류 검출)
+		SuiteUISmoke.run(_t, self)   # 메인 씬 실제 인스턴스화 + 오버레이 호출(런타임 오류 검출)
+		SuiteDragScroll.run(_t, self) # 버튼이 깔린 스크롤 영역의 드래그 스크롤(터치 조작)
 		return false
 
 	# 테스트 임시 세이브 정리 및 오버라이드 해제

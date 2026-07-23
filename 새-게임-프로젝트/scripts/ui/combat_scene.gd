@@ -253,6 +253,10 @@ func show_section_selector() -> void:
 
 func handle_section_selector_closed() -> void:
 	_is_shortcut_mode = false
+	# 호출자가 이미 숨겼더라도 여기서 한 번 더 보장한다.
+	# 화면 전환의 책임을 호출자에게만 맡기면, 다른 경로로 들어왔을 때 브리핑이 남는다.
+	if _section_selector_overlay:
+		_section_selector_overlay.visible = false
 	_show_title_screen()
 
 

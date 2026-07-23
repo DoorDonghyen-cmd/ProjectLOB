@@ -81,6 +81,7 @@ func _build_ui() -> void:
 
 	# ── 스크롤 카드 그리드 컨테이너 ──
 	var scroll := ScrollContainer.new()
+	DragScroll.attach(scroll)  # 버튼 위에서도 끌어서 스크롤
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

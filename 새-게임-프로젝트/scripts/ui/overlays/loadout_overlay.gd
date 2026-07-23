@@ -249,6 +249,7 @@ func _build_ui() -> void:
 	
 	# 총기 카드 선택 리스트 (VBox + ScrollContainer)
 	var weapon_scroll := ScrollContainer.new()
+	DragScroll.attach(weapon_scroll)  # 버튼 위에서도 끌어서 스크롤
 	weapon_scroll.custom_minimum_size = Vector2(0, 240)
 	weapon_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	weapon_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED

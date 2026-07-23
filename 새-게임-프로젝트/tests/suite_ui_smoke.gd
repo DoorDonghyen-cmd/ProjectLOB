@@ -45,15 +45,30 @@ static func run(t, tree: SceneTree) -> void:
 		RunManager.meta_unlocked_sections = unlocked
 
 		scene.show_section_selector()
-		t.check(true, "상승 브리핑 갱신 — %s" % label)
+
+		# ⚠️ `t.check(true, ...)`로 "안 죽었다"만 확인하면 안 된다.
+		#    GDScript 오류는 실행을 멈추지 않으므로, 오버레이가 통째로 깨져 있어도
+		#    그런 단언은 통과한다. 실제로 화면에 들어간 값을 본다.
+		var brief_ok: bool = scene._section_selector_overlay != null 			and scene._section_selector_overlay.visible 			and scene._section_selector_overlay._summary_label.text.contains("이번 상승")
+		t.check(brief_ok, "상승 브리핑 갱신 — %s" % label)
+
+		var expected_len := 0
+		for s2 in unlocked:
+			expected_len += int(MapGenerator.section_info(s2).floors)
+		t.check(scene._section_selector_overlay._summary_label.text.contains("%d층" % expected_len),
+			"브리핑 요약에 이번 런 길이 %d층 표시" % expected_len)
 
 	# 로비 복귀 경로
 	scene.handle_section_selector_closed()
-	t.check(true, "브리핑 → 로비 복귀 경로 정상")
+	t.check(scene._title_overlay.visible and not scene._section_selector_overlay.visible,
+		"브리핑 → 로비 복귀 (타이틀 표시 / 브리핑 숨김)")
 
 	# ── 준비실: 시작 계층 표기 갱신 ──
 	scene.show_loadout_screen(str(RunManager.SECTION_ORDER[0]))
-	t.check(true, "요원 준비실 진입 + 시작 계층 표기 갱신 정상")
+	var start_name: String = str(MapGenerator.section_info(RunManager.SECTION_ORDER[0]).name)
+	t.check(scene._loadout_overlay.visible, "요원 준비실 진입")
+	t.check(scene._loadout_overlay._target_zone_label.text.contains(start_name),
+		"준비실이 시작 계층을 %s로 표기" % start_name)
 
 	# ── 지도: 런 전체(35층)가 한 화면에 그려지는가 ──
 	# 지도는 계층 단위가 아니라 **런 전체**를 보여준다. 계층마다 리셋되면
@@ -141,4 +156,4 @@ static func run(t, tree: SceneTree) -> void:
 	# queue_free()로 넘기고, 호출부가 다음 프레임에 종료하도록 한다.
 	RunManager.meta_unlocked_sections = prev_unlocked
 	scene.queue_free()
-	t.check(true, "메인 씬 정리 예약 완료")
+	t.check(scene.is_queued_for_deletion(), "메인 씬 정리 예약 완료")

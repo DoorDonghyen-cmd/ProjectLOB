@@ -247,6 +247,7 @@ func _build_service_layout() -> void:
 		"▶ 분해 가능 물자 (가방) — 장착 중인 파츠는 분해되지 않습니다", 12, parent_scene.C_DIM))
 
 	var scroll := ScrollContainer.new()
+	DragScroll.attach(scroll)  # 버튼 위에서도 끌어서 스크롤
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
