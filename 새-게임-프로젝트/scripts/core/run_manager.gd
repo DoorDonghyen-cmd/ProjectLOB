@@ -645,6 +645,34 @@ func run_itinerary() -> Array[String]:
 	return out
 
 
+## 도시 사다리 전체 길이(항상 35층). **해금 여부와 무관하다.**
+##
+## ⚠️ `total_run_length()`와 구분할 것. 그쪽은 *이번 런이 실제로 오를 길이*(6~35)이며
+##    난이도 램프 계산의 분모다. 이 함수는 *지도에 그릴 사다리 전체*이며 표시 전용이다.
+##    둘을 섞으면 첫 런에서 난이도 종반 압박이 사라지거나, 지도가 6층만 보이게 된다.
+func full_ladder_length() -> int:
+	var total := 0
+	for sec in SECTION_ORDER:
+		total += int(MapGenerator.section_info(sec).floors)
+	return total
+
+
+## 사다리 전체 기준 절대 층 번호 → {section, floor}. 잠긴 계층도 반환한다(표시용).
+func resolve_ladder_floor(abs_floor: int) -> Dictionary:
+	var acc := 0
+	for sec in SECTION_ORDER:
+		var f := int(MapGenerator.section_info(sec).floors)
+		if abs_floor <= acc + f:
+			return {"section": String(sec), "floor": abs_floor - acc}
+		acc += f
+	return {}
+
+
+## 해당 계층이 이번 런에서 실제로 오를 수 있는 곳인가(= 해금됐는가).
+func is_section_in_run(section: String) -> bool:
+	return meta_unlocked_sections.has(section)
+
+
 ## (계층, 계층 내 층) → 런 전체 기준 절대 층 번호(1..35).
 func absolute_run_floor(section: String, local_floor: int) -> int:
 	var acc := 0

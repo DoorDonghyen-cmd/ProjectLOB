@@ -171,17 +171,18 @@ func show_map_screen() -> void:
 		
 	_node_buttons.clear()
 	
-	# ⚠️ 지도는 **런 전체(최대 35층)**를 하나로 보여준다. 계층 단위로 끊지 않는다.
+	# ⚠️ 지도는 **도시 사다리 35층 전체**를 항상 보여준다. 계층 단위로 끊지 않는다.
 	#    연속 런에서 계층은 난이도 사다리가 아니라 한 여정의 구간이므로,
 	#    지도가 계층마다 리셋되면 "얼마나 남았는가"를 전혀 알 수 없다.
-	var itinerary: Array[String] = run_manager.run_itinerary()
-	var total_floors: int = run_manager.total_run_length()
+	#    아직 해금되지 않은 계층도 잠금 상태로 그린다 — 목표를 각인시키기 위해서다.
+	var total_floors: int = run_manager.full_ladder_length()
+	var run_ceiling: int = run_manager.total_run_length()  # 이번 런이 실제로 닿는 층
 	var here: int = run_manager.total_floors_climbed()
 	var active_floor_row: Control = null
 
 	# 위층이 위에 오도록 절대 층 번호 내림차순으로 쌓는다.
 	for abs_f in range(total_floors, 0, -1):
-		var loc: Dictionary = run_manager.resolve_run_floor(abs_f)
+		var loc: Dictionary = run_manager.resolve_ladder_floor(abs_f)
 		if loc.is_empty():
 			continue
 		var sec: String = str(loc.section)
@@ -189,10 +190,15 @@ func show_map_screen() -> void:
 		var s_info: Dictionary = MapGenerator.section_info(sec)
 		var is_section_top: bool = f == int(s_info.floors)
 		var is_here: bool = abs_f == here
+		var in_run: bool = run_manager.is_section_in_run(sec)
 
 		# 계층이 바뀌는 경계에 헤더를 넣어 여정의 구간을 구분한다.
 		if is_section_top:
-			_floors_vbox.add_child(_make_section_header(sec, s_info, itinerary.find(sec), abs_f, here))
+			_floors_vbox.add_child(_make_section_header(sec, s_info, abs_f, here, in_run))
+
+		# 이번 런의 도달 상한 표시 — 여기서 런이 끝난다는 사실을 지도 위에 못박는다.
+		if abs_f == run_ceiling and run_ceiling < total_floors:
+			_floors_vbox.add_child(_make_ceiling_marker())
 
 		var floor_row := HBoxContainer.new()
 		floor_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -226,11 +232,14 @@ func show_map_screen() -> void:
 		floor_panel.add_theme_stylebox_override("panel", fp_style)
 		floor_row.add_child(floor_panel)
 
-		# 큰 숫자는 **런 전체 기준 절대 층**이다(1..35). 계층 내 층 번호는 작게 병기한다.
+		# 큰 숫자는 **사다리 전체 기준 절대 층**이다(1..35). 계층 내 층 번호는 작게 병기한다.
 		var fp_label: Label = parent_scene.make_label("%d" % abs_f, 18, parent_scene.C_TEXT)
 		if is_here:
 			fp_label.text = "%d\n%dF" % [abs_f, f]
 			fp_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
+		elif not in_run:
+			fp_label.text = "%d\n🔒" % abs_f
+			fp_label.add_theme_color_override("font_color", Color(0.35, 0.4, 0.48))
 		elif is_section_top:
 			fp_label.text = "%d\nBOSS" % abs_f
 			fp_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
@@ -248,6 +257,11 @@ func show_map_screen() -> void:
 		nodes_hbox.add_theme_constant_override("separation", 20)
 		floor_row.add_child(nodes_hbox)
 		
+		# 아직 해금되지 않은 계층은 맵을 생성하지 않는다. 존재만 실루엣으로 알린다.
+		if not in_run:
+			nodes_hbox.add_child(_make_locked_slot(is_section_top))
+			continue
+
 		# 지금 서 있는 계층만 상호작용 가능하다. 위 계층은 보이되 아직 고를 수 없다.
 		var is_current_section: bool = sec == run_manager.current_section
 		var nodes := run_manager.nodes_for(sec, f)
@@ -387,12 +401,12 @@ func show_map_screen() -> void:
 
 
 ## 계층 경계 구분자. 여정의 어느 구간인지와, 이미 지나왔는지를 한 줄로 알린다.
-func _make_section_header(sec: String, s_info: Dictionary, idx: int, top_abs: int, here: int) -> Control:
+func _make_section_header(sec: String, s_info: Dictionary, top_abs: int, here: int, in_run: bool) -> Control:
 	var floors := int(s_info.floors)
 	var bottom_abs := top_abs - floors + 1
 
-	var passed: bool = here > top_abs          # 이 계층을 이미 통과했다
-	var current: bool = here >= bottom_abs and here <= top_abs
+	var passed: bool = in_run and here > top_abs          # 이 계층을 이미 통과했다
+	var current: bool = in_run and here >= bottom_abs and here <= top_abs
 
 	var panel := PanelContainer.new()
 	var style := StyleBoxFlat.new()
@@ -409,9 +423,16 @@ func _make_section_header(sec: String, s_info: Dictionary, idx: int, top_abs: in
 	hbox.add_theme_constant_override("separation", 12)
 	panel.add_child(hbox)
 
-	var col: Color = parent_scene.C_ACCENT if current else (Color(0.45, 0.5, 0.58) if passed else parent_scene.C_TEXT)
+	var col: Color = parent_scene.C_TEXT
+	if current:
+		col = parent_scene.C_ACCENT
+	elif not in_run:
+		col = Color(0.35, 0.4, 0.48)
+	elif passed:
+		col = Color(0.45, 0.5, 0.58)
+
 	hbox.add_child(parent_scene.make_label(str(s_info.icon), 15, col))
-	hbox.add_child(parent_scene.make_label("%s" % str(s_info.name), 15, col))
+	hbox.add_child(parent_scene.make_label(str(s_info.name) if in_run else "미확인 구역", 15, col))
 	hbox.add_child(parent_scene.make_label(
 		"%d–%d층 · LV.%d~%d" % [
 			bottom_abs, top_abs,
@@ -423,7 +444,9 @@ func _make_section_header(sec: String, s_info: Dictionary, idx: int, top_abs: in
 	hbox.add_child(spacer)
 
 	var tag := ""
-	if passed:
+	if not in_run:
+		tag = "🔒 미해금"
+	elif passed:
 		tag = "돌파함"
 	elif current:
 		tag = "◀ 현재 구간"
@@ -432,6 +455,52 @@ func _make_section_header(sec: String, s_info: Dictionary, idx: int, top_abs: in
 	hbox.add_child(parent_scene.make_label(tag, 10, col))
 
 	return panel
+
+
+## 이번 런의 도달 상한선. 해금이 진행되면 이 선이 위로 올라간다.
+func _make_ceiling_marker() -> Control:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.12, 0.10, 0.03, 0.85)
+	style.border_width_top = 1
+	style.border_width_bottom = 1
+	style.border_color = parent_scene.C_WARNING
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 4
+	style.content_margin_bottom = 4
+	panel.add_theme_stylebox_override("panel", style)
+
+	var lbl: Label = parent_scene.make_label(
+		"▲ 이번 상승은 여기까지 — 위 계층은 이 층을 돌파해야 열린다", 11, parent_scene.C_WARNING)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	panel.add_child(lbl)
+	return panel
+
+
+## 미해금 계층의 노드 자리. 내용은 숨기고 존재만 알린다.
+func _make_locked_slot(is_boss_floor: bool) -> Control:
+	var slot := PanelContainer.new()
+	slot.custom_minimum_size = Vector2(240, 60)
+	slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slot.modulate = Color(1, 1, 1, 0.45)
+
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.06, 0.09, 0.8)
+	style.border_color = Color(0.14, 0.17, 0.22, 0.9)
+	style.set_border_width_all(1)
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	slot.add_theme_stylebox_override("panel", style)
+
+	var lbl: Label = parent_scene.make_label(
+		"🔒 봉인된 구획" if is_boss_floor else "▨▨▨", 12, Color(0.35, 0.4, 0.48))
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	slot.add_child(lbl)
+	return slot
 
 
 func _on_node_selected(node: RunManager.RunNode) -> void:
@@ -449,14 +518,15 @@ func _draw_lines(drawer: Control) -> void:
 	if not run_manager or _node_buttons.is_empty():
 		return
 		
-	# 연결선도 런 전체(최대 35층)를 대상으로 그린다. 표시 루프와 같은 근거를 써야 어긋나지 않는다.
-	var total_floors: int = run_manager.total_run_length()
+	# 연결선도 사다리 전체(35층)를 대상으로 돈다. 표시 루프와 같은 근거를 써야 어긋나지 않는다.
+	# 미해금 계층은 맵이 없어 nodes_for가 비어 있으므로 자연히 건너뛴다.
+	var total_floors: int = run_manager.full_ladder_length()
 	var here: int = run_manager.total_floors_climbed()
 	var inv := drawer.get_global_transform().affine_inverse()
 
 	# 층 구분선
 	for abs_f in range(1, total_floors + 1):
-		var loc: Dictionary = run_manager.resolve_run_floor(abs_f)
+		var loc: Dictionary = run_manager.resolve_ladder_floor(abs_f)
 		if loc.is_empty():
 			continue
 		var sum_y := 0.0
@@ -475,8 +545,8 @@ func _draw_lines(drawer: Control) -> void:
 
 	# 노드 간 통로선. 연결 정보는 계층 안에서만 존재하므로 같은 계층끼리만 잇는다.
 	for abs_f in range(2, total_floors + 1):
-		var loc_c: Dictionary = run_manager.resolve_run_floor(abs_f)
-		var loc_p: Dictionary = run_manager.resolve_run_floor(abs_f - 1)
+		var loc_c: Dictionary = run_manager.resolve_ladder_floor(abs_f)
+		var loc_p: Dictionary = run_manager.resolve_ladder_floor(abs_f - 1)
 		if loc_c.is_empty() or loc_p.is_empty():
 			continue
 		var sec: String = str(loc_c.section)

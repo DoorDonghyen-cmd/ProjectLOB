@@ -60,30 +60,35 @@ static func run(t, tree: SceneTree) -> void:
 	# "얼마나 남았는가"를 알 수 없기 때문이다.
 	# 과거 map_overlay가 end_floor를 15로 하드코딩해 어느 계층에서든 15개 층이 그려졌다.
 	# 숫자 리터럴이라 소스 검사로는 잡히지 않으므로 실제로 그려서 센다.
+	# ⚠️ 해금 상태와 무관하게 **항상 35층**이 그려져야 한다. 잠긴 계층은 자물쇠로 표시된다.
+	#    첫 런에서 6층만 보이면 "얼마나 남았는가"도, 목표도 전달되지 않는다.
 	for case2 in [
-		[["section_a"], 6],
-		[["section_a", "section_b"], 13],
-		[["section_a", "section_b", "section_c", "section_d", "section_e"], 35],
+		["section_a"],
+		["section_a", "section_b"],
+		["section_a", "section_b", "section_c", "section_d", "section_e"],
 	]:
 		var unlocked2: Array[String] = []
-		for s in case2[0]:
+		for s in case2:
 			unlocked2.append(str(s))
 		RunManager.meta_unlocked_sections = unlocked2
 		scene.handle_loadout_finished()  # 런 개시 → 지도 표시
 
 		# queue_free()된 이전 행은 아직 트리에 남아 있으므로 제외한다.
-		# 층 행은 HBoxContainer, 계층 헤더는 PanelContainer다.
+		# 층 행은 HBoxContainer, 계층 헤더·상한 마커는 PanelContainer다.
 		var floor_rows := 0
-		var headers := 0
+		var panels := 0
 		for row in scene._map_overlay._floors_vbox.get_children():
 			if row.is_queued_for_deletion():
 				continue
 			if row is HBoxContainer:
 				floor_rows += 1
 			elif row is PanelContainer:
-				headers += 1
-		t.eq(floor_rows, int(case2[1]), "지도 층 표시 수 (해금 %d계층)" % unlocked2.size())
-		t.eq(headers, unlocked2.size(), "계층 헤더 수 = 해금 계층 수")
+				panels += 1
+		t.eq(floor_rows, 35, "⭐ 해금 %d계층에서도 지도는 35층 전체 표시" % unlocked2.size())
+
+		# 헤더 5개 + (도달 상한이 정점이 아니면) 상한 마커 1개
+		var expected_panels: int = 5 + (0 if unlocked2.size() == 5 else 1)
+		t.eq(panels, expected_panels, "계층 헤더 5 + 상한 마커 %d" % (expected_panels - 5))
 
 	# 상위 계층으로 이동해도 지도 전체 길이는 그대로여야 한다(런은 하나이므로).
 	scene._rm.enter_section("section_c")

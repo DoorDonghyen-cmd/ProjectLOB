@@ -195,6 +195,23 @@ static func run(t) -> void:
 	t.eq(after.size(), before.size(), "도착 후에도 노드 수 동일")
 	t.check(before == after, "⭐ 지도가 미리 보여준 구성 = 실제 도착 시 구성 (스캔 힌트 포함)")
 
+	# 사다리 전체 길이는 해금과 무관하게 항상 35층이다(지도 표시의 근거).
+	# ⚠️ total_run_length(런 실제 길이)와 혼동하면 첫 런에서 지도가 6층만 보이거나
+	#    난이도 종반 압박이 사라진다. 두 값의 의미가 다름을 여기서 못박는다.
+	_unlock(["section_a"])
+	var rm11 := _fresh_run()
+	t.eq(rm11.full_ladder_length(), 35, "사다리 전체 = 35층 (해금 무관)")
+	t.eq(rm11.total_run_length(), 6, "이번 런 실제 길이 = 6층 (해금 1계층)")
+	t.check(rm11.full_ladder_length() != rm11.total_run_length(), "⭐ 두 값은 별개다")
+	t.check(not rm11.is_section_in_run("section_e"), "정점은 이번 런에 포함되지 않음(잠금 표시 대상)")
+	t.check(rm11.is_section_in_run("section_a"), "침전 거주구는 이번 런에 포함됨")
+
+	var top := rm11.resolve_ladder_floor(35)
+	t.eq(str(top.section), "section_e", "사다리 35층 → 정점 (미해금이어도 조회 가능)")
+	t.eq(int(top.floor), 8, "사다리 35층 → 정점 8층")
+
+	_unlock(["section_a", "section_b", "section_c", "section_d", "section_e"])
+
 	# 절대 층 번호 변환이 지도 표시의 근거다.
 	t.eq(rm10.absolute_run_floor("section_a", 1), 1, "침전 1층 = 런 1층")
 	t.eq(rm10.absolute_run_floor("section_b", 1), 7, "공역 1층 = 런 7층 (침전 6 + 1)")
