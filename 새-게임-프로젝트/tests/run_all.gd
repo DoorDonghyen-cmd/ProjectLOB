@@ -20,15 +20,26 @@ const SuiteWeaponUnlock := preload("res://tests/suite_weapon_unlock.gd")
 const SuiteSectionProgress := preload("res://tests/suite_section_progress.gd")
 const SuiteConsumables := preload("res://tests/suite_consumables.gd")
 const SuiteContinuousRun := preload("res://tests/suite_continuous_run.gd")
+const SuiteUIDataDrift := preload("res://tests/suite_ui_data_drift.gd")
+const SuiteUISmoke := preload("res://tests/suite_ui_smoke.gd")
+
+
+const OVERRIDE_PATH := "user://__test_meta_override.cfg"
+
+## UI 스모크는 씬 트리가 실제로 돌기 시작한 뒤에만 의미가 있다.
+## _initialize() 시점에는 root Window가 아직 트리에 들어가지 않아 자식의 _ready()가 호출되지 않고,
+## 오버레이 참조가 전부 null인 상태에서 검사하게 된다. 그래서 첫 프레임 이후로 미룬다.
+var _t
+var _ui_done := false
 
 
 func _initialize() -> void:
 	print("\n╔══════ Last on Board · 자동 검증 ══════╗")
 	# 테스트 중 메타 저장이 실제 세이브(user://meta_save.cfg)를 덮어쓰지 않도록 임시 경로로 리다이렉트
-	var override_path := "user://__test_meta_override.cfg"
-	RunManager.save_path_override = override_path
+	RunManager.save_path_override = OVERRIDE_PATH
 
 	var t := LobTest.new()
+	_t = t
 
 	SuiteDamage.run(t)      # 전투 수식(관통 게이트 · 명중 임계값)
 	SuiteMagazine.run(t)    # 탄창 LIFO
@@ -46,11 +57,23 @@ func _initialize() -> void:
 	SuiteSectionProgress.run(t) # 구역 완주 판정 + 다음 구역 해금 + 영속화
 	SuiteConsumables.run(t)   # 소모품 효과(heal/shred) + 가방 적재·소진
 	SuiteContinuousRun.run(t) # 연속 런 구조(계층 체이닝·자원 유지·종료 시점)
+	SuiteUIDataDrift.run(t)   # UI가 계층 정보를 복사해 두지 않았는지(소스 레벨 드리프트 검사)
+	# SuiteUISmoke는 _process()에서 — 트리 가동 후에 실행해야 한다.
+
+
+## 첫 프레임: 씬 트리가 살아 있으므로 이제 UI를 실제로 띄워 볼 수 있다.
+func _process(_delta: float) -> bool:
+	if _ui_done:
+		return true
+	_ui_done = true
+
+	SuiteUISmoke.run(_t, self) # 메인 씬 실제 인스턴스화 + 오버레이 호출(런타임 오류 검출)
 
 	# 테스트 임시 세이브 정리 및 오버라이드 해제
-	DirAccess.remove_absolute(override_path)
+	DirAccess.remove_absolute(OVERRIDE_PATH)
 	RunManager.save_path_override = ""
 
-	var code := t.summary()
+	var code: int = _t.summary()
 	print("╚═════════════════════════════════════╝")
 	quit(code)
+	return true

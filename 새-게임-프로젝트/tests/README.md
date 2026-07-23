@@ -36,6 +36,9 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_enemy.gd` | 적 태세 전환(N발 주기), 전진/둔화/넉백 거리 계산 |
 | `validate_data.gd` | CSV 정합성 — id 유니크·컬럼·정수·밴드(ERROR/WARN), `.tres` 매칭 |
 | `sim_harness.gd` | 결정론 전투 시뮬레이터 — 승패·마진·넉백락 산출(밸런스 회귀+튜닝) |
+| `suite_continuous_run.gd` | 연속 런 — 계층 체이닝, 자원 유지, 총 35층, 런 길이 램프 |
+| `suite_ui_data_drift.gd` | UI 소스에 계층 이름·층수가 복사돼 있지 않은지(정본은 `MapGenerator`) |
+| `suite_ui_smoke.gd` | 메인 씬을 실제로 인스턴스화하고 오버레이를 호출 — 런타임 오류 검출 |
 
 - **ERROR**(FAIL, 종료 1): 구조적 오류(관통 게이트 위반, 중복 id, 컬럼 부족 등).
 - **WARN**(경보만): 밸런스 밴드 이탈, `.tres` 파일명 불일치 등. 종료 코드에 영향 없음.
@@ -45,8 +48,17 @@ GODOT=/path/to/godot ./tests/run.sh
 1. `suite_*.gd`에 `static func run(t) -> void:` 작성, `t.eq(...)` / `t.check(...)` 사용.
 2. `run_all.gd`에 `preload` + `Suite.run(t)` 한 줄 추가.
 
+> **씬 트리가 필요한 스위트**(노드 인스턴스화·`_ready` 실행)는 `_initialize()`가 아니라
+> `run_all.gd`의 `_process()`에 넣는다. `_initialize()` 시점에는 root Window가 아직 트리에
+> 들어가지 않아 자식 `_ready()`가 호출되지 않고, 노드 참조가 전부 null인 채로 검사하게 된다.
+> `suite_ui_smoke.gd`가 이 형태이며 `run(t, tree)` 시그니처를 쓴다.
+
 ## 참고
 
-- 시각/UX 검증(레이아웃·연출)은 자동화 대상이 아니다 → 인게임 `🛠️ 개발자 테스트` 메뉴 활용.
-- 순수 static 클래스(`DamageCalculator`/`DataLoader`)와 `RefCounted` 로직(`Magazine`/`EnemyInstance`)만 대상. UI/씬 의존 코드는 제외.
+- **레이아웃·연출은 여전히 자동화 대상이 아니다** → 인게임 `🛠️ 개발자 테스트` 메뉴 활용.
+  다만 "화면이 뜨긴 하는가 / 표시 문자열이 정본과 어긋나지 않는가"는 자동으로 잡는다
+  (`suite_ui_smoke`, `suite_ui_data_drift`). 2026-07-24에 구역 선택 화면이 구버전 세계관과
+  구 층수를 표시하고 있었는데도 전 스위트가 통과한 사고를 계기로 추가됐다.
+- 로직 검증은 순수 static 클래스(`DamageCalculator`/`DataLoader`)와 `RefCounted`
+  (`Magazine`/`EnemyInstance`) 대상. UI는 위 두 스위트로만 얕게 훑는다.
 - 밸런스 밴드 정본은 `.agents/skills/10-balance-designer/SKILL.md`, 전투 공식 정본은 `docs/gdd/03_combat_system.md §3.2`.

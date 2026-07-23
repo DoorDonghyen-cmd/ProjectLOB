@@ -44,14 +44,9 @@ const C_NEON_GOLD_DIM := Color(0.83, 0.69, 0.22, 0.25)
 const C_ALERT_RED := Color(1.0, 0.27, 0.27, 1.0)
 const C_ALERT_RED_BG := Color(1.0, 0.27, 0.27, 0.08)
 
-# ── 작전 구역 프로필 데이터 맵 ──
-const SECTION_PROFILES := {
-	"section_a": {"name": "지하 주차장", "emoji": "🚗", "desc": "10층 구조 - 입문 난이도"},
-	"section_b": {"name": "사무동 하층", "emoji": "🏢", "desc": "12층 구조 - 초급 난이도"},
-	"section_c": {"name": "연구소 중층", "emoji": "🧪", "desc": "12층 구조 - 중급 난이도"},
-	"section_d": {"name": "펜트하우스", "emoji": "🌇", "desc": "15층 구조 - 상급 난이도"},
-	"section_e": {"name": "무한 루프", "emoji": "♾️", "desc": "15층 구조 - 도전 난이도"}
-}
+# ⚠️ 계층 이름·층수는 MapGenerator.section_info()가 유일한 출처다.
+#    여기에 상수 테이블로 복사하지 말 것 — 과거 복사본이 세계관 개정·층수 압축을
+#    따라가지 못해 화면에만 구버전이 남았다. (2026-07-24)
 
 # ── 총기 프로필 데이터 맵 (GDD/HTML 기반 정합성 스펙) ──
 const WEAPON_PROFILES := {
@@ -219,7 +214,7 @@ func _build_ui() -> void:
 	var title_lbl = parent_scene.make_label("🛠️ AGENT TACTICAL LOADOUT", 20, C_NEON_GOLD)
 	header_hbox.add_child(title_lbl)
 	
-	_target_zone_label = parent_scene.make_label(" [TARGET: 지하 주차장]", 14, parent_scene.C_TEXT)
+	_target_zone_label = parent_scene.make_label("", 14, parent_scene.C_TEXT)
 	header_hbox.add_child(_target_zone_label)
 	
 	# 스캔라인 디스플레이 연출용 실선
@@ -662,9 +657,11 @@ func _close_bonus_popup() -> void:
 	_refresh_stats_ui()
 
 
-## 🗺️ 작전 구역 설정 연동
+## 🗺️ 시작 계층 표기 연동.
+## 연속 런에서 시작 계층은 항상 최하 계층이므로 선택이 아니라 확인용 표기다.
 func _select_section(sec_key: String) -> void:
 	selected_section_key = sec_key
-	var profile = SECTION_PROFILES.get(sec_key, {"name": sec_key})
+	var info: Dictionary = MapGenerator.section_info(sec_key)
 	if _target_zone_label:
-		_target_zone_label.text = " [TARGET: %s]" % profile.name
+		_target_zone_label.text = " [진입: %s LV.%d]" % [
+			str(info.name), MapGenerator.absolute_level(sec_key, 1)]

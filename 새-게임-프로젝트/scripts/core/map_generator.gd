@@ -13,17 +13,31 @@ extends RefCounted
 ## ═══════════════════════════════════════════════════
 
 
-## 구역 메타데이터 — 표시명 · 절대 고도 기준값 · 층수.
+## 구역 메타데이터 — 표시명 · 절대 고도 기준값 · 층수 · 표시용 아이콘/브리핑.
 ## 도시 전체는 약 3000층 규모이며, 한 번의 런은 그중 얇은 한 조각을 오른다.
 ## (정점 구역의 최상층이 정확히 LV.3000이 되도록 기준값을 맞춤)
+##
+## ⚠️ UI는 계층 이름·층수·설명을 자체 상수로 복사하지 말고 **반드시 이 함수를 통해** 읽을 것.
+##    과거 오버레이가 이 값들을 하드코딩해 두어, 세계관 개정과 층수 압축이 반영되지 않고
+##    화면에만 구버전(지하 주차장/10층)이 남는 드리프트가 발생했다. (2026-07-24)
 static func section_info(section: String) -> Dictionary:
 	match section:
-		"section_a": return {"name": "침전 거주구", "base_level": 407, "floors": 6}
-		"section_b": return {"name": "공역", "base_level": 1142, "floors": 7}
-		"section_c": return {"name": "정비 계층", "base_level": 1783, "floors": 7}
-		"section_d": return {"name": "관리 계층", "base_level": 2461, "floors": 7}
-		"section_e": return {"name": "정점", "base_level": 2993, "floors": 8}
-	return {"name": "미상 구역", "base_level": 0, "floors": 6}
+		"section_a": return {
+			"name": "침전 거주구", "base_level": 407, "floors": 6, "icon": "🟤",
+			"brief": "위층이 버린 것들로 지어진 거주구. 개조받지 못한 몸들이 산다."}
+		"section_b": return {
+			"name": "공역", "base_level": 1142, "floors": 7, "icon": "🟠",
+			"brief": "생산과 물류의 층. 사람은 공정의 일부로 취급된다."}
+		"section_c": return {
+			"name": "정비 계층", "base_level": 1783, "floors": 7, "icon": "🟢",
+			"brief": "몸을 고치고 바꾸는 층. 여기서부터 인간형 실루엣이 흔들린다."}
+		"section_d": return {
+			"name": "관리 계층", "base_level": 2461, "floors": 7, "icon": "🔵",
+			"brief": "결정이 내려지는 층. 얼굴을 가진 것을 거의 만나지 못한다."}
+		"section_e": return {
+			"name": "정점", "base_level": 2993, "floors": 8, "icon": "🟣",
+			"brief": "도시의 꼭대기. 더 오를 곳이 없다."}
+	return {"name": "미상 구역", "base_level": 0, "floors": 6, "icon": "⬛", "brief": ""}
 
 
 ## 현재 층의 절대 고도(LV) 표기를 반환한다. 예: 침전 거주구 3층 → 409

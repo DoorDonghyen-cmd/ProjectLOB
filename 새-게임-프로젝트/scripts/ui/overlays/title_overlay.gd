@@ -72,7 +72,7 @@ func _build_ui() -> void:
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	left_vbox.add_child(spacer)
 
-	var start_run_btn: Button = parent_scene.make_button("🚀 봉쇄 빌딩 진입 (런 시작)", _on_start_run_pressed, parent_scene.C_ACCENT)
+	var start_run_btn: Button = parent_scene.make_button("🚀 상승 개시 (런 시작)", _on_start_run_pressed, parent_scene.C_ACCENT)
 	start_run_btn.custom_minimum_size = Vector2(0, 56)
 	left_vbox.add_child(start_run_btn)
 
@@ -474,7 +474,7 @@ func _build_dev_test_panel() -> void:
 	# 8. 🔒 작전 구역 초기화 디버그 숏컷
 	var btn_lock_zones = parent_scene.make_button("🔒 작전 구역 초기화", func():
 		RunManager.meta_unlocked_sections = ["section_a"]
-		print("디버그: 작전 구역 초기화 완료 (지하 주차장만 활성)!")
+		print("디버그: 계층 해금 초기화 완료 (최하 계층만 활성)!")
 	, parent_scene.C_WARNING)
 	btn_lock_zones.custom_minimum_size = Vector2(0, 36)
 	btn_lock_zones.add_theme_font_size_override("font_size", 11)

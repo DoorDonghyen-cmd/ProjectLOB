@@ -459,18 +459,22 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		var floor_num := _rm.current_floor
 		var section := _rm.current_section
 		
+		# ⚠️ 층수 압축(64→35층) 이후 아래 층 임계값들은 구 층수 기준으로 남아 있다.
+		#    예: 관리/정점 보스 분기의 `floor_num <= 10`은 현행 7·8층에서 항상 참이라
+		#    최상위 보스 구성이 실질적으로 도달 불가다.
+		#    35층 기준 난이도 곡선 재설계 시 함께 정리할 것 (task_tracker 등재됨).
 		if selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss") or selected_node.type_name.contains("boss"):
 			if section == "section_a":
-				# 지하 주차장 보스: 탱크 + 회피 (1지역 보스 유형)
+				# 침전 거주구 보스: 탱크 + 회피
 				enemy_list = [_enemy_tank, _enemy_dodger]
 			elif section == "section_b":
-				# 사무동 하층 보스: 탱크 + 술사
+				# 공역 보스: 탱크 + 술사
 				enemy_list = [_enemy_tank, _enemy_caster]
 			elif section == "section_c":
-				# 연구소 중층 보스: 흡수(스펀지) + 술사
+				# 정비 계층 보스: 흡수(스펀지) + 술사
 				enemy_list = [_enemy_absorber, _enemy_caster]
 			else:
-				# 펜트하우스/무한루프 보스
+				# 관리 계층 / 정점 보스
 				if floor_num <= 5:
 					enemy_list = [_enemy_tank, _enemy_neuro_caster]
 				elif floor_num <= 10:
@@ -480,7 +484,7 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		else:
 			# 일반전 스폰 분기
 			if section == "section_a":
-				# 지하 주차장: 입문 (1~10층) - 기본 3종만 스폰
+				# 침전 거주구: 입문 - 기본 3종만 스폰
 				if floor_num <= 3:
 					enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
 				elif floor_num <= 6:
@@ -488,7 +492,7 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 				else:
 					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
 			elif section == "section_b":
-				# 사무동 하층: 초급 (1~12층) - 술사(Caster), 드론(Drone) 유입
+				# 공역: 초급 - 술사(Caster), 드론(Drone) 유입
 				if floor_num <= 4:
 					enemy_list = [_enemy_rusher, _enemy_dodger]
 				elif floor_num <= 8:
@@ -496,7 +500,7 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 				else:
 					enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
 			elif section == "section_c":
-				# 연구소 중층: 중급 (1~12층) - 스펀지(Absorber) 유입
+				# 정비 계층: 중급 - 스펀지(Absorber) 유입
 				if floor_num <= 4:
 					enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
 				elif floor_num <= 8:
@@ -504,7 +508,7 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 				else:
 					enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_caster]
 			else:
-				# 펜트하우스 & 무한 루프: 상급/도전 (기존 하드코딩된 전체 층 테이블 활용)
+				# 관리 계층 & 정점: 상급/도전
 				if floor_num <= 3:
 					enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
 				elif floor_num <= 6:
