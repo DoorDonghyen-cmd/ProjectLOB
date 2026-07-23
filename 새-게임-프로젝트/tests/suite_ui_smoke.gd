@@ -75,6 +75,42 @@ static func run(t, tree: SceneTree) -> void:
 				rows += 1
 		t.eq(rows, expected, "%s 지도 층 표시 수" % str(MapGenerator.section_info(sec_key).name))
 
+	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
+	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.
+	var prev_credits: int = RunManager.meta_credits
+	var prev_lore: Array[int] = RunManager.meta_lore_fragments.duplicate()
+
+	scene._rm.enter_section(str(RunManager.SECTION_ORDER[0]))
+	scene._debriefing_overlay.show_debriefing(false)
+	t.check(scene._debriefing_overlay._debrief_log.text.length() > 0, "디브리핑 — 사망 분기 렌더")
+
+	RunManager.meta_unlocked_sections = ["section_a", "section_b"]
+	scene._rm.enter_section("section_b")
+	scene._debriefing_overlay.show_debriefing(true)
+	t.check(scene._debriefing_overlay._debrief_log.text.length() > 0, "디브리핑 — 해금 상한 도달 분기 렌더")
+
+	var last_sec: String = str(RunManager.SECTION_ORDER[RunManager.SECTION_ORDER.size() - 1])
+	RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"]
+	scene._rm.enter_section(last_sec)
+	RunManager.meta_lore_fragments = [] as Array[int]
+	scene._debriefing_overlay.show_debriefing(true)
+	var summit_text: String = scene._debriefing_overlay._debrief_log.text
+	t.check(summit_text.find("총을 내려놓지 않았다") != -1, "디브리핑 — 정점 결말(개조 거부) 출력됨")
+
+	# 로어 20개를 모으면 심화 한 컷이 덧붙는다. 20개 미만에서는 나오면 안 된다.
+	t.check(summit_text.find("이전 도달자") == -1, "로어 미완성 시 심화 파편 미출력")
+	var full_lore: Array[int] = []
+	for i in range(1, 21):
+		full_lore.append(i)
+	RunManager.meta_lore_fragments = full_lore
+	scene._rm.enter_section(last_sec)
+	scene._debriefing_overlay.show_debriefing(true)
+	t.check(scene._debriefing_overlay._debrief_log.text.find("이전 도달자") != -1,
+		"⭐ 로어 20/20 + 정점 도달 → 심화 파편 출력(과거 조건 `floor >= 15`로 도달 불가였음)")
+
+	RunManager.meta_credits = prev_credits
+	RunManager.meta_lore_fragments = prev_lore
+
 	# ── 정리 ──
 	# free()는 쓰지 않는다. 지도 갱신이 이전 층 행들을 queue_free()로 예약해 두므로,
 	# 삭제 대기 중인 자식을 가진 씬을 즉시 free()하면 엔진이 종료 시 크래시한다(signal 11).

@@ -52,7 +52,7 @@ func setup_encounter(enemy_list: Array) -> void:
 		
 		_build_enemy_badge(es, enemy)
 		
-		# [Phase 4] 좀비 대기 숨쉬기/흐느적거림 무한 트윈 루프 적용
+		# [Phase 4] 적 대기 숨쉬기/흐느적거림 무한 트윈 루프 적용
 		(func(sprite: TextureRect):
 			var delay_offset := randf() * 0.5
 			# 1. 좌우 흔들림 트윈 (회전)

@@ -99,7 +99,7 @@ const WEAPON_PROFILES := {
 		"prev": 2,
 		"calibers": "[9mm] [5.56mm] [속사전용]",
 		"passive": "- 리듬 챔버 혜택 일부 내장 (Combo 연타 DMG+)\n- 9mm 권총탄 계열 연사 시 추가 탄 공급 보너스",
-		"penalty": "- 대구경 고화력 7.62mm 탄환 사용 불가능\n- 기본 관통(PEN) 게이트가 낮아 중장갑 좀비에 취약",
+		"penalty": "- 대구경 고화력 7.62mm 탄환 사용 불가능\n- 기본 관통(PEN) 게이트가 낮아 중장갑 적에 취약",
 		"unlock_desc": "[계획 규율] 납탄(중간 삽탄) 격발 없이 완주"
 	},
 	"heavy": {
@@ -444,7 +444,7 @@ func _build_ui() -> void:
 	_apply_custom_panel_style(action_bar, Color.BLACK, C_NEON_GOLD)
 	main_vbox.add_child(action_bar)
 	
-	_btn_start_run = parent_scene.make_button("🚀 봉쇄 구역 작전 개시 (Proceed)", _on_start_run_pressed, C_NEON_GOLD)
+	_btn_start_run = parent_scene.make_button("🚀 상승 개시 (Proceed)", _on_start_run_pressed, C_NEON_GOLD)
 	_btn_start_run.custom_minimum_size = Vector2(0, 44)
 	_btn_start_run.add_theme_font_size_override("font_size", 14)
 	action_bar.add_child(_btn_start_run)

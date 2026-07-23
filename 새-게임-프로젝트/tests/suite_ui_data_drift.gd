@@ -12,10 +12,18 @@ extends RefCounted
 const UI_DIR := "res://scripts/ui"
 const SRC_OF_TRUTH := "res://scripts/core/map_generator.gd"
 
-## 세계관 개정 이전 명칭. UI 어디에도 남아 있으면 안 된다.
+## 세계관 개정 이전 명칭·설정. UI 어디에도 남아 있으면 안 된다.
+## 정본: docs/gdd/01_game_overview.md §1.3 — "봉쇄된 기업 빌딩 + 특수작전 요원 + 감염/좀비"는 전면 폐기.
 const RETIRED_TERMS := [
+	# 구 계층명
 	"지하 주차장", "사무동 하층", "연구소 중층", "펜트하우스", "무한 루프", "봉쇄 빌딩",
+	# 구 설정(감염/봉쇄/군사 회수 서사)
+	"좀비", "헬기", "기지 복귀", "봉쇄 구역", "빌딩 침투", "열핵", "바이러스",
 ]
+
+## 이 표식이 있는 줄은 검사에서 제외한다.
+## "되살리지 말 것" 주석처럼 폐기어를 **의도적으로** 적어 둔 자리를 위한 탈출구다.
+const ALLOW_MARK := "[drift-allow]"
 
 
 static func _gd_files(dir_path: String, out: Array[String]) -> void:
@@ -48,14 +56,17 @@ static func run(t) -> void:
 	_gd_files(UI_DIR, files)
 	t.check(files.size() > 0, "UI 스크립트 스캔 대상 %d개" % files.size())
 
-	# ── ① 폐기된 세계관 명칭이 UI에 남아 있지 않은가 ──
+	# ── ① 폐기된 세계관 명칭·설정이 UI에 남아 있지 않은가 ──
+	# 줄 단위로 본다. [drift-allow] 표식이 붙은 줄만 예외다.
 	for term in RETIRED_TERMS:
 		var hits: Array[String] = []
 		for path in files:
-			if _read(path).find(term) != -1:
-				hits.append(path.get_file())
+			for line in _read(path).split("\n"):
+				if line.find(term) != -1 and line.find(ALLOW_MARK) == -1:
+					hits.append(path.get_file())
+					break
 		t.check(hits.is_empty(),
-			"폐기 명칭 \"%s\" 미사용%s" % [term, "" if hits.is_empty() else " ← 잔존: " + ", ".join(hits)])
+			"폐기 설정 \"%s\" 미사용%s" % [term, "" if hits.is_empty() else " ← 잔존: " + ", ".join(hits)])
 
 	# ── ② 계층 표시명이 UI에 하드코딩되지 않았는가 ──
 	# 이름은 MapGenerator가 유일한 출처여야 한다. UI에 리터럴로 박히면 개정 시 또 어긋난다.

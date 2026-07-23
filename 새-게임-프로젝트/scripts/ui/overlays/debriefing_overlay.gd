@@ -2,7 +2,17 @@ class_name DebriefingOverlay
 extends PanelContainer
 
 ## ═══════════════════════════════════════════════════
-## 작전 종료 및 크레딧 정산 오버레이
+## 상승 종료 정산 오버레이
+##
+## 세계관 정본: docs/gdd/01_game_overview.md §1.3
+##   무드는 **비장한 절차 + 고독**. 주인공은 훈련받은 전문가가 아니고
+##   지원도 보급도 회수 계획도 없다 — 아무도 이런 사람을 위해 오지 않는다.
+##   결말은 물리적 탈출이 아니라 **정점에서의 개조 거부**다.
+##   서사는 3층으로 통제되며(§1.3-③) 결말은 장황한 폭로 대신 **짧은 한 컷**으로 처리한다.
+##
+## ⚠️ 폐기된 설정(혼동 주의). 되살리지 말 것: [drift-allow]
+##    봉쇄된 기업 빌딩 · 특수작전 요원 · 좀비/감염 · 탈출 헬기 · 기지 복귀 · [drift-allow]
+##    나노 자율 머신 'L.O.B' 통제 실패 · 열핵 정화. [drift-allow]
 ## ═══════════════════════════════════════════════════
 
 var parent_scene: Control
@@ -58,30 +68,39 @@ func _build_ui() -> void:
 	_debrief_log.add_theme_font_size_override("normal_font_size", 16)
 	log_margin.add_child(_debrief_log)
 
-	_debrief_confirm_btn = parent_scene.make_button("기지 복귀", _on_debrief_confirm_pressed, parent_scene.C_ACCENT)
+	_debrief_confirm_btn = parent_scene.make_button("내려간다", _on_debrief_confirm_pressed, parent_scene.C_ACCENT)
 	_debrief_confirm_btn.custom_minimum_size = Vector2(0, 48)
 	vbox.add_child(_debrief_confirm_btn)
 
 
 func show_debriefing(won: bool) -> void:
 	visible = true
-	if won:
-		_debrief_title.text = "★ 작전 종료: 탈출 헬기 탑승 성공!"
+
+	# 상승의 끝은 세 가지다 — 죽거나, 지금 오를 수 있는 한계에 닿거나, 정점에 닿거나.
+	# `won`은 "더 오를 계층이 없다"는 뜻일 뿐 정점 도달을 보장하지 않는다.
+	# (해금 램프 때문에 침전 거주구만 열린 상태에서도 완주하면 won == true가 된다.)
+	var reached_summit: bool = won and run_manager.current_section == RunManager.SECTION_ORDER[RunManager.SECTION_ORDER.size() - 1]
+
+	if reached_summit:
+		_debrief_title.text = "▲ 정점"
+		_debrief_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
+	elif won:
+		_debrief_title.text = "▲ 더 오를 곳이 없다"
 		_debrief_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 	else:
-		_debrief_title.text = "💀 작전 실패: 요원 무력화됨..."
+		_debrief_title.text = "상승 중단"
 		_debrief_title.add_theme_color_override("font_color", parent_scene.C_DANGER)
-		
+
 	var earned := run_manager.end_run(won)
 	var unlocked_weapons := run_manager.check_weapon_unlocks()
 	var unlocked_sections := run_manager.check_section_unlocks(won)
-	
-	var log_text := "── 작전 디브리핑 정산 내역 ──\n\n"
+
+	var log_text := "── 상승 기록 ──\n\n"
 	# 연속 런이므로 계층 내 층 번호(current_floor)가 아니라 누적 등반 층수로 정산한다.
 	var climbed: int = run_manager.total_floors_climbed()
 	log_text += "- 오른 층수: %d 층 (x15 Cr) = %d Cr\n" % [climbed, climbed * 15]
 	if won:
-		log_text += "- 헬기 보딩 성공 보너스 = 50 Cr\n"
+		log_text += "- 계층 돌파 보상 = 50 Cr\n"
 	log_text += "- 획득한 전술 데이터 코어 (TDC): %d 개\n" % run_manager.tactical_data_cores
 	log_text += "──────────────────────────\n"
 	log_text += "[color=#ffff44]총 환전된 크레딧: +%d Cr[/color]\n" % earned
@@ -89,7 +108,8 @@ func show_debriefing(won: bool) -> void:
 	log_text += "[color=#aaffaa]누적 보유 데이터 코어 (TDC): %d 개[/color]\n\n" % RunManager.meta_tactical_data_cores
 	
 	if not unlocked_weapons.is_empty():
-		log_text += "[color=#00ff66][b]🆕 전술 데이터 분석 완료 - 신규 무기 영구 해금! 🆕[/b][/color]\n"
+		# 무기는 사이보그에게 쓸모없어져 하층에 버려진 인간용 화기다. 해금 = 쓸 수 있게 됨.
+		log_text += "[color=#00ff66][b]🆕 인간용 화기 사용법을 익혔다 🆕[/b][/color]\n"
 		for w_key in unlocked_weapons:
 			var name_kor = "알 수 없음"
 			match w_key:
@@ -100,31 +120,50 @@ func show_debriefing(won: bool) -> void:
 				"heavy": name_kor = "중장형 (HEAVY)"
 				"stance_hunter": name_kor = "태세사냥꾼 (STANCE HUNTER)"
 				"gambler": name_kor = "도박형 (GAMBLER)"
-			log_text += "  ★ [b]%s[/b]이(가) 무기 캐비닛에 영구 추가되었습니다!\n" % name_kor
-		log_text += "\n"
-	
-	if not unlocked_sections.is_empty():
-		log_text += "[color=#66ccff][b]🔓 상위 구역 접근 권한 확보! 🔓[/b][/color]\n"
-		for s_key in unlocked_sections:
-			var sec_name: String = MapGenerator.section_info(s_key).name
-			log_text += "  ▲ [b]%s[/b] 구역으로 오를 수 있게 되었습니다.\n" % sec_name
+			log_text += "  ★ [b]%s[/b] — 다음 상승부터 고를 수 있다.\n" % name_kor
 		log_text += "\n"
 
-	log_text += "다음 작전을 준비하기 위해 준비실에서 해금된 총기를 선택해 작전을 개시하세요."
-	
-	# ── 100% 정보 도감 해독 완료 엔딩 (소프트 엔딩) ──
-	# 조건은 "런 완주 + 로어 20개". won == true 자체가 정점까지 올라 더 오를 곳이 없다는 뜻이다.
-	# (과거 `current_floor >= 15` 조건은 계층당 최대 8층이 된 뒤로 영영 만족될 수 없었다.)
-	if won and RunManager.meta_lore_fragments.size() == 20:
+	if not unlocked_sections.is_empty():
+		log_text += "[color=#66ccff][b]🔓 위로 가는 길이 열렸다 🔓[/b][/color]\n"
+		for s_key in unlocked_sections:
+			var sec_name: String = str(MapGenerator.section_info(s_key).name)
+			log_text += "  ▲ [b]%s[/b] — 다음 상승은 여기까지 이어진다.\n" % sec_name
+		log_text += "\n"
+
+	log_text += _closing_line(won, reached_summit)
+
+	# ── 결말: 정점에서의 개조 거부 ──
+	# 물리적 탈출("탑 밖")은 그리지 않는다. 끝까지 올라간 유일한 인간이 거부하고 그 자리에
+	# 선다는 장면만으로 충분하다. (01_game_overview §1.3 결말 채택안)
+	if reached_summit:
 		log_text += "\n\n"
-		log_text += "[color=#33ffff]📥 🚨 기밀 통신망 복원 완료 - [PROJECT L.O.B] 블랙박스 파일 해독 완료 🚨[/color]\n"
-		log_text += "[color=#00ff66][b]보안 등급 5 (RESTRICTED LOG):[/b][/color]\n"
-		log_text += "\"이 빌딩은 좀비 바이러스가 아닌, 나노 자율 머신 'L.O.B'의 통제 실패로 봉쇄되었다.\n"
-		log_text += "최후의 탑승자(Last on Board)들은 기밀 보존을 위해 모두 빌딩 내에서 숙청되었으며,\n"
-		log_text += "당신이 확보한 블랙박스가 회수되는 즉시 본 구역 전체에 정밀 열핵 정화가 시작된다.\"\n"
-		log_text += "[color=#ff5555][b]STATUS: OPERATION SUCCESSFUL. SYSTEM DECONTAMINATED.[/b][/color]"
-	
+		log_text += "[color=#cc88ff]────────────────────────[/color]\n"
+		log_text += "정점에는 왕좌도, 적도 없었다.\n"
+		log_text += "당신을 기다린 것은 시술대와 이미 작성된 서류 한 장이었다.\n\n"
+		log_text += "[color=#aaaaaa]\"승인. 개조 대상: 최종 도달자 1인.\"[/color]\n\n"
+		log_text += "여기까지 오른 인간은 모두 받아들였다.\n"
+		log_text += "그것이 상승의 유일한 목적이었으므로.\n\n"
+		log_text += "[color=#ffffff][b]당신은 총을 내려놓지 않았다.[/b][/color]"
+
+		# ── 3층: 로어를 전부 모은 플레이어에게만 주는 심화 (선택) ──
+		# ⚠️ 읽지 않아도 이해에 지장이 없어야 한다. 폭로가 아니라 한 줄의 침묵으로 끝낸다.
+		if RunManager.meta_lore_fragments.size() == 20:
+			log_text += "\n\n"
+			log_text += "[color=#33ffff]── 기록 파편 20/20 ──[/color]\n"
+			log_text += "당신이 주운 총에는 일련번호가 새겨져 있었다.\n"
+			log_text += "같은 번호가 서류의 '이전 도달자' 항목에 적혀 있다.\n\n"
+			log_text += "[color=#aaaaaa]날짜는 41년 전이다.[/color]"
+
 	_debrief_log.text = log_text
+
+
+## 마무리 한 줄. 무드는 비장한 절차 + 고독 — 격려하지 않고, 상황만 말한다.
+func _closing_line(won: bool, reached_summit: bool) -> String:
+	if reached_summit:
+		return "더 오를 곳이 없다."
+	if won:
+		return "여기가 지금 오를 수 있는 끝이다. 위로 가는 문은 열렸다."
+	return "아무도 회수하러 오지 않는다. 다시 아래에서 시작한다."
 
 
 func _on_debrief_confirm_pressed() -> void:

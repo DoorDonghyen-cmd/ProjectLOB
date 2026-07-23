@@ -2021,7 +2021,7 @@ func _build_result_overlay() -> void:
 
 func _on_result_confirmed() -> void:
 	# 드래프트 선택 처리는 reward_draft_panel 내부의 버튼들에서 처리 완료했으므로,
-	# 여기서는 일반 확인(예: 아군 사망 시 기지 복귀) 처리만 수행하도록 설정합니다.
+	# 여기서는 일반 확인(예: 사망 시 상승 종료) 처리만 수행하도록 설정합니다.
 	_draft_selected = null
 	if _draft_container:
 		_draft_container.clear_selected()

@@ -150,6 +150,22 @@ static func run(t) -> void:
 	rm7.current_floor = 6
 	t.eq(rm7.floor_distance_modifier(), -2, "⭐ 짧은 런에서도 최종층 압박이 걸림(비율 기준)")
 
+	# ── 정점 도달 판정: won만으로는 결말 조건이 될 수 없다 ──
+	# 해금 램프 때문에 침전 거주구만 열린 상태에서도 완주하면 won == true다.
+	# 결말(개조 거부)은 **정점 계층**에 닿았을 때만 나와야 한다.
+	var last_section: String = String(RunManager.SECTION_ORDER[RunManager.SECTION_ORDER.size() - 1])
+
+	_unlock(["section_a"])
+	var rm8 := _fresh_run()
+	t.eq(rm8.get_next_unlocked_section(), "", "침전만 해금: 완주 시 won 성립")
+	t.check(rm8.current_section != last_section, "⭐ 그러나 정점이 아니다 — 결말이 뜨면 안 되는 상태")
+
+	_unlock(["section_a", "section_b", "section_c", "section_d", "section_e"])
+	var rm9 := _fresh_run()
+	rm9.enter_section(last_section)
+	t.eq(rm9.get_next_unlocked_section(), "", "정점: 더 오를 곳 없음")
+	t.eq(rm9.current_section, last_section, "⭐ 정점 도달 — 결말 조건 성립")
+
 	# ── 해금 진행에 따른 런 길이 램프 ──
 	var ramp := 0
 	var ramp_desc: Array[String] = []
