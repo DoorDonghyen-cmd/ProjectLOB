@@ -142,12 +142,14 @@ func _build_ui() -> void:
 
 func show_map_screen() -> void:
 	visible = true
-	# 구역명 · 구역 내 진행도 · 도시 전체 기준 절대 고도(약 3000층 규모의 한 조각임을 전달)
+	# 계층명 · 런 전체 진행도 · 도시 전체 기준 절대 고도(약 3000층 규모의 한 조각임을 전달)
 	var sec_info := MapGenerator.section_info(run_manager.current_section)
-	_map_floor_label.text = "%s · %d/%d · LV.%04d" % [
+	var climbed: int = run_manager.total_floors_climbed()
+	var run_len: int = run_manager.total_run_length()
+	_map_floor_label.text = "%s · 상승 %d/%d · LV.%04d" % [
 		sec_info.name,
-		run_manager.current_floor,
-		int(sec_info.floors),
+		climbed,
+		run_len,
 		MapGenerator.absolute_level(run_manager.current_section, run_manager.current_floor)
 	]
 	_route_pressure_label.visible = run_manager.pending_combat_distance_modifier < 0
@@ -169,29 +171,45 @@ func show_map_screen() -> void:
 		
 	_node_buttons.clear()
 	
-	# ⚠️ 층수는 계층마다 다르다(6/7/7/7/8). 하드코딩하지 말고 MapGenerator에서 읽을 것.
-	var start_floor := 1
-	var end_floor := int(sec_info.floors)
+	# ⚠️ 지도는 **런 전체(최대 35층)**를 하나로 보여준다. 계층 단위로 끊지 않는다.
+	#    연속 런에서 계층은 난이도 사다리가 아니라 한 여정의 구간이므로,
+	#    지도가 계층마다 리셋되면 "얼마나 남았는가"를 전혀 알 수 없다.
+	var itinerary: Array[String] = run_manager.run_itinerary()
+	var total_floors: int = run_manager.total_run_length()
+	var here: int = run_manager.total_floors_climbed()
 	var active_floor_row: Control = null
-	
-	# Loop from end_floor down to start_floor (top-down visual stacking)
-	for f in range(end_floor, start_floor - 1, -1):
+
+	# 위층이 위에 오도록 절대 층 번호 내림차순으로 쌓는다.
+	for abs_f in range(total_floors, 0, -1):
+		var loc: Dictionary = run_manager.resolve_run_floor(abs_f)
+		if loc.is_empty():
+			continue
+		var sec: String = str(loc.section)
+		var f: int = int(loc.floor)
+		var s_info: Dictionary = MapGenerator.section_info(sec)
+		var is_section_top: bool = f == int(s_info.floors)
+		var is_here: bool = abs_f == here
+
+		# 계층이 바뀌는 경계에 헤더를 넣어 여정의 구간을 구분한다.
+		if is_section_top:
+			_floors_vbox.add_child(_make_section_header(sec, s_info, itinerary.find(sec), abs_f, here))
+
 		var floor_row := HBoxContainer.new()
 		floor_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		floor_row.add_theme_constant_override("separation", 24)
 		_floors_vbox.add_child(floor_row)
-		
-		if f == run_manager.current_floor:
+
+		if is_here:
 			active_floor_row = floor_row
-		
+
 		# Floor Indicator Label Panel
 		var floor_panel := PanelContainer.new()
 		floor_panel.custom_minimum_size = Vector2(80, 50)
 		floor_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		var fp_style := StyleBoxFlat.new()
-		
+
 		# Highlight current floor
-		if f == run_manager.current_floor:
+		if is_here:
 			fp_style.bg_color = parent_scene.C_ACCENT.darkened(0.6)
 			fp_style.border_color = parent_scene.C_ACCENT
 			fp_style.border_width_bottom = 2
@@ -200,26 +218,29 @@ func show_map_screen() -> void:
 			fp_style.border_width_right = 2
 		else:
 			fp_style.bg_color = parent_scene.C_PANEL_DARK
-			
+
 		fp_style.corner_radius_bottom_left = 5
 		fp_style.corner_radius_bottom_right = 5
 		fp_style.corner_radius_top_left = 5
 		fp_style.corner_radius_top_right = 5
 		floor_panel.add_theme_stylebox_override("panel", fp_style)
 		floor_row.add_child(floor_panel)
-		
-		var fp_label: Label = parent_scene.make_label("%dF" % f, 18, parent_scene.C_TEXT)
-		if f == run_manager.current_floor:
+
+		# 큰 숫자는 **런 전체 기준 절대 층**이다(1..35). 계층 내 층 번호는 작게 병기한다.
+		var fp_label: Label = parent_scene.make_label("%d" % abs_f, 18, parent_scene.C_TEXT)
+		if is_here:
+			fp_label.text = "%d\n%dF" % [abs_f, f]
 			fp_label.add_theme_color_override("font_color", parent_scene.C_ACCENT)
-		elif f == end_floor:
-			fp_label.text = "%dF\nBOSS" % f
+		elif is_section_top:
+			fp_label.text = "%d\nBOSS" % abs_f
 			fp_label.add_theme_color_override("font_color", parent_scene.C_DANGER)
 		else:
+			fp_label.text = "%d\n%dF" % [abs_f, f]
 			fp_label.add_theme_color_override("font_color", parent_scene.C_DIM)
 		fp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		fp_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		floor_panel.add_child(fp_label)
-		
+
 		# Nodes container for this floor
 		var nodes_hbox := HBoxContainer.new()
 		nodes_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -227,12 +248,14 @@ func show_map_screen() -> void:
 		nodes_hbox.add_theme_constant_override("separation", 20)
 		floor_row.add_child(nodes_hbox)
 		
-		var nodes := run_manager.get_nodes_for_floor(f)
+		# 지금 서 있는 계층만 상호작용 가능하다. 위 계층은 보이되 아직 고를 수 없다.
+		var is_current_section: bool = sec == run_manager.current_section
+		var nodes := run_manager.nodes_for(sec, f)
 		for node in nodes:
 			if node.is_hidden:
 				continue # 조건부 개방 전 숨김 노드는 렌더링 패스
-			var is_reachable := run_manager.is_node_reachable(node.id)
-			var route_to_node := run_manager.get_route_to_node(node.id)
+			var is_reachable: bool = is_current_section and run_manager.is_node_reachable(node.id)
+			var route_to_node: String = run_manager.get_route_to_node(node.id) if is_current_section else "stairs"
 				
 			# Rich button card representing a room
 			var btn := Button.new()
@@ -246,7 +269,7 @@ func show_map_screen() -> void:
 			normal_style.corner_radius_top_left = 6
 			normal_style.corner_radius_top_right = 6
 			
-			if f == run_manager.current_floor and is_reachable:
+			if is_here and is_reachable:
 				normal_style.bg_color = parent_scene.C_PANEL.darkened(0.3)
 				
 				# 목적지에 붙은 진입 통로 가격을 네온 테두리로 표시
@@ -280,16 +303,18 @@ func show_map_screen() -> void:
 				normal_style.border_width_right = 1
 				
 				btn.disabled = true
-				if f < run_manager.current_floor:
-					btn.modulate = Color(0.4, 0.4, 0.4, 0.6) # Past floors
+				if abs_f < here:
+					btn.modulate = Color(0.4, 0.4, 0.4, 0.6) # 이미 지나온 층
+				elif is_current_section:
+					btn.modulate = Color(0.7, 0.7, 0.7, 0.8) # 이 계층의 앞으로 갈 층
 				else:
-					btn.modulate = Color(0.7, 0.7, 0.7, 0.8) # Future floors
+					btn.modulate = Color(0.55, 0.6, 0.7, 0.6) # 아직 도달하지 않은 상위 계층
 					
 			btn.add_theme_stylebox_override("normal", normal_style)
 			btn.add_theme_stylebox_override("disabled", normal_style)
 			
 			# Hover highlight for active buttons
-			if f == run_manager.current_floor and is_reachable:
+			if is_here and is_reachable:
 				var hover_style := normal_style.duplicate() as StyleBoxFlat
 				hover_style.bg_color = parent_scene.C_PANEL
 				hover_style.shadow_size = 10 # 호버 시 발광 증폭
@@ -297,12 +322,14 @@ func show_map_screen() -> void:
 				btn.add_theme_stylebox_override("pressed", hover_style)
 			
 			# 미지 노드인 경우 마우스 호버 전술 스캔 힌트 연결 (오직 선택 가능한 활성 노드일 때만)
-			if f == run_manager.current_floor and node.type_name.begins_with("???") and node.scan_hint != "":
+			if is_here and node.type_name.begins_with("???") and node.scan_hint != "":
 				btn.mouse_entered.connect(func(): _show_scan_hint(node.scan_hint, btn))
 				btn.mouse_exited.connect(func(): _hide_scan_hint())
 				
 			nodes_hbox.add_child(btn)
-			_node_buttons[node.id] = btn
+			# ⚠️ 노드 ID는 계층마다 재사용된다(침전 1F도 101, 공역 1F도 101).
+			#    런 전체를 한 화면에 그리므로 계층을 포함한 복합 키로 구분해야 한다.
+			_node_buttons["%s:%d" % [sec, node.id]] = btn
 			
 			# Content layout inside the card button
 			var content_vbox := VBoxContainer.new()
@@ -331,7 +358,7 @@ func show_map_screen() -> void:
 			desc_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 			content_vbox.add_child(desc_lbl)
 
-			if f == run_manager.current_floor and is_reachable:
+			if is_here and is_reachable:
 				var route_text := "🚶 비상계단 · 비용 없음"
 				var route_color: Color = parent_scene.C_SUCCESS
 				if route_to_node == "air_duct":
@@ -359,6 +386,54 @@ func show_map_screen() -> void:
 
 
 
+## 계층 경계 구분자. 여정의 어느 구간인지와, 이미 지나왔는지를 한 줄로 알린다.
+func _make_section_header(sec: String, s_info: Dictionary, idx: int, top_abs: int, here: int) -> Control:
+	var floors := int(s_info.floors)
+	var bottom_abs := top_abs - floors + 1
+
+	var passed: bool = here > top_abs          # 이 계층을 이미 통과했다
+	var current: bool = here >= bottom_abs and here <= top_abs
+
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.09, 0.14, 0.9) if current else Color(0.04, 0.05, 0.08, 0.7)
+	style.border_width_bottom = 2
+	style.border_color = parent_scene.C_ACCENT if current else Color(0.15, 0.2, 0.28, 0.8)
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 6
+	style.content_margin_bottom = 6
+	panel.add_theme_stylebox_override("panel", style)
+
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 12)
+	panel.add_child(hbox)
+
+	var col: Color = parent_scene.C_ACCENT if current else (Color(0.45, 0.5, 0.58) if passed else parent_scene.C_TEXT)
+	hbox.add_child(parent_scene.make_label(str(s_info.icon), 15, col))
+	hbox.add_child(parent_scene.make_label("%s" % str(s_info.name), 15, col))
+	hbox.add_child(parent_scene.make_label(
+		"%d–%d층 · LV.%d~%d" % [
+			bottom_abs, top_abs,
+			MapGenerator.absolute_level(sec, 1), MapGenerator.absolute_level(sec, floors)
+		], 10, parent_scene.C_DIM))
+
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.add_child(spacer)
+
+	var tag := ""
+	if passed:
+		tag = "돌파함"
+	elif current:
+		tag = "◀ 현재 구간"
+	else:
+		tag = "남은 구간"
+	hbox.add_child(parent_scene.make_label(tag, 10, col))
+
+	return panel
+
+
 func _on_node_selected(node: RunManager.RunNode) -> void:
 	var route := run_manager.get_route_to_node(node.id)
 	visible = false
@@ -374,74 +449,79 @@ func _draw_lines(drawer: Control) -> void:
 	if not run_manager or _node_buttons.is_empty():
 		return
 		
-	# 표시 루프와 같은 근거(현재 계층의 층수)를 써야 연결선이 층 수와 어긋나지 않는다.
-	var start_floor := 1
-	var end_floor := int(MapGenerator.section_info(run_manager.current_section).floors)
+	# 연결선도 런 전체(최대 35층)를 대상으로 그린다. 표시 루프와 같은 근거를 써야 어긋나지 않는다.
+	var total_floors: int = run_manager.total_run_length()
+	var here: int = run_manager.total_floors_climbed()
+	var inv := drawer.get_global_transform().affine_inverse()
 
-	# Draw horizontal floor division lines (building floors)
-	for f in range(start_floor, end_floor + 1):
-		var nodes = run_manager.get_nodes_for_floor(f)
-		if nodes.is_empty():
+	# 층 구분선
+	for abs_f in range(1, total_floors + 1):
+		var loc: Dictionary = run_manager.resolve_run_floor(abs_f)
+		if loc.is_empty():
 			continue
 		var sum_y := 0.0
 		var count := 0
-		for n in nodes:
+		for n in run_manager.nodes_for(str(loc.section), int(loc.floor)):
 			if n.is_hidden:
 				continue
-			if _node_buttons.has(n.id):
-				var btn: Button = _node_buttons[n.id]
-				var center = btn.global_position + btn.size / 2
-				var local_center = drawer.get_global_transform().affine_inverse() * center
-				sum_y += local_center.y
+			var key := "%s:%d" % [str(loc.section), n.id]
+			if _node_buttons.has(key):
+				var btn: Button = _node_buttons[key]
+				sum_y += (inv * (btn.global_position + btn.size / 2)).y
 				count += 1
 		if count > 0:
 			var avg_y = sum_y / count
-			var line_start := Vector2(0, avg_y)
-			var line_end := Vector2(drawer.size.x, avg_y)
-			drawer.draw_line(line_start, line_end, Color(0.2, 0.2, 0.3, 0.15), 1.5)
-	
-	# Loop from start_floor + 1 to end_floor to draw lines from f-1 to f
-	for f in range(start_floor + 1, end_floor + 1):
-		var prev_nodes = run_manager.get_nodes_for_floor(f - 1)
-		var curr_nodes = run_manager.get_nodes_for_floor(f)
-		
+			drawer.draw_line(Vector2(0, avg_y), Vector2(drawer.size.x, avg_y), Color(0.2, 0.2, 0.3, 0.15), 1.5)
+
+	# 노드 간 통로선. 연결 정보는 계층 안에서만 존재하므로 같은 계층끼리만 잇는다.
+	for abs_f in range(2, total_floors + 1):
+		var loc_c: Dictionary = run_manager.resolve_run_floor(abs_f)
+		var loc_p: Dictionary = run_manager.resolve_run_floor(abs_f - 1)
+		if loc_c.is_empty() or loc_p.is_empty():
+			continue
+		var sec: String = str(loc_c.section)
+		if sec != str(loc_p.section):
+			continue  # 계층 경계 — 헤더가 구간을 구분하므로 선은 잇지 않는다
+
+		var prev_nodes := run_manager.nodes_for(sec, int(loc_p.floor))
+		var curr_nodes := run_manager.nodes_for(sec, int(loc_c.floor))
 		if prev_nodes.is_empty() or curr_nodes.is_empty():
 			continue
-			
+
 		for prev_node in prev_nodes:
 			if prev_node.is_hidden:
 				continue
 			for curr_node in curr_nodes:
 				if curr_node.is_hidden:
 					continue
-				
-				if prev_node.connected_node_ids.has(curr_node.id):
-					var route: String = prev_node.connected_node_routes.get(curr_node.id, "stairs")
-					
-					if _node_buttons.has(prev_node.id) and _node_buttons.has(curr_node.id):
-						var btn_prev: Button = _node_buttons[prev_node.id]
-						var btn_curr: Button = _node_buttons[curr_node.id]
-						
-						var start_pos = btn_prev.global_position + btn_prev.size / 2
-						var end_pos = btn_curr.global_position + btn_curr.size / 2
-						
-						var local_start = drawer.get_global_transform().affine_inverse() * start_pos
-						var local_end = drawer.get_global_transform().affine_inverse() * end_pos
-						
-						var color: Color = parent_scene.C_ACCENT
-						match route:
-							"stairs": color = parent_scene.C_SUCCESS
-							"air_duct": color = parent_scene.C_WARNING
-							
-						# 현재 층에서 선택 가능한 목적지의 통로 가격은 모두 미리 보인다.
-						if f - 1 == run_manager.current_floor:
-							color.a = 1.0
-						elif f == run_manager.current_floor:
-							color.a = 0.65
-						else:
-							color.a = 0.25
-								
-						drawer.draw_line(local_start, local_end, color, 3.5, true)
+				if not prev_node.connected_node_ids.has(curr_node.id):
+					continue
+
+				var k_prev := "%s:%d" % [sec, prev_node.id]
+				var k_curr := "%s:%d" % [sec, curr_node.id]
+				if not (_node_buttons.has(k_prev) and _node_buttons.has(k_curr)):
+					continue
+
+				var btn_prev: Button = _node_buttons[k_prev]
+				var btn_curr: Button = _node_buttons[k_curr]
+				var local_start = inv * (btn_prev.global_position + btn_prev.size / 2)
+				var local_end = inv * (btn_curr.global_position + btn_curr.size / 2)
+
+				var route: String = prev_node.connected_node_routes.get(curr_node.id, "stairs")
+				var color: Color = parent_scene.C_ACCENT
+				match route:
+					"stairs": color = parent_scene.C_SUCCESS
+					"air_duct": color = parent_scene.C_WARNING
+
+				# 지금 서 있는 층에서 뻗어 나가는 선(= 지금 고를 수 있는 통로)만 선명하게.
+				if abs_f - 1 == here:
+					color.a = 1.0
+				elif abs_f == here:
+					color.a = 0.65
+				else:
+					color.a = 0.25
+
+				drawer.draw_line(local_start, local_end, color, 3.5, true)
 
 
 func _build_scan_hint_panel() -> void:

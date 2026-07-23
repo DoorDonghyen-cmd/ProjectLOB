@@ -55,25 +55,44 @@ static func run(t, tree: SceneTree) -> void:
 	scene.show_loadout_screen(str(RunManager.SECTION_ORDER[0]))
 	t.check(true, "요원 준비실 진입 + 시작 계층 표기 갱신 정상")
 
-	# ── 지도: 표시되는 층 수가 계층별 실제 층수와 일치하는가 ──
-	# 과거 map_overlay가 end_floor를 15로 하드코딩해, 6층짜리 침전 거주구 지도에
-	# 15개 층이 그려지고 9개 층은 빈 채로 남았다(보스 표시도 15F에 붙었다).
-	# 숫자 리터럴이라 소스 검사(suite_ui_data_drift)로는 잡히지 않으므로 실제로 그려 본다.
-	RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"]
-	scene.handle_loadout_finished()  # 런 개시 → 지도 표시
+	# ── 지도: 런 전체(35층)가 한 화면에 그려지는가 ──
+	# 지도는 계층 단위가 아니라 **런 전체**를 보여준다. 계층마다 리셋되면
+	# "얼마나 남았는가"를 알 수 없기 때문이다.
+	# 과거 map_overlay가 end_floor를 15로 하드코딩해 어느 계층에서든 15개 층이 그려졌다.
+	# 숫자 리터럴이라 소스 검사로는 잡히지 않으므로 실제로 그려서 센다.
+	for case2 in [
+		[["section_a"], 6],
+		[["section_a", "section_b"], 13],
+		[["section_a", "section_b", "section_c", "section_d", "section_e"], 35],
+	]:
+		var unlocked2: Array[String] = []
+		for s in case2[0]:
+			unlocked2.append(str(s))
+		RunManager.meta_unlocked_sections = unlocked2
+		scene.handle_loadout_finished()  # 런 개시 → 지도 표시
 
-	for sec in RunManager.SECTION_ORDER:
-		var sec_key: String = str(sec)
-		var expected: int = int(MapGenerator.section_info(sec_key).floors)
-		scene._rm.enter_section(sec_key)
-		scene._show_map_screen()
-
-		# queue_free()된 이전 행은 아직 트리에 남아 있으므로 제외하고 센다.
-		var rows := 0
+		# queue_free()된 이전 행은 아직 트리에 남아 있으므로 제외한다.
+		# 층 행은 HBoxContainer, 계층 헤더는 PanelContainer다.
+		var floor_rows := 0
+		var headers := 0
 		for row in scene._map_overlay._floors_vbox.get_children():
-			if not row.is_queued_for_deletion():
-				rows += 1
-		t.eq(rows, expected, "%s 지도 층 표시 수" % str(MapGenerator.section_info(sec_key).name))
+			if row.is_queued_for_deletion():
+				continue
+			if row is HBoxContainer:
+				floor_rows += 1
+			elif row is PanelContainer:
+				headers += 1
+		t.eq(floor_rows, int(case2[1]), "지도 층 표시 수 (해금 %d계층)" % unlocked2.size())
+		t.eq(headers, unlocked2.size(), "계층 헤더 수 = 해금 계층 수")
+
+	# 상위 계층으로 이동해도 지도 전체 길이는 그대로여야 한다(런은 하나이므로).
+	scene._rm.enter_section("section_c")
+	scene._show_map_screen()
+	var rows_mid := 0
+	for row in scene._map_overlay._floors_vbox.get_children():
+		if not row.is_queued_for_deletion() and row is HBoxContainer:
+			rows_mid += 1
+	t.eq(rows_mid, 35, "⭐ 계층을 넘어가도 지도는 런 전체 35층을 유지")
 
 	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
 	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.

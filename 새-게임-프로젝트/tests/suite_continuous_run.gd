@@ -166,6 +166,43 @@ static func run(t) -> void:
 	t.eq(rm9.get_next_unlocked_section(), "", "정점: 더 오를 곳 없음")
 	t.eq(rm9.current_section, last_section, "⭐ 정점 도달 — 결말 조건 성립")
 
+	# ── 지도가 미리 보여준 구성 = 실제 도착했을 때의 구성 ──
+	# 지도가 런 전체(35층)를 보여주는 이상, 그 표시는 약속이어야 한다.
+	# 계층 도착 때마다 맵을 새로 생성하면 ??? 노드의 스캔 힌트가 바뀌어 표시가 거짓이 된다.
+	_unlock(["section_a", "section_b", "section_c", "section_d", "section_e"])
+	var rm10 := _fresh_run()
+
+	t.eq(rm10.run_itinerary().size(), 5, "런 여정 = 해금된 5계층")
+	t.check(rm10.section_maps.size() == 5, "런 시작 시 전 계층 맵이 생성됨(%d개)" % rm10.section_maps.size())
+
+	# 아직 도달하지 않은 계층도 조회할 수 있어야 지도에 그릴 수 있다.
+	var preview := rm10.nodes_for("section_d", 1)
+	t.check(preview.size() > 0, "미도달 계층(관리 계층 1층) 노드 미리 조회 가능(%d개)" % preview.size())
+
+	# 미리 본 내용을 기록해 둔다 — 이름과 스캔 힌트까지.
+	var before: Array[String] = []
+	for f in range(1, int(MapGenerator.section_info("section_d").floors) + 1):
+		for n in rm10.nodes_for("section_d", f):
+			before.append("%d|%s|%s" % [n.id, n.type_name, n.scan_hint])
+
+	rm10.enter_section("section_d")
+
+	var after: Array[String] = []
+	for f in range(1, int(MapGenerator.section_info("section_d").floors) + 1):
+		for n in rm10.nodes_for("section_d", f):
+			after.append("%d|%s|%s" % [n.id, n.type_name, n.scan_hint])
+
+	t.eq(after.size(), before.size(), "도착 후에도 노드 수 동일")
+	t.check(before == after, "⭐ 지도가 미리 보여준 구성 = 실제 도착 시 구성 (스캔 힌트 포함)")
+
+	# 절대 층 번호 변환이 지도 표시의 근거다.
+	t.eq(rm10.absolute_run_floor("section_a", 1), 1, "침전 1층 = 런 1층")
+	t.eq(rm10.absolute_run_floor("section_b", 1), 7, "공역 1층 = 런 7층 (침전 6 + 1)")
+	t.eq(rm10.absolute_run_floor("section_e", 8), 35, "정점 최상층 = 런 35층")
+	var back := rm10.resolve_run_floor(7)
+	t.eq(str(back.section), "section_b", "런 7층 → 공역")
+	t.eq(int(back.floor), 1, "런 7층 → 공역 1층")
+
 	# ── 해금 진행에 따른 런 길이 램프 ──
 	var ramp := 0
 	var ramp_desc: Array[String] = []

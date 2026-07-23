@@ -55,8 +55,14 @@ var run_stats := {
 var deck: Array[BulletData] = []
 var discarded_bullets: Array[BulletData] = [] # Unload로 버려져 소실 위기에 놓인 탄환들
 # ── 맵 구조 데이터 ──
+## ⚠️ 아래 두 변수는 **현재 계층의 맵을 가리키는 활성 뷰**다. 실체는 section_maps가 소유한다.
+##    (기존 코드 전반이 이 이름을 참조하므로 시그니처를 유지한다)
 var map_nodes: Dictionary = {}         # id(int) -> RunNode
 var floor_connections: Dictionary = {} # floor(int) -> Array[int] (노드 ID 목록)
+
+## 런 전체 지도. section(String) -> {map_nodes, floor_connections}
+## 연속 런에서 지도는 35층 전체를 보여주므로, 아직 도달하지 않은 계층의 맵도 미리 갖고 있어야 한다.
+var section_maps: Dictionary = {}
 
 # ── 노드 정보 구조체 ──
 class RunNode:
@@ -428,7 +434,9 @@ func enter_section(section_id: String) -> void:
 	current_route_type = "stairs"
 	# 환기 압박은 계층 경계를 넘겨 이월하지 않는다(다음 교전 한정 비용이므로).
 	pending_combat_distance_modifier = 0
-	generate_run_map()
+	# ⚠️ 여기서 맵을 새로 만들지 않는다. 런 시작 시 전 계층을 확정했고,
+	#    지도가 미리 보여준 구성과 실제 도착 시 구성이 달라지면 안 되기 때문이다.
+	_bind_current_section_map()
 	update_conditional_paths()
 
 
@@ -625,17 +633,100 @@ func get_nodes_for_floor(floor_num: int) -> Array[RunNode]:
 	return nodes
 
 
+## 이번 런에 오를 계층 목록(최하 계층 → 해금 상한). 지도가 보여줄 전체 여정이다.
+func run_itinerary() -> Array[String]:
+	var out: Array[String] = []
+	for sec in SECTION_ORDER:
+		if not meta_unlocked_sections.has(sec):
+			break
+		out.append(String(sec))
+	if out.is_empty():
+		out.append(String(SECTION_ORDER[0]))
+	return out
+
+
+## (계층, 계층 내 층) → 런 전체 기준 절대 층 번호(1..35).
+func absolute_run_floor(section: String, local_floor: int) -> int:
+	var acc := 0
+	for sec in run_itinerary():
+		if sec == section:
+			return acc + local_floor
+		acc += int(MapGenerator.section_info(sec).floors)
+	return acc + local_floor
+
+
+## 런 전체 기준 절대 층 번호 → {section, floor}. 범위를 벗어나면 빈 Dictionary.
+func resolve_run_floor(abs_floor: int) -> Dictionary:
+	var acc := 0
+	for sec in run_itinerary():
+		var f := int(MapGenerator.section_info(sec).floors)
+		if abs_floor <= acc + f:
+			return {"section": sec, "floor": abs_floor - acc}
+		acc += f
+	return {}
+
+
+## 특정 계층의 특정 층에 있는 노드들. 아직 도달하지 않은 계층도 조회할 수 있다.
+func nodes_for(section: String, floor_num: int) -> Array[RunNode]:
+	var nodes: Array[RunNode] = []
+	if not section_maps.has(section):
+		return nodes
+	var data: Dictionary = section_maps[section]
+	var conns: Dictionary = data.floor_connections
+	var nodes_by_id: Dictionary = data.map_nodes
+	if conns.has(floor_num):
+		for node_id in conns[floor_num]:
+			if nodes_by_id.has(node_id):
+				nodes.append(nodes_by_id[node_id])
+	return nodes
+
+
+## 런에 오를 전 계층의 맵을 **한 번에** 생성한다.
+##
+## ⚠️ 계층에 도착할 때마다 새로 생성하면, 지도에서 미리 본 구성과 실제 도착했을 때의 구성이
+##    달라진다(??? 노드의 스캔 힌트는 생성 시 무작위로 정해지므로 특히 그렇다).
+##    지도가 런 전체를 보여주는 이상, 그 표시는 약속이어야 하므로 런 시작 시 확정한다.
+func generate_full_run_map() -> void:
+	section_maps.clear()
+	for sec in run_itinerary():
+		var result := MapGenerator.generate(sec)
+		section_maps[sec] = {
+			"map_nodes": result.map_nodes,
+			"floor_connections": result.floor_connections,
+		}
+	_bind_current_section_map()
+
+
+## 현재 계층의 맵을 활성 뷰(map_nodes/floor_connections)에 연결한다.
+## 두 변수는 기존 코드 전반이 참조하므로 유지하되, 실체는 section_maps가 소유한다.
+func _bind_current_section_map() -> void:
+	if not section_maps.has(current_section):
+		var result := MapGenerator.generate(current_section)
+		section_maps[current_section] = {
+			"map_nodes": result.map_nodes,
+			"floor_connections": result.floor_connections,
+		}
+	var data: Dictionary = section_maps[current_section]
+	map_nodes = data.map_nodes
+	floor_connections = data.floor_connections
+
+
 ## 맵 생성은 MapGenerator로 분리됨 (SRP). 여기서는 결과를 런 상태에 반영만 한다.
 func generate_run_map() -> void:
-	var result := MapGenerator.generate(current_section)
-	map_nodes = result.map_nodes
-	floor_connections = result.floor_connections
+	generate_full_run_map()
 
 
-## 조건부 우회 경로 실시간 해제 검사
+## 조건부 우회 경로 실시간 해제 검사.
+## ⚠️ 런 전체 지도를 대상으로 돈다 — 해제 조건(총기 구경 등)은 런 내내 고정이므로,
+##    아직 도달하지 않은 계층의 숨김 노드도 지도에 미리 드러나야 표시가 일관된다.
 func update_conditional_paths() -> void:
-	for id in map_nodes.keys():
-		var node = map_nodes[id]
+	for sec in section_maps.keys():
+		_update_conditional_paths_in(section_maps[sec].map_nodes)
+
+
+func _update_conditional_paths_in(nodes_by_id: Dictionary) -> void:
+	for id in nodes_by_id.keys():
+		var node = nodes_by_id[id]
 		if node.is_hidden:
 			var cond = node.unlock_condition_type
 			var can_unlock = false
