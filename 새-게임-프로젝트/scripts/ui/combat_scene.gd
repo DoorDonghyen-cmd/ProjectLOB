@@ -393,10 +393,10 @@ func handle_loadout_finished() -> void:
 		return
 		
 	# 실제 런(Run) 개시
-	var section_id := "section_a"
-	if _loadout_overlay:
-		section_id = _loadout_overlay.selected_section_key
-	_rm.start_new_run(section_id, _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	# ⚠️ 연속 런 구조: 런은 항상 최하층(section_a)에서 시작해 해금된 최고 계층까지 이어진다.
+	#    구역 선택은 시작 지점을 고르는 것이 아니라 온보딩 램프(런 길이)를 나타낸다.
+	#    정본: docs/gdd/20_ascension_intention.md §3
+	_rm.start_new_run(RunManager.SECTION_ORDER[0], _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	_show_map_screen()
 
 
@@ -658,17 +658,92 @@ func handle_combat_finished(is_dead: bool) -> void:
 	_advance_floor_or_finish()
 
 
-## 다음 층으로 진행하거나, 현재 구역의 최종 층을 넘었으면 완주 처리한다.
-## ⚠️ 구역마다 층수가 다르므로(a:10 / b·c:12 / d·e:15) 반드시 section_info를 참조할 것.
-##    과거 `> 15` 하드코딩 탓에 10·12층 구역이 완주되지 않고 존재하지 않는 층의
+## 다음 층으로 진행한다. 계층의 최종층을 넘으면 **다음 계층으로 이어지고**,
+## 더 오를 계층이 없으면 그때 런을 완주 처리한다.
+##
+## ⚠️ 연속 런 구조 (docs/gdd/20_ascension_intention.md §3)
+##   - 한 런 = 1계층부터 **해금된 최고 계층**까지 연속. 계층이 바뀌어도 런은 끊기지 않는다.
+##   - 덱·파츠·가방·크레딧은 계층을 넘어 그대로 누적된다(start_new_run을 다시 부르지 않음).
+##   - 구역 순차 해금은 난이도 사다리가 아니라 **런 길이 램프**로 작동한다.
+## ⚠️ 구역마다 층수가 다르므로 반드시 section_info를 참조할 것.
+##    과거 `> 15` 하드코딩 탓에 층수가 적은 계층이 완주되지 않고 존재하지 않는 층의
 ##    빈 맵으로 이동해 진행이 막히는 버그가 있었다.
 func _advance_floor_or_finish() -> void:
 	_rm.current_floor += 1
 	var max_floor: int = int(MapGenerator.section_info(_rm.current_section).floors)
-	if _rm.current_floor > max_floor:
-		_show_debriefing(true)
-	else:
+	if _rm.current_floor <= max_floor:
 		_show_map_screen()
+		return
+
+	# 계층 완주 — 다음 계층이 해금돼 있으면 이어서 오른다.
+	var next_section := _rm.get_next_unlocked_section()
+	if next_section == "":
+		_show_debriefing(true)  # 더 오를 곳이 없다 = 런 완주
+	else:
+		_advance_to_next_section(next_section)
+
+
+## 다음 계층으로 진입한다. 런 자원(덱·파츠·크레딧)은 유지된다.
+func _advance_to_next_section(next_section: String) -> void:
+	var prev_name: String = MapGenerator.section_info(_rm.current_section).name
+	var next_name: String = MapGenerator.section_info(next_section).name
+
+	_rm.enter_section(next_section)
+
+	if _combat_overlay:
+		_combat_overlay.visible = false
+	_map_overlay.visible = false
+
+	_show_section_transition(prev_name, next_name)
+
+
+## 계층 전환 연출 — 한 계층을 돌파하고 상위 계층으로 오르는 순간을 표시한다.
+## 런은 끊기지 않으므로 정산 없이 "계속 오른다"는 감각만 전달한다.
+func _show_section_transition(prev_name: String, next_name: String) -> void:
+	var popup := PanelContainer.new()
+	popup.set_anchors_preset(Control.PRESET_CENTER)
+	popup.custom_minimum_size = Vector2(460, 0)
+
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.07, 0.11, 0.98)
+	style.set_border_width_all(2)
+	style.border_color = C_ACCENT
+	style.corner_radius_top_left = 6; style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6; style.corner_radius_bottom_right = 6
+	popup.add_theme_stylebox_override("panel", style)
+	add_child(popup)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	popup.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 12)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(vbox)
+
+	var title = make_label("▲ 상위 계층 진입", 18, C_ACCENT)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	var lv: int = MapGenerator.absolute_level(_rm.current_section, 1)
+	var body := "[%s] 돌파 — 위로 향하는 통로가 열렸습니다.\n\n" % prev_name
+	body += "▶ [b]%s[/b] (LV.%04d)\n\n" % [next_name, lv]
+	body += "장비와 물자는 그대로 유지됩니다."
+
+	var desc = make_label(body, 12, C_TEXT)
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(desc)
+
+	var btn = make_button("계속 오른다 ▲", func():
+		popup.queue_free()
+		_show_map_screen()
+	, C_SUCCESS)
+	btn.custom_minimum_size = Vector2(180, 40)
+	vbox.add_child(btn)
 
 
 func _show_debriefing(won: bool) -> void:

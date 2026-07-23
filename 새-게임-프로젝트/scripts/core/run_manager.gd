@@ -362,6 +362,33 @@ func end_run(won: bool) -> int:
 const SECTION_ORDER: Array[String] = ["section_a", "section_b", "section_c", "section_d", "section_e"]
 
 
+## 현재 계층 다음에 **해금되어 있는** 계층 ID를 반환한다. 없으면 "".
+## 연속 런에서 "이번 런이 여기서 끝나는가"를 판단하는 기준이다.
+## 구역 해금이 곧 런의 도달 상한이므로, 해금이 진행될수록 런이 길어진다(온보딩 램프).
+func get_next_unlocked_section() -> String:
+	var idx := SECTION_ORDER.find(current_section)
+	if idx < 0 or idx + 1 >= SECTION_ORDER.size():
+		return ""
+	var next_section: String = SECTION_ORDER[idx + 1]
+	if not meta_unlocked_sections.has(next_section):
+		return ""
+	return next_section
+
+
+## 다음 계층으로 진입한다. **런 자원(덱·파츠·가방·크레딧)은 유지**되고
+## 맵과 층 위치만 새 계층 기준으로 초기화된다.
+## (start_new_run을 호출하면 덱이 리셋되므로 계층 이동에는 쓰면 안 된다)
+func enter_section(section_id: String) -> void:
+	current_section = section_id
+	current_floor = 1
+	current_node_id = 0
+	current_route_type = "stairs"
+	# 환기 압박은 계층 경계를 넘겨 이월하지 않는다(다음 교전 한정 비용이므로).
+	pending_combat_distance_modifier = 0
+	generate_run_map()
+	update_conditional_paths()
+
+
 ## 런을 완주(구역 보스 처치)했을 때 다음 작전 구역을 영구 해금한다.
 ## 반환: 새로 해금된 구역 ID 배열 (없으면 빈 배열)
 func check_section_unlocks(won: bool) -> Array[String]:

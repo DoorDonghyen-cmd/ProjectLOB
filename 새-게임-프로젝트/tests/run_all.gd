@@ -19,6 +19,7 @@ const SuiteBulletEffects := preload("res://tests/suite_bullet_effects.gd")
 const SuiteWeaponUnlock := preload("res://tests/suite_weapon_unlock.gd")
 const SuiteSectionProgress := preload("res://tests/suite_section_progress.gd")
 const SuiteConsumables := preload("res://tests/suite_consumables.gd")
+const SuiteContinuousRun := preload("res://tests/suite_continuous_run.gd")
 
 
 func _initialize() -> void:
@@ -44,6 +45,7 @@ func _initialize() -> void:
 	SuiteWeaponUnlock.run(t)  # 무기 해금 조건 판정 + 영속화
 	SuiteSectionProgress.run(t) # 구역 완주 판정 + 다음 구역 해금 + 영속화
 	SuiteConsumables.run(t)   # 소모품 효과(heal/shred) + 가방 적재·소진
+	SuiteContinuousRun.run(t) # 연속 런 구조(계층 체이닝·자원 유지·종료 시점)
 
 	# 테스트 임시 세이브 정리 및 오버라이드 해제
 	DirAccess.remove_absolute(override_path)
