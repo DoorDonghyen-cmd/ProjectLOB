@@ -85,10 +85,20 @@ static func run(t) -> void:
 	t.eq(rm4.get_next_unlocked_section(), "", "c 미해금: b에서 런 종료(램프 상한)")
 
 	# ── 전 계층 누적 층수(연속 런 총 길이) ──
+	# 설계 목표: 약 35층 ≈ 1시간. 장르 평균(45~60분)과 모바일 타겟을 넘지 않아야 한다.
+	# 이 값이 크게 늘면 "완전 리셋 구조에서 사망 손실 과대" 문제가 재발한다.
 	var total := 0
 	for sec in RunManager.SECTION_ORDER:
 		total += int(MapGenerator.section_info(sec).floors)
-	t.check(total > 0, "연속 런 총 층수 = %d층" % total)
+	t.eq(total, 35, "연속 런 총 층수 = 35층 (설계 목표)")
+
+	# ── 해금 진행에 따른 런 길이 램프 ──
+	var ramp := 0
+	var ramp_desc: Array[String] = []
+	for sec in RunManager.SECTION_ORDER:
+		ramp += int(MapGenerator.section_info(sec).floors)
+		ramp_desc.append("%d" % ramp)
+	t.check(ramp_desc.size() == 5, "런 길이 램프: %s층 (해금이 진행될수록 런이 길어짐)" % " → ".join(ramp_desc))
 
 	# ── 정리 ──
 	DirAccess.remove_absolute(SL_PATH)

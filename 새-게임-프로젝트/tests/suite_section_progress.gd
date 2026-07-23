@@ -21,7 +21,8 @@ static func run(t) -> void:
 	RunManager.save_path_override = SL_PATH
 
 	# ── 구역별 층수 메타데이터가 실제 맵과 일치하는지 (완주 판정의 근거) ──
-	var expected := {"section_a": 10, "section_b": 12, "section_c": 12, "section_d": 15, "section_e": 15}
+	# 연속 런 재편(20_ascension_intention §3)으로 총 35층으로 압축됨
+	var expected := {"section_a": 6, "section_b": 7, "section_c": 7, "section_d": 7, "section_e": 8}
 	for sec in expected.keys():
 		t.eq(int(MapGenerator.section_info(sec).floors), expected[sec],
 			"%s 층수 메타데이터 = %d" % [sec, expected[sec]])
