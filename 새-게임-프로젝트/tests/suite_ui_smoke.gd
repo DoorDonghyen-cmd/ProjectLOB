@@ -215,11 +215,11 @@ static func run(t, tree: SceneTree) -> void:
 			any_enemy.current_hp = maxi(any_enemy.data.max_hp / 2, 1)
 			tc.refresh_all_hp_bars()
 			var fill = hp_bg.get_node_or_null("HpFill") if hp_bg else null
-			var txt = hp_bg.get_node_or_null("HpText") if hp_bg else null
-			if fill and txt:
+			if fill:
 				# 절반이면 채움 막대가 배경 안쪽 폭의 절반쯤 비어 있어야 한다.
 				t.check(fill.offset_right < -10.0, "⭐ HP 바가 절반으로 줄어듦 (offset_right=%.0f)" % fill.offset_right)
-				t.check(txt.text.contains("/"), "HP 바에 수치 표기 (%s)" % txt.text)
+			# HP 바 안에는 수치를 표기하지 않는다(막대 길이만으로 충분).
+			t.check(hp_bg.get_node_or_null("HpText") == null, "HP 바 내 수치 미표기")
 
 		ov._fire_fx_queue.clear()
 		ov._pending_result = ""

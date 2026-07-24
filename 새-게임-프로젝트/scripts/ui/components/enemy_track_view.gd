@@ -122,17 +122,7 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	hp_fill.offset_right = -2; hp_fill.offset_bottom = -2
 	hp_bg.add_child(hp_fill)
 
-	# HP 수치 (작게, 바 위에 겹쳐 표기)
-	var hp_txt: Label = parent_scene.make_label("", 8, Color.WHITE)
-	hp_txt.name = "HpText"
-	hp_txt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hp_txt.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	hp_txt.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hp_txt.set_anchors_preset(Control.PRESET_FULL_RECT)
-	hp_txt.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
-	hp_txt.add_theme_constant_override("outline_size", 3)
-	hp_bg.add_child(hp_txt)
-
+	# HP 바 내 수치는 표기하지 않는다 — 막대 길이만으로 충분하고, 작은 숫자는 잡음이다.
 	_refresh_hp_bar(es, enemy)
 
 	# ── 아키타입 배지 (발 아래) ──
@@ -261,25 +251,21 @@ func _refresh_hp_bar(es: TextureRect, enemy: EnemyInstance) -> void:
 	if not hp_bg:
 		return
 	var fill = hp_bg.get_node_or_null("HpFill") as ColorRect
-	var txt = hp_bg.get_node_or_null("HpText") as Label
 	if not fill:
 		return
 
 	var ratio := 0.0
-	var label_text := ""
 	var col := Color(0.3, 1.0, 0.5)  # 초록
 
 	if enemy.is_stack_sponge:
 		var cur: int = enemy.barrier_cells
 		var maxc: int = maxi(enemy.max_barrier_cells, 1)
 		ratio = clampf(float(cur) / float(maxc), 0.0, 1.0)
-		label_text = "◆%d" % cur
 		col = Color(0.4, 0.7, 1.0)  # 배리어 = 청색
 	else:
 		var cur: int = enemy.current_hp
 		var maxh: int = maxi(enemy.data.max_hp, 1)
 		ratio = clampf(float(cur) / float(maxh), 0.0, 1.0)
-		label_text = "%d/%d" % [cur, maxh]
 		# 체력이 낮을수록 초록 → 노랑 → 빨강
 		if ratio <= 0.3:
 			col = Color(1.0, 0.3, 0.3)
@@ -290,8 +276,6 @@ func _refresh_hp_bar(es: TextureRect, enemy: EnemyInstance) -> void:
 	# 앵커 기반 폭: 오른쪽 offset을 배경 폭에 비례해 당긴다.
 	var inner_w: float = _HP_BAR_W - 4.0
 	fill.offset_right = -2.0 - inner_w * (1.0 - ratio)
-	if txt:
-		txt.text = label_text
 
 
 ## 모든 적의 HP 바를 즉시 갱신한다. 피격·태세 변화 등 체력이 바뀌는 순간에 호출한다.
