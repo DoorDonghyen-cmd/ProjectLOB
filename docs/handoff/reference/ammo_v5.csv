@@ -1,0 +1,28 @@
+id,display_name,class,is_basic,role,damage,penetration,accuracy,knockback,slow,effect_type,effect_value
+basic_pistol,9mm 재생탄,pistol,true,standalone,3,0,7,0,0,0,0
+flare_pistol,9mm 발광탄,pistol,false,setter,1,0,8,0,0,7,3
+overpressure_pistol,9mm 고압탄,pistol,false,payload,6,1,2,0,0,0,0
+slow_pistol,9mm 슬로우탄,pistol,false,utility,1,0,8,0,2,0,0
+impact_pistol,9mm 충격탄,pistol,false,utility,1,0,6,2,0,0,0
+basic_smg,.45ACP 재생탄,smg,true,standalone,3,0,6,0,0,0,0
+tuner_smg,.45ACP 조율탄,smg,false,setter,1,0,7,0,0,7,3
+chain_smg,.45ACP 연쇄탄,smg,false,payload,2,1,6,0,0,2,3
+surge_smg,.45ACP 과부하탄,smg,false,payload,6,0,3,0,0,0,0
+finale_smg,.45ACP 마무리탄,smg,false,standalone,3,1,6,0,0,3,130
+basic_rifle,5.56mm 재생탄,rifle,true,standalone,3,1,6,0,0,0,0
+borer_rifle,5.56mm 천공탄,rifle,false,setter,1,2,6,0,0,8,3
+ap_rifle,5.56mm 철갑탄,rifle,false,standalone,2,4,5,0,0,0,0
+shred_rifle,5.56mm 파쇄탄,rifle,false,setter,1,3,5,0,0,1,2
+heavyslug_rifle,5.56mm 중격탄,rifle,false,payload,7,0,5,0,0,0,0
+basic_dmr,7.62mm 재생탄,dmr,true,standalone,4,1,7,0,0,0,0
+marker_dmr,7.62mm 표적 지시탄,dmr,false,setter,1,1,8,0,0,8,4
+pierce_dmr,7.62mm 관통 저격탄,dmr,false,standalone,4,3,7,0,0,6,1
+burst_dmr,7.62mm 작렬탄,dmr,false,payload,9,0,3,0,0,0,0
+decisive_dmr,7.62mm 결전탄,dmr,false,payload,4,2,6,0,0,3,200
+basic_shotgun,12게이지 재생탄,shotgun,true,standalone,4,0,5,1,0,0,0
+spread_shotgun,12게이지 산개탄,shotgun,false,setter,1,0,7,1,0,7,3
+breach_shotgun,12게이지 파쇄 슬러그,shotgun,false,setter,2,3,4,0,0,1,2
+opening_shotgun,12게이지 선제 제압탄,shotgun,false,standalone,2,1,5,1,0,4,2
+dense_shotgun,12게이지 밀집탄,shotgun,false,payload,7,0,4,0,0,0,0
+crosscal_universal,교차 구경탄,universal,false,payload,2,1,5,0,0,5,4
+tracer_universal,규격 외 예광탄,universal,false,setter,1,1,7,0,0,7,3
