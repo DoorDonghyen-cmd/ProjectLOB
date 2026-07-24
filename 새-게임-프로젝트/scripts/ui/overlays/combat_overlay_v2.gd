@@ -1190,14 +1190,17 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 
 func _update_action_buttons() -> void:
 	if not combat_manager: return
-	var is_tempo := combat_manager.gun and (combat_manager.gun.display_name.contains("Tempo") or combat_manager.gun.display_name.contains("속사형"))
-	var is_trickster := combat_manager.gun and (combat_manager.gun.display_name.contains("Trickster") or combat_manager.gun.display_name.contains("곡예형"))
+	# ⚠️ 리소스 ID로 판정한다. 표시명 매칭은 이름이 바뀌면 조용히 어긋난다.
+	var is_tempo := combat_manager.gun_is("smg")
+	var is_trickster := combat_manager.gun_is("trickster")
+	# 연발 총은 전량 커밋이므로 더블탭·이젝트 같은 "중간 조작"이 성립하지 않는다.
+	var is_full_auto := combat_manager.is_full_auto()
 	
 	_fire_btn.visible = true
 	_unload_btn.visible = true
 	_reload_btn.visible = true
-	_double_tap_btn.visible = is_tempo
-	_eject_btn.visible = is_trickster
+	_double_tap_btn.visible = is_tempo and not is_full_auto
+	_eject_btn.visible = is_trickster and not is_full_auto
 	
 	if combat_manager.state == CombatManager.State.LOADING:
 		_loading_confirm_btn.disabled = _loaded_bullets.is_empty()
@@ -1211,7 +1214,8 @@ func _update_action_buttons() -> void:
 		if _eject_btn.visible: _eject_btn.disabled = true
 		return
 		
-	_fire_btn.text = "🔫 발사"
+	# 연발은 무엇이 일어나는지 버튼에 명시한다 — 되돌릴 수 없는 선택이기 때문이다.
+	_fire_btn.text = ("💥 연발 (%d발 전탄)" % combat_manager.magazine.get_remaining()) if is_full_auto else "🔫 발사"
 	_unload_btn.text = "🗑 빼내기"
 	
 	if combat_manager.state != CombatManager.State.PLAYER_TURN:

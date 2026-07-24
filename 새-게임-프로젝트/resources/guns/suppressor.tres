@@ -1,0 +1,22 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/shotgun.png" id="1_icon"]
+[ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+display_name = "제압형 연사총 (Suppressor)"
+description = "진압용으로 만들어진 구형 화기. 조준을 사람이 하지 않는다는 전제로 설계되어 방아쇠를 당기면 탄창을 통째로 비웁니다. 전투 중에는 아무것도 고칠 수 없으므로, 적 구성을 읽고 적재 단계에서 전부 결정해야 합니다."
+icon = ExtResource("1_icon")
+fire_mode = 1
+magazine_capacity = 5
+has_chamber = false
+magazine_structure = 0
+reload_turns = 3
+parts_capacity = 3
+passive_dmg_bonus = 0
+passive_pen_bonus = 0
+passive_knockback_bonus = 0
+passive_acc_bonus = 0
+preview_window_size = 5
+weapon_class = 2

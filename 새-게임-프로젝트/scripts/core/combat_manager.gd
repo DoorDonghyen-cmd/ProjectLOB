@@ -72,7 +72,8 @@ var battle_stats := {
 	"max_kills_in_single_turn": 0,
 	"min_dist_allowed": 99,
 	"total_kills": 0,
-	"total_kill_dist_sum": 0.0
+	"total_kill_dist_sum": 0.0,
+	"magazine_emptied_wins": 0
 }
 
 
@@ -150,7 +151,8 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 		"max_kills_in_single_turn": 0,
 		"min_dist_allowed": init_min_dist,
 		"total_kills": 0,
-		"total_kill_dist_sum": 0.0
+		"total_kill_dist_sum": 0.0,
+		"magazine_emptied_wins": 0
 	}
 	final_kill_distance = 99
 	
@@ -215,15 +217,71 @@ func confirm_loading(bullets: Array[BulletData]) -> void:
 	combat_log.emit("── 탄창 장전 완료! %d발 ──" % magazine.get_remaining())
 
 
+## 이 총이 연발(FULL_AUTO)인가. 정본: docs/gdd/21_fire_mode.md
+func is_full_auto() -> bool:
+	return gun != null and gun.fire_mode == Enums.FireMode.FULL_AUTO
+
+
 ## 발사 — 탄창에서 한 발 꺼내 최근접 적에게 쏜다 (강제 타겟팅).
 func fire() -> void:
 	battle_stats.kills_this_turn = 0
-	if double_tap_active:
+	if is_full_auto():
+		_fire_full_auto()
+	elif double_tap_active:
 		_fire_double_tap()
 	else:
 		var target := _get_nearest_enemy()
 		_fire_internal(target)
 	battle_stats.max_kills_in_single_turn = maxi(battle_stats.max_kills_in_single_turn, battle_stats.kills_this_turn)
+
+
+## 연발 — 탄창의 모든 탄이 나간다. 중간에 멈출 수 없다.
+##
+## ⚠️ 전체가 **1턴**이다. 발당 1턴이면 "멈출 수만 없는 단발"이 되어 하위호환이 된다.
+##    그래서 적 전진은 마지막에 한 번만 일어난다.
+##
+## 발당 도는 것(오버킬 이월·ARMOR_SHRED·태세 전환)은 _fire_internal이 이미 처리한다.
+##  - 매 탄 _get_nearest_enemy()를 다시 부르므로 앞의 적이 죽으면 자연히 다음 적으로 이월된다.
+##    강제 타겟이 "최근접 1명"이라 규칙을 새로 추가하지 않아도 성립한다.
+##  - 태세 전환 검사는 _fire_internal 안의 전진 블록 밖에 있어 전진을 억제해도 발당 돈다.
+func _fire_full_auto() -> void:
+	if state != State.PLAYER_TURN:
+		return
+	if magazine.is_empty():
+		combat_log.emit("⚠ 탄창이 비었습니다! 리로드하세요.")
+		return
+	if _get_nearest_enemy() == null:
+		combat_log.emit("⚠ 타겟이 없습니다.")
+		return
+
+	var burst_size := magazine.get_remaining()
+	combat_log.emit("💥 [연발 개시] 탄창 %d발을 전부 쏟아붓습니다." % burst_size)
+
+	var fired := 0
+	while not magazine.is_empty():
+		var target := _get_nearest_enemy()
+		if target == null:
+			break
+
+		fired += 1
+		combat_log.emit("🔥 [%d/%d발째]" % [fired, burst_size])
+		_fire_internal(target, false)  # 적 전진은 버스트 종료 후 1회만
+
+		# ⚠️ 전투가 끝나면(승리/패배) 남은 탄을 인위적으로 비우지 않는다.
+		#    "중간에 멈출 수 없다"는 전투 **중** 판단 변경을 막는 규칙이지,
+		#    쏠 대상이 사라진 뒤까지 적용할 이유가 없다. 억지로 비우면
+		#    "탄창을 비운 채 승리" 같은 조건이 무의미해지고, 플레이어에게
+		#    아무 영향도 없는 규칙만 하나 늘어난다.
+		if state != State.PLAYER_TURN:
+			return
+
+	# ── 버스트 전체를 1턴으로 정산: 적 전진 1회 ──
+	eject_used_this_turn = false
+	_all_enemies_advance()
+	if state == State.LOST:
+		return
+
+	combat_log.emit("🔻 탄창이 비었습니다. 재장전이 필요합니다 (%d턴)." % gun.reload_turns)
 
 
 func _fire_double_tap() -> void:
@@ -689,6 +747,10 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		state = State.WON
 		if target:
 			final_kill_distance = target.current_distance
+		# [전탄 소모] 판정 — 탄창을 한 발도 남기지 않고 비운 채 이겼는가.
+		# 제압형(연발) 해금 조건. 연발이 강제하는 행동을 단발 총으로 미리 연습시킨다.
+		if magazine.is_empty():
+			battle_stats.magazine_emptied_wins += 1
 		combat_log.emit("★ 모든 적 처치! 승리!")
 		encounter_won.emit()
 		return
@@ -996,6 +1058,13 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 ## 총기 시그니처 판정 — 표시명(문구 변경·현지화에 취약) 대신 리소스 ID로 안정 판정한다.
 ## 예: _gun_is("dmr") → res://resources/guns/dmr.tres
 func _gun_is(gun_id: String) -> bool:
+	return gun_is(gun_id)
+
+
+## 총기 식별 — **리소스 ID로 판정한다.**
+## ⚠️ 표시명 문자열 매칭을 쓰지 말 것. 표시명이 바뀌면 조용히 어긋난다
+##    (실제로 시그니처가 발동하지 않던 결함의 원인이었다).
+func gun_is(gun_id: String) -> bool:
 	if gun == null:
 		return false
 	return gun.resource_path.get_file().get_basename() == gun_id

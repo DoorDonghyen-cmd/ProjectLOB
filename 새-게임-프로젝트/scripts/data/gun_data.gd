@@ -12,6 +12,12 @@ extends Resource
 @export var icon: Texture2D
 @export var weapon_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 
+@export_group("발사 방식")
+## 한 번의 결정으로 몇 발을 커밋하는가. 정본: docs/gdd/21_fire_mode.md
+## ⚠️ 총기 고유 속성 — 파츠로 변경 불가, 전투 중 전환 불가.
+##    파츠가 발사 방식을 **강화**하는 것은 허용하나 **변경**은 금지한다.
+@export var fire_mode: Enums.FireMode = Enums.FireMode.SINGLE
+
 @export_group("탄창 규칙")
 ## 탄창 크기 — 한 번에 장전 가능한 최대 총알 수
 @export_range(1, 12) var magazine_capacity: int = 6
@@ -39,5 +45,7 @@ extends Resource
 @export_range(-1, 3) var passive_knockback_bonus: int = 0
 ## 모든 총알의 명중에 가산되는 보너스
 @export_range(-3, 5) var passive_acc_bonus: int = 0
-## 전투 중 탄창에서 보여질 예고창의 크기
-@export_range(0, 4) var preview_window_size: int = 2
+## 전투 중 탄창에서 보여질 예고창의 크기.
+## ⚠️ 연발(FULL_AUTO) 총기는 전량 커밋하므로 예고창이 **페널티 축이 아니라 정보 표시**다.
+##    탄창 전체(최대 12)를 보여줄 수 있어야 하므로 상한을 탄창 크기에 맞춘다.
+@export_range(0, 12) var preview_window_size: int = 2

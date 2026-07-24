@@ -22,6 +22,48 @@ static func ensure_loaded() -> void:
 	print("DataLoader: 모든 CSV 전술 스탯 로딩 완료.")
 
 
+## ── 헤더 이름 기반 접근 헬퍼 ──
+##
+## ⚠️ CSV를 **인덱스가 아니라 칼럼 이름으로** 읽는다.
+##    인덱스 파싱은 칼럼을 하나 삽입할 때마다 그 뒤 전부가 한 칸씩 밀리는데,
+##    파싱이 실패하지 않고 **엉뚱한 값을 조용히 읽어** 밸런스가 어긋난다.
+##    (fire_mode 칼럼 도입 시 실제로 이 위험이 있었다.)
+static func _col_map(headers: PackedStringArray) -> Dictionary:
+	var m := {}
+	for i in range(headers.size()):
+		m[headers[i].strip_edges()] = i
+	return m
+
+
+static func _s(line: PackedStringArray, cols: Dictionary, key: String, fallback: String = "") -> String:
+	if not cols.has(key):
+		return fallback
+	var idx: int = cols[key]
+	if idx >= line.size():
+		return fallback
+	return line[idx].strip_edges()
+
+
+static func _i(line: PackedStringArray, cols: Dictionary, key: String, fallback: int = 0) -> int:
+	var raw := _s(line, cols, key, "")
+	return int(raw) if raw != "" else fallback
+
+
+static func _b(line: PackedStringArray, cols: Dictionary, key: String) -> bool:
+	return _s(line, cols, key, "").to_lower() == "true"
+
+
+## ── 발사 방식 파싱 ──
+## 정본: docs/gdd/21_fire_mode.md
+## 값은 single / full_auto 2종뿐이다. double_tap은 fire_mode가 아니라
+## 기관단총의 턴당 1회 선택형 능력이므로 여기에 정의하지 않는다.
+static func _parse_fire_mode(s: String) -> int:
+	match s.strip_edges().to_lower():
+		"full_auto": return Enums.FireMode.FULL_AUTO
+		"single": return Enums.FireMode.SINGLE
+	return Enums.FireMode.SINGLE  # 미기입 총기는 단발(기존 동작 보존)
+
+
 ## ── 클래스 문자열 파싱 헬퍼 ──
 static func _parse_class(cls_str: String) -> int:
 	match cls_str.strip_edges().to_lower():
@@ -42,27 +84,28 @@ static func _load_gun_stats() -> void:
 		print("DataLoader ⚠️ 에러: gun_stats.csv 파일을 열 수 없습니다.")
 		return
 		
-	# 헤더 스킵
-	var headers := file.get_csv_line()
-	
+	var cols := _col_map(file.get_csv_line())
+
 	while not file.eof_reached():
 		var line := file.get_csv_line()
-		if line.size() < 11 or line[0] == "":
+		if line.size() < 2 or line[0] == "":
 			continue
-			
+
 		var id := line[0].strip_edges()
 		var entry := {
 			"id": id,
-			"display_name": line[1].strip_edges(),
-			"class": _parse_class(line[2]),
-			"magazine_capacity": int(line[3]),
-			"has_chamber": line[4].strip_edges().to_lower() == "true",
-			"reload_turns": int(line[5]),
-			"parts_capacity": int(line[6]),
-			"passive_dmg_bonus": int(line[7]),
-			"passive_pen_bonus": int(line[8]),
-			"passive_knockback_bonus": int(line[9]),
-			"passive_acc_bonus": int(line[10])
+			"display_name": _s(line, cols, "display_name"),
+			"class": _parse_class(_s(line, cols, "class")),
+			"fire_mode": _parse_fire_mode(_s(line, cols, "fire_mode")),
+			"magazine_capacity": _i(line, cols, "magazine_capacity"),
+			"has_chamber": _b(line, cols, "has_chamber"),
+			"reload_turns": _i(line, cols, "reload_turns"),
+			"parts_capacity": _i(line, cols, "parts_capacity"),
+			"passive_dmg_bonus": _i(line, cols, "passive_dmg_bonus"),
+			"passive_pen_bonus": _i(line, cols, "passive_pen_bonus"),
+			"passive_knockback_bonus": _i(line, cols, "passive_knockback_bonus"),
+			"passive_acc_bonus": _i(line, cols, "passive_acc_bonus"),
+			"preview_window_size": _i(line, cols, "preview_window_size", -1)
 		}
 		_guns[id] = entry
 
@@ -154,6 +197,16 @@ static func get_enemy(id: String) -> Dictionary:
 static func get_all_enemies() -> Array:
 	ensure_loaded()
 	return _enemies.values()
+
+
+static func get_all_bullet_ids() -> Array:
+	ensure_loaded()
+	return _bullets.keys()
+
+
+static func get_all_gun_ids() -> Array:
+	ensure_loaded()
+	return _guns.keys()
 
 
 static func get_all_bullets() -> Array:

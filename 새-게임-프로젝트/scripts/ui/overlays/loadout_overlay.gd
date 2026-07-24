@@ -17,6 +17,7 @@ var _gun_heavy: GunData
 var _gun_trickster: GunData
 var _gun_gambler: GunData
 var _gun_stance_hunter: GunData
+var _gun_suppressor: GunData
 
 # ── 선택 상태 변수 ──
 var selected_weapon_key: String = "workhorse"
@@ -153,6 +154,19 @@ const WEAPON_PROFILES := {
 		"passive": "- 태세 예지 내장 (적 태세 전환 1턴 미리 예고)\n- 적의 태세 전환 턴에 모든 게이트 무시 (확정 명중/관통)",
 		"penalty": "- 태세 전환이 없는 적을 상대할 때는 시그니처 혜택 소멸\n- 낮은 범용성에 따른 빌드 불안정성",
 		"unlock_desc": "[시스템 파훼] 슬로우 없이 태세 전환 병사 처치"
+	},
+	"suppressor": {
+		"res_key": "suppressor",
+		"display_name_kor": "제압형",
+		"display_name_eng": "SUPPRESSOR",
+		"emoji": "🌪",
+		"cap": 3,
+		"ammo": 5,
+		"prev": 5,
+		"calibers": "[7.62mm] [소총 계열]",
+		"passive": "- 연발: 방아쇠를 당기면 탄창 5발이 한 턴에 전부 나갑니다\n- 앞의 적이 쓰러지면 남은 탄이 다음 적으로 이어집니다\n- 탄창 전체가 예고창에 보입니다",
+		"penalty": "- 재장전 3턴 — 쏟아붓고 나면 그동안 무방비입니다\n- 중간에 멈출 수 없어 통하지 않는 탄을 고르면 손실이 5배\n- 개조 슬롯 3칸 · 패시브 보정 없음",
+		"unlock_desc": "[전탄 소모] 탄창을 한 발도 남기지 않고 비운 채 전투 승리"
 	}
 }
 
@@ -170,6 +184,7 @@ func initialize(p_scene: Control, rm: RunManager) -> void:
 	_gun_trickster = parent_scene._gun_trickster
 	_gun_gambler = parent_scene._gun_gambler
 	_gun_stance_hunter = parent_scene._gun_stance_hunter
+	_gun_suppressor = parent_scene._gun_suppressor
 	
 	# 풀 화면 오버레이 설정
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -543,6 +558,7 @@ func _on_start_run_pressed() -> void:
 		"trickster": target_gun = _gun_trickster
 		"gambler": target_gun = _gun_gambler
 		"stance_hunter": target_gun = _gun_stance_hunter
+		"suppressor": target_gun = _gun_suppressor
 		
 	if target_gun:
 		parent_scene.set_current_gun(target_gun)

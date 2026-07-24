@@ -49,7 +49,8 @@ var run_stats := {
 	"total_kill_dist_sum": 0.0,
 	"tanks_killed_by_shred_only": 0,
 	"stance_shifts_killed_without_slow": 0,
-	"perfect_battles_count": 0
+	"perfect_battles_count": 0,
+	"magazine_emptied_wins": 0
 }
 
 var deck: Array[BulletData] = []
@@ -120,7 +121,8 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 		"total_kill_dist_sum": 0.0,
 		"tanks_killed_by_shred_only": 0,
 		"stance_shifts_killed_without_slow": 0,
-		"perfect_battles_count": 0
+		"perfect_battles_count": 0,
+		"magazine_emptied_wins": 0
 	}
 	
 	# 총기 및 기본 파츠 초기화
@@ -211,6 +213,10 @@ func _sync_gun_stats_from_csv(g: GunData) -> void:
 		g.passive_knockback_bonus = csv.passive_knockback_bonus
 		g.passive_acc_bonus = csv.passive_acc_bonus
 		g.parts_capacity = csv.parts_capacity
+		g.fire_mode = csv.fire_mode
+		# preview_window_size는 CSV에 없으면 -1로 오므로 .tres 값을 보존한다.
+		if int(csv.get("preview_window_size", -1)) >= 0:
+			g.preview_window_size = int(csv.preview_window_size)
 		print("DataLoader: 총기 [%s] 스탯 CSV 동기화 완료 (장탄수: %d)" % [res_id, g.magazine_capacity])
 
 
@@ -498,6 +504,11 @@ func check_weapon_unlocks() -> Array[String]:
 	# 7. 도박형 (gambler): [리스크 감수] 무손실 완주 (런 전체에서 최소 적 접근 거리가 1 초과 유지)
 	if not meta_unlocked_weapons.has("gambler") and run_stats.min_dist_allowed > 1:
 		newly_unlocked.append("gambler")
+
+	# 8. 제압형 (suppressor): [전탄 소모] 탄창을 한 발도 남기지 않고 비운 채 전투 승리
+	# 연발이 강제하는 행동(전량 커밋)을 단발 총으로 미리 연습시키는 조건이다.
+	if not meta_unlocked_weapons.has("suppressor") and run_stats.get("magazine_emptied_wins", 0) >= 1:
+		newly_unlocked.append("suppressor")
 		
 	for weapon in newly_unlocked:
 		meta_unlocked_weapons.append(weapon)

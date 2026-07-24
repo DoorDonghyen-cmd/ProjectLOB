@@ -13,6 +13,7 @@ var _gun_heavy: GunData = preload("res://resources/guns/heavy.tres")
 var _gun_trickster: GunData = preload("res://resources/guns/trickster.tres")
 var _gun_gambler: GunData = preload("res://resources/guns/gambler.tres")
 var _gun_stance_hunter: GunData = preload("res://resources/guns/stance_hunter.tres")
+var _gun_suppressor: GunData = preload("res://resources/guns/suppressor.tres")
 
 var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
 var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
@@ -624,6 +625,7 @@ func handle_combat_finished(is_dead: bool) -> void:
 		_rm.run_stats.total_kill_dist_sum += _cm.battle_stats.total_kill_dist_sum
 		_rm.run_stats.tanks_killed_by_shred_only += _cm.battle_stats.shred_only_tank_kills
 		_rm.run_stats.stance_shifts_killed_without_slow += _cm.battle_stats.stance_kills_without_slow
+		_rm.run_stats.magazine_emptied_wins += _cm.battle_stats.magazine_emptied_wins
 		
 		# 최소 접근 거리
 		if _cm.battle_stats.min_dist_allowed < _rm.run_stats.min_dist_allowed:

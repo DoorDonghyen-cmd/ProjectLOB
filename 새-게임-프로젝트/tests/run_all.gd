@@ -22,6 +22,7 @@ const SuiteSectionProgress := preload("res://tests/suite_section_progress.gd")
 const SuiteConsumables := preload("res://tests/suite_consumables.gd")
 const SuiteContinuousRun := preload("res://tests/suite_continuous_run.gd")
 const SuiteSpawnTiers := preload("res://tests/suite_spawn_tiers.gd")
+const SuiteFireMode := preload("res://tests/suite_fire_mode.gd")
 const SuiteUIDataDrift := preload("res://tests/suite_ui_data_drift.gd")
 const SuiteDocDrift := preload("res://tests/suite_doc_drift.gd")
 const SuiteUISmoke := preload("res://tests/suite_ui_smoke.gd")
@@ -65,6 +66,7 @@ func _initialize() -> void:
 	SuiteConsumables.run(t)   # 소모품 효과(heal/shred) + 가방 적재·소진
 	SuiteContinuousRun.run(t) # 연속 런 구조(계층 체이닝·자원 유지·종료 시점)
 	SuiteSpawnTiers.run(t)    # 계층별 스폰 3구간이 모두 도달 가능한지
+	SuiteFireMode.run(t)      # 발사 방식(연발 버스트 + 단발 회귀)
 	SuiteUIDataDrift.run(t)   # UI가 계층 정보를 복사해 두지 않았는지(소스 레벨 드리프트 검사)
 	SuiteDocDrift.run(t)      # GDD·스킬 문서에 폐기된 세계관 설정이 남아 있지 않은지
 	# SuiteUISmoke는 _process()에서 — 트리 가동 후에 실행해야 한다.
