@@ -1,6 +1,8 @@
 class_name CylinderView
 extends VBoxContainer
 
+const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 약실 내 탄환들의 순서(LIFO) 및 실린더 UI 시각화 컴포넌트
 ## ═══════════════════════════════════════════════════
@@ -40,9 +42,15 @@ func update_cylinder_visuals() -> void:
 		var bullet: BulletData = bullets[i]
 		var is_next: bool = (display_count == 0)
 		var is_hidden: bool = (display_count >= 2)
+		var has_visible_chain := (
+			display_count == 0
+			and i > 0
+			and BulletRoleUI.is_setup_chain(bullet, bullets[i - 1])
+		)
 		
 		# 카드 번호는 격발될 순서(1, 2, 3...)로 표기
-		var bullet_card := _create_dynamic_bullet_card(bullet, display_count + 1, is_next, is_hidden)
+		var bullet_card := _create_dynamic_bullet_card(
+			bullet, display_count + 1, is_next, is_hidden, has_visible_chain)
 		add_child(bullet_card)
 		display_count += 1
 		
@@ -61,10 +69,18 @@ func update_cylinder_visuals() -> void:
 	rot_tween.tween_property(self, "rotation_degrees", 4.0, 0.08).set_trans(Tween.TRANS_CUBIC)
 	rot_tween.tween_property(self, "rotation_degrees", 0.0, 0.18).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 
-func _create_dynamic_bullet_card(bullet: BulletData, index: int, is_next: bool, is_hidden: bool = false) -> PanelContainer:
+func _create_dynamic_bullet_card(
+	bullet: BulletData,
+	index: int,
+	is_next: bool,
+	is_hidden: bool = false,
+	has_visible_chain: bool = false
+) -> PanelContainer:
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(0, 32)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if not is_hidden:
+		card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
 	
 	var style := StyleBoxFlat.new()
 	if is_next:
@@ -121,6 +137,15 @@ func _create_dynamic_bullet_card(bullet: BulletData, index: int, is_next: bool, 
 	var name_lbl: Label = parent_scene.make_label(display_name, 11, name_color)
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hbox.add_child(name_lbl)
+
+	if not is_hidden:
+		var role_lbl: Label = parent_scene.make_label(
+			BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
+		hbox.add_child(role_lbl)
+		if has_visible_chain:
+			var chain_lbl: Label = parent_scene.make_label("⇢ 연계", 9.0, parent_scene.C_SUCCESS)
+			chain_lbl.tooltip_text = "현재 셋업탄 다음에 페이로드탄이 발사됩니다."
+			hbox.add_child(chain_lbl)
 	
 	# 간단한 성능 표시 (is_hidden 시 은폐)
 	var stat_str := "D%d P%d" % [bullet.damage, bullet.penetration]

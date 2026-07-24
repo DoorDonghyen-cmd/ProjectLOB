@@ -1,6 +1,8 @@
 class_name BulletGalleryOverlay
 extends PanelContainer
 
+const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 탄환 이미지 갤러리 오버레이 (15종 총알 리소스 한눈에 보기)
 ## ═══════════════════════════════════════════════════
@@ -135,7 +137,8 @@ func open_gallery() -> void:
 	# 그리드 내부 카드 렌더링
 	for b_data in bullet_datas:
 		var cell_panel := PanelContainer.new()
-		cell_panel.custom_minimum_size = Vector2(170, 100)
+		cell_panel.custom_minimum_size = Vector2(170, 112)
+		cell_panel.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(b_data.role), b_data.description]
 		_apply_panel_style(cell_panel, C_PANEL_BG, Color(0.25, 0.25, 0.3))
 		_grid_container.add_child(cell_panel)
 		
@@ -165,6 +168,10 @@ func open_gallery() -> void:
 		var name_lbl = parent_scene.make_label(b_data.display_name, 11, C_NEON_GOLD)
 		name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		info_vbox.add_child(name_lbl)
+
+		var role_lbl = parent_scene.make_label(
+			BulletRoleUI.badge_text(b_data.role), 9, BulletRoleUI.color(b_data.role))
+		info_vbox.add_child(role_lbl)
 		
 		var stat_lbl = parent_scene.make_label("DMG:%d ACC:%d PEN:%d" % [b_data.damage, b_data.accuracy, b_data.penetration], 8, parent_scene.C_TEXT)
 		info_vbox.add_child(stat_lbl)
@@ -190,6 +197,8 @@ func open_gallery() -> void:
 				Enums.BulletEffect.OPENING_SHOT: eff_name = "선제 사격"
 				Enums.BulletEffect.CALIBER_DIFF: eff_name = "클래스 교차"
 				Enums.BulletEffect.PIERCE: eff_name = "관통 다중"
+				Enums.BulletEffect.BUFF_ACC: eff_name = "다음 탄 ACC 강화"
+				Enums.BulletEffect.BUFF_PEN: eff_name = "다음 탄 PEN 강화"
 			var eff_lbl = parent_scene.make_label("★ %s (%d)" % [eff_name, b_data.effect_value], 8, Color(0.3, 0.9, 0.5))
 			info_vbox.add_child(eff_lbl)
 

@@ -5,14 +5,16 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = ".45ACP 연발마무리탄"
-description = "탄창의 마지막을 장식하는 탄환으로 화력이 증폭되어 격발됩니다."
+display_name = ".45ACP 마무리탄"
+description = "탄창의 마지막 발일 때 최종 피해가 130%로 증폭됩니다."
 icon = ExtResource("2_texture")
-damage = 2
-accuracy = 5
-penetration = 2
+is_basic = false
+role = "standalone"
+damage = 3
+accuracy = 6
+penetration = 1
 knockback = 0
 slow = 0
 effect_type = 3
-effect_value = 150
+effect_value = 130
 weapon_class = 1

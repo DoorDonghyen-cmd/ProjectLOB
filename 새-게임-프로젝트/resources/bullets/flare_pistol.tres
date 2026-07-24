@@ -5,14 +5,16 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "9mm 견제탄"
-description = "장전된 첫 탄환 발사 시 강력한 경직을 일으켜 적을 넉백시키고, 방어력(DEF)을 영구적으로 -1 파쇄합니다."
+display_name = "9mm 발광탄"
+description = "유효 적중 시 탄도 표식을 남겨 다음 1발의 ACC를 3 높입니다."
 icon = ExtResource("2_texture")
-damage = 2
-accuracy = 5
-penetration = 1
-knockback = 1
+is_basic = false
+role = "setter"
+damage = 1
+accuracy = 8
+penetration = 0
+knockback = 0
 slow = 0
-effect_type = 4
-effect_value = 2
+effect_type = 7
+effect_value = 3
 weapon_class = 0

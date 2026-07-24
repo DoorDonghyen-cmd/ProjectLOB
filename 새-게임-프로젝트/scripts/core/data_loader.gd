@@ -55,8 +55,7 @@ static func _b(line: PackedStringArray, cols: Dictionary, key: String) -> bool:
 
 ## ── 발사 방식 파싱 ──
 ## 정본: docs/gdd/21_fire_mode.md
-## 값은 single / full_auto 2종뿐이다. double_tap은 fire_mode가 아니라
-## 기관단총의 턴당 1회 선택형 능력이므로 여기에 정의하지 않는다.
+## 값은 single / full_auto 2종뿐이다.
 static func _parse_fire_mode(s: String) -> int:
 	match s.strip_edges().to_lower():
 		"full_auto": return Enums.FireMode.FULL_AUTO
@@ -118,25 +117,28 @@ static func _load_bullet_stats() -> void:
 		print("DataLoader ⚠️ 에러: bullet_stats.csv 파일을 열 수 없습니다.")
 		return
 		
-	var headers := file.get_csv_line()
+	var cols := _col_map(file.get_csv_line())
 	
 	while not file.eof_reached():
 		var line := file.get_csv_line()
-		if line.size() < 10 or line[0] == "":
+		var id := _s(line, cols, "id")
+		if id == "":
 			continue
 			
-		var id := line[0].strip_edges()
 		var entry := {
 			"id": id,
-			"display_name": line[1].strip_edges(),
-			"class": _parse_class(line[2]),
-			"damage": int(line[3]),
-			"penetration": int(line[4]),
-			"accuracy": int(line[5]),
-			"knockback": int(line[6]),
-			"slow": int(line[7]),
-			"effect_type": int(line[8]),
-			"effect_value": int(line[9])
+			"display_name": _s(line, cols, "display_name"),
+			"class": _parse_class(_s(line, cols, "class")),
+			"is_basic": _b(line, cols, "is_basic"),
+			"role": _s(line, cols, "role", "standalone"),
+			"damage": _i(line, cols, "damage"),
+			"penetration": _i(line, cols, "penetration"),
+			"accuracy": _i(line, cols, "accuracy"),
+			"knockback": _i(line, cols, "knockback"),
+			"slow": _i(line, cols, "slow"),
+			"effect_type": _i(line, cols, "effect_type"),
+			"effect_value": _i(line, cols, "effect_value"),
+			"description": _s(line, cols, "description")
 		}
 		_bullets[id] = entry
 

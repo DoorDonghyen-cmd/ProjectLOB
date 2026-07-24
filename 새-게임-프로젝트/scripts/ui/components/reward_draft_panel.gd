@@ -1,6 +1,8 @@
 class_name RewardDraftPanel
 extends VBoxContainer
 
+const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 전투 승리 후 탄환 보상 드래프트 선택 UI 컴포넌트
 ## ═══════════════════════════════════════════════════
@@ -143,8 +145,9 @@ func _generate_draft_choices() -> Array[BulletData]:
 
 func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(130, 130)
+	card.custom_minimum_size = Vector2(140, 145)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
 	
 	var style := StyleBoxFlat.new()
 	style.bg_color = parent_scene.C_PANEL
@@ -161,6 +164,12 @@ func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(name_lbl)
+
+	var role_lbl: Label = parent_scene.make_label(
+		BulletRoleUI.badge_text(bullet.role), 11, BulletRoleUI.color(bullet.role))
+	role_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	role_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(role_lbl)
 	
 	var stats_lbl: Label = parent_scene.make_label(
 		"DMG %d  ACC %d  PEN %d" % [bullet.damage, bullet.accuracy, bullet.penetration],
@@ -341,6 +350,7 @@ func _open_deck_swap_popup() -> void:
 		var card := PanelContainer.new()
 		card.custom_minimum_size = Vector2(0, 40)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
+		card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
 		
 		var style := StyleBoxFlat.new()
 		style.bg_color = parent_scene.C_PANEL_DARK
@@ -362,6 +372,10 @@ func _open_deck_swap_popup() -> void:
 		var name_lbl: Label = parent_scene.make_label(bullet.display_name, 12, parent_scene.C_TEXT)
 		name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		hbox.add_child(name_lbl)
+
+		var role_lbl: Label = parent_scene.make_label(
+			BulletRoleUI.badge_text(bullet.role), 10, BulletRoleUI.color(bullet.role))
+		hbox.add_child(role_lbl)
 		
 		var stats_lbl: Label = parent_scene.make_label("DMG %d PEN %d" % [bullet.damage, bullet.penetration], 10, parent_scene.C_DIM)
 		hbox.add_child(stats_lbl)
@@ -373,6 +387,7 @@ func _open_deck_swap_popup() -> void:
 		btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 		btn.add_theme_stylebox_override("disabled", StyleBoxEmpty.new())
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.tooltip_text = card.tooltip_text
 		
 		btn.pressed.connect(func():
 			_execute_swap_action(idx)

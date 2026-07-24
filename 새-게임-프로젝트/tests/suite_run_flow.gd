@@ -7,8 +7,8 @@ const CombatManagerScript := preload("res://scripts/core/combat_manager.gd")
 
 const GUN_PISTOL := "res://resources/guns/revolver.tres"
 const B_BASIC := "res://resources/bullets/basic_pistol.tres"
-const B_KB := "res://resources/bullets/knockback_pistol.tres"
-const B_OPEN := "res://resources/bullets/opening_pistol.tres"
+const B_KB := "res://resources/bullets/impact_pistol.tres"
+const B_OPEN := "res://resources/bullets/flare_pistol.tres"
 const E_RUSHER := "res://resources/enemies/rusher.tres"
 
 

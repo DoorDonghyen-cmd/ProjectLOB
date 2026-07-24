@@ -8,6 +8,8 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-24 | **기관단총 연발 전환과 탄환 역할 UI** | `codex0724-smg-role` | Tempo 전탄 커밋·Gambler 단발 분리, 셋업 유효 적중 수치 정합, 리듬 챔버 폭증 차단, 27종 역할 메타데이터와 LIFO 연계 배지 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_smg_full_auto_ammo_role_ui_2026-07-24.md) |
+| 2026-07-24 | **탄환 데이터 v5 27종 마이그레이션** | `codex0724-ammo-v5` | 헤더 기반 데이터 계약, 27종 CSV·리소스 일치, 시작 덱·상점·프리로드 ID 교체, 엄격한 무결성 회귀 안전망 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v5_migration_2026-07-24.md) |
 | 2026-07-17 | **렐릭 시스템 전면 제거** | `codex0717` | 런타임 상태·호출 계약·UI·맵 조건·정산을 함께 제거하고 포인트블랭크 파츠 및 기존 맵 연결 구조는 보존 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_relic_system_removal_2026-07-17.md) |
 | 2026-06-27 | **에이전트 지침 및 매니지먼트 이식** | `2bed5975` | D:\ProjectLoB 내 범용 매니지먼트 환경 직접 구축 설계 | [계획서 없음](#) |
 | 2026-06-28 | **combat_scene.gd 리팩토링** | `bbacb3ae` | 씬 라우터 및 5대 독립 서브 오버레이 컴포넌트 모듈 분리 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/bbacb3ae-bec7-4690-b500-e3c4ec102daf/implementation_plan.md) |
@@ -32,6 +34,8 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0724-smg-role Plan](file:///D:/ProjectLoB/docs/implementation_plan_smg_full_auto_ammo_role_ui_2026-07-24.md)
+* [Session codex0724-ammo-v5 Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v5_migration_2026-07-24.md)
 * [Session codex0718 Plan](file:///D:/ProjectLoB/docs/implementation_plan_route_branching_2026-07-18.md)
 * [Session codex0717 Plan](file:///D:/ProjectLoB/docs/implementation_plan_relic_system_removal_2026-07-17.md)
 * [Session afaad6f3-77c6-4268-acfb-c7f4a2acdd2c Plan](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/implementation_plan.md)

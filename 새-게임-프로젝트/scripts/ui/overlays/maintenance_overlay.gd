@@ -6,6 +6,8 @@ extends PanelContainer
 ## ═══════════════════════════════════════════════════
 
 const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
+## 무기고 탄환 진열 정본. 무결성 테스트가 전 항목의 실제 로드 가능 여부를 검증한다.
+const SHOP_BULLET_IDS := ["shred_rifle", "slow_pistol", "marker_dmr", "burst_dmr"]
 
 var parent_scene: Control
 var run_manager: RunManager
@@ -1336,12 +1338,9 @@ func _on_exit_pressed() -> void:
 func _generate_shop_items() -> void:
 	_shop_items.clear()
 	
-	var bullet_paths := [
-		"res://resources/bullets/shred_rifle.tres",
-		"res://resources/bullets/heavy_dmr.tres",
-		"res://resources/bullets/slow_pistol.tres",
-		"res://resources/bullets/knockback_pistol.tres"
-	]
+	var bullet_paths: Array[String] = []
+	for id in SHOP_BULLET_IDS:
+		bullet_paths.append("res://resources/bullets/%s.tres" % id)
 	var bullet_res = load(bullet_paths.pick_random())
 	_shop_items.append({ "item": bullet_res, "price": randi_range(20, 25), "sold_out": false })
 

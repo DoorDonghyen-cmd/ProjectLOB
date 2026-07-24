@@ -1,23 +1,22 @@
-[gd_resource type="Resource" load_steps=4 format=3]
+[gd_resource type="Resource" load_steps=3 format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/smg.png" id="1_icon"]
-[ext_resource type="Resource" path="res://resources/parts/rhythm_chamber.tres" id="2_part"]
 [ext_resource type="Script" path="res://scripts/data/gun_data.gd" id="3_script"]
 
 [resource]
 script = ExtResource("3_script")
 display_name = "전술 기관단총 (Tempo)"
-description = "속사형 템포 총기. 6발 대용량 탄창과 동일 구경 연타 시 대미지가 누적 폭증하는 리듬 챔버 파츠를 기본 내장하고 있습니다."
+description = "탄창 전체를 한 턴에 순차 발사하는 시퀀스 설계형 총기. 셋업탄과 페이로드탄의 연계를 한 번에 완성하지만 발사 후 3턴의 재장전 공백을 감수합니다."
 icon = ExtResource("1_icon")
 magazine_capacity = 6
 has_chamber = true
 magazine_structure = 0
-reload_turns = 2
-parts_capacity = 4
-default_part = ExtResource("2_part")
+reload_turns = 3
+parts_capacity = 3
 passive_dmg_bonus = -1
 passive_pen_bonus = 0
 passive_knockback_bonus = 0
 passive_acc_bonus = 0
-preview_window_size = 2
+preview_window_size = 6
 weapon_class = 1
+fire_mode = 1

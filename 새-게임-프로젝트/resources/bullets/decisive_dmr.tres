@@ -6,13 +6,15 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "7.62mm 결전탄"
-description = "지정사수소총의 한 발을 극대화하여 결정적인 피해를 입히는 결전용 탄환."
+description = "탄창의 마지막 발일 때 최종 피해가 200%로 증폭됩니다."
 icon = ExtResource("2_texture")
-damage = 5
+is_basic = false
+role = "payload"
+damage = 4
 accuracy = 6
 penetration = 2
 knockback = 0
 slow = 0
-effect_type = 0
-effect_value = 0
+effect_type = 3
+effect_value = 200
 weapon_class = 3

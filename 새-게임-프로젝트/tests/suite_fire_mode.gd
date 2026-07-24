@@ -5,15 +5,17 @@ extends RefCounted
 ##   연발(FULL_AUTO)은 탄창 전체를 **1턴에** 쏟는다. 발당 1턴이면
 ##   "멈출 수만 없는 단발"이 되어 하위호환이므로, 1턴이 유일하게 성립하는 값이다.
 ##
-## ⚠️ 이 스위트의 절반은 **단발 회귀**다. 기존 8종 총기의 동작이 바뀌지 않았음을
-##    확인하는 쪽이 연발 자체보다 중요하다 — 연발은 신규 총기 하나뿐이지만
-##    단발은 게임 전체이기 때문이다.
+## ⚠️ 전술 기관단총은 탄환 v5부터 연발로 전환되었다. 같은 SMG 클래스인 도박형은
+##    블라인드 스택 관리 정체성을 위해 단발을 유지하므로 총기별 계약을 따로 검증한다.
 
 const CombatManagerScript := preload("res://scripts/core/combat_manager.gd")
 
 const G_SUPPRESSOR := "res://resources/guns/suppressor.tres"
 const G_REVOLVER := "res://resources/guns/revolver.tres"
 const G_SMG := "res://resources/guns/smg.tres"
+const G_GAMBLER := "res://resources/guns/gambler.tres"
+const B_TUNER_SMG := "res://resources/bullets/tuner_smg.tres"
+const B_SURGE_SMG := "res://resources/bullets/surge_smg.tres"
 
 
 static func _bullet(dmg: int, acc: int, pen: int) -> BulletData:
@@ -53,8 +55,16 @@ static func run(t) -> void:
 	t.check(not sup_csv.is_empty(), "제압형이 gun_stats.csv에 존재")
 	t.eq(int(sup_csv.fire_mode), Enums.FireMode.FULL_AUTO, "제압형 = FULL_AUTO")
 
-	# ⚠️ 기존 8종은 전부 단발이어야 한다. 하나라도 연발이 되면 그 총의 정체성이 죽는다.
-	for gid in ["revolver", "smg", "dmr", "shotgun", "heavy", "trickster", "gambler", "stance_hunter"]:
+	var smg_csv := DataLoader.get_gun("smg")
+	t.eq(int(smg_csv.fire_mode), Enums.FireMode.FULL_AUTO, "전술 기관단총 = FULL_AUTO")
+	t.eq(int(smg_csv.reload_turns), 3, "전술 기관단총 리로드 = 3턴")
+	t.eq(int(smg_csv.preview_window_size), 6, "전술 기관단총 예고창 = 6발")
+	t.eq(int(smg_csv.parts_capacity), 3, "전술 기관단총 파츠 슬롯 = 3")
+	var smg_res: GunData = load(G_SMG)
+	t.check(smg_res.default_part == null, "연발 폭증을 만들던 리듬 챔버 기본 내장 해제")
+
+	# 전술 기관단총을 제외한 기존 총기는 단발을 유지한다. 특히 도박형은 블라인드가 핵심이다.
+	for gid in ["revolver", "dmr", "shotgun", "heavy", "trickster", "gambler", "stance_hunter"]:
 		var g := DataLoader.get_gun(gid)
 		t.eq(int(g.fire_mode), Enums.FireMode.SINGLE, "%s = SINGLE (기존 총기 불변)" % gid)
 
@@ -158,23 +168,41 @@ static func run(t) -> void:
 	t.eq(cm6.enemies[0].current_hp, 98, "단발: 2 대미지만 적용 (회귀)")
 	cm6.free()
 
-	# 기관단총의 더블탭은 그대로 살아 있어야 한다 (fire_mode로 승격하지 않았다).
+	# 전술 기관단총: 조율→과부하를 3번 연결한 6발 시퀀스가 한 턴에 완성된다.
+	# 적재 배열은 LIFO이므로 페이로드를 먼저, 셋업을 나중에 넣는다.
 	var loadout7: Array[BulletData] = []
-	for i in range(6):
-		loadout7.append(_bullet(2, 9, 5))
-	var enemies7: Array[EnemyData] = [_enemy(100, 0, 0, 6)]
+	for i in range(3):
+		loadout7.append((load(B_SURGE_SMG) as BulletData).duplicate())
+		loadout7.append((load(B_TUNER_SMG) as BulletData).duplicate())
+	var enemies7: Array[EnemyData] = [_enemy(100, 0, 6, 8, 1)]
 	var cm7 = _setup(G_SMG, enemies7, loadout7)
-	t.check(not cm7.is_full_auto(), "기관단총은 연발이 아님(더블탭은 별개 층위)")
-
-	var before7: int = cm7.magazine.get_remaining()
-	cm7.double_tap_active = true
+	t.check(cm7.is_full_auto(), "전술 기관단총은 연발")
+	t.check(not cm7.has_method("_fire_double_tap"), "더블탭 발사 경로 제거")
+	var dist_before7: int = cm7.enemies[0].current_distance
 	cm7.fire()
-	t.eq(cm7.magazine.get_remaining(), before7 - 2, "⭐ 더블탭: 2발 소비 (회귀)")
+	t.eq(cm7.magazine.get_remaining(), 0, "⭐ 전술 기관단총 6발 전량 소비")
+	t.eq(cm7.enemies[0].current_hp, 85,
+		"⭐ 조율(1피해)+과부하(4피해) 3쌍 = 15피해, 버프 체인 작동")
+	t.eq(dist_before7 - cm7.enemies[0].current_distance, 1,
+		"전술 기관단총 6발도 적 전진은 1회")
+	t.eq(cm7.pending_buff_acc, 0, "6발 체인 종료 후 보류 ACC 버프 없음")
 	cm7.free()
+
+	# 같은 SMG 클래스인 도박형은 블라인드 스택 관리 때문에 단발을 유지한다.
+	var loadout_gambler: Array[BulletData] = []
+	for i in range(5):
+		loadout_gambler.append(_bullet(2, 9, 5))
+	var gambler_enemies: Array[EnemyData] = [_enemy(100, 0, 0, 6)]
+	var gambler_cm = _setup(G_GAMBLER, gambler_enemies, loadout_gambler)
+	t.check(not gambler_cm.is_full_auto(), "도박형은 단발 유지")
+	var gambler_before: int = gambler_cm.magazine.get_remaining()
+	gambler_cm.fire()
+	t.eq(gambler_cm.magazine.get_remaining(), gambler_before - 1,
+		"⭐ 도박형은 발사 1회에 1발만 소비")
+	gambler_cm.free()
 
 	# ── 밸런스: 연발 총의 턴당 화력이 기존 밴드 안인가 ──
 	# 사이클 = 1턴(발사) + reload_turns. 제압형은 3 → 4턴 사이클.
-	var sup: GunData = load(G_SUPPRESSOR)
 	var cycle: int = 1 + int(sup_csv.reload_turns)
 	t.eq(cycle, 4, "제압형 사이클 = 4턴 (발사 1 + 리로드 3)")
 
@@ -182,6 +210,27 @@ static func run(t) -> void:
 	var dpt := 10.0 / float(cycle)
 	t.check(dpt >= 2.0 and dpt <= 3.4,
 		"⭐ 기본 적재 턴당 DMG %.2f — 기존 밴드(2.14~3.33) 내" % dpt)
+
+	var smg_cycle: int = 1 + int(smg_csv.reload_turns)
+	var smg_basic_dpt := float(6 * (3 + int(smg_csv.passive_dmg_bonus))) / float(smg_cycle)
+	var smg_chain_dpt := 15.0 / float(smg_cycle)
+	t.eq(smg_cycle, 4, "전술 기관단총 사이클 = 4턴")
+	t.eq(smg_basic_dpt, 3.0, "⭐ 전술 기관단총 기본 6발 = 3.00 DMG/턴")
+	t.eq(smg_chain_dpt, 3.75, "⭐ 전술 기관단총 조율→과부하 체인 = 3.75 DMG/턴")
+
+	# 리듬 챔버를 선택 장착해도 연속 횟수만큼 폭증하지 않고 2·4·6번째에 +1씩만 붙는다.
+	var rhythm_loadout: Array[BulletData] = []
+	for i in range(6):
+		rhythm_loadout.append(_bullet(3, 9, 5))
+	var rhythm_enemies: Array[EnemyData] = [_enemy(100, 0, 0, 8)]
+	var rhythm_parts: Array[PartData] = [load("res://resources/parts/rhythm_chamber.tres")]
+	var rhythm_cm = CombatManagerScript.new()
+	rhythm_cm.start_encounter(smg_res, rhythm_enemies, rhythm_loadout, rhythm_parts)
+	rhythm_cm.confirm_loading(rhythm_loadout)
+	rhythm_cm.fire()
+	t.eq(rhythm_cm.enemies[0].current_hp, 85,
+		"⭐ 리듬 챔버 6발 = 기본 12 + 짝수 박자 3, 폭증 차단")
+	rhythm_cm.free()
 
 	# ⚠️ 연발 총의 패시브는 탄창 크기만큼 증폭된다. 특히 PEN은 이진 게이트라 절벽이다.
 	#    (전량 0 대미지 ↔ 전량 통과) 그래서 제압형의 패시브는 전부 0이어야 한다.

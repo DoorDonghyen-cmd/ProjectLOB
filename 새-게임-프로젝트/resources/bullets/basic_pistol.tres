@@ -5,9 +5,11 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "9mm 일반탄"
-description = "대인용 저지력을 지닌 탄환. 특수 방탄 장비가 없는 적에게 순수 물리 대미지를 입힙니다."
+display_name = "9mm 재생탄"
+description = "회수한 탄피와 남은 장약으로 재조립한 9mm 탄환. 안정적인 피해를 냅니다."
 icon = ExtResource("2_texture")
+is_basic = true
+role = "standalone"
 damage = 3
 accuracy = 7
 penetration = 0

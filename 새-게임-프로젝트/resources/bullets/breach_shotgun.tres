@@ -5,10 +5,12 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "12게이지 장갑파괴탄"
-description = "근접 궤적 전체에 파편을 흩뿌려 적의 장갑(DEF)을 영구히 붕괴시킵니다."
+display_name = "12게이지 파쇄 슬러그"
+description = "중량 슬러그가 적의 DEF를 영구적으로 2 낮춥니다."
 icon = ExtResource("2_texture")
-damage = 1
+is_basic = false
+role = "setter"
+damage = 2
 accuracy = 4
 penetration = 3
 knockback = 0

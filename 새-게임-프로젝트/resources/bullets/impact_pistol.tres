@@ -6,10 +6,12 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "9mm 충격탄"
-description = "대량의 화약을 충전하여 타격 시 적을 뒤로 크게 밀어냅니다."
+description = "충격 장약으로 적을 2칸 밀어 통로 거리를 확보합니다."
 icon = ExtResource("2_texture")
+is_basic = false
+role = "utility"
 damage = 1
-accuracy = 4
+accuracy = 6
 penetration = 0
 knockback = 2
 slow = 0

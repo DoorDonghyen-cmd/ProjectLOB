@@ -9,6 +9,10 @@ extends Resource
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var icon: Texture2D
+## 시작 덱·기본 보급에서 사용하는 계열 대표 탄환인지 여부
+@export var is_basic: bool = false
+## 덱 구성 역할. 표시 문구와 색상은 BulletRoleUI에서 중앙 관리한다.
+@export_enum("standalone", "setter", "payload", "utility") var role: String = "standalone"
 @export var weapon_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 
 @export_group("기본 스탯")
@@ -29,5 +33,6 @@ extends Resource
 ## 효과 유형 — 장전 순서에 따라 발동하는 특수 효과
 @export var effect_type: Enums.BulletEffect = Enums.BulletEffect.NONE
 ## 효과 수치 — ARMOR_SHRED: 방어 감소량, COMBO: 대미지 보너스, 
-## LAST_SHOT: 대미지 배율(x100, 예: 150=1.5배), OPENING_SHOT: 넉백 보너스
+## LAST_SHOT: 대미지 배율(x100, 예: 150=1.5배), OPENING_SHOT: 넉백 보너스,
+## BUFF_ACC / BUFF_PEN: 다음 1발에 더하는 해당 스탯
 @export var effect_value: int = 0

@@ -9,8 +9,8 @@ extends RefCounted
 const SL_PATH := "user://__test_continuous.cfg"
 const GUN := "res://resources/guns/revolver.tres"
 const B_BASIC := "res://resources/bullets/basic_pistol.tres"
-const B_KB := "res://resources/bullets/knockback_pistol.tres"
-const B_OPEN := "res://resources/bullets/opening_pistol.tres"
+const B_KB := "res://resources/bullets/impact_pistol.tres"
+const B_OPEN := "res://resources/bullets/flare_pistol.tres"
 
 
 static func _unlock(sections: Array) -> void:

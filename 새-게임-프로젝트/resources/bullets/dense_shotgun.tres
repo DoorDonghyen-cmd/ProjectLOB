@@ -5,14 +5,16 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "12게이지 대구경충격탄"
-description = "초근접 격발 시 적의 태세를 무력화하고 엄청난 거리를 밀어내는 충격 탄환."
+display_name = "12게이지 밀집탄"
+description = "밀집된 산탄으로 큰 피해를 내지만 낮은 ACC를 보완해야 합니다."
 icon = ExtResource("2_texture")
-damage = 2
+is_basic = false
+role = "payload"
+damage = 7
 accuracy = 4
-penetration = 2
-knockback = 1
+penetration = 0
+knockback = 0
 slow = 0
-effect_type = 4
-effect_value = 3
+effect_type = 0
+effect_value = 0
 weapon_class = 4

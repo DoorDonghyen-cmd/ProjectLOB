@@ -17,7 +17,7 @@ var _gun_suppressor: GunData = preload("res://resources/guns/suppressor.tres")
 
 var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
 var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
-var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_pistol.tres")
+var _bullets_kb: BulletData = preload("res://resources/bullets/impact_pistol.tres")
 
 var _enemy_rusher: EnemyData = preload("res://resources/enemies/rusher.tres")
 var _enemy_tank: EnemyData = preload("res://resources/enemies/tank.tres")
@@ -33,7 +33,7 @@ var _boss_director: EnemyData = preload("res://resources/enemies/boss_director.t
 var _boss_seraph: EnemyData = preload("res://resources/enemies/boss_seraph.tres")
 var _boss_omega: EnemyData = preload("res://resources/enemies/boss_omega.tres")
 var _boss_lob_core: EnemyData = preload("res://resources/enemies/boss_lob_core.tres")
-var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
+var _bullets_heavy: BulletData = preload("res://resources/bullets/burst_dmr.tres")
 var _font_neodgm: Font = load("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 
 # ── 색상 상수 ──
@@ -297,19 +297,21 @@ func handle_monster_gallery_closed() -> void:
 	_show_title_screen()
 
 
-func trigger_double_tap_test() -> void:
+## 전술 기관단총의 셋업→페이로드 연발 체인을 직접 확인하는 개발자 전투.
+func trigger_tempo_full_auto_test() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
 	_current_gun_data = _gun_smg
-	
+
 	_rm.start_new_run("section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
-	
+
 	_combat_margin.visible = true
 	if _combat_overlay:
 		_combat_overlay.visible = true
 		_combat_overlay.clear_combat_log()
-		_combat_overlay.add_combat_log("[color=#ffff66]🛠️ 더블탭 전투 테스트 시작! (속사형 SMG 탑재)[/color]")
-	
+		_combat_overlay.add_combat_log(
+			"[color=#ffff66]🛠️ 기관단총 연발 체인 테스트 시작! 페이로드를 먼저, 셋업을 나중에 넣으십시오.[/color]")
+
 	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_tank]
 	_start_combat_phase(enemy_list)
 

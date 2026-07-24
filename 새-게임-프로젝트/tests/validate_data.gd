@@ -18,6 +18,22 @@ static func _read_rows(path: String) -> Array:
 	return rows
 
 
+static func _col_map(headers: Variant) -> Dictionary:
+	var cols: Dictionary = {}
+	for i in range(headers.size()):
+		cols[str(headers[i]).strip_edges()] = i
+	return cols
+
+
+static func _cell(row: Variant, cols: Dictionary, key: String) -> String:
+	if not cols.has(key):
+		return ""
+	var idx: int = int(cols[key])
+	if idx < 0 or idx >= row.size():
+		return ""
+	return str(row[idx]).strip_edges()
+
+
 static func _tres_basenames(dir_path: String) -> Dictionary:
 	var names: Dictionary = {}
 	var d := DirAccess.open(dir_path)
@@ -78,27 +94,62 @@ static func _validate_bullets(t) -> void:
 
 	var tres := _tres_basenames("res://resources/bullets")
 	var seen: Dictionary = {}
-	# 컬럼: 0 id,1 display,2 class,3 dmg,4 pen,5 acc,6 kb,7 slow,8 effect_type,9 effect_value,10 desc
-	var int_cols := [3, 4, 5, 6, 7, 8, 9]
+	var cols := _col_map(rows[0])
+	var required := [
+		"id", "display_name", "class", "is_basic", "role",
+		"damage", "penetration", "accuracy", "knockback", "slow",
+		"effect_type", "effect_value", "description"
+	]
+	var schema_ok := true
+	for key in required:
+		var exists := cols.has(key)
+		t.check(exists, "bullet_stats.csv 필수 헤더 '%s' 존재" % key)
+		schema_ok = schema_ok and exists
+	if not schema_ok:
+		return
+
+	var int_keys := [
+		"damage", "penetration", "accuracy", "knockback",
+		"slow", "effect_type", "effect_value"
+	]
+	var valid_classes := ["pistol", "smg", "rifle", "dmr", "shotgun", "universal"]
+	var valid_roles := ["setter", "payload", "standalone", "utility"]
 	for i in range(1, rows.size()):
-		var r: Array = rows[i]
+		var r: Variant = rows[i]
 		var where := "bullet 행 %d" % (i + 1)
-		if r.size() < 11:
-			t.check(false, "%s: 컬럼 수 부족(%d < 11)" % [where, r.size()])
-			continue
-		var id: String = r[0].strip_edges()
+		var id := _cell(r, cols, "id")
 		t.check(id != "", "%s: id 비어있지 않음" % where)
 		t.check(not seen.has(id), "bullet id 유니크: '%s'" % id)
 		seen[id] = true
-		for c in int_cols:
-			t.check(r[c].strip_edges().is_valid_int(), "%s: 컬럼[%d]='%s' 정수" % [where, c, r[c]])
+		for key in int_keys:
+			var raw := _cell(r, cols, key)
+			t.check(raw.is_valid_int(), "%s: %s='%s' 정수" % [where, key, raw])
+
+		var is_basic := _cell(r, cols, "is_basic").to_lower()
+		var role := _cell(r, cols, "role").to_lower()
+		var cls := _cell(r, cols, "class").to_lower()
+		t.check(is_basic in ["true", "false"], "%s: is_basic bool" % where)
+		t.check(role in valid_roles, "%s: role '%s' 유효" % [where, role])
+		t.check(cls in valid_classes, "%s: class '%s' 유효" % [where, cls])
+		t.check(_cell(r, cols, "display_name") != "", "%s: 표기명 존재" % where)
+		t.check(_cell(r, cols, "description") != "", "%s: 설명문 존재" % where)
+
 		if id != "":
-			t.warn(tres.has(id), "bullet '%s' → resources/bullets/%s.tres 존재" % [id, id])
-		# 밸런스 밴드(WARN): DMG 1~5 / PEN 0~5 / ACC 4~8 / KB 0~2 / slow 0~2
-		var dmg := int(r[3]); var pen := int(r[4]); var acc := int(r[5]); var kb := int(r[6]); var slow := int(r[7])
-		t.warn(dmg >= 1 and dmg <= 5, "bullet '%s' DMG %d 밴드(1~5)" % [id, dmg])
+			t.check(tres.has(id), "bullet '%s' → resources/bullets/%s.tres 존재" % [id, id])
+
+		# v5 페이로드는 셋업 없이는 게이트를 넘기 어려운 대신 극단 DMG를 갖는다.
+		# 인지 밴드는 없애지 않고 의도된 최대치만 수용한다.
+		var dmg := int(_cell(r, cols, "damage"))
+		var pen := int(_cell(r, cols, "penetration"))
+		var acc := int(_cell(r, cols, "accuracy"))
+		var kb := int(_cell(r, cols, "knockback"))
+		var slow := int(_cell(r, cols, "slow"))
+		var effect_type := int(_cell(r, cols, "effect_type"))
+		t.check(effect_type >= 0 and effect_type < Enums.BulletEffect.size(),
+			"bullet '%s' effect_type %d 유효" % [id, effect_type])
+		t.warn(dmg >= 1 and dmg <= 9, "bullet '%s' DMG %d 밴드(1~9)" % [id, dmg])
 		t.warn(pen >= 0 and pen <= 5, "bullet '%s' PEN %d 밴드(0~5)" % [id, pen])
-		t.warn(acc >= 4 and acc <= 8, "bullet '%s' ACC %d 밴드(4~8)" % [id, acc])
+		t.warn(acc >= 2 and acc <= 8, "bullet '%s' ACC %d 밴드(2~8)" % [id, acc])
 		t.warn(kb >= 0 and kb <= 2, "bullet '%s' KB %d 밴드(0~2)" % [id, kb])
 		t.warn(slow >= 0 and slow <= 2, "bullet '%s' slow %d 밴드(0~2)" % [id, slow])
 

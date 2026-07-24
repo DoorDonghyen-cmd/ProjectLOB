@@ -5,10 +5,12 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "5.56mm 일반탄"
-description = "방탄 조끼를 가볍게 관통할 수 있는 높은 관통력을 지닌 돌격소총용 표준 탄환."
+display_name = "5.56mm 재생탄"
+description = "회수한 5.56mm 부품으로 재조립한 균형형 탄환입니다."
 icon = ExtResource("2_texture")
-damage = 2
+is_basic = true
+role = "standalone"
+damage = 3
 accuracy = 6
 penetration = 1
 knockback = 0

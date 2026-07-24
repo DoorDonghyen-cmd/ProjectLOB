@@ -5,14 +5,16 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = ".45ACP 콤보탄"
-description = "연속 명중 시 반응 장약이 폭발하여 추가 대미지를 입힙니다."
+display_name = ".45ACP 과부하탄"
+description = "고출력 장약으로 큰 피해를 내지만 ACC가 낮아 조율탄과의 연계가 필요합니다."
 icon = ExtResource("2_texture")
-damage = 2
-accuracy = 6
-penetration = 1
+is_basic = false
+role = "payload"
+damage = 5
+accuracy = 3
+penetration = 0
 knockback = 0
 slow = 0
-effect_type = 2
-effect_value = 3
+effect_type = 0
+effect_value = 0
 weapon_class = 1

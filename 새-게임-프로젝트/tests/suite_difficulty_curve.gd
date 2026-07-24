@@ -17,7 +17,7 @@ static func _fresh_full_run() -> RunManager:
 	rm.start_new_run("section_a", load(G_REVOLVER),
 		load("res://resources/bullets/basic_pistol.tres"),
 		load("res://resources/bullets/shred_rifle.tres"),
-		load("res://resources/bullets/knockback_pistol.tres"))
+		load("res://resources/bullets/impact_pistol.tres"))
 	return rm
 
 

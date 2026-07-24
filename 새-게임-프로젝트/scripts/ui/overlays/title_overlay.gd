@@ -286,16 +286,16 @@ func _build_dev_test_panel() -> void:
 	btn_monster_gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_monster_gallery)
 	
-	# 4. 더블탭 전투 테스트 숏컷 버튼
-	var btn_double_tap = parent_scene.make_button("🔫 더블탭 전투 테스트", func():
+	# 4. 기관단총 연발 체인 테스트
+	var btn_tempo_full_auto = parent_scene.make_button("⚡ 연발 체인 테스트 (기관단총)", func():
 		_dev_test_panel.visible = false
-		parent_scene.trigger_double_tap_test()
+		parent_scene.trigger_tempo_full_auto_test()
 	, parent_scene.C_ACCENT)
-	btn_double_tap.custom_minimum_size = Vector2(0, 36)
-	btn_double_tap.add_theme_font_size_override("font_size", 11)
-	btn_double_tap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_child(btn_double_tap)
-	
+	btn_tempo_full_auto.custom_minimum_size = Vector2(0, 36)
+	btn_tempo_full_auto.add_theme_font_size_override("font_size", 11)
+	btn_tempo_full_auto.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_tempo_full_auto)
+
 	# 4-1. 연발(제압형) 전투 테스트 — 다수전 이월 + 적재 퍼즐 + 리로드 공백
 	var btn_full_auto = parent_scene.make_button("🌪 연발 전투 테스트 (제압형)", func():
 		_dev_test_panel.visible = false

@@ -92,15 +92,15 @@ const WEAPON_PROFILES := {
 	},
 	"tempo": {
 		"res_key": "smg",
-		"display_name_kor": "속사형",
+		"display_name_kor": "전술 기관단총",
 		"display_name_eng": "TEMPO",
 		"emoji": "⚡",
-		"cap": 4,
+		"cap": 3,
 		"ammo": 6,
-		"prev": 2,
-		"calibers": "[9mm] [5.56mm] [속사전용]",
-		"passive": "- 리듬 챔버 혜택 일부 내장 (Combo 연타 DMG+)\n- 9mm 권총탄 계열 연사 시 추가 탄 공급 보너스",
-		"penalty": "- 대구경 고화력 7.62mm 탄환 사용 불가능\n- 기본 관통(PEN) 게이트가 낮아 중장갑 적에 취약",
+		"prev": 6,
+		"calibers": "[.45ACP] [SMG] [시퀀스]",
+		"passive": "- 탄창 전체를 1턴에 순차 발사\n- 셋업→페이로드 체인을 버스트 안에서 자동 완성",
+		"penalty": "- 발사 후 3턴 재장전 공백\n- 탄당 DMG -1, 발사 중 시퀀스 수정 불가",
 		"unlock_desc": "[계획 규율] 납탄(중간 삽탄) 격발 없이 완주"
 	},
 	"heavy": {

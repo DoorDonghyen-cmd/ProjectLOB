@@ -5,14 +5,16 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "5.56mm 철갑탄"
-description = "피격된 적의 전술 방어구(DEF)를 영구적으로 파쇄하여 약화시킵니다."
+display_name = "5.56mm 파쇄탄"
+description = "명중한 적의 DEF를 영구적으로 2 낮춰 뒤따르는 탄을 지원합니다."
 icon = ExtResource("2_texture")
-damage = 2
+is_basic = false
+role = "setter"
+damage = 1
 accuracy = 5
-penetration = 4
+penetration = 3
 knockback = 0
 slow = 0
 effect_type = 1
-effect_value = 1
+effect_value = 2
 weapon_class = 2

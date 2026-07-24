@@ -5,10 +5,12 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = ".45ACP 일반탄"
-description = "연사 화기 전용 표준 탄환. 빠르게 화력을 누적시키기에 적합합니다."
+display_name = ".45ACP 재생탄"
+description = "회수 부품으로 재조립한 기관단총용 탄환. 연속 화력의 기준이 됩니다."
 icon = ExtResource("2_texture")
-damage = 2
+is_basic = true
+role = "standalone"
+damage = 3
 accuracy = 6
 penetration = 0
 knockback = 0

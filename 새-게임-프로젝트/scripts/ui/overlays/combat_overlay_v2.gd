@@ -1,6 +1,8 @@
 class_name CombatOverlayV2
 extends MarginContainer
 
+const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 🧠 L.O.B 전투 UI V2 데모 오버레이 (새로운 노드 트리 구조 기반 설계)
 ## ═══════════════════════════════════════════════════
@@ -12,8 +14,8 @@ var combat_manager: CombatManager
 # ── 프리로드 리소스 ──
 var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
 var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
-var _bullets_kb: BulletData = preload("res://resources/bullets/knockback_pistol.tres")
-var _bullets_heavy: BulletData = preload("res://resources/bullets/heavy_dmr.tres")
+var _bullets_kb: BulletData = preload("res://resources/bullets/impact_pistol.tres")
+var _bullets_heavy: BulletData = preload("res://resources/bullets/burst_dmr.tres")
 var _bullets_slow: BulletData = preload("res://resources/bullets/slow_pistol.tres")
 
 # ── 서브 컴포넌트 프리로드 ──
@@ -119,7 +121,6 @@ var _mag_display_override: Array[BulletData] = []
 var _fx_layer: Control
 var _unload_btn: Button
 var _reload_btn: Button
-var _double_tap_btn: Button
 var _eject_btn: Button
 var _fire_btn: Button
 
@@ -402,7 +403,12 @@ func _build_ui() -> void:
 	_loading_bag_ammo.add_theme_constant_override("separation", 10)
 	bag_body_margin.add_child(_loading_bag_ammo)
 	
-	var bag_hint_ammo: Label = parent_scene.make_label("✓ 적재 페이즈 — 탄을 눌러 스택 맨 위에 삽탄", 12, parent_scene.C_SUCCESS)
+	var bag_hint_ammo: Label = parent_scene.make_label(
+		"✓ 탄을 누르면 스택 맨 위에 삽탄\n페이로드를 먼저 넣고 셋업을 나중에 넣으면 셋업이 먼저 발사됩니다.",
+		12,
+		parent_scene.C_SUCCESS
+	)
+	bag_hint_ammo.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_loading_bag_ammo.add_child(bag_hint_ammo)
 	
 	# 세로 스크롤 가능한 스크롤 영역 생성
@@ -721,12 +727,6 @@ func _build_ui() -> void:
 	_apply_button_style(bag_btn, parent_scene.C_WARNING)
 	_action_row.add_child(bag_btn)
 	
-	_double_tap_btn = parent_scene.make_button("💥 더블탭 OFF", _on_double_tap_toggled, parent_scene.C_DIM)
-	_double_tap_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_double_tap_btn.add_theme_font_size_override("font_size", 13)
-	_apply_button_style(_double_tap_btn, parent_scene.C_DIM)
-	_action_row.add_child(_double_tap_btn)
-	
 	_eject_btn = parent_scene.make_button("🎪 이젝트", _on_eject_pressed, parent_scene.C_NEON_GOLD)
 	_eject_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_eject_btn.add_theme_font_size_override("font_size", 13)
@@ -805,6 +805,7 @@ func _create_drawer_item(title: String, desc: String, can_use: bool, click_callb
 func _create_inventory_card(bullet: BulletData, count: int, click_callback: Callable = Callable()) -> Control:
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(120, 72)
+	card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.11, 0.16)
 	style.border_width_left = 1; style.border_width_right = 1
@@ -865,6 +866,12 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	title_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	title_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(title_lbl)
+
+	var role_lbl: Label = parent_scene.make_label(
+		BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
+	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	role_lbl.add_theme_constant_override("outline_size", 3)
+	title_hbox.add_child(role_lbl)
 	
 	# 수량이 2개 이상일 때만 수량 표기 노출 (1개 이하일 때는 직관성을 위해 완전히 숨김)
 	if count > 1:
@@ -927,6 +934,7 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 		btn.add_theme_stylebox_override("focus", empty_style)
 		btn.add_theme_stylebox_override("disabled", empty_style)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.tooltip_text = card.tooltip_text
 		
 		btn.gui_input.connect(func(event: InputEvent):
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -1249,15 +1257,13 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 func _update_action_buttons() -> void:
 	if not combat_manager: return
 	# ⚠️ 리소스 ID로 판정한다. 표시명 매칭은 이름이 바뀌면 조용히 어긋난다.
-	var is_tempo := combat_manager.gun_is("smg")
 	var is_trickster := combat_manager.gun_is("trickster")
-	# 연발 총은 전량 커밋이므로 더블탭·이젝트 같은 "중간 조작"이 성립하지 않는다.
+	# 연발 총은 전량 커밋이므로 이젝트 같은 "중간 조작"이 성립하지 않는다.
 	var is_full_auto := combat_manager.is_full_auto()
 	
 	_fire_btn.visible = true
 	_unload_btn.visible = true
 	_reload_btn.visible = true
-	_double_tap_btn.visible = is_tempo and not is_full_auto
 	_eject_btn.visible = is_trickster and not is_full_auto
 	
 	if combat_manager.state == CombatManager.State.LOADING:
@@ -1268,7 +1274,6 @@ func _update_action_buttons() -> void:
 		_fire_btn.disabled = _loaded_bullets.is_empty()
 		_unload_btn.disabled = _loaded_bullets.is_empty()
 		_reload_btn.disabled = true
-		if _double_tap_btn.visible: _double_tap_btn.disabled = true
 		if _eject_btn.visible: _eject_btn.disabled = true
 		return
 		
@@ -1280,7 +1285,6 @@ func _update_action_buttons() -> void:
 		_fire_btn.disabled = true
 		_unload_btn.disabled = true
 		_reload_btn.disabled = true
-		if _double_tap_btn.visible: _double_tap_btn.disabled = true
 		if _eject_btn.visible: _eject_btn.disabled = true
 		return
 		
@@ -1291,11 +1295,6 @@ func _update_action_buttons() -> void:
 	if _eject_btn.visible:
 		var eject_used = combat_manager.get("eject_used_this_turn") if "eject_used_this_turn" in combat_manager else false
 		_eject_btn.disabled = not has_ammo or eject_used
-	if _double_tap_btn.visible:
-		var dt_used = combat_manager.get("double_tap_used_this_turn") if "double_tap_used_this_turn" in combat_manager else false
-		var dt_active = combat_manager.get("double_tap_active") if "double_tap_active" in combat_manager else false
-		_double_tap_btn.disabled = not has_ammo or dt_used
-		_double_tap_btn.text = "💥 더블탭 ON" if dt_active else "💥 더블탭 OFF"
 
 func _update_phase_state() -> void:
 	if not combat_manager: return
@@ -1395,12 +1394,6 @@ func _on_reload_pressed() -> void:
 		combat_manager.request_reload()
 		_update_action_buttons()
 		_update_phase_state()
-
-func _on_double_tap_toggled() -> void:
-	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
-		if combat_manager.has_method("toggle_double_tap"):
-			combat_manager.toggle_double_tap()
-		_update_action_buttons()
 
 func _on_eject_pressed() -> void:
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
@@ -1976,11 +1969,6 @@ func request_insert_bullet(bullet: BulletData) -> void:
 
 	# 1. PLAYER_TURN (인게임 플레이어 턴 도중 삽탄)
 	if combat_manager.state == CombatManager.State.PLAYER_TURN:
-		if combat_manager.double_tap_active:
-			add_combat_log("[color=#ff6666]⚠ 더블탭이 선언된 턴에는 납탄할 수 없습니다.[/color]")
-			combat_manager.combat_log.emit("⚠ 더블탭이 선언된 턴에는 납탄할 수 없습니다.")
-			return
-		
 		# 현재 남은 탄수가 최대 용량 이상인지 확인
 		if combat_manager.magazine.get_remaining() >= max_cap:
 			add_combat_log("[color=#ff6666]⚠ 탄창이 가득 찼습니다.[/color]")
@@ -2142,6 +2130,19 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 	
 	var role_lbl: Label = parent_scene.make_label(role_str, 9, parent_scene.C_SUCCESS if pos == 0 else parent_scene.C_DIM)
 	top_hbox.add_child(role_lbl)
+
+	if not is_hidden:
+		var bullet_role_lbl: Label = parent_scene.make_label(
+			BulletRoleUI.badge_text(bullet.role), 9, BulletRoleUI.color(bullet.role))
+		top_hbox.add_child(bullet_role_lbl)
+
+		var source_index := _loaded_bullets.size() - 1 - pos
+		var next_source_index := source_index - 1
+		if next_source_index >= 0 and BulletRoleUI.is_setup_chain(
+			bullet, _loaded_bullets[next_source_index]):
+			var chain_lbl: Label = parent_scene.make_label("⇢ 연계", 9, parent_scene.C_SUCCESS)
+			chain_lbl.tooltip_text = "현재 셋업탄 다음에 페이로드탄이 발사됩니다."
+			top_hbox.add_child(chain_lbl)
 	
 	var top_spacer := Control.new()
 	top_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2177,6 +2178,9 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 	name_lbl.clip_text = true
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_child(name_lbl)
+
+	if not is_hidden:
+		slot.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
 	
 	return slot
 

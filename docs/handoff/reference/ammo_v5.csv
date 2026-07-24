@@ -1,28 +1,28 @@
-id,display_name,class,is_basic,role,damage,penetration,accuracy,knockback,slow,effect_type,effect_value
-basic_pistol,9mm 재생탄,pistol,true,standalone,3,0,7,0,0,0,0
-flare_pistol,9mm 발광탄,pistol,false,setter,1,0,8,0,0,7,3
-overpressure_pistol,9mm 고압탄,pistol,false,payload,6,1,2,0,0,0,0
-slow_pistol,9mm 슬로우탄,pistol,false,utility,1,0,8,0,2,0,0
-impact_pistol,9mm 충격탄,pistol,false,utility,1,0,6,2,0,0,0
-basic_smg,.45ACP 재생탄,smg,true,standalone,3,0,6,0,0,0,0
-tuner_smg,.45ACP 조율탄,smg,false,setter,1,0,7,0,0,7,3
-chain_smg,.45ACP 연쇄탄,smg,false,payload,2,1,6,0,0,2,3
-surge_smg,.45ACP 과부하탄,smg,false,payload,6,0,3,0,0,0,0
-finale_smg,.45ACP 마무리탄,smg,false,standalone,3,1,6,0,0,3,130
-basic_rifle,5.56mm 재생탄,rifle,true,standalone,3,1,6,0,0,0,0
-borer_rifle,5.56mm 천공탄,rifle,false,setter,1,2,6,0,0,8,3
-ap_rifle,5.56mm 철갑탄,rifle,false,standalone,2,4,5,0,0,0,0
-shred_rifle,5.56mm 파쇄탄,rifle,false,setter,1,3,5,0,0,1,2
-heavyslug_rifle,5.56mm 중격탄,rifle,false,payload,7,0,5,0,0,0,0
-basic_dmr,7.62mm 재생탄,dmr,true,standalone,4,1,7,0,0,0,0
-marker_dmr,7.62mm 표적 지시탄,dmr,false,setter,1,1,8,0,0,8,4
-pierce_dmr,7.62mm 관통 저격탄,dmr,false,standalone,4,3,7,0,0,6,1
-burst_dmr,7.62mm 작렬탄,dmr,false,payload,9,0,3,0,0,0,0
-decisive_dmr,7.62mm 결전탄,dmr,false,payload,4,2,6,0,0,3,200
-basic_shotgun,12게이지 재생탄,shotgun,true,standalone,4,0,5,1,0,0,0
-spread_shotgun,12게이지 산개탄,shotgun,false,setter,1,0,7,1,0,7,3
-breach_shotgun,12게이지 파쇄 슬러그,shotgun,false,setter,2,3,4,0,0,1,2
-opening_shotgun,12게이지 선제 제압탄,shotgun,false,standalone,2,1,5,1,0,4,2
-dense_shotgun,12게이지 밀집탄,shotgun,false,payload,7,0,4,0,0,0,0
-crosscal_universal,교차 구경탄,universal,false,payload,2,1,5,0,0,5,4
-tracer_universal,규격 외 예광탄,universal,false,setter,1,1,7,0,0,7,3
+id,display_name,class,is_basic,role,damage,penetration,accuracy,knockback,slow,effect_type,effect_value,description
+basic_pistol,9mm 재생탄,pistol,true,standalone,3,0,7,0,0,0,0,회수한 탄피와 남은 장약으로 재조립한 9mm 탄환. 안정적인 피해를 냅니다.
+flare_pistol,9mm 발광탄,pistol,false,setter,1,0,8,0,0,7,3,유효 적중 시 탄도 표식을 남겨 다음 1발의 ACC를 3 높입니다.
+overpressure_pistol,9mm 고압탄,pistol,false,payload,6,1,2,0,0,0,0,극단적인 장약으로 큰 피해를 내지만 ACC가 낮아 발광탄의 보조가 필요합니다.
+slow_pistol,9mm 슬로우탄,pistol,false,utility,1,0,8,0,2,0,0,점착 성분으로 피격된 적의 다음 이동 속도를 2 낮춥니다.
+impact_pistol,9mm 충격탄,pistol,false,utility,1,0,6,2,0,0,0,충격 장약으로 적을 2칸 밀어 통로 거리를 확보합니다.
+basic_smg,.45ACP 재생탄,smg,true,standalone,3,0,6,0,0,0,0,회수 부품으로 재조립한 기관단총용 탄환. 연속 화력의 기준이 됩니다.
+tuner_smg,.45ACP 조율탄,smg,false,setter,2,0,7,0,0,7,3,유효 적중 시 총열 보정을 기록해 다음 1발의 ACC를 3 높입니다.
+chain_smg,.45ACP 연쇄탄,smg,false,payload,2,1,6,0,0,2,3,직전 탄이 명중했다면 연쇄 반응으로 추가 피해 3을 입힙니다.
+surge_smg,.45ACP 과부하탄,smg,false,payload,5,0,3,0,0,0,0,고출력 장약으로 큰 피해를 내지만 ACC가 낮아 조율탄과의 연계가 필요합니다.
+finale_smg,.45ACP 마무리탄,smg,false,standalone,3,1,6,0,0,3,130,탄창의 마지막 발일 때 최종 피해가 130%로 증폭됩니다.
+basic_rifle,5.56mm 재생탄,rifle,true,standalone,3,1,6,0,0,0,0,회수한 5.56mm 부품으로 재조립한 균형형 탄환입니다.
+borer_rifle,5.56mm 천공탄,rifle,false,setter,1,2,6,0,0,8,3,유효 적중 시 약점을 천공해 다음 1발의 PEN을 3 높입니다.
+ap_rifle,5.56mm 철갑탄,rifle,false,standalone,2,4,5,0,0,0,0,높은 관통력으로 중장갑의 방어 게이트를 직접 돌파합니다.
+shred_rifle,5.56mm 파쇄탄,rifle,false,setter,1,3,5,0,0,1,2,명중한 적의 DEF를 영구적으로 2 낮춰 뒤따르는 탄을 지원합니다.
+heavyslug_rifle,5.56mm 중격탄,rifle,false,payload,7,0,5,0,0,0,0,큰 피해를 내지만 PEN이 없어 천공탄이나 파쇄탄의 지원이 필요합니다.
+basic_dmr,7.62mm 재생탄,dmr,true,standalone,4,1,7,0,0,0,0,회수 부품으로 재조립한 지정사수용 탄환. 한 발의 위력이 높습니다.
+marker_dmr,7.62mm 표적 지시탄,dmr,false,setter,1,1,8,0,0,8,4,유효 적중 시 관통 좌표를 기록해 다음 1발의 PEN을 4 높입니다.
+pierce_dmr,7.62mm 관통 저격탄,dmr,false,standalone,4,3,7,0,0,6,1,전열의 적을 관통해 뒤에 선 대상까지 연속 타격합니다.
+burst_dmr,7.62mm 작렬탄,dmr,false,payload,9,0,3,0,0,0,0,최고 수준의 피해를 내지만 ACC와 PEN이 낮아 정교한 셋업이 필요합니다.
+decisive_dmr,7.62mm 결전탄,dmr,false,payload,4,2,6,0,0,3,200,탄창의 마지막 발일 때 최종 피해가 200%로 증폭됩니다.
+basic_shotgun,12게이지 재생탄,shotgun,true,standalone,4,0,5,1,0,0,0,회수한 셸을 재조립한 산탄. 피해와 넉백을 함께 제공합니다.
+spread_shotgun,12게이지 산개탄,shotgun,false,setter,1,0,7,1,0,7,3,넓게 퍼진 탄착점으로 다음 1발의 ACC를 3 높이고 적을 1칸 밀어냅니다.
+breach_shotgun,12게이지 파쇄 슬러그,shotgun,false,setter,2,3,4,0,0,1,2,중량 슬러그가 적의 DEF를 영구적으로 2 낮춥니다.
+opening_shotgun,12게이지 선제 제압탄,shotgun,false,standalone,2,1,5,1,0,4,2,첫 발이면 추가 넉백 2를 적용하며 명중 시 적의 DEF를 1 낮춥니다.
+dense_shotgun,12게이지 밀집탄,shotgun,false,payload,7,0,4,0,0,0,0,밀집된 산탄으로 큰 피해를 내지만 낮은 ACC를 보완해야 합니다.
+crosscal_universal,교차 구경탄,universal,false,payload,2,1,5,0,0,5,4,직전과 다른 클래스 뒤에 발사하면 추가 피해 4를 얻는 범용 탄환입니다.
+tracer_universal,규격 외 예광탄,universal,false,setter,1,1,7,0,0,7,3,규격과 무관하게 탄도를 표시해 다음 1발의 ACC를 3 높입니다.

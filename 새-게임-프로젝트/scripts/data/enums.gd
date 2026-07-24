@@ -16,7 +16,6 @@ enum WeaponClass {
 ## ── 발사 방식 (커밋 단위) ──
 ## 정본: docs/gdd/21_fire_mode.md
 ## ⚠️ 총기 고유 속성이다. 파츠로 변경 불가, 전투 중 전환 불가.
-##    더블탭은 여기 없다 — 기관단총의 턴당 1회 선택형 능력이지 발사 방식이 아니다.
 enum FireMode {
 	SINGLE,     ## 1발씩. 매 턴 판단·수정 가능
 	FULL_AUTO,  ## 탄창 전체를 1턴에. 전량 커밋, 중간 수정 불가
@@ -88,4 +87,3 @@ enum PartID {
 	SPREAD_SHOT,       ## 확산 격발 장치 (샷건 고유)
 	MARKSMAN_SCOPE,    ## 저격경 (Marksman 고유)
 }
-

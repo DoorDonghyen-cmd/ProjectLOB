@@ -19,6 +19,15 @@ static var meta_unlocked_sections: Array[String] = ["section_a"] # 영구 해금
 static var meta_lore_fragments: Array[int] = [] # 1~20 범위의 수집된 파편 번호
 ## gambler 해금 임계 — 적을 시작 거리의 이 비율 이내로 들이면 실패.
 const GAMBLER_DIST_RATIO := 1.0 / 3.0
+## 클래스별 시작 덱 탄환 ID 정본: [기본, 셋업, 페이로드].
+## 리소스 경로를 여러 분기에 복사하지 않아 탄환 마이그레이션 시 유령 참조를 막는다.
+const STARTING_AMMO_IDS := {
+	Enums.WeaponClass.PISTOL: ["basic_pistol", "flare_pistol", "overpressure_pistol"],
+	Enums.WeaponClass.SMG: ["basic_smg", "tuner_smg", "surge_smg"],
+	Enums.WeaponClass.RIFLE: ["basic_rifle", "shred_rifle", "heavyslug_rifle"],
+	Enums.WeaponClass.DMR: ["basic_dmr", "marker_dmr", "burst_dmr"],
+	Enums.WeaponClass.SHOTGUN: ["basic_shotgun", "spread_shotgun", "dense_shotgun"],
+}
 
 ## ── 승천(Ascension) ── 정본: docs/gdd/20_ascension_intention.md
 ## 해금된 최고 등급. 정점 클리어 시 1이 열리고, 그 등급으로 완주할 때마다 하나씩 올라간다.
@@ -157,40 +166,33 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 
 		match cls:
 			Enums.WeaponClass.PISTOL:
-				basic_path = "res://resources/bullets/basic_pistol.tres"
-				specA_path = "res://resources/bullets/knockback_pistol.tres"
-				specB_path = "res://resources/bullets/opening_pistol.tres"
 				basic_cnt = 5 + meta_backpack_lvl
 				specA_cnt = 2 + (1 if meta_backpack_lvl >= 2 else 0)
 				specB_cnt = 1
 			Enums.WeaponClass.SMG:
-				basic_path = "res://resources/bullets/basic_smg.tres"
-				specA_path = "res://resources/bullets/combo_smg.tres"
-				specB_path = "res://resources/bullets/rhythm_smg.tres"
 				basic_cnt = 6 + meta_backpack_lvl
 				specA_cnt = 2
 				specB_cnt = 1
 			Enums.WeaponClass.RIFLE:
-				basic_path = "res://resources/bullets/basic_rifle.tres"
-				specA_path = "res://resources/bullets/shred_rifle.tres"
-				specB_path = "res://resources/bullets/last_rifle.tres"
 				basic_cnt = 6 + meta_backpack_lvl
 				specA_cnt = 2
 				specB_cnt = 1
 			Enums.WeaponClass.DMR:
-				basic_path = "res://resources/bullets/basic_dmr.tres"
-				specA_path = "res://resources/bullets/heavy_dmr.tres"
-				specB_path = "res://resources/bullets/pierce_dmr.tres"
 				basic_cnt = 3 + meta_backpack_lvl
 				specA_cnt = 2
 				specB_cnt = 1
 			Enums.WeaponClass.SHOTGUN:
-				basic_path = "res://resources/bullets/basic_shotgun.tres"
-				specA_path = "res://resources/bullets/shred_shotgun.tres"
-				specB_path = "res://resources/bullets/heavy_shotgun.tres"
 				basic_cnt = 5 + meta_backpack_lvl
 				specA_cnt = 2
 				specB_cnt = 1
+
+		var ammo_ids: Array = STARTING_AMMO_IDS.get(cls, [])
+		if ammo_ids.size() == 3:
+			basic_path = "res://resources/bullets/%s.tres" % ammo_ids[0]
+			specA_path = "res://resources/bullets/%s.tres" % ammo_ids[1]
+			specB_path = "res://resources/bullets/%s.tres" % ammo_ids[2]
+		else:
+			push_error("RunManager: 클래스 %d의 시작 탄환 구성이 없습니다." % cls)
 
 		# 승천: 시작 덱 감소(§4.1 레버 ②). 각 계열에서 1발씩 빼되 최소 1발은 남긴다.
 		# ⚠️ 0으로 만들면 해당 탄 계열이 통째로 사라져 빌드가 아니라 결함이 된다.
@@ -253,6 +255,8 @@ func _sync_bullet_stats_from_csv(b: BulletData) -> void:
 		b.knockback = csv.knockback
 		b.slow = csv.slow
 		b.weapon_class = csv.class
+		b.is_basic = csv.is_basic
+		b.role = csv.role
 		b.effect_type = csv.effect_type
 		b.effect_value = csv.effect_value
 		print("DataLoader: 탄환 [%s] 스탯 CSV 동기화 완료 (DMG: %d, PEN: %d)" % [res_id, b.damage, b.penetration])

@@ -8,6 +8,8 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-24 | **기관단총 연발 전환과 탄환 역할 UI** | `codex0724-smg-role` | Tempo 6발 전탄 커밋·더블탭 제거·Gambler 단발 유지, 조율/과부하 체인 정합, 리듬 챔버 폭증 차단, 전 UI 역할·연계 배지와 회귀 검증 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_smg_full_auto_ammo_role_ui_2026-07-24.md) |
+| 2026-07-24 | **탄환 데이터 v5 27종 마이그레이션** | `codex0724-ammo-v5` | 현대 구경 표기를 유지한 역할 기반 27종 데이터 교체, 헤더 기반 CSV 계약, 시작 덱·상점 도달성 및 CSV↔리소스 완전 일치 회귀 검증 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_v5_migration_2026-07-24.md) |
 | 2026-07-17 | **렐릭 시스템 전면 제거** | `codex0717` | 문자열 기반 렐릭 상태·전투 효과·로드아웃 UI·정산·맵 조건을 제거하고 가스 우회로를 일반 경로로 전환, 현행 GDD와 프로젝트 지침 동기화 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_relic_system_removal_2026-07-17.md) |
 | 2026-06-27 | **에이전트 지침 이식** | `2bed5975` | 새로운 프로젝트에 맞춘 범용 SOP 및 템플릿 환경 구축 | [이식 가이드](#) |
 | 2026-07-04 | **CombatOverlayV2 삽탄 오류 수정 및 가방 연동** | `4948a7e9` | 가방 내 잔여 탄환 풀 연동, 동적 탄창 용량 계산 및 플레이어 턴 삽탄 로직 이식, 준비단계 삽탄 취소(Undo) 구현 완료 | [walkthrough.md](file:///C:/Users/도얼동현/.gemini/antigravity-ide/brain/4948a7e9-5ecb-4e3a-8f7a-cbfe2a652b65/walkthrough.md) |
@@ -35,6 +37,8 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0724-smg-role Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_smg_full_auto_ammo_role_ui_2026-07-24.md)
+* [Session codex0724-ammo-v5 Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_v5_migration_2026-07-24.md)
 * [Session codex0718 Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_route_branching_2026-07-18.md)
 * [Session codex0717 Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_relic_system_removal_2026-07-17.md)
 * [Session afaad6f3-77c6-4268-acfb-c7f4a2acdd2c Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/walkthrough.md)

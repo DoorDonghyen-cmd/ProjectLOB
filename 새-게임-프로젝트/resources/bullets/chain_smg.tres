@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_smg_special_orange.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = ".45ACP 연쇄탄"
+description = "직전 탄이 명중했다면 연쇄 반응으로 추가 피해 3을 입힙니다."
+icon = ExtResource("2_texture")
+is_basic = false
+role = "payload"
+damage = 2
+accuracy = 6
+penetration = 1
+knockback = 0
+slow = 0
+effect_type = 2
+effect_value = 3
+weapon_class = 1

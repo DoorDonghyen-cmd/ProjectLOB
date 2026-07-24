@@ -5,10 +5,12 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "7.62mm 일반탄"
-description = "지정사수용 중형 고정밀 탄환. 탄창은 작지만 한 발 한 발이 위력적입니다."
+display_name = "7.62mm 재생탄"
+description = "회수 부품으로 재조립한 지정사수용 탄환. 한 발의 위력이 높습니다."
 icon = ExtResource("2_texture")
-damage = 3
+is_basic = true
+role = "standalone"
+damage = 4
 accuracy = 7
 penetration = 1
 knockback = 0

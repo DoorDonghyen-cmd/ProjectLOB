@@ -4,17 +4,18 @@
 > **설계 정본**: [22_ammo_expansion.md](file:///d:/ProjectLoB/docs/gdd/22_ammo_expansion.md) — **먼저 읽을 것**
 > **참조 데이터**: `docs/handoff/reference/ammo_v5.csv`, `conversion_kits.csv`
 > **선행 완료**: ① 시뮬 하니스 버프 지원(`a869426`) · ② `BUFF_ACC`/`BUFF_PEN` 구현(`fc5ce64`)
+> **구현 상태**: ✅ **③ 마이그레이션 완료 (2026-07-24)** — 이 문서는 구현 근거와 회귀 체크리스트로 보존
 
 ---
 
 ## 0. 이 작업이 위험한 이유
 
-탄환 21종 → 27종 교체인데, **삭제되는 12종 중 9종을 코드가 하드코딩 참조**한다.
+탄환 21종 → 27종 교체 당시, **삭제되는 12종 중 8종을 프로덕션 코드가 직접 참조**했고
+회귀 테스트 4개에도 삭제 ID가 남아 있었다.
 그리고 **드래프트·도감이 디렉터리를 스캔**하므로 CSV만 고치면 유령 탄이 계속 등장한다.
 
-> ⚠️ **자동 검증이 이걸 실패로 잡아주지 않는다.** `validate_data`의 CSV↔`.tres` 대조는
-> `t.warn`(경보)이라 종료 코드에 영향이 없다. **테스트가 초록불이어도 깨져 있을 수 있다.**
-> 아래 §5의 수동 확인을 반드시 수행할 것.
+> ✅ 현재는 `suite_ammo_integrity`가 CSV↔`.tres` 양방향 집합·전 필드·시작 덱·상점 후보·
+> 삭제 ID 잔존을 `t.check`로 검증한다. 불일치가 생기면 전체 테스트가 실패한다.
 
 ---
 
@@ -24,7 +25,7 @@
 # 프로젝트 경로 (폴더명이 한글이라 bash cd가 실패할 수 있음 → 절대 경로 사용)
 d:\ProjectLoB\새-게임-프로젝트
 
-# 전체 검증 (현재 기준선: 1256 통과 / 0 실패 / 경보 3)
+# 전체 검증 (마이그레이션 전 기준선: 1256 통과 / 0 실패 / 경보 3)
 <Godot> --headless --path "d:\ProjectLoB\새-게임-프로젝트" --script res://tests/run_all.gd
 
 # 부팅 확인 (UI 변경 시 필수 — 테스트만으로는 부족)
@@ -39,7 +40,7 @@ Godot 실행파일: `C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_con
 
 ---
 
-## 2. 삭제 12종 → 참조 위치 (정확한 좌표)
+## 2. 삭제 12종 → 마이그레이션 당시 참조 위치
 
 | 삭제되는 탄 | 참조 위치 | 성격 |
 |---|---|---|
@@ -54,6 +55,9 @@ Godot 실행파일: `C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_con
 | `last_smg` · `shred_ap_rifle` · `critical_dmr` · `universal_caliber` | 코드 참조 없음 | `.tres`만 삭제/개명 |
 
 > `universal_caliber` → `crosscal_universal` **개명**이다(삭제 아님).
+>
+> 표 밖에서 `suite_run_flow.gd` · `suite_full_run.gd` · `suite_continuous_run.gd` ·
+> `suite_difficulty_curve.gd`도 구 권총 ID를 참조하고 있어 함께 갱신했다.
 
 ### 디렉터리를 통째로 스캔하는 곳 (개별 참조 없음, 그래서 더 위험)
 
@@ -127,33 +131,29 @@ v5 **페이로드는 의도적으로 극단 스탯**이다. 현행 검증 밴드
 ## 5. 작업 순서
 
 ```
-1. resources/bullets/ 에 신규 .tres 12종 생성
-   → 기존 .tres를 템플릿으로 (예: shred_rifle.tres 열어 구조 확인)
-   → weapon_class / effect_type / effect_value 정확히
-   → BUFF_ACC = 7, BUFF_PEN = 8 (Enums.BulletEffect)
+1. 탄환 DataLoader와 validate_data를 헤더 이름 기반으로 전환
+   → role / is_basic / description까지 파싱·검증
 
-2. universal_caliber.tres → crosscal_universal.tres 개명
-   (파일명이 곧 id다. DataLoader가 basename으로 CSV와 매칭한다)
+2. 기존 21종 중 9종 유지 + 삭제 ID 12종을 v5 ID로 교체/개명
+   → 신규 리소스 6종을 추가해 최종 27종 구성
+   → weapon_class / effect_type / effect_value / 설명문을 CSV와 일치
 
-3. 삭제 대상 11종 .tres 제거
+3. data/bullet_stats.csv와 참조 ammo_v5.csv를 동일한 27행으로 교체
 
-4. data/bullet_stats.csv를 ammo_v5.csv 내용으로 교체
-   ⚠️ v5는 role / is_basic 칼럼이 추가돼 있다.
-      DataLoader는 **헤더 이름 기반 파싱**이라 칼럼 삽입은 안전하지만,
-      새 칼럼을 실제로 쓰려면 _load_bullet_stats에 추가해야 한다.
-      (role은 지금 당장 로직에 안 쓰이면 CSV에만 두고 로드 생략 가능 —
-       쓰지 않을 값을 미리 로드하지 말 것)
+4. 시작 덱을 RunManager.STARTING_AMMO_IDS 단일 정본으로 이동
+   → 프리로드 · 상점 · 기존 테스트 참조도 함께 갱신
 
-5. §2 표의 코드 참조 9곳 수정
+5. 밸런스 밴드 확장과 근거 주석 반영
 
-6. §4 밸런스 밴드 확장
+6. suite_ammo_integrity 추가
+   → CSV↔tres 집합/필드 · 시작 덱 · 상점 · 삭제 ID를 실패 조건으로 고정
 
 7. --import → 전체 테스트 → 부팅 확인
 ```
 
 ---
 
-## 6. 검증 — 자동 테스트만 믿지 말 것
+## 6. 검증 — 자동 안전망 + 플레이 확인
 
 ### 자동으로 잡히는 것
 ```bash
@@ -162,19 +162,19 @@ v5 **페이로드는 의도적으로 극단 스탯**이다. 현행 검증 밴드
 - `suite_script_parse` — 스크립트 컴파일 실패 (경로 오타 등)
 - `suite_ui_smoke` — 씬 인스턴스화 + 오버레이 런타임 오류
 - `suite_bullet_effects` — 버프 체인 동작 (이미 작성돼 있음)
+- `suite_ammo_integrity` — CSV↔`.tres` 27종과 전 필드·시작 덱·상점·삭제 ID
 
-### ⚠️ 자동으로 안 잡히는 것 — 반드시 수동 확인
+### 플레이 감각 확인이 필요한 것
 
 | 확인 | 방법 | 왜 필요한가 |
 |---|---|---|
-| **유령 탄** | `ls resources/bullets/` 와 `awk -F, 'NR>1{print $1}' data/bullet_stats.csv` 비교 | 드래프트는 디렉터리를 스캔한다. CSV에 없는 `.tres`가 남으면 **CSV 동기화 안 된 탄이 보상으로 등장** |
-| **시작 덱** | 개발자 테스트 → 요원 준비실 → 각 클래스 선택 후 전투 진입 | 경로 오타는 파싱 오류가 아니라 **`load()` null**이라 조용히 덱이 비어 버린다 |
-| **드래프트 풀** | 전투 승리 후 드래프트 화면 | 삭제된 탄이 뜨는지 |
-| **상점** | 지도에서 상점 노드 진입 | 하드코딩 4종 |
+| **시작 덱 학습성** | 각 클래스 선택 후 장전 화면 진입 | 셋업→페이로드 역순 장전이 실제로 이해되는지 |
+| **드래프트 판독성** | 전투 승리 후 드래프트 화면 | 역할·극단 스탯을 카드 한 장에서 읽을 수 있는지 |
+| **상점 판독성** | 지도에서 상점 노드 진입 | 셋업/페이로드가 일반탄과 시각적으로 구분되는지 |
 
-### 회귀 테스트 추가 권장
+### 회귀 테스트 추가 완료
 
-이번 작업의 실패 모드(유령 탄)를 **테스트로 고정**해두면 이후 재발이 막힌다:
+이번 작업의 실패 모드(유령 탄)를 `suite_ammo_integrity.gd`로 고정했다:
 
 ```gdscript
 # tests/suite_ammo_integrity.gd (신규)
@@ -207,15 +207,15 @@ v5 **페이로드는 의도적으로 극단 스탯**이다. 현행 검증 밴드
 
 ## 8. 완료 조건
 
-- [ ] `.tres` 27종 == `bullet_stats.csv` 27행 (집합 일치)
-- [ ] 5개 클래스 시작 덱이 셋업+페이로드 포함해 정상 생성
-- [ ] 코드 참조 9곳 전부 갱신 (§2)
-- [ ] 밸런스 밴드 확장 + 근거 주석 (§4)
-- [ ] 전체 테스트 통과 (기준선 1256 이상, 실패 0)
-- [ ] 부팅 정상 (종료 코드 0)
-- [ ] 드래프트·상점에 유령 탄 없음 (수동 확인)
-- [ ] `docs/gdd/22_ammo_expansion.md` §22.10 구현 순서에 ③ 완료 표기
-- [ ] `.agents/skills/00-project-manager/task_tracker.md` Phase 12 항목 갱신
+- [x] `.tres` 27종 == `bullet_stats.csv` 27행 (양방향 집합 일치)
+- [x] 5개 클래스 시작 덱에 기본+셋업+페이로드 포함 및 전 리소스 로드 가능
+- [x] 프로덕션 코드와 회귀 테스트의 삭제 ID 참조 전부 갱신 (§2)
+- [x] 밸런스 밴드 확장 + 근거 주석 (§4)
+- [x] 전체 테스트 통과 (기준선 1256 이상, 실패 0)
+- [x] 부팅 정상 (종료 코드 0)
+- [x] 드래프트 디렉터리·상점 후보에 유령 탄 없음 (`suite_ammo_integrity`)
+- [x] `docs/gdd/22_ammo_expansion.md` §22.10 구현 순서에 ③ 완료 표기
+- [x] `.agents/skills/00-project-manager/task_tracker.md` Phase 12 항목 갱신
 
 ---
 
@@ -223,6 +223,6 @@ v5 **페이로드는 의도적으로 극단 스탯**이다. 현행 검증 밴드
 
 | 단계 | 내용 | 주의 |
 |---|---|---|
-| ④ | 기관단총 연발 전환 | 리로드 2→3 **필수**(안 하면 턴당 4.00으로 밴드 초과) · 예고창 2→6 · 더블탭 제거. **도박형은 단발 유지** |
+| ✅ ④ | 기관단총 연발 전환 + 역할 UI | 리로드 3 · 예고창 6 · 파츠 3 · 더블탭 제거 · **도박형 단발 유지**. 조율 DMG2/과부하 DMG5로 유효 적중 보존, 리듬 챔버 폭증 차단 |
 | ⑤ | 컨버전 킷 | 소멸 면제 확장 · 드래프트 가중 · `conversion_cost` 칼럼. 승천 8등급과 상호작용 있음 |
 | ⑥ | 매트릭스 수치 조정 | 하니스에 버프 지원이 이미 들어가 있다(`sim_harness.simulate`의 `total_damage`/`buffed_shots`) |

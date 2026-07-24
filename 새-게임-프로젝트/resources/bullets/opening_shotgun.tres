@@ -5,12 +5,14 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "12게이지 선제제압탄"
-description = "전투 진입 후 첫 발을 격발 시 적을 완벽하게 저지하며 압도적으로 제압합니다."
+display_name = "12게이지 선제 제압탄"
+description = "첫 발이면 추가 넉백 2를 적용하며 명중 시 적의 DEF를 1 낮춥니다."
 icon = ExtResource("2_texture")
+is_basic = false
+role = "standalone"
 damage = 2
 accuracy = 5
-penetration = 5
+penetration = 1
 knockback = 1
 slow = 0
 effect_type = 4

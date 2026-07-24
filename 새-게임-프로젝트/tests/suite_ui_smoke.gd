@@ -12,6 +12,15 @@ extends RefCounted
 const MAIN_SCENE := "res://scenes/combat/combat_scene.tscn"
 
 
+static func _has_label_text(root: Node, fragment: String) -> bool:
+	if root is Label and fragment in (root as Label).text:
+		return true
+	for child in root.get_children():
+		if _has_label_text(child, fragment):
+			return true
+	return false
+
+
 static func run(t, tree: SceneTree) -> void:
 	t.section("UISmoke")
 
@@ -114,7 +123,18 @@ static func run(t, tree: SceneTree) -> void:
 			rows_mid += 1
 	t.eq(rows_mid, 35, "⭐ 계층을 넘어가도 지도는 런 전체 35층을 유지")
 
-	# ── 개발자 테스트: 연발 전투 숏컷이 실제로 도는가 ──
+	# ── 개발자 테스트: 기관단총 연발 체인 숏컷과 역할 UI가 실제로 도는가 ──
+	scene.trigger_tempo_full_auto_test()
+	t.check(scene._cm != null, "기관단총 연발 체인 테스트 — CombatManager 생성됨")
+	if scene._cm != null:
+		t.check(scene._cm.gun_is("smg"), "⭐ 기관단총 연발 체인 테스트가 Tempo로 시작됨")
+		t.check(scene._cm.is_full_auto(), "기관단총 QA 숏컷도 연발")
+	t.check(_has_label_text(scene._combat_overlay, "[셋업]"),
+		"⭐ 장전 UI에 셋업 역할 배지 렌더")
+	t.check(_has_label_text(scene._combat_overlay, "[페이로드]"),
+		"⭐ 장전 UI에 페이로드 역할 배지 렌더")
+
+	# ── 개발자 테스트: 제압형 연발 전투 숏컷이 실제로 도는가 ──
 	# ⚠️ 숏컷은 QA 진입점이라 깨져도 본 게임 흐름에서는 드러나지 않는다.
 	#    전투를 실제로 시작시켜 CombatManager가 연발 총으로 붙는지 확인한다.
 	scene.trigger_full_auto_test()

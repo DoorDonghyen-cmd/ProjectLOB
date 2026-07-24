@@ -5,14 +5,16 @@
 
 [resource]
 script = ExtResource("1_script")
-display_name = "5.56mm 파쇄철갑탄"
-description = "방어구 파쇄 기능을 극대화하여 적의 장갑을 즉각 무력화시키는 탄환."
+display_name = "5.56mm 천공탄"
+description = "유효 적중 시 약점을 천공해 다음 1발의 PEN을 3 높입니다."
 icon = ExtResource("2_texture")
+is_basic = false
+role = "setter"
 damage = 1
-accuracy = 5
-penetration = 4
+accuracy = 6
+penetration = 2
 knockback = 0
 slow = 0
-effect_type = 1
+effect_type = 8
 effect_value = 3
 weapon_class = 2

@@ -6,6 +6,7 @@ extends PanelContainer
 ## ═══════════════════════════════════════════════════
 
 const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
+const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
 
 var parent_scene: Control
 var run_manager: RunManager
@@ -349,6 +350,7 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 func _create_inventory_card(bullet: BulletData, count: int, click_callback: Callable = Callable()) -> Control:
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(120, 72)
+	card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.11, 0.16)
 	style.border_width_left = 1; style.border_width_right = 1
@@ -408,6 +410,12 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	title_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	title_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(title_lbl)
+
+	var role_lbl: Label = parent_scene.make_label(
+		BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
+	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	role_lbl.add_theme_constant_override("outline_size", 3)
+	title_hbox.add_child(role_lbl)
 	
 	# 수량이 2개 이상일 때만 수량 표기 노출 (1개 이하일 때는 직관성을 위해 완전히 숨김)
 	if count > 1:
@@ -470,6 +478,7 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 		btn.add_theme_stylebox_override("focus", empty_style)
 		btn.add_theme_stylebox_override("disabled", empty_style)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.tooltip_text = card.tooltip_text
 		
 		btn.gui_input.connect(func(event: InputEvent):
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:

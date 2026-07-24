@@ -37,7 +37,6 @@ var enemies: Array[EnemyInstance] = []
 var last_shot_hit: bool = false
 var reload_turns_remaining: int = 0
 var _insert_seal_active: bool = false
-var double_tap_active: bool = false
 var eject_used_this_turn: bool = false
 var has_inserted_bullet_this_turn: bool = false
 var is_magazine_first_shot: bool = true
@@ -134,7 +133,6 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 	magazine = Magazine.new(gun)
 	last_shot_hit = false
 	_insert_seal_active = false
-	double_tap_active = false
 	has_inserted_bullet_this_turn = false
 	last_fired_class = Enums.WeaponClass.PISTOL
 	is_magazine_first_shot = true
@@ -204,7 +202,6 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 func _enter_loading_phase() -> void:
 	state = State.LOADING
 	_insert_seal_active = false
-	double_tap_active = false
 	eject_used_this_turn = false
 	loading_phase_started.emit()
 
@@ -241,8 +238,6 @@ func fire() -> void:
 	battle_stats.kills_this_turn = 0
 	if is_full_auto():
 		_fire_full_auto()
-	elif double_tap_active:
-		_fire_double_tap()
 	else:
 		var target := _get_nearest_enemy()
 		_fire_internal(target)
@@ -296,40 +291,6 @@ func _fire_full_auto() -> void:
 		return
 
 	combat_log.emit("🔻 탄창이 비었습니다. 재장전이 필요합니다 (%d턴)." % gun.reload_turns)
-
-
-func _fire_double_tap() -> void:
-	if state != State.PLAYER_TURN:
-		return
-	if magazine.get_remaining() < 2:
-		combat_log.emit("⚠ 탄창에 탄환이 부족하여 더블탭을 수행할 수 없습니다.")
-		return
-		
-	# 1발째 격발
-	var target1 := _get_nearest_enemy()
-	if target1 == null:
-		combat_log.emit("⚠ 타겟이 없습니다.")
-		return
-		
-	combat_log.emit("🔥 [더블탭 1발째 격발]")
-	_fire_internal(target1, false) # 적 전진 없음
-	
-	if state != State.PLAYER_TURN:
-		double_tap_active = false
-		return
-		
-	# 2발째 격발
-	var target2 := _get_nearest_enemy()
-	if target2 == null:
-		combat_log.emit("⚠ 더블탭 2발째 격발을 수행할 대상이 없습니다.")
-		_all_enemies_advance() # 2발째 격발 타겟 없더라도 적 1회 전진
-		double_tap_active = false
-		return
-		
-	combat_log.emit("🔥 [더블탭 2발째 격발]")
-	_fire_internal(target2, true) # 적 전진 있음
-	
-	double_tap_active = false
 
 
 ## 지정 사격 — 특정 적을 지정하여 쏜다 (슬로우 탄 자유 조준 사격용).
@@ -464,16 +425,17 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				part_dmg_bonus += deep_bonus
 				combat_log.emit("   ↳ 📥 [딥로더] 탄창 깊이(%d)에 따른 DMG +%d 가산" % [deep_bonus, deep_bonus])
 				
-		# 리듬 챔버 (RHYTHM_CHAMBER): 동일 클래스 연속 격발 시 DMG 보너스
+		# 리듬 챔버 (RHYTHM_CHAMBER): 동일 클래스의 짝수 번째 연속 격발에 DMG +1
+		# ⚠️ 연속 횟수를 그대로 보너스로 쓰면 연발 6발에서 +20이 되어 발사 방식이
+		#    곧 지배 전략이 된다. 2·4·6번째 박자만 보상해 슬롯 가치만 남긴다.
 		if _has_part(Enums.PartID.RHYTHM_CHAMBER):
 			if bullet.weapon_class == last_fired_class:
 				consecutive_caliber_count += 1
 			else:
 				consecutive_caliber_count = 1
-			if consecutive_caliber_count >= 2:
-				var rhythm_bonus := consecutive_caliber_count
-				part_dmg_bonus += rhythm_bonus
-				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 클래스 %d회 격발! DMG +%d 가산" % [consecutive_caliber_count, rhythm_bonus])
+			if consecutive_caliber_count % 2 == 0:
+				part_dmg_bonus += 1
+				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 클래스 %d번째 박자! DMG +1" % consecutive_caliber_count)
 		else:
 			consecutive_caliber_count = 0
 			
@@ -883,9 +845,6 @@ func request_unload() -> void:
 ## 인게임 중간 장전(납탄) 요청
 func request_insert_bullet(bullet: BulletData) -> void:
 	if state != State.PLAYER_TURN:
-		return
-	if double_tap_active:
-		combat_log.emit("⚠ 더블탭이 선언된 턴에는 납탄할 수 없습니다.")
 		return
 	var cap := gun.magazine_capacity
 	var has_ch := gun.has_chamber

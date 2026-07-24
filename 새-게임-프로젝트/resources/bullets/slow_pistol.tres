@@ -6,8 +6,10 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "9mm 슬로우탄"
-description = "특수 점착 성분을 묻혀 피격된 적의 이동 속도를 한시적으로 저하시킵니다."
+description = "점착 성분으로 피격된 적의 다음 이동 속도를 2 낮춥니다."
 icon = ExtResource("2_texture")
+is_basic = false
+role = "utility"
 damage = 1
 accuracy = 8
 penetration = 0
