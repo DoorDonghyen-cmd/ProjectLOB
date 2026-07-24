@@ -76,6 +76,16 @@ var _shot_log_label: RichTextLabel  # 색상 태그 표현을 위해 RichTextLab
 
 # 5. ActionBar
 var _action_row: HBoxContainer
+
+## 액션 바 반동 트윈의 기준선(컨테이너가 배치한 원래 y).
+##
+## ⚠️ 반동은 컨테이너가 관리하는 자식의 position을 직접 건드린다. 그래서
+##    "현재 위치"를 원점으로 삼으면 **직전 반동이 끝나기 전에 다음 발이 나갈 때
+##    밀린 위치가 새 원점이 되어 8px씩 영구 누적**된다.
+##    (연발은 한 프레임에 5발이라 즉시 40px 밀려 버튼이 화면 밖으로 나갔다.)
+##    기준선을 따로 보관하고 진행 중인 트윈을 죽여서 누적을 원천 차단한다.
+var _action_row_base_y: float = NAN
+var _recoil_tween: Tween
 var _unload_btn: Button
 var _reload_btn: Button
 var _double_tap_btn: Button
@@ -646,7 +656,14 @@ func _build_ui() -> void:
 	_action_row.custom_minimum_size = Vector2(0, 44)
 	_action_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_flow.add_child(_action_row)
-	
+
+	# 컨테이너가 재배치할 때마다 반동 기준선을 다시 읽는다(창 크기 변경 대응).
+	# 트윈이 도는 중에는 트윈이 position을 쥐고 있으므로 갱신하지 않는다.
+	main_flow.sort_children.connect(func():
+		if _recoil_tween == null or not _recoil_tween.is_valid():
+			_action_row_base_y = _action_row.position.y
+	)
+
 	_unload_btn = parent_scene.make_button("🗑 빼내기", _on_unload_pressed, parent_scene.C_WARNING)
 	_unload_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_unload_btn.add_theme_font_size_override("font_size", 13)
@@ -1488,11 +1505,16 @@ func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) ->
 	tween.chain().tween_callback(func(): _set_agent_frame(2)) # 조준 복구
 	
 	# 3. 액션 바 덜컹임 반동 트윈
+	# ⚠️ 기준선(_action_row_base_y)에서만 흔든다. "현재 위치"를 원점으로 삼으면
+	#    연발처럼 빠르게 연속 격발할 때 밀린 값이 누적돼 버튼이 화면 밖으로 나간다.
 	if _action_row:
-		var origin_y = _action_row.position.y
-		_action_row.position.y += 8.0
-		var act_tween := create_tween()
-		act_tween.tween_property(_action_row, "position:y", origin_y, 0.16)\
+		if is_nan(_action_row_base_y):
+			_action_row_base_y = _action_row.position.y
+		if _recoil_tween != null and _recoil_tween.is_valid():
+			_recoil_tween.kill()
+		_action_row.position.y = _action_row_base_y + 8.0
+		_recoil_tween = create_tween()
+		_recoil_tween.tween_property(_action_row, "position:y", _action_row_base_y, 0.16)\
 			.set_trans(Tween.TRANS_BACK)\
 			.set_ease(Tween.EASE_OUT)
 			

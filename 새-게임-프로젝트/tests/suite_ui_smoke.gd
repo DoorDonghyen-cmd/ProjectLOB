@@ -124,6 +124,25 @@ static func run(t, tree: SceneTree) -> void:
 		t.eq(scene._cm.enemies.size(), 3, "적 3체 배치(다수전 이월 + 중장갑 관문)")
 	scene._is_shortcut_mode = false
 
+	# ── 반동 연출이 액션 바를 밀어내지 않는가 ──
+	# 회귀 배경(2026-07-25 보고): 격발 반동이 액션 바의 **현재 위치**를 원점으로 삼아
+	#   position.y += 8 했다가 되돌리는 방식이었다. 직전 반동이 끝나기 전에 다음 발이
+	#   나가면 밀린 위치가 새 원점이 되어 8px씩 영구 누적됐고, 세 번 쏘면 버튼이
+	#   화면 밖으로 사라졌다. 연발은 한 프레임에 5발이라 즉시 40px 밀렸다.
+	# ⚠️ 애니메이션 결함이라 로직 테스트로는 잡히지 않는다 — 좌표를 직접 잰다.
+	var ov = scene._combat_overlay
+	if ov != null and ov._action_row != null:
+		var base_y: float = ov._action_row.position.y
+		var dummy := BulletData.new()
+		dummy.display_name = "테스트탄"
+		for i in range(20):
+			ov._on_bullet_fired(dummy, true, 1)
+		var drift: float = absf(ov._action_row.position.y - base_y)
+		t.check(drift <= 8.0,
+			"⭐ 20연속 격발 후 액션 바 이동 %.1fpx — 반동 진폭(8px) 내, 누적 없음" % drift)
+		t.check(ov._action_row.position.y + ov._action_row.size.y <= ov.size.y + 1.0,
+			"⭐ 액션 바가 화면 안에 남아 있음 (버튼이 가려지지 않음)")
+
 	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
 	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.
 	var prev_credits: int = RunManager.meta_credits
