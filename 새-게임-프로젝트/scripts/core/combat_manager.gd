@@ -55,6 +55,13 @@ var target_marker_active: bool = false
 var same_stance_hit_count: int = 0
 var last_stance: Enums.EnemyStance = Enums.EnemyStance.NONE
 var consecutive_caliber_count: int = 0
+
+## ── 셋업 버프 (정본: docs/gdd/22_ammo_expansion.md §22.2) ──
+## **다음 1발**에만 적용된다. 탄창 전체 지속이면 "셋업 하나 깔고 나머지 전부 고화력"이
+## 최적해가 되어 조합이 다시 단순해지므로, 1발 한정이라야 버프-딜러 교차가 강제된다.
+## 중첩 없이 덮어쓰며, 리로드 시 소멸한다(탄창 끝에 셋업 깔아두기 방지).
+var pending_buff_acc: int = 0
+var pending_buff_pen: int = 0
 var visible_magazine_slots: int = 2
 var final_kill_distance: int = 99
 
@@ -168,6 +175,8 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 	same_stance_hit_count = 0
 	last_stance = Enums.EnemyStance.NONE
 	consecutive_caliber_count = 0
+	pending_buff_acc = 0
+	pending_buff_pen = 0
 	
 	# 예고창 슬롯 수 보정 (Scope, Blind Fire 파츠)
 	visible_magazine_slots = gun.preview_window_size if gun != null else 2
@@ -408,8 +417,16 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			target_evasion = 0
 			combat_log.emit("   ↳ 🎯 [태세 사냥꾼 시그니처] 파훼 발동! 태세 전환 타이밍 간파 (게이트 무조건 통과!)")
 
+	# 대기 중인 셋업 버프를 이번 탄에 소비한다(다음 1발 한정이므로 즉시 비운다).
+	var buff_acc := pending_buff_acc
+	var buff_pen := pending_buff_pen
+	pending_buff_acc = 0
+	pending_buff_pen = 0
+	if buff_acc > 0 or buff_pen > 0:
+		combat_log.emit("   ↳ 🎯 [셋업 적용] ACC +%d · PEN +%d" % [buff_acc, buff_pen])
+
 	var calc_bullet_acc := bullet.duplicate()
-	calc_bullet_acc.accuracy += part_acc_bonus
+	calc_bullet_acc.accuracy += part_acc_bonus + buff_acc
 
 	# ── 돌격형(Bruiser) 총기 페널티: 원거리 조준 불안정 ──
 	if _gun_is("shotgun") and target.current_distance >= 4:
@@ -425,7 +442,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	if hit:
 		# ── 2. 대미지 및 관통 파츠 가산 ──
 		var part_dmg_bonus := 0
-		var part_pen_bonus := 0
+		var part_pen_bonus := buff_pen
 
 		# 철갑 총열 (ARMOR_PIERCING): PEN +1
 		if _has_part(Enums.PartID.ARMOR_PIERCING):
@@ -558,6 +575,17 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		_apply_damage_to_enemy(target, damage)
 		if damage > 0:
 			is_refunded = true
+			# ── 셋업 버프 부여 (유효 적중 시에만) ──
+			# ⚠️ "막힌 탄은 아무 일도 일으키지 않는다" — 환급 원칙과 같은 선상이다.
+			#    셋업탄도 게이트를 넘어야 하므로 셋업 자체가 리스크가 된다.
+			#    (파쇄는 반대로 명중만으로 발동한다 — _apply_post_hit_effects 참조)
+			match bullet.effect_type:
+				Enums.BulletEffect.BUFF_ACC:
+					pending_buff_acc = bullet.effect_value
+					combat_log.emit("   ↳ ✨ [셋업] 다음 탄 ACC +%d" % bullet.effect_value)
+				Enums.BulletEffect.BUFF_PEN:
+					pending_buff_pen = bullet.effect_value
+					combat_log.emit("   ↳ ✨ [셋업] 다음 탄 PEN +%d" % bullet.effect_value)
 		else:
 			battle_stats.zero_damage_hits += 1
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미지" % [bullet.display_name, target.data.display_name, damage])
@@ -922,6 +950,11 @@ func request_reload() -> void:
 				draw_pile.append(b)
 
 	magazine.clear()
+	# 셋업 버프는 리로드로 소멸한다.
+	# ⚠️ 유지되면 "탄창 끝에 셋업 깔아두기"가 항상 이득이 되어 리로드 공백의 비용이 흐려진다.
+	pending_buff_acc = 0
+	pending_buff_pen = 0
+
 	var turns := gun.reload_turns
 	reload_turns_remaining = turns
 	state = State.RELOADING

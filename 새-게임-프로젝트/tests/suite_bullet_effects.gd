@@ -87,3 +87,62 @@ static func run(t) -> void:
 	var r_open := _fire(_enemy(50, 3, 0, 10), opening)
 	t.eq(r_open.def, 2, "선제 사격: 장갑 파쇄로 DEF 3→2")
 	t.eq(r_open.dist, 12, "선제 사격: 첫 탄 넉백 +2 → 거리 10→12")
+
+	# ══════════════════════════════════════════════════════════
+	# 셋업 버프 (BUFF_ACC / BUFF_PEN) — 정본: docs/gdd/22_ammo_expansion.md §22.2
+	#
+	# 규칙: 다음 1발만 · 유효 적중 시에만 · 중첩 없음 · 리로드 소멸
+	# ⚠️ LIFO — 나중에 넣은 탄이 먼저 나간다. 셋업을 뒤에 적재해야 먼저 발사된다.
+	# ══════════════════════════════════════════════════════════
+
+	# ── ACC 페이로드는 단독으로 빗나간다 ──
+	var payload_only: Array[BulletData] = []
+	for i in range(4):
+		payload_only.append(_bullet(6, 2, 1))          # ACC2
+	var r_solo := _fire(_enemy(30, 0, 5, 10), payload_only)   # EVA5
+	t.eq(int(r_solo.hp), 30, "⭐ ACC 페이로드 단독 → 전탄 빗나감 (ACC2 < EVA5)")
+
+	# ── 셋업을 끼우면 같은 탄이 통한다 ──
+	var chained: Array[BulletData] = []
+	for i in range(2):
+		chained.append(_bullet(6, 2, 1))                                             # 페이로드(먼저 적재)
+		chained.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))             # 셋업(나중 적재 = 먼저 발사)
+	var r_chain := _fire(_enemy(30, 0, 5, 10), chained)
+	t.check(int(r_chain.hp) < 30,
+		"⭐ 셋업 + 페이로드 → 명중 (HP 30 → %d), 단독 실패에서 반전" % int(r_chain.hp))
+
+	# ── PEN 셋업도 같은 구조 ──
+	var pen_solo: Array[BulletData] = []
+	for i in range(4):
+		pen_solo.append(_bullet(7, 7, 0))              # PEN0
+	var r_pen_solo := _fire(_enemy(40, 2, 0, 10), pen_solo)   # DEF2
+	t.eq(int(r_pen_solo.hp), 40, "⭐ PEN 페이로드 단독 → 관통 실패 (PEN0 < DEF2)")
+
+	var pen_chain: Array[BulletData] = []
+	for i in range(2):
+		pen_chain.append(_bullet(7, 7, 0))
+		pen_chain.append(_bullet(1, 7, 2, Enums.BulletEffect.BUFF_PEN, 3))
+	var r_pen_chain := _fire(_enemy(40, 2, 0, 10), pen_chain)
+	t.check(int(r_pen_chain.hp) < 40,
+		"⭐ PEN 셋업 + 페이로드 → 관통 (HP 40 → %d)" % int(r_pen_chain.hp))
+
+	# ── 버프는 다음 1발만 (탄창 전체 지속 아님) ──
+	# 셋업 1발 + 페이로드 3발 → 첫 페이로드만 맞고 나머지 둘은 빗나가야 한다.
+	var leak_test: Array[BulletData] = []
+	for i in range(3):
+		leak_test.append(_bullet(6, 2, 1))
+	leak_test.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))
+	var r_leak := _fire(_enemy(30, 0, 5, 10), leak_test)
+	# 셋업 1 + 버프받은 페이로드 6 = 7 피해. 나머지 2발은 빗나감.
+	t.eq(int(r_leak.hp), 30 - 7,
+		"⭐ 버프는 다음 1발만 — 페이로드 3발 중 1발만 명중 (누수 없음)")
+
+	# ── 막힌 셋업은 버프를 주지 않는다 ──
+	# "막힌 탄은 아무 일도 일으키지 않는다" — 셋업 자체가 리스크가 되어야 한다.
+	var blocked_setter: Array[BulletData] = []
+	for i in range(2):
+		blocked_setter.append(_bullet(7, 2, 5))                                       # 페이로드(ACC2, PEN5)
+		blocked_setter.append(_bullet(1, 8, 0, Enums.BulletEffect.BUFF_ACC, 3))       # 셋업 PEN0 → DEF3에 막힘
+	var r_blocked := _fire(_enemy(40, 3, 5, 10), blocked_setter)
+	t.eq(int(r_blocked.hp), 40,
+		"⭐ 관통 실패한 셋업은 버프 미부여 → 뒤 페이로드도 빗나감 (유효 적중 조건)")
