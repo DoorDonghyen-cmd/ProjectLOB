@@ -143,6 +143,31 @@ static func run(t, tree: SceneTree) -> void:
 		t.check(ov._action_row.position.y + ov._action_row.size.y <= ov.size.y + 1.0,
 			"⭐ 액션 바가 화면 안에 남아 있음 (버튼이 가려지지 않음)")
 
+	# ── 연발 격발 연출이 순차 재생되는가 ──
+	# ⚠️ 시뮬레이션은 1턴에 즉시 끝나지만, 연출을 한 번에 뭉쳐 보여주면
+	#    "펑" 하고 끝나 장전 순서가 전혀 읽히지 않는다. 로직은 그대로 두고
+	#    bullet_fired를 큐에 쌓아 간격을 두고 재생한다(정본 §21.5).
+	if ov != null:
+		ov._fire_fx_queue.clear()
+		ov._fx_playing = false
+		var b1 := BulletData.new()
+		b1.display_name = "연출탄"
+		# 한 프레임에 5발이 들어와도 큐에 쌓여야 한다(즉시 전부 소비되면 안 된다).
+		for i in range(5):
+			ov._on_bullet_fired(b1, true, 1)
+		t.check(ov._fx_playing, "⭐ 연발 5발 → 연출 큐 재생이 시작됨")
+		t.check(ov._fire_fx_queue.size() > 0,
+			"⭐ 나머지 %d발이 큐에 남아 순차 대기 (한 번에 소비되지 않음)" % ov._fire_fx_queue.size())
+
+		# 탄창 표시가 재생 진행도를 따라가는가
+		ov._mag_display_override = [b1, b1, b1] as Array[BulletData]
+		ov._update_cylinder_visuals()
+		t.eq(ov._lookahead_container.display_override.size(), 3,
+			"연출 중 탄창 표시는 실제 탄창이 아니라 재생 진행도를 그림")
+
+		ov._fire_fx_queue.clear()
+		ov._mag_display_override.clear()
+
 	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
 	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.
 	var prev_credits: int = RunManager.meta_credits

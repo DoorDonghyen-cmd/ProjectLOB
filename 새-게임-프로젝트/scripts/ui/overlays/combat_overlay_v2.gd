@@ -86,6 +86,22 @@ var _action_row: HBoxContainer
 ##    기준선을 따로 보관하고 진행 중인 트윈을 죽여서 누적을 원천 차단한다.
 var _action_row_base_y: float = NAN
 var _recoil_tween: Tween
+
+## ── 격발 연출 큐 (순차 재생) ──
+##
+## ⚠️ **시뮬레이션은 즉시 끝나고, 연출만 순차로 재생한다.**
+##    연발은 탄창 전체가 1턴에 처리되는데(정본: docs/gdd/21_fire_mode.md §21.3),
+##    결과를 한 번에 뭉쳐 보여주면 "펑" 하고 끝나 장전 순서가 전혀 읽히지 않는다.
+##    그렇다고 전투 로직을 비동기로 만들면 결정론이 흔들리므로,
+##    로직은 그대로 두고 `bullet_fired` 이벤트를 큐에 쌓아 간격을 두고 재생한다.
+##    (GDD §21.5: "다탄 발사는 반드시 순차 연출")
+const FX_STEP_INTERVAL := 0.13   ## 발 사이 간격(초). "타닥 타닥"이 느껴지는 최소치
+const TRACER_TRAVEL := 0.07      ## 탄환이 총구에서 표적까지 날아가는 시간
+
+var _fire_fx_queue: Array[Dictionary] = []
+var _fx_playing: bool = false
+## 연출 재생 중 탄창에 표시할 잔탄 스냅샷. 비어 있으면 실제 탄창을 그대로 쓴다.
+var _mag_display_override: Array[BulletData] = []
 var _unload_btn: Button
 var _reload_btn: Button
 var _double_tap_btn: Button
@@ -1158,6 +1174,8 @@ func _update_distance_display(enemy: EnemyInstance) -> void:
 
 func _update_cylinder_visuals() -> void:
 	if is_instance_valid(_lookahead_container):
+		# 연출 재생 중에는 실제 탄창이 아니라 재생 진행도를 그린다.
+		_lookahead_container.display_override = _mag_display_override
 		_lookahead_container.update_cylinder_visuals()
 	_update_penetration_indicators()
 
@@ -1306,6 +1324,11 @@ func _on_fire_pressed() -> void:
 		if combat_manager.state == CombatManager.State.PLAYER_TURN:
 			clear_combat_log()
 			
+			# 연발은 탄창 전체가 한 번에 처리되므로, 연출이 한 발씩 재생되는 동안
+			# 표시할 잔탄을 미리 스냅샷해 둔다. (실제 탄창은 즉시 비어 버린다)
+			if combat_manager.is_full_auto():
+				_mag_display_override = combat_manager.magazine.get_loaded_bullets().duplicate()
+
 			var next_bullet := combat_manager.magazine.peek()
 			if next_bullet and next_bullet.slow > 0 and is_instance_valid(_slow_target_enemy) and not _slow_target_enemy.is_dead():
 				combat_manager.fire_at_target(_slow_target_enemy)
@@ -1474,12 +1497,72 @@ func _on_magazine_updated(remaining: int = 0, capacity: int = 0) -> void:
 	_update_action_buttons()
 	_update_penetration_indicators()
 
+## 격발 이벤트 수신 — 연출을 **큐에 쌓고** 순차 재생한다.
+##
+## 표적 위치는 이 시점에 스냅샷한다. 재생 시점에는 적이 이미 죽었거나
+## 전진해 있어(버스트 전체가 1턴이므로) 엉뚱한 곳으로 탄이 날아간다.
 func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) -> void:
+	var target_pos := Vector2.ZERO
+	var target_inst: EnemyInstance = null
+	if combat_manager and combat_manager.enemy:
+		target_inst = combat_manager.enemy
+		var es = _enemy_sprites.get(target_inst)
+		if is_instance_valid(es) and es.visible:
+			target_pos = es.global_position + es.size / 2.0
+
+	_fire_fx_queue.append({
+		"bullet": bullet,
+		"hit": hit,
+		"damage": damage,
+		"target_pos": target_pos,
+		"target": target_inst,
+	})
+
+	if not _fx_playing:
+		_pump_fire_fx()
+
+
+## 큐를 하나씩 꺼내 간격을 두고 재생한다.
+func _pump_fire_fx() -> void:
+	if _fx_playing:
+		return
+	_fx_playing = true
+
+	# ⚠️ 재생 후 **항상 간격을 기다린 뒤** 큐를 다시 본다.
+	#    대기 전에 종료를 판정하면, 버스트의 나머지 탄이 아직 도착하지 않은
+	#    첫 프레임에 큐가 비어 보여서 매 발이 즉시 재생돼 버린다
+	#    (버스트는 동기 루프라 5발이 같은 프레임에 들어온다).
+	while not _fire_fx_queue.is_empty():
+		var entry: Dictionary = _fire_fx_queue.pop_front()
+		_play_fire_fx(entry)
+
+		# 탄창 표시를 한 발씩 줄여 "장전 순서대로 나간다"를 눈에 보이게 한다.
+		if not _mag_display_override.is_empty():
+			_mag_display_override.pop_back()  # LIFO — 맨 위(마지막에 넣은 탄)부터 나간다
+			_update_cylinder_visuals()
+
+		if not is_inside_tree():
+			break
+		await get_tree().create_timer(FX_STEP_INTERVAL).timeout
+		if not is_instance_valid(self) or not is_inside_tree():
+			return
+
+	_mag_display_override.clear()
+	_fx_playing = false
+	if is_instance_valid(self) and is_inside_tree():
+		_update_cylinder_visuals()
+
+
+func _play_fire_fx(entry: Dictionary) -> void:
+	var bullet: BulletData = entry.bullet
+	var hit: bool = entry.hit
+	var damage: int = entry.damage
+
 	add_combat_log("[color=#ffa500]🔫 격발: %s가 격발되었습니다.[/color]" % bullet.display_name)
-	
+
 	if not _agent_sprite:
 		return
-		
+
 	# 1. 아바타 사격 프레임 적용
 	var tex = _agent_sprite.texture as AtlasTexture
 	if tex:
@@ -1521,17 +1604,51 @@ func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) ->
 	# 4. Muzzle Flash 파티클 생성 (총구 부근)
 	var muzzle_pos = _agent_sprite.global_position + Vector2(_agent_sprite.size.x * 0.72, _agent_sprite.size.y * 0.42)
 	_spawn_muzzle_flash_particles(muzzle_pos)
-	
-	# 5. 피격 시 Blood Spurt 파티클 생성 및 탄환 반환 UI 플로팅 연출
-	if hit and combat_manager and combat_manager.enemy:
-		var es = _enemy_sprites.get(combat_manager.enemy)
-		if is_instance_valid(es) and es.visible:
-			var target_pos = es.global_position + es.size / 2.0
-			_spawn_blood_spurt_particles(target_pos)
-		
-		# 유효 적중(damage > 0) 시 탄환 반환 플로팅 연출 트리거
-		if damage > 0:
-			_spawn_bullet_refund_floating(combat_manager.enemy, bullet)
+
+	# 4-B. 탄환 궤적 — 무엇이 날아갔는지 눈으로 보이게 한다.
+	var tgt: Vector2 = entry.target_pos
+	if tgt != Vector2.ZERO:
+		_spawn_tracer(muzzle_pos, tgt, bullet, hit)
+
+	# 5. 피격 시 Blood Spurt 파티클 및 탄환 반환 플로팅 연출
+	# ⚠️ 재생 시점의 `combat_manager.enemy`가 아니라 **격발 당시 스냅샷**을 쓴다.
+	#    버스트는 전체가 1턴이라 재생 중에는 이미 다른 적이 최근접이 되어 있다.
+	if hit:
+		if tgt != Vector2.ZERO:
+			_spawn_blood_spurt_particles(tgt)
+		var tgt_inst = entry.get("target")
+		if damage > 0 and tgt_inst != null and is_instance_valid(tgt_inst):
+			_spawn_bullet_refund_floating(tgt_inst, bullet)
+
+
+## 탄환 궤적 — 총구에서 표적까지 날아가는 탄을 짧게 보여준다.
+## 색은 탄환 구경 계열을 따라, 막힌 탄은 회색으로 표시해 "통했는가"가 즉시 읽히게 한다.
+func _spawn_tracer(from_pos: Vector2, to_pos: Vector2, bullet: BulletData, hit: bool) -> void:
+	var tracer := ColorRect.new()
+	tracer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tracer.size = Vector2(18, 3)
+	tracer.pivot_offset = Vector2(9, 1.5)
+
+	var col := Color(1.0, 0.85, 0.35)   # 기본: 탄 궤적 노랑
+	if not hit:
+		col = Color(0.55, 0.58, 0.65)   # 빗나감: 흐린 회색
+	elif bullet.penetration >= 3:
+		col = Color(0.55, 0.85, 1.0)    # 고관통: 청백
+	elif bullet.knockback > 0:
+		col = Color(1.0, 0.55, 0.25)    # 충격탄: 주황
+	tracer.color = col
+
+	add_child(tracer)
+	tracer.global_position = from_pos - tracer.pivot_offset
+	tracer.rotation = (to_pos - from_pos).angle()
+
+	var t := create_tween()
+	t.set_parallel(true)
+	t.tween_property(tracer, "global_position", to_pos - tracer.pivot_offset, TRACER_TRAVEL)\
+		.set_trans(Tween.TRANS_LINEAR)
+	t.tween_property(tracer, "modulate:a", 0.15, TRACER_TRAVEL)\
+		.set_ease(Tween.EASE_IN)
+	t.chain().tween_callback(tracer.queue_free)
 
 func _spawn_muzzle_flash_particles(pos: Vector2) -> void:
 	var parts := CPUParticles2D.new()

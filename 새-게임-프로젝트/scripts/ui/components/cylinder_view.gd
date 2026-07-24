@@ -8,6 +8,11 @@ extends VBoxContainer
 var parent_scene: Control
 var combat_manager: CombatManager
 
+## 연출 재생 중 표시할 잔탄 스냅샷. 비어 있으면 실제 탄창을 그대로 읽는다.
+## 연발은 탄창이 한 번에 비므로, 한 발씩 나가는 모습을 보여주려면
+## 실제 상태가 아니라 **재생 진행도**를 그려야 한다.
+var display_override: Array[BulletData] = []
+
 func initialize(p_scene: Control, cm: CombatManager) -> void:
 	parent_scene = p_scene
 	combat_manager = cm
@@ -19,7 +24,9 @@ func update_cylinder_visuals() -> void:
 		child.queue_free()
 		
 	var bullets: Array[BulletData] = []
-	if combat_manager:
+	if not display_override.is_empty():
+		bullets = display_override
+	elif combat_manager:
 		bullets = combat_manager.magazine.get_loaded_bullets()
 		
 	if bullets.size() == 0:
