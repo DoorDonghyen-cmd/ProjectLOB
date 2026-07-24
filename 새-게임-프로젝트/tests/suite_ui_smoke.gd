@@ -189,6 +189,28 @@ static func run(t, tree: SceneTree) -> void:
 				"⭐ 궤적이 화면 폭으로 늘어나지 않음 (컨테이너 자식이 아님)")
 			slug.queue_free()
 
+		# ── 연출이 재생 중이면 전투 결과 화면을 미룬다 ──
+		# 회귀 배경(2026-07-25 보고): 마지막 적을 연발로 잡으니 총알 연출도 없이
+		#   곧바로 "승리"가 떴다. 버스트가 동기로 돌아 적이 죽는 순간 encounter_won이
+		#   즉시 발생하는데, 그 시점엔 총알 연출이 아직 큐에만 있었기 때문이다.
+		ov._fire_fx_queue.clear()
+		ov._pending_result = ""
+		if is_instance_valid(ov._result_overlay):
+			ov._result_overlay.visible = false
+
+		# 연출이 재생 중(큐에 남음)일 때 승리가 오면 결과를 보류해야 한다.
+		ov._fx_playing = true
+		ov._on_encounter_won()
+		t.eq(ov._pending_result, "won", "⭐ 연출 재생 중 승리 → 결과 화면 보류")
+		t.check(not ov._result_overlay.visible, "⭐ 총알 연출 전에는 승리 화면이 뜨지 않음")
+
+		# 연출이 없을 때 오는 승리는 즉시 표시된다(단발 마지막 발 등).
+		ov._fx_playing = false
+		ov._pending_result = ""
+		ov._on_encounter_won()
+		t.check(ov._result_overlay.visible, "연출 없이 온 승리는 즉시 표시")
+		ov._result_overlay.visible = false
+
 	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
 	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.
 	var prev_credits: int = RunManager.meta_credits

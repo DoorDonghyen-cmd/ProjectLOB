@@ -102,6 +102,11 @@ const TRACER_TRAVEL := 0.16
 
 var _fire_fx_queue: Array[Dictionary] = []
 var _fx_playing: bool = false
+## 연출이 재생되는 동안 도착한 전투 결과(승리/패배)를 보류해 둔다.
+## 연발은 버스트가 동기로 돌아 적이 죽는 순간 encounter_won이 **즉시** 발생하는데,
+## 그 시점엔 총알 연출이 아직 큐에만 있다. 결과 화면을 바로 띄우면
+## "발사도 안 보였는데 승리"가 된다. 연출이 끝난 뒤에 처리한다.
+var _pending_result: String = ""  ## "" / "won" / "lost"
 ## 연출 재생 중 탄창에 표시할 잔탄 스냅샷. 비어 있으면 실제 탄창을 그대로 쓴다.
 var _mag_display_override: Array[BulletData] = []
 
@@ -1570,6 +1575,15 @@ func _pump_fire_fx() -> void:
 	if is_instance_valid(self) and is_inside_tree():
 		_update_cylinder_visuals()
 
+	# 연출이 다 끝났으니 보류해 둔 전투 결과를 이제 띄운다.
+	if _pending_result != "":
+		var result := _pending_result
+		_pending_result = ""
+		if result == "won":
+			_present_encounter_won()
+		elif result == "lost":
+			_present_player_died()
+
 
 func _play_fire_fx(entry: Dictionary) -> void:
 	var bullet: BulletData = entry.bullet
@@ -1735,7 +1749,15 @@ func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 	_update_hit_info(nearest)
 	_update_distance_display(nearest)
 
+## 승리 신호 수신 — 연출이 재생 중이면 끝날 때까지 결과 화면을 미룬다.
 func _on_encounter_won() -> void:
+	if _fx_playing or not _fire_fx_queue.is_empty():
+		_pending_result = "won"
+		return
+	_present_encounter_won()
+
+
+func _present_encounter_won() -> void:
 	_result_title.text = "전투 승리!"
 	_result_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 
@@ -1797,7 +1819,15 @@ func _on_encounter_won() -> void:
 
 	_result_overlay.visible = true
 
+## 패배 신호 수신 — 승리와 같은 이유로 연출이 끝난 뒤에 처리한다.
 func _on_player_died() -> void:
+	if _fx_playing or not _fire_fx_queue.is_empty():
+		_pending_result = "lost"
+		return
+	_present_player_died()
+
+
+func _present_player_died() -> void:
 	_fire_btn.disabled = true
 	_unload_btn.disabled = true
 	_reload_btn.disabled = true
