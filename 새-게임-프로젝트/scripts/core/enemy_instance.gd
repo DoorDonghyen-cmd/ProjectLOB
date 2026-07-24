@@ -26,6 +26,8 @@ var is_charger: bool = false
 # ── 스택 스펀지(ABSORBER) 변수 ──
 var is_stack_sponge: bool = false
 var barrier_cells: int = 3
+## 배리어 최대치 — HP 바가 비율을 그리려면 최댓값이 필요하다. 초기화 끝에 현재값으로 확정한다.
+var max_barrier_cells: int = 3
 
 # ── 보스 전용 변수 ──
 ## 현재 페이즈 (1 = 기본, 2 = 코어 노출 등)
@@ -122,6 +124,9 @@ func _init(enemy_data: EnemyData) -> void:
 		current_speed = 0
 		charge_turns_max = 3
 		phase2_hp = 30
+
+	# 배리어 최대치를 초기값으로 확정한다(전 분기 공통). HP 바 비율 계산에 쓰인다.
+	max_barrier_cells = maxi(barrier_cells, 1)
 
 
 ## 대미지 적용. HP는 0 미만으로 내려가지 않는다.

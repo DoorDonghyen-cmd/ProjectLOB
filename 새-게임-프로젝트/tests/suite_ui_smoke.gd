@@ -193,6 +193,34 @@ static func run(t, tree: SceneTree) -> void:
 		# 회귀 배경(2026-07-25 보고): 마지막 적을 연발로 잡으니 총알 연출도 없이
 		#   곧바로 "승리"가 떴다. 버스트가 동기로 돌아 적이 죽는 순간 encounter_won이
 		#   즉시 발생하는데, 그 시점엔 총알 연출이 아직 큐에만 있었기 때문이다.
+		# ── 적 표시 배치: HP 바는 머리 위, 방어·회피 배지는 발 아래 ──
+		# 요청(2026-07-25): HP를 머리 위로, 자물쇠·방어·회피를 아래로.
+		var tc = ov._track_control
+		if is_instance_valid(tc) and not tc.enemy_sprites.is_empty():
+			var any_enemy = tc.enemy_sprites.keys()[0]
+			var es = tc.enemy_sprites[any_enemy]
+			var hp_bg = es.get_node_or_null("HpBarBG")
+			var badge = es.get_node_or_null("BadgePanel")
+			var defp = es.get_node_or_null("DefPanel")
+			t.check(hp_bg != null, "적 머리 위 HP 바 존재")
+			t.check(badge != null and defp != null, "아키타입·방어 배지 존재")
+			if hp_bg and badge:
+				# 스프라이트는 y=0~80. HP 바는 그 위(음수), 배지는 그 아래(80 초과).
+				t.check(hp_bg.position.y < 0, "⭐ HP 바가 머리 위(y=%.0f)" % hp_bg.position.y)
+				t.check(badge.position.y >= 80, "⭐ 아키타입 배지가 발 아래(y=%.0f)" % badge.position.y)
+				t.check(defp.position.y >= 80, "⭐ 방어 배지가 발 아래(y=%.0f)" % defp.position.y)
+				t.check(hp_bg.position.y < badge.position.y, "HP 바가 배지보다 위에 있음")
+
+			# HP 바가 체력 변화를 따라가는가
+			any_enemy.current_hp = maxi(any_enemy.data.max_hp / 2, 1)
+			tc.refresh_all_hp_bars()
+			var fill = hp_bg.get_node_or_null("HpFill") if hp_bg else null
+			var txt = hp_bg.get_node_or_null("HpText") if hp_bg else null
+			if fill and txt:
+				# 절반이면 채움 막대가 배경 안쪽 폭의 절반쯤 비어 있어야 한다.
+				t.check(fill.offset_right < -10.0, "⭐ HP 바가 절반으로 줄어듦 (offset_right=%.0f)" % fill.offset_right)
+				t.check(txt.text.contains("/"), "HP 바에 수치 표기 (%s)" % txt.text)
+
 		ov._fire_fx_queue.clear()
 		ov._pending_result = ""
 		if is_instance_valid(ov._result_overlay):

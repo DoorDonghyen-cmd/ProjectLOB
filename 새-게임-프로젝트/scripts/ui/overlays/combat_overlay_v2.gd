@@ -98,7 +98,7 @@ var _recoil_tween: Tween
 const FX_STEP_INTERVAL := 0.18   ## 발 사이 간격(초). "타닥 타닥"이 느껴지는 최소치
 ## 탄알이 총구에서 표적까지 날아가는 시간.
 ## ⚠️ 너무 짧으면(≤0.08s = 5프레임 이하) 궤적이 아니라 번쩍임으로 보인다.
-const TRACER_TRAVEL := 0.16
+const TRACER_TRAVEL := 0.28
 
 var _fire_fx_queue: Array[Dictionary] = []
 var _fx_playing: bool = false
@@ -1442,6 +1442,8 @@ func _on_enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int
 		enemy_inst.data.display_name, damage, remaining_hp
 	])
 	_spawn_damage_text(enemy_inst, "-%d" % damage)
+	if is_instance_valid(_track_control):
+		_track_control.refresh_all_hp_bars()
 	var nearest = combat_manager.enemy
 	_update_hit_info(nearest)
 	_update_distance_display(nearest)

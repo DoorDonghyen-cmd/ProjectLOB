@@ -86,11 +86,60 @@ func connect_enemy_gui_input(callback: Callable) -> void:
 		if is_instance_valid(es):
 			es.gui_input.connect(func(event): callback.call(event, enemy))
 
+## 적 표시 배치 (2026-07-25 개편):
+##   - 머리 위(y ≈ -18): **HP 프로그레스 바** — 남은 체력을 한눈에
+##   - 발 아래(y ≈ 84): 아키타입 배지 + 방어 + 회피 — "무엇을 뚫어야 하는가"
+## HP는 즉각적 정보(얼마나 남았나)라 위, 관통 판단 정보(방어/회피)는 아래로 분리한다.
+const _BADGE_ROW_Y := 84.0
+const _HP_BAR_Y := -18.0
+const _HP_BAR_W := 76.0
+
 func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
+	# ── HP 바 (머리 위) ──
+	var hp_bg := PanelContainer.new()
+	hp_bg.name = "HpBarBG"
+	hp_bg.custom_minimum_size = Vector2(_HP_BAR_W, 9)
+	hp_bg.position = Vector2((80.0 - _HP_BAR_W) / 2.0, _HP_BAR_Y)
+	es.add_child(hp_bg)
+
+	var hp_bg_style := StyleBoxFlat.new()
+	hp_bg_style.bg_color = Color(0.06, 0.07, 0.1, 0.9)
+	hp_bg_style.border_width_left = 1; hp_bg_style.border_width_right = 1
+	hp_bg_style.border_width_top = 1; hp_bg_style.border_width_bottom = 1
+	hp_bg_style.border_color = Color(0.2, 0.23, 0.29, 0.95)
+	hp_bg_style.corner_radius_top_left = 3; hp_bg_style.corner_radius_top_right = 3
+	hp_bg_style.corner_radius_bottom_left = 3; hp_bg_style.corner_radius_bottom_right = 3
+	hp_bg.add_theme_stylebox_override("panel", hp_bg_style)
+
+	# 채워지는 막대 — 앵커로 좌측에 붙이고 offset_right로 비율을 만든다.
+	var hp_fill := ColorRect.new()
+	hp_fill.name = "HpFill"
+	hp_fill.color = parent_scene.C_SUCCESS if parent_scene and "C_SUCCESS" in parent_scene else Color(0.3, 1.0, 0.5)
+	hp_fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hp_fill.anchor_left = 0.0; hp_fill.anchor_top = 0.0
+	hp_fill.anchor_right = 1.0; hp_fill.anchor_bottom = 1.0
+	hp_fill.offset_left = 2; hp_fill.offset_top = 2
+	hp_fill.offset_right = -2; hp_fill.offset_bottom = -2
+	hp_bg.add_child(hp_fill)
+
+	# HP 수치 (작게, 바 위에 겹쳐 표기)
+	var hp_txt: Label = parent_scene.make_label("", 8, Color.WHITE)
+	hp_txt.name = "HpText"
+	hp_txt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hp_txt.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hp_txt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hp_txt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hp_txt.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	hp_txt.add_theme_constant_override("outline_size", 3)
+	hp_bg.add_child(hp_txt)
+
+	_refresh_hp_bar(es, enemy)
+
+	# ── 아키타입 배지 (발 아래) ──
 	var badge_panel := PanelContainer.new()
 	badge_panel.name = "BadgePanel"
 	badge_panel.custom_minimum_size = Vector2(24, 24)
-	badge_panel.position = Vector2(28, -28)
+	badge_panel.position = Vector2(8, _BADGE_ROW_Y)
 	es.add_child(badge_panel)
 	
 	var badge_style := StyleBoxFlat.new()
@@ -131,11 +180,11 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	badge_panel.add_child(lbl)
 	
-	# 신규 방어도 배지 (자물쇠 배지 바로 옆에 배치)
+	# 방어도 배지 (아키타입 배지 오른쪽, 발 아래 줄)
 	var def_panel := PanelContainer.new()
 	def_panel.name = "DefPanel"
 	def_panel.custom_minimum_size = Vector2(36, 24)
-	def_panel.position = Vector2(56, -28) # 28 + 24 + 4 = 56
+	def_panel.position = Vector2(36, _BADGE_ROW_Y) # 8 + 24 + 4 = 36
 	es.add_child(def_panel)
 	
 	var def_style := StyleBoxFlat.new()
@@ -159,7 +208,31 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	var def_lbl: Label = parent_scene.make_label(str(enemy.current_def), 10, Color.WHITE)
 	def_lbl.name = "DefLabel"
 	def_hbox.add_child(def_lbl)
-	
+
+	# 회피 배지 (방어 배지 오른쪽). 회피 0인 적은 표시하지 않아 잡음을 줄인다.
+	var eva_panel := PanelContainer.new()
+	eva_panel.name = "EvaPanel"
+	eva_panel.custom_minimum_size = Vector2(36, 24)
+	eva_panel.position = Vector2(76, _BADGE_ROW_Y) # 36 + 36 + 4 = 76
+	eva_panel.visible = enemy.data.evasion > 0
+	es.add_child(eva_panel)
+
+	var eva_style := StyleBoxFlat.new()
+	eva_style.bg_color = Color(0.08, 0.11, 0.09, 0.85)
+	eva_style.border_width_left = 1; eva_style.border_width_right = 1
+	eva_style.border_width_top = 1; eva_style.border_width_bottom = 1
+	eva_style.border_color = (parent_scene.C_SUCCESS if parent_scene and "C_SUCCESS" in parent_scene else Color(0.3, 1.0, 0.5))
+	eva_style.corner_radius_top_left = 6; eva_style.corner_radius_top_right = 6
+	eva_style.corner_radius_bottom_left = 6; eva_style.corner_radius_bottom_right = 6
+	eva_panel.add_theme_stylebox_override("panel", eva_style)
+
+	var eva_hbox := HBoxContainer.new()
+	eva_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	eva_hbox.add_theme_constant_override("separation", 2)
+	eva_panel.add_child(eva_hbox)
+	eva_hbox.add_child(parent_scene.make_label("💨", 9, Color.WHITE))
+	eva_hbox.add_child(parent_scene.make_label(str(enemy.data.evasion), 10, Color.WHITE))
+
 	# 타겟 지시기 (최근접 링)
 	var ring_style := StyleBoxFlat.new()
 	ring_style.bg_color = Color(0,0,0,0)
@@ -179,6 +252,55 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	ring_panel.add_theme_stylebox_override("panel", ring_style)
 	es.add_child(ring_panel)
 	ring_panel.visible = false
+
+## HP 바를 현재 체력에 맞춰 갱신한다.
+## ⚠️ 스택 스펀지(앱소버)는 HP가 아니라 배리어 셀로 버티므로, 그 경우 배리어 비율을 그린다.
+##    안 그러면 배리어가 남았는데 HP 바가 가득 차 있어 "왜 안 죽지?"가 된다.
+func _refresh_hp_bar(es: TextureRect, enemy: EnemyInstance) -> void:
+	var hp_bg = es.get_node_or_null("HpBarBG")
+	if not hp_bg:
+		return
+	var fill = hp_bg.get_node_or_null("HpFill") as ColorRect
+	var txt = hp_bg.get_node_or_null("HpText") as Label
+	if not fill:
+		return
+
+	var ratio := 0.0
+	var label_text := ""
+	var col := Color(0.3, 1.0, 0.5)  # 초록
+
+	if enemy.is_stack_sponge:
+		var cur: int = enemy.barrier_cells
+		var maxc: int = maxi(enemy.max_barrier_cells, 1)
+		ratio = clampf(float(cur) / float(maxc), 0.0, 1.0)
+		label_text = "◆%d" % cur
+		col = Color(0.4, 0.7, 1.0)  # 배리어 = 청색
+	else:
+		var cur: int = enemy.current_hp
+		var maxh: int = maxi(enemy.data.max_hp, 1)
+		ratio = clampf(float(cur) / float(maxh), 0.0, 1.0)
+		label_text = "%d/%d" % [cur, maxh]
+		# 체력이 낮을수록 초록 → 노랑 → 빨강
+		if ratio <= 0.3:
+			col = Color(1.0, 0.3, 0.3)
+		elif ratio <= 0.6:
+			col = Color(1.0, 0.8, 0.25)
+
+	fill.color = col
+	# 앵커 기반 폭: 오른쪽 offset을 배경 폭에 비례해 당긴다.
+	var inner_w: float = _HP_BAR_W - 4.0
+	fill.offset_right = -2.0 - inner_w * (1.0 - ratio)
+	if txt:
+		txt.text = label_text
+
+
+## 모든 적의 HP 바를 즉시 갱신한다. 피격·태세 변화 등 체력이 바뀌는 순간에 호출한다.
+func refresh_all_hp_bars() -> void:
+	for enemy in enemy_sprites.keys():
+		var es = enemy_sprites[enemy]
+		if is_instance_valid(es) and not enemy.is_dead():
+			_refresh_hp_bar(es, enemy)
+
 
 func update_enemy_position_and_scale() -> void:
 	if not combat_manager:
@@ -320,4 +442,7 @@ func update_penetration_indicators(next_bullet: BulletData) -> void:
 			var def_lbl = def_panel.get_node_or_null("DefHBox/DefLabel") as Label
 			if def_lbl:
 				def_lbl.text = str(enemy.current_def)
+
+		# HP 바 갱신
+		_refresh_hp_bar(es, enemy)
 
