@@ -659,6 +659,8 @@ func handle_combat_finished(is_dead: bool) -> void:
 		# 최소 접근 거리
 		if _cm.battle_stats.min_dist_allowed < _rm.run_stats.min_dist_allowed:
 			_rm.run_stats.min_dist_allowed = _cm.battle_stats.min_dist_allowed
+		if _cm.battle_stats.min_dist_ratio < _rm.run_stats.min_dist_ratio:
+			_rm.run_stats.min_dist_ratio = _cm.battle_stats.min_dist_ratio
 			
 		# 완벽 실행 (빗나감과 0뎀 타격이 없고, 최소 1킬 이상 처치)
 		if _cm.battle_stats.misses == 0 and _cm.battle_stats.zero_damage_hits == 0 and _cm.battle_stats.total_kills > 0:

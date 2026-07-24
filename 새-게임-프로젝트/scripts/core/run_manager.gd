@@ -17,6 +17,15 @@ static var starting_bonus_available: bool = false # 스타팅 보증 사용 가�
 static var meta_unlocked_weapons: Array[String] = ["workhorse"] # 영구 해금된 총기 목록 (기본 workhorse 해금)
 static var meta_unlocked_sections: Array[String] = ["section_a"] # 영구 해금된 작전 구역 목록 (기본 section_a 지하주차장 해금)
 static var meta_lore_fragments: Array[int] = [] # 1~20 범위의 수집된 파편 번호
+## gambler 해금 임계 — 적을 시작 거리의 이 비율 이내로 들이면 실패.
+const GAMBLER_DIST_RATIO := 1.0 / 3.0
+
+## ── 승천(Ascension) ── 정본: docs/gdd/20_ascension_intention.md
+## 해금된 최고 등급. 정점 클리어 시 1이 열리고, 그 등급으로 완주할 때마다 하나씩 올라간다.
+static var meta_ascension_unlocked: int = 0
+## 이번 런에 적용할 등급(0 = 승천 없음). 타이틀에서 고르며 런 내내 고정된다.
+static var meta_ascension_level: int = 0
+
 static var infiltration_risk_level: int = 1 # 1~5 침투 위험도 (정적 보존하여 런 밖에서도 난이도 세팅 유지)
 
 # ── 런 가변 상태 ──
@@ -42,6 +51,7 @@ var tactical_data_cores: int = 0         # 이번 런에서 획득한 전술 데
 var run_stats := {
 	"lead_bullets_fired": 0,
 	"min_dist_allowed": 99,
+	"min_dist_ratio": 1.0,
 	"hard_zones_cleared": 0,
 	"max_kills_in_single_turn": 0,
 	"average_kill_distance": 0.0,
@@ -97,7 +107,9 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 
 	current_section = section_id
 	current_floor = 1
-	hp_buffer = 1 + meta_hp_armor_lvl
+	# 승천은 메타 파워를 상쇄한다(§5) — HP 아머 업그레이드를 시작 아머 −N으로 되돌린다.
+	# ⚠️ 최소 1은 보장한다. 0이면 첫 접근에 즉사해 "완벽한 플레이도 이길 수 없는" 상태가 된다(§6 바닥선).
+	hp_buffer = maxi(1 + meta_hp_armor_lvl + int(ascension_effects().armor_delta), 1)
 	credits = saved_vault_credits
 	saved_vault_credits = 0
 	backpack_items.clear()
@@ -114,6 +126,7 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 	run_stats = {
 		"lead_bullets_fired": 0,
 		"min_dist_allowed": 99,
+		"min_dist_ratio": 1.0,
 		"hard_zones_cleared": 0,
 		"max_kills_in_single_turn": 0,
 		"average_kill_distance": 0.0,
@@ -178,6 +191,14 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 				basic_cnt = 5 + meta_backpack_lvl
 				specA_cnt = 2
 				specB_cnt = 1
+
+		# 승천: 시작 덱 감소(§4.1 레버 ②). 각 계열에서 1발씩 빼되 최소 1발은 남긴다.
+		# ⚠️ 0으로 만들면 해당 탄 계열이 통째로 사라져 빌드가 아니라 결함이 된다.
+		var deck_delta: int = int(ascension_effects().deck_delta)
+		if deck_delta != 0:
+			basic_cnt = maxi(basic_cnt + deck_delta, 1)
+			specA_cnt = maxi(specA_cnt + deck_delta, 1)
+			specB_cnt = maxi(specB_cnt + deck_delta, 1)
 
 		var b_res: BulletData = load(basic_path)
 		var sa_res: BulletData = load(specA_path)
@@ -309,8 +330,12 @@ func unload_bullet_to_discard(bullet: BulletData) -> void:
 
 ## 소멸(Exile)되거나 분실된 탄환을 덱에서 영구 제거 (단, 기본 9mm는 리필 보장용으로 제거 생략)
 func exile_bullet_from_deck(bullet: BulletData) -> void:
-	if current_gun != null and bullet.weapon_class == current_gun.weapon_class:
-		return # 전용 탄은 보존 (전투마다 복구)
+	# 전용탄 보존 안전장치 — 주력 탄이 계속 소멸하면 쏠 것이 없어지므로 같은 구경은 보호한다.
+	# ⚠️ 승천 8등급 "회수 불가"는 이 안전장치를 해제한다(§4.1 레버 ①).
+	#    잘못 고른 한 발이 곧 자원 손실이 되어, "이 적에게 무엇이 통하는가" 계산이 절실해진다.
+	if not bool(ascension_effects().no_caliber_safety):
+		if current_gun != null and bullet.weapon_class == current_gun.weapon_class:
+			return
 		
 	for i in range(deck.size()):
 		if deck[i].display_name == bullet.display_name:
@@ -390,6 +415,8 @@ func floor_distance_modifier() -> int:
 func end_run(won: bool) -> int:
 	var won_bonus := 50 if won else 0
 	var earned := (total_floors_climbed() * 15) + won_bonus
+	# 승천: 크레딧 수입 감소(곱연산). 합연산이면 등급이 오를수록 수입이 0 이하가 된다.
+	earned = int(round(float(earned) * float(ascension_effects().credit_mult)))
 	meta_credits += earned
 
 	# 전술 데이터 코어 영구 누적
@@ -444,6 +471,31 @@ func enter_section(section_id: String) -> void:
 	#    지도가 미리 보여준 구성과 실제 도착 시 구성이 달라지면 안 되기 때문이다.
 	_bind_current_section_map()
 	update_conditional_paths()
+
+
+## 이번 런에 적용되는 승천 효과 묶음. 정본: scripts/core/ascension.gd
+static func ascension_effects() -> Dictionary:
+	return Ascension.effects_for(meta_ascension_level)
+
+
+## 승천 등급 해금 판정 — **정점까지 완주**했을 때만.
+## 반환: 새로 해금된 등급(없으면 0)
+##
+## ⚠️ 지금 적용 중인 등급으로 완주해야 다음 등급이 열린다.
+##    낮은 등급으로 반복 완주해도 사다리가 올라가면 "등급 = 난이도" 신뢰가 깨진다.
+func check_ascension_unlock(won: bool) -> int:
+	if not won:
+		return 0
+	var last_section: String = String(SECTION_ORDER[SECTION_ORDER.size() - 1])
+	if current_section != last_section:
+		return 0  # 해금 램프 상한에서 끝난 완주는 정점 도달이 아니다
+	if meta_ascension_unlocked >= Ascension.MAX_LEVEL:
+		return 0
+	if meta_ascension_level < meta_ascension_unlocked:
+		return 0  # 이미 넘은 등급으로 다시 깬 것 — 사다리는 오르지 않는다
+	meta_ascension_unlocked += 1
+	save_meta()
+	return meta_ascension_unlocked
 
 
 ## 런을 완주(구역 보스 처치)했을 때 다음 작전 구역을 영구 해금한다.
@@ -501,8 +553,13 @@ func check_weapon_unlocks() -> Array[String]:
 	if not meta_unlocked_weapons.has("stance_hunter") and run_stats.stance_shifts_killed_without_slow >= 1:
 		newly_unlocked.append("stance_hunter")
 		
-	# 7. 도박형 (gambler): [리스크 감수] 무손실 완주 (런 전체에서 최소 적 접근 거리가 1 초과 유지)
-	if not meta_unlocked_weapons.has("gambler") and run_stats.min_dist_allowed > 1:
+	# 7. 도박형 (gambler): [거리 통제] 어떤 적도 **시작 거리의 1/3 이내**로 들이지 않고 완주
+	#
+	# ⚠️ 절대 거리("최소 접근 거리 > 1")를 쓰지 않는다. 승천이 시작 거리를 좁히고 적 SPD를
+	#    올리면 절대 임계값은 사실상 달성 불가가 되어 진행이 막힌다.
+	#    비율 기준이면 난이도가 올라도 "거리를 통제했는가"라는 의도가 그대로 유지된다.
+	#    정본: docs/gdd/20_ascension_intention.md §5
+	if not meta_unlocked_weapons.has("gambler") and run_stats.get("min_dist_ratio", 1.0) >= GAMBLER_DIST_RATIO:
 		newly_unlocked.append("gambler")
 
 	# 8. 제압형 (suppressor): [전탄 소모] 탄창을 한 발도 남기지 않고 비운 채 전투 승리
@@ -596,6 +653,8 @@ static func save_meta(path := "") -> void:
 	cfg.set_value("meta", "unlocked_sections", meta_unlocked_sections)
 	cfg.set_value("meta", "lore_fragments", meta_lore_fragments)
 	cfg.set_value("meta", "infiltration_risk_level", infiltration_risk_level)
+	cfg.set_value("meta", "ascension_unlocked", meta_ascension_unlocked)
+	cfg.set_value("meta", "ascension_level", meta_ascension_level)
 	cfg.save(_resolve_save_path(path))
 
 
@@ -616,6 +675,9 @@ static func load_meta(path := "") -> void:
 	meta_unlocked_sections = _as_string_array(cfg.get_value("meta", "unlocked_sections", meta_unlocked_sections))
 	meta_lore_fragments = _as_int_array(cfg.get_value("meta", "lore_fragments", meta_lore_fragments))
 	infiltration_risk_level = int(cfg.get_value("meta", "infiltration_risk_level", infiltration_risk_level))
+	meta_ascension_unlocked = clampi(int(cfg.get_value("meta", "ascension_unlocked", meta_ascension_unlocked)), 0, Ascension.MAX_LEVEL)
+	# 적용 등급은 해금 범위를 넘을 수 없다(세이브 조작·롤백 방어).
+	meta_ascension_level = clampi(int(cfg.get_value("meta", "ascension_level", meta_ascension_level)), 0, meta_ascension_unlocked)
 
 
 static func _as_string_array(v) -> Array[String]:

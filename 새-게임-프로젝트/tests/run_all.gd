@@ -24,6 +24,7 @@ const SuiteContinuousRun := preload("res://tests/suite_continuous_run.gd")
 const SuiteSpawnTiers := preload("res://tests/suite_spawn_tiers.gd")
 const SuiteFireMode := preload("res://tests/suite_fire_mode.gd")
 const SuiteDifficultyCurve := preload("res://tests/suite_difficulty_curve.gd")
+const SuiteAscension := preload("res://tests/suite_ascension.gd")
 const SuiteUIDataDrift := preload("res://tests/suite_ui_data_drift.gd")
 const SuiteDocDrift := preload("res://tests/suite_doc_drift.gd")
 const SuiteUISmoke := preload("res://tests/suite_ui_smoke.gd")
@@ -69,6 +70,7 @@ func _initialize() -> void:
 	SuiteSpawnTiers.run(t)    # 계층별 스폰 3구간이 모두 도달 가능한지
 	SuiteFireMode.run(t)      # 발사 방식(연발 버스트 + 단발 회귀)
 	SuiteDifficultyCurve.run(t) # 난이도 곡선 램프 + 진행 경제(35층 실측값 고정)
+	SuiteAscension.run(t)     # 승천(누적 적용·해금 사다리·공정성 바닥선)
 	SuiteUIDataDrift.run(t)   # UI가 계층 정보를 복사해 두지 않았는지(소스 레벨 드리프트 검사)
 	SuiteDocDrift.run(t)      # GDD·스킬 문서에 폐기된 세계관 설정이 남아 있지 않은지
 	# SuiteUISmoke는 _process()에서 — 트리 가동 후에 실행해야 한다.

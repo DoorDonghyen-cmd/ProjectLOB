@@ -24,11 +24,12 @@ static func run(t) -> void:
 	var rm := RunManager.new()
 	rm.run_stats.max_kills_in_single_turn = 2   # bruiser 조건은 3 이상
 	rm.run_stats.lead_bullets_fired = 1         # tempo 조건(0발) 불충족
-	rm.run_stats.min_dist_allowed = 1           # gambler 조건(>1) 불충족
+	# gambler는 절대 거리가 아니라 **시작 거리 대비 비율** 기준이다(승천이 거리를 좁혀도 성립).
+	rm.run_stats.min_dist_ratio = 0.2           # 1/3 미만 → 불충족
 	var none_unlocked := rm.check_weapon_unlocks()
 	t.check(not none_unlocked.has("bruiser"), "한 턴 2킬로는 돌격형(bruiser) 미해금")
 	t.check(not none_unlocked.has("tempo"), "납탄 격발 시 발사형(tempo) 미해금")
-	t.check(not none_unlocked.has("gambler"), "최소 거리 1이면 도박형(gambler) 미해금")
+	t.check(not none_unlocked.has("gambler"), "시작 거리의 1/3 이내로 들이면 도박형(gambler) 미해금")
 
 	# ── 조건 충족 시 해금된다 ──
 	_reset_unlocks()
@@ -37,7 +38,7 @@ static func run(t) -> void:
 	rm2.run_stats.tanks_killed_by_shred_only = 1        # heavy 충족
 	rm2.run_stats.stance_shifts_killed_without_slow = 1 # stance_hunter 충족
 	rm2.run_stats.lead_bullets_fired = 1                # tempo 제외(격리)
-	rm2.run_stats.min_dist_allowed = 1                  # gambler 제외(격리)
+	rm2.run_stats.min_dist_ratio = 0.2                  # gambler 제외(격리)
 	var unlocked := rm2.check_weapon_unlocks()
 	t.check(unlocked.has("bruiser"), "한 턴 3킬 → 돌격형(bruiser) 해금")
 	t.check(unlocked.has("heavy"), "파쇄만으로 탱커 처치 → 중장형(heavy) 해금")

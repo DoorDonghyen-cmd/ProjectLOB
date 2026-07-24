@@ -130,9 +130,14 @@ func _generate_draft_choices() -> Array[BulletData]:
 	if pool.is_empty():
 		pool = [_bullets_basic, _bullets_ap, _bullets_kb, _bullets_heavy, _bullets_slow]
 		
+	# 기본 2장 + 크레딧 카드 1장 = 선택지 3개.
+	# 승천 "마른 보급"은 탄환 선택지를 줄인다(§4 — 탄환 획득 감소).
+	# ⚠️ 최소 1장은 남긴다. 0이면 드래프트가 크레딧 강제 선택이 되어 보상 구조가 사라진다.
+	var slots: int = maxi(2 + int(RunManager.ascension_effects().draft_slots_delta), 1)
+
 	var result: Array[BulletData] = []
 	pool.shuffle()
-	for i in range(min(2, pool.size())):
+	for i in range(min(slots, pool.size())):
 		result.append(pool[i].duplicate())
 	return result
 

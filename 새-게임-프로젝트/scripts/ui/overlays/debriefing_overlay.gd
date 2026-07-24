@@ -94,8 +94,13 @@ func show_debriefing(won: bool) -> void:
 	var earned := run_manager.end_run(won)
 	var unlocked_weapons := run_manager.check_weapon_unlocks()
 	var unlocked_sections := run_manager.check_section_unlocks(won)
+	# 승천 해금은 **정점까지 완주**했을 때만. 해금 램프 상한에서 끝난 완주는 해당 없다.
+	var new_ascension := run_manager.check_ascension_unlock(reached_summit)
 
 	var log_text := "── 상승 기록 ──\n\n"
+	if RunManager.meta_ascension_level > 0:
+		log_text += "[color=#cc88ff]🔺 승천 %d등급 — %s[/color]\n" % [
+			RunManager.meta_ascension_level, Ascension.tier_title(RunManager.meta_ascension_level)]
 	# 연속 런이므로 계층 내 층 번호(current_floor)가 아니라 누적 등반 층수로 정산한다.
 	var climbed: int = run_manager.total_floors_climbed()
 	log_text += "- 오른 층수: %d 층 (x15 Cr) = %d Cr\n" % [climbed, climbed * 15]
@@ -129,6 +134,10 @@ func show_debriefing(won: bool) -> void:
 			var sec_name: String = str(MapGenerator.section_info(s_key).name)
 			log_text += "  ▲ [b]%s[/b] — 다음 상승은 여기까지 이어진다.\n" % sec_name
 		log_text += "\n"
+
+	if new_ascension > 0:
+		log_text += "[color=#cc88ff][b]🔺 승천 %d등급 개방[/b][/color]\n" % new_ascension
+		log_text += "  더 조여진 조건으로 다시 오를 수 있다 — %s\n\n" % Ascension.tier_title(new_ascension)
 
 	log_text += _closing_line(won, reached_summit)
 

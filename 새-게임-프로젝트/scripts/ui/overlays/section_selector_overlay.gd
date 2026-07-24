@@ -23,9 +23,16 @@ const C_LOCKED := Color(1.0, 1.0, 1.0, 0.32)
 var parent_scene: Control
 var run_manager: RunManager
 
+const C_ASCENSION := Color(0.8, 0.55, 1.0)
+
 var _rows_vbox: VBoxContainer
 var _summary_label: Label
 var _brief_label: Label
+
+## 승천 등급 선택 — 해금 전에는 통째로 숨긴다(있는 줄도 모르게).
+var _asc_panel: PanelContainer
+var _asc_level_label: Label
+var _asc_cond_label: Label
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
@@ -107,6 +114,50 @@ func _build_ui() -> void:
 	_brief_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	summary_vbox.add_child(_brief_label)
 
+	# ── 3-B. 승천 등급 선택 (해금 후에만 나타난다) ──
+	_asc_panel = PanelContainer.new()
+	_apply_custom_panel_style(_asc_panel, Color(0.09, 0.06, 0.13), Color(0.55, 0.35, 0.75))
+	main_vbox.add_child(_asc_panel)
+
+	var asc_margin := MarginContainer.new()
+	asc_margin.add_theme_constant_override("margin_left", 20)
+	asc_margin.add_theme_constant_override("margin_right", 20)
+	asc_margin.add_theme_constant_override("margin_top", 10)
+	asc_margin.add_theme_constant_override("margin_bottom", 10)
+	_asc_panel.add_child(asc_margin)
+
+	var asc_vbox := VBoxContainer.new()
+	asc_vbox.add_theme_constant_override("separation", 6)
+	asc_margin.add_child(asc_vbox)
+
+	var asc_row := HBoxContainer.new()
+	asc_row.add_theme_constant_override("separation", 10)
+	asc_vbox.add_child(asc_row)
+
+	asc_row.add_child(parent_scene.make_label("🔺 승천", 13, C_ASCENSION))
+
+	var btn_down: Button = parent_scene.make_button("◀", func(): _shift_ascension(-1), C_ASCENSION)
+	btn_down.custom_minimum_size = Vector2(40, 28)
+	asc_row.add_child(btn_down)
+
+	_asc_level_label = parent_scene.make_label("", 13, C_ASCENSION)
+	_asc_level_label.custom_minimum_size = Vector2(150, 0)
+	_asc_level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	asc_row.add_child(_asc_level_label)
+
+	var btn_up: Button = parent_scene.make_button("▶", func(): _shift_ascension(1), C_ASCENSION)
+	btn_up.custom_minimum_size = Vector2(40, 28)
+	asc_row.add_child(btn_up)
+
+	var asc_spacer := Control.new()
+	asc_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	asc_row.add_child(asc_spacer)
+
+	# 누적 조건 목록 — 등급이 곧 난이도라는 신뢰를 위해 **적용 중인 전부**를 보여준다.
+	_asc_cond_label = parent_scene.make_label("", 10, parent_scene.C_DIM)
+	_asc_cond_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	asc_vbox.add_child(_asc_cond_label)
+
 	# ── 4. 액션바 ──
 	var action_hbox := HBoxContainer.new()
 	action_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -157,6 +208,34 @@ func refresh_unlocked_sections() -> void:
 		_brief_label.text = "정점까지 열려 있다. 완주하면 런이 끝난다."
 	else:
 		_brief_label.text = "%s를 완주하면 그 위가 열리고, 다음 상승은 더 길어진다." % reach_name
+
+	_refresh_ascension()
+
+
+## 승천 등급을 올리고 내린다. 해금 범위를 벗어날 수 없다.
+func _shift_ascension(delta: int) -> void:
+	RunManager.meta_ascension_level = clampi(
+		RunManager.meta_ascension_level + delta, 0, RunManager.meta_ascension_unlocked)
+	RunManager.save_meta()
+	_refresh_ascension()
+
+
+func _refresh_ascension() -> void:
+	if not is_instance_valid(_asc_panel):
+		return
+	# 아직 정점을 못 밟았으면 승천은 존재하지 않는다 — 클리어 이후 콘텐츠이므로 미리 노출하지 않는다.
+	_asc_panel.visible = RunManager.meta_ascension_unlocked > 0
+	if not _asc_panel.visible:
+		return
+
+	var lv: int = RunManager.meta_ascension_level
+	if lv <= 0:
+		_asc_level_label.text = "없음"
+		_asc_cond_label.text = "기본 난이도. ▶로 등급을 올리면 조건이 누적된다. (해금 %d등급까지)" % RunManager.meta_ascension_unlocked
+	else:
+		_asc_level_label.text = "%d등급 · %s" % [lv, Ascension.tier_title(lv)]
+		# 누적된 조건을 전부 나열한다. 등급 N은 1~N이 동시에 걸리므로 일부만 보이면 오해가 생긴다.
+		_asc_cond_label.text = "적용 중: " + "  /  ".join(Ascension.active_conditions(lv))
 
 
 ## 계층 한 줄. 해금되지 않은 계층은 흐리게 표시하되 존재는 보여준다(목표 각인).

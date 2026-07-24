@@ -73,7 +73,11 @@ var battle_stats := {
 	"min_dist_allowed": 99,
 	"total_kills": 0,
 	"total_kill_dist_sum": 0.0,
-	"magazine_emptied_wins": 0
+	"magazine_emptied_wins": 0,
+	## 적이 접근한 최소 거리 / 그 적의 시작 거리 (0.0~1.0). 낮을수록 가까이 붙였다는 뜻.
+	## ⚠️ 절대 거리가 아니라 **비율**이다. 승천이 시작 거리를 좁히면 임계값도 함께 좁아져야
+	##    "거리를 통제했는가"라는 의도가 난이도와 무관하게 유지된다.
+	"min_dist_ratio": 1.0
 }
 
 
@@ -152,7 +156,8 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 		"min_dist_allowed": init_min_dist,
 		"total_kills": 0,
 		"total_kill_dist_sum": 0.0,
-		"magazine_emptied_wins": 0
+		"magazine_emptied_wins": 0,
+		"min_dist_ratio": 1.0
 	}
 	final_kill_distance = 99
 	
@@ -991,10 +996,7 @@ func _all_enemies_advance() -> void:
 				if state == State.LOST:
 					return
 	
-	var nearest = _get_nearest_enemy()
-	if nearest:
-		battle_stats.min_dist_allowed = mini(battle_stats.min_dist_allowed, nearest.current_distance)
-		
+	_track_closest_approach()
 	all_enemies_moved.emit()
 
 
@@ -1017,9 +1019,20 @@ func _caster_force_advance_all(amount: int) -> void:
 			player_died.emit()
 			return
 			
-	var nearest = _get_nearest_enemy()
-	if nearest:
-		battle_stats.min_dist_allowed = mini(battle_stats.min_dist_allowed, nearest.current_distance)
+	_track_closest_approach()
+
+
+## 적이 얼마나 가까이 붙었는지를 기록한다.
+## 절대 거리(min_dist_allowed)와 **시작 거리 대비 비율**(min_dist_ratio)을 함께 남긴다.
+## 비율 쪽이 승천 등급과 무관하게 "거리를 통제했는가"를 재는 지표다.
+func _track_closest_approach() -> void:
+	for e in enemies:
+		if e.is_dead():
+			continue
+		battle_stats.min_dist_allowed = mini(battle_stats.min_dist_allowed, e.current_distance)
+		var start := maxi(e.start_distance, 1)
+		var ratio := float(e.current_distance) / float(start)
+		battle_stats.min_dist_ratio = minf(battle_stats.min_dist_ratio, ratio)
 
 
 ## 전체 적 사망 검사

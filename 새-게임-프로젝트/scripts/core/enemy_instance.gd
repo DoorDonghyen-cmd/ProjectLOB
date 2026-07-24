@@ -68,6 +68,15 @@ func _init(enemy_data: EnemyData) -> void:
 		
 	if RunManager.infiltration_risk_level >= 3:
 		current_distance = maxi(current_distance - 1, 1)
+
+	# ── 승천 적용 (정본: docs/gdd/20_ascension_intention.md §4) ──
+	# ⚠️ 적 DEF/EVA는 절대 건드리지 않는다. 이진 관통 게이트라 절벽이 되어
+	#    난이도가 균일하게 오르지 않고 특정 빌드만 골라 죽인다.
+	#    거리와 SPD는 게이트와 무관한 양적 손잡이라 완만하게 조여진다.
+	var asc := RunManager.ascension_effects()
+	current_distance = maxi(current_distance + int(asc.start_dist_delta), 1)
+	current_speed = maxi(current_speed + int(asc.enemy_spd_delta), 0)
+
 	start_distance = current_distance
 	
 	# 데이터에서 보스/태세 전환 주기 읽기
