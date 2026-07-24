@@ -95,13 +95,23 @@ var _recoil_tween: Tween
 ##    그렇다고 전투 로직을 비동기로 만들면 결정론이 흔들리므로,
 ##    로직은 그대로 두고 `bullet_fired` 이벤트를 큐에 쌓아 간격을 두고 재생한다.
 ##    (GDD §21.5: "다탄 발사는 반드시 순차 연출")
-const FX_STEP_INTERVAL := 0.13   ## 발 사이 간격(초). "타닥 타닥"이 느껴지는 최소치
-const TRACER_TRAVEL := 0.07      ## 탄환이 총구에서 표적까지 날아가는 시간
+const FX_STEP_INTERVAL := 0.18   ## 발 사이 간격(초). "타닥 타닥"이 느껴지는 최소치
+## 탄알이 총구에서 표적까지 날아가는 시간.
+## ⚠️ 너무 짧으면(≤0.08s = 5프레임 이하) 궤적이 아니라 번쩍임으로 보인다.
+const TRACER_TRAVEL := 0.16
 
 var _fire_fx_queue: Array[Dictionary] = []
 var _fx_playing: bool = false
 ## 연출 재생 중 탄창에 표시할 잔탄 스냅샷. 비어 있으면 실제 탄창을 그대로 쓴다.
 var _mag_display_override: Array[BulletData] = []
+
+## 연출 전용 레이어.
+##
+## ⚠️ 이 오버레이는 **MarginContainer(컨테이너)**다. 컨테이너는 Control 자식의
+##    위치·크기를 강제로 다시 잡으므로, 탄환 궤적 같은 Control을 여기에 직접 붙이면
+##    **화면 전체로 늘어나 거대한 플래시가 된다.**
+##    컨테이너가 레이아웃을 관리하지 않는 평범한 Control을 하나 두고 그 안에 붙인다.
+var _fx_layer: Control
 var _unload_btn: Button
 var _reload_btn: Button
 var _double_tap_btn: Button
@@ -672,6 +682,14 @@ func _build_ui() -> void:
 	_action_row.custom_minimum_size = Vector2(0, 44)
 	_action_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_flow.add_child(_action_row)
+
+	# 연출 전용 레이어 — 컨테이너 레이아웃 밖에서 자유 좌표를 쓰기 위한 껍데기.
+	# 이 오버레이가 MarginContainer라 Control을 직접 붙이면 전부 화면 크기로 늘어난다.
+	_fx_layer = Control.new()
+	_fx_layer.name = "FXLayer"
+	_fx_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_fx_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(_fx_layer)
 
 	# 컨테이너가 재배치할 때마다 반동 기준선을 다시 읽는다(창 크기 변경 대응).
 	# 트윈이 도는 중에는 트윈이 position을 쥐고 있으므로 갱신하지 않는다.
@@ -1621,51 +1639,67 @@ func _play_fire_fx(entry: Dictionary) -> void:
 			_spawn_bullet_refund_floating(tgt_inst, bullet)
 
 
-## 탄환 궤적 — 총구에서 표적까지 날아가는 탄을 짧게 보여준다.
-## 색은 탄환 구경 계열을 따라, 막힌 탄은 회색으로 표시해 "통했는가"가 즉시 읽히게 한다.
-func _spawn_tracer(from_pos: Vector2, to_pos: Vector2, bullet: BulletData, hit: bool) -> void:
-	var tracer := ColorRect.new()
-	tracer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tracer.size = Vector2(18, 3)
-	tracer.pivot_offset = Vector2(9, 1.5)
+## 연출 노드의 부모. 컨테이너 레이아웃 밖이어야 좌표를 자유롭게 쓸 수 있다.
+func _fx_parent() -> Node:
+	return _fx_layer if is_instance_valid(_fx_layer) else self
 
-	var col := Color(1.0, 0.85, 0.35)   # 기본: 탄 궤적 노랑
+
+## 탄환 궤적 — 총구에서 표적까지 **날아가는 탄알**을 보여준다.
+##
+## ⚠️ 반드시 `_fx_layer`에 붙인다. 이 오버레이(MarginContainer)에 직접 붙이면
+##    컨테이너가 크기를 화면 전체로 늘려 거대한 플래시가 된다.
+## 색으로 판정을 전달한다 — 막힘/빗나감이 즉시 읽혀야 "탄 선택이 옳았나"가 전달된다.
+func _spawn_tracer(from_pos: Vector2, to_pos: Vector2, bullet: BulletData, hit: bool) -> void:
+	if not is_instance_valid(_fx_layer):
+		return
+
+	var col := Color(1.0, 0.85, 0.35)   # 기본: 명중
 	if not hit:
-		col = Color(0.55, 0.58, 0.65)   # 빗나감: 흐린 회색
+		col = Color(0.6, 0.63, 0.7)     # 빗나감: 흐린 회색
 	elif bullet.penetration >= 3:
 		col = Color(0.55, 0.85, 1.0)    # 고관통: 청백
 	elif bullet.knockback > 0:
 		col = Color(1.0, 0.55, 0.25)    # 충격탄: 주황
-	tracer.color = col
 
-	add_child(tracer)
-	tracer.global_position = from_pos - tracer.pivot_offset
-	tracer.rotation = (to_pos - from_pos).angle()
+	# 탄알 본체 — 작고 선명한 점. 크게 만들면 화면을 덮어 눈이 아프다.
+	var slug := ColorRect.new()
+	slug.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	slug.color = col
+	slug.size = Vector2(7, 3)
+	slug.pivot_offset = slug.size / 2.0
+	slug.rotation = (to_pos - from_pos).angle()
+	_fx_layer.add_child(slug)
 
+	var start := from_pos - slug.pivot_offset
+	var goal := to_pos - slug.pivot_offset
+	slug.global_position = start
+
+	# 날아가는 동안은 또렷하게 유지하고, 도착 직전에만 사라진다.
+	# (이동 중에 흐려지면 "날아간다"가 아니라 "번쩍인다"로 보인다)
 	var t := create_tween()
-	t.set_parallel(true)
-	t.tween_property(tracer, "global_position", to_pos - tracer.pivot_offset, TRACER_TRAVEL)\
+	t.tween_property(slug, "global_position", goal, TRACER_TRAVEL)\
 		.set_trans(Tween.TRANS_LINEAR)
-	t.tween_property(tracer, "modulate:a", 0.15, TRACER_TRAVEL)\
-		.set_ease(Tween.EASE_IN)
-	t.chain().tween_callback(tracer.queue_free)
+	t.tween_property(slug, "modulate:a", 0.0, 0.05)
+	t.tween_callback(slug.queue_free)
 
+## ⚠️ 연발은 한 번의 발사로 이 연출이 5번 연속 재생된다.
+##    단발 기준으로 잡은 양을 그대로 두면 겹쳐 쌓여 화면이 번쩍이고 눈이 아프다.
 func _spawn_muzzle_flash_particles(pos: Vector2) -> void:
 	var parts := CPUParticles2D.new()
-	parts.amount = 14
-	parts.lifetime = 0.22
+	parts.amount = 8
+	parts.lifetime = 0.16
 	parts.one_shot = true
 	parts.explosiveness = 0.98
-	parts.spread = 32.0
+	parts.spread = 26.0
 	parts.gravity = Vector2(0, 0)
-	parts.initial_velocity_min = 120.0
-	parts.initial_velocity_max = 200.0
-	parts.color = Color(1.0, 0.65, 0.1)
+	parts.initial_velocity_min = 90.0
+	parts.initial_velocity_max = 150.0
+	parts.color = Color(1.0, 0.7, 0.25, 0.85)
 	parts.direction = Vector2(1, -0.15)
-	parts.scale_amount_min = 2.0
-	parts.scale_amount_max = 4.5
+	parts.scale_amount_min = 1.5
+	parts.scale_amount_max = 2.8
 	parts.global_position = pos
-	add_child(parts)
+	_fx_parent().add_child(parts)
 	parts.emitting = true
 	
 	var t := create_tween()
@@ -1674,20 +1708,20 @@ func _spawn_muzzle_flash_particles(pos: Vector2) -> void:
 
 func _spawn_blood_spurt_particles(pos: Vector2) -> void:
 	var parts := CPUParticles2D.new()
-	parts.amount = 20
-	parts.lifetime = 0.32
+	parts.amount = 12
+	parts.lifetime = 0.26
 	parts.one_shot = true
 	parts.explosiveness = 0.92
-	parts.spread = 55.0
+	parts.spread = 50.0
 	parts.gravity = Vector2(0, 220)
-	parts.initial_velocity_min = 70.0
-	parts.initial_velocity_max = 140.0
-	parts.color = Color(0.2, 0.62, 0.28) # 초록 핏방울
+	parts.initial_velocity_min = 60.0
+	parts.initial_velocity_max = 110.0
+	parts.color = Color(0.2, 0.62, 0.28, 0.9) # 초록 핏방울
 	parts.direction = Vector2(-0.4, -0.9)
-	parts.scale_amount_min = 3.0
-	parts.scale_amount_max = 6.0
+	parts.scale_amount_min = 2.0
+	parts.scale_amount_max = 3.5
 	parts.global_position = pos
-	add_child(parts)
+	_fx_parent().add_child(parts)
 	parts.emitting = true
 	
 	var t := create_tween()

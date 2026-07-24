@@ -168,6 +168,27 @@ static func run(t, tree: SceneTree) -> void:
 		ov._fire_fx_queue.clear()
 		ov._mag_display_override.clear()
 
+		# ── 탄환 궤적이 화면을 덮지 않는가 ──
+		# 회귀 배경(2026-07-25 보고): "이펙트가 화면 전체를 가득 채워 눈이 아프다".
+		#   이 오버레이는 MarginContainer(컨테이너)라 Control 자식의 크기를 강제로
+		#   다시 잡는다. 궤적 ColorRect를 여기 직접 붙였더니 **화면 전체로 늘어나**
+		#   날아가는 탄이 아니라 거대한 플래시가 됐다.
+		#   → 컨테이너가 관리하지 않는 _fx_layer에 붙여야 한다.
+		t.check(is_instance_valid(ov._fx_layer), "연출 전용 레이어 존재")
+		if is_instance_valid(ov._fx_layer):
+			var before_fx: int = ov._fx_layer.get_child_count()
+			var tb := BulletData.new()
+			tb.display_name = "궤적탄"
+			ov._spawn_tracer(Vector2(100, 300), Vector2(600, 320), tb, true)
+			t.eq(ov._fx_layer.get_child_count(), before_fx + 1, "궤적이 연출 레이어에 생성됨")
+
+			var slug: Control = ov._fx_layer.get_child(ov._fx_layer.get_child_count() - 1)
+			t.check(slug.size.x <= 24 and slug.size.y <= 8,
+				"⭐ 궤적이 작은 탄알 크기 %s — 화면을 덮지 않음" % str(slug.size))
+			t.check(slug.size.x < ov.size.x * 0.2,
+				"⭐ 궤적이 화면 폭으로 늘어나지 않음 (컨테이너 자식이 아님)")
+			slug.queue_free()
+
 	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
 	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.
 	var prev_credits: int = RunManager.meta_credits
