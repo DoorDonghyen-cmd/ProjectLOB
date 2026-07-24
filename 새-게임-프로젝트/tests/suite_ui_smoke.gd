@@ -114,6 +114,16 @@ static func run(t, tree: SceneTree) -> void:
 			rows_mid += 1
 	t.eq(rows_mid, 35, "⭐ 계층을 넘어가도 지도는 런 전체 35층을 유지")
 
+	# ── 개발자 테스트: 연발 전투 숏컷이 실제로 도는가 ──
+	# ⚠️ 숏컷은 QA 진입점이라 깨져도 본 게임 흐름에서는 드러나지 않는다.
+	#    전투를 실제로 시작시켜 CombatManager가 연발 총으로 붙는지 확인한다.
+	scene.trigger_full_auto_test()
+	t.check(scene._cm != null, "연발 전투 테스트 — CombatManager 생성됨")
+	if scene._cm != null:
+		t.check(scene._cm.is_full_auto(), "⭐ 연발 전투 테스트가 제압형(연발)으로 시작됨")
+		t.eq(scene._cm.enemies.size(), 3, "적 3체 배치(다수전 이월 + 중장갑 관문)")
+	scene._is_shortcut_mode = false
+
 	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
 	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.
 	var prev_credits: int = RunManager.meta_credits

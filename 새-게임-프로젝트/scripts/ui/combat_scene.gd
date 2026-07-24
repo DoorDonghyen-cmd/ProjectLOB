@@ -314,6 +314,35 @@ func trigger_double_tap_test() -> void:
 	_start_combat_phase(enemy_list)
 
 
+## 연발(제압형) 전투 테스트.
+## 정본: docs/gdd/21_fire_mode.md
+##
+## 연발의 세 가지 성격이 한 판에 다 나오도록 구성한다:
+##   ① 다수전 특화 — 앞의 적이 죽으면 남은 탄이 다음 적으로 이월된다
+##   ② 적재 퍼즐   — 중장갑을 뚫으려면 파쇄탄을 **앞쪽(먼저 나가는 자리)**에 깔아야 한다
+##   ③ 리로드 공백 — 5발 쏟고 3턴 무방비. 그동안 적이 계속 다가온다
+func trigger_full_auto_test() -> void:
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_current_gun_data = _gun_suppressor
+
+	_rm.start_new_run(RunManager.SECTION_ORDER[0], _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+
+	_combat_margin.visible = true
+	if _combat_overlay:
+		_combat_overlay.visible = true
+		_combat_overlay.clear_combat_log()
+		_combat_overlay.add_combat_log("[color=#ffff66]🛠️ 연발 전투 테스트 — 제압형(Suppressor)[/color]")
+		_combat_overlay.add_combat_log("[color=#88ff88]· 발사하면 탄창 5발이 [b]한 턴에[/b] 전부 나갑니다. 중간에 멈출 수 없습니다.[/color]")
+		_combat_overlay.add_combat_log("[color=#88ff88]· 앞의 적이 쓰러지면 남은 탄이 [b]다음 적[/b]으로 이어집니다.[/color]")
+		_combat_overlay.add_combat_log("[color=#ffcc44]· 중장갑(탱크)이 섞여 있습니다 — 파쇄탄을 먼저 나가는 자리에 깔아 보세요.[/color]")
+		_combat_overlay.add_combat_log("[color=#ff8888]· 쏟아붓고 나면 재장전 3턴 동안 무방비입니다.[/color]")
+
+	# 돌격 2 + 중장갑 1 — ①과 ②를 동시에 요구하는 최소 구성
+	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_rusher, _enemy_tank]
+	_start_combat_phase(enemy_list)
+
+
 func trigger_v2_ui_test() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false

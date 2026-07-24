@@ -296,6 +296,16 @@ func _build_dev_test_panel() -> void:
 	btn_double_tap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_double_tap)
 	
+	# 4-1. 연발(제압형) 전투 테스트 — 다수전 이월 + 적재 퍼즐 + 리로드 공백
+	var btn_full_auto = parent_scene.make_button("🌪 연발 전투 테스트 (제압형)", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_full_auto_test()
+	, parent_scene.C_ACCENT)
+	btn_full_auto.custom_minimum_size = Vector2(0, 36)
+	btn_full_auto.add_theme_font_size_override("font_size", 11)
+	btn_full_auto.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_full_auto)
+
 	# 4-2. 🔥 새 전투 UI 데모 (v2) 실행 버튼
 	var btn_v2_ui = parent_scene.make_button("🔥 새 전투 UI 데모 (v2)", func():
 		_dev_test_panel.visible = false
@@ -427,23 +437,28 @@ func _build_dev_test_panel() -> void:
 	# 5. 해금 및 보상 테스트 숏컷 버튼
 	var btn_unlock_test = parent_scene.make_button("🔑 해금 및 보상 테스트", func():
 		_dev_test_panel.visible = false
-		# 데이터 코어 10개 증가 및 2개 무기 해금
 		RunManager.meta_tactical_data_cores += 10
-		if not RunManager.meta_unlocked_weapons.has("marksman"):
-			RunManager.meta_unlocked_weapons.append("marksman")
-		if not RunManager.meta_unlocked_weapons.has("tempo"):
-			RunManager.meta_unlocked_weapons.append("tempo")
-		
-		# 모든 작전 구역 해금 연동
-		RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"]
-		
-		# 기밀 정보 파편 19개 수집 상태 프리셋 (엔딩 및 도감 테스트 가시화)
+
+		# ⚠️ 해금 대상을 하드코딩하지 않는다. 준비실 목록에서 읽어야
+		#    총기를 추가할 때마다 이 버튼이 어긋나지 않는다.
+		#    (과거 marksman·tempo 2종만 박혀 있어 이후 추가된 총기는 해금되지 않았다.)
+		for weapon_key in LoadoutOverlay.WEAPON_PROFILES.keys():
+			if not RunManager.meta_unlocked_weapons.has(weapon_key):
+				RunManager.meta_unlocked_weapons.append(String(weapon_key))
+
+		# 전 계층 해금
+		RunManager.meta_unlocked_sections = [] as Array[String]
+		for sec in RunManager.SECTION_ORDER:
+			RunManager.meta_unlocked_sections.append(String(sec))
+
+		# 기밀 정보 파편 19개 수집 상태 프리셋
+		# (20개가 아니라 19개인 것은 의도적 — 결말의 심화 파편이 아직 안 뜨는 상태를 본다)
 		RunManager.meta_lore_fragments.clear()
 		for i in range(1, 20):
 			RunManager.meta_lore_fragments.append(i)
-		
-		# 준비실을 열기 전에 알림
-		print("디버그: TDC 10개 가산, 2개 무기 해금, 모든 작전 구역 해금 및 기밀 파편 19개(1~19F)가 테스트 프리셋되었습니다.")
+
+		print("디버그: TDC +10, 무기 %d종 전체 해금, 전 계층 해금, 기밀 파편 19/20 프리셋 완료." %
+			LoadoutOverlay.WEAPON_PROFILES.size())
 		_refresh_shop_ui()
 		parent_scene.trigger_loadout_test_ui()
 	, parent_scene.C_WARNING)
