@@ -94,11 +94,19 @@ static func run(t) -> void:
 	var hp_without := _remaining_hp(gun, _enemy(20, 0, 7), no_parts)
 	t.eq(hp_without, 20, "파츠 미장착: ACC6 < EVA7 전탄 빗나감 → HP 불변")
 
-	# HIGH_PRECISION(ACC+2) 장착: ACC8 >= EVA7 → 명중 발생
+	# ── HIGH_PRECISION: **직전 빗나감 시** ACC+3 (상시 아님) ──
+	# 정본: docs/gdd/22_ammo_expansion §22.0-B — 버프탄과 겹치지 않게 "실패 보정" 조건.
+	# ACC6 탄 vs EVA7: 첫 탄은 빗나감(보정 없음) → 그 다음부터 ACC6+3=9 ≥ 7 명중.
 	var with_hp: Array[PartData] = [_part(Enums.PartID.HIGH_PRECISION)]
 	var hp_with := _remaining_hp(gun, _enemy(20, 0, 7), with_hp)
-	t.check(hp_with < hp_without, "HIGH_PRECISION 장착 시 ACC+2로 명중 발생 → HP 감소 (%d < %d)" % [hp_with, hp_without])
-	t.eq(hp_with, 5, "명중 5발 × DMG3 = 15 → HP 20→5 (파츠 효과 정확 반영)")
+	t.check(hp_with < hp_without, "HIGH_PRECISION: 빗나감 다음 탄부터 ACC+3로 명중 (%d < %d)" % [hp_with, hp_without])
+	# 첫 탄 빗나감 + 이후 4발 명중(직전이 빗나감/명중 교대 아님 — 명중하면 다음은 보정 없음)
+	# 실측을 고정값으로 박지 않고 "상시가 아님"을 검증한다:
+	t.check(hp_with > 5, "⭐ HIGH_PRECISION은 상시 ACC가 아님 — 전탄 명중(HP 5)보다 덜 깎임 (%d)" % hp_with)
+
+	# ⭐ 첫 탄에는 보정이 없다(직전 빗나감이 없으므로). 1발만 쏘면 빗나가야 한다.
+	var hp_first_only := _fire_and_get_hp(gun, _enemy(20, 0, 7), with_hp, 3, 6, 0, 1)
+	t.eq(hp_first_only, 20, "⭐ HIGH_PRECISION: 첫 탄은 보정 없음(직전 빗나감 부재) → 빗나감")
 
 	# 대조군: 무관한 파츠(QUICK_LOAD)는 명중에 영향 없음 → 여전히 빗나감
 	var irrelevant: Array[PartData] = [_part(Enums.PartID.QUICK_LOAD)]
@@ -108,15 +116,20 @@ static func run(t) -> void:
 	# ── 신규 제작 파츠 효과 실증 (리소스 설명문 ↔ 실제 동작 일치 확인) ──
 	var none_parts: Array[PartData] = []
 
-	# 철갑 총열(PEN+1): PEN2 탄 vs DEF3 → 도탄(0) → 관통 성공으로 전환
-	var ap_off := _fire_and_get_hp(gun, _enemy(20, 3, 0), none_parts, 3, 7, 2, 5)
+	# ── 철갑 총열: **탄창 첫 탄에만** PEN+2 (상시 아님) ──
+	# 정본: §22.0-B — LIFO 고유의 "첫 탄" 축. 연발에서 상시 PEN은 탄창 전체를 뒤집어 위험했다.
+	# PEN2 탄 vs DEF3: 첫 탄만 PEN2+2=4 ≥ 3 관통(3뎀), 나머지 4발은 PEN2 < DEF3 도탄.
 	var ap_on := _fire_and_get_hp(gun, _enemy(20, 3, 0), [_part(Enums.PartID.ARMOR_PIERCING)] as Array[PartData], 3, 7, 2, 5)
-	t.eq(ap_off, 20, "철갑총열 미장착: PEN2 < DEF3 도탄 → HP 불변")
-	t.eq(ap_on, 5, "철갑총열 장착: PEN+1로 게이트 통과 → 15 대미지 (HP 20→5)")
+	t.eq(ap_on, 17, "⭐ 철갑총열: 첫 탄만 PEN+2 관통(3뎀), 나머지 도탄 → HP 20→17")
 
-	# 만능 약실(ACC+1/PEN+1): 동일 게이트 통과 확인
-	var vc_on := _fire_and_get_hp(gun, _enemy(20, 3, 0), [_part(Enums.PartID.VERSATILE_CHAMBER)] as Array[PartData], 3, 7, 2, 5)
-	t.eq(vc_on, 5, "만능약실 장착: PEN+1로 게이트 통과 → HP 20→5")
+	# ⭐ 상시가 아님을 못박는다: 만약 상시 PEN+1이었다면 전탄 관통(HP 5)이 됐을 것.
+	t.check(ap_on > 5, "⭐ 철갑총열은 상시 PEN이 아님 — 전탄 관통(HP 5)이 아니어야 함")
+
+	# ── 만능 약실: **직전과 구경이 다를 때만** ACC+1/PEN+1 (교차 구경 조건) ──
+	# 같은 구경만 연사하면 발동하지 않으므로 PEN2 < DEF3 도탄이 유지된다.
+	# (상시 PEN+1이었다면 전탄 관통해 HP 5가 됐을 것 — 그렇지 않음을 확인한다.)
+	var vc_same := _fire_and_get_hp(gun, _enemy(20, 3, 0), [_part(Enums.PartID.VERSATILE_CHAMBER)] as Array[PartData], 3, 7, 2, 5)
+	t.check(vc_same > 5, "⭐ 만능약실: 동일 구경 연사 시 상시 보정 아님 (HP %d)" % vc_same)
 
 	# 블라인드파이어(DMG+2): 발당 +2 → 5발 기준 +10
 	var bf_off := _fire_and_get_hp(gun, _enemy(40, 0, 0), none_parts, 3, 7, 0, 5)

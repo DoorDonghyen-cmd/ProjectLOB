@@ -7,8 +7,18 @@ extends Node
 # ── 시그널 ──
 signal encounter_started(enemy_list: Array[EnemyInstance])
 signal loading_phase_started()
-signal bullet_fired(bullet: BulletData, hit: bool, damage: int)
-signal enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int)
+## 실제 피격 대상과 정산 직후 잔여 내구도를 함께 전달한다.
+## 전투는 동기 정산하되 UI가 탄환 도착 시점에 정확한 대상·HP를 재생하기 위한 스냅샷이다.
+signal bullet_fired(
+	bullet: BulletData,
+	hit: bool,
+	damage: int,
+	target: EnemyInstance,
+	remaining_durability: int
+)
+## defer_visual=true인 주 사격 대상은 탄환 도착 큐가 HP·피격 연출을 담당한다.
+## 과관통·관통 다중타 같은 보조 피해는 false로 즉시 표시해 누락을 막는다.
+signal enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int, defer_visual: bool)
 signal enemy_moved(enemy_inst: EnemyInstance, new_distance: int, speed_used: int)
 signal all_enemies_moved()
 signal enemy_knocked_back(enemy_inst: EnemyInstance, new_distance: int, amount: int)
@@ -334,13 +344,20 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		part_acc_bonus += 2
 		combat_log.emit("   ↳ 🎯 [연동 조준] 직전 명중으로 ACC +2 적용")
 		
-	# 만능 약실 (VERSATILE_CHAMBER): ACC +1, PEN +1
-	if _has_part(Enums.PartID.VERSATILE_CHAMBER):
+	# 만능 약실 (VERSATILE_CHAMBER): 직전과 **구경이 다르면** ACC +1 (PEN은 아래에서 +1)
+	# ⚠️ 상시 보정이 아니라 교차 구경 조건이다. 버프탄(적을 읽는 상황적 보정)과 겹치지 않도록
+	#    "호환·교차 빌드"라는 다른 축을 쓴다. (정본: docs/gdd/22_ammo_expansion §22.0-B 파츠 경계)
+	var versatile_active := _has_part(Enums.PartID.VERSATILE_CHAMBER) and bullet.weapon_class != last_fired_class
+	if versatile_active:
 		part_acc_bonus += 1
-		
-	# 고정밀 총열 (HIGH_PRECISION): ACC +2
-	if _has_part(Enums.PartID.HIGH_PRECISION):
-		part_acc_bonus += 2
+		combat_log.emit("   ↳ 🔧 [만능 약실] 교차 구경으로 ACC +1 · PEN +1")
+
+	# 고정밀 총열 (HIGH_PRECISION): **직전 탄이 빗나갔으면** ACC +3 (실패 보정)
+	# ⚠️ 상시 ACC가 아니라 회복 조건이다. 명중 버프탄이 상황적으로 하는 걸,
+	#    파츠는 "빗나감 다음"이라는 다른 조건으로 한다.
+	if _has_part(Enums.PartID.HIGH_PRECISION) and not is_first and not last_shot_hit:
+		part_acc_bonus += 3
+		combat_log.emit("   ↳ 🎯 [고정밀 총열] 직전 빗나감 보정으로 ACC +3")
 
 	# 저격경 (MARKSMAN_SCOPE): ACC +4 상시 가산 및 첫 탄환 EVA 무시
 	if _has_part(Enums.PartID.MARKSMAN_SCOPE):
@@ -405,12 +422,15 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		var part_dmg_bonus := 0
 		var part_pen_bonus := buff_pen
 
-		# 철갑 총열 (ARMOR_PIERCING): PEN +1
-		if _has_part(Enums.PartID.ARMOR_PIERCING):
-			part_pen_bonus += 1
-			
-		# 만능 약실 (VERSATILE_CHAMBER): PEN +1
-		if _has_part(Enums.PartID.VERSATILE_CHAMBER):
+		# 철갑 총열 (ARMOR_PIERCING): **탄창 첫 탄**에 PEN +2 (선두 관통)
+		# ⚠️ 상시 PEN이 아니라 스택 위치 조건이다. 관통 버프탄과 겹치지 않도록 LIFO 고유의
+		#    "첫 탄" 축을 쓴다. 연발에서 상시 PEN+1은 탄창 전체를 뒤집어 특히 위험했다.
+		if _has_part(Enums.PartID.ARMOR_PIERCING) and is_first:
+			part_pen_bonus += 2
+			combat_log.emit("   ↳ 🛡 [철갑 총열] 선두 탄 PEN +2")
+
+		# 만능 약실 (VERSATILE_CHAMBER): 교차 구경일 때 PEN +1 (위 ACC +1과 한 쌍)
+		if versatile_active:
 			part_pen_bonus += 1
 			
 		# 블라인드파이어 (BLIND_FIRE): DMG +2
@@ -552,8 +572,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			battle_stats.zero_damage_hits += 1
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미지" % [bullet.display_name, target.data.display_name, damage])
 		combat_log.emit("   %s" % breakdown)
-		bullet_fired.emit(bullet, true, damage)
-		enemy_damaged.emit(target, damage, target.current_hp if not target.is_stack_sponge else target.barrier_cells)
+		var remaining_durability := target.current_hp if not target.is_stack_sponge else target.barrier_cells
+		bullet_fired.emit(bullet, true, damage, target, remaining_durability)
+		enemy_damaged.emit(target, damage, remaining_durability, true)
 
 		# ── 중장형(Heavy) 총기 시그니처: 과관통 ──
 		if _gun_is("heavy"):
@@ -572,7 +593,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 						dmg2 = maxi(dmg2, 1)
 						_apply_damage_to_enemy(e2, dmg2)
 						combat_log.emit("   ↳ 🎯 [중장형 과관통] 초과 관통(PEN %d vs DEF %d)으로 [%s] 관통! %d 대미지" % [excess_pen, e2.current_def, e2.data.display_name, dmg2])
-						enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells)
+						enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells, false)
 						if e2.is_dead():
 							combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
 							enemy_killed.emit(e2)
@@ -597,7 +618,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 					var dmg2: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e2.current_def, gun) * 0.5)))
 					_apply_damage_to_enemy(e2, dmg2)
 					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (50%% 감쇄)" % [e2.data.display_name, dmg2])
-					enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells)
+					enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells, false)
 					if e2.is_dead():
 						combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
 						enemy_killed.emit(e2)
@@ -606,7 +627,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 					var dmg3: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e3.current_def, gun) * 0.25)))
 					_apply_damage_to_enemy(e3, dmg3)
 					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (75%% 감쇄)" % [e3.data.display_name, dmg3])
-					enemy_damaged.emit(e3, dmg3, e3.current_hp if not e3.is_stack_sponge else e3.barrier_cells)
+					enemy_damaged.emit(e3, dmg3, e3.current_hp if not e3.is_stack_sponge else e3.barrier_cells, false)
 					if e3.is_dead():
 						combat_log.emit("💀 [%s] 처치!" % e3.data.display_name)
 						enemy_killed.emit(e3)
@@ -718,7 +739,8 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		combat_log.emit("🔫 %s → [%s] 빗나감! (ACC %d < EVA %d)" % [
 			bullet.display_name, target.data.display_name, bullet.accuracy, target.current_evasion
 		])
-		bullet_fired.emit(bullet, false, 0)
+		var remaining_durability := target.current_hp if not target.is_stack_sponge else target.barrier_cells
+		bullet_fired.emit(bullet, false, 0, target, remaining_durability)
 		battle_stats.misses += 1
 
 	# 탄약 순환 자원 정산
@@ -964,23 +986,25 @@ func _all_enemies_advance() -> void:
 		if e.is_dead():
 			continue
 		var speed_used := e.advance()
-		
-		# 술사가 아닐 경우에만 전진 시그널 및 로그 출력
-		if e.data.archetype != Enums.EnemyArchetype.CASTER:
+
+		# 이동형 적은 먼저 전진을 정산한다. 최종 보스 페이즈 2처럼
+		# "전진 + 차징"을 동시에 수행하는 적도 있으므로 차저 여부와 이동을 분리한다.
+		if speed_used > 0 or not e.is_charger:
 			enemy_moved.emit(e, e.current_distance, speed_used)
 			combat_log.emit("👣 [%s] 전진 %d칸 → 거리 %d" % [e.data.display_name, speed_used, e.current_distance])
 
 			# 자동 긴급 격퇴 검사 추가
 			if _check_and_trigger_buttstroke(e):
-				continue
-
-			if e.is_at_player():
+				pass
+			elif e.is_at_player():
 				state = State.LOST
 				combat_log.emit("💀 [%s]가 도달했습니다... 사망!" % e.data.display_name)
 				player_died.emit()
 				return
-		else:
-			# 술사 차징 진행
+
+		# 차징은 아키타입 문자열이 아니라 런타임 기믹 플래그로 판정한다.
+		# 일반 술사뿐 아니라 세라프와 L.O.B 코어도 같은 경로를 사용한다.
+		if e.is_charger:
 			var is_fired := e.advance_charger()
 			if is_fired:
 				combat_log.emit("⚠ [술사 경보] [%s]의 차징 공격 발동! 적 대열이 플레이어 방향으로 2칸 강제 전진!" % e.data.display_name)
@@ -995,7 +1019,8 @@ func _all_enemies_advance() -> void:
 ## 술사 차징 공격 시 다른 적들을 2칸 강제 전진시킴
 func _caster_force_advance_all(amount: int) -> void:
 	for e in enemies:
-		if e.is_dead() or e.data.archetype == Enums.EnemyArchetype.CASTER:
+		# 차징 주체와 다른 차저는 고정 포대다. 강제전진 대상은 호위 대열뿐이다.
+		if e.is_dead() or e.is_charger:
 			continue
 		e.current_distance = maxi(e.current_distance - amount, 0)
 		enemy_moved.emit(e, e.current_distance, amount)

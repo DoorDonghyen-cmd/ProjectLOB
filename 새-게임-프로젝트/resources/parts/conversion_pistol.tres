@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/part_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+display_name = "9mm 컨버전 킷"
+description = "9mm 탄환을 이 총기의 전용탄으로 취급합니다. 승천 8등급 전에는 헛방 소멸을 면제하며 드래프트 등장 가중치를 3배로 높입니다."
+part_id = 24
+tier = 5
+conversion_class = 0
