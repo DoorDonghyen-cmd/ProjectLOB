@@ -135,9 +135,18 @@ func _create_dynamic_bullet_card(
 		name_color = parent_scene.C_DIM
 		
 	var name_lbl: Label = parent_scene.make_label(display_name, 11, name_color)
+	name_lbl.name = "BulletName"
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# ⚠️ 클립하지 않으면 라벨의 최소 폭 = 전체 텍스트 폭이 되어, 긴 탄 이름
+	#    ("12게이지 밀집탄" 등)이 카드를 가로로 밀어내고 실린더 전체가 늘어난다.
+	#    클립하면 카드는 컨테이너 폭을 채우되 넘치지 않고, 긴 이름은 …으로 잘린다.
+	name_lbl.clip_text = true
+	name_lbl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_lbl.custom_minimum_size = Vector2(40, 0)
+	name_lbl.tooltip_text = display_name  # 잘려도 전체 이름은 툴팁으로
 	hbox.add_child(name_lbl)
 
+	var has_gate := false
 	if not is_hidden:
 		var role_lbl: Label = parent_scene.make_label(
 			BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
@@ -147,9 +156,10 @@ func _create_dynamic_bullet_card(
 		# "연계"만으로는 무엇이 강화되는지 안 보인다 — 명중/관통을 직접 표기한다.
 		var gate := ""
 		match bullet.effect_type:
-			Enums.BulletEffect.BUFF_ACC: gate = "⬇ 명중 열기"
-			Enums.BulletEffect.BUFF_PEN: gate = "⬇ 관통 열기"
+			Enums.BulletEffect.BUFF_ACC: gate = "⬇명중"
+			Enums.BulletEffect.BUFF_PEN: gate = "⬇관통"
 		if gate != "":
+			has_gate = true
 			var gate_lbl: Label = parent_scene.make_label(gate, 9.0, Color(0.78, 0.59, 1.0))
 			gate_lbl.tooltip_text = "다음에 발사되는 탄의 %s 게이트를 엽니다 (다음 1발, 유효 적중 시)." % \
 				("명중" if bullet.effect_type == Enums.BulletEffect.BUFF_ACC else "관통")
@@ -158,15 +168,16 @@ func _create_dynamic_bullet_card(
 			var chain_lbl: Label = parent_scene.make_label("⇢ 연계", 9.0, parent_scene.C_SUCCESS)
 			chain_lbl.tooltip_text = "현재 셋업탄 다음에 페이로드탄이 발사됩니다."
 			hbox.add_child(chain_lbl)
-	
-	# 간단한 성능 표시 (is_hidden 시 은폐)
-	var stat_str := "D%d P%d" % [bullet.damage, bullet.penetration]
-	if is_hidden:
-		stat_str = "D? P?"
-		
-	var stat_lbl: Label = parent_scene.make_label(stat_str, 9.5, parent_scene.C_DIM)
-	hbox.add_child(stat_lbl)
-	
+
+	# 성능 숫자(D/P). 버프탄은 게이트 라벨이 핵심 정보이고 화력탄이 아니므로 생략한다
+	# (좁은 실린더 폭에 칩이 넘쳐 UI가 가로로 늘어나는 것을 막는다. 전체 스탯은 툴팁에 있음).
+	if not has_gate:
+		var stat_str := "D%d P%d" % [bullet.damage, bullet.penetration]
+		if is_hidden:
+			stat_str = "D? P?"
+		var stat_lbl: Label = parent_scene.make_label(stat_str, 9.5, parent_scene.C_DIM)
+		hbox.add_child(stat_lbl)
+
 	return card
 
 func _create_empty_bullet_card(text: String) -> PanelContainer:

@@ -188,6 +188,24 @@ static func run(t, tree: SceneTree) -> void:
 		ov._fire_fx_queue.clear()
 		ov._mag_display_override.clear()
 
+		# ── 실린더 카드의 이름 라벨이 클립되는가 (가로 늘어남 방지의 근본) ──
+		# 회귀 배경(2026-07-27 보고): 긴 이름 탄("12게이지 밀집탄" 등)을 장착하면 카드
+		#   min-width가 211px까지 부풀어 UI가 가로로 늘어났다. 원인은 이름 라벨이 클립되지
+		#   않아 전체 텍스트 폭을 최소 폭으로 요구한 것.
+		# ⚠️ 픽셀 폭 측정은 헤드리스 레이아웃 타이밍상 불안정하다. 근본 원인(클립 여부)을
+		#    구조로 검증한다 — 이게 false가 되면 다시 늘어난다.
+		var long_named := load("res://resources/bullets/dense_shotgun.tres")
+		if long_named != null and is_instance_valid(ov._lookahead_container):
+			var card = ov._lookahead_container._create_dynamic_bullet_card(long_named, 1, true, false, false)
+			var name_lbl = card.find_child("BulletName", true, false)
+			t.check(name_lbl != null, "실린더 카드에 이름 라벨 존재")
+			if name_lbl != null:
+				t.check(name_lbl.clip_text,
+					"⭐ 이름 라벨이 클립됨 — 긴 이름이 카드를 가로로 밀어내지 않음")
+				t.check(name_lbl.custom_minimum_size.x <= 60,
+					"이름 라벨 최소 폭이 제한됨 (%.0f)" % name_lbl.custom_minimum_size.x)
+			card.free()
+
 		# ── 탄환 궤적이 화면을 덮지 않는가 ──
 		# 회귀 배경(2026-07-25 보고): "이펙트가 화면 전체를 가득 채워 눈이 아프다".
 		#   이 오버레이는 MarginContainer(컨테이너)라 Control 자식의 크기를 강제로
