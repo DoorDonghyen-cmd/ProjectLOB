@@ -243,6 +243,34 @@ func is_full_auto() -> bool:
 	return gun != null and gun.fire_mode == Enums.FireMode.FULL_AUTO
 
 
+## 다음에 발사될 탄의 **유효 ACC/PEN**을 미리 계산한다 (게이트 판정 표시의 단일 정본).
+##
+## ⚠️ UI가 이 계산을 자기 안에서 중복하지 않게 한 곳에 둔다.
+##    포함: 탄 기본값 + 총기 패시브 + **대기 중인 셋업 버프**.
+##    ⚠️ 버프를 빼면 판정이 거짓이 된다 — 관통 버프탄을 깔아도 "도탄 ✗"로 표시되어
+##       실제로는 뚫리는데 화면이 안 뚫린다고 거짓말을 한다(v5가 만든 불일치).
+##    제외: 조건부 파츠(거리·스택 위치·연속 명중 등)는 실제 격발 시점에만 확정되므로
+##       미리보기에 넣지 않는다. 이 표시는 "탄 + 버프"까지만 책임진다.
+func preview_next_shot() -> Dictionary:
+	if magazine == null or magazine.is_empty():
+		return {}
+	var b := magazine.peek()
+	var acc := b.accuracy
+	var pen := b.penetration
+	if gun != null:
+		acc += gun.passive_acc_bonus
+		pen += gun.passive_pen_bonus
+	acc += pending_buff_acc
+	pen += pending_buff_pen
+	return {
+		"bullet": b,
+		"acc": acc,
+		"pen": pen,
+		"buffed_acc": pending_buff_acc > 0,
+		"buffed_pen": pending_buff_pen > 0,
+	}
+
+
 ## 발사 — 탄창에서 한 발 꺼내 최근접 적에게 쏜다 (강제 타겟팅).
 func fire() -> void:
 	battle_stats.kills_this_turn = 0

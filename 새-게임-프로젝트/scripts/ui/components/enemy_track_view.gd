@@ -379,23 +379,14 @@ func update_distance_display(enemy: EnemyInstance) -> void:
 		top_log_toast.text = "상황 대기 중"
 		top_log_toast.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 
-func update_penetration_indicators(next_bullet: BulletData) -> void:
-	var total_pen: int = 0
-	var has_bullet: bool = false
-	if next_bullet:
-		has_bullet = true
-		total_pen = next_bullet.penetration
-		var b_csv: Dictionary = DataLoader.get_bullet(next_bullet.resource_path.get_file().get_basename())
-		if not b_csv.is_empty():
-			total_pen = b_csv.penetration
-			
-		var current_gun = combat_manager.gun if combat_manager else null
-		if current_gun:
-			var g_csv: Dictionary = DataLoader.get_gun(current_gun.resource_path.get_file().get_basename())
-			var pen_bonus: int = current_gun.passive_pen_bonus
-			if not g_csv.is_empty():
-				pen_bonus = g_csv.passive_pen_bonus
-			total_pen += pen_bonus
+## 다음 탄이 각 적의 **두 게이트(명중·관통)**를 넘는지 배지 색으로 표시한다.
+## ⚠️ 유효 스탯은 CombatManager.preview_next_shot()가 정본 — 버프까지 반영된 값이다.
+##    여기서 다시 계산하지 않는다(중복 계산은 반드시 어긋난다).
+func update_penetration_indicators(_next_bullet: BulletData) -> void:
+	var preview: Dictionary = combat_manager.preview_next_shot() if combat_manager else {}
+	var has_bullet: bool = not preview.is_empty()
+	var total_pen: int = int(preview.get("pen", 0))
+	var total_acc: int = int(preview.get("acc", 0))
 
 	var c_dim = parent_scene.C_DIM if parent_scene and "C_DIM" in parent_scene else Color(0.55, 0.55, 0.65)
 	var c_success = parent_scene.C_SUCCESS if parent_scene and "C_SUCCESS" in parent_scene else Color(0.30, 1.0, 0.50)
@@ -422,8 +413,9 @@ func update_penetration_indicators(next_bullet: BulletData) -> void:
 				new_style.bg_color = c_dim.darkened(0.4)
 				new_style.border_color = c_dim
 			else:
-				var can_pierce: bool = total_pen >= enemy.current_def
-				if can_pierce:
+				# 명중과 관통 **둘 다** 넘어야 실제로 맞는다. 하나라도 막히면 빨강.
+				var clears: bool = total_acc >= enemy.current_evasion and total_pen >= enemy.current_def
+				if clears:
 					new_style.bg_color = c_success.darkened(0.4)
 					new_style.border_color = c_success
 				else:

@@ -1228,34 +1228,27 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 		_hit_info_label.text = "[color=#66788c]타겟 부재 - 사격 대기 중[/color]"
 		return
 		
-	var next_bullet: BulletData = null
-	if combat_manager and not combat_manager.magazine.is_empty():
-		next_bullet = combat_manager.magazine.peek()
-		
-	if not next_bullet:
+	# 유효 스탯은 CombatManager가 정본(버프 반영). UI는 비교만 한다.
+	var preview: Dictionary = combat_manager.preview_next_shot() if combat_manager else {}
+	if preview.is_empty():
 		_hit_info_label.text = "[color=#ff4242]약실 비어있음 - 리로드 필요[/color]"
 		return
-		
-	var total_pen: int = next_bullet.penetration
-	var b_csv: Dictionary = DataLoader.get_bullet(next_bullet.resource_path.get_file().get_basename())
-	if not b_csv.is_empty():
-		total_pen = b_csv.penetration
-		
-	if _current_gun_data:
-		var g_csv: Dictionary = DataLoader.get_gun(_current_gun_data.resource_path.get_file().get_basename())
-		var pen_bonus: int = _current_gun_data.passive_pen_bonus
-		if not g_csv.is_empty():
-			pen_bonus = g_csv.passive_pen_bonus
-		total_pen += pen_bonus
 
-	var can_pierce: bool = total_pen >= enemy.current_def
-	var hit_status := "[color=#37e0ac]관통 성공 ✓[/color]" if can_pierce else "[color=#ff4242]도탄 경고 ✗ (DEF>=PEN)[/color]"
-	
-	_hit_info_label.text = "사격탄: %s\n예상명중: %s\n대상타겟: %s" % [
-		next_bullet.display_name,
-		hit_status,
-		enemy.data.display_name
-	]
+	var next_bullet: BulletData = preview.bullet
+	var acc: int = int(preview.acc)
+	var pen: int = int(preview.pen)
+
+	# 두 게이트를 각각 보여준다. 버프로 열린 값은 색으로 강조해 "무엇이 강화됐는지" 드러낸다.
+	var acc_ok: bool = acc >= enemy.current_evasion
+	var pen_ok: bool = pen >= enemy.current_def
+	var acc_buff := " [color=#c896ff](버프)[/color]" if preview.buffed_acc else ""
+	var pen_buff := " [color=#c896ff](버프)[/color]" if preview.buffed_pen else ""
+	var acc_line := "[color=#37e0ac]명중 %d ≥ 회피 %d ✓[/color]%s" % [acc, enemy.current_evasion, acc_buff] if acc_ok \
+		else "[color=#ff4242]명중 %d < 회피 %d ✗[/color]%s" % [acc, enemy.current_evasion, acc_buff]
+	var pen_line := "[color=#37e0ac]관통 %d ≥ 방어 %d ✓[/color]%s" % [pen, enemy.current_def, pen_buff] if pen_ok \
+		else "[color=#ff4242]관통 %d < 방어 %d ✗[/color]%s" % [pen, enemy.current_def, pen_buff]
+
+	_hit_info_label.text = "사격탄: %s\n%s\n%s" % [next_bullet.display_name, acc_line, pen_line]
 
 func _update_action_buttons() -> void:
 	if not combat_manager: return

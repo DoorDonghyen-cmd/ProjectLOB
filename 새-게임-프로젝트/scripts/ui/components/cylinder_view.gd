@@ -142,7 +142,19 @@ func _create_dynamic_bullet_card(
 		var role_lbl: Label = parent_scene.make_label(
 			BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
 		hbox.add_child(role_lbl)
-		if has_visible_chain:
+
+		# 버프탄은 **어떤 게이트를 여는지** 명시한다 (정본: 22_ammo_expansion §22.0-B 결정 #3).
+		# "연계"만으로는 무엇이 강화되는지 안 보인다 — 명중/관통을 직접 표기한다.
+		var gate := ""
+		match bullet.effect_type:
+			Enums.BulletEffect.BUFF_ACC: gate = "⬇ 명중 열기"
+			Enums.BulletEffect.BUFF_PEN: gate = "⬇ 관통 열기"
+		if gate != "":
+			var gate_lbl: Label = parent_scene.make_label(gate, 9.0, Color(0.78, 0.59, 1.0))
+			gate_lbl.tooltip_text = "다음에 발사되는 탄의 %s 게이트를 엽니다 (다음 1발, 유효 적중 시)." % \
+				("명중" if bullet.effect_type == Enums.BulletEffect.BUFF_ACC else "관통")
+			hbox.add_child(gate_lbl)
+		elif has_visible_chain:
 			var chain_lbl: Label = parent_scene.make_label("⇢ 연계", 9.0, parent_scene.C_SUCCESS)
 			chain_lbl.tooltip_text = "현재 셋업탄 다음에 페이로드탄이 발사됩니다."
 			hbox.add_child(chain_lbl)

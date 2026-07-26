@@ -146,3 +146,42 @@ static func run(t) -> void:
 	var r_blocked := _fire(_enemy(40, 3, 5, 10), blocked_setter)
 	t.eq(int(r_blocked.hp), 40,
 		"⭐ 관통 실패한 셋업은 버프 미부여 → 뒤 페이로드도 빗나감 (유효 적중 조건)")
+
+	# ══════════════════════════════════════════════════════════
+	# 버프-인지 게이트 미리보기 (정본: CombatManager.preview_next_shot)
+	#
+	# ⚠️ v5 이전의 판정 표시는 버프를 무시해 "실제로는 뚫리는데 도탄 ✗"로 거짓말을 했다.
+	#    preview_next_shot이 대기 버프를 반영하는지 실증한다. UI는 이 값만 읽는다.
+	# ══════════════════════════════════════════════════════════
+	var cm := CombatManagerScript.new()
+	var gun2: GunData = load(G_REVOLVER)
+	var e2: Array[EnemyData] = [_enemy(30, 3, 0, 10)]  # DEF3
+	# 셋업(PEN2, BUFF_PEN+3) → 페이로드(PEN0). LIFO: 셋업을 뒤에 넣어 먼저 발사.
+	var lo2: Array[BulletData] = [_bullet(7, 7, 0), _bullet(1, 7, 2, Enums.BulletEffect.BUFF_PEN, 3)]
+	var np2: Array[PartData] = []
+	cm.start_encounter(gun2, e2, lo2, np2)
+	cm.confirm_loading(lo2)
+
+	# 첫 탄(셋업) 발사 전 — 셋업 자체는 PEN2 < DEF3
+	var pv_setter: Dictionary = cm.preview_next_shot()
+	t.eq(int(pv_setter.pen), 2, "미리보기: 셋업 탄 PEN 2 (버프 대기 없음)")
+	t.check(not pv_setter.buffed_pen, "미리보기: 아직 버프 없음")
+
+	cm.fire()  # 셋업 발사 → PEN2 ≥ DEF3? 아니다. 근데 유효 적중해야 버프가 걸린다...
+	# ⚠️ 셋업 PEN2 < DEF3이면 막혀서 버프가 안 걸린다. 셋업이 먼저 게이트를 넘어야 하므로
+	#    이 시나리오는 "막힌 셋업"이다. 버프 대기가 없어야 한다.
+	var pv_after_blocked: Dictionary = cm.preview_next_shot()
+	t.check(not pv_after_blocked.buffed_pen, "⭐ 막힌 셋업 후 — 페이로드 미리보기에 버프 없음 (PEN 그대로)")
+	cm.free()
+
+	# 이번엔 셋업이 게이트를 넘는 경우: DEF1 적 → 셋업 PEN2 ≥ 1 통과 → 버프 부여
+	var cm3 := CombatManagerScript.new()
+	var e3: Array[EnemyData] = [_enemy(30, 1, 0, 10)]  # DEF1
+	var lo3: Array[BulletData] = [_bullet(7, 7, 0), _bullet(1, 7, 2, Enums.BulletEffect.BUFF_PEN, 3)]
+	cm3.start_encounter(gun2, e3, lo3, np2)
+	cm3.confirm_loading(lo3)
+	cm3.fire()  # 셋업 발사(PEN2 ≥ DEF1 통과) → BUFF_PEN+3 대기
+	var pv_buffed: Dictionary = cm3.preview_next_shot()
+	t.eq(int(pv_buffed.pen), 0 + 3, "⭐ 셋업 적중 후 — 페이로드 미리보기 PEN 0→3 (버프 반영)")
+	t.check(pv_buffed.buffed_pen, "⭐ 미리보기가 버프 적용을 표시 (거짓 도탄 표시 해소)")
+	cm3.free()
