@@ -297,7 +297,7 @@ func handle_monster_gallery_closed() -> void:
 	_show_title_screen()
 
 
-## 전술 기관단총의 셋업→페이로드 연발 체인을 직접 확인하는 개발자 전투.
+## 전술 기관단총의 연계→공격 연발 체인을 직접 확인하는 개발자 전투.
 func trigger_tempo_full_auto_test() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
@@ -310,7 +310,7 @@ func trigger_tempo_full_auto_test() -> void:
 		_combat_overlay.visible = true
 		_combat_overlay.clear_combat_log()
 		_combat_overlay.add_combat_log(
-			"[color=#ffff66]🛠️ 기관단총 연발 체인 테스트 시작! 페이로드를 먼저, 셋업을 나중에 넣으십시오.[/color]")
+			"[color=#ffff66]🛠️ 기관단총 연발 체인 테스트 시작! 공격탄을 먼저, 연계탄을 나중에 넣으십시오.[/color]")
 
 	var enemy_list: Array[EnemyData] = [_enemy_rusher, _enemy_tank]
 	_start_combat_phase(enemy_list)

@@ -45,7 +45,7 @@ func update_cylinder_visuals() -> void:
 		var has_visible_chain := (
 			display_count == 0
 			and i > 0
-			and BulletRoleUI.is_setup_chain(bullet, bullets[i - 1])
+			and BulletRoleUI.is_link_chain(bullet, bullets[i - 1])
 		)
 		
 		# 카드 번호는 격발될 순서(1, 2, 3...)로 표기
@@ -166,7 +166,7 @@ func _create_dynamic_bullet_card(
 			hbox.add_child(gate_lbl)
 		elif has_visible_chain:
 			var chain_lbl: Label = parent_scene.make_label("⇢ 연계", 9.0, parent_scene.C_SUCCESS)
-			chain_lbl.tooltip_text = "현재 셋업탄 다음에 페이로드탄이 발사됩니다."
+			chain_lbl.tooltip_text = "현재 연계탄 다음에 공격탄이 발사됩니다."
 			hbox.add_child(chain_lbl)
 
 	# 성능 숫자(D/P). 버프탄은 게이트 라벨이 핵심 정보이고 화력탄이 아니므로 생략한다

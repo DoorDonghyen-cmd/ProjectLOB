@@ -188,7 +188,7 @@ static func run(t) -> void:
 	cm6.free()
 
 	# 전술 기관단총: 조율→과부하를 3번 연결한 6발 시퀀스가 한 턴에 완성된다.
-	# 적재 배열은 LIFO이므로 페이로드를 먼저, 셋업을 나중에 넣는다.
+	# 적재 배열은 LIFO이므로 공격탄을 먼저, 연계탄을 나중에 넣는다.
 	var loadout7: Array[BulletData] = []
 	for i in range(3):
 		loadout7.append((load(B_SURGE_SMG) as BulletData).duplicate())
@@ -200,8 +200,8 @@ static func run(t) -> void:
 	var dist_before7: int = cm7.enemies[0].current_distance
 	cm7.fire()
 	t.eq(cm7.magazine.get_remaining(), 0, "⭐ 전술 기관단총 6발 전량 소비")
-	t.eq(cm7.enemies[0].current_hp, 85,
-		"⭐ 조율(1피해)+과부하(4피해) 3쌍 = 15피해, 버프 체인 작동")
+	t.eq(cm7.enemies[0].current_hp, 88,
+		"⭐ 조율(1피해)+과부하(3피해) 3쌍 = 12피해, 버프 체인 작동")
 	t.eq(dist_before7 - cm7.enemies[0].current_distance, 1,
 		"전술 기관단총 6발도 적 전진은 1회")
 	t.eq(cm7.pending_buff_acc, 0, "6발 체인 종료 후 보류 ACC 버프 없음")
@@ -232,10 +232,10 @@ static func run(t) -> void:
 
 	var smg_cycle: int = 1 + int(smg_csv.reload_turns)
 	var smg_basic_dpt := float(6 * (3 + int(smg_csv.passive_dmg_bonus))) / float(smg_cycle)
-	var smg_chain_dpt := 15.0 / float(smg_cycle)
+	var smg_chain_dpt := 12.0 / float(smg_cycle)
 	t.eq(smg_cycle, 4, "전술 기관단총 사이클 = 4턴")
 	t.eq(smg_basic_dpt, 3.0, "⭐ 전술 기관단총 기본 6발 = 3.00 DMG/턴")
-	t.eq(smg_chain_dpt, 3.75, "⭐ 전술 기관단총 조율→과부하 체인 = 3.75 DMG/턴")
+	t.eq(smg_chain_dpt, 3.0, "⭐ 전술 기관단총 조율→과부하 체인 = 3.00 DMG/턴")
 
 	# 리듬 챔버를 선택 장착해도 연속 횟수만큼 폭증하지 않고 2·4·6번째에 +1씩만 붙는다.
 	var rhythm_loadout: Array[BulletData] = []

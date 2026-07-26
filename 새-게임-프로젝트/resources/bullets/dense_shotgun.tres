@@ -6,12 +6,12 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "12게이지 밀집탄"
-description = "밀집된 산탄으로 큰 피해를 내지만 낮은 ACC를 보완해야 합니다."
+description = "밀집된 산탄으로 높은 피해를 내며 산개탄과 연계하면 고회피 대상까지 대응합니다."
 icon = ExtResource("2_texture")
 is_basic = false
-role = "payload"
-damage = 7
-accuracy = 4
+role = "attack"
+damage = 5
+accuracy = 5
 penetration = 0
 knockback = 0
 slow = 0

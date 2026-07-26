@@ -103,10 +103,9 @@ static func run(t) -> void:
 
 	# CSV가 런타임 수치 정본이고 .tres가 UI 메타데이터 정본이므로 양쪽 값이 같아야 한다.
 	var role_counts := {
-		BulletRoleUI.STANDALONE: 0,
-		BulletRoleUI.SETTER: 0,
-		BulletRoleUI.PAYLOAD: 0,
-		BulletRoleUI.UTILITY: 0,
+		BulletRoleUI.ATTACK: 0,
+		BulletRoleUI.LINK: 0,
+		BulletRoleUI.CONTROL: 0,
 	}
 	var basic_count := 0
 	for id in csv:
@@ -155,27 +154,28 @@ static func run(t) -> void:
 		t.eq(str(loaded.description), str(row.description), "'%s' 로더 설명문" % id)
 
 	t.eq(basic_count, 5, "기본탄은 클래스별 1종씩 총 5종")
-	t.eq(int(role_counts[BulletRoleUI.STANDALONE]), 9, "독립 역할 9종")
-	t.eq(int(role_counts[BulletRoleUI.SETTER]), 8, "셋업 역할 8종")
-	t.eq(int(role_counts[BulletRoleUI.PAYLOAD]), 8, "페이로드 역할 8종")
-	t.eq(int(role_counts[BulletRoleUI.UTILITY]), 2, "유틸 역할 2종")
+	t.eq(int(role_counts[BulletRoleUI.ATTACK]), 17, "공격 역할 17종")
+	t.eq(int(role_counts[BulletRoleUI.LINK]), 8, "연계 역할 8종")
+	t.eq(int(role_counts[BulletRoleUI.CONTROL]), 2, "제어 역할 2종")
 
 	# 사용자 문구와 LIFO 연계 판정은 모든 UI에서 이 헬퍼 하나를 공유한다.
-	t.eq(BulletRoleUI.label("standalone"), "독립", "역할 UI: standalone")
-	t.eq(BulletRoleUI.label("setter"), "셋업", "역할 UI: setter")
-	t.eq(BulletRoleUI.label("payload"), "페이로드", "역할 UI: payload")
-	t.eq(BulletRoleUI.label("utility"), "유틸", "역할 UI: utility")
-	t.eq(BulletRoleUI.normalize("unknown"), BulletRoleUI.STANDALONE, "미지 역할은 독립으로 안전 폴백")
-	var setter_probe := BulletData.new()
-	setter_probe.role = "setter"
-	var payload_probe := BulletData.new()
-	payload_probe.role = "payload"
-	t.check(BulletRoleUI.is_setup_chain(setter_probe, payload_probe),
-		"역할 UI: 셋업→페이로드 연계 인식")
-	t.check(not BulletRoleUI.is_setup_chain(payload_probe, setter_probe),
+	t.eq(BulletRoleUI.label("attack"), "공격", "역할 UI: attack")
+	t.eq(BulletRoleUI.label("link"), "연계", "역할 UI: link")
+	t.eq(BulletRoleUI.label("control"), "제어", "역할 UI: control")
+	t.eq(BulletRoleUI.normalize("unknown"), BulletRoleUI.ATTACK, "미지 역할은 공격으로 안전 폴백")
+	t.eq(BulletRoleUI.normalize("payload"), BulletRoleUI.ATTACK, "구 payload 값은 공격으로 호환")
+	t.eq(BulletRoleUI.normalize("setter"), BulletRoleUI.LINK, "구 setter 값은 연계로 호환")
+	t.eq(BulletRoleUI.normalize("utility"), BulletRoleUI.CONTROL, "구 utility 값은 제어로 호환")
+	var link_probe := BulletData.new()
+	link_probe.role = "link"
+	var attack_probe := BulletData.new()
+	attack_probe.role = "attack"
+	t.check(BulletRoleUI.is_link_chain(link_probe, attack_probe),
+		"역할 UI: 연계→공격 체인 인식")
+	t.check(not BulletRoleUI.is_link_chain(attack_probe, link_probe),
 		"역할 UI: 역순은 연계로 오인하지 않음")
 
-	# 시작 덱은 모든 클래스에서 기본 + 셋업 + 페이로드를 실제 로드할 수 있어야 한다.
+	# 시작 덱은 모든 클래스에서 기본 공격 + 연계 + 특수 공격을 실제 로드할 수 있어야 한다.
 	t.eq(RunManager.STARTING_AMMO_IDS.size(), 5, "시작 덱 클래스 구성 5종")
 	for cls in RunManager.STARTING_AMMO_IDS:
 		var ids: Array = RunManager.STARTING_AMMO_IDS[cls]
@@ -189,11 +189,11 @@ static func run(t) -> void:
 			if bullet != null:
 				t.eq(bullet.weapon_class, int(cls), "시작 덱 '%s' 클래스 일치" % id)
 		var basic := DataLoader.get_bullet(ids[0])
-		var setter := DataLoader.get_bullet(ids[1])
-		var payload := DataLoader.get_bullet(ids[2])
+		var link := DataLoader.get_bullet(ids[1])
+		var attack := DataLoader.get_bullet(ids[2])
 		t.check(bool(basic.get("is_basic", false)), "시작 덱 '%s' 기본탄 표시" % ids[0])
-		t.eq(str(setter.get("role", "")), "setter", "시작 덱 '%s' 셋업 역할" % ids[1])
-		t.eq(str(payload.get("role", "")), "payload", "시작 덱 '%s' 페이로드 역할" % ids[2])
+		t.eq(str(link.get("role", "")), "link", "시작 덱 '%s' 연계 역할" % ids[1])
+		t.eq(str(attack.get("role", "")), "attack", "시작 덱 '%s' 공격 역할" % ids[2])
 
 	# 상점은 무작위로 하나만 뽑지만 후보 네 종은 모두 실제 도달 가능해야 한다.
 	t.eq(MaintenanceOverlay.SHOP_BULLET_IDS.size(), 4, "무기고 탄환 후보 4종")

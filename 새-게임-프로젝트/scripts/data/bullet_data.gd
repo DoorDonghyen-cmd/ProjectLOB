@@ -12,7 +12,7 @@ extends Resource
 ## 시작 덱·기본 보급에서 사용하는 계열 대표 탄환인지 여부
 @export var is_basic: bool = false
 ## 덱 구성 역할. 표시 문구와 색상은 BulletRoleUI에서 중앙 관리한다.
-@export_enum("standalone", "setter", "payload", "utility") var role: String = "standalone"
+@export_enum("attack", "link", "control") var role: String = "attack"
 @export var weapon_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 
 @export_group("기본 스탯")

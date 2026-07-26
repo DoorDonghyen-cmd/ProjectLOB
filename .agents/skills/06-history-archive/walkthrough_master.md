@@ -8,6 +8,7 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-27 | **Phase 12 탄환 역할 단순화 및 조합 매트릭스** | `codex0727-ammo-rebalance` | 공격/연계/제어 17/8/2 전환, 특수 공격탄 5종 단독 사용성 보정, 실제 적 단독·연계·연발·게이트 실패 매트릭스와 전체 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_role_rebalance_2026-07-27.md) |
 | 2026-07-26 | **Phase 12 컨버전 킷** | `codex0726-conversion-kit` | 클래스별 5종 킷, 장착 제한, 지정탄 소멸 면제·승천8 해제, 드래프트 3배 가중, 무기고 전용 판매와 총기별 가격 배수 구현 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_conversion_kit_2026-07-26.md) |
 | 2026-07-26 | **보스 호위 대열 밸런싱 QA** | `codex0726-boss-qa` | 세라프/L.O.B 2m 편성·차징 포격·호위 강제전진·넉백 저항 실측, 보스 차징 미작동 결함 수정 및 페이즈2 동시 이동 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_boss_formation_balance_qa_2026-07-26.md) |
 | 2026-07-24 | **기관단총 연발 전환과 탄환 역할 UI** | `codex0724-smg-role` | Tempo 6발 전탄 커밋·더블탭 제거·Gambler 단발 유지, 조율/과부하 체인 정합, 리듬 챔버 폭증 차단, 전 UI 역할·연계 배지와 회귀 검증 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_smg_full_auto_ammo_role_ui_2026-07-24.md) |
@@ -39,6 +40,7 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0727-ammo-rebalance Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_role_rebalance_2026-07-27.md)
 * [Session codex0726-conversion-kit Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_conversion_kit_2026-07-26.md)
 * [Session codex0726-boss-qa Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_boss_formation_balance_qa_2026-07-26.md)
 * [Session codex0724-smg-role Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_smg_full_auto_ammo_role_ui_2026-07-24.md)

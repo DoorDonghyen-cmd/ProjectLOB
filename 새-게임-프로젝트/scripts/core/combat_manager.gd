@@ -592,10 +592,10 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			match bullet.effect_type:
 				Enums.BulletEffect.BUFF_ACC:
 					pending_buff_acc = bullet.effect_value
-					combat_log.emit("   ↳ ✨ [셋업] 다음 탄 ACC +%d" % bullet.effect_value)
+					combat_log.emit("   ↳ ✨ [연계] 다음 탄 ACC +%d" % bullet.effect_value)
 				Enums.BulletEffect.BUFF_PEN:
 					pending_buff_pen = bullet.effect_value
-					combat_log.emit("   ↳ ✨ [셋업] 다음 탄 PEN +%d" % bullet.effect_value)
+					combat_log.emit("   ↳ ✨ [연계] 다음 탄 PEN +%d" % bullet.effect_value)
 		else:
 			battle_stats.zero_damage_hits += 1
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미지" % [bullet.display_name, target.data.display_name, damage])

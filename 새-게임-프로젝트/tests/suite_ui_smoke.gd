@@ -129,10 +129,10 @@ static func run(t, tree: SceneTree) -> void:
 	if scene._cm != null:
 		t.check(scene._cm.gun_is("smg"), "⭐ 기관단총 연발 체인 테스트가 Tempo로 시작됨")
 		t.check(scene._cm.is_full_auto(), "기관단총 QA 숏컷도 연발")
-	t.check(_has_label_text(scene._combat_overlay, "[셋업]"),
-		"⭐ 장전 UI에 셋업 역할 배지 렌더")
-	t.check(_has_label_text(scene._combat_overlay, "[페이로드]"),
-		"⭐ 장전 UI에 페이로드 역할 배지 렌더")
+	t.check(_has_label_text(scene._combat_overlay, "[연계]"),
+		"⭐ 장전 UI에 연계 역할 배지 렌더")
+	t.check(_has_label_text(scene._combat_overlay, "[공격]"),
+		"⭐ 장전 UI에 공격 역할 배지 렌더")
 
 	# ── 개발자 테스트: 제압형 연발 전투 숏컷이 실제로 도는가 ──
 	# ⚠️ 숏컷은 QA 진입점이라 깨져도 본 게임 흐름에서는 드러나지 않는다.

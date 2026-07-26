@@ -407,7 +407,7 @@ func _build_ui() -> void:
 	bag_body_margin.add_child(_loading_bag_ammo)
 	
 	var bag_hint_ammo: Label = parent_scene.make_label(
-		"✓ 탄을 누르면 스택 맨 위에 삽탄\n페이로드를 먼저 넣고 셋업을 나중에 넣으면 셋업이 먼저 발사됩니다.",
+		"✓ 탄을 누르면 스택 맨 위에 삽탄\n공격탄을 먼저 넣고 연계탄을 나중에 넣으면 연계탄이 먼저 발사됩니다.",
 		12,
 		parent_scene.C_SUCCESS
 	)
@@ -2204,10 +2204,10 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 
 		var source_index := _loaded_bullets.size() - 1 - pos
 		var next_source_index := source_index - 1
-		if next_source_index >= 0 and BulletRoleUI.is_setup_chain(
+		if next_source_index >= 0 and BulletRoleUI.is_link_chain(
 			bullet, _loaded_bullets[next_source_index]):
 			var chain_lbl: Label = parent_scene.make_label("⇢ 연계", 9, parent_scene.C_SUCCESS)
-			chain_lbl.tooltip_text = "현재 셋업탄 다음에 페이로드탄이 발사됩니다."
+			chain_lbl.tooltip_text = "현재 연계탄 다음에 공격탄이 발사됩니다."
 			top_hbox.add_child(chain_lbl)
 	
 	var top_spacer := Control.new()

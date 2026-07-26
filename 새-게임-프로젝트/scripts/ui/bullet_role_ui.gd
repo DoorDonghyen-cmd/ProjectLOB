@@ -4,28 +4,33 @@ extends RefCounted
 ## 탄환의 덱 구성 역할을 화면 전반에서 같은 용어·색으로 표시하는 정본.
 ## CSV/.tres에는 기계 판독용 영문 role을 저장하고, 사용자 문구는 여기서만 관리한다.
 
-const STANDALONE := "standalone"
-const SETTER := "setter"
-const PAYLOAD := "payload"
-const UTILITY := "utility"
-const VALID_ROLES := [STANDALONE, SETTER, PAYLOAD, UTILITY]
+const ATTACK := "attack"
+const LINK := "link"
+const CONTROL := "control"
+const VALID_ROLES := [ATTACK, LINK, CONTROL]
 
 
 static func normalize(value: String) -> String:
 	var normalized := value.strip_edges().to_lower()
-	return normalized if normalized in VALID_ROLES else STANDALONE
+	match normalized:
+		ATTACK, "standalone", "payload":
+			return ATTACK
+		LINK, "setter":
+			return LINK
+		CONTROL, "utility":
+			return CONTROL
+		_:
+			return ATTACK
 
 
 static func label(value: String) -> String:
 	match normalize(value):
-		SETTER:
-			return "셋업"
-		PAYLOAD:
-			return "페이로드"
-		UTILITY:
-			return "유틸"
+		LINK:
+			return "연계"
+		CONTROL:
+			return "제어"
 		_:
-			return "독립"
+			return "공격"
 
 
 static func badge_text(value: String) -> String:
@@ -34,32 +39,28 @@ static func badge_text(value: String) -> String:
 
 static func color(value: String) -> Color:
 	match normalize(value):
-		SETTER:
+		LINK:
 			return Color(0.35, 0.85, 1.0)
-		PAYLOAD:
-			return Color(1.0, 0.55, 0.25)
-		UTILITY:
+		CONTROL:
 			return Color(0.35, 0.9, 0.6)
 		_:
-			return Color(0.72, 0.76, 0.82)
+			return Color(1.0, 0.65, 0.3)
 
 
 static func hint(value: String) -> String:
 	match normalize(value):
-		SETTER:
-			return "유효 적중 시 뒤따르는 1발을 강화합니다. LIFO에서는 페이로드를 먼저 넣고 셋업을 나중에 넣으십시오."
-		PAYLOAD:
-			return "셋업 뒤에 발사할 때 큰 보상을 내는 탄환입니다."
-		UTILITY:
+		LINK:
+			return "뒤따르는 공격탄의 게이트를 열거나 적을 약화합니다. LIFO에서는 공격탄을 먼저 넣고 연계탄을 나중에 넣으십시오."
+		CONTROL:
 			return "거리나 적 상태를 조작해 다음 판단을 유리하게 만듭니다."
 		_:
-			return "다른 탄의 도움 없이도 안정적인 성능을 내는 탄환입니다."
+			return "일반 적에게 단독으로 작동하며 연계탄을 받으면 대응 범위가 넓어집니다."
 
 
-static func is_setup_chain(first_to_fire: BulletData, second_to_fire: BulletData) -> bool:
+static func is_link_chain(first_to_fire: BulletData, second_to_fire: BulletData) -> bool:
 	return (
 		first_to_fire != null
 		and second_to_fire != null
-		and normalize(first_to_fire.role) == SETTER
-		and normalize(second_to_fire.role) == PAYLOAD
+		and normalize(first_to_fire.role) == LINK
+		and normalize(second_to_fire.role) == ATTACK
 	)

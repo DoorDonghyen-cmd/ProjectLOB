@@ -6,13 +6,13 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "5.56mm 중격탄"
-description = "큰 피해를 내지만 PEN이 없어 천공탄이나 파쇄탄의 지원이 필요합니다."
+description = "중량 탄자가 일반 장갑을 관통하며 천공탄이나 파쇄탄과 연계하면 중장갑까지 대응합니다."
 icon = ExtResource("2_texture")
 is_basic = false
-role = "payload"
-damage = 7
+role = "attack"
+damage = 5
 accuracy = 5
-penetration = 0
+penetration = 2
 knockback = 0
 slow = 0
 effect_type = 0

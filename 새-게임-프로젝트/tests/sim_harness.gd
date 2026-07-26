@@ -26,7 +26,7 @@ static func _bullet(dmg: int, acc: int, pen: int, kb: int = 0, slow: int = 0) ->
 	return b
 
 
-## 효과를 가진 탄. 셋업(버프·파쇄)과 페이로드 체인을 모델링하기 위해 필요하다.
+## 효과를 가진 탄. 연계(버프·파쇄)와 공격탄 체인을 모델링하기 위해 필요하다.
 static func _fx_bullet(dmg: int, acc: int, pen: int, effect: int, value: int) -> BulletData:
 	var b := _bullet(dmg, acc, pen)
 	b.effect_type = effect
@@ -60,10 +60,9 @@ static func simulate(enemy: EnemyInstance, bullets: Array, gun: GunData, max_tur
 	var result := "timeout"
 	var total_damage := 0
 
-	# ── 셋업 버프 상태 (정본: docs/gdd/22_ammo_expansion.md §22.2) ──
-	# ⚠️ 이것이 없으면 페이로드 탄(극단 스탯)이 **단독 측정에서 "쓰레기"로 나온다.**
-	#    "단독=무용, 버프 시=최강"이 v5 설계의 핵심이므로 하니스가 이를 모델링해야
-	#    수치 조정이 가능하다. 규칙: 다음 1발만 · 유효 적중 시에만 · 중첩 없음.
+	# ── 연계 버프 상태 (정본: docs/gdd/22_ammo_expansion.md §22.2) ──
+	# 공격탄은 일반 적에게 단독으로 작동하고, 버프는 다음 1발의 대응 범위를 넓힌다.
+	# 규칙: 다음 1발만 · 유효 적중 시에만 · 중첩 없음.
 	var pending_acc := 0
 	var pending_pen := 0
 	var buffed_shots := 0
@@ -99,7 +98,7 @@ static func simulate(enemy: EnemyInstance, bullets: Array, gun: GunData, max_tur
 			if bullet.slow > 0:
 				enemy.apply_slow(bullet.slow)
 
-			# ── 셋업 효과 ──
+			# ── 연계 효과 ──
 			# ⚠️ 파쇄는 **명중만으로** 발동한다. 유효 적중을 요구하면 관통 게이트를
 			#    여는 제 역할을 못 한다(막혔을 때 써야 의미가 있는 탄이므로).
 			#    반대로 버프는 **유효 적중**을 요구한다 — "막힌 탄은 아무 일도 일으키지 않는다".
@@ -180,76 +179,71 @@ static func run(t) -> void:
 	t.eq(r4.remaining_hp, 6, "빗나감은 HP 무변화")
 
 	# ══════════════════════════════════════════════════════════
-	# 셋업/페이로드 체인 (정본: docs/gdd/22_ammo_expansion.md)
+	# 연계/공격 체인 (정본: docs/gdd/22_ammo_expansion.md)
 	#
-	# v5의 핵심 주장은 **"페이로드는 단독으로는 무용, 셋업과 짝지으면 최강"**이다.
-	# 이 주장이 성립하는지 하니스로 확인한다. 성립하지 않으면 설계가 아니라
-	# 그냥 나쁜 탄을 추가한 것이 된다.
+	# 공격탄은 일반 적에게 단독으로 작동하고, 연계탄은 고회피·중장갑 전문 적까지
+	# 대응 범위를 넓힌다. 실패 시 전탄 무효가 아니라 효율 손실로 남기는 것이 목표다.
 	# ══════════════════════════════════════════════════════════
 
-	# ── 시나리오5: ACC 페이로드는 단독으로 쓸모없다 ──
-	# 9mm 고압탄 (DMG6 / ACC2) vs EVA5 적 → ACC 부족으로 전탄 빗나감
-	var e5 := _enemy(Enums.EnemyArchetype.RUSHER, 20, 0, 5, 0, 12)
+	# ── 시나리오5: 공격탄은 일반 EVA5 적에게 단독으로 작동한다 ──
+	var e5 := _enemy(Enums.EnemyArchetype.RUSHER, 30, 0, 5, 0, 12)
 	var bs5: Array = []
 	for i in range(6):
-		bs5.append(_bullet(6, 2, 1))  # 과부하 계열 페이로드
+		bs5.append(_bullet(5, 5, 1))
 	var r5 := simulate(e5, bs5, _gun(6, false))
-	t.eq(int(r5.total_damage), 0, "⭐ ACC 페이로드 단독 → 총 대미지 0 (ACC2 < EVA5)")
+	t.eq(int(r5.total_damage), 30, "⭐ 공격탄 단독 → EVA5 적에게 5×6=30 피해")
 
-	# ── 시나리오6: 셋업을 끼우면 같은 탄이 통한다 ──
-	# 발광탄(ACC8 / BUFF_ACC+3) → 고압탄(ACC2+3=5 ≥ EVA5) 교차 배치
-	# ⚠️ LIFO: 나중에 넣은 탄이 먼저 나가므로, 셋업이 페이로드보다 뒤에 와야 한다.
-	var e6 := _enemy(Enums.EnemyArchetype.RUSHER, 20, 0, 5, 0, 12)
+	# ── 시나리오6: 연계탄은 같은 공격탄을 EVA7 전문 적까지 확장한다 ──
+	# ⚠️ LIFO: 나중에 넣은 탄이 먼저 나가므로, 연계탄을 공격탄보다 뒤에 적재한다.
+	var e6 := _enemy(Enums.EnemyArchetype.RUSHER, 20, 0, 7, 0, 12)
 	var bs6: Array = []
 	for i in range(3):
-		bs6.append(_bullet(6, 2, 1))                                    # 페이로드 (먼저 적재)
-		bs6.append(_fx_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3)) # 셋업 (나중 적재 = 먼저 발사)
+		bs6.append(_bullet(5, 5, 1))                                    # 공격 (먼저 적재)
+		bs6.append(_fx_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3)) # 연계 (나중 적재)
 	var r6 := simulate(e6, bs6, _gun(6, false))
-	t.check(int(r6.total_damage) > 0,
-		"⭐ 셋업 + 페이로드 → 대미지 발생 (%d) — 단독 0에서 반전" % int(r6.total_damage))
+	t.eq(int(r6.total_damage), 18,
+		"⭐ ACC 연계→공격 3쌍 = 18 피해, EVA7까지 대응")
 	t.check(int(r6.buffed_shots) >= 3, "버프가 실제로 %d발에 적용됨" % int(r6.buffed_shots))
 
-	# ── 시나리오7: PEN 페이로드도 같은 구조 ──
-	# 중격탄 (DMG7 / PEN0) vs DEF2 적 → 관통 게이트에 막혀 0
+	# ── 시나리오7: PEN2 공격탄은 일반 DEF2 적에게 단독으로 작동한다 ──
 	var e7 := _enemy(Enums.EnemyArchetype.RUSHER, 25, 2, 0, 0, 12)
 	var bs7: Array = []
 	for i in range(6):
-		bs7.append(_bullet(7, 6, 0))
+		bs7.append(_bullet(5, 6, 2))
 	var r7 := simulate(e7, bs7, _gun(6, false))
-	t.eq(int(r7.total_damage), 0, "⭐ PEN 페이로드 단독 → 총 대미지 0 (PEN0 < DEF2)")
+	t.eq(int(r7.total_damage), 25, "⭐ PEN2 공격탄 단독 → DEF2 적에게 25 피해")
 
-	# 천공탄(PEN2 / BUFF_PEN+3) → 중격탄(PEN0+3=3 ≥ DEF2)
-	var e8 := _enemy(Enums.EnemyArchetype.RUSHER, 25, 2, 0, 0, 12)
+	# PEN3 연계 → PEN2 공격탄(+3)으로 DEF3 전문 적 대응.
+	var e8 := _enemy(Enums.EnemyArchetype.RUSHER, 25, 3, 0, 0, 12)
 	var bs8: Array = []
 	for i in range(3):
-		bs8.append(_bullet(7, 6, 0))
-		bs8.append(_fx_bullet(1, 6, 2, Enums.BulletEffect.BUFF_PEN, 3))
+		bs8.append(_bullet(5, 6, 2))
+		bs8.append(_fx_bullet(1, 6, 3, Enums.BulletEffect.BUFF_PEN, 3))
 	var r8 := simulate(e8, bs8, _gun(6, false))
-	t.check(int(r8.total_damage) > 0,
-		"⭐ PEN 셋업 + 페이로드 → 대미지 발생 (%d)" % int(r8.total_damage))
+	t.eq(int(r8.total_damage), 18,
+		"⭐ PEN 연계→공격 3쌍 = 18 피해, DEF3까지 대응")
 
 	# ── 시나리오8: 버프는 다음 1발만 (누수 방지) ──
-	# 셋업 1발 + 페이로드 3발 → 첫 페이로드만 버프를 받아야 한다.
-	var e9 := _enemy(Enums.EnemyArchetype.RUSHER, 40, 0, 5, 0, 12)
+	# 연계 1발 + 공격 3발 → 첫 공격만 버프를 받아야 한다.
+	var e9 := _enemy(Enums.EnemyArchetype.RUSHER, 40, 0, 7, 0, 12)
 	var bs9: Array = []
 	for i in range(3):
-		bs9.append(_bullet(6, 2, 1))
+		bs9.append(_bullet(5, 5, 1))
 	bs9.append(_fx_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))
 	var r9 := simulate(e9, bs9, _gun(6, false))
 	t.eq(int(r9.buffed_shots), 1,
-		"⭐ 버프는 다음 1발만 — 셋업 1발에 버프 적용도 1발 (탄창 전체 지속 아님)")
+		"⭐ 버프는 다음 1발만 — 연계 1발에 버프 적용도 1발")
 
-	# ── 시나리오9: 막힌 셋업은 버프를 주지 않는다 ──
-	# "막힌 탄은 아무 일도 일으키지 않는다" — 셋업 자체가 리스크가 되어야 한다.
-	# 셋업(PEN0)이 DEF3 적에게 막히면 뒤따르는 페이로드는 맨몸으로 나간다.
-	var e10 := _enemy(Enums.EnemyArchetype.RUSHER, 30, 3, 0, 0, 12)
+	# ── 시나리오9: 막힌 연계탄은 버프를 주지 않는다 ──
+	# 연계(PEN0)가 DEF3에 막히면 뒤 공격탄은 ACC5로 EVA7에 빗나간다.
+	var e10 := _enemy(Enums.EnemyArchetype.RUSHER, 30, 3, 7, 0, 12)
 	var bs10: Array = []
 	for i in range(3):
-		bs10.append(_bullet(7, 6, 4))
-		bs10.append(_fx_bullet(1, 8, 0, Enums.BulletEffect.BUFF_ACC, 3))  # PEN0 → DEF3에 막힘
+		bs10.append(_bullet(5, 5, 4))
+		bs10.append(_fx_bullet(1, 8, 0, Enums.BulletEffect.BUFF_ACC, 3))
 	var r10 := simulate(e10, bs10, _gun(6, false))
 	t.eq(int(r10.buffed_shots), 0,
-		"⭐ 관통 실패한 셋업은 버프를 주지 않음 (유효 적중 조건)")
+		"⭐ 관통 실패한 연계는 버프를 주지 않음 (유효 적중 조건)")
 
 	# ── 시나리오10: 파쇄는 막혀도 발동한다 (버프와의 의도된 비대칭) ──
 	# ⚠️ 파쇄가 유효 적중을 요구하면 관통 게이트를 여는 제 역할을 못 한다.
@@ -263,6 +257,6 @@ static func run(t) -> void:
 		"⭐ 파쇄는 관통에 막혀도 DEF를 깎는다 (4 → %d) — 버프와 의도된 비대칭" % e11.current_def)
 
 	# ── 데모 로그 출력 (하니스 가시성) ──
-	print("  · 셋업+페이로드 체인 로그 (시나리오6):")
+	print("  · 연계→공격 체인 로그 (시나리오6):")
 	for line in r6.log:
 		print("      " + line)

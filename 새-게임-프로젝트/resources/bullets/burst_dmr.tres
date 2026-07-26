@@ -6,13 +6,13 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "7.62mm 작렬탄"
-description = "최고 수준의 피해를 내지만 ACC와 PEN이 낮아 정교한 셋업이 필요합니다."
+description = "높은 피해와 기본 관통력을 갖추며 표적 지시탄과 연계하면 중장갑까지 대응합니다."
 icon = ExtResource("2_texture")
 is_basic = false
-role = "payload"
-damage = 9
-accuracy = 3
-penetration = 0
+role = "attack"
+damage = 7
+accuracy = 5
+penetration = 2
 knockback = 0
 slow = 0
 effect_type = 0

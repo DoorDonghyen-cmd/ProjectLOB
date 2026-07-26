@@ -6,12 +6,12 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "9mm 고압탄"
-description = "극단적인 장약으로 큰 피해를 내지만 ACC가 낮아 발광탄의 보조가 필요합니다."
+description = "강한 장약으로 높은 피해를 내며 발광탄과 연계하면 고회피 대상까지 대응합니다."
 icon = ExtResource("2_texture")
 is_basic = false
-role = "payload"
-damage = 6
-accuracy = 2
+role = "attack"
+damage = 5
+accuracy = 5
 penetration = 1
 knockback = 0
 slow = 0

@@ -19,7 +19,7 @@ static var meta_unlocked_sections: Array[String] = ["section_a"] # 영구 해금
 static var meta_lore_fragments: Array[int] = [] # 1~20 범위의 수집된 파편 번호
 ## gambler 해금 임계 — 적을 시작 거리의 이 비율 이내로 들이면 실패.
 const GAMBLER_DIST_RATIO := 1.0 / 3.0
-## 클래스별 시작 덱 탄환 ID 정본: [기본, 셋업, 페이로드].
+## 클래스별 시작 덱 탄환 ID 정본: [기본 공격, 연계, 특수 공격].
 ## 리소스 경로를 여러 분기에 복사하지 않아 탄환 마이그레이션 시 유령 참조를 막는다.
 const STARTING_AMMO_IDS := {
 	Enums.WeaponClass.PISTOL: ["basic_pistol", "flare_pistol", "overpressure_pistol"],

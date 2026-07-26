@@ -136,7 +136,7 @@ static func _load_bullet_stats() -> void:
 			"display_name": _s(line, cols, "display_name"),
 			"class": _parse_class(_s(line, cols, "class")),
 			"is_basic": _b(line, cols, "is_basic"),
-			"role": _s(line, cols, "role", "standalone"),
+			"role": _s(line, cols, "role", "attack"),
 			"damage": _i(line, cols, "damage"),
 			"penetration": _i(line, cols, "penetration"),
 			"accuracy": _i(line, cols, "accuracy"),

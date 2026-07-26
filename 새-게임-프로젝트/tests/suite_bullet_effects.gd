@@ -89,63 +89,64 @@ static func run(t) -> void:
 	t.eq(r_open.dist, 12, "선제 사격: 첫 탄 넉백 +2 → 거리 10→12")
 
 	# ══════════════════════════════════════════════════════════
-	# 셋업 버프 (BUFF_ACC / BUFF_PEN) — 정본: docs/gdd/22_ammo_expansion.md §22.2
+	# 연계 버프 (BUFF_ACC / BUFF_PEN) — 정본: docs/gdd/22_ammo_expansion.md §22.2
 	#
 	# 규칙: 다음 1발만 · 유효 적중 시에만 · 중첩 없음 · 리로드 소멸
-	# ⚠️ LIFO — 나중에 넣은 탄이 먼저 나간다. 셋업을 뒤에 적재해야 먼저 발사된다.
+	# ⚠️ LIFO — 나중에 넣은 탄이 먼저 나간다. 연계탄을 뒤에 적재해야 먼저 발사된다.
 	# ══════════════════════════════════════════════════════════
 
-	# ── ACC 페이로드는 단독으로 빗나간다 ──
-	var payload_only: Array[BulletData] = []
+	# ── 공격탄은 일반 적에게 단독으로 작동한다 ──
+	var attack_only: Array[BulletData] = []
 	for i in range(4):
-		payload_only.append(_bullet(6, 2, 1))          # ACC2
-	var r_solo := _fire(_enemy(30, 0, 5, 10), payload_only)   # EVA5
-	t.eq(int(r_solo.hp), 30, "⭐ ACC 페이로드 단독 → 전탄 빗나감 (ACC2 < EVA5)")
+		attack_only.append(_bullet(5, 5, 1))
+	var r_solo := _fire(_enemy(30, 0, 5, 10), attack_only)
+	t.eq(int(r_solo.hp), 10, "⭐ 공격탄 단독 → 일반 EVA5 적에게 5×4=20 피해")
 
-	# ── 셋업을 끼우면 같은 탄이 통한다 ──
+	# ── 연계탄은 같은 공격탄의 대응 범위를 고회피 적까지 넓힌다 ──
 	var chained: Array[BulletData] = []
 	for i in range(2):
-		chained.append(_bullet(6, 2, 1))                                             # 페이로드(먼저 적재)
-		chained.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))             # 셋업(나중 적재 = 먼저 발사)
-	var r_chain := _fire(_enemy(30, 0, 5, 10), chained)
-	t.check(int(r_chain.hp) < 30,
-		"⭐ 셋업 + 페이로드 → 명중 (HP 30 → %d), 단독 실패에서 반전" % int(r_chain.hp))
+		chained.append(_bullet(5, 5, 1))                                             # 공격(먼저 적재)
+		chained.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))             # 연계(나중 적재)
+	var r_chain := _fire(_enemy(30, 0, 7, 10), chained)
+	t.eq(int(r_chain.hp), 18,
+		"⭐ ACC 연계→공격 2쌍 = 12 피해, EVA7 전문 적까지 대응")
 
-	# ── PEN 셋업도 같은 구조 ──
+	# ── PEN2 공격탄은 일반 장갑에 단독으로 작동한다 ──
 	var pen_solo: Array[BulletData] = []
 	for i in range(4):
-		pen_solo.append(_bullet(7, 7, 0))              # PEN0
-	var r_pen_solo := _fire(_enemy(40, 2, 0, 10), pen_solo)   # DEF2
-	t.eq(int(r_pen_solo.hp), 40, "⭐ PEN 페이로드 단독 → 관통 실패 (PEN0 < DEF2)")
+		pen_solo.append(_bullet(5, 7, 2))
+	var r_pen_solo := _fire(_enemy(40, 2, 0, 10), pen_solo)
+	t.eq(int(r_pen_solo.hp), 20, "⭐ PEN2 공격탄 단독 → 일반 DEF2 적에게 5×4=20 피해")
 
+	# PEN 연계는 동일 공격탄을 DEF3 전문 적까지 확장한다.
 	var pen_chain: Array[BulletData] = []
 	for i in range(2):
-		pen_chain.append(_bullet(7, 7, 0))
-		pen_chain.append(_bullet(1, 7, 2, Enums.BulletEffect.BUFF_PEN, 3))
-	var r_pen_chain := _fire(_enemy(40, 2, 0, 10), pen_chain)
-	t.check(int(r_pen_chain.hp) < 40,
-		"⭐ PEN 셋업 + 페이로드 → 관통 (HP 40 → %d)" % int(r_pen_chain.hp))
+		pen_chain.append(_bullet(5, 7, 2))
+		pen_chain.append(_bullet(1, 7, 3, Enums.BulletEffect.BUFF_PEN, 3))
+	var r_pen_chain := _fire(_enemy(40, 3, 0, 10), pen_chain)
+	t.eq(int(r_pen_chain.hp), 28,
+		"⭐ PEN 연계→공격 2쌍 = 12 피해, DEF3 전문 적까지 대응")
 
 	# ── 버프는 다음 1발만 (탄창 전체 지속 아님) ──
-	# 셋업 1발 + 페이로드 3발 → 첫 페이로드만 맞고 나머지 둘은 빗나가야 한다.
+	# 연계 1발 + 공격 3발 → 첫 공격만 맞고 나머지 둘은 빗나가야 한다.
 	var leak_test: Array[BulletData] = []
 	for i in range(3):
-		leak_test.append(_bullet(6, 2, 1))
+		leak_test.append(_bullet(5, 5, 1))
 	leak_test.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))
-	var r_leak := _fire(_enemy(30, 0, 5, 10), leak_test)
-	# 셋업 1 + 버프받은 페이로드 6 = 7 피해. 나머지 2발은 빗나감.
-	t.eq(int(r_leak.hp), 30 - 7,
-		"⭐ 버프는 다음 1발만 — 페이로드 3발 중 1발만 명중 (누수 없음)")
+	var r_leak := _fire(_enemy(30, 0, 7, 10), leak_test)
+	# 연계 1 + 버프받은 공격 5 = 6 피해. 나머지 2발은 빗나감.
+	t.eq(int(r_leak.hp), 24,
+		"⭐ 버프는 다음 1발만 — 공격탄 3발 중 1발만 명중 (누수 없음)")
 
-	# ── 막힌 셋업은 버프를 주지 않는다 ──
-	# "막힌 탄은 아무 일도 일으키지 않는다" — 셋업 자체가 리스크가 되어야 한다.
-	var blocked_setter: Array[BulletData] = []
+	# ── 막힌 연계탄은 버프를 주지 않는다 ──
+	# "막힌 탄은 아무 일도 일으키지 않는다" — 연계 자체가 리스크가 되어야 한다.
+	var blocked_link: Array[BulletData] = []
 	for i in range(2):
-		blocked_setter.append(_bullet(7, 2, 5))                                       # 페이로드(ACC2, PEN5)
-		blocked_setter.append(_bullet(1, 8, 0, Enums.BulletEffect.BUFF_ACC, 3))       # 셋업 PEN0 → DEF3에 막힘
-	var r_blocked := _fire(_enemy(40, 3, 5, 10), blocked_setter)
+		blocked_link.append(_bullet(5, 5, 5))                                         # 공격 ACC5
+		blocked_link.append(_bullet(1, 8, 0, Enums.BulletEffect.BUFF_ACC, 3))         # 연계 PEN0 → DEF3 도탄
+	var r_blocked := _fire(_enemy(40, 3, 7, 10), blocked_link)
 	t.eq(int(r_blocked.hp), 40,
-		"⭐ 관통 실패한 셋업은 버프 미부여 → 뒤 페이로드도 빗나감 (유효 적중 조건)")
+		"⭐ 관통 실패한 연계는 버프 미부여 → 뒤 공격탄도 EVA7에 빗나감")
 
 	# ══════════════════════════════════════════════════════════
 	# 버프-인지 게이트 미리보기 (정본: CombatManager.preview_next_shot)
@@ -156,32 +157,30 @@ static func run(t) -> void:
 	var cm := CombatManagerScript.new()
 	var gun2: GunData = load(G_REVOLVER)
 	var e2: Array[EnemyData] = [_enemy(30, 3, 0, 10)]  # DEF3
-	# 셋업(PEN2, BUFF_PEN+3) → 페이로드(PEN0). LIFO: 셋업을 뒤에 넣어 먼저 발사.
+	# 연계(PEN2, BUFF_PEN+3) → 공격(PEN0). LIFO: 연계탄을 뒤에 넣어 먼저 발사.
 	var lo2: Array[BulletData] = [_bullet(7, 7, 0), _bullet(1, 7, 2, Enums.BulletEffect.BUFF_PEN, 3)]
 	var np2: Array[PartData] = []
 	cm.start_encounter(gun2, e2, lo2, np2)
 	cm.confirm_loading(lo2)
 
 	# 첫 탄(셋업) 발사 전 — 셋업 자체는 PEN2 < DEF3
-	var pv_setter: Dictionary = cm.preview_next_shot()
-	t.eq(int(pv_setter.pen), 2, "미리보기: 셋업 탄 PEN 2 (버프 대기 없음)")
-	t.check(not pv_setter.buffed_pen, "미리보기: 아직 버프 없음")
+	var pv_link: Dictionary = cm.preview_next_shot()
+	t.eq(int(pv_link.pen), 2, "미리보기: 연계탄 PEN 2 (버프 대기 없음)")
+	t.check(not pv_link.buffed_pen, "미리보기: 아직 버프 없음")
 
-	cm.fire()  # 셋업 발사 → PEN2 ≥ DEF3? 아니다. 근데 유효 적중해야 버프가 걸린다...
-	# ⚠️ 셋업 PEN2 < DEF3이면 막혀서 버프가 안 걸린다. 셋업이 먼저 게이트를 넘어야 하므로
-	#    이 시나리오는 "막힌 셋업"이다. 버프 대기가 없어야 한다.
+	cm.fire()  # 연계탄 PEN2 < DEF3 → 도탄, 버프 미생성.
 	var pv_after_blocked: Dictionary = cm.preview_next_shot()
-	t.check(not pv_after_blocked.buffed_pen, "⭐ 막힌 셋업 후 — 페이로드 미리보기에 버프 없음 (PEN 그대로)")
+	t.check(not pv_after_blocked.buffed_pen, "⭐ 막힌 연계 후 — 공격탄 미리보기에 버프 없음")
 	cm.free()
 
-	# 이번엔 셋업이 게이트를 넘는 경우: DEF1 적 → 셋업 PEN2 ≥ 1 통과 → 버프 부여
+	# 이번엔 연계가 게이트를 넘는 경우: DEF1 적 → PEN2 ≥ 1 통과 → 버프 부여
 	var cm3 := CombatManagerScript.new()
 	var e3: Array[EnemyData] = [_enemy(30, 1, 0, 10)]  # DEF1
 	var lo3: Array[BulletData] = [_bullet(7, 7, 0), _bullet(1, 7, 2, Enums.BulletEffect.BUFF_PEN, 3)]
 	cm3.start_encounter(gun2, e3, lo3, np2)
 	cm3.confirm_loading(lo3)
-	cm3.fire()  # 셋업 발사(PEN2 ≥ DEF1 통과) → BUFF_PEN+3 대기
+	cm3.fire()  # 연계탄 발사(PEN2 ≥ DEF1 통과) → BUFF_PEN+3 대기
 	var pv_buffed: Dictionary = cm3.preview_next_shot()
-	t.eq(int(pv_buffed.pen), 0 + 3, "⭐ 셋업 적중 후 — 페이로드 미리보기 PEN 0→3 (버프 반영)")
+	t.eq(int(pv_buffed.pen), 0 + 3, "⭐ 연계 적중 후 — 공격탄 미리보기 PEN 0→3")
 	t.check(pv_buffed.buffed_pen, "⭐ 미리보기가 버프 적용을 표시 (거짓 도탄 표시 해소)")
 	cm3.free()

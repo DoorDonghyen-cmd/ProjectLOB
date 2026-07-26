@@ -113,7 +113,7 @@ static func _validate_bullets(t) -> void:
 		"slow", "effect_type", "effect_value"
 	]
 	var valid_classes := ["pistol", "smg", "rifle", "dmr", "shotgun", "universal"]
-	var valid_roles := ["setter", "payload", "standalone", "utility"]
+	var valid_roles := ["attack", "link", "control"]
 	for i in range(1, rows.size()):
 		var r: Variant = rows[i]
 		var where := "bullet 행 %d" % (i + 1)
@@ -137,8 +137,8 @@ static func _validate_bullets(t) -> void:
 		if id != "":
 			t.check(tres.has(id), "bullet '%s' → resources/bullets/%s.tres 존재" % [id, id])
 
-		# v5 페이로드는 셋업 없이는 게이트를 넘기 어려운 대신 극단 DMG를 갖는다.
-		# 인지 밴드는 없애지 않고 의도된 최대치만 수용한다.
+		# 공격탄은 일반 적에게 단독으로 작동하고, 연계탄은 전문 게이트 대응 범위를 넓힌다.
+		# 모든 값은 결정론적 인지 밴드 안에서 유지한다.
 		var dmg := int(_cell(r, cols, "damage"))
 		var pen := int(_cell(r, cols, "penetration"))
 		var acc := int(_cell(r, cols, "accuracy"))

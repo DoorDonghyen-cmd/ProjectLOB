@@ -36,6 +36,8 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_enemy.gd` | 적 태세 전환(N발 주기), 전진/둔화/넉백 거리 계산 |
 | `suite_boss_gimmicks.gd` | 보스 기믹·호위 대열 — 2m 편성, 차징 포격, 강제전진, 페이즈 전환, 넉백 저항 |
 | `validate_data.gd` | CSV 정합성 — id 유니크·컬럼·정수·밴드(ERROR/WARN), `.tres` 매칭 |
+| `suite_ammo_integrity.gd` | 탄환 CSV↔리소스↔시작 덱 역할·수치 완전 일치 |
+| `suite_ammo_matrix.gd` | 실제 몬스터별 공격·연계·연발 처치 조합 매트릭스 |
 | `sim_harness.gd` | 결정론 전투 시뮬레이터 — 승패·마진·넉백락 산출(밸런스 회귀+튜닝) |
 | `suite_conversion_kit.gd` | 컨버전 킷 — 클래스별 데이터, 장착 제한, 소멸 면제, 드래프트 가중, 가격, 승천 8등급 |
 | `suite_continuous_run.gd` | 연속 런 — 계층 체이닝, 자원 유지, 총 35층, 런 길이 램프 |

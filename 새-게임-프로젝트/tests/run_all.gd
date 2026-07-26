@@ -10,6 +10,7 @@ const SuiteMagazine := preload("res://tests/suite_magazine.gd")
 const SuiteEnemy := preload("res://tests/suite_enemy.gd")
 const ValidateData := preload("res://tests/validate_data.gd")
 const SuiteAmmoIntegrity := preload("res://tests/suite_ammo_integrity.gd")
+const SuiteAmmoMatrix := preload("res://tests/suite_ammo_matrix.gd")
 const SimHarness := preload("res://tests/sim_harness.gd")
 const SuiteRunFlow := preload("res://tests/suite_run_flow.gd")
 const SuiteSaveLoad := preload("res://tests/suite_save_load.gd")
@@ -58,6 +59,7 @@ func _initialize() -> void:
 	SuiteEnemy.run(t)       # 적 태세 전환 · 거리 계산
 	ValidateData.run(t)     # CSV 데이터 정합성
 	SuiteAmmoIntegrity.run(t) # 탄환 CSV↔리소스↔시작 덱 완전 일치
+	SuiteAmmoMatrix.run(t)    # 실제 몬스터별 공격·연계·연발 처치 매트릭스
 	SimHarness.run(t)       # 결정론 전투 시뮬레이션
 	SuiteRunFlow.run(t)     # 플레이 흐름 통합(무기→맵→노드→전투→클리어→정산)
 	SuiteSaveLoad.run(t)    # 메타 세이브/로드 영속화
