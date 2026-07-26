@@ -217,7 +217,14 @@ static func run(t, tree: SceneTree) -> void:
 		# 요청(2026-07-25): HP를 머리 위로, 자물쇠·방어·회피를 아래로.
 		var tc = ov._track_control
 		if is_instance_valid(tc) and not tc.enemy_sprites.is_empty():
-			var any_enemy = tc.enemy_sprites.keys()[0]
+			var any_enemy = null
+			for candidate in tc.enemy_sprites.keys():
+				if not candidate.is_stack_sponge:
+					any_enemy = candidate
+					break
+			t.check(any_enemy != null, "HP 바 검증용 일반 HP 적 존재")
+			if any_enemy == null:
+				return
 			var es = tc.enemy_sprites[any_enemy]
 			var hp_bg = es.get_node_or_null("HpBarBG")
 			var badge = es.get_node_or_null("BadgePanel")
@@ -225,6 +232,7 @@ static func run(t, tree: SceneTree) -> void:
 			t.check(hp_bg != null, "적 머리 위 HP 바 존재")
 			t.check(badge != null and defp != null, "아키타입·방어 배지 존재")
 			if hp_bg and badge:
+				t.check(not hp_bg is Container, "⭐ HP 배경이 채움 폭을 자동 재배치하지 않음")
 				# 스프라이트는 y=0~80. HP 바는 그 위(음수), 배지는 그 아래(80 초과).
 				t.check(hp_bg.position.y < 0, "⭐ HP 바가 머리 위(y=%.0f)" % hp_bg.position.y)
 				t.check(badge.position.y >= 80, "⭐ 아키타입 배지가 발 아래(y=%.0f)" % badge.position.y)
@@ -232,14 +240,48 @@ static func run(t, tree: SceneTree) -> void:
 				t.check(hp_bg.position.y < badge.position.y, "HP 바가 배지보다 위에 있음")
 
 			# HP 바가 체력 변화를 따라가는가
-			any_enemy.current_hp = maxi(any_enemy.data.max_hp / 2, 1)
+			any_enemy.current_hp = maxi(any_enemy.max_hp / 2, 1)
 			tc.refresh_all_hp_bars()
 			var fill = hp_bg.get_node_or_null("HpFill") if hp_bg else null
 			if fill:
 				# 절반이면 채움 막대가 배경 안쪽 폭의 절반쯤 비어 있어야 한다.
 				t.check(fill.offset_right < -10.0, "⭐ HP 바가 절반으로 줄어듦 (offset_right=%.0f)" % fill.offset_right)
+				t.check(fill.size.x > 0.0, "생존 적의 HP 채움 폭이 남아 있음")
+				any_enemy.current_hp = 1
+				tc.refresh_all_hp_bars()
+				t.check(not any_enemy.is_dead() and fill.size.x > 0.0,
+					"⭐ HP 1 생존 적의 채움 막대가 완전히 비지 않음 (폭 %.1fpx)" % fill.size.x)
+				tc.refresh_hp_bar_to(any_enemy, any_enemy.max_hp)
+				var full_offset: float = fill.offset_right
+				ov._on_enemy_damaged(any_enemy, 1, any_enemy.max_hp / 2, true)
+				t.check(is_equal_approx(fill.offset_right, full_offset),
+					"주 대상 HP는 탄환 도착 전까지 선갱신되지 않음")
+				ov._on_enemy_damaged(any_enemy, 1, any_enemy.max_hp / 2, false)
+				t.check(fill.offset_right < full_offset - 10.0,
+					"과관통·관통 보조 피해 HP는 누락 없이 즉시 갱신")
 			# HP 바 안에는 수치를 표기하지 않는다(막대 길이만으로 충분).
 			t.check(hp_bg.get_node_or_null("HpText") == null, "HP 바 내 수치 미표기")
+
+			# 마지막 처치탄은 실제 대상을 보존하고, 사망 페이드가 끝날 때까지 결과창을 막는다.
+			ov._fire_fx_queue.clear()
+			ov._fx_playing = true
+			for candidate in tc.enemy_sprites.keys():
+				candidate.current_hp = 0
+				if candidate.is_stack_sponge:
+					candidate.barrier_cells = 0
+			ov._on_bullet_fired(b1, true, 5, any_enemy, 0)
+			var kill_entry: Dictionary = ov._fire_fx_queue.back()
+			t.check(kill_entry.target == any_enemy and bool(kill_entry.final_kill),
+				"⭐ 마지막 처치탄 큐가 실제 사망 대상을 보존")
+			ov._result_overlay.visible = false
+			ov._on_encounter_won()
+			t.check(ov._pending_result == "won" and not ov._result_overlay.visible,
+				"⭐ 마지막 적 사망 연출 전에는 드래프트 결과창 보류")
+			ov._apply_queued_hit_feedback(kill_entry)
+			t.check(es.visible and not ov._result_overlay.visible,
+				"⭐ 사망 실루엣 페이드 중에도 드래프트가 화면을 덮지 않음")
+			t.check(ov.ENEMY_DEATH_FADE + ov.POST_KILL_HOLD >= 0.6,
+				"처치 페이드와 후속 여운 시간이 확보됨")
 
 		ov._fire_fx_queue.clear()
 		ov._pending_result = ""

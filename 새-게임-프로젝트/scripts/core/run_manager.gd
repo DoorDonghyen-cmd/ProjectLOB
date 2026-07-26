@@ -236,6 +236,7 @@ func _sync_gun_stats_from_csv(g: GunData) -> void:
 		g.passive_knockback_bonus = csv.passive_knockback_bonus
 		g.passive_acc_bonus = csv.passive_acc_bonus
 		g.parts_capacity = csv.parts_capacity
+		g.conversion_cost = float(csv.get("conversion_cost", 1.0))
 		g.fire_mode = csv.fire_mode
 		# preview_window_size는 CSV에 없으면 -1로 오므로 .tres 값을 보존한다.
 		if int(csv.get("preview_window_size", -1)) >= 0:
@@ -335,10 +336,14 @@ func unload_bullet_to_discard(bullet: BulletData) -> void:
 ## 소멸(Exile)되거나 분실된 탄환을 덱에서 영구 제거 (단, 기본 9mm는 리필 보장용으로 제거 생략)
 func exile_bullet_from_deck(bullet: BulletData) -> void:
 	# 전용탄 보존 안전장치 — 주력 탄이 계속 소멸하면 쏠 것이 없어지므로 같은 구경은 보호한다.
+	# 컨버전 킷은 지정 클래스도 전용탄으로 취급한다.
 	# ⚠️ 승천 8등급 "회수 불가"는 이 안전장치를 해제한다(§4.1 레버 ①).
 	#    잘못 고른 한 발이 곧 자원 손실이 되어, "이 적에게 무엇이 통하는가" 계산이 절실해진다.
 	if not bool(ascension_effects().no_caliber_safety):
 		if current_gun != null and bullet.weapon_class == current_gun.weapon_class:
+			return
+		var conversion_class := get_conversion_class()
+		if conversion_class != Enums.WeaponClass.UNIVERSAL and bullet.weapon_class == conversion_class:
 			return
 		
 	for i in range(deck.size()):
@@ -863,11 +868,46 @@ func collect_lore_fragment(fragment_id: int) -> bool:
 
 # ── 파츠 장착 및 교체 제어 ──
 
+## 현재 장착된 컨버전 킷의 대상 클래스. 미장착이면 UNIVERSAL.
+func get_conversion_class() -> int:
+	for part in equipped_parts:
+		if part != null and part.is_conversion_kit():
+			return part.conversion_class
+	return Enums.WeaponClass.UNIVERSAL
+
+
+## 컨버전 대상 탄환의 획득 가중치. 선언한 클래스는 기본의 3배로 등장한다.
+func bullet_draft_weight(bullet: BulletData) -> int:
+	var conversion_class := get_conversion_class()
+	if conversion_class != Enums.WeaponClass.UNIVERSAL \
+			and bullet != null and bullet.weapon_class == conversion_class:
+		return 3
+	return 1
+
+
+## 자기 클래스 킷과 복수 킷 장착을 차단한다.
+## replacing_index는 해당 슬롯을 교체한다고 가정해 중복 검사에서 제외한다.
+func can_equip_part(part: PartData, replacing_index: int = -1) -> bool:
+	if current_gun == null or part == null:
+		return false
+	if not part.is_conversion_kit():
+		return true
+	if part.conversion_class == current_gun.weapon_class:
+		return false
+	for i in range(equipped_parts.size()):
+		if i == replacing_index:
+			continue
+		var equipped := equipped_parts[i]
+		if equipped != null and equipped.is_conversion_kit():
+			return false
+	return true
+
+
 ## 빈 슬롯이 있으면 파츠를 즉시 장착한다. 성공 시 true, 슬롯이 가득 찬 경우 false 반환.
 func equip_part_to_slot(part: PartData) -> bool:
 	if current_gun == null:
 		return false
-	if equipped_parts.size() < current_gun.parts_capacity:
+	if equipped_parts.size() < current_gun.parts_capacity and can_equip_part(part):
 		equipped_parts.append(part)
 		return true
 	return false
@@ -877,6 +917,8 @@ func equip_part_to_slot(part: PartData) -> bool:
 ## 반환: 버려진 이전 파츠
 func replace_equipped_part(index: int, new_part: PartData) -> PartData:
 	if index < 0 or index >= equipped_parts.size():
+		return null
+	if not can_equip_part(new_part, index):
 		return null
 	var old_part = equipped_parts[index]
 	equipped_parts[index] = new_part
@@ -900,13 +942,15 @@ func swap_hold_with_equipped(equipped_index: int) -> void:
 		return
 	
 	# 인덱스가 빈 슬롯(새 장착) 범위인 경우
-	if equipped_index == equipped_parts.size() and equipped_parts.size() < current_gun.parts_capacity:
+	if equipped_index == equipped_parts.size() and equipped_parts.size() < current_gun.parts_capacity \
+			and can_equip_part(hold_part):
 		equipped_parts.append(hold_part)
 		hold_part = null
 		return
 		
 	# 인덱스가 기존 장착 범위인 경우 스왑
-	if equipped_index >= 0 and equipped_index < equipped_parts.size():
+	if equipped_index >= 0 and equipped_index < equipped_parts.size() \
+			and can_equip_part(hold_part, equipped_index):
 		var temp = equipped_parts[equipped_index]
 		equipped_parts[equipped_index] = hold_part
 		hold_part = temp

@@ -34,8 +34,10 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_damage.gd` | 전투 수식 — 이진 관통 게이트, 명중 `ACC≥EVA` 임계값 |
 | `suite_magazine.gd` | 탄창 LIFO — 발사 순서, 용량/약실, unload/insert |
 | `suite_enemy.gd` | 적 태세 전환(N발 주기), 전진/둔화/넉백 거리 계산 |
+| `suite_boss_gimmicks.gd` | 보스 기믹·호위 대열 — 2m 편성, 차징 포격, 강제전진, 페이즈 전환, 넉백 저항 |
 | `validate_data.gd` | CSV 정합성 — id 유니크·컬럼·정수·밴드(ERROR/WARN), `.tres` 매칭 |
 | `sim_harness.gd` | 결정론 전투 시뮬레이터 — 승패·마진·넉백락 산출(밸런스 회귀+튜닝) |
+| `suite_conversion_kit.gd` | 컨버전 킷 — 클래스별 데이터, 장착 제한, 소멸 면제, 드래프트 가중, 가격, 승천 8등급 |
 | `suite_continuous_run.gd` | 연속 런 — 계층 체이닝, 자원 유지, 총 35층, 런 길이 램프 |
 | `suite_spawn_tiers.gd` | 계층별 스폰 3구간이 모두 도달 가능한지(사문화 콘텐츠 검출) |
 | `suite_ui_data_drift.gd` | UI 소스에 계층 이름·층수가 복사돼 있지 않은지(정본은 `MapGenerator`) |

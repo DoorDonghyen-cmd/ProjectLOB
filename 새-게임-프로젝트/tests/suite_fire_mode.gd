@@ -99,6 +99,18 @@ static func run(t) -> void:
 		loadout2.append(_bullet(2, 9, 5))
 	var enemies2: Array[EnemyData] = [_enemy(4, 0, 0, 3), _enemy(20, 0, 0, 6)]
 	var cm2 = _setup(G_SUPPRESSOR, enemies2, loadout2)
+	var fired_targets: Array[EnemyInstance] = []
+	var fired_remaining: Array[int] = []
+	cm2.bullet_fired.connect(func(
+		_bullet_data: BulletData,
+		_hit: bool,
+		_damage: int,
+		target: EnemyInstance,
+		remaining: int
+	):
+		fired_targets.append(target)
+		fired_remaining.append(remaining)
+	)
 	cm2.fire()
 
 	# 앞 적(HP4)은 2발로 사망, 남은 3발이 뒤 적에게 → 20 - 6 = 14
@@ -110,6 +122,13 @@ static func run(t) -> void:
 			back_hp = e.current_hp
 	t.eq(survivors, 1, "앞 적 사망, 뒤 적 생존")
 	t.eq(back_hp, 14, "⭐ 오버킬 이월 — 남은 3발이 다음 적에게 (20 → 14)")
+	t.eq(fired_targets.size(), 5, "연발 5발 모두 실제 피격 대상 스냅샷 전달")
+	t.check(fired_targets[0] == cm2.enemies[0] and fired_targets[1] == cm2.enemies[0],
+		"⭐ 처치까지 첫 2발은 앞 적을 가리킴")
+	t.check(fired_targets[2] == cm2.enemies[1] and fired_targets[4] == cm2.enemies[1],
+		"⭐ 남은 3발의 연출 대상도 뒤 적으로 이월")
+	t.check(fired_remaining == [2, 0, 18, 16, 14],
+		"⭐ 발별 HP 스냅샷 4→2→0 / 20→18→16→14")
 	cm2.free()
 
 	# ── 막힌 탄: 관통 게이트 미달이면 전량 무효 ──

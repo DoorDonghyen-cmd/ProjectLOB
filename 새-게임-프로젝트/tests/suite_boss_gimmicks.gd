@@ -7,6 +7,10 @@ extends RefCounted
 const CombatManagerScript := preload("res://scripts/core/combat_manager.gd")
 const GUN := "res://resources/guns/revolver.tres"
 const BOSS_FINAL_RES := "res://resources/enemies/boss_lob_core.tres"
+const BOSS_SERAPH_RES := "res://resources/enemies/boss_seraph.tres"
+const RUSHER_RES := "res://resources/enemies/rusher.tres"
+const TANK_RES := "res://resources/enemies/tank.tres"
+const DODGER_RES := "res://resources/enemies/dodger.tres"
 const B_PIERCE := "res://resources/bullets/pierce_dmr.tres" # DMG4 / ACC7 / PEN3 — DEF3 게이트 통과
 
 
@@ -47,6 +51,18 @@ static func _run_final_boss(shots: int) -> Dictionary:
 	}
 	cm.free()
 	return res
+
+
+static func _start_formation(enemy_paths: Array[String]) -> CombatManager:
+	var cm = CombatManagerScript.new()
+	var gun: GunData = load(GUN)
+	var enemies: Array[EnemyData] = []
+	for path in enemy_paths:
+		enemies.append(load(path) as EnemyData)
+	var no_bullets: Array[BulletData] = []
+	var no_parts: Array[PartData] = []
+	cm.start_encounter(gun, enemies, no_bullets, no_parts)
+	return cm
 
 
 static func run(t) -> void:
@@ -105,3 +121,55 @@ static func run(t) -> void:
 	t.eq(r5.hp, 30, "[전투] 페이즈2 실체 HP 30 노출")
 	t.check(not r5.dead, "[전투] 페이즈2 진입 — 즉사하지 않음")
 	t.check(not r5.won, "[전투] 배리어 소진만으로 전투가 종료되지 않음")
+
+	# ── 세라프 호위 대열: 2m 스태거링 + 4턴 차징 ──
+	var seraph_cm := _start_formation([RUSHER_RES, TANK_RES, BOSS_SERAPH_RES])
+	t.eq(seraph_cm.enemies[0].current_distance, 10, "[대열] 세라프 선봉 돌격병 = 10m")
+	t.eq(seraph_cm.enemies[1].current_distance, 14, "[대열] 방패병 = 기본 12m + 오프셋 2m")
+	t.eq(seraph_cm.enemies[2].current_distance, 19, "[대열] 세라프 = 기본 15m + 오프셋 4m")
+
+	# 선봉은 처치된 상태로 두어 차징 자체의 호위 압박을 격리 측정한다.
+	seraph_cm.enemies[0].current_hp = 0
+	for i in range(3):
+		seraph_cm._all_enemies_advance()
+	t.eq(seraph_cm.enemies[1].current_distance, 11, "[세라프] 3턴 동안 방패병 정상 전진")
+	t.eq(seraph_cm.enemies[2].charge_turns_current, 3, "[세라프] 4턴 차징 중 3턴 누적")
+	seraph_cm._all_enemies_advance()
+	t.eq(seraph_cm.enemies[1].current_distance, 8, "[세라프] 4턴째 방패병 1m 전진 + 포격 2m 강제전진")
+	t.eq(seraph_cm.enemies[2].current_distance, 19, "[세라프] 포격이 차징 주체 자신을 밀지 않음")
+	t.eq(seraph_cm.enemies[2].charge_turns_current, 0, "[세라프] 포격 후 차징 카운터 리셋")
+	seraph_cm.free()
+
+	# ── L.O.B 코어 호위 대열: 2m 스태거링 + 3턴 차징 ──
+	var lob_cm := _start_formation([RUSHER_RES, DODGER_RES, TANK_RES, BOSS_FINAL_RES])
+	t.eq(lob_cm.enemies[0].current_distance, 10, "[대열] L.O.B 선봉 돌격병 = 10m")
+	t.eq(lob_cm.enemies[1].current_distance, 11, "[대열] 회피병 = 기본 9m + 오프셋 2m")
+	t.eq(lob_cm.enemies[2].current_distance, 16, "[대열] 방패병 = 기본 12m + 오프셋 4m")
+	t.eq(lob_cm.enemies[3].current_distance, 21, "[대열] L.O.B 코어 = 기본 15m + 오프셋 6m")
+
+	# 두 선봉을 제거하고 방패병에 가해지는 3턴 압박을 격리 측정한다.
+	lob_cm.enemies[0].current_hp = 0
+	lob_cm.enemies[1].current_hp = 0
+	for i in range(2):
+		lob_cm._all_enemies_advance()
+	t.eq(lob_cm.enemies[2].current_distance, 14, "[L.O.B] 2턴 동안 방패병 정상 전진")
+	t.eq(lob_cm.enemies[3].charge_turns_current, 2, "[L.O.B] 3턴 차징 중 2턴 누적")
+	lob_cm._all_enemies_advance()
+	t.eq(lob_cm.enemies[2].current_distance, 11, "[L.O.B] 3턴째 방패병 1m 전진 + 포격 2m 강제전진")
+	t.eq(lob_cm.enemies[3].current_distance, 21, "[L.O.B] 포격이 차징 주체 자신을 밀지 않음")
+	t.eq(lob_cm.enemies[3].charge_turns_current, 0, "[L.O.B] 포격 후 차징 카운터 리셋")
+
+	# 넉백 2 기준: 선봉은 밀리지만 방패병(저항2)·코어(저항3)는 고정된다.
+	t.eq(lob_cm.enemies[0].apply_knockback(2), 2, "[넉백] 돌격병은 충격탄 2m 전량 적용")
+	t.eq(lob_cm.enemies[2].apply_knockback(2), 0, "[넉백] 방패병 저항2가 충격탄 2m 상쇄")
+	t.eq(lob_cm.enemies[3].apply_knockback(2), 0, "[넉백] L.O.B 코어 저항3이 충격탄 2m 상쇄")
+
+	# 페이즈 2는 SPD1 전진과 3턴 차징을 동시에 수행한다.
+	lob_cm.enemies[3].barrier_cells = 0
+	t.check(lob_cm.enemies[3].check_phase_transition(), "[L.O.B] 대열 시나리오 페이즈2 진입")
+	for i in range(3):
+		lob_cm._all_enemies_advance()
+	t.eq(lob_cm.enemies[3].current_distance, 18, "[L.O.B] 페이즈2 코어는 3턴 동안 3m 전진")
+	t.eq(lob_cm.enemies[2].current_distance, 6, "[L.O.B] 페이즈2 3턴째 호위에 포격 2m 추가 압박")
+	t.eq(lob_cm.enemies[3].charge_turns_current, 0, "[L.O.B] 페이즈2에서도 차징 반복")
+	lob_cm.free()

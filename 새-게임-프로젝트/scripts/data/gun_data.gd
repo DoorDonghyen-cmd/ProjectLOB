@@ -35,6 +35,8 @@ extends Resource
 @export_range(1, 5) var parts_capacity: int = 3
 ## 총기에 고정되어 해제할 수 없는 고유 내장 파츠
 @export var default_part: PartData
+## 컨버전 킷 기준가에 곱하는 총기별 가격 배수. 구조 페널티 대신 가격만 차등한다.
+@export_range(0.5, 2.0, 0.1) var conversion_cost: float = 1.0
 
 @export_group("패시브 효과")
 ## 모든 총알의 DMG에 가산되는 보너스

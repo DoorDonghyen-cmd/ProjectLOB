@@ -138,10 +138,28 @@ func _generate_draft_choices() -> Array[BulletData]:
 	var slots: int = maxi(2 + int(RunManager.ascension_effects().draft_slots_delta), 1)
 
 	var result: Array[BulletData] = []
-	pool.shuffle()
+	# 컨버전 킷 대상 클래스는 3배 가중치로 추첨하되, 같은 리소스 중복은 허용하지 않는다.
 	for i in range(min(slots, pool.size())):
-		result.append(pool[i].duplicate())
+		var picked_idx := _weighted_pick_index(pool)
+		result.append(pool[picked_idx].duplicate())
+		pool.remove_at(picked_idx)
 	return result
+
+
+func _weighted_pick_index(pool: Array[BulletData]) -> int:
+	if pool.size() <= 1:
+		return 0
+	var total_weight := 0
+	for bullet in pool:
+		total_weight += run_manager.bullet_draft_weight(bullet) if run_manager != null else 1
+	var roll := randi_range(1, maxi(total_weight, 1))
+	var cumulative := 0
+	for i in range(pool.size()):
+		cumulative += run_manager.bullet_draft_weight(pool[i]) if run_manager != null else 1
+		if roll <= cumulative:
+			return i
+	return pool.size() - 1
+
 
 func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	var card := PanelContainer.new()

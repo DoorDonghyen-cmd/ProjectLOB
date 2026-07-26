@@ -14,3 +14,9 @@ extends Resource
 @export var part_id: Enums.PartID = Enums.PartID.NONE
 ## 파츠의 작동 층위 (1: LIFO 스택, 2: 거리 제어, 3: 스탯 매칭, 4: 태세 제어, 5: 시스템 변조)
 @export_range(1, 5) var tier: int = 1
+## 컨버전 킷이 전용으로 취급할 탄환 클래스. UNIVERSAL이면 일반 파츠다.
+@export var conversion_class: Enums.WeaponClass = Enums.WeaponClass.UNIVERSAL
+
+
+func is_conversion_kit() -> bool:
+	return conversion_class != Enums.WeaponClass.UNIVERSAL

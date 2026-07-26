@@ -10,6 +10,10 @@
 | #001 | 에이전트 초기 이식 및 정적 링크 검증 | 낮음 | ✅ Closed | - | 2026-06-27 | 2026-06-27 | [링크](#) |
 | #002 | Tempo 조율탄 피해 0으로 셋업 효과 미발동 | 보통 | ✅ Closed | `codex0724-smg-role` | 2026-07-24 | 2026-07-24 | [리포트](bug_002_tempo_tuner_zero_damage.md) |
 | #003 | 리듬 챔버 6발 연발 보너스 +20 폭증 | 보통 | ✅ Closed | `codex0724-smg-role` | 2026-07-24 | 2026-07-24 | [리포트](bug_003_rhythm_chamber_full_auto_scaling.md) |
+| #004 | 보스 차징 카운터가 실전 전투에서 진행되지 않음 | 높음 | ✅ Closed | `codex0726-boss-qa` | 2026-07-26 | 2026-07-26 | [리포트](bug_004_boss_charger_not_advancing.md) |
+| #005 | 생존 몬스터의 HP 바가 피격 후 빈 상태로 표시됨 | 보통 | ✅ Closed | `codex0726-enemy-hp-bar` | 2026-07-26 | 2026-07-26 | [리포트](bug_005_enemy_hp_bar_empty_while_alive.md) |
+| #006 | 연발 오버킬 이월 피해와 순차 피격 연출의 시점 불일치 | 보통 | ✅ Closed | `codex0726-full-auto-carryover-fx` | 2026-07-26 | 2026-07-26 | [리포트](bug_006_full_auto_carryover_fx_desync.md) |
+| #007 | 마지막 적 사망 연출 전에 결과·드래프트 창 표시 | 보통 | ✅ Closed | `codex0726-last-kill-draft-delay` | 2026-07-26 | 2026-07-26 | [리포트](bug_007_last_enemy_death_before_draft.md) |
 
 ---
 

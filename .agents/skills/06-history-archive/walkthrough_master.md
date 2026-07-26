@@ -8,6 +8,8 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-26 | **Phase 12 컨버전 킷** | `codex0726-conversion-kit` | 클래스별 5종 킷, 장착 제한, 지정탄 소멸 면제·승천8 해제, 드래프트 3배 가중, 무기고 전용 판매와 총기별 가격 배수 구현 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_conversion_kit_2026-07-26.md) |
+| 2026-07-26 | **보스 호위 대열 밸런싱 QA** | `codex0726-boss-qa` | 세라프/L.O.B 2m 편성·차징 포격·호위 강제전진·넉백 저항 실측, 보스 차징 미작동 결함 수정 및 페이즈2 동시 이동 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_boss_formation_balance_qa_2026-07-26.md) |
 | 2026-07-24 | **기관단총 연발 전환과 탄환 역할 UI** | `codex0724-smg-role` | Tempo 6발 전탄 커밋·더블탭 제거·Gambler 단발 유지, 조율/과부하 체인 정합, 리듬 챔버 폭증 차단, 전 UI 역할·연계 배지와 회귀 검증 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_smg_full_auto_ammo_role_ui_2026-07-24.md) |
 | 2026-07-24 | **탄환 데이터 v5 27종 마이그레이션** | `codex0724-ammo-v5` | 현대 구경 표기를 유지한 역할 기반 27종 데이터 교체, 헤더 기반 CSV 계약, 시작 덱·상점 도달성 및 CSV↔리소스 완전 일치 회귀 검증 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_v5_migration_2026-07-24.md) |
 | 2026-07-17 | **렐릭 시스템 전면 제거** | `codex0717` | 문자열 기반 렐릭 상태·전투 효과·로드아웃 UI·정산·맵 조건을 제거하고 가스 우회로를 일반 경로로 전환, 현행 GDD와 프로젝트 지침 동기화 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_relic_system_removal_2026-07-17.md) |
@@ -37,6 +39,8 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0726-conversion-kit Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_conversion_kit_2026-07-26.md)
+* [Session codex0726-boss-qa Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_boss_formation_balance_qa_2026-07-26.md)
 * [Session codex0724-smg-role Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_smg_full_auto_ammo_role_ui_2026-07-24.md)
 * [Session codex0724-ammo-v5 Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_v5_migration_2026-07-24.md)
 * [Session codex0718 Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_route_branching_2026-07-18.md)

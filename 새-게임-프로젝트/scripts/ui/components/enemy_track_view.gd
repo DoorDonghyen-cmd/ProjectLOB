@@ -96,10 +96,14 @@ const _HP_BAR_W := 76.0
 
 func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	# ── HP 바 (머리 위) ──
-	var hp_bg := PanelContainer.new()
+	# PanelContainer는 자식 크기를 자동 재배치해 피격 시 수동 폭 갱신과 충돌한다.
+	# 일반 Panel이 배경만 그리고 HpFill의 폭은 _refresh_hp_bar가 단독으로 관리한다.
+	var hp_bg := Panel.new()
 	hp_bg.name = "HpBarBG"
 	hp_bg.custom_minimum_size = Vector2(_HP_BAR_W, 9)
+	hp_bg.size = Vector2(_HP_BAR_W, 9)
 	hp_bg.position = Vector2((80.0 - _HP_BAR_W) / 2.0, _HP_BAR_Y)
+	hp_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	es.add_child(hp_bg)
 
 	var hp_bg_style := StyleBoxFlat.new()
@@ -246,7 +250,7 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 ## HP 바를 현재 체력에 맞춰 갱신한다.
 ## ⚠️ 스택 스펀지(앱소버)는 HP가 아니라 배리어 셀로 버티므로, 그 경우 배리어 비율을 그린다.
 ##    안 그러면 배리어가 남았는데 HP 바가 가득 차 있어 "왜 안 죽지?"가 된다.
-func _refresh_hp_bar(es: TextureRect, enemy: EnemyInstance) -> void:
+func _refresh_hp_bar(es: TextureRect, enemy: EnemyInstance, durability_override: int = -1) -> void:
 	var hp_bg = es.get_node_or_null("HpBarBG")
 	if not hp_bg:
 		return
@@ -258,13 +262,13 @@ func _refresh_hp_bar(es: TextureRect, enemy: EnemyInstance) -> void:
 	var col := Color(0.3, 1.0, 0.5)  # 초록
 
 	if enemy.is_stack_sponge:
-		var cur: int = enemy.barrier_cells
+		var cur: int = durability_override if durability_override >= 0 else enemy.barrier_cells
 		var maxc: int = maxi(enemy.max_barrier_cells, 1)
 		ratio = clampf(float(cur) / float(maxc), 0.0, 1.0)
 		col = Color(0.4, 0.7, 1.0)  # 배리어 = 청색
 	else:
-		var cur: int = enemy.current_hp
-		var maxh: int = maxi(enemy.data.max_hp, 1)
+		var cur: int = durability_override if durability_override >= 0 else enemy.current_hp
+		var maxh: int = maxi(enemy.max_hp, 1)
 		ratio = clampf(float(cur) / float(maxh), 0.0, 1.0)
 		# 체력이 낮을수록 초록 → 노랑 → 빨강
 		if ratio <= 0.3:
@@ -276,6 +280,13 @@ func _refresh_hp_bar(es: TextureRect, enemy: EnemyInstance) -> void:
 	# 앵커 기반 폭: 오른쪽 offset을 배경 폭에 비례해 당긴다.
 	var inner_w: float = _HP_BAR_W - 4.0
 	fill.offset_right = -2.0 - inner_w * (1.0 - ratio)
+
+
+## 동기 전투 정산과 별개로, 탄환 도착 시점의 HP/배리어 스냅샷을 화면에 반영한다.
+func refresh_hp_bar_to(enemy: EnemyInstance, remaining_durability: int) -> void:
+	var es = enemy_sprites.get(enemy)
+	if is_instance_valid(es):
+		_refresh_hp_bar(es, enemy, remaining_durability)
 
 
 ## 모든 적의 HP 바를 즉시 갱신한다. 피격·태세 변화 등 체력이 바뀌는 순간에 호출한다.
@@ -429,4 +440,3 @@ func update_penetration_indicators(next_bullet: BulletData) -> void:
 
 		# HP 바 갱신
 		_refresh_hp_bar(es, enemy)
-

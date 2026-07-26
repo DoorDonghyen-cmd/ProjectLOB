@@ -101,6 +101,9 @@ const FX_STEP_INTERVAL := 0.18   ## 발 사이 간격(초). "타닥 타닥"이 �
 ## 탄알이 총구에서 표적까지 날아가는 시간.
 ## ⚠️ 너무 짧으면(≤0.08s = 5프레임 이하) 궤적이 아니라 번쩍임으로 보인다.
 const TRACER_TRAVEL := 0.28
+## 마지막 적 처치 시 실루엣이 사라지는 시간을 보여준 뒤 결과창을 연다.
+const ENEMY_DEATH_FADE := 0.45
+const POST_KILL_HOLD := 0.18
 
 var _fire_fx_queue: Array[Dictionary] = []
 var _fx_playing: bool = false
@@ -1430,13 +1433,19 @@ func _on_enemy_sprite_gui_input(event: InputEvent, clicked_enemy: EnemyInstance)
 
 # ── 상태 전이 헨들러 바인딩 ──
 
-func _on_enemy_damaged(enemy_inst: EnemyInstance, damage: int, remaining_hp: int) -> void:
+func _on_enemy_damaged(
+	enemy_inst: EnemyInstance,
+	damage: int,
+	remaining_hp: int,
+	defer_visual: bool = false
+) -> void:
 	add_combat_log("[color=#ff4242]💥 피격: %s가 %d의 피해를 입었습니다. (남은 HP: %d)[/color]" % [
 		enemy_inst.data.display_name, damage, remaining_hp
 	])
-	_spawn_damage_text(enemy_inst, "-%d" % damage)
-	if is_instance_valid(_track_control):
-		_track_control.refresh_all_hp_bars()
+	if not defer_visual:
+		if is_instance_valid(_track_control):
+			_track_control.refresh_hp_bar_to(enemy_inst, remaining_hp)
+		_spawn_damage_text(enemy_inst, "-%d" % damage)
 	var nearest = combat_manager.enemy
 	_update_hit_info(nearest)
 	_update_distance_display(nearest)
@@ -1517,23 +1526,36 @@ func _on_magazine_updated(remaining: int = 0, capacity: int = 0) -> void:
 
 ## 격발 이벤트 수신 — 연출을 **큐에 쌓고** 순차 재생한다.
 ##
-## 표적 위치는 이 시점에 스냅샷한다. 재생 시점에는 적이 이미 죽었거나
-## 전진해 있어(버스트 전체가 1턴이므로) 엉뚱한 곳으로 탄이 날아간다.
-func _on_bullet_fired(bullet: BulletData, hit: bool = false, damage: int = 0) -> void:
+## 표적 위치와 잔여 HP는 이 시점에 스냅샷한다. 재생 시점에는 적이 이미 죽었거나
+## 다음 적까지 정산되어 있으므로 현재 CombatManager 상태를 다시 읽으면 안 된다.
+func _on_bullet_fired(
+	bullet: BulletData,
+	hit: bool = false,
+	damage: int = 0,
+	target_inst: EnemyInstance = null,
+	remaining_durability: int = -1
+) -> void:
 	var target_pos := Vector2.ZERO
-	var target_inst: EnemyInstance = null
-	if combat_manager and combat_manager.enemy:
-		target_inst = combat_manager.enemy
-		var es = _enemy_sprites.get(target_inst)
+	var actual_target := target_inst
+	# 개발자 연출 숏컷처럼 표적 인자가 없는 레거시 호출만 현재 최근접 적을 사용한다.
+	if actual_target == null and combat_manager:
+		actual_target = combat_manager.enemy
+	if actual_target != null:
+		var es = _enemy_sprites.get(actual_target)
 		if is_instance_valid(es) and es.visible:
 			target_pos = es.global_position + es.size / 2.0
 
+	var killed := actual_target != null and actual_target.is_dead()
+	var final_kill := killed and combat_manager != null and combat_manager.get_alive_enemies().is_empty()
 	_fire_fx_queue.append({
 		"bullet": bullet,
 		"hit": hit,
 		"damage": damage,
 		"target_pos": target_pos,
-		"target": target_inst,
+		"target": actual_target,
+		"remaining_durability": remaining_durability,
+		"killed": killed,
+		"final_kill": final_kill,
 	})
 
 	if not _fx_playing:
@@ -1550,8 +1572,10 @@ func _pump_fire_fx() -> void:
 	#    대기 전에 종료를 판정하면, 버스트의 나머지 탄이 아직 도착하지 않은
 	#    첫 프레임에 큐가 비어 보여서 매 발이 즉시 재생돼 버린다
 	#    (버스트는 동기 루프라 5발이 같은 프레임에 들어온다).
+	var saw_final_kill := false
 	while not _fire_fx_queue.is_empty():
 		var entry: Dictionary = _fire_fx_queue.pop_front()
+		saw_final_kill = saw_final_kill or bool(entry.get("final_kill", false))
 		_play_fire_fx(entry)
 
 		# 탄창 표시를 한 발씩 줄여 "장전 순서대로 나간다"를 눈에 보이게 한다.
@@ -1565,10 +1589,25 @@ func _pump_fire_fx() -> void:
 		if not is_instance_valid(self) or not is_inside_tree():
 			return
 
+	# 마지막 탄도 실제 표적에 도착할 때까지 기다린다. 발사 간격보다 비행 시간이 길어
+	# 이 꼬리 시간을 두지 않으면 마지막 피격 전에 결과창이 전투 화면을 덮는다.
+	var tracer_tail := maxf(TRACER_TRAVEL - FX_STEP_INTERVAL, 0.0)
+	if tracer_tail > 0.0 and is_inside_tree():
+		await get_tree().create_timer(tracer_tail).timeout
+		if not is_instance_valid(self) or not is_inside_tree():
+			return
+
+	# 마지막 적은 탄환 도착 후 페이드아웃을 끝까지 보여주고 짧은 여운 뒤 결과를 연다.
+	if saw_final_kill and is_inside_tree():
+		await get_tree().create_timer(ENEMY_DEATH_FADE + POST_KILL_HOLD).timeout
+		if not is_instance_valid(self) or not is_inside_tree():
+			return
+
 	_mag_display_override.clear()
 	_fx_playing = false
 	if is_instance_valid(self) and is_inside_tree():
 		_update_cylinder_visuals()
+		_update_enemy_position_and_scale(null, true)
 
 	# 연출이 다 끝났으니 보류해 둔 전투 결과를 이제 띄운다.
 	if _pending_result != "":
@@ -1637,15 +1676,50 @@ func _play_fire_fx(entry: Dictionary) -> void:
 	if tgt != Vector2.ZERO:
 		_spawn_tracer(muzzle_pos, tgt, bullet, hit)
 
-	# 5. 피격 시 Blood Spurt 파티클 및 탄환 반환 플로팅 연출
-	# ⚠️ 재생 시점의 `combat_manager.enemy`가 아니라 **격발 당시 스냅샷**을 쓴다.
-	#    버스트는 전체가 1턴이라 재생 중에는 이미 다른 적이 최근접이 되어 있다.
-	if hit:
-		if tgt != Vector2.ZERO:
-			_spawn_blood_spurt_particles(tgt)
-		var tgt_inst = entry.get("target")
-		if damage > 0 and tgt_inst != null and is_instance_valid(tgt_inst):
-			_spawn_bullet_refund_floating(tgt_inst, bullet)
+	# 5. HP·피해 숫자·피격·사망은 탄환이 표적에 도착하는 순간 함께 재생한다.
+	if is_inside_tree():
+		var arrival_timer := get_tree().create_timer(TRACER_TRAVEL)
+		arrival_timer.timeout.connect(func(): _apply_queued_hit_feedback(entry), CONNECT_ONE_SHOT)
+
+
+func _apply_queued_hit_feedback(entry: Dictionary) -> void:
+	if not is_instance_valid(self) or not is_inside_tree():
+		return
+	var hit := bool(entry.get("hit", false))
+	var damage := int(entry.get("damage", 0))
+	var target_inst = entry.get("target")
+	var target_pos: Vector2 = entry.get("target_pos", Vector2.ZERO)
+	if not hit or target_inst == null or not is_instance_valid(target_inst):
+		return
+
+	if target_pos != Vector2.ZERO:
+		_spawn_blood_spurt_particles(target_pos)
+	var remaining := int(entry.get("remaining_durability", -1))
+	if is_instance_valid(_track_control) and remaining >= 0:
+		_track_control.refresh_hp_bar_to(target_inst, remaining)
+	_spawn_damage_text(target_inst, "-%d" % damage)
+	if damage > 0:
+		var bullet: BulletData = entry.get("bullet")
+		_spawn_bullet_refund_floating(target_inst, bullet)
+	if bool(entry.get("killed", false)):
+		_animate_enemy_death(target_inst)
+
+
+func _animate_enemy_death(enemy_inst: EnemyInstance) -> void:
+	var es = _enemy_sprites.get(enemy_inst)
+	if not is_instance_valid(es):
+		return
+	es.visible = true
+	es.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_spawn_damage_text(enemy_inst, "처치!")
+	var death_tween := create_tween()
+	death_tween.tween_property(es, "modulate:a", 0.0, ENEMY_DEATH_FADE)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_IN)
+	death_tween.tween_callback(func():
+		if is_instance_valid(es):
+			es.visible = false
+	)
 
 
 ## 연출 노드의 부모. 컨테이너 레이아웃 밖이어야 좌표를 자유롭게 쓸 수 있다.
@@ -1739,7 +1813,6 @@ func _spawn_blood_spurt_particles(pos: Vector2) -> void:
 
 func _on_enemy_killed(enemy_inst: EnemyInstance) -> void:
 	add_combat_log("[color=#37e0ac]💀 처치: %s를 무력화시켰습니다![/color]" % enemy_inst.data.display_name)
-	_spawn_damage_text(enemy_inst, "처치!")
 	var nearest = combat_manager.enemy
 	_update_hit_info(nearest)
 	_update_distance_display(nearest)
@@ -2301,6 +2374,10 @@ func _trigger_last_stand_slowmotion() -> void:
 	tween.tween_property(Engine, "time_scale", 1.0, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 func _on_all_enemies_moved() -> void:
+	# 연발 정산은 동기지만 화면은 순차 재생한다. 재생 중 죽은 적을 즉시 숨기면
+	# 처치탄과 페이드아웃을 보기도 전에 실루엣이 사라진다.
+	if _fx_playing:
+		return
 	_update_enemy_position_and_scale(null, true)
 
 func _on_loading_phase_started() -> void:

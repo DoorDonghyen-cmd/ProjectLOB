@@ -86,4 +86,9 @@ enum PartID {
 	QUICK_LOAD,        ## 퀵로드
 	SPREAD_SHOT,       ## 확산 격발 장치 (샷건 고유)
 	MARKSMAN_SCOPE,    ## 저격경 (Marksman 고유)
+	CONVERSION_PISTOL, ## 9mm 컨버전 킷
+	CONVERSION_SMG,    ## .45ACP 컨버전 킷
+	CONVERSION_RIFLE,  ## 5.56mm 컨버전 킷
+	CONVERSION_DMR,    ## 7.62mm 컨버전 킷
+	CONVERSION_SHOTGUN,## 12게이지 컨버전 킷
 }

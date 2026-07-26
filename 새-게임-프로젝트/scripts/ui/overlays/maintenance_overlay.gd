@@ -8,6 +8,15 @@ extends PanelContainer
 const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
 ## 무기고 탄환 진열 정본. 무결성 테스트가 전 항목의 실제 로드 가능 여부를 검증한다.
 const SHOP_BULLET_IDS := ["shred_rifle", "slow_pistol", "marker_dmr", "burst_dmr"]
+## 컨버전 킷은 기존 일반 파츠와 별도로 1종을 진열한다. 자기 클래스 킷은 후보에서 제외.
+const CONVERSION_KIT_BASE_PRICE := 80
+const CONVERSION_KIT_PATHS := [
+	"res://resources/parts/conversion_pistol.tres",
+	"res://resources/parts/conversion_smg.tres",
+	"res://resources/parts/conversion_rifle.tres",
+	"res://resources/parts/conversion_dmr.tres",
+	"res://resources/parts/conversion_shotgun.tres",
+]
 
 var parent_scene: Control
 var run_manager: RunManager
@@ -1265,21 +1274,35 @@ func _on_equip_part_from_bag(bag_item_idx: int) -> void:
 	if gun == null: return
 	
 	if run_manager.equipped_parts.size() < gun.parts_capacity:
-		run_manager.equipped_parts.append(item)
-		run_manager.remove_from_backpack_at(bag_item_idx)
+		if run_manager.equip_part_to_slot(item):
+			run_manager.remove_from_backpack_at(bag_item_idx)
+		else:
+			print("⚠ 컨버전 킷은 자기 클래스에 장착할 수 없으며 총기당 1개만 허용됩니다.")
+			return
 	else:
 		# 교체 가능한 일반 파츠(탈거 불가인 POINT_BLANK, SPREAD_SHOT이 아닌 파츠) 찾기
 		var target_idx := -1
+		# 새 킷으로 갈아끼우는 경우 기존 킷 슬롯을 우선 교체한다.
+		if item.is_conversion_kit():
+			for i in range(run_manager.equipped_parts.size()):
+				if run_manager.equipped_parts[i].is_conversion_kit():
+					target_idx = i
+					break
 		for i in range(run_manager.equipped_parts.size()):
+			if target_idx != -1:
+				break
 			var p = run_manager.equipped_parts[i]
 			if p != null and p.part_id != Enums.PartID.POINT_BLANK and p.part_id != Enums.PartID.SPREAD_SHOT:
 				target_idx = i
 				break
 		
 		if target_idx != -1:
-			var old_equipped = run_manager.equipped_parts[target_idx]
-			run_manager.equipped_parts[target_idx] = item
-			run_manager.backpack_items[bag_item_idx] = old_equipped
+			var old_equipped := run_manager.replace_equipped_part(target_idx, item)
+			if old_equipped != null:
+				run_manager.backpack_items[bag_item_idx] = old_equipped
+			else:
+				print("⚠ 해당 슬롯에는 이 컨버전 킷을 장착할 수 없습니다.")
+				return
 		else:
 			print("⚠ 모든 슬롯에 해제 불가능한 고유 파츠가 장착되어 있어 파츠를 장착할 수 없습니다.")
 			return
@@ -1371,6 +1394,21 @@ func _generate_shop_items() -> void:
 	var part_res = load(part_paths.pick_random())
 	_shop_items.append({ "item": part_res, "price": randi_range(30, 45), "sold_out": false })
 
+	# 빌드 선언용 컨버전 킷 1종. 총기별 차등은 구조 페널티가 아니라 가격 배수로만 적용한다.
+	if run_manager != null and run_manager.current_gun != null:
+		var kit_candidates: Array[PartData] = []
+		for kit_path in CONVERSION_KIT_PATHS:
+			var kit := load(kit_path) as PartData
+			if kit != null and kit.conversion_class != run_manager.current_gun.weapon_class:
+				kit_candidates.append(kit)
+		if not kit_candidates.is_empty():
+			var kit_res: PartData = kit_candidates.pick_random()
+			_shop_items.append({
+				"item": kit_res,
+				"price": conversion_kit_price(run_manager.current_gun),
+				"sold_out": false
+			})
+
 	var c1 := ConsumableItem.new()
 	c1.display_name = "응급 아머 키트"
 	c1.description = "요원의 외골격 아머를 즉시 긴급 정비합니다.\n[즉발 효과] 보유 HP 버퍼가 +1 충전됩니다 (최대 3)."
@@ -1390,6 +1428,12 @@ func _generate_shop_items() -> void:
 
 
 # ── 기타 헬퍼 유틸리티 함수 ──
+
+static func conversion_kit_price(gun: GunData) -> int:
+	if gun == null:
+		return CONVERSION_KIT_BASE_PRICE
+	return roundi(CONVERSION_KIT_BASE_PRICE * gun.conversion_cost)
+
 
 func _get_bullet_effect_desc(bullet: BulletData) -> String:
 	match bullet.effect_type:
@@ -1442,4 +1486,7 @@ func _get_part_emoji(part_id: int) -> String:
 		Enums.PartID.POINT_BLANK: return "💥"
 		Enums.PartID.HIGH_PRECISION: return "🎯"
 		Enums.PartID.MARKSMAN_SCOPE: return "🔬"
+		Enums.PartID.CONVERSION_PISTOL, Enums.PartID.CONVERSION_SMG, \
+		Enums.PartID.CONVERSION_RIFLE, Enums.PartID.CONVERSION_DMR, \
+		Enums.PartID.CONVERSION_SHOTGUN: return "🔀"
 	return "🔧"

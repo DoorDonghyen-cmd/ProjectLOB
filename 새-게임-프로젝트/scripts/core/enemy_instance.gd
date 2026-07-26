@@ -6,6 +6,8 @@ extends RefCounted
 
 var data: EnemyData          ## 원본 데이터 참조
 
+## CSV 동기화까지 반영한 런타임 최대 HP. UI 비율 계산은 원본 .tres가 아니라 이 값을 사용한다.
+var max_hp: int
 var current_hp: int
 var current_def: int
 var current_evasion: int
@@ -51,7 +53,8 @@ func _init(enemy_data: EnemyData) -> void:
 	var current_arch = data.archetype
 	
 	if not csv.is_empty():
-		current_hp = csv.max_hp
+		max_hp = csv.max_hp
+		current_hp = max_hp
 		current_def = csv.defense
 		current_evasion = csv.evasion
 		current_speed = csv.speed
@@ -59,7 +62,8 @@ func _init(enemy_data: EnemyData) -> void:
 		knockback_resistance = csv.knockback_resistance
 		current_arch = csv.archetype
 	else:
-		current_hp = data.max_hp
+		max_hp = data.max_hp
+		current_hp = max_hp
 		current_def = data.defense
 		current_evasion = data.evasion
 		current_speed = data.speed
@@ -274,6 +278,7 @@ func check_phase_transition() -> bool:
 	# 페이즈 2 전환: 코어 노출
 	current_phase = 2
 	is_stack_sponge = false
+	max_hp = phase2_hp
 	current_hp = phase2_hp
 	current_speed = 1
 	knockback_resistance = 2

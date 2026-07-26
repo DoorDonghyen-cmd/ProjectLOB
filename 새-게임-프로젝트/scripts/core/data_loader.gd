@@ -49,6 +49,11 @@ static func _i(line: PackedStringArray, cols: Dictionary, key: String, fallback:
 	return int(raw) if raw != "" else fallback
 
 
+static func _f(line: PackedStringArray, cols: Dictionary, key: String, fallback: float = 0.0) -> float:
+	var raw := _s(line, cols, key, "")
+	return float(raw) if raw != "" else fallback
+
+
 static func _b(line: PackedStringArray, cols: Dictionary, key: String) -> bool:
 	return _s(line, cols, key, "").to_lower() == "true"
 
@@ -100,6 +105,7 @@ static func _load_gun_stats() -> void:
 			"has_chamber": _b(line, cols, "has_chamber"),
 			"reload_turns": _i(line, cols, "reload_turns"),
 			"parts_capacity": _i(line, cols, "parts_capacity"),
+			"conversion_cost": _f(line, cols, "conversion_cost", 1.0),
 			"passive_dmg_bonus": _i(line, cols, "passive_dmg_bonus"),
 			"passive_pen_bonus": _i(line, cols, "passive_pen_bonus"),
 			"passive_knockback_bonus": _i(line, cols, "passive_knockback_bonus"),
