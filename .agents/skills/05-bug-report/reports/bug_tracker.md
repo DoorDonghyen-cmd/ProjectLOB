@@ -14,6 +14,10 @@
 | #005 | 생존 몬스터의 HP 바가 피격 후 빈 상태로 표시됨 | 보통 | ✅ Closed | `codex0726-enemy-hp-bar` | 2026-07-26 | 2026-07-26 | [리포트](bug_005_enemy_hp_bar_empty_while_alive.md) |
 | #006 | 연발 오버킬 이월 피해와 순차 피격 연출의 시점 불일치 | 보통 | ✅ Closed | `codex0726-full-auto-carryover-fx` | 2026-07-26 | 2026-07-26 | [리포트](bug_006_full_auto_carryover_fx_desync.md) |
 | #007 | 마지막 적 사망 연출 전에 결과·드래프트 창 표시 | 보통 | ✅ Closed | `codex0726-last-kill-draft-delay` | 2026-07-26 | 2026-07-26 | [리포트](bug_007_last_enemy_death_before_draft.md) |
+| #008 | Tempo 6발 설계가 약실 중복으로 실제 7발 적재됨 | 높음 | ✅ Closed | `codex0727-ammo-v6-preflight` | 2026-07-27 | 2026-07-27 | [리포트](bug_008_tempo_effective_capacity_seven.md) |
+| #009 | 흡수체 배리어가 관통 실패 명중에도 감소함 | 높음 | ✅ Closed | `codex0727-ammo-v6-runtime` | 2026-07-27 | 2026-07-27 | [리포트](bug_009_absorber_barrier_counts_blocked_hits.md) |
+| #010 | 태세 사냥꾼 파훼가 2발 주기 오메가에 발동하지 않음 | 높음 | ✅ Closed | `codex0727-ammo-v6-runtime` | 2026-07-27 | 2026-07-27 | [리포트](bug_010_stance_hunter_misses_omega_interval.md) |
+| #011 | 첫 구역 보스 클리어 후 다음 구역 대신 메인 화면으로 복귀 | 높음 | ✅ Closed | `codex0728-continuous-ascent` | 2026-07-28 | 2026-07-28 | [리포트](bug_011_first_section_returns_to_title.md) |
 
 ---
 

@@ -113,10 +113,10 @@ static func run(t) -> void:
 	rm_lose.current_section = last_sec
 	t.eq(rm_lose.check_ascension_unlock(false), 0, "패배 시 승천 미해금")
 
-	# 정점이 아닌 계층에서의 완주(해금 램프 상한)는 승천을 열지 않는다.
+	# 정점이 아닌 계층에 완주 신호가 잘못 들어와도 승천을 열지 않는다.
 	var rm_mid := RunManager.new()
 	rm_mid.current_section = "section_b"
-	t.eq(rm_mid.check_ascension_unlock(true), 0, "⭐ 해금 램프 상한 완주는 승천 미해금 (정점 아님)")
+	t.eq(rm_mid.check_ascension_unlock(true), 0, "⭐ 비정점 완주 신호는 승천 미해금")
 
 	# 정점 완주 → 1등급 해금
 	var rm_top := RunManager.new()

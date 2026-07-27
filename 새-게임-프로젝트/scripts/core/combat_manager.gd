@@ -45,11 +45,14 @@ var gun: GunData
 var magazine: Magazine
 var enemies: Array[EnemyInstance] = []
 var last_shot_hit: bool = false
+var last_shot_effective: bool = false
 var reload_turns_remaining: int = 0
 var _insert_seal_active: bool = false
 var eject_used_this_turn: bool = false
 var has_inserted_bullet_this_turn: bool = false
 var is_magazine_first_shot: bool = true
+var _is_full_auto_burst: bool = false
+var _burst_knockback_budget: int = 0
 
 # ── 순환 탄약 & 긴급 격퇴 가변 상태 ──
 var draw_pile: Array[BulletData] = []
@@ -71,11 +74,16 @@ var consecutive_caliber_count: int = 0
 ## 중첩 없이 덮어쓰며, 리로드 시 소멸한다(탄창 끝에 셋업 깔아두기 방지).
 var pending_buff_acc: int = 0
 var pending_buff_pen: int = 0
+## 유도탄·정렬탄이 부여하는 현재 탄창 잔여 전체 버프. 리로드 시 소멸한다.
+var magazine_buff_acc: int = 0
+var magazine_buff_pen: int = 0
 var visible_magazine_slots: int = 2
 var final_kill_distance: int = 99
 
 # ── 구경 기반 순서 기억 ──
 var last_fired_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
+## 범용탄은 구경 기억을 덮어쓰지 않는다. -1은 아직 구체 구경을 쏘지 않은 상태.
+var last_concrete_caliber: int = -1
 
 # ── 전투 세션 통계 ──
 var battle_stats := {
@@ -142,10 +150,14 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 		offset += 2
 	magazine = Magazine.new(gun)
 	last_shot_hit = false
+	last_shot_effective = false
 	_insert_seal_active = false
 	has_inserted_bullet_this_turn = false
-	last_fired_class = Enums.WeaponClass.PISTOL
+	last_fired_class = gun.weapon_class
+	last_concrete_caliber = -1
 	is_magazine_first_shot = true
+	_is_full_auto_burst = false
+	_burst_knockback_budget = 0
 	
 	# 탄약 순환 자원 데이터 및 긴급 격퇴 초기화
 	draw_pile = deck_bullets.duplicate()
@@ -185,6 +197,8 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 	consecutive_caliber_count = 0
 	pending_buff_acc = 0
 	pending_buff_pen = 0
+	magazine_buff_acc = 0
+	magazine_buff_pen = 0
 	
 	# 예고창 슬롯 수 보정 (Scope, Blind Fire 파츠)
 	visible_magazine_slots = gun.preview_window_size if gun != null else 2
@@ -260,14 +274,30 @@ func preview_next_shot() -> Dictionary:
 	if gun != null:
 		acc += gun.passive_acc_bonus
 		pen += gun.passive_pen_bonus
+	acc += magazine_buff_acc
+	pen += magazine_buff_pen
+	var acc_without_adjacent := acc
+	var pen_without_adjacent := pen
 	acc += pending_buff_acc
 	pen += pending_buff_pen
+	var target := _get_nearest_enemy()
+	var critical := false
+	if target != null:
+		var hit_without := acc_without_adjacent >= target.current_evasion
+		var pen_without := pen_without_adjacent >= target.current_def
+		var hit_with := acc >= target.current_evasion
+		var pen_with := pen >= target.current_def
+		critical = hit_with and pen_with and (not hit_without or not pen_without)
 	return {
 		"bullet": b,
 		"acc": acc,
 		"pen": pen,
 		"buffed_acc": pending_buff_acc > 0,
 		"buffed_pen": pending_buff_pen > 0,
+		"magazine_buff_acc": magazine_buff_acc,
+		"magazine_buff_pen": magazine_buff_pen,
+		"critical": critical,
+		"permanent_loss_on_failure": not _bullet_is_caliber_safe(b),
 	}
 
 
@@ -303,6 +333,8 @@ func _fire_full_auto() -> void:
 
 	var burst_size := magazine.get_remaining()
 	combat_log.emit("💥 [연발 개시] 탄창 %d발을 전부 쏟아붓습니다." % burst_size)
+	_is_full_auto_burst = true
+	_burst_knockback_budget = 2
 
 	var fired := 0
 	while not magazine.is_empty():
@@ -320,9 +352,11 @@ func _fire_full_auto() -> void:
 		#    "탄창을 비운 채 승리" 같은 조건이 무의미해지고, 플레이어에게
 		#    아무 영향도 없는 규칙만 하나 늘어난다.
 		if state != State.PLAYER_TURN:
+			_is_full_auto_burst = false
 			return
 
 	# ── 버스트 전체를 1턴으로 정산: 적 전진 1회 ──
+	_is_full_auto_burst = false
 	eject_used_this_turn = false
 	_all_enemies_advance()
 	if state == State.LOST:
@@ -363,6 +397,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 격발 직전 탄창의 잔탄 개수
 	var remaining_before_fire := magazine.get_remaining()
 	var bullet := magazine.fire()
+	var effective_caliber := _effective_caliber(bullet)
 
 	# ── 1. 명중 판정 파츠 가산 ──
 	var part_acc_bonus := 0
@@ -375,7 +410,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 만능 약실 (VERSATILE_CHAMBER): 직전과 **구경이 다르면** ACC +1 (PEN은 아래에서 +1)
 	# ⚠️ 상시 보정이 아니라 교차 구경 조건이다. 버프탄(적을 읽는 상황적 보정)과 겹치지 않도록
 	#    "호환·교차 빌드"라는 다른 축을 쓴다. (정본: docs/gdd/22_ammo_expansion §22.0-B 파츠 경계)
-	var versatile_active := _has_part(Enums.PartID.VERSATILE_CHAMBER) and bullet.weapon_class != last_fired_class
+	var versatile_active := _has_part(Enums.PartID.VERSATILE_CHAMBER) and effective_caliber != last_fired_class
 	if versatile_active:
 		part_acc_bonus += 1
 		combat_log.emit("   ↳ 🔧 [만능 약실] 교차 구경으로 ACC +1 · PEN +1")
@@ -418,7 +453,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# ── 태세 사냥꾼(Stance Hunter) 총기 시그니처: 파훼 ──
 	var is_stance_hunter_bypass := false
 	if _gun_is("stance_hunter") and target.current_stance != Enums.EnemyStance.NONE:
-		if target.shot_counter == 2:
+		# 전환 주기는 적마다 다르다(일반 태세병 3발, 실험체 Ω 2발).
+		# 이번 격발이 실제 전환을 일으키는지를 데이터 기반으로 판단한다.
+		if target.shot_counter + 1 >= target.stance_shift_interval:
 			is_stance_hunter_bypass = true
 			target_evasion = 0
 			combat_log.emit("   ↳ 🎯 [태세 사냥꾼 시그니처] 파훼 발동! 태세 전환 타이밍 간파 (게이트 무조건 통과!)")
@@ -432,7 +469,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		combat_log.emit("   ↳ 🎯 [셋업 적용] ACC +%d · PEN +%d" % [buff_acc, buff_pen])
 
 	var calc_bullet_acc := bullet.duplicate()
-	calc_bullet_acc.accuracy += part_acc_bonus + buff_acc
+	calc_bullet_acc.accuracy += part_acc_bonus + magazine_buff_acc + buff_acc
 
 	# ── 돌격형(Bruiser) 총기 페널티: 원거리 조준 불안정 ──
 	if _gun_is("shotgun") and target.current_distance >= 4:
@@ -440,15 +477,20 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		combat_log.emit("   ↳ ⚠ [돌격형 페널티] 원거리 조준 불안정으로 이번 사격 ACC -4 감소!")
 
 	var hit := DamageCalculator.check_hit(calc_bullet_acc, target_evasion, gun)
+	var calc_bullet_without_adjacent := calc_bullet_acc.duplicate()
+	calc_bullet_without_adjacent.accuracy -= buff_acc
+	var hit_without_adjacent := DamageCalculator.check_hit(
+		calc_bullet_without_adjacent, target_evasion, gun
+	)
 	# 콤보 판정은 "직전 격발"의 명중 여부를 봐야 하므로 덮어쓰기 전에 보존한다.
 	# (보존하지 않으면 현재 격발의 명중 여부를 읽어 첫 발부터 항상 발동하는 버그가 된다)
-	var prev_shot_hit := last_shot_hit
+	var prev_shot_effective := last_shot_effective
 	last_shot_hit = hit
 
 	if hit:
 		# ── 2. 대미지 및 관통 파츠 가산 ──
 		var part_dmg_bonus := 0
-		var part_pen_bonus := buff_pen
+		var part_pen_bonus := magazine_buff_pen + buff_pen
 
 		# 철갑 총열 (ARMOR_PIERCING): **탄창 첫 탄**에 PEN +2 (선두 관통)
 		# ⚠️ 상시 PEN이 아니라 스택 위치 조건이다. 관통 버프탄과 겹치지 않도록 LIFO 고유의
@@ -477,7 +519,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		# ⚠️ 연속 횟수를 그대로 보너스로 쓰면 연발 6발에서 +20이 되어 발사 방식이
 		#    곧 지배 전략이 된다. 2·4·6번째 박자만 보상해 슬롯 가치만 남긴다.
 		if _has_part(Enums.PartID.RHYTHM_CHAMBER):
-			if bullet.weapon_class == last_fired_class:
+			if effective_caliber == last_fired_class:
 				consecutive_caliber_count += 1
 			else:
 				consecutive_caliber_count = 1
@@ -489,7 +531,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			
 		# 인터럽터 (INTERRUPTER): 직전 클래스와 다를 시 DMG 보너스 (+3)
 		if _has_part(Enums.PartID.INTERRUPTER):
-			if bullet.weapon_class != last_fired_class:
+			if effective_caliber != last_fired_class:
 				part_dmg_bonus += 3
 				combat_log.emit("   ↳ 🔀 [인터럽터] 클래스 교차 격발! DMG +3 가산")
 				
@@ -537,52 +579,69 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		# 도박형(Gambler) 올인 데미지 가산
 		if _gun_is("gambler"):
 			var depth := remaining_before_fire - 1
-			var gambler_bonus := depth * 2
+			var gambler_bonus := int(floori(float(depth) / 2.0))
 			part_dmg_bonus += gambler_bonus
 			combat_log.emit("   ↳ 🎲 [도박형 시그니처] 올인 격발! 깊이 %d단계 보너스로 DMG +%d 가산!" % [depth, gambler_bonus])
 
+		# v6 피해 순서: 탄·총기·탄 조건 → 결정형 크리티컬 → 파츠 정액.
+		# 파츠 보너스를 먼저 배율에 넣으면 크리티컬이 탄환 빌드가 아니라 파츠 증폭기가 된다.
 		var calc_bullet := bullet.duplicate()
-		calc_bullet.damage += part_dmg_bonus
 		calc_bullet.penetration += part_pen_bonus
+		var core_damage := DamageCalculator.calculate_damage(calc_bullet, target.current_def, gun)
+		var gate_total_pen := bullet.penetration + part_pen_bonus
+		var gate_pen_without_adjacent := gate_total_pen - buff_pen
+		if gun != null:
+			gate_total_pen += gun.passive_pen_bonus
+			gate_pen_without_adjacent += gun.passive_pen_bonus
+		var penetrated := gate_total_pen >= target.current_def
+		var penetrated_without_adjacent := gate_pen_without_adjacent >= target.current_def
+		var critical := penetrated and hit and (
+			not hit_without_adjacent or not penetrated_without_adjacent
+		)
+		var breakdown := DamageCalculator.damage_breakdown(calc_bullet, target.current_def, gun)
+
+		# ── 2.3 마무리탄: 배율이 아닌 정액 +4 ──
+		if bullet.effect_type == Enums.BulletEffect.LAST_SHOT and is_last and core_damage > 0:
+			core_damage += bullet.effect_value
+			breakdown += " + [막탄 보너스] %d" % bullet.effect_value
+			combat_log.emit("   ↳ 🎯 [마무리탄] 탄창 최종 격발! 피해 +%d" % bullet.effect_value)
+
+		# ── 2.4 연쇄탄: 직전 '명중'이 아니라 직전 유효 적중 ──
+		if bullet.effect_type == Enums.BulletEffect.COMBO and prev_shot_effective and core_damage > 0:
+			core_damage += bullet.effect_value
+			breakdown += " + [연쇄 보너스] %d" % bullet.effect_value
+			combat_log.emit("   ↳ 🔥 [연쇄탄] 직전 유효 적중 연계! 피해 +%d" % bullet.effect_value)
+
+		# ── 2.5 교차탄: 범용탄은 기억을 덮지 않고, 실제 구체 구경 경계만 인정 ──
+		if bullet.effect_type == Enums.BulletEffect.CALIBER_DIFF \
+				and last_concrete_caliber >= 0 \
+				and effective_caliber != last_concrete_caliber \
+				and core_damage > 0:
+			core_damage += bullet.effect_value
+			breakdown += " + [교차 구경] %d" % bullet.effect_value
+			combat_log.emit("   ↳ ⚡ [교차탄] 직전 구경(%s)과 달라 피해 +%d" % [
+				_class_name(last_concrete_caliber), bullet.effect_value
+			])
+
+		var damage := core_damage
+		if critical and damage > 0:
+			var before_critical := damage
+			damage = floori(float(damage) * 1.5)
+			breakdown += " x [결정형 크리티컬 1.5]"
+			combat_log.emit("   ↳ ✦ [크리티컬] 보조탄으로 게이트 개방! 피해 %d → %d" % [
+				before_critical, damage
+			])
+		if damage > 0:
+			damage = maxi(damage + part_dmg_bonus, 0)
 
 		# 처형자 (EXECUTIONER): 거리 1 이하에서 체력이 3 이하인 적 즉사
 		if _has_part(Enums.PartID.EXECUTIONER) and target.current_distance <= 1 and target.current_hp <= 3:
-			calc_bullet.damage = target.current_hp + target.current_def + 10
+			damage = target.current_hp + 10
 			combat_log.emit("   ↳ 🗡 [처형자] 빈사 상태의 적 즉사 처형!")
-
-		var damage := DamageCalculator.calculate_damage(
-			calc_bullet, target.current_def, gun
-		)
-		var breakdown := DamageCalculator.damage_breakdown(
-			calc_bullet, target.current_def, gun
-		)
-
-		# ── 2.3 마무리 사격 (Last Shot) 배율 적용 ──
-		if bullet.effect_type == Enums.BulletEffect.LAST_SHOT and is_last:
-			if damage > 0:
-				var multiplier := float(bullet.effect_value) / 100.0
-				var base_dmg = damage
-				damage = int(round(damage * multiplier))
-				breakdown += " x [막탄 배율 %s]" % str(multiplier)
-				combat_log.emit("   ↳ 🎯 [막탄 강화] 탄창 최종 격발! 대미지 %d → %d" % [base_dmg, damage])
-
-		# ── 2.4 연발 콤보 (Combo Shot) 대미지 가산 적용 ──
-		if bullet.effect_type == Enums.BulletEffect.COMBO and prev_shot_hit:
-			if damage > 0:
-				damage += bullet.effect_value
-				breakdown += " + [콤보 보너스] %d" % bullet.effect_value
-				combat_log.emit("   ↳ 🔥 [콤보 사격] 연속 명중 보너스! 추가 대미지 +%d" % bullet.effect_value)
-
-		# ── 2.5 클래스 다름/교차구경 조건부 추가피해 ──
-		if bullet.effect_type == Enums.BulletEffect.CALIBER_DIFF:
-			if bullet.weapon_class != last_fired_class or bullet.weapon_class == Enums.WeaponClass.UNIVERSAL:
-				var bonus := bullet.effect_value
-				damage += bonus
-				breakdown += " + [구경다름 보너스] %d" % bonus
-				combat_log.emit("   ↳ ⚡ [교차 구경] 직전 클래스(%s)와 다름! 추가 대미지 +%d" % [_class_name(last_fired_class), bonus])
 
 		# ── 3. 대미지 적용 ──
 		_apply_damage_to_enemy(target, damage)
+		last_shot_effective = damage > 0
 		if damage > 0:
 			is_refunded = true
 			# ── 셋업 버프 부여 (유효 적중 시에만) ──
@@ -596,6 +655,12 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				Enums.BulletEffect.BUFF_PEN:
 					pending_buff_pen = bullet.effect_value
 					combat_log.emit("   ↳ ✨ [연계] 다음 탄 PEN +%d" % bullet.effect_value)
+				Enums.BulletEffect.BUFF_MAG_ACC:
+					magazine_buff_acc += bullet.effect_value
+					combat_log.emit("   ↳ ✨ [유도] 탄창 잔여 ACC +%d" % bullet.effect_value)
+				Enums.BulletEffect.BUFF_MAG_PEN:
+					magazine_buff_pen += bullet.effect_value
+					combat_log.emit("   ↳ ✨ [정렬] 탄창 잔여 PEN +%d" % bullet.effect_value)
 		else:
 			battle_stats.zero_damage_hits += 1
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미지" % [bullet.display_name, target.data.display_name, damage])
@@ -636,7 +701,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			combat_log.emit("   ↳ ⚙ [파쇄 총구] 명중 피드백으로 적 DEF -1 영구 파쇄!")
 
 		# ── 4.5 관통 다중 타격 (PIERCE 효과) ──
-		if bullet.effect_type == Enums.BulletEffect.PIERCE:
+		if bullet.effect_type == Enums.BulletEffect.PIERCE and damage > 0:
 			var alive_list := get_alive_enemies()
 			alive_list.sort_custom(func(a, b): return a.current_distance < b.current_distance)
 			var target_idx := alive_list.find(target)
@@ -666,6 +731,12 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		calc_bullet_kb.penetration += part_pen_bonus
 		
 		var kb := DamageCalculator.calculate_knockback(calc_bullet_kb, gun)
+		if _is_full_auto_burst and kb > 0:
+			var requested_kb := kb
+			kb = mini(kb, _burst_knockback_budget)
+			_burst_knockback_budget = maxi(_burst_knockback_budget - kb, 0)
+			if kb < requested_kb:
+				combat_log.emit("   ↳ ⚠ [연발 제어 상한] 버스트 총 넉백 2칸 초과분 억제")
 
 		# 돌격형(샷건) 시그니처 보호: 초근접 보너스 구간(거리 <= 2)에서는 자체 패시브 넉백을 제외한다.
 		# 제외하지 않으면 샷건이 자기 사격으로 적을 보너스 구간 밖으로 밀어내
@@ -764,6 +835,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 						enemy_knocked_back.emit(e, e.current_distance, 1)
 						combat_log.emit("     ↳ [%s] 강제 넉백 1칸 → 거리 %d" % [e.data.display_name, e.current_distance])
 	else:
+		last_shot_effective = false
 		combat_log.emit("🔫 %s → [%s] 빗나감! (ACC %d < EVA %d)" % [
 			bullet.display_name, target.data.display_name, bullet.accuracy, target.current_evasion
 		])
@@ -782,7 +854,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	piles_updated.emit(draw_pile, discard_pile, exile_pile)
 
 	# 직전 클래스 업데이트
-	last_fired_class = bullet.weapon_class
+	last_fired_class = effective_caliber
+	if bullet.weapon_class != Enums.WeaponClass.UNIVERSAL:
+		last_concrete_caliber = bullet.weapon_class
 
 	# 탄창 상태 갱신
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
@@ -820,6 +894,10 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 ## 적 대미지 적용 공통 헬퍼 (스택 스펀지 포함)
 func _apply_damage_to_enemy(enemy: EnemyInstance, dmg_amount: int) -> void:
 	if enemy.is_stack_sponge:
+		# 흡수체의 셀은 '명중 횟수'가 아니라 양 게이트를 통과한 유효 적중만 센다.
+		# 피해 0인 관통 실패 명중으로 셀이 줄면 DEF 게이트가 사실상 사라진다.
+		if dmg_amount <= 0:
+			return
 		enemy.barrier_cells = maxi(enemy.barrier_cells - 1, 0)
 		combat_log.emit("   [color=#33ffff]🛡️ 배리어 충전 셀 차감! 남은 보호막: %d/3[/color]" % enemy.barrier_cells)
 		# 최종 보스: 배리어 소진 시 페이즈 2(코어 노출)로 전환한다.
@@ -832,7 +910,7 @@ func _apply_damage_to_enemy(enemy: EnemyInstance, dmg_amount: int) -> void:
 
 
 ## 클래스 이름 텍스트 변환
-func _class_name(cls: Enums.WeaponClass) -> String:
+func _class_name(cls: int) -> String:
 	match cls:
 		Enums.WeaponClass.PISTOL: return "권총(9mm)"
 		Enums.WeaponClass.SMG: return "기관단총(.45ACP)"
@@ -841,6 +919,28 @@ func _class_name(cls: Enums.WeaponClass) -> String:
 		Enums.WeaponClass.SHOTGUN: return "샷건(12Gauge)"
 		Enums.WeaponClass.UNIVERSAL: return "교차구경"
 	return "?"
+
+
+## 범용탄은 현재 총기의 약실 구경으로 발사되지만, 자체가 구체 구경을 선언하지는 않는다.
+func _effective_caliber(bullet: BulletData) -> int:
+	if bullet != null and bullet.weapon_class != Enums.WeaponClass.UNIVERSAL:
+		return bullet.weapon_class
+	return gun.weapon_class if gun != null else Enums.WeaponClass.UNIVERSAL
+
+
+## 실패 시 런 덱에서도 보존되는 탄인지 미리보기와 실제 소실 계약이 공유하는 판정.
+func _bullet_is_caliber_safe(bullet: BulletData) -> bool:
+	if bullet == null or bool(RunManager.ascension_effects().no_caliber_safety):
+		return false
+	if bullet.weapon_class == Enums.WeaponClass.UNIVERSAL:
+		return false
+	if gun != null and bullet.weapon_class == gun.weapon_class:
+		return true
+	for part in equipped_parts:
+		if part != null and part.is_conversion_kit() \
+				and part.conversion_class == bullet.weapon_class:
+			return true
+	return false
 
 
 ## 빼내기 요청 (Unload)
@@ -963,6 +1063,8 @@ func request_reload() -> void:
 	# ⚠️ 유지되면 "탄창 끝에 셋업 깔아두기"가 항상 이득이 되어 리로드 공백의 비용이 흐려진다.
 	pending_buff_acc = 0
 	pending_buff_pen = 0
+	magazine_buff_acc = 0
+	magazine_buff_pen = 0
 
 	var turns := gun.reload_turns
 	reload_turns_remaining = turns
@@ -1097,10 +1199,15 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 			combat_log.emit("   ↳ 장갑 파쇄! DEF -%d → %d" % [
 				bullet.effect_value, target.current_def
 			])
+		Enums.BulletEffect.DEBUFF_EVA:
+			target.apply_evasion_shred(bullet.effect_value)
+			combat_log.emit("   ↳ 조준 교란! EVA -%d → %d" % [
+				bullet.effect_value, target.current_evasion
+			])
 		Enums.BulletEffect.OPENING_SHOT:
-			target.apply_armor_shred(1)
-			armor_shredded.emit(target, target.current_def, 1)
 			if is_first:
+				target.apply_armor_shred(1)
+				armor_shredded.emit(target, target.current_def, 1)
 				var eff_kb := target.apply_knockback(bullet.effect_value)
 				if eff_kb > 0:
 					enemy_knocked_back.emit(target, target.current_distance, eff_kb)
@@ -1108,7 +1215,7 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 				else:
 					combat_log.emit("   ↳ 선제 사격! 넉백 저항으로 밀려나지 않음 (저항 %d, 장갑 파쇄 -1만 적용)" % target.knockback_resistance)
 			else:
-				combat_log.emit("   ↳ 견제 사격! 장갑 파쇄 -1 적용")
+				combat_log.emit("   ↳ 선제탄 첫 발 조건 불충족 — 추가 효과 없음")
 		_:
 			pass
 

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_5_56mm_special_cyan.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "파쇄탄"
+description = "명중한 적의 방어를 영구히 2 낮춥니다."
+icon = ExtResource("2")
+family = "support"
+role = "link"
+weapon_class = 5
+trigger = "on_hit"
+scope = "target"
+damage = 2
+accuracy = 5
+penetration = 3
+effect_type = 1
+effect_value = 2

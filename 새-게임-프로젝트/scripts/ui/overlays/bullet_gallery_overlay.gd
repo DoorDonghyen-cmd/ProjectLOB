@@ -185,7 +185,9 @@ func open_gallery() -> void:
 			Enums.WeaponClass.DMR: cal_name = "DMR(7.62)"
 			Enums.WeaponClass.SHOTGUN: cal_name = "Shotgun(12G)"
 			Enums.WeaponClass.UNIVERSAL: cal_name = "Universal"
-		var caliber_lbl = parent_scene.make_label("클래스: %s / KB:%d / S:%d" % [cal_name, b_data.knockback, b_data.slow], 8, parent_scene.C_DIM)
+		var caliber_lbl = parent_scene.make_label("구경: %s / 계열: %s / KB:%d / S:%d" % [
+			cal_name, b_data.family, b_data.knockback, b_data.slow
+		], 8, parent_scene.C_DIM)
 		info_vbox.add_child(caliber_lbl)
 		
 		if b_data.effect_type != Enums.BulletEffect.NONE:
@@ -199,6 +201,9 @@ func open_gallery() -> void:
 				Enums.BulletEffect.PIERCE: eff_name = "관통 다중"
 				Enums.BulletEffect.BUFF_ACC: eff_name = "다음 탄 ACC 강화"
 				Enums.BulletEffect.BUFF_PEN: eff_name = "다음 탄 PEN 강화"
+				Enums.BulletEffect.DEBUFF_EVA: eff_name = "적 EVA 영구 감소"
+				Enums.BulletEffect.BUFF_MAG_ACC: eff_name = "탄창 잔여 ACC 강화"
+				Enums.BulletEffect.BUFF_MAG_PEN: eff_name = "탄창 잔여 PEN 강화"
 			var eff_lbl = parent_scene.make_label("★ %s (%d)" % [eff_name, b_data.effect_value], 8, Color(0.3, 0.9, 0.5))
 			info_vbox.add_child(eff_lbl)
 

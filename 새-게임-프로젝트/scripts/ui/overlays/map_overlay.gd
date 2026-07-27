@@ -177,7 +177,6 @@ func show_map_screen() -> void:
 	#    지도가 계층마다 리셋되면 "얼마나 남았는가"를 전혀 알 수 없다.
 	#    아직 해금되지 않은 계층도 잠금 상태로 그린다 — 목표를 각인시키기 위해서다.
 	var total_floors: int = run_manager.full_ladder_length()
-	var run_ceiling: int = run_manager.total_run_length()  # 이번 런이 실제로 닿는 층
 	var here: int = run_manager.total_floors_climbed()
 	var active_floor_row: Control = null
 
@@ -196,10 +195,6 @@ func show_map_screen() -> void:
 		# 계층이 바뀌는 경계에 헤더를 넣어 여정의 구간을 구분한다.
 		if is_section_top:
 			_floors_vbox.add_child(_make_section_header(sec, s_info, abs_f, here, in_run))
-
-		# 이번 런의 도달 상한 표시 — 여기서 런이 끝난다는 사실을 지도 위에 못박는다.
-		if abs_f == run_ceiling and run_ceiling < total_floors:
-			_floors_vbox.add_child(_make_ceiling_marker())
 
 		var floor_row := HBoxContainer.new()
 		floor_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -258,7 +253,7 @@ func show_map_screen() -> void:
 		nodes_hbox.add_theme_constant_override("separation", 20)
 		floor_row.add_child(nodes_hbox)
 		
-		# 아직 해금되지 않은 계층은 맵을 생성하지 않는다. 존재만 실루엣으로 알린다.
+		# 아직 관문을 돌파하지 않은 계층은 내용 대신 실루엣만 알린다.
 		if not in_run:
 			nodes_hbox.add_child(_make_locked_slot(is_section_top))
 			continue
@@ -455,27 +450,6 @@ func _make_section_header(sec: String, s_info: Dictionary, top_abs: int, here: i
 		tag = "남은 구간"
 	hbox.add_child(parent_scene.make_label(tag, 10, col))
 
-	return panel
-
-
-## 이번 런의 도달 상한선. 해금이 진행되면 이 선이 위로 올라간다.
-func _make_ceiling_marker() -> Control:
-	var panel := PanelContainer.new()
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.12, 0.10, 0.03, 0.85)
-	style.border_width_top = 1
-	style.border_width_bottom = 1
-	style.border_color = parent_scene.C_WARNING
-	style.content_margin_left = 12
-	style.content_margin_right = 12
-	style.content_margin_top = 4
-	style.content_margin_bottom = 4
-	panel.add_theme_stylebox_override("panel", style)
-
-	var lbl: Label = parent_scene.make_label(
-		"▲ 이번 상승은 여기까지 — 위 계층은 이 층을 돌파해야 열린다", 11, parent_scene.C_WARNING)
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	panel.add_child(lbl)
 	return panel
 
 

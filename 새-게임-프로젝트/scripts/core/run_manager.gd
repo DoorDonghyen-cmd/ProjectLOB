@@ -22,11 +22,11 @@ const GAMBLER_DIST_RATIO := 1.0 / 3.0
 ## 클래스별 시작 덱 탄환 ID 정본: [기본 공격, 연계, 특수 공격].
 ## 리소스 경로를 여러 분기에 복사하지 않아 탄환 마이그레이션 시 유령 참조를 막는다.
 const STARTING_AMMO_IDS := {
-	Enums.WeaponClass.PISTOL: ["basic_pistol", "flare_pistol", "overpressure_pistol"],
-	Enums.WeaponClass.SMG: ["basic_smg", "tuner_smg", "surge_smg"],
-	Enums.WeaponClass.RIFLE: ["basic_rifle", "shred_rifle", "heavyslug_rifle"],
-	Enums.WeaponClass.DMR: ["basic_dmr", "marker_dmr", "burst_dmr"],
-	Enums.WeaponClass.SHOTGUN: ["basic_shotgun", "spread_shotgun", "dense_shotgun"],
+	Enums.WeaponClass.PISTOL: ["cal_9mm", "borer", "shred"],
+	Enums.WeaponClass.SMG: ["cal_45acp", "borer", "shred"],
+	Enums.WeaponClass.RIFLE: ["cal_556", "borer", "marker"],
+	Enums.WeaponClass.DMR: ["cal_762", "borer", "shred"],
+	Enums.WeaponClass.SHOTGUN: ["cal_12g", "borer", "impact"],
 }
 
 ## ── 승천(Ascension) ── 정본: docs/gdd/20_ascension_intention.md
@@ -255,11 +255,15 @@ func _sync_bullet_stats_from_csv(b: BulletData) -> void:
 		b.accuracy = csv.accuracy
 		b.knockback = csv.knockback
 		b.slow = csv.slow
-		b.weapon_class = csv.class
+		b.weapon_class = csv.caliber
+		b.family = csv.family
 		b.is_basic = csv.is_basic
 		b.role = csv.role
 		b.effect_type = csv.effect_type
 		b.effect_value = csv.effect_value
+		b.trigger = csv.trigger
+		b.scope = csv.scope
+		b.condition = csv.condition
 		print("DataLoader: 탄환 [%s] 스탯 CSV 동기화 완료 (DMG: %d, PEN: %d)" % [res_id, b.damage, b.penetration])
 
 
@@ -392,12 +396,10 @@ func total_floors_climbed() -> int:
 	return total + current_floor
 
 
-## 이번 런의 총 길이(해금된 계층까지의 층수 합). 진척도 비율 계산의 분모다.
+## 이번 런의 총 길이. 해금 상태와 무관하게 5계층·35층 전체가 한 번의 상승이다.
 func total_run_length() -> int:
 	var total := 0
-	for sec in SECTION_ORDER:
-		if not meta_unlocked_sections.has(sec):
-			break
+	for sec in run_itinerary():
 		total += int(MapGenerator.section_info(sec).floors)
 	return maxi(total, 1)
 
@@ -407,8 +409,8 @@ func total_run_length() -> int:
 ##
 ## ⚠️ 기준은 **누적 등반 층수의 비율**이다. 계층 내 층 번호(current_floor)를 쓰면
 ##    계층마다 난이도가 리셋되어 정점 1층에서도 초반 보너스 +6m가 붙는다.
-##    또한 런 길이는 해금 상태에 따라 6~35층으로 변하므로, 절대 층수가 아니라
-##    비율로 판정해야 짧은 런에서도 종반 압박이 실제로 걸린다.
+##    절대 층수가 아니라 35층 전체 대비 비율로 판정해야 계층 경계에서도
+##    난이도가 되감기지 않는다.
 ##
 ## 구간 비율은 구 15층 구역 기준 램프(20%/47%/67%/93%)를 그대로 옮긴 것이다.
 func floor_distance_modifier() -> int:
@@ -453,9 +455,8 @@ func end_run(won: bool) -> int:
 const SECTION_ORDER: Array[String] = ["section_a", "section_b", "section_c", "section_d", "section_e"]
 
 
-## 현재 계층 다음에 **해금되어 있는** 계층 ID를 반환한다. 없으면 "".
-## 연속 런에서 "이번 런이 여기서 끝나는가"를 판단하는 기준이다.
-## 구역 해금이 곧 런의 도달 상한이므로, 해금이 진행될수록 런이 길어진다(온보딩 램프).
+## 현재 계층 다음에 **이미 해금되어 있는** 계층 ID를 반환한다. 없으면 "".
+## 메타/UI 호환용 조회이며 런 종료 판정에는 사용하지 않는다.
 func get_next_unlocked_section() -> String:
 	var idx := SECTION_ORDER.find(current_section)
 	if idx < 0 or idx + 1 >= SECTION_ORDER.size():
@@ -464,6 +465,15 @@ func get_next_unlocked_section() -> String:
 	if not meta_unlocked_sections.has(next_section):
 		return ""
 	return next_section
+
+
+## 현재 계층 바로 위의 계층 ID. 해금 여부와 무관하며 정점이면 "".
+## 한 런은 35층 전체를 오르므로 구역 경계 진행은 이 함수를 기준으로 한다.
+func get_next_section() -> String:
+	var idx := SECTION_ORDER.find(current_section)
+	if idx < 0 or idx + 1 >= SECTION_ORDER.size():
+		return ""
+	return String(SECTION_ORDER[idx + 1])
 
 
 ## 다음 계층으로 진입한다. **런 자원(덱·파츠·가방·크레딧)은 유지**되고
@@ -497,7 +507,7 @@ func check_ascension_unlock(won: bool) -> int:
 		return 0
 	var last_section: String = String(SECTION_ORDER[SECTION_ORDER.size() - 1])
 	if current_section != last_section:
-		return 0  # 해금 램프 상한에서 끝난 완주는 정점 도달이 아니다
+		return 0  # 방어적 호출: 정점이 아닌 계층에서는 완주 신호가 와도 승천을 열지 않는다
 	if meta_ascension_unlocked >= Ascension.MAX_LEVEL:
 		return 0
 	if meta_ascension_level < meta_ascension_unlocked:
@@ -715,23 +725,16 @@ func get_nodes_for_floor(floor_num: int) -> Array[RunNode]:
 	return nodes
 
 
-## 이번 런에 오를 계층 목록(최하 계층 → 해금 상한). 지도가 보여줄 전체 여정이다.
+## 이번 런에 오를 계층 목록. 해금 여부와 무관하게 최하 계층부터 정점까지 전부다.
 func run_itinerary() -> Array[String]:
 	var out: Array[String] = []
 	for sec in SECTION_ORDER:
-		if not meta_unlocked_sections.has(sec):
-			break
 		out.append(String(sec))
-	if out.is_empty():
-		out.append(String(SECTION_ORDER[0]))
 	return out
 
 
-## 도시 사다리 전체 길이(항상 35층). **해금 여부와 무관하다.**
-##
-## ⚠️ `total_run_length()`와 구분할 것. 그쪽은 *이번 런이 실제로 오를 길이*(6~35)이며
-##    난이도 램프 계산의 분모다. 이 함수는 *지도에 그릴 사다리 전체*이며 표시 전용이다.
-##    둘을 섞으면 첫 런에서 난이도 종반 압박이 사라지거나, 지도가 6층만 보이게 된다.
+## 도시 사다리 전체 길이(항상 35층). 현행 연속 런에서는 total_run_length()와 같다.
+## 별도 함수는 지도 표시 의도를 명확히 하고 향후 표시 범위 변경과 진행 계약을 분리하기 위해 둔다.
 func full_ladder_length() -> int:
 	var total := 0
 	for sec in SECTION_ORDER:
@@ -750,7 +753,7 @@ func resolve_ladder_floor(abs_floor: int) -> Dictionary:
 	return {}
 
 
-## 해당 계층이 이번 런에서 실제로 오를 수 있는 곳인가(= 해금됐는가).
+## 해당 계층이 지도에서 공개된 곳인가. 잠긴 계층도 같은 런에서 관문 돌파 시 즉시 열린다.
 func is_section_in_run(section: String) -> bool:
 	return meta_unlocked_sections.has(section)
 

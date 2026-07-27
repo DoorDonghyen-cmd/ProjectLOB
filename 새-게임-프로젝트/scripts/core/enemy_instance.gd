@@ -195,6 +195,11 @@ func apply_armor_shred(amount: int) -> void:
 	current_def = maxi(current_def - amount, 0)
 
 
+## 조준 교란. EVA를 전투 동안 영구적으로 감소시킨다.
+func apply_evasion_shred(amount: int) -> void:
+	current_evasion = maxi(current_evasion - amount, 0)
+
+
 ## 적이 죽었는가
 func is_dead() -> bool:
 	if is_stack_sponge:

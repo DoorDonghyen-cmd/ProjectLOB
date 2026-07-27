@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_45acp.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = ".45ACP"
+description = "무겁고 느린 기관단총 탄약. 발당 성능 대신 연속 화력으로 회수합니다."
+icon = ExtResource("2")
+is_basic = true
+family = "basic"
+role = "attack"
+weapon_class = 1
+damage = 3
+accuracy = 7
+penetration = 1

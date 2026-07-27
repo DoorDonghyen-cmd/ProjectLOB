@@ -391,6 +391,7 @@ func update_penetration_indicators(_next_bullet: BulletData) -> void:
 	var c_dim = parent_scene.C_DIM if parent_scene and "C_DIM" in parent_scene else Color(0.55, 0.55, 0.65)
 	var c_success = parent_scene.C_SUCCESS if parent_scene and "C_SUCCESS" in parent_scene else Color(0.30, 1.0, 0.50)
 	var c_danger = parent_scene.C_DANGER if parent_scene and "C_DANGER" in parent_scene else Color(1.0, 0.30, 0.30)
+	var c_critical := Color(1.0, 0.78, 0.25)
 
 	for enemy in enemy_sprites.keys():
 		var es = enemy_sprites[enemy]
@@ -416,8 +417,9 @@ func update_penetration_indicators(_next_bullet: BulletData) -> void:
 				# 명중과 관통 **둘 다** 넘어야 실제로 맞는다. 하나라도 막히면 빨강.
 				var clears: bool = total_acc >= enemy.current_evasion and total_pen >= enemy.current_def
 				if clears:
-					new_style.bg_color = c_success.darkened(0.4)
-					new_style.border_color = c_success
+					var clear_color: Color = c_critical if bool(preview.get("critical", false)) else c_success
+					new_style.bg_color = clear_color.darkened(0.4)
+					new_style.border_color = clear_color
 				else:
 					new_style.bg_color = c_danger.darkened(0.4)
 					new_style.border_color = c_danger

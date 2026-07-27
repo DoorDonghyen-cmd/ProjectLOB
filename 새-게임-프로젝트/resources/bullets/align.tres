@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_7_62mm_special_yellow.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "정렬탄"
+description = "유효 적중 시 탄창에 남은 모든 발의 관통을 1 높입니다."
+icon = ExtResource("2")
+family = "support"
+role = "link"
+weapon_class = 5
+trigger = "on_effective_hit"
+scope = "remaining_mag"
+damage = 2
+accuracy = 6
+penetration = 2
+effect_type = 11
+effect_value = 1

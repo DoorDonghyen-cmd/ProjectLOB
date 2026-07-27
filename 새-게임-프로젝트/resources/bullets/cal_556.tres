@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_5_56mm.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "5.56mm"
+description = "표준 소총 탄약. 뚜렷한 약점이 없어 보조탄을 가장 적게 요구합니다."
+icon = ExtResource("2")
+is_basic = true
+family = "basic"
+role = "attack"
+weapon_class = 2
+damage = 3
+accuracy = 6
+penetration = 2

@@ -12,11 +12,11 @@ var run_manager: RunManager
 var combat_manager: CombatManager
 
 # ── 프리로드 리소스 ──
-var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
-var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
-var _bullets_kb: BulletData = preload("res://resources/bullets/impact_pistol.tres")
-var _bullets_heavy: BulletData = preload("res://resources/bullets/burst_dmr.tres")
-var _bullets_slow: BulletData = preload("res://resources/bullets/slow_pistol.tres")
+var _bullets_basic: BulletData = preload("res://resources/bullets/cal_9mm.tres")
+var _bullets_ap: BulletData = preload("res://resources/bullets/shred.tres")
+var _bullets_kb: BulletData = preload("res://resources/bullets/impact.tres")
+var _bullets_heavy: BulletData = preload("res://resources/bullets/pierce.tres")
+var _bullets_slow: BulletData = preload("res://resources/bullets/adhesive.tres")
 
 # ── 서브 컴포넌트 프리로드 ──
 const CylinderView = preload("res://scripts/ui/components/cylinder_view.gd")
@@ -1241,14 +1241,23 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 	# 두 게이트를 각각 보여준다. 버프로 열린 값은 색으로 강조해 "무엇이 강화됐는지" 드러낸다.
 	var acc_ok: bool = acc >= enemy.current_evasion
 	var pen_ok: bool = pen >= enemy.current_def
-	var acc_buff := " [color=#c896ff](버프)[/color]" if preview.buffed_acc else ""
-	var pen_buff := " [color=#c896ff](버프)[/color]" if preview.buffed_pen else ""
+	var acc_is_buffed: bool = bool(preview.buffed_acc) or int(preview.magazine_buff_acc) > 0
+	var pen_is_buffed: bool = bool(preview.buffed_pen) or int(preview.magazine_buff_pen) > 0
+	var acc_buff := " [color=#c896ff](버프)[/color]" if acc_is_buffed else ""
+	var pen_buff := " [color=#c896ff](버프)[/color]" if pen_is_buffed else ""
 	var acc_line := "[color=#37e0ac]명중 %d ≥ 회피 %d ✓[/color]%s" % [acc, enemy.current_evasion, acc_buff] if acc_ok \
 		else "[color=#ff4242]명중 %d < 회피 %d ✗[/color]%s" % [acc, enemy.current_evasion, acc_buff]
 	var pen_line := "[color=#37e0ac]관통 %d ≥ 방어 %d ✓[/color]%s" % [pen, enemy.current_def, pen_buff] if pen_ok \
 		else "[color=#ff4242]관통 %d < 방어 %d ✗[/color]%s" % [pen, enemy.current_def, pen_buff]
 
-	_hit_info_label.text = "사격탄: %s\n%s\n%s" % [next_bullet.display_name, acc_line, pen_line]
+	var outcome_line := ""
+	if bool(preview.critical):
+		outcome_line = "\n[color=#ffd166]✦ 크리티컬 ⟨게이트 개방⟩ ×1.5[/color]"
+	elif (not acc_ok or not pen_ok) and bool(preview.permanent_loss_on_failure):
+		outcome_line = "\n[color=#ff6868]⚠ 실패 시 이 범용탄은 런 덱에서 영구 소실[/color]"
+	_hit_info_label.text = "사격탄: %s\n%s\n%s%s" % [
+		next_bullet.display_name, acc_line, pen_line, outcome_line
+	]
 
 func _update_action_buttons() -> void:
 	if not combat_manager: return

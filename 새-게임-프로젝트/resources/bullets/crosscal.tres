@@ -1,0 +1,21 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_universal.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "교차탄"
+description = "직전과 다른 구경 뒤에 발사하면 피해 4를 더합니다."
+icon = ExtResource("2")
+family = "special"
+role = "attack"
+weapon_class = 5
+trigger = "on_effective_hit"
+scope = "self"
+condition = "cross_caliber"
+damage = 2
+accuracy = 5
+penetration = 1
+effect_type = 5
+effect_value = 4

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_7_62mm_special_blue.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "관통 저격탄"
+description = "전열의 적을 관통해 뒤에 선 대상까지 연속 타격합니다."
+icon = ExtResource("2")
+family = "special"
+role = "attack"
+weapon_class = 5
+trigger = "on_effective_hit"
+scope = "formation"
+damage = 3
+accuracy = 7
+penetration = 3
+effect_type = 6
+effect_value = 1

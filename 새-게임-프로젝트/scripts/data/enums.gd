@@ -36,6 +36,9 @@ enum BulletEffect {
 	##    파쇄가 유효 적중을 요구하면 관통 게이트를 여는 제 역할을 못 하게 된다.
 	BUFF_ACC,      ## 다음 탄 ACC +N
 	BUFF_PEN,      ## 다음 탄 PEN +N
+	DEBUFF_EVA,    ## 명중한 적 EVA 영구 -N
+	BUFF_MAG_ACC,  ## 유효 적중 시 탄창 잔여 전부 ACC +N
+	BUFF_MAG_PEN,  ## 유효 적중 시 탄창 잔여 전부 PEN +N
 }
 
 ## ── 적 아키타입 ──

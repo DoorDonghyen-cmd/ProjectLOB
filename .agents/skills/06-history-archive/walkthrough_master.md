@@ -8,6 +8,10 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-28 | **첫 구역 이후 35층 연속 상승 복구** | `codex0728-continuous-ascent` | 침전 보스 뒤 메인 복귀하던 과거 런 길이 램프 제거. 다음 계층 즉시 해금·연속 진입, 덱·파츠·가방·크레딧 유지와 지도·브리핑·디브리핑 계약 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_continuous_ascent_2026-07-28.md) |
+| 2026-07-27 | **Phase 13-3 탄환 v6 런타임 마이그레이션** | `codex0727-ammo-v6-runtime` | 27종 v5를 19종 v6으로 교체하고 결정형 크리티컬·탄창 버프·교차 구경·영구 소실·UI 예고 구현. #009·#010 종결, 연발 넉백 2m 상한과 전체 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_runtime_migration_2026-07-27.md) |
+| 2026-07-27 | **Phase 13-2 탄환 v6 수치 튜닝** | `codex0727-ammo-v6-tuning` | 기반탄 3/3/3/4/5와 도박형·제압형 보정안, 9총기×13적 기본/환기구 해법 및 시작 덱 56조합 검증. 일반 적 무해법 0, 런타임 드리프트 2건 분리 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_tuning_2026-07-27.md) |
+| 2026-07-27 | **Phase 13 탄환 v6 사전검증** | `codex0727-ammo-v6-preflight` | v5 360순열 기준선, Tempo 실제 7발 결함 수정, v6 규칙 계약과 9총기×13적 기반탄 매트릭스 작성. 런타임 v5를 유지한 채 마이그레이션 전 위험을 분리 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_preflight_2026-07-27.md) |
 | 2026-07-27 | **Phase 12 탄환 역할 단순화 및 조합 매트릭스** | `codex0727-ammo-rebalance` | 공격/연계/제어 17/8/2 전환, 특수 공격탄 5종 단독 사용성 보정, 실제 적 단독·연계·연발·게이트 실패 매트릭스와 전체 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_role_rebalance_2026-07-27.md) |
 | 2026-07-26 | **Phase 12 컨버전 킷** | `codex0726-conversion-kit` | 클래스별 5종 킷, 장착 제한, 지정탄 소멸 면제·승천8 해제, 드래프트 3배 가중, 무기고 전용 판매와 총기별 가격 배수 구현 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_conversion_kit_2026-07-26.md) |
 | 2026-07-26 | **보스 호위 대열 밸런싱 QA** | `codex0726-boss-qa` | 세라프/L.O.B 2m 편성·차징 포격·호위 강제전진·넉백 저항 실측, 보스 차징 미작동 결함 수정 및 페이즈2 동시 이동 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_boss_formation_balance_qa_2026-07-26.md) |
@@ -40,6 +44,10 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0728-continuous-ascent Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_continuous_ascent_2026-07-28.md)
+* [Session codex0727-ammo-v6-runtime Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_runtime_migration_2026-07-27.md)
+* [Session codex0727-ammo-v6-tuning Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_tuning_2026-07-27.md)
+* [Session codex0727-ammo-v6-preflight Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_preflight_2026-07-27.md)
 * [Session codex0727-ammo-rebalance Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_role_rebalance_2026-07-27.md)
 * [Session codex0726-conversion-kit Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_conversion_kit_2026-07-26.md)
 * [Session codex0726-boss-qa Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_boss_formation_balance_qa_2026-07-26.md)

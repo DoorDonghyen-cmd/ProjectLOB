@@ -15,9 +15,9 @@ static func _fresh_full_run() -> RunManager:
 	RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"] as Array[String]
 	var rm := RunManager.new()
 	rm.start_new_run("section_a", load(G_REVOLVER),
-		load("res://resources/bullets/basic_pistol.tres"),
-		load("res://resources/bullets/shred_rifle.tres"),
-		load("res://resources/bullets/impact_pistol.tres"))
+		load("res://resources/bullets/cal_9mm.tres"),
+		load("res://resources/bullets/shred.tres"),
+		load("res://resources/bullets/impact.tres"))
 	return rm
 
 
@@ -29,7 +29,7 @@ static func run(t) -> void:
 	var rm := _fresh_full_run()
 
 	# ── ① 거리 보정 램프: 35층 전체에서 단조 감소하며 의도한 밴드를 그린다 ──
-	# 밴드 경계는 진척도 비율 20/47/67/93%에서 갈린다(런 길이에 비례 → 짧은 런도 램프).
+	# 밴드 경계는 35층 진척도 비율 20/47/67/93%에서 갈린다.
 	var mods: Array[int] = []
 	for abs_f in range(1, 36):
 		var loc := rm.resolve_ladder_floor(abs_f)
@@ -70,9 +70,6 @@ static func run(t) -> void:
 		"⭐ 한 번의 완주(575)가 전체 메타(385)를 덮는다 — 층당 15Cr는 넉넉함")
 
 	# ⚠️ 층당 환율을 바꾸면 이 관계가 깨진다. 15Cr는 이 부등식을 만족하도록 고른 값이다.
-	# 짧은 런(침전만, 6층)도 온보딩 수입으로 성립하는지 확인.
-	var short_income := 6 * 15 + 50
-	t.eq(short_income, 140, "침전만 완주(6층) 수입 = 140 Cr — 첫 업그레이드 1~2개 분량")
 
 	# ── ③ 런 내 적 스탯은 층별로 오르지 않는다 (설계 확인, 결함 아님) ──
 	# 난이도는 적 스탯 인플레가 아니라 **스폰 구성 + 시작 거리**로 오른다(슬더스 모델).

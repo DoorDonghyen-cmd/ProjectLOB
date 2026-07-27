@@ -14,8 +14,8 @@ const G_SUPPRESSOR := "res://resources/guns/suppressor.tres"
 const G_REVOLVER := "res://resources/guns/revolver.tres"
 const G_SMG := "res://resources/guns/smg.tres"
 const G_GAMBLER := "res://resources/guns/gambler.tres"
-const B_TUNER_SMG := "res://resources/bullets/tuner_smg.tres"
-const B_SURGE_SMG := "res://resources/bullets/surge_smg.tres"
+const B_TUNER_SMG := "res://resources/bullets/marker.tres"
+const B_SURGE_SMG := "res://resources/bullets/cal_45acp.tres"
 
 
 static func _bullet(dmg: int, acc: int, pen: int) -> BulletData:
@@ -57,11 +57,24 @@ static func run(t) -> void:
 
 	var smg_csv := DataLoader.get_gun("smg")
 	t.eq(int(smg_csv.fire_mode), Enums.FireMode.FULL_AUTO, "전술 기관단총 = FULL_AUTO")
+	t.eq(int(smg_csv.magazine_capacity), 5, "전술 기관단총 내부 탄창 = 5발")
+	t.check(bool(smg_csv.has_chamber), "전술 기관단총 약실 = +1발")
+	t.eq(int(smg_csv.magazine_capacity) + (1 if bool(smg_csv.has_chamber) else 0), 6,
+		"⭐ 전술 기관단총 총 실장탄수 = 6발")
 	t.eq(int(smg_csv.reload_turns), 3, "전술 기관단총 리로드 = 3턴")
 	t.eq(int(smg_csv.preview_window_size), 6, "전술 기관단총 예고창 = 6발")
 	t.eq(int(smg_csv.parts_capacity), 3, "전술 기관단총 파츠 슬롯 = 3")
 	var smg_res: GunData = load(G_SMG)
 	t.check(smg_res.default_part == null, "연발 폭증을 만들던 리듬 챔버 기본 내장 해제")
+
+	# 7발을 전달해도 내부 탄창 5 + 약실 1 = 6발에서 잘려야 한다.
+	var over_capacity_loadout: Array[BulletData] = []
+	for i in range(7):
+		over_capacity_loadout.append(_bullet(2, 9, 5))
+	var cap_enemies: Array[EnemyData] = [_enemy(100, 0, 0, 8)]
+	var cap_cm = _setup(G_SMG, cap_enemies, over_capacity_loadout)
+	t.eq(cap_cm.magazine.get_remaining(), 6, "⭐ Tempo 7번째 탄 적재 차단 — 실제 6발")
+	cap_cm.free()
 
 	# 전술 기관단총을 제외한 기존 총기는 단발을 유지한다. 특히 도박형은 블라인드가 핵심이다.
 	for gid in ["revolver", "dmr", "shotgun", "heavy", "trickster", "gambler", "stance_hunter"]:
@@ -91,6 +104,20 @@ static func run(t) -> void:
 	var moved: int = dist_before - cm.enemies[0].current_distance
 	t.eq(moved, 1, "⭐ 버스트 전체가 1턴 — 적 전진 1회 (5발인데 1칸)")
 	cm.free()
+
+	# v6 충격탄은 구경 무관이다. 상한이 없으면 5발×KB2로 10m를 벌려 거리 락이 된다.
+	var control_burst: Array[BulletData] = []
+	for i in range(5):
+		var control_bullet := _bullet(2, 9, 5)
+		control_bullet.knockback = 2
+		control_burst.append(control_bullet)
+	var control_enemies: Array[EnemyData] = [_enemy(100, 0, 0, 6, 1)]
+	var control_cm = _setup(G_SUPPRESSOR, control_enemies, control_burst)
+	var control_before: int = control_cm.enemies[0].current_distance
+	control_cm.fire()
+	t.eq(control_cm.enemies[0].current_distance - control_before, 1,
+		"⭐ 연발 총 넉백 합계 2칸 상한 − 버스트 후 적 전진 1칸 = 순거리 +1")
+	control_cm.free()
 
 	# ── 오버킬 이월: 앞 적이 죽으면 남은 탄이 다음 적으로 ──
 	# 강제 타겟이 "최근접 1명"이므로 규칙 추가 없이 성립해야 한다.
@@ -200,8 +227,8 @@ static func run(t) -> void:
 	var dist_before7: int = cm7.enemies[0].current_distance
 	cm7.fire()
 	t.eq(cm7.magazine.get_remaining(), 0, "⭐ 전술 기관단총 6발 전량 소비")
-	t.eq(cm7.enemies[0].current_hp, 88,
-		"⭐ 조율(1피해)+과부하(3피해) 3쌍 = 12피해, 버프 체인 작동")
+	t.eq(cm7.enemies[0].current_hp, 91,
+		"⭐ 표식(1피해)+.45ACP(2피해) 3쌍 = 9피해, 버프 체인 작동")
 	t.eq(dist_before7 - cm7.enemies[0].current_distance, 1,
 		"전술 기관단총 6발도 적 전진은 1회")
 	t.eq(cm7.pending_buff_acc, 0, "6발 체인 종료 후 보류 ACC 버프 없음")
@@ -221,21 +248,21 @@ static func run(t) -> void:
 	gambler_cm.free()
 
 	# ── 밸런스: 연발 총의 턴당 화력이 기존 밴드 안인가 ──
-	# 사이클 = 1턴(발사) + reload_turns. 제압형은 3 → 4턴 사이클.
+	# 사이클 = 1턴(발사) + reload_turns. v6 제압형은 4턴 리로드 → 5턴 사이클.
 	var cycle: int = 1 + int(sup_csv.reload_turns)
-	t.eq(cycle, 4, "제압형 사이클 = 4턴 (발사 1 + 리로드 3)")
+	t.eq(cycle, 5, "제압형 사이클 = 5턴 (발사 1 + 리로드 4)")
 
-	# 기본탄(DMG2) 5발 = 10 / 4턴 = 2.50
-	var dpt := 10.0 / float(cycle)
+	# 5.56 기반탄(DMG3) 5발 = 15 / 5턴 = 3.00
+	var dpt := 15.0 / float(cycle)
 	t.check(dpt >= 2.0 and dpt <= 3.4,
 		"⭐ 기본 적재 턴당 DMG %.2f — 기존 밴드(2.14~3.33) 내" % dpt)
 
 	var smg_cycle: int = 1 + int(smg_csv.reload_turns)
 	var smg_basic_dpt := float(6 * (3 + int(smg_csv.passive_dmg_bonus))) / float(smg_cycle)
-	var smg_chain_dpt := 12.0 / float(smg_cycle)
+	var smg_chain_dpt := 9.0 / float(smg_cycle)
 	t.eq(smg_cycle, 4, "전술 기관단총 사이클 = 4턴")
 	t.eq(smg_basic_dpt, 3.0, "⭐ 전술 기관단총 기본 6발 = 3.00 DMG/턴")
-	t.eq(smg_chain_dpt, 3.0, "⭐ 전술 기관단총 조율→과부하 체인 = 3.00 DMG/턴")
+	t.eq(smg_chain_dpt, 2.25, "⭐ 전술 기관단총 표식→.45ACP 체인 = 2.25 DMG/턴")
 
 	# 리듬 챔버를 선택 장착해도 연속 횟수만큼 폭증하지 않고 2·4·6번째에 +1씩만 붙는다.
 	var rhythm_loadout: Array[BulletData] = []
@@ -263,7 +290,7 @@ static func run(t) -> void:
 	var kb_max := 0
 	for bid in DataLoader.get_all_bullet_ids():
 		var b := DataLoader.get_bullet(bid)
-		if int(b.class) == Enums.WeaponClass.RIFLE:
+		if int(b.caliber) == Enums.WeaponClass.RIFLE:
 			kb_max = maxi(kb_max, int(b.knockback))
 	t.eq(kb_max, 0, "⭐ rifle 계열 탄의 넉백 최대치 = 0 (넉백락 불가)")
 

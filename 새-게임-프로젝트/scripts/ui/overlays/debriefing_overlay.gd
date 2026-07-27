@@ -76,16 +76,12 @@ func _build_ui() -> void:
 func show_debriefing(won: bool) -> void:
 	visible = true
 
-	# 상승의 끝은 세 가지다 — 죽거나, 지금 오를 수 있는 한계에 닿거나, 정점에 닿거나.
-	# `won`은 "더 오를 계층이 없다"는 뜻일 뿐 정점 도달을 보장하지 않는다.
-	# (해금 램프 때문에 침전 거주구만 열린 상태에서도 완주하면 won == true가 된다.)
+	# 상승의 끝은 두 가지다 — 죽거나 정점을 돌파하거나.
+	# 구역 관문은 다음 계층을 즉시 해금하고 같은 런으로 이어지므로 디브리핑 지점이 아니다.
 	var reached_summit: bool = won and run_manager.current_section == RunManager.SECTION_ORDER[RunManager.SECTION_ORDER.size() - 1]
 
 	if reached_summit:
 		_debrief_title.text = "▲ 정점"
-		_debrief_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
-	elif won:
-		_debrief_title.text = "▲ 더 오를 곳이 없다"
 		_debrief_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 	else:
 		_debrief_title.text = "상승 중단"
@@ -93,8 +89,7 @@ func show_debriefing(won: bool) -> void:
 
 	var earned := run_manager.end_run(won)
 	var unlocked_weapons := run_manager.check_weapon_unlocks()
-	var unlocked_sections := run_manager.check_section_unlocks(won)
-	# 승천 해금은 **정점까지 완주**했을 때만. 해금 램프 상한에서 끝난 완주는 해당 없다.
+	# 계층 해금은 관문 돌파 순간 처리한다. 정산에서 다시 해금하면 런 경계가 뒤틀린다.
 	var new_ascension := run_manager.check_ascension_unlock(reached_summit)
 
 	var log_text := "── 상승 기록 ──\n\n"
@@ -126,13 +121,6 @@ func show_debriefing(won: bool) -> void:
 				"stance_hunter": name_kor = "태세사냥꾼 (STANCE HUNTER)"
 				"gambler": name_kor = "도박형 (GAMBLER)"
 			log_text += "  ★ [b]%s[/b] — 다음 상승부터 고를 수 있다.\n" % name_kor
-		log_text += "\n"
-
-	if not unlocked_sections.is_empty():
-		log_text += "[color=#66ccff][b]🔓 위로 가는 길이 열렸다 🔓[/b][/color]\n"
-		for s_key in unlocked_sections:
-			var sec_name: String = str(MapGenerator.section_info(s_key).name)
-			log_text += "  ▲ [b]%s[/b] — 다음 상승은 여기까지 이어진다.\n" % sec_name
 		log_text += "\n"
 
 	if new_ascension > 0:
@@ -170,8 +158,6 @@ func show_debriefing(won: bool) -> void:
 func _closing_line(won: bool, reached_summit: bool) -> String:
 	if reached_summit:
 		return "더 오를 곳이 없다."
-	if won:
-		return "여기가 지금 오를 수 있는 끝이다. 위로 가는 문은 열렸다."
 	return "아무도 회수하러 오지 않는다. 다시 아래에서 시작한다."
 
 

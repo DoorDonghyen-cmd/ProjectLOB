@@ -6,12 +6,14 @@ extends RefCounted
 
 const CombatManagerScript := preload("res://scripts/core/combat_manager.gd")
 const GUN := "res://resources/guns/revolver.tres"
+const G_STANCE_HUNTER := "res://resources/guns/stance_hunter.tres"
 const BOSS_FINAL_RES := "res://resources/enemies/boss_lob_core.tres"
+const BOSS_OMEGA_RES := "res://resources/enemies/boss_omega.tres"
 const BOSS_SERAPH_RES := "res://resources/enemies/boss_seraph.tres"
 const RUSHER_RES := "res://resources/enemies/rusher.tres"
 const TANK_RES := "res://resources/enemies/tank.tres"
 const DODGER_RES := "res://resources/enemies/dodger.tres"
-const B_PIERCE := "res://resources/bullets/pierce_dmr.tres" # DMG4 / ACC7 / PEN3 — DEF3 게이트 통과
+const B_PIERCE := "res://resources/bullets/pierce.tres" # DMG3 / ACC7 / PEN3 — DEF3 게이트 통과
 
 
 static func _enemy(arch: int) -> EnemyInstance:
@@ -77,6 +79,15 @@ static func run(t) -> void:
 	ab.barrier_cells = 0
 	t.check(ab.is_dead(), "배리어 0 → 사망")
 
+	# 회귀 #009: 관통 실패 명중(피해 0)은 유효 적중이 아니므로 셀을 깎지 않는다.
+	var barrier_cm = CombatManagerScript.new()
+	var blocked_ab := _enemy(Enums.EnemyArchetype.ABSORBER)
+	barrier_cm._apply_damage_to_enemy(blocked_ab, 0)
+	t.eq(blocked_ab.barrier_cells, 3, "⭐ 피해 0 관통 실패 → 배리어 셀 유지")
+	barrier_cm._apply_damage_to_enemy(blocked_ab, 1)
+	t.eq(blocked_ab.barrier_cells, 2, "⭐ 피해 1 유효 적중 → 배리어 셀 1 감소")
+	barrier_cm.free()
+
 	# ── 캐스터 차징: N턴 충전 후 격발, 카운터 리셋 ──
 	var cs := _enemy(Enums.EnemyArchetype.CASTER)
 	t.check(cs.is_charger, "캐스터 차저 활성")
@@ -96,6 +107,28 @@ static func run(t) -> void:
 	t.eq(om.current_stance, Enums.EnemyStance.RUSH_CHARGE, "4발 후 → RUSH_CHARGE")
 	om.apply_shot_and_check_shift(); om.apply_shot_and_check_shift()
 	t.eq(om.current_stance, Enums.EnemyStance.IRON_SHIELD, "6발 후 → IRON_SHIELD 복귀(순환)")
+
+	# 회귀 #010: 태세 사냥꾼은 하드코딩 3발째가 아니라 적의 실제 전환 주기를 읽는다.
+	# Ω는 2발 주기이므로 shot_counter=1인 다음 격발에서 ACC/PEN 게이트를 모두 우회해야 한다.
+	var hunter_cm = CombatManagerScript.new()
+	var hunter_gun: GunData = load(G_STANCE_HUNTER)
+	var omega_data: EnemyData = load(BOSS_OMEGA_RES)
+	var lock_test_bullet := BulletData.new()
+	lock_test_bullet.display_name = "파훼 회귀탄"
+	lock_test_bullet.damage = 3
+	lock_test_bullet.accuracy = 1
+	lock_test_bullet.penetration = 0
+	var hunter_loadout: Array[BulletData] = [lock_test_bullet]
+	var omega_formation: Array[EnemyData] = [omega_data]
+	var hunter_parts: Array[PartData] = []
+	hunter_cm.start_encounter(hunter_gun, omega_formation, hunter_loadout, hunter_parts)
+	hunter_cm.confirm_loading(hunter_loadout)
+	hunter_cm.enemies[0].shot_counter = 1
+	var omega_hp_before: int = hunter_cm.enemies[0].current_hp
+	hunter_cm.fire()
+	t.check(hunter_cm.enemies[0].current_hp < omega_hp_before,
+		"⭐ 태세 사냥꾼이 Ω 2발 주기 전환탄에서 ACC/PEN 게이트 우회")
+	hunter_cm.free()
 
 	# ── 최종 보스 페이즈 전환(함수 단위) — 함수는 정상, 전투 호출 누락은 별건 ──
 	var fb := _enemy(Enums.EnemyArchetype.BOSS_FINAL)

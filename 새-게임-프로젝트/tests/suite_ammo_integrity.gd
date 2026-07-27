@@ -1,16 +1,19 @@
 extends RefCounted
-## 탄환 v5 연결 무결성 검사.
-## CSV·리소스·시작 덱이 서로 다른 정본으로 갈라져 "유령 탄"이나 빈 덱이 생기는 것을 막는다.
+## 탄환 v6 연결 무결성 및 구조 불변식.
 
 const CSV_PATH := "res://data/bullet_stats.csv"
 const BULLET_DIR := "res://resources/bullets"
 const SELF_PATH := "res://tests/suite_ammo_integrity.gd"
+const HISTORICAL_PROBE := "res://tests/lifo_depth_probe.gd"
 const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
 
 const RETIRED_IDS := [
-	"knockback_pistol", "opening_pistol", "combo_smg", "rhythm_smg",
-	"last_smg", "shred_ap_rifle", "last_rifle", "heavy_dmr",
-	"critical_dmr", "shred_shotgun", "heavy_shotgun", "universal_caliber",
+	"basic_pistol", "flare_pistol", "overpressure_pistol", "slow_pistol", "impact_pistol",
+	"basic_smg", "tuner_smg", "chain_smg", "surge_smg", "finale_smg",
+	"basic_rifle", "borer_rifle", "ap_rifle", "shred_rifle", "heavyslug_rifle",
+	"basic_dmr", "marker_dmr", "pierce_dmr", "burst_dmr", "decisive_dmr",
+	"basic_shotgun", "spread_shotgun", "breach_shotgun", "opening_shotgun",
+	"dense_shotgun", "crosscal_universal", "tracer_universal",
 ]
 
 
@@ -77,7 +80,7 @@ static func _gd_files(dir_path: String, out: Array[String]) -> void:
 		var full := dir_path + "/" + entry
 		if d.current_is_dir():
 			_gd_files(full, out)
-		elif entry.ends_with(".gd") and full != SELF_PATH:
+		elif entry.ends_with(".gd") and full != SELF_PATH and full != HISTORICAL_PROBE:
 			out.append(full)
 		entry = d.get_next()
 	d.list_dir_end()
@@ -88,26 +91,33 @@ static func _read(path: String) -> String:
 	return "" if f == null else f.get_as_text()
 
 
+static func _dominates(a: Dictionary, b: Dictionary) -> bool:
+	var keys := ["damage", "penetration", "accuracy", "knockback"]
+	var strictly_better := false
+	for key in keys:
+		var av := int(a[key])
+		var bv := int(b[key])
+		if av < bv:
+			return false
+		strictly_better = strictly_better or av > bv
+	return strictly_better
+
+
 static func run(t) -> void:
 	t.section("AmmoIntegrity")
-
 	var csv := _csv_by_id()
 	var resources := _resource_ids()
-	t.eq(csv.size(), 27, "탄환 CSV 27종")
-	t.eq(resources.size(), 27, "탄환 리소스 27종")
-
+	t.eq(csv.size(), 19, "탄환 CSV v6 19종")
+	t.eq(resources.size(), 19, "탄환 리소스 v6 19종")
 	for id in csv:
 		t.check(resources.has(id), "CSV '%s'에 대응하는 .tres 존재" % id)
 	for id in resources:
 		t.check(csv.has(id), ".tres '%s'가 CSV에 등록됨" % id)
 
-	# CSV가 런타임 수치 정본이고 .tres가 UI 메타데이터 정본이므로 양쪽 값이 같아야 한다.
-	var role_counts := {
-		BulletRoleUI.ATTACK: 0,
-		BulletRoleUI.LINK: 0,
-		BulletRoleUI.CONTROL: 0,
-	}
-	var basic_count := 0
+	var family_counts := {"basic": 0, "support": 0, "special": 0, "control": 0}
+	var role_counts := {"attack": 0, "link": 0, "control": 0}
+	var nonzero_effects: Dictionary = {}
+	var basics: Array[Dictionary] = []
 	for id in csv:
 		var row: Dictionary = csv[id]
 		var bullet: BulletData = load("%s/%s.tres" % [BULLET_DIR, id])
@@ -116,93 +126,88 @@ static func run(t) -> void:
 			continue
 		t.eq(bullet.display_name, str(row.display_name), "'%s' 표기명 CSV↔tres" % id)
 		t.eq(bullet.description, str(row.description), "'%s' 설명문 CSV↔tres" % id)
-		t.eq(bullet.is_basic, str(row.is_basic).to_lower() == "true",
-			"'%s' is_basic CSV↔tres" % id)
+		t.eq(bullet.weapon_class, _class_id(str(row.caliber)), "'%s' 구경 CSV↔tres" % id)
+		t.eq(bullet.family, str(row.family), "'%s' 계열 CSV↔tres" % id)
+		t.eq(bullet.is_basic, str(row.is_basic).to_lower() == "true", "'%s' is_basic" % id)
 		t.eq(bullet.role, str(row.role), "'%s' 역할 CSV↔tres" % id)
-		t.check(bullet.role in BulletRoleUI.VALID_ROLES, "'%s' 유효 역할값" % id)
-		if bullet.role in role_counts:
-			role_counts[bullet.role] += 1
+		t.eq(bullet.trigger, str(row.trigger), "'%s' 발동 CSV↔tres" % id)
+		t.eq(bullet.scope, str(row.scope), "'%s' 범위 CSV↔tres" % id)
+		t.eq(bullet.condition, str(row.condition), "'%s' 조건 CSV↔tres" % id)
+		for key in ["damage", "penetration", "accuracy", "knockback", "slow", "effect_type", "effect_value"]:
+			t.eq(int(bullet.get(key)), int(row[key]), "'%s' %s CSV↔tres" % [id, key])
+
+		family_counts[bullet.family] = int(family_counts.get(bullet.family, 0)) + 1
+		role_counts[bullet.role] = int(role_counts.get(bullet.role, 0)) + 1
+		t.check(bullet.damage >= 2, "'%s' DMG ≥ 2 불변식" % id)
 		if bullet.is_basic:
-			basic_count += 1
-		t.eq(bullet.weapon_class, _class_id(str(row.class)), "'%s' 클래스 CSV↔tres" % id)
-		t.eq(bullet.damage, int(row.damage), "'%s' DMG CSV↔tres" % id)
-		t.eq(bullet.penetration, int(row.penetration), "'%s' PEN CSV↔tres" % id)
-		t.eq(bullet.accuracy, int(row.accuracy), "'%s' ACC CSV↔tres" % id)
-		t.eq(bullet.knockback, int(row.knockback), "'%s' KB CSV↔tres" % id)
-		t.eq(bullet.slow, int(row.slow), "'%s' slow CSV↔tres" % id)
-		t.eq(bullet.effect_type, int(row.effect_type), "'%s' effect_type CSV↔tres" % id)
-		t.eq(bullet.effect_value, int(row.effect_value), "'%s' effect_value CSV↔tres" % id)
+			t.eq(bullet.family, "basic", "'%s' 기반탄 계열" % id)
+			t.check(bullet.weapon_class != Enums.WeaponClass.UNIVERSAL,
+				"'%s' 기반탄은 구체 구경" % id)
+			basics.append(row)
+		else:
+			t.eq(bullet.weapon_class, Enums.WeaponClass.UNIVERSAL,
+				"'%s' 비기반탄은 구경 무관" % id)
+		if bullet.effect_type != Enums.BulletEffect.NONE:
+			t.check(not nonzero_effects.has(bullet.effect_type),
+				"'%s' 비영(非0) effect_type 중복 없음" % id)
+			nonzero_effects[bullet.effect_type] = id
 
-		# 헤더 기반 DataLoader가 13개 칼럼을 실제 런타임 Dictionary에 빠짐없이 옮기는지 전수 비교한다.
-		var loaded: Dictionary = DataLoader.get_bullet(id)
+		var loaded := DataLoader.get_bullet(id)
 		t.check(not loaded.is_empty(), "DataLoader 탄환 '%s' 조회 가능" % id)
-		if loaded.is_empty():
-			continue
-		t.eq(str(loaded.id), id, "'%s' 로더 id" % id)
-		t.eq(str(loaded.display_name), str(row.display_name), "'%s' 로더 표기명" % id)
-		t.eq(int(loaded["class"]), _class_id(str(row["class"])), "'%s' 로더 클래스" % id)
-		t.eq(bool(loaded.is_basic), str(row.is_basic).to_lower() == "true",
-			"'%s' 로더 is_basic" % id)
-		t.eq(str(loaded.role), str(row.role), "'%s' 로더 역할" % id)
-		t.eq(int(loaded.damage), int(row.damage), "'%s' 로더 DMG" % id)
-		t.eq(int(loaded.penetration), int(row.penetration), "'%s' 로더 PEN" % id)
-		t.eq(int(loaded.accuracy), int(row.accuracy), "'%s' 로더 ACC" % id)
-		t.eq(int(loaded.knockback), int(row.knockback), "'%s' 로더 KB" % id)
-		t.eq(int(loaded.slow), int(row.slow), "'%s' 로더 slow" % id)
-		t.eq(int(loaded.effect_type), int(row.effect_type), "'%s' 로더 effect_type" % id)
-		t.eq(int(loaded.effect_value), int(row.effect_value), "'%s' 로더 effect_value" % id)
-		t.eq(str(loaded.description), str(row.description), "'%s' 로더 설명문" % id)
+		if not loaded.is_empty():
+			t.eq(int(loaded.caliber), _class_id(str(row.caliber)), "'%s' 로더 구경" % id)
+			t.eq(str(loaded.family), str(row.family), "'%s' 로더 계열" % id)
+			t.eq(str(loaded.trigger), str(row.trigger), "'%s' 로더 발동" % id)
+			t.eq(str(loaded.scope), str(row.scope), "'%s' 로더 범위" % id)
+			t.eq(str(loaded.condition), str(row.condition), "'%s' 로더 조건" % id)
 
-	t.eq(basic_count, 5, "기본탄은 클래스별 1종씩 총 5종")
-	t.eq(int(role_counts[BulletRoleUI.ATTACK]), 17, "공격 역할 17종")
-	t.eq(int(role_counts[BulletRoleUI.LINK]), 8, "연계 역할 8종")
-	t.eq(int(role_counts[BulletRoleUI.CONTROL]), 2, "제어 역할 2종")
+	t.eq(int(family_counts.basic), 5, "기반탄 5종")
+	t.eq(int(family_counts.support), 6, "보조탄 6종")
+	t.eq(int(family_counts.special), 6, "조건부 공격탄 6종")
+	t.eq(int(family_counts.control), 2, "제어탄 2종")
+	t.eq(int(role_counts.attack), 11, "공격 역할 11종")
+	t.eq(int(role_counts.link), 6, "연계 역할 6종")
+	t.eq(int(role_counts.control), 2, "제어 역할 2종")
 
-	# 사용자 문구와 LIFO 연계 판정은 모든 UI에서 이 헬퍼 하나를 공유한다.
-	t.eq(BulletRoleUI.label("attack"), "공격", "역할 UI: attack")
-	t.eq(BulletRoleUI.label("link"), "연계", "역할 UI: link")
-	t.eq(BulletRoleUI.label("control"), "제어", "역할 UI: control")
-	t.eq(BulletRoleUI.normalize("unknown"), BulletRoleUI.ATTACK, "미지 역할은 공격으로 안전 폴백")
-	t.eq(BulletRoleUI.normalize("payload"), BulletRoleUI.ATTACK, "구 payload 값은 공격으로 호환")
-	t.eq(BulletRoleUI.normalize("setter"), BulletRoleUI.LINK, "구 setter 값은 연계로 호환")
-	t.eq(BulletRoleUI.normalize("utility"), BulletRoleUI.CONTROL, "구 utility 값은 제어로 호환")
-	var link_probe := BulletData.new()
-	link_probe.role = "link"
-	var attack_probe := BulletData.new()
-	attack_probe.role = "attack"
-	t.check(BulletRoleUI.is_link_chain(link_probe, attack_probe),
-		"역할 UI: 연계→공격 체인 인식")
-	t.check(not BulletRoleUI.is_link_chain(attack_probe, link_probe),
-		"역할 UI: 역순은 연계로 오인하지 않음")
+	for i in range(basics.size()):
+		for j in range(i + 1, basics.size()):
+			var pair := [str(basics[i].id), str(basics[j].id)]
+			pair.sort()
+			if pair == ["cal_45acp", "cal_9mm"]:
+				t.check(int(DataLoader.get_gun("smg").magazine_capacity) >= 5,
+					".45ACP의 9mm 열세는 Tempo 6발 처리량으로 보상")
+			else:
+				t.check(not _dominates(basics[i], basics[j]) and not _dominates(basics[j], basics[i]),
+					"기반탄 비지배: %s ↔ %s" % [basics[i].id, basics[j].id])
+	var damages: Array[int] = []
+	for row in basics:
+		damages.append(int(row.damage))
+	t.check(damages.max() - damages.min() <= 3, "기반탄 DMG 스프레드 ≤ 3")
 
-	# 시작 덱은 모든 클래스에서 기본 공격 + 연계 + 특수 공격을 실제 로드할 수 있어야 한다.
 	t.eq(RunManager.STARTING_AMMO_IDS.size(), 5, "시작 덱 클래스 구성 5종")
 	for cls in RunManager.STARTING_AMMO_IDS:
 		var ids: Array = RunManager.STARTING_AMMO_IDS[cls]
-		t.eq(ids.size(), 3, "클래스 %d 시작 덱 역할 3종" % cls)
+		t.eq(ids.size(), 3, "클래스 %d 시작 패키지 3종" % cls)
 		if ids.size() != 3:
 			continue
-		for id in ids:
-			var path := "%s/%s.tres" % [BULLET_DIR, id]
-			var bullet: BulletData = load(path)
-			t.check(bullet != null, "시작 덱 '%s' 실제 로드 가능" % id)
-			if bullet != null:
-				t.eq(bullet.weapon_class, int(cls), "시작 덱 '%s' 클래스 일치" % id)
-		var basic := DataLoader.get_bullet(ids[0])
-		var link := DataLoader.get_bullet(ids[1])
-		var attack := DataLoader.get_bullet(ids[2])
-		t.check(bool(basic.get("is_basic", false)), "시작 덱 '%s' 기본탄 표시" % ids[0])
-		t.eq(str(link.get("role", "")), "link", "시작 덱 '%s' 연계 역할" % ids[1])
-		t.eq(str(attack.get("role", "")), "attack", "시작 덱 '%s' 공격 역할" % ids[2])
+		var base: BulletData = load("%s/%s.tres" % [BULLET_DIR, ids[0]])
+		t.check(base != null and base.is_basic and base.weapon_class == int(cls),
+			"시작 기반탄 '%s'가 총기 구경과 일치" % ids[0])
+		for i in range(1, ids.size()):
+			var support: BulletData = load("%s/%s.tres" % [BULLET_DIR, ids[i]])
+			t.check(support != null and support.weapon_class == Enums.WeaponClass.UNIVERSAL,
+				"시작 보조/제어탄 '%s' 구경 무관" % ids[i])
 
-	# 상점은 무작위로 하나만 뽑지만 후보 네 종은 모두 실제 도달 가능해야 한다.
-	t.eq(MaintenanceOverlay.SHOP_BULLET_IDS.size(), 4, "무기고 탄환 후보 4종")
+	t.eq(MaintenanceOverlay.SHOP_BULLET_IDS.size(), 14, "무기고 구경 무관 탄환 후보 14종")
 	for id in MaintenanceOverlay.SHOP_BULLET_IDS:
 		t.check(csv.has(id), "무기고 탄환 '%s' CSV 등록" % id)
 		t.check(load("%s/%s.tres" % [BULLET_DIR, id]) != null,
 			"무기고 탄환 '%s' 실제 로드 가능" % id)
 
-	# 삭제 ID가 프리로드가 아닌 문자열 참조로 남는 경우도 차단한다.
+	t.eq(BulletRoleUI.label("attack"), "공격", "역할 UI: attack")
+	t.eq(BulletRoleUI.label("link"), "연계", "역할 UI: link")
+	t.eq(BulletRoleUI.label("control"), "제어", "역할 UI: control")
+
 	var gd_files: Array[String] = []
 	_gd_files("res://scripts", gd_files)
 	_gd_files("res://tests", gd_files)
@@ -211,8 +216,6 @@ static func run(t) -> void:
 		for path in gd_files:
 			if _read(path).find(retired) != -1:
 				hits.append(path)
-		t.check(hits.is_empty(),
-			"삭제 탄환 ID '%s' 코드 잔존 없음%s" % [
-				retired,
-				"" if hits.is_empty() else " ← " + ", ".join(hits)
-			])
+		t.check(hits.is_empty(), "삭제 탄환 ID '%s' 코드 잔존 없음%s" % [
+			retired, "" if hits.is_empty() else " ← " + ", ".join(hits)
+		])

@@ -57,14 +57,14 @@ static func run(t) -> void:
 	var r_shred := _fire(_enemy(50, 3, 0, 10), shred)
 	t.eq(r_shred.def, 2, "장갑 파쇄: 1발 명중 후 적 DEF 3→2")
 
-	# ── LAST_SHOT: 탄창 마지막 탄 대미지 배율(x1.5) ──
-	# LIFO이므로 먼저 장전한 탄이 마지막에 발사된다 → 배율탄을 맨 앞에 적재
+	# ── LAST_SHOT: 탄창 마지막 탄 정액 피해 +4 ──
+	# LIFO이므로 먼저 장전한 탄이 마지막에 발사된다 → 마무리탄을 맨 앞에 적재
 	var plain3: Array[BulletData] = [_bullet(4, 7, 0), _bullet(4, 7, 0), _bullet(4, 7, 0)]
-	var last3: Array[BulletData] = [_bullet(4, 7, 0, Enums.BulletEffect.LAST_SHOT, 150), _bullet(4, 7, 0), _bullet(4, 7, 0)]
+	var last3: Array[BulletData] = [_bullet(4, 7, 0, Enums.BulletEffect.LAST_SHOT, 4), _bullet(4, 7, 0), _bullet(4, 7, 0)]
 	var r_plain := _fire(_enemy(50, 0, 0, 10), plain3)
 	var r_last := _fire(_enemy(50, 0, 0, 10), last3)
 	t.eq(r_plain.hp, 38, "기준: 4x3=12 대미지 (HP 50→38)")
-	t.eq(r_last.hp, 36, "막탄 강화: 마지막 탄 4→6(x1.5) → 14 대미지 (HP 50→36)")
+	t.eq(r_last.hp, 34, "마무리탄: 마지막 탄 4→8(+4) → 16 대미지 (HP 50→34)")
 
 	# ── COMBO: 직전 격발이 명중했을 때 추가 대미지 ──
 	# 첫 발은 직전 명중 이력이 없어 보너스 없음, 2발째부터 가산
@@ -75,12 +75,12 @@ static func run(t) -> void:
 	var r_combo := _fire(_enemy(50, 0, 0, 10), combo3)
 	t.eq(r_combo.hp, 37, "콤보 사격: 3 + 5 + 5 = 13 대미지 (HP 50→37)")
 
-	# ── CALIBER_DIFF: 교차 구경(UNIVERSAL)은 항상 추가 대미지 ──
+	# ── CALIBER_DIFF: 구체 구경 경계 뒤에서만 추가 대미지 ──
 	var uni2: Array[BulletData] = [
 		_bullet(3, 7, 0, Enums.BulletEffect.CALIBER_DIFF, 4, Enums.WeaponClass.UNIVERSAL),
-		_bullet(3, 7, 0, Enums.BulletEffect.CALIBER_DIFF, 4, Enums.WeaponClass.UNIVERSAL)]
+		_bullet(3, 7, 0, Enums.BulletEffect.NONE, 0, Enums.WeaponClass.DMR)]
 	var r_uni := _fire(_enemy(50, 0, 0, 10), uni2)
-	t.eq(r_uni.hp, 36, "교차 구경: (3+4)x2=14 대미지 (HP 50→36)")
+	t.eq(r_uni.hp, 40, "교차 구경: 3 + (3+4)=10 대미지 (HP 50→40)")
 
 	# ── OPENING_SHOT: 첫 탄 넉백 + 장갑 파쇄 -1 ──
 	var opening: Array[BulletData] = [_bullet(3, 7, 3, Enums.BulletEffect.OPENING_SHOT, 2)]
@@ -108,8 +108,8 @@ static func run(t) -> void:
 		chained.append(_bullet(5, 5, 1))                                             # 공격(먼저 적재)
 		chained.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))             # 연계(나중 적재)
 	var r_chain := _fire(_enemy(30, 0, 7, 10), chained)
-	t.eq(int(r_chain.hp), 18,
-		"⭐ ACC 연계→공격 2쌍 = 12 피해, EVA7 전문 적까지 대응")
+	t.eq(int(r_chain.hp), 14,
+		"⭐ ACC 연계→크리티컬 공격 2쌍 = 16 피해, EVA7 전문 적까지 대응")
 
 	# ── PEN2 공격탄은 일반 장갑에 단독으로 작동한다 ──
 	var pen_solo: Array[BulletData] = []
@@ -124,8 +124,8 @@ static func run(t) -> void:
 		pen_chain.append(_bullet(5, 7, 2))
 		pen_chain.append(_bullet(1, 7, 3, Enums.BulletEffect.BUFF_PEN, 3))
 	var r_pen_chain := _fire(_enemy(40, 3, 0, 10), pen_chain)
-	t.eq(int(r_pen_chain.hp), 28,
-		"⭐ PEN 연계→공격 2쌍 = 12 피해, DEF3 전문 적까지 대응")
+	t.eq(int(r_pen_chain.hp), 24,
+		"⭐ PEN 연계→크리티컬 공격 2쌍 = 16 피해, DEF3 전문 적까지 대응")
 
 	# ── 버프는 다음 1발만 (탄창 전체 지속 아님) ──
 	# 연계 1발 + 공격 3발 → 첫 공격만 맞고 나머지 둘은 빗나가야 한다.
@@ -134,8 +134,8 @@ static func run(t) -> void:
 		leak_test.append(_bullet(5, 5, 1))
 	leak_test.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))
 	var r_leak := _fire(_enemy(30, 0, 7, 10), leak_test)
-	# 연계 1 + 버프받은 공격 5 = 6 피해. 나머지 2발은 빗나감.
-	t.eq(int(r_leak.hp), 24,
+	# 연계 1 + 버프받은 크리티컬 공격 7 = 8 피해. 나머지 2발은 빗나감.
+	t.eq(int(r_leak.hp), 22,
 		"⭐ 버프는 다음 1발만 — 공격탄 3발 중 1발만 명중 (누수 없음)")
 
 	# ── 막힌 연계탄은 버프를 주지 않는다 ──
@@ -183,4 +183,17 @@ static func run(t) -> void:
 	var pv_buffed: Dictionary = cm3.preview_next_shot()
 	t.eq(int(pv_buffed.pen), 0 + 3, "⭐ 연계 적중 후 — 공격탄 미리보기 PEN 0→3")
 	t.check(pv_buffed.buffed_pen, "⭐ 미리보기가 버프 적용을 표시 (거짓 도탄 표시 해소)")
+	t.check(bool(pv_buffed.critical), "⭐ 인접 버프만으로 열린 게이트를 격발 전에 크리티컬 표시")
 	cm3.free()
+
+	# 구경 무관 탄은 실패 시 런 덱 영구 소실 위험을 격발 전에 공개한다.
+	var cm4 := CombatManagerScript.new()
+	var universal := _bullet(2, 7, 1, Enums.BulletEffect.NONE, 0, Enums.WeaponClass.UNIVERSAL)
+	var e4: Array[EnemyData] = [_enemy(30, 3, 0, 10)]
+	var lo4: Array[BulletData] = [universal]
+	cm4.start_encounter(gun2, e4, lo4, np2)
+	cm4.confirm_loading(lo4)
+	var pv_loss := cm4.preview_next_shot()
+	t.check(bool(pv_loss.permanent_loss_on_failure),
+		"⭐ 범용탄 게이트 실패의 런 덱 영구 소실 위험 사전 표시")
+	cm4.free()

@@ -158,11 +158,14 @@ func _create_dynamic_bullet_card(
 		match bullet.effect_type:
 			Enums.BulletEffect.BUFF_ACC: gate = "⬇명중"
 			Enums.BulletEffect.BUFF_PEN: gate = "⬇관통"
+			Enums.BulletEffect.DEBUFF_EVA: gate = "⬇회피"
+			Enums.BulletEffect.ARMOR_SHRED: gate = "⬇방어"
+			Enums.BulletEffect.BUFF_MAG_ACC: gate = "⇢명중"
+			Enums.BulletEffect.BUFF_MAG_PEN: gate = "⇢관통"
 		if gate != "":
 			has_gate = true
 			var gate_lbl: Label = parent_scene.make_label(gate, 9.0, Color(0.78, 0.59, 1.0))
-			gate_lbl.tooltip_text = "다음에 발사되는 탄의 %s 게이트를 엽니다 (다음 1발, 유효 적중 시)." % \
-				("명중" if bullet.effect_type == Enums.BulletEffect.BUFF_ACC else "관통")
+			gate_lbl.tooltip_text = bullet.description
 			hbox.add_child(gate_lbl)
 		elif has_visible_chain:
 			var chain_lbl: Label = parent_scene.make_label("⇢ 연계", 9.0, parent_scene.C_SUCCESS)

@@ -134,7 +134,8 @@ static func _load_bullet_stats() -> void:
 		var entry := {
 			"id": id,
 			"display_name": _s(line, cols, "display_name"),
-			"class": _parse_class(_s(line, cols, "class")),
+			"caliber": _parse_class(_s(line, cols, "caliber")),
+			"family": _s(line, cols, "family", "basic"),
 			"is_basic": _b(line, cols, "is_basic"),
 			"role": _s(line, cols, "role", "attack"),
 			"damage": _i(line, cols, "damage"),
@@ -144,6 +145,9 @@ static func _load_bullet_stats() -> void:
 			"slow": _i(line, cols, "slow"),
 			"effect_type": _i(line, cols, "effect_type"),
 			"effect_value": _i(line, cols, "effect_value"),
+			"trigger": _s(line, cols, "trigger", "none"),
+			"scope": _s(line, cols, "scope", "none"),
+			"condition": _s(line, cols, "condition", "none"),
 			"description": _s(line, cols, "description")
 		}
 		_bullets[id] = entry

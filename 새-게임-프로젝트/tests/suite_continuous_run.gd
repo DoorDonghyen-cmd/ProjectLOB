@@ -2,15 +2,15 @@ extends RefCounted
 ## 연속 런 구조 검증 — 계층 체이닝 · 자원 유지 · 런 종료 시점.
 ##
 ## 설계 정본: docs/gdd/20_ascension_intention.md §3
-##   한 런 = 1계층부터 **해금된 최고 계층**까지 연속.
-##   계층이 바뀌어도 덱·파츠·가방·크레딧은 유지되고, 더 오를 계층이 없을 때만 런이 끝난다.
-##   구역 순차 해금은 난이도 사다리가 아니라 **런 길이 램프**로 작동한다.
+##   한 런 = 1계층부터 정점까지 35층 연속.
+##   계층이 바뀌어도 덱·파츠·가방·크레딧은 유지되고, 정점 돌파 때만 런이 끝난다.
+##   잠긴 계층은 바로 아래 관문을 돌파하는 순간 해금되며 런을 끊지 않는다.
 
 const SL_PATH := "user://__test_continuous.cfg"
 const GUN := "res://resources/guns/revolver.tres"
-const B_BASIC := "res://resources/bullets/basic_pistol.tres"
-const B_KB := "res://resources/bullets/impact_pistol.tres"
-const B_OPEN := "res://resources/bullets/flare_pistol.tres"
+const B_BASIC := "res://resources/bullets/cal_9mm.tres"
+const B_KB := "res://resources/bullets/impact.tres"
+const B_OPEN := "res://resources/bullets/marker.tres"
 
 
 static func _unlock(sections: Array) -> void:
@@ -35,11 +35,14 @@ static func run(t) -> void:
 	RunManager.meta_backpack_lvl = 0
 	RunManager.meta_hp_armor_lvl = 0
 
-	# ── 해금 상태가 런의 도달 상한을 정한다 (온보딩 램프) ──
+	# ── 해금 상태는 공개 범위일 뿐 런의 도달 상한이 아니다 ──
 	_unlock(["section_a"])
 	var rm1 := _fresh_run()
 	t.eq(rm1.current_section, "section_a", "런은 항상 최하 계층에서 시작")
-	t.eq(rm1.get_next_unlocked_section(), "", "a만 해금: 다음 계층 없음 → 여기서 런 종료")
+	t.eq(rm1.get_next_unlocked_section(), "", "a만 공개: 공역은 아직 잠김")
+	t.eq(rm1.get_next_section(), "section_b", "⭐ 잠긴 공역도 이번 런의 다음 계층")
+	t.eq(rm1.total_run_length(), 35, "⭐ 첫 런부터 총 길이 35층")
+	t.eq(rm1.run_itinerary().size(), 5, "⭐ 첫 런 여정에 5계층 전부 포함")
 
 	_unlock(["section_a", "section_b"])
 	var rm2 := _fresh_run()
@@ -78,11 +81,12 @@ static func run(t) -> void:
 	rm3.enter_section("section_e")
 	t.eq(rm3.get_next_unlocked_section(), "", "최종 계층: 다음 없음 → 런 완주 지점")
 
-	# ── 미해금 계층에서는 런이 조기 종료된다 ──
+	# ── 미해금 계층도 다음 관문 목적지이며 조기 종료하지 않는다 ──
 	_unlock(["section_a", "section_b"])
 	var rm4 := _fresh_run()
 	rm4.enter_section("section_b")
-	t.eq(rm4.get_next_unlocked_section(), "", "c 미해금: b에서 런 종료(램프 상한)")
+	t.eq(rm4.get_next_unlocked_section(), "", "c 미공개 상태 확인")
+	t.eq(rm4.get_next_section(), "section_c", "⭐ c 미공개여도 b 돌파 후 계속 상승")
 
 	# ── 전 계층 누적 층수(연속 런 총 길이) ──
 	# 설계 목표: 약 35층 ≈ 1시간. 장르 평균(45~60분)과 모바일 타겟을 넘지 않아야 한다.
@@ -143,27 +147,26 @@ static func run(t) -> void:
 			ramp_track.append("%d" % m)
 	t.check(monotonic, "거리 보정 단조 감소: %s" % " ".join(ramp_track))
 
-	# 짧은 런(침전만 해금)에서도 종반 압박이 실제로 걸려야 한다.
+	# 첫 저장(침전만 공개)도 총 길이는 35층이며 침전 보스에서 난이도가 종반으로 점프하지 않는다.
 	_unlock(["section_a"])
 	var rm7 := _fresh_run()
-	t.eq(rm7.total_run_length(), 6, "침전만 해금 시 런 길이 = 6층")
+	t.eq(rm7.total_run_length(), 35, "침전만 공개돼도 런 길이 = 35층")
 	rm7.current_floor = 6
-	t.eq(rm7.floor_distance_modifier(), -2, "⭐ 짧은 런에서도 최종층 압박이 걸림(비율 기준)")
+	t.eq(rm7.floor_distance_modifier(), 6, "⭐ 침전 보스는 전체 런 초반 밴드 유지")
 
-	# ── 정점 도달 판정: won만으로는 결말 조건이 될 수 없다 ──
-	# 해금 램프 때문에 침전 거주구만 열린 상태에서도 완주하면 won == true다.
-	# 결말(개조 거부)은 **정점 계층**에 닿았을 때만 나와야 한다.
+	# ── 정점 도달 판정 ──
+	# 침전 관문은 다음 계층이 있으므로 완주 지점이 아니고, 정점에서만 다음 계층이 없다.
 	var last_section: String = String(RunManager.SECTION_ORDER[RunManager.SECTION_ORDER.size() - 1])
 
 	_unlock(["section_a"])
 	var rm8 := _fresh_run()
-	t.eq(rm8.get_next_unlocked_section(), "", "침전만 해금: 완주 시 won 성립")
-	t.check(rm8.current_section != last_section, "⭐ 그러나 정점이 아니다 — 결말이 뜨면 안 되는 상태")
+	t.eq(rm8.get_next_section(), "section_b", "침전 관문 뒤 공역 존재")
+	t.check(rm8.current_section != last_section, "⭐ 침전은 결말 지점이 아님")
 
 	_unlock(["section_a", "section_b", "section_c", "section_d", "section_e"])
 	var rm9 := _fresh_run()
 	rm9.enter_section(last_section)
-	t.eq(rm9.get_next_unlocked_section(), "", "정점: 더 오를 곳 없음")
+	t.eq(rm9.get_next_section(), "", "정점: 더 오를 곳 없음")
 	t.eq(rm9.current_section, last_section, "⭐ 정점 도달 — 결말 조건 성립")
 
 	# ── 지도가 미리 보여준 구성 = 실제 도착했을 때의 구성 ──
@@ -201,10 +204,10 @@ static func run(t) -> void:
 	_unlock(["section_a"])
 	var rm11 := _fresh_run()
 	t.eq(rm11.full_ladder_length(), 35, "사다리 전체 = 35층 (해금 무관)")
-	t.eq(rm11.total_run_length(), 6, "이번 런 실제 길이 = 6층 (해금 1계층)")
-	t.check(rm11.full_ladder_length() != rm11.total_run_length(), "⭐ 두 값은 별개다")
-	t.check(not rm11.is_section_in_run("section_e"), "정점은 이번 런에 포함되지 않음(잠금 표시 대상)")
-	t.check(rm11.is_section_in_run("section_a"), "침전 거주구는 이번 런에 포함됨")
+	t.eq(rm11.total_run_length(), 35, "이번 런 실제 길이도 35층")
+	t.eq(rm11.section_maps.size(), 5, "⭐ 첫 런부터 5계층 맵을 한 번에 확정")
+	t.check(not rm11.is_section_in_run("section_e"), "정점은 아직 미공개(잠금 표시 대상)")
+	t.check(rm11.is_section_in_run("section_a"), "침전 거주구는 공개됨")
 
 	var top := rm11.resolve_ladder_floor(35)
 	t.eq(str(top.section), "section_e", "사다리 35층 → 정점 (미해금이어도 조회 가능)")
@@ -220,13 +223,12 @@ static func run(t) -> void:
 	t.eq(str(back.section), "section_b", "런 7층 → 공역")
 	t.eq(int(back.floor), 1, "런 7층 → 공역 1층")
 
-	# ── 해금 진행에 따른 런 길이 램프 ──
-	var ramp := 0
-	var ramp_desc: Array[String] = []
-	for sec in RunManager.SECTION_ORDER:
-		ramp += int(MapGenerator.section_info(sec).floors)
-		ramp_desc.append("%d" % ramp)
-	t.check(ramp_desc.size() == 5, "런 길이 램프: %s층 (해금이 진행될수록 런이 길어짐)" % " → ".join(ramp_desc))
+	# ── 공개 진행과 무관하게 런 길이는 고정 ──
+	for unlocked_count in range(1, RunManager.SECTION_ORDER.size() + 1):
+		var visible_sections: Array = RunManager.SECTION_ORDER.slice(0, unlocked_count)
+		_unlock(visible_sections)
+		var fixed := _fresh_run()
+		t.eq(fixed.total_run_length(), 35, "공개 %d계층에서도 런 길이 35층" % unlocked_count)
 
 	# ── 정리 ──
 	DirAccess.remove_absolute(SL_PATH)

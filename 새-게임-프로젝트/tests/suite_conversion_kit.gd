@@ -106,7 +106,7 @@ static func run(t) -> void:
 	t.check(not _deck_has(rm, "converted"), "승천8: 킷 탄 소멸 면제 해제")
 	RunManager.meta_ascension_level = old_ascension
 
-	# ── 무기고: 자기 클래스를 뺀 킷 1종을 총기 배수 가격으로 진열 ──
+	# ── 무기고: 보류 중에는 킷을 진열하지 않는다 ──
 	var shop := MaintenanceOverlay.new()
 	shop.run_manager = rm
 	rm.current_gun = revolver.duplicate()
@@ -116,7 +116,6 @@ static func run(t) -> void:
 		var item = entry.item
 		if item is PartData and item.is_conversion_kit():
 			found_kit += 1
-			t.check(item.conversion_class != Enums.WeaponClass.PISTOL, "무기고가 자기 클래스 킷을 제외")
-			t.eq(int(entry.price), 80, "무기고 킷 가격에 revolver 배수 적용")
-	t.eq(found_kit, 1, "무기고에 컨버전 킷 1종 진열")
+	t.check(not MaintenanceOverlay.CONVERSION_KITS_ENABLED, "컨버전 킷 기능 플래그 보류 상태")
+	t.eq(found_kit, 0, "보류 중인 컨버전 킷은 무기고에 진열하지 않음")
 	shop.free()

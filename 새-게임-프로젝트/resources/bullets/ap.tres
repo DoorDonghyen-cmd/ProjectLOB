@@ -1,0 +1,16 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_5_56mm_special_magenta.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "철갑탄"
+description = "경화 탄자로 어떤 장갑이든 단독으로 관통합니다."
+icon = ExtResource("2")
+family = "special"
+role = "attack"
+weapon_class = 5
+damage = 2
+accuracy = 6
+penetration = 4

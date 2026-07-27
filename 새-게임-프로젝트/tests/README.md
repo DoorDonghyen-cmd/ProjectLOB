@@ -38,9 +38,14 @@ GODOT=/path/to/godot ./tests/run.sh
 | `validate_data.gd` | CSV 정합성 — id 유니크·컬럼·정수·밴드(ERROR/WARN), `.tres` 매칭 |
 | `suite_ammo_integrity.gd` | 탄환 CSV↔리소스↔시작 덱 역할·수치 완전 일치 |
 | `suite_ammo_matrix.gd` | 실제 몬스터별 공격·연계·연발 처치 조합 매트릭스 |
+| `lifo_depth_probe.gd` | 같은 6발의 고유 순열을 실제 CombatManager로 전투해 적별 최적 배치 산출 |
+| `suite_lifo_depth_baseline.gd` | `baseline/lifo_depth_v5.json`과 현행 v5 순서 민감도 비교 |
+| `ammo_v6_preflight_probe.gd` | v6 초안 기반탄을 런타임 교체 없이 9총기×13적에 임시 주입 |
+| `ammo_v6_tuning_probe.gd` | v6 후보 피해·총기 보정의 사이클 화력, 거리별 도달성, 기반+지원탄 전수 순열 및 제어탄 구조 검사 |
+| `suite_ammo_v6_tuning.gd` | 후보 피해 3/3/3/4/4, 9총기 화력 밴드, 일반 적 해법, 지배 지원 패키지 부재를 기준 JSON으로 회귀 고정 |
 | `sim_harness.gd` | 결정론 전투 시뮬레이터 — 승패·마진·넉백락 산출(밸런스 회귀+튜닝) |
 | `suite_conversion_kit.gd` | 컨버전 킷 — 클래스별 데이터, 장착 제한, 소멸 면제, 드래프트 가중, 가격, 승천 8등급 |
-| `suite_continuous_run.gd` | 연속 런 — 계층 체이닝, 자원 유지, 총 35층, 런 길이 램프 |
+| `suite_continuous_run.gd` | 연속 런 — 첫 관문 자동 해금·계층 체이닝, 자원 유지, 고정 35층 |
 | `suite_spawn_tiers.gd` | 계층별 스폰 3구간이 모두 도달 가능한지(사문화 콘텐츠 검출) |
 | `suite_ui_data_drift.gd` | UI 소스에 계층 이름·층수가 복사돼 있지 않은지(정본은 `MapGenerator`) |
 | `suite_doc_drift.gd` | GDD·스킬 문서에 폐기된 세계관 설정이 남아 있지 않은지 |
@@ -71,8 +76,19 @@ GODOT=/path/to/godot ./tests/run.sh
 
 - **레이아웃·연출은 여전히 자동화 대상이 아니다** → 인게임 `🛠️ 개발자 테스트` 메뉴 활용.
   다만 "화면이 뜨긴 하는가 / 표시 문자열이 정본과 어긋나지 않는가"는 자동으로 잡는다
-  (`suite_ui_smoke`, `suite_ui_data_drift`). 2026-07-24에 구역 선택 화면이 구버전 세계관과
-  구 층수를 표시하고 있었는데도 전 스위트가 통과한 사고를 계기로 추가됐다.
+(`suite_ui_smoke`, `suite_ui_data_drift`). 2026-07-24에 구역 선택 화면이 구버전 세계관과
+구 층수를 표시하고 있었는데도 전 스위트가 통과한 사고를 계기로 추가됐다.
+
+## 탄환 v6 사전검증 산출물 재생성
+
+```powershell
+<Godot> --headless --path <프로젝트> --script res://tests/generate_lifo_depth_baseline.gd
+<Godot> --headless --path <프로젝트> --script res://tests/generate_ammo_v6_preflight.gd
+<Godot> --headless --path <프로젝트> --script res://tests/generate_ammo_v6_tuning.gd
+```
+
+첫 명령은 **v5 마이그레이션 전에만** 실행한다. 이후 v6 비교를 위해
+`baseline/lifo_depth_v5.json`을 역사 기준값으로 보존한다.
 - 로직 검증은 순수 static 클래스(`DamageCalculator`/`DataLoader`)와 `RefCounted`
   (`Magazine`/`EnemyInstance`) 대상. UI는 위 두 스위트로만 얕게 훑는다.
 - 밸런스 밴드 정본은 `.agents/skills/10-balance-designer/SKILL.md`, 전투 공식 정본은 `docs/gdd/03_combat_system.md §3.2`.

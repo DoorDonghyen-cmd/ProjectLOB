@@ -7,8 +7,14 @@ extends PanelContainer
 
 const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
 ## 무기고 탄환 진열 정본. 무결성 테스트가 전 항목의 실제 로드 가능 여부를 검증한다.
-const SHOP_BULLET_IDS := ["shred_rifle", "slow_pistol", "marker_dmr", "burst_dmr"]
-## 컨버전 킷은 기존 일반 파츠와 별도로 1종을 진열한다. 자기 클래스 킷은 후보에서 제외.
+const SHOP_BULLET_IDS := [
+	"marker", "borer", "jammer", "shred", "guide", "align",
+	"ap", "pierce", "chain", "finale", "opener", "crosscal",
+	"impact", "adhesive",
+]
+## 컨버전 킷은 플레이테스트 피드백에 따라 임시 보류 중이다.
+## 런타임 계약과 리소스는 보존하고, 재설계가 끝날 때까지 상점 진열만 중단한다.
+const CONVERSION_KITS_ENABLED := false
 const CONVERSION_KIT_BASE_PRICE := 80
 const CONVERSION_KIT_PATHS := [
 	"res://resources/parts/conversion_pistol.tres",
@@ -1394,8 +1400,8 @@ func _generate_shop_items() -> void:
 	var part_res = load(part_paths.pick_random())
 	_shop_items.append({ "item": part_res, "price": randi_range(30, 45), "sold_out": false })
 
-	# 빌드 선언용 컨버전 킷 1종. 총기별 차등은 구조 페널티가 아니라 가격 배수로만 적용한다.
-	if run_manager != null and run_manager.current_gun != null:
+	# 보류 해제 시 빌드 선언용 컨버전 킷 1종을 다시 진열한다.
+	if CONVERSION_KITS_ENABLED and run_manager != null and run_manager.current_gun != null:
 		var kit_candidates: Array[PartData] = []
 		for kit_path in CONVERSION_KIT_PATHS:
 			var kit := load(kit_path) as PartData

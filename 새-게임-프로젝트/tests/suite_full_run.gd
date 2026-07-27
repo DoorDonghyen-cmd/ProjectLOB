@@ -8,11 +8,11 @@ extends RefCounted
 const CombatManagerScript := preload("res://scripts/core/combat_manager.gd")
 
 const GUN := "res://resources/guns/revolver.tres"
-const B_BASIC := "res://resources/bullets/basic_pistol.tres"
-const B_KB := "res://resources/bullets/impact_pistol.tres"
-const B_OPEN := "res://resources/bullets/flare_pistol.tres"
-const B_STRONG := "res://resources/bullets/pierce_dmr.tres"   # ACC7 / PEN3 / DMG4 — 범용 강탄
-const B_MAXACC := "res://resources/bullets/slow_pistol.tres"  # ACC8 — 최대 명중
+const B_BASIC := "res://resources/bullets/cal_9mm.tres"
+const B_KB := "res://resources/bullets/impact.tres"
+const B_OPEN := "res://resources/bullets/marker.tres"
+const B_STRONG := "res://resources/bullets/pierce.tres"   # ACC7 / PEN3 / DMG3 — 범용 강탄
+const B_MAXACC := "res://resources/bullets/marker.tres"    # ACC8 — 일반탄 상한, EVA9 전용 카운터 아님
 
 
 static func run(t) -> void:

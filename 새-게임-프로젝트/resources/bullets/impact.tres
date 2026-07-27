@@ -1,0 +1,19 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/bullet_data.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bullet_9mm_special_blue.png" id="2"]
+
+[resource]
+script = ExtResource("1")
+display_name = "충격탄"
+description = "충격 장약으로 적을 2칸 밀어 통로 거리를 확보합니다."
+icon = ExtResource("2")
+family = "control"
+role = "control"
+weapon_class = 5
+trigger = "on_hit"
+scope = "target"
+damage = 2
+accuracy = 7
+penetration = 1
+knockback = 2

@@ -61,11 +61,8 @@ static func run(t, tree: SceneTree) -> void:
 		var brief_ok: bool = scene._section_selector_overlay != null 			and scene._section_selector_overlay.visible 			and scene._section_selector_overlay._summary_label.text.contains("이번 상승")
 		t.check(brief_ok, "상승 브리핑 갱신 — %s" % label)
 
-		var expected_len := 0
-		for s2 in unlocked:
-			expected_len += int(MapGenerator.section_info(s2).floors)
-		t.check(scene._section_selector_overlay._summary_label.text.contains("%d층" % expected_len),
-			"브리핑 요약에 이번 런 길이 %d층 표시" % expected_len)
+		t.check(scene._section_selector_overlay._summary_label.text.contains("35층"),
+			"브리핑 요약은 해금 상태와 무관하게 35층 연속 상승 표시")
 
 	# 로비 복귀 경로
 	scene.handle_section_selector_closed()
@@ -110,9 +107,7 @@ static func run(t, tree: SceneTree) -> void:
 				panels += 1
 		t.eq(floor_rows, 35, "⭐ 해금 %d계층에서도 지도는 35층 전체 표시" % unlocked2.size())
 
-		# 헤더 5개 + (도달 상한이 정점이 아니면) 상한 마커 1개
-		var expected_panels: int = 5 + (0 if unlocked2.size() == 5 else 1)
-		t.eq(panels, expected_panels, "계층 헤더 5 + 상한 마커 %d" % (expected_panels - 5))
+		t.eq(panels, 5, "계층 헤더 5개 — 조기 종료 상한 마커 없음")
 
 	# 상위 계층으로 이동해도 지도 전체 길이는 그대로여야 한다(런은 하나이므로).
 	scene._rm.enter_section("section_c")
@@ -122,6 +117,22 @@ static func run(t, tree: SceneTree) -> void:
 		if not row.is_queued_for_deletion() and row is HBoxContainer:
 			rows_mid += 1
 	t.eq(rows_mid, 35, "⭐ 계층을 넘어가도 지도는 런 전체 35층을 유지")
+
+	# ── #011: 첫 관문 돌파는 디브리핑이 아니라 공역으로 이어져야 한다 ──
+	RunManager.meta_unlocked_sections = ["section_a"] as Array[String]
+	scene._rm.start_new_run("section_a", scene._current_gun_data,
+		scene._bullets_basic, scene._bullets_ap, scene._bullets_kb)
+	scene._rm.credits = 77
+	var deck_at_gate: int = scene._rm.deck.size()
+	scene._rm.backpack_items.append(scene._bullets_kb)
+	scene._rm.current_floor = int(MapGenerator.section_info("section_a").floors)
+	scene._advance_floor_or_finish()
+	t.eq(scene._rm.current_section, "section_b", "⭐ #011 침전 관문 돌파 → 공역 즉시 진입")
+	t.check(RunManager.meta_unlocked_sections.has("section_b"), "⭐ #011 공역 해금 즉시 저장 대상 반영")
+	t.eq(scene._rm.deck.size(), deck_at_gate, "⭐ #011 계층 전환 시 덱 유지")
+	t.eq(scene._rm.credits, 77, "⭐ #011 계층 전환 시 크레딧 유지")
+	t.eq(scene._rm.backpack_items.size(), 1, "⭐ #011 계층 전환 시 가방 유지")
+	t.check(not scene._debriefing_overlay.visible, "⭐ #011 첫 구역 뒤 디브리핑·메인 복귀 없음")
 
 	# ── 개발자 테스트: 기관단총 연발 체인 숏컷과 역할 UI가 실제로 도는가 ──
 	scene.trigger_tempo_full_auto_test()
@@ -194,7 +205,7 @@ static func run(t, tree: SceneTree) -> void:
 		#   않아 전체 텍스트 폭을 최소 폭으로 요구한 것.
 		# ⚠️ 픽셀 폭 측정은 헤드리스 레이아웃 타이밍상 불안정하다. 근본 원인(클립 여부)을
 		#    구조로 검증한다 — 이게 false가 되면 다시 늘어난다.
-		var long_named := load("res://resources/bullets/dense_shotgun.tres")
+		var long_named := load("res://resources/bullets/pierce.tres")
 		if long_named != null and is_instance_valid(ov._lookahead_container):
 			var card = ov._lookahead_container._create_dynamic_bullet_card(long_named, 1, true, false, false)
 			var name_lbl = card.find_child("BulletName", true, false)
@@ -319,19 +330,13 @@ static func run(t, tree: SceneTree) -> void:
 		t.check(ov._result_overlay.visible, "연출 없이 온 승리는 즉시 표시")
 		ov._result_overlay.visible = false
 
-	# ── 디브리핑: 세 가지 종료 분기가 모두 오류 없이 렌더되는가 ──
-	# 사망 / 해금 상한 도달 / 정점 도달(결말). 결말 분기는 로어 20개 유무로 한 번 더 갈린다.
+	# ── 디브리핑: 사망 / 정점 도달(결말). 결말은 로어 20개 유무로 한 번 더 갈린다 ──
 	var prev_credits: int = RunManager.meta_credits
 	var prev_lore: Array[int] = RunManager.meta_lore_fragments.duplicate()
 
 	scene._rm.enter_section(str(RunManager.SECTION_ORDER[0]))
 	scene._debriefing_overlay.show_debriefing(false)
 	t.check(scene._debriefing_overlay._debrief_log.text.length() > 0, "디브리핑 — 사망 분기 렌더")
-
-	RunManager.meta_unlocked_sections = ["section_a", "section_b"]
-	scene._rm.enter_section("section_b")
-	scene._debriefing_overlay.show_debriefing(true)
-	t.check(scene._debriefing_overlay._debrief_log.text.length() > 0, "디브리핑 — 해금 상한 도달 분기 렌더")
 
 	var last_sec: String = str(RunManager.SECTION_ORDER[RunManager.SECTION_ORDER.size() - 1])
 	RunManager.meta_unlocked_sections = ["section_a", "section_b", "section_c", "section_d", "section_e"]

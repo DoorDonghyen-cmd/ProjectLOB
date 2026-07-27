@@ -5,7 +5,7 @@ extends PanelContainer
 ## 상승 브리핑 (Ascent Briefing) 오버레이
 ##
 ## ⚠️ 연속 런 구조(docs/gdd/20_ascension_intention.md §3)에서 **시작 계층은 선택하지 않는다.**
-##    런은 항상 최하 계층에서 시작해 해금된 최고 계층까지 이어진다.
+##    런은 항상 최하 계층에서 시작해 정점까지 35층을 이어 오른다.
 ##    따라서 이 화면은 "어디로 갈지 고르는 곳"이 아니라
 ##    "이번 런이 어디까지 이어지는지 보여주는 곳"이다.
 ##
@@ -183,7 +183,7 @@ func refresh_unlocked_sections() -> void:
 	var reach_floors := 0
 	var reach_key := ""
 
-	# 도달 상한 = 해금된 계층 중 가장 위. 그 아래는 전부 이번 런에 포함된다.
+	# 공개 현황은 행 표시에 사용하되, 이번 상승 길이는 항상 전체 35층이다.
 	for sec in order:
 		if RunManager.meta_unlocked_sections.has(sec):
 			reach_floors += int(MapGenerator.section_info(sec).floors)
@@ -196,18 +196,12 @@ func refresh_unlocked_sections() -> void:
 		var unlocked: bool = RunManager.meta_unlocked_sections.has(sec)
 		_rows_vbox.add_child(_make_row(sec, info, unlocked, i == 0, sec == reach_key))
 
-	var boss_count := 0
+	var total_floors := 0
 	for sec in order:
-		if RunManager.meta_unlocked_sections.has(sec):
-			boss_count += 1
-
-	var reach_name: String = str(MapGenerator.section_info(reach_key).name) if reach_key != "" else "-"
-	_summary_label.text = "이번 상승: %d층 · 보스 %d체 · %s까지" % [reach_floors, boss_count, reach_name]
-
-	if reach_key == str(order[order.size() - 1]):
-		_brief_label.text = "정점까지 열려 있다. 완주하면 런이 끝난다."
-	else:
-		_brief_label.text = "%s를 완주하면 그 위가 열리고, 다음 상승은 더 길어진다." % reach_name
+		total_floors += int(MapGenerator.section_info(sec).floors)
+	var summit_name: String = str(MapGenerator.section_info(str(order[order.size() - 1])).name)
+	_summary_label.text = "이번 상승: %d층 · 보스 %d체 · %s까지" % [total_floors, order.size(), summit_name]
+	_brief_label.text = "관문을 돌파하면 다음 계층이 즉시 열립니다. 덱과 장비를 유지한 채 정점까지 계속 오릅니다."
 
 	_refresh_ascension()
 

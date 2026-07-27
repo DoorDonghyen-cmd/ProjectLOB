@@ -8,6 +8,10 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-28 | **첫 구역 이후 35층 연속 상승 복구** | `codex0728-continuous-ascent` | 해금 여부와 런 목적지 분리, 관문 즉시 해금·연속 진입, 자원 유지, 지도·브리핑·디브리핑의 조기 종료 상한 제거 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_continuous_ascent_2026-07-28.md) |
+| 2026-07-27 | **탄환 v6 런타임 마이그레이션** | `codex0727-ammo-v6-runtime` | 19종 데이터 계약 이관, 크리티컬·탄창 버프·교차 구경·영구 소실 런타임, 시작 덱·상점·UI·회귀의 원자적 교체 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_runtime_migration_2026-07-27.md) |
+| 2026-07-27 | **탄환 v6 수치 튜닝 및 해법 존재 검사** | `codex0727-ammo-v6-tuning` | 기반탄 3/3/3/4/5, 총기 시그니처 보정, 9총기×13적 거리·지원탄 전수 순열, 클래스별 시작 덱 56조합 탐색 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_tuning_2026-07-27.md) |
+| 2026-07-27 | **탄환 v6 사전검증 및 규칙 계약** | `codex0727-ammo-v6-preflight` | v5 LIFO 기준선, Tempo 6발 정합, 데이터 필드·결정형 크리티컬·교차 구경·소실 계약, 9총기×13적 기반탄 비파괴 매트릭스 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_preflight_2026-07-27.md) |
 | 2026-07-27 | **탄환 역할 단순화 및 조합 밸런스 재조정** | `codex0727-ammo-rebalance` | 공격/연계/제어 3역할, 공격탄 단독 유효성, 연계탄 전문 적 대응 확장, 실제 몬스터 전투 매트릭스 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_role_rebalance_2026-07-27.md) |
 | 2026-07-24 | **기관단총 연발 전환과 탄환 역할 UI** | `codex0724-smg-role` | Tempo 전탄 커밋·Gambler 단발 분리, 셋업 유효 적중 수치 정합, 리듬 챔버 폭증 차단, 27종 역할 메타데이터와 LIFO 연계 배지 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_smg_full_auto_ammo_role_ui_2026-07-24.md) |
 | 2026-07-24 | **탄환 데이터 v5 27종 마이그레이션** | `codex0724-ammo-v5` | 헤더 기반 데이터 계약, 27종 CSV·리소스 일치, 시작 덱·상점·프리로드 ID 교체, 엄격한 무결성 회귀 안전망 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v5_migration_2026-07-24.md) |
@@ -35,6 +39,10 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0728-continuous-ascent Plan](file:///D:/ProjectLoB/docs/implementation_plan_continuous_ascent_2026-07-28.md)
+* [Session codex0727-ammo-v6-runtime Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_runtime_migration_2026-07-27.md)
+* [Session codex0727-ammo-v6-tuning Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_tuning_2026-07-27.md)
+* [Session codex0727-ammo-v6-preflight Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_preflight_2026-07-27.md)
 * [Session codex0727-ammo-rebalance Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_role_rebalance_2026-07-27.md)
 * [Session codex0724-smg-role Plan](file:///D:/ProjectLoB/docs/implementation_plan_smg_full_auto_ammo_role_ui_2026-07-24.md)
 * [Session codex0724-ammo-v5 Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v5_migration_2026-07-24.md)

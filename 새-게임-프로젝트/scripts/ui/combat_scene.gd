@@ -15,9 +15,9 @@ var _gun_gambler: GunData = preload("res://resources/guns/gambler.tres")
 var _gun_stance_hunter: GunData = preload("res://resources/guns/stance_hunter.tres")
 var _gun_suppressor: GunData = preload("res://resources/guns/suppressor.tres")
 
-var _bullets_basic: BulletData = preload("res://resources/bullets/basic_pistol.tres")
-var _bullets_ap: BulletData = preload("res://resources/bullets/shred_rifle.tres")
-var _bullets_kb: BulletData = preload("res://resources/bullets/impact_pistol.tres")
+var _bullets_basic: BulletData = preload("res://resources/bullets/cal_9mm.tres")
+var _bullets_ap: BulletData = preload("res://resources/bullets/shred.tres")
+var _bullets_kb: BulletData = preload("res://resources/bullets/impact.tres")
 
 var _enemy_rusher: EnemyData = preload("res://resources/enemies/rusher.tres")
 var _enemy_tank: EnemyData = preload("res://resources/enemies/tank.tres")
@@ -33,7 +33,7 @@ var _boss_director: EnemyData = preload("res://resources/enemies/boss_director.t
 var _boss_seraph: EnemyData = preload("res://resources/enemies/boss_seraph.tres")
 var _boss_omega: EnemyData = preload("res://resources/enemies/boss_omega.tres")
 var _boss_lob_core: EnemyData = preload("res://resources/enemies/boss_lob_core.tres")
-var _bullets_heavy: BulletData = preload("res://resources/bullets/burst_dmr.tres")
+var _bullets_heavy: BulletData = preload("res://resources/bullets/pierce.tres")
 var _font_neodgm: Font = load("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 
 # ── 색상 상수 ──
@@ -429,8 +429,8 @@ func handle_loadout_finished() -> void:
 		return
 		
 	# 실제 런(Run) 개시
-	# ⚠️ 연속 런 구조: 런은 항상 최하층(section_a)에서 시작해 해금된 최고 계층까지 이어진다.
-	#    구역 선택은 시작 지점을 고르는 것이 아니라 온보딩 램프(런 길이)를 나타낸다.
+	# ⚠️ 연속 런 구조: 런은 항상 최하층(section_a)에서 시작해 정점까지 35층을 이어 오른다.
+	#    잠긴 계층은 바로 아래 관문을 돌파하는 순간 해금되며 런을 끊지 않는다.
 	#    정본: docs/gdd/20_ascension_intention.md §3
 	_rm.start_new_run(RunManager.SECTION_ORDER[0], _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
 	_show_map_screen()
@@ -700,13 +700,13 @@ func handle_combat_finished(is_dead: bool) -> void:
 	_advance_floor_or_finish()
 
 
-## 다음 층으로 진행한다. 계층의 최종층을 넘으면 **다음 계층으로 이어지고**,
-## 더 오를 계층이 없으면 그때 런을 완주 처리한다.
+## 다음 층으로 진행한다. 계층의 최종층을 넘으면 다음 계층을 해금해 이어지고,
+## 정점을 돌파했을 때만 런을 완주 처리한다.
 ##
 ## ⚠️ 연속 런 구조 (docs/gdd/20_ascension_intention.md §3)
-##   - 한 런 = 1계층부터 **해금된 최고 계층**까지 연속. 계층이 바뀌어도 런은 끊기지 않는다.
+##   - 한 런 = 1계층부터 정점까지 35층 연속. 계층이 바뀌어도 런은 끊기지 않는다.
 ##   - 덱·파츠·가방·크레딧은 계층을 넘어 그대로 누적된다(start_new_run을 다시 부르지 않음).
-##   - 구역 순차 해금은 난이도 사다리가 아니라 **런 길이 램프**로 작동한다.
+##   - 구역 순차 해금은 관문 돌파 기록이며 런 종료 조건이 아니다.
 ## ⚠️ 구역마다 층수가 다르므로 반드시 section_info를 참조할 것.
 ##    과거 `> 15` 하드코딩 탓에 층수가 적은 계층이 완주되지 않고 존재하지 않는 층의
 ##    빈 맵으로 이동해 진행이 막히는 버그가 있었다.
@@ -717,11 +717,12 @@ func _advance_floor_or_finish() -> void:
 		_show_map_screen()
 		return
 
-	# 계층 완주 — 다음 계층이 해금돼 있으면 이어서 오른다.
-	var next_section := _rm.get_next_unlocked_section()
+	# 계층 완주 — 정점이 아니라면 다음 계층을 즉시 해금하고 같은 런으로 이어간다.
+	var next_section := _rm.get_next_section()
 	if next_section == "":
-		_show_debriefing(true)  # 더 오를 곳이 없다 = 런 완주
+		_show_debriefing(true)  # 정점 돌파 = 런 완주
 	else:
+		_rm.check_section_unlocks(true)
 		_advance_to_next_section(next_section)
 
 

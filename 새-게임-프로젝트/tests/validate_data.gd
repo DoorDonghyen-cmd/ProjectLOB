@@ -96,9 +96,9 @@ static func _validate_bullets(t) -> void:
 	var seen: Dictionary = {}
 	var cols := _col_map(rows[0])
 	var required := [
-		"id", "display_name", "class", "is_basic", "role",
+		"id", "display_name", "caliber", "family", "is_basic", "role",
 		"damage", "penetration", "accuracy", "knockback", "slow",
-		"effect_type", "effect_value", "description"
+		"effect_type", "effect_value", "trigger", "scope", "condition", "description"
 	]
 	var schema_ok := true
 	for key in required:
@@ -113,7 +113,11 @@ static func _validate_bullets(t) -> void:
 		"slow", "effect_type", "effect_value"
 	]
 	var valid_classes := ["pistol", "smg", "rifle", "dmr", "shotgun", "universal"]
+	var valid_families := ["basic", "support", "special", "control"]
 	var valid_roles := ["attack", "link", "control"]
+	var valid_triggers := ["none", "on_hit", "on_effective_hit"]
+	var valid_scopes := ["none", "next_shot", "target", "remaining_mag", "formation", "self"]
+	var valid_conditions := ["none", "previous_effective", "last_shot", "first_shot", "cross_caliber"]
 	for i in range(1, rows.size()):
 		var r: Variant = rows[i]
 		var where := "bullet 행 %d" % (i + 1)
@@ -127,10 +131,18 @@ static func _validate_bullets(t) -> void:
 
 		var is_basic := _cell(r, cols, "is_basic").to_lower()
 		var role := _cell(r, cols, "role").to_lower()
-		var cls := _cell(r, cols, "class").to_lower()
+		var cls := _cell(r, cols, "caliber").to_lower()
+		var family := _cell(r, cols, "family").to_lower()
+		var trigger := _cell(r, cols, "trigger").to_lower()
+		var scope := _cell(r, cols, "scope").to_lower()
+		var condition := _cell(r, cols, "condition").to_lower()
 		t.check(is_basic in ["true", "false"], "%s: is_basic bool" % where)
 		t.check(role in valid_roles, "%s: role '%s' 유효" % [where, role])
-		t.check(cls in valid_classes, "%s: class '%s' 유효" % [where, cls])
+		t.check(cls in valid_classes, "%s: caliber '%s' 유효" % [where, cls])
+		t.check(family in valid_families, "%s: family '%s' 유효" % [where, family])
+		t.check(trigger in valid_triggers, "%s: trigger '%s' 유효" % [where, trigger])
+		t.check(scope in valid_scopes, "%s: scope '%s' 유효" % [where, scope])
+		t.check(condition in valid_conditions, "%s: condition '%s' 유효" % [where, condition])
 		t.check(_cell(r, cols, "display_name") != "", "%s: 표기명 존재" % where)
 		t.check(_cell(r, cols, "description") != "", "%s: 설명문 존재" % where)
 
@@ -147,9 +159,9 @@ static func _validate_bullets(t) -> void:
 		var effect_type := int(_cell(r, cols, "effect_type"))
 		t.check(effect_type >= 0 and effect_type < Enums.BulletEffect.size(),
 			"bullet '%s' effect_type %d 유효" % [id, effect_type])
-		t.warn(dmg >= 1 and dmg <= 9, "bullet '%s' DMG %d 밴드(1~9)" % [id, dmg])
+		t.check(dmg >= 2 and dmg <= 9, "bullet '%s' DMG %d 밴드(2~9)" % [id, dmg])
 		t.warn(pen >= 0 and pen <= 5, "bullet '%s' PEN %d 밴드(0~5)" % [id, pen])
-		t.warn(acc >= 2 and acc <= 8, "bullet '%s' ACC %d 밴드(2~8)" % [id, acc])
+		t.warn(acc >= 2 and acc <= 9, "bullet '%s' ACC %d 밴드(2~9)" % [id, acc])
 		t.warn(kb >= 0 and kb <= 2, "bullet '%s' KB %d 밴드(0~2)" % [id, kb])
 		t.warn(slow >= 0 and slow <= 2, "bullet '%s' slow %d 밴드(0~2)" % [id, slow])
 

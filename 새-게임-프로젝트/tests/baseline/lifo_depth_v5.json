@@ -1,0 +1,282 @@
+{
+	"ammo_multiset": [
+		"tuner_smg",
+		"chain_smg",
+		"finale_smg",
+		"shred_rifle",
+		"heavyslug_rifle",
+		"heavyslug_rifle"
+	],
+	"ammo_version": "v5",
+	"distinct_best_orders": 4,
+	"effective_capacity": 7,
+	"enemies": [
+		{
+			"best_order": [
+				"heavyslug_rifle",
+				"chain_smg",
+				"finale_smg",
+				"heavyslug_rifle",
+				"shred_rifle",
+				"tuner_smg"
+			],
+			"best_outcome": {
+				"dead": true,
+				"effective_hit_count": 2,
+				"final_def": 0,
+				"final_distance": 10,
+				"final_eva": 2,
+				"fired_count": 2,
+				"hit_count": 2,
+				"rank": 1041008,
+				"remaining_ammo": 4,
+				"remaining_hp": 0,
+				"total_damage": 8
+			},
+			"best_rank": 1041008,
+			"canonical_outcome": {
+				"dead": true,
+				"effective_hit_count": 3,
+				"final_def": 0,
+				"final_distance": 10,
+				"final_eva": 2,
+				"fired_count": 3,
+				"hit_count": 3,
+				"rank": 1031007,
+				"remaining_ammo": 3,
+				"remaining_hp": 0,
+				"total_damage": 7
+			},
+			"damage_max": 9,
+			"damage_min": 6,
+			"damage_spread": 3,
+			"enemy_id": "rusher",
+			"winning_orders": 360
+		},
+		{
+			"best_order": [
+				"shred_rifle",
+				"chain_smg",
+				"heavyslug_rifle",
+				"tuner_smg",
+				"heavyslug_rifle",
+				"finale_smg"
+			],
+			"best_outcome": {
+				"dead": true,
+				"effective_hit_count": 4,
+				"final_def": 0,
+				"final_distance": 12,
+				"final_eva": 7,
+				"fired_count": 5,
+				"hit_count": 5,
+				"rank": 1011213,
+				"remaining_ammo": 1,
+				"remaining_hp": 0,
+				"total_damage": 13
+			},
+			"best_rank": 1011213,
+			"canonical_outcome": {
+				"dead": false,
+				"effective_hit_count": 0,
+				"final_def": 4,
+				"final_distance": 11,
+				"final_eva": 1,
+				"fired_count": 6,
+				"hit_count": 3,
+				"rank": 11,
+				"remaining_ammo": 0,
+				"remaining_hp": 12,
+				"total_damage": 0
+			},
+			"damage_max": 13,
+			"damage_min": 0,
+			"damage_spread": 13,
+			"enemy_id": "tank",
+			"winning_orders": 9
+		},
+		{
+			"best_order": [
+				"chain_smg",
+				"tuner_smg",
+				"heavyslug_rifle",
+				"shred_rifle",
+				"heavyslug_rifle",
+				"finale_smg"
+			],
+			"best_outcome": {
+				"dead": true,
+				"effective_hit_count": 3,
+				"final_def": 2,
+				"final_distance": 9,
+				"final_eva": 1,
+				"fired_count": 5,
+				"hit_count": 4,
+				"rank": 1010909,
+				"remaining_ammo": 1,
+				"remaining_hp": 0,
+				"total_damage": 9
+			},
+			"best_rank": 1010909,
+			"canonical_outcome": {
+				"dead": true,
+				"effective_hit_count": 3,
+				"final_def": 2,
+				"final_distance": 9,
+				"final_eva": 1,
+				"fired_count": 5,
+				"hit_count": 4,
+				"rank": 1010909,
+				"remaining_ammo": 1,
+				"remaining_hp": 0,
+				"total_damage": 9
+			},
+			"damage_max": 11,
+			"damage_min": 0,
+			"damage_spread": 11,
+			"enemy_id": "dodger",
+			"winning_orders": 26
+		},
+		{
+			"best_order": [
+				"heavyslug_rifle",
+				"chain_smg",
+				"finale_smg",
+				"heavyslug_rifle",
+				"shred_rifle",
+				"tuner_smg"
+			],
+			"best_outcome": {
+				"dead": true,
+				"effective_hit_count": 2,
+				"final_def": 1,
+				"final_distance": 10,
+				"final_eva": 2,
+				"fired_count": 2,
+				"hit_count": 2,
+				"rank": 1041008,
+				"remaining_ammo": 4,
+				"remaining_hp": 0,
+				"total_damage": 8
+			},
+			"best_rank": 1041008,
+			"canonical_outcome": {
+				"dead": true,
+				"effective_hit_count": 3,
+				"final_def": 0,
+				"final_distance": 10,
+				"final_eva": 2,
+				"fired_count": 5,
+				"hit_count": 5,
+				"rank": 1011010,
+				"remaining_ammo": 1,
+				"remaining_hp": 0,
+				"total_damage": 10
+			},
+			"damage_max": 11,
+			"damage_min": 8,
+			"damage_spread": 3,
+			"enemy_id": "caster",
+			"winning_orders": 360
+		},
+		{
+			"best_order": [
+				"shred_rifle",
+				"heavyslug_rifle",
+				"heavyslug_rifle",
+				"chain_smg",
+				"finale_smg",
+				"tuner_smg"
+			],
+			"best_outcome": {
+				"dead": true,
+				"effective_hit_count": 2,
+				"final_def": 2,
+				"final_distance": 12,
+				"final_eva": 0,
+				"fired_count": 3,
+				"hit_count": 3,
+				"rank": 1031208,
+				"remaining_ammo": 3,
+				"remaining_hp": 99,
+				"total_damage": 8
+			},
+			"best_rank": 1031208,
+			"canonical_outcome": {
+				"dead": true,
+				"effective_hit_count": 0,
+				"final_def": 4,
+				"final_distance": 12,
+				"final_eva": 0,
+				"fired_count": 3,
+				"hit_count": 3,
+				"rank": 1031200,
+				"remaining_ammo": 3,
+				"remaining_hp": 99,
+				"total_damage": 0
+			},
+			"damage_max": 8,
+			"damage_min": 0,
+			"damage_spread": 8,
+			"enemy_id": "absorber_mech",
+			"winning_orders": 360
+		},
+		{
+			"best_order": [
+				"shred_rifle",
+				"heavyslug_rifle",
+				"heavyslug_rifle",
+				"chain_smg",
+				"finale_smg",
+				"tuner_smg"
+			],
+			"best_outcome": {
+				"dead": true,
+				"effective_hit_count": 2,
+				"final_def": 2,
+				"final_distance": 8,
+				"final_eva": 1,
+				"fired_count": 3,
+				"hit_count": 3,
+				"rank": 1030808,
+				"remaining_ammo": 3,
+				"remaining_hp": 0,
+				"total_damage": 8
+			},
+			"best_rank": 1030808,
+			"canonical_outcome": {
+				"dead": false,
+				"effective_hit_count": 0,
+				"final_def": 4,
+				"final_distance": 7,
+				"final_eva": 1,
+				"fired_count": 6,
+				"hit_count": 3,
+				"rank": 7,
+				"remaining_ammo": 0,
+				"remaining_hp": 6,
+				"total_damage": 0
+			},
+			"damage_max": 9,
+			"damage_min": 0,
+			"damage_spread": 9,
+			"enemy_id": "scrambler_drone",
+			"winning_orders": 34
+		}
+	],
+	"enemy_ids": [
+		"rusher",
+		"tank",
+		"dodger",
+		"caster",
+		"absorber_mech",
+		"scrambler_drone"
+	],
+	"enemy_specific_optima": true,
+	"gun_id": "smg",
+	"has_chamber": true,
+	"magazine_capacity": 6,
+	"permutation_count": 360,
+	"schema": "lob.lifo_depth_baseline",
+	"version": 1
+}
