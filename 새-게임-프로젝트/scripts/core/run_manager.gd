@@ -6,7 +6,8 @@ extends RefCounted
 ## ═══════════════════════════════════════════════════
 
 # ── 영구 메타 데이터 (정적 보존) ──
-static var meta_credits: int = 100       # 시작 시 테스트용으로 100 크레딧 기본 제공
+const DEFAULT_META_CREDITS := 100
+static var meta_credits: int = DEFAULT_META_CREDITS
 static var meta_backpack_lvl: int = 0    # 시작 전술탄 +1/레벨 업그레이드 (최대 3)
 static var meta_hp_armor_lvl: int = 0    # 시작 HP 버퍼 업그레이드 (최대 2 -> 버퍼 1~3)
 static var meta_discount_unlocked: bool = false # 탄환 폐기 수수료 면제
@@ -641,7 +642,7 @@ static func _resolve_save_path(path: String) -> String:
 
 
 ## 메타 영속 데이터를 저장한다. (path 미지정 시 기본/오버라이드 경로)
-static func save_meta(path := "") -> void:
+static func save_meta(path := "") -> Error:
 	var cfg := ConfigFile.new()
 	cfg.set_value("meta", "version", SAVE_VERSION)
 	cfg.set_value("meta", "credits", meta_credits)
@@ -658,7 +659,78 @@ static func save_meta(path := "") -> void:
 	cfg.set_value("meta", "infiltration_risk_level", infiltration_risk_level)
 	cfg.set_value("meta", "ascension_unlocked", meta_ascension_unlocked)
 	cfg.set_value("meta", "ascension_level", meta_ascension_level)
-	cfg.save(_resolve_save_path(path))
+	return cfg.save(_resolve_save_path(path))
+
+
+## 영구 진행을 첫 실행 상태로 되돌리고 기존 세이브 파일을 제거한다.
+## 파일 삭제가 막히면 기본값 세이브로 덮어써 다음 실행에서도 초기 상태를 보장한다.
+static func reset_meta_progress(path := "") -> Error:
+	meta_credits = DEFAULT_META_CREDITS
+	meta_backpack_lvl = 0
+	meta_hp_armor_lvl = 0
+	meta_discount_unlocked = false
+	meta_tactical_data_cores = 0
+	meta_vault_lvl = 0
+	saved_vault_credits = 0
+	starting_bonus_available = false
+	meta_unlocked_weapons = ["workhorse"] as Array[String]
+	meta_unlocked_sections = ["section_a"] as Array[String]
+	meta_lore_fragments = [] as Array[int]
+	meta_ascension_unlocked = 0
+	meta_ascension_level = 0
+	infiltration_risk_level = 1
+
+	var save_path := _resolve_save_path(path)
+	if not FileAccess.file_exists(save_path):
+		return OK
+
+	var remove_error := DirAccess.remove_absolute(ProjectSettings.globalize_path(save_path))
+	if remove_error == OK:
+		return OK
+
+	# 삭제 권한이 없는 환경에서도 오래된 진행이 되살아나지 않도록 기본값을 기록한다.
+	return save_meta(save_path)
+
+
+## 개발자 테스트용 전체 초기화. 영구 메타와 현재 런 메모리를 함께 비운다.
+func reset_all_progress(path := "") -> Error:
+	var result := reset_meta_progress(path)
+
+	current_gun = null
+	equipped_parts.clear()
+	hold_part = null
+	hp_buffer = 1
+	credits = 0
+	backpack_items.clear()
+	current_floor = 1
+	current_section = "section_a"
+	current_route_type = "stairs"
+	current_node_id = 0
+	pending_combat_distance_modifier = 0
+	has_chamber_polish = false
+	visible_magazine_slots = 2
+	tactical_data_cores = 0
+	run_stats = {
+		"lead_bullets_fired": 0,
+		"min_dist_allowed": 99,
+		"min_dist_ratio": 1.0,
+		"hard_zones_cleared": 0,
+		"max_kills_in_single_turn": 0,
+		"average_kill_distance": 0.0,
+		"total_kills": 0,
+		"total_kill_dist_sum": 0.0,
+		"tanks_killed_by_shred_only": 0,
+		"stance_shifts_killed_without_slow": 0,
+		"perfect_battles_count": 0,
+		"magazine_emptied_wins": 0
+	}
+	deck.clear()
+	basic_supply_bullet = null
+	discarded_bullets.clear()
+	map_nodes.clear()
+	floor_connections.clear()
+	section_maps.clear()
+	return result
 
 
 ## 메타 영속 데이터를 불러온다. 파일이 없으면 현재(기본)값을 유지한다.

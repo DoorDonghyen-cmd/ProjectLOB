@@ -275,6 +275,17 @@ func trigger_loadout_test_ui() -> void:
 	_loadout_overlay.open_loadout_overlay("section_a")
 
 
+## 개발자 메뉴의 전체 초기화 진입점.
+## 영구 세이브와 현재 런을 지운 뒤 첫 실행의 기본 총기·타이틀 상태로 돌아간다.
+func trigger_reset_all_progress() -> Error:
+	var result := _rm.reset_all_progress()
+	_is_shortcut_mode = false
+	_current_node = null
+	_current_gun_data = _gun_revolver
+	_show_title_screen()
+	return result
+
+
 func trigger_bullet_gallery_ui() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
@@ -443,6 +454,10 @@ func _show_title_screen() -> void:
 	_title_overlay.visible = true
 	_map_overlay.visible = false
 	_maintenance_overlay.visible = false
+	_loadout_overlay.visible = false
+	_section_selector_overlay.visible = false
+	_bullet_gallery_overlay.visible = false
+	_monster_gallery_overlay.visible = false
 	_debriefing_overlay.visible = false
 	_combat_margin.visible = false
 	_title_overlay._refresh_shop_ui()

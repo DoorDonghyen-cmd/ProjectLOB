@@ -39,6 +39,7 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_ammo_integrity.gd` | 탄환 CSV↔리소스↔시작 덱 역할·수치 완전 일치 |
 | `suite_caliber_profiles.gd` | 고정 구경 프로필 — 공용 전술탄 보정, 기반탄 비중복, 다른 구경 드래프트 차단 |
 | `suite_basic_supply.gd` | 기본탄 고정 보급 슬롯 — 총기별 상한, 장전 차감, 리로드 정량 복구 |
+| `suite_save_load.gd` | 메타 저장·로드와 개발자 전체 초기화 — 세이브 삭제, 영구 진행·현재 런 기본값 복원 |
 | `suite_ammo_matrix.gd` | 실제 몬스터별 공격·연계·연발 처치 조합 매트릭스 |
 | `lifo_depth_probe.gd` | 같은 6발의 고유 순열을 실제 CombatManager로 전투해 적별 최적 배치 산출 |
 | `suite_lifo_depth_baseline.gd` | `baseline/lifo_depth_v5.json`과 현행 v5 순서 민감도 비교 |

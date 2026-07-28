@@ -8,6 +8,7 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-28 | **개발자 테스트 전체 데이터 초기화** | `codex0728-dev-reset` | 확인 대화상자를 거쳐 현재 런·영구 진행·메타 세이브를 첫 실행 상태로 복원하고 타이틀 UI 갱신. 삭제 실패 폴백과 저장·UI 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_dev_reset_all_2026-07-28.md) |
 | 2026-07-28 | **기본탄 고정 보급 슬롯 및 리로드 정량 복구** | `codex0728-basic-supply` | 기본탄을 덱·드래프트에서 분리해 가방 고정 슬롯으로 표시하고 탄창+약실 상한까지 리로드 복구. 발당 탄창 슬롯과 LIFO는 유지하고 전술탄만 제한 자원으로 분리, 승천 8 계약과 회귀 동기화 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_basic_ammo_supply_2026-07-28.md) |
 | 2026-07-28 | **역할명 기반 표준 3종·전용 2종 고정 규격 및 역할 전환** | `codex0728-fixed-caliber` | 경량탄·소총탄·산탄 표준 규격과 중량탄·저격탄 전용 규격을 UI·카드·문서에 분리하고 실제 구경은 보조 표기로 유지. 공용 전술탄 프로필·자기 규격 드래프트·역할 파츠 시퀀스·DMR 게이트를 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_fixed_caliber_profiles_2026-07-28.md) |
 | 2026-07-28 | **첫 구역 이후 35층 연속 상승 복구** | `codex0728-continuous-ascent` | 침전 보스 뒤 메인 복귀하던 과거 런 길이 램프 제거. 다음 계층 즉시 해금·연속 진입, 덱·파츠·가방·크레딧 유지와 지도·브리핑·디브리핑 계약 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_continuous_ascent_2026-07-28.md) |
@@ -46,6 +47,7 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0728-dev-reset Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_dev_reset_all_2026-07-28.md)
 * [Session codex0728-basic-supply Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_basic_ammo_supply_2026-07-28.md)
 * [Session codex0728-fixed-caliber Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_fixed_caliber_profiles_2026-07-28.md)
 * [Session codex0728-continuous-ascent Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_continuous_ascent_2026-07-28.md)

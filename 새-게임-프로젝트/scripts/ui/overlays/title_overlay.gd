@@ -18,6 +18,8 @@ var _meta_discount_btn: Button
 var _meta_vault_btn: Button
 
 var _dev_test_panel: PanelContainer
+var _reset_confirmation: ConfirmationDialog
+var _reset_result_dialog: AcceptDialog
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
@@ -495,6 +497,34 @@ func _build_dev_test_panel() -> void:
 	btn_lock_zones.add_theme_font_size_override("font_size", 11)
 	btn_lock_zones.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_lock_zones)
+
+	# 9. 모든 런·영구 메타·세이브 초기화
+	var btn_reset_all = parent_scene.make_button("🧹 전부 초기화", func():
+		_reset_confirmation.popup_centered()
+	, parent_scene.C_DANGER)
+	btn_reset_all.name = "ResetAllProgressButton"
+	btn_reset_all.tooltip_text = "현재 런과 크레딧·업그레이드·해금·승천·세이브를 첫 실행 상태로 되돌립니다."
+	btn_reset_all.custom_minimum_size = Vector2(0, 36)
+	btn_reset_all.add_theme_font_size_override("font_size", 11)
+	btn_reset_all.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_reset_all)
+
+	_reset_confirmation = ConfirmationDialog.new()
+	_reset_confirmation.name = "ResetAllProgressConfirmation"
+	_reset_confirmation.title = "전체 데이터 초기화"
+	_reset_confirmation.dialog_text = (
+		"현재 런과 모든 영구 진행 데이터를 삭제합니다.\n"
+		+ "크레딧·업그레이드·무기/계층 해금·로어·승천은 복구할 수 없습니다."
+	)
+	_reset_confirmation.ok_button_text = "전부 초기화"
+	_reset_confirmation.cancel_button_text = "취소"
+	_reset_confirmation.confirmed.connect(_on_reset_all_confirmed)
+	add_child(_reset_confirmation)
+
+	_reset_result_dialog = AcceptDialog.new()
+	_reset_result_dialog.name = "ResetAllProgressResult"
+	_reset_result_dialog.title = "전체 데이터 초기화"
+	add_child(_reset_result_dialog)
 	
 	# ── 보스 전투 테스트 숏컷 ──
 	# 보스 #1: 디렉터 강 (구역 1 보스)
@@ -548,6 +578,21 @@ func _build_dev_test_panel() -> void:
 	btn_close.custom_minimum_size = Vector2(240, 36)
 	btn_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	vbox.add_child(btn_close)
+
+
+func _on_reset_all_confirmed() -> void:
+	_dev_test_panel.visible = false
+	var result: Error = parent_scene.trigger_reset_all_progress()
+	_refresh_shop_ui()
+	if result == OK:
+		_reset_result_dialog.dialog_text = "모든 데이터가 초기 상태로 복원되었습니다."
+		print("디버그: 현재 런·영구 메타·세이브 전체 초기화 완료.")
+	else:
+		_reset_result_dialog.dialog_text = (
+			"메모리는 초기화했지만 세이브 파일 갱신에 실패했습니다.\n오류 코드: %d" % result
+		)
+		push_error("전체 데이터 초기화 세이브 처리 실패: %d" % result)
+	_reset_result_dialog.popup_centered()
 
 
 ## 📊 밸런스 기대 발수 매트릭스 팝업 렌더링

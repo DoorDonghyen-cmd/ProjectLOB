@@ -21,6 +21,16 @@ static func _has_label_text(root: Node, fragment: String) -> bool:
 	return false
 
 
+static func _find_button_text(root: Node, fragment: String) -> Button:
+	if root is Button and fragment in (root as Button).text:
+		return root as Button
+	for child in root.get_children():
+		var found := _find_button_text(child, fragment)
+		if found != null:
+			return found
+	return null
+
+
 static func run(t, tree: SceneTree) -> void:
 	t.section("UISmoke")
 
@@ -68,6 +78,17 @@ static func run(t, tree: SceneTree) -> void:
 	scene.handle_section_selector_closed()
 	t.check(scene._title_overlay.visible and not scene._section_selector_overlay.visible,
 		"브리핑 → 로비 복귀 (타이틀 표시 / 브리핑 숨김)")
+
+	# ── 개발자 테스트: 전체 초기화는 확인창을 거쳐야 한다 ──
+	scene._title_overlay._on_dev_test_pressed()
+	var reset_btn := _find_button_text(scene._title_overlay._dev_test_panel, "전부 초기화")
+	t.check(reset_btn != null, "개발자 테스트 메뉴에 전부 초기화 버튼 존재")
+	if reset_btn != null:
+		reset_btn.pressed.emit()
+		t.check(scene._title_overlay._reset_confirmation.visible,
+			"전부 초기화는 오작동 방지 확인창을 표시")
+		scene._title_overlay._reset_confirmation.hide()
+	scene._title_overlay._dev_test_panel.visible = false
 
 	# ── 준비실: 시작 계층 표기 갱신 ──
 	scene.show_loadout_screen(str(RunManager.SECTION_ORDER[0]))
