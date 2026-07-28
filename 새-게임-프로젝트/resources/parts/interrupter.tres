@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "인터럽터 (Interrupter)"
-description = "직전에 격발한 탄환과 구경(클래스)이 다를 때 DMG +3이 가산됩니다. 서로 다른 구경을 교차로 장전하는 설계에 보상합니다."
+description = "직전에 격발한 탄환과 역할(공격·연계·제어)이 다를 때 DMG +3이 가산됩니다. 역할을 교대로 배치하는 LIFO 설계에 보상합니다."
 part_id = 3
 tier = 1

@@ -1,6 +1,8 @@
 class_name CombatManager
 extends Node
 
+const CaliberProfiles = preload("res://scripts/core/caliber_profiles.gd")
+
 ## 전투 루프 오케스트레이터 (다수 적 공유 트랙 + Tier 2 확장 버전)
 ## 상태 머신으로 전투 플로우를 제어하고, 시그널로 UI에 이벤트를 전달한다.
 
@@ -35,6 +37,8 @@ signal bullet_unloaded(bullet: BulletData)
 signal bullet_exiled(bullet: BulletData)
 signal draw_pile_updated(bullets: Array[BulletData])
 signal piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletData], exile_pile: Array[BulletData])
+## 기본 보급탄은 덱과 분리된 고정 슬롯 하나로 표시한다.
+signal basic_supply_updated(bullet: BulletData, current: int, capacity: int)
 signal buttstroke_triggered(enemy: EnemyInstance, new_distance: int)
 
 # ── 상태 ──
@@ -58,6 +62,9 @@ var _burst_knockback_budget: int = 0
 var draw_pile: Array[BulletData] = []
 var discard_pile: Array[BulletData] = []
 var exile_pile: Array[BulletData] = []
+var basic_supply_bullet: BulletData = null
+var basic_supply_current: int = 0
+var basic_supply_capacity: int = 0
 var buttstroke_used_this_encounter: bool = false
 
 # ── 총기 파츠 및 기믹 상태 ──
@@ -66,7 +73,7 @@ var chaser_pen_bonus: int = 0
 var target_marker_active: bool = false
 var same_stance_hit_count: int = 0
 var last_stance: Enums.EnemyStance = Enums.EnemyStance.NONE
-var consecutive_caliber_count: int = 0
+var consecutive_role_count: int = 0
 
 ## ── 셋업 버프 (정본: docs/gdd/22_ammo_expansion.md §22.2) ──
 ## **다음 1발**에만 적용된다. 탄창 전체 지속이면 "셋업 하나 깔고 나머지 전부 고화력"이
@@ -80,10 +87,9 @@ var magazine_buff_pen: int = 0
 var visible_magazine_slots: int = 2
 var final_kill_distance: int = 99
 
-# ── 구경 기반 순서 기억 ──
-var last_fired_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
-## 범용탄은 구경 기억을 덮어쓰지 않는다. -1은 아직 구체 구경을 쏘지 않은 상태.
-var last_concrete_caliber: int = -1
+# ── 탄환 역할 기반 순서 기억 ──
+## 구경은 총기의 고정 프로필이며, 런 중 순서 빌드는 공격·연계·제어 역할 교대로 만든다.
+var last_fired_role: String = ""
 
 # ── 전투 세션 통계 ──
 var battle_stats := {
@@ -136,8 +142,15 @@ func get_alive_enemies() -> Array[EnemyInstance]:
 	return alive
 
 
-## 인카운터를 시작한다. 총과 적 데이터 배열, 장착 파츠 목록을 받아 초기화.
-func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bullets: Array[BulletData], parts: Array[PartData] = []) -> void:
+## 인카운터를 시작한다. 기본 보급탄은 전술 덱과 분리해 총기 장전 한도만큼 지급한다.
+## 마지막 인자는 선택 사항이라 테스트용 임의 전투와 레거시 호출은 기존 동작을 유지한다.
+func start_encounter(
+	gun_data: GunData,
+	enemy_datas: Array[EnemyData],
+	deck_bullets: Array[BulletData],
+	parts: Array[PartData] = [],
+	supply_bullet: BulletData = null
+) -> void:
 	gun = gun_data
 	enemies.clear()
 	var offset := 0
@@ -153,19 +166,27 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 	last_shot_effective = false
 	_insert_seal_active = false
 	has_inserted_bullet_this_turn = false
-	last_fired_class = gun.weapon_class
-	last_concrete_caliber = -1
+	last_fired_role = ""
 	is_magazine_first_shot = true
 	_is_full_auto_burst = false
 	_burst_knockback_budget = 0
 	
 	# 탄약 순환 자원 데이터 및 긴급 격퇴 초기화
-	draw_pile = deck_bullets.duplicate()
+	basic_supply_bullet = supply_bullet
+	basic_supply_capacity = _max_load_capacity() if basic_supply_bullet != null else 0
+	basic_supply_current = basic_supply_capacity
+	draw_pile.clear()
+	for bullet in deck_bullets:
+		# 구 세션/세이브가 덱 안에 기반탄을 보유해도 고정 보급과 중복시키지 않는다.
+		if basic_supply_bullet != null and _is_basic_supply_bullet(bullet):
+			continue
+		draw_pile.append(bullet)
 	discard_pile.clear()
 	exile_pile.clear()
 	buttstroke_used_this_encounter = false
 	draw_pile_updated.emit(draw_pile)
 	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 	
 	# 전투 통계 초기화
 	var init_min_dist = 99
@@ -194,7 +215,7 @@ func start_encounter(gun_data: GunData, enemy_datas: Array[EnemyData], deck_bull
 	target_marker_active = false
 	same_stance_hit_count = 0
 	last_stance = Enums.EnemyStance.NONE
-	consecutive_caliber_count = 0
+	consecutive_role_count = 0
 	pending_buff_acc = 0
 	pending_buff_pen = 0
 	magazine_buff_acc = 0
@@ -234,22 +255,63 @@ func _enter_loading_phase() -> void:
 func confirm_loading(bullets: Array[BulletData]) -> void:
 	if state != State.LOADING:
 		return
-	magazine.load_bullets(bullets)
-	
-	# 장전된 탄환을 가방(draw_pile)에서 제외
+
+	# UI 상태와 별개로 실제 보유량을 다시 검증한다. 기본탄은 고정 보급 잔량에서,
+	# 전술탄은 draw_pile에서 꺼내므로 중복 장전이 생기지 않는다.
+	var accepted: Array[BulletData] = []
 	for b in bullets:
-		for i in range(draw_pile.size()):
-			if draw_pile[i].display_name == b.display_name:
-				draw_pile.remove_at(i)
-				break
+		if accepted.size() >= _max_load_capacity():
+			break
+		if _is_basic_supply_bullet(b):
+			if basic_supply_current <= 0:
+				continue
+			basic_supply_current -= 1
+			accepted.append(b)
+			continue
+		var draw_idx := _find_draw_pile_index(b)
+		if draw_idx < 0:
+			continue
+		accepted.append(b)
+		draw_pile.remove_at(draw_idx)
+
+	magazine.load_bullets(accepted)
 	draw_pile_updated.emit(draw_pile)
 	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 	
 	state = State.PLAYER_TURN
 	eject_used_this_turn = false
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
 	is_magazine_first_shot = true
 	combat_log.emit("── 탄창 장전 완료! %d발 ──" % magazine.get_remaining())
+
+
+## 약실을 포함한 실제 최대 장전 수. 기본 보급 상한과 UI가 같은 정본을 사용한다.
+func _max_load_capacity() -> int:
+	if gun == null:
+		return 0
+	return gun.magazine_capacity + (1 if gun.has_chamber else 0)
+
+
+func _is_basic_supply_bullet(bullet: BulletData) -> bool:
+	return bullet != null \
+		and basic_supply_bullet != null \
+		and bullet.is_basic \
+		and bullet.weapon_class == basic_supply_bullet.weapon_class
+
+
+func _find_draw_pile_index(bullet: BulletData) -> int:
+	if bullet == null:
+		return -1
+	for i in range(draw_pile.size()):
+		var candidate := draw_pile[i]
+		if candidate == bullet or (
+			candidate != null
+			and candidate.resource_path == bullet.resource_path
+			and not bullet.resource_path.is_empty()
+		) or (candidate != null and candidate.display_name == bullet.display_name):
+			return i
+	return -1
 
 
 ## 이 총이 연발(FULL_AUTO)인가. 정본: docs/gdd/21_fire_mode.md
@@ -274,6 +336,8 @@ func preview_next_shot() -> Dictionary:
 	if gun != null:
 		acc += gun.passive_acc_bonus
 		pen += gun.passive_pen_bonus
+		acc += CaliberProfiles.bonus_for(b, gun, "accuracy")
+		pen += CaliberProfiles.bonus_for(b, gun, "penetration")
 	acc += magazine_buff_acc
 	pen += magazine_buff_pen
 	var acc_without_adjacent := acc
@@ -397,7 +461,11 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 격발 직전 탄창의 잔탄 개수
 	var remaining_before_fire := magazine.get_remaining()
 	var bullet := magazine.fire()
-	var effective_caliber := _effective_caliber(bullet)
+	var role_changed := not last_fired_role.is_empty() and bullet.role != last_fired_role
+	if bullet.role == last_fired_role:
+		consecutive_role_count += 1
+	else:
+		consecutive_role_count = 1
 
 	# ── 1. 명중 판정 파츠 가산 ──
 	var part_acc_bonus := 0
@@ -407,13 +475,12 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		part_acc_bonus += 2
 		combat_log.emit("   ↳ 🎯 [연동 조준] 직전 명중으로 ACC +2 적용")
 		
-	# 만능 약실 (VERSATILE_CHAMBER): 직전과 **구경이 다르면** ACC +1 (PEN은 아래에서 +1)
-	# ⚠️ 상시 보정이 아니라 교차 구경 조건이다. 버프탄(적을 읽는 상황적 보정)과 겹치지 않도록
-	#    "호환·교차 빌드"라는 다른 축을 쓴다. (정본: docs/gdd/22_ammo_expansion §22.0-B 파츠 경계)
-	var versatile_active := _has_part(Enums.PartID.VERSATILE_CHAMBER) and effective_caliber != last_fired_class
+	# 만능 약실: 직전과 **역할이 다르면** ACC +1 (PEN은 아래에서 +1).
+	# 구경은 고정 프로필이므로 공격·연계·제어 역할 교대가 LIFO 순서 빌드를 담당한다.
+	var versatile_active := _has_part(Enums.PartID.VERSATILE_CHAMBER) and role_changed
 	if versatile_active:
 		part_acc_bonus += 1
-		combat_log.emit("   ↳ 🔧 [만능 약실] 교차 구경으로 ACC +1 · PEN +1")
+		combat_log.emit("   ↳ 🔧 [만능 약실] 역할 교대로 ACC +1 · PEN +1")
 
 	# 고정밀 총열 (HIGH_PRECISION): **직전 탄이 빗나갔으면** ACC +3 (실패 보정)
 	# ⚠️ 상시 ACC가 아니라 회복 조건이다. 명중 버프탄이 상황적으로 하는 걸,
@@ -499,7 +566,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			part_pen_bonus += 2
 			combat_log.emit("   ↳ 🛡 [철갑 총열] 선두 탄 PEN +2")
 
-		# 만능 약실 (VERSATILE_CHAMBER): 교차 구경일 때 PEN +1 (위 ACC +1과 한 쌍)
+		# 만능 약실: 역할 교대일 때 PEN +1 (위 ACC +1과 한 쌍)
 		if versatile_active:
 			part_pen_bonus += 1
 			
@@ -515,25 +582,18 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				part_dmg_bonus += deep_bonus
 				combat_log.emit("   ↳ 📥 [딥로더] 탄창 깊이(%d)에 따른 DMG +%d 가산" % [deep_bonus, deep_bonus])
 				
-		# 리듬 챔버 (RHYTHM_CHAMBER): 동일 클래스의 짝수 번째 연속 격발에 DMG +1
+		# 리듬 챔버: 동일 역할의 짝수 번째 연속 격발에 DMG +1
 		# ⚠️ 연속 횟수를 그대로 보너스로 쓰면 연발 6발에서 +20이 되어 발사 방식이
 		#    곧 지배 전략이 된다. 2·4·6번째 박자만 보상해 슬롯 가치만 남긴다.
 		if _has_part(Enums.PartID.RHYTHM_CHAMBER):
-			if effective_caliber == last_fired_class:
-				consecutive_caliber_count += 1
-			else:
-				consecutive_caliber_count = 1
-			if consecutive_caliber_count % 2 == 0:
+			if consecutive_role_count % 2 == 0:
 				part_dmg_bonus += 1
-				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 클래스 %d번째 박자! DMG +1" % consecutive_caliber_count)
-		else:
-			consecutive_caliber_count = 0
+				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 역할 %d번째 박자! DMG +1" % consecutive_role_count)
 			
-		# 인터럽터 (INTERRUPTER): 직전 클래스와 다를 시 DMG 보너스 (+3)
-		if _has_part(Enums.PartID.INTERRUPTER):
-			if effective_caliber != last_fired_class:
-				part_dmg_bonus += 3
-				combat_log.emit("   ↳ 🔀 [인터럽터] 클래스 교차 격발! DMG +3 가산")
+		# 인터럽터: 직전 탄과 역할이 다를 시 DMG 보너스 (+3)
+		if _has_part(Enums.PartID.INTERRUPTER) and role_changed:
+			part_dmg_bonus += 3
+			combat_log.emit("   ↳ 🔀 [인터럽터] 역할 교대 격발! DMG +3 가산")
 				
 		# 언더플로우 (UNDERFLOW): 탄창 가장 마지막 1발(바닥 탄) 발사 시 DMG +5
 		if _has_part(Enums.PartID.UNDERFLOW) and is_last:
@@ -593,6 +653,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		if gun != null:
 			gate_total_pen += gun.passive_pen_bonus
 			gate_pen_without_adjacent += gun.passive_pen_bonus
+			var caliber_pen := CaliberProfiles.bonus_for(bullet, gun, "penetration")
+			gate_total_pen += caliber_pen
+			gate_pen_without_adjacent += caliber_pen
 		var penetrated := gate_total_pen >= target.current_def
 		var penetrated_without_adjacent := gate_pen_without_adjacent >= target.current_def
 		var critical := penetrated and hit and (
@@ -612,15 +675,14 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			breakdown += " + [연쇄 보너스] %d" % bullet.effect_value
 			combat_log.emit("   ↳ 🔥 [연쇄탄] 직전 유효 적중 연계! 피해 +%d" % bullet.effect_value)
 
-		# ── 2.5 교차탄: 범용탄은 기억을 덮지 않고, 실제 구체 구경 경계만 인정 ──
+		# ── 2.5 교대탄: 직전 탄환과 역할이 다를 때 발동 ──
 		if bullet.effect_type == Enums.BulletEffect.CALIBER_DIFF \
-				and last_concrete_caliber >= 0 \
-				and effective_caliber != last_concrete_caliber \
+				and role_changed \
 				and core_damage > 0:
 			core_damage += bullet.effect_value
-			breakdown += " + [교차 구경] %d" % bullet.effect_value
-			combat_log.emit("   ↳ ⚡ [교차탄] 직전 구경(%s)과 달라 피해 +%d" % [
-				_class_name(last_concrete_caliber), bullet.effect_value
+			breakdown += " + [역할 교대] %d" % bullet.effect_value
+			combat_log.emit("   ↳ ⚡ [교대탄] 직전 역할(%s)과 달라 피해 +%d" % [
+				last_fired_role, bullet.effect_value
 			])
 
 		var damage := core_damage
@@ -853,10 +915,8 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		combat_log.emit("   ↳ 💀 [소멸] 관통 실패 또는 빗나감! 탄환이 이번 전투에서 소멸(Exile) 처리되었습니다.")
 	piles_updated.emit(draw_pile, discard_pile, exile_pile)
 
-	# 직전 클래스 업데이트
-	last_fired_class = effective_caliber
-	if bullet.weapon_class != Enums.WeaponClass.UNIVERSAL:
-		last_concrete_caliber = bullet.weapon_class
+	# 직전 역할 업데이트
+	last_fired_role = bullet.role
 
 	# 탄창 상태 갱신
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
@@ -911,27 +971,15 @@ func _apply_damage_to_enemy(enemy: EnemyInstance, dmg_amount: int) -> void:
 
 ## 클래스 이름 텍스트 변환
 func _class_name(cls: int) -> String:
-	match cls:
-		Enums.WeaponClass.PISTOL: return "권총(9mm)"
-		Enums.WeaponClass.SMG: return "기관단총(.45ACP)"
-		Enums.WeaponClass.RIFLE: return "소총(5.56mm)"
-		Enums.WeaponClass.DMR: return "지정사수(7.62mm)"
-		Enums.WeaponClass.SHOTGUN: return "샷건(12Gauge)"
-		Enums.WeaponClass.UNIVERSAL: return "교차구경"
-	return "?"
-
-
-## 범용탄은 현재 총기의 약실 구경으로 발사되지만, 자체가 구체 구경을 선언하지는 않는다.
-func _effective_caliber(bullet: BulletData) -> int:
-	if bullet != null and bullet.weapon_class != Enums.WeaponClass.UNIVERSAL:
-		return bullet.weapon_class
-	return gun.weapon_class if gun != null else Enums.WeaponClass.UNIVERSAL
+	return CaliberProfiles.short_label_for_class(cls)
 
 
 ## 실패 시 런 덱에서도 보존되는 탄인지 미리보기와 실제 소실 계약이 공유하는 판정.
 func _bullet_is_caliber_safe(bullet: BulletData) -> bool:
-	if bullet == null or bool(RunManager.ascension_effects().no_caliber_safety):
+	if bullet == null:
 		return false
+	if bullet.is_basic:
+		return true
 	if bullet.weapon_class == Enums.WeaponClass.UNIVERSAL:
 		return false
 	if gun != null and bullet.weapon_class == gun.weapon_class:
@@ -993,15 +1041,30 @@ func request_unload() -> void:
 
 
 ## 인게임 중간 장전(납탄) 요청
-func request_insert_bullet(bullet: BulletData) -> void:
+func request_insert_bullet(bullet: BulletData) -> bool:
 	if state != State.PLAYER_TURN:
-		return
+		return false
 	var cap := gun.magazine_capacity
 	var has_ch := gun.has_chamber
 	var max_cap := cap + (1 if has_ch else 0)
 	if magazine.get_remaining() >= max_cap:
 		combat_log.emit("⚠ 탄창이 가득 차서 납탄할 수 없습니다.")
-		return
+		return false
+
+	if _is_basic_supply_bullet(bullet):
+		if basic_supply_current <= 0:
+			combat_log.emit("⚠ 이번 재장전 사이클의 기본 보급탄을 모두 사용했습니다.")
+			return false
+		basic_supply_current -= 1
+		basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
+	else:
+		var draw_idx := _find_draw_pile_index(bullet)
+		if draw_idx < 0:
+			combat_log.emit("⚠ 가방에 남은 탄환이 없습니다.")
+			return false
+		draw_pile.remove_at(draw_idx)
+		draw_pile_updated.emit(draw_pile)
+		piles_updated.emit(draw_pile, discard_pile, exile_pile)
 		
 	magazine.insert_bullet(bullet)
 	battle_stats.lead_bullets_fired += 1
@@ -1015,6 +1078,7 @@ func request_insert_bullet(bullet: BulletData) -> void:
 		_insert_seal_active = true
 
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
+	return true
 
 ## 가방 닫힘 시 템포 세금 정산 (적이 단 한 번만 전진하도록 보장)
 func apply_bullet_insertion_tax() -> void:
@@ -1055,7 +1119,7 @@ func request_reload() -> void:
 		combat_log.emit("남은 %d발을 가방으로 반환하고 리로드합니다." % remaining)
 		while not magazine.is_empty():
 			var b := magazine.unload()
-			if b:
+			if b and not _is_basic_supply_bullet(b):
 				draw_pile.append(b)
 
 	magazine.clear()
@@ -1078,17 +1142,28 @@ func request_reload() -> void:
 		if state == State.LOST:
 			return
 
-	# 리로드 완료: 버린 카드 더미(discard_pile)를 가방(draw_pile)에 합산 및 셔플
+	# 리로드 완료: 전술탄만 버린 더미에서 순환한다. 기본탄은 고정 보급량으로 일괄 복구한다.
 	if not discard_pile.is_empty():
-		draw_pile.append_array(discard_pile)
+		for b in discard_pile:
+			if not _is_basic_supply_bullet(b):
+				draw_pile.append(b)
 		discard_pile.clear()
 		draw_pile.shuffle()
 		combat_log.emit("♻ 버린 더미의 탄환들이 가방(Draw Pile)으로 셔플 순환되었습니다.")
+	# 실패·빼내기로 소멸된 기본탄 표시는 복구와 함께 제거한다. 전술탄 소멸 기록은 유지한다.
+	for i in range(exile_pile.size() - 1, -1, -1):
+		if _is_basic_supply_bullet(exile_pile[i]):
+			exile_pile.remove_at(i)
+	basic_supply_current = basic_supply_capacity
 	draw_pile_updated.emit(draw_pile)
 	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 
 	reload_finished.emit()
-	combat_log.emit("🔄 리로드 완료!")
+	if basic_supply_bullet != null:
+		combat_log.emit("🔄 리로드 완료! 기본 보급탄 %d발 복구" % basic_supply_current)
+	else:
+		combat_log.emit("🔄 리로드 완료!")
 	magazine_updated.emit(0, magazine.get_capacity())
 	_enter_loading_phase()
 

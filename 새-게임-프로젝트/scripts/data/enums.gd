@@ -28,7 +28,7 @@ enum BulletEffect {
 	COMBO,         ## 직전 탄 명중 시 대미지 보너스
 	LAST_SHOT,     ## 탄창 마지막 탄일 때 대미지 배율
 	OPENING_SHOT,  ## 탄창 첫 탄일 때 넉백 보너스
-	CALIBER_DIFF,  ## 직전 탄과 구경이 다를 때 대미지 추가 보너스
+	CALIBER_DIFF,  ## 직전 탄과 역할이 다를 때 대미지 추가 보너스 (직렬화 값 5 유지)
 	PIERCE,        ## 공유 트랙 일렬 다수 적 관통 다중타
 	## ── 셋업 계열 (정본: docs/gdd/22_ammo_expansion.md §22.2) ──
 	## ⚠️ 아래 둘은 **유효 적중(양 게이트 통과) 시에만** 발동하고 **다음 1발**에만 적용된다.
@@ -89,9 +89,9 @@ enum PartID {
 	QUICK_LOAD,        ## 퀵로드
 	SPREAD_SHOT,       ## 확산 격발 장치 (샷건 고유)
 	MARKSMAN_SCOPE,    ## 저격경 (Marksman 고유)
-	CONVERSION_PISTOL, ## 9mm 컨버전 킷
-	CONVERSION_SMG,    ## .45ACP 컨버전 킷
-	CONVERSION_RIFLE,  ## 5.56mm 컨버전 킷
-	CONVERSION_DMR,    ## 7.62mm 컨버전 킷
-	CONVERSION_SHOTGUN,## 12게이지 컨버전 킷
+	CONVERSION_PISTOL, ## 경량탄(9mm) 컨버전 킷
+	CONVERSION_SMG,    ## 중량탄(.45ACP) 컨버전 킷
+	CONVERSION_RIFLE,  ## 소총탄(5.56mm) 컨버전 킷
+	CONVERSION_DMR,    ## 저격탄(7.62mm) 컨버전 킷
+	CONVERSION_SHOTGUN,## 산탄(12게이지) 컨버전 킷
 }

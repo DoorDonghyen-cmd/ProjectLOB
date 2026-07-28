@@ -28,7 +28,7 @@ const MAX_LEVEL := 10
 ## 배치 원칙:
 ##   - 앞쪽에 큰 것을 넣으면 영원히 누적되어 후반이 감당 불가능해진다 → 작은 것부터
 ##   - 메타 파워(HP아머 +2 / 가방 +3 / 금고)를 상쇄하도록 분산 배치(§5)
-##   - 8등급의 전용탄 보존 해제는 **질적 벽**이라 단독 배치("여기부터 다른 게임")
+##   - 기본탄은 전 난이도에서 총기 고정 보급이므로 승천도 보급 계약을 깨지 않는다
 const TIERS := [
 	{
 		"level": 1, "title": "가벼운 짐",
@@ -66,10 +66,10 @@ const TIERS := [
 		"effects": {"armor_delta": -1},
 	},
 	{
-		"level": 8, "title": "회수 불가",
-		"desc": "전용탄도 헛방이면 소멸한다",
-		# ⚠️ 질적 벽. 이진 스위치라 완만하지 않으므로 이 등급에는 이것만 둔다(§4.1 레버 ①).
-		"effects": {"no_caliber_safety": true},
+		"level": 8, "title": "더 좁은 통로",
+		"desc": "교전 시작 거리 −1m (누적 −2m)",
+		# 기본탄 보급 계약을 예외 처리하지 않고 기존 총기 중립 거리 레버를 한 번 더 누적한다.
+		"effects": {"start_dist_delta": -1},
 	},
 	{
 		"level": 9, "title": "더 빈 주머니",
@@ -96,7 +96,6 @@ static func effects_for(level: int) -> Dictionary:
 		"start_dist_delta": 0,
 		"enemy_spd_delta": 0,
 		"draft_slots_delta": 0,
-		"no_caliber_safety": false,
 	}
 	var lv: int = clampi(level, 0, MAX_LEVEL)
 	for tier in TIERS:
@@ -107,8 +106,6 @@ static func effects_for(level: int) -> Dictionary:
 			match key:
 				"credit_mult":
 					acc.credit_mult *= float(eff[key])
-				"no_caliber_safety":
-					acc.no_caliber_safety = acc.no_caliber_safety or bool(eff[key])
 				_:
 					acc[key] = int(acc[key]) + int(eff[key])
 	return acc

@@ -28,7 +28,9 @@ static func run(t) -> void:
 	t.eq(rm.current_gun, gun, "런에 총기 고정")
 	t.eq(rm.current_floor, 1, "런 시작 층 = 1")
 	t.eq(rm.hp_buffer, 1, "HP 버퍼 = 1 (아머 Lv0)")
-	t.eq(rm.deck.size(), 8, "권총 기본 덱 8발(5+2+1)")
+	t.eq(rm.deck.size(), 3, "권총 시작 전술 덱 3발(연계2+공격1)")
+	t.check(rm.basic_supply_bullet != null and rm.basic_supply_bullet.is_basic,
+		"권총 기본탄은 덱 밖 고정 보급원")
 
 	# ── 2) 스테이지/맵 생성 ──
 	t.check(rm.map_nodes.size() > 0, "맵 노드 생성됨 (%d개)" % rm.map_nodes.size())

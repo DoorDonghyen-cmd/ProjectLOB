@@ -1,5 +1,7 @@
 class_name DamageCalculator
 
+const CaliberProfiles = preload("res://scripts/core/caliber_profiles.gd")
+
 ## 결정론적 대미지 계산기 (정적 함수 모음)
 ##
 ## 모든 계산은 덧셈/뺄셈 기반. 확률 요소 없음.
@@ -24,6 +26,7 @@ static func check_hit(bullet: BulletData, enemy_evasion: int, gun: GunData = nul
 		var passive_acc_bonus := gun.passive_acc_bonus
 		# 총기 스탯도 룩업 가능 (현재는 passive_acc_bonus가 CSV에 없으므로 기본 리소스값 유지)
 		total_acc += passive_acc_bonus
+		total_acc += CaliberProfiles.bonus_for(bullet, gun, "accuracy")
 	return total_acc >= enemy_evasion
 
 
@@ -55,6 +58,8 @@ static func calculate_damage(
 			pen_bonus = g_csv.passive_pen_bonus
 		total_dmg += dmg_bonus
 		total_pen += pen_bonus
+		total_dmg += CaliberProfiles.bonus_for(bullet, gun, "damage")
+		total_pen += CaliberProfiles.bonus_for(bullet, gun, "penetration")
 
 	# 이진 관통 게이트: PEN < DEF 이면 0
 	if total_pen < enemy_def:
@@ -71,6 +76,7 @@ static func calculate_knockback(bullet: BulletData, gun: GunData = null) -> int:
 		
 	if gun:
 		total_kb += gun.passive_knockback_bonus
+		total_kb += CaliberProfiles.bonus_for(bullet, gun, "knockback")
 	return total_kb
 
 
@@ -97,6 +103,8 @@ static func damage_breakdown(
 			pen_bonus = g_csv.passive_pen_bonus
 		total_dmg += dmg_bonus
 		total_pen += pen_bonus
+		total_dmg += CaliberProfiles.bonus_for(bullet, gun, "damage")
+		total_pen += CaliberProfiles.bonus_for(bullet, gun, "penetration")
 
 	var is_penetrated := total_pen >= enemy_def
 	var final_damage := total_dmg if is_penetrated else 0
@@ -104,3 +112,19 @@ static func damage_breakdown(
 	return "PEN(%d) vs DEF(%d) -> %s | DMG: %d" % [
 		total_pen, enemy_def, "관통" if is_penetrated else "도탄(0)", final_damage
 	]
+
+
+## 드래프트·준비 UI용 기본 유효 스탯. 거리·순서·파츠 같은 조건부 보정은 포함하지 않는다.
+static func effective_stats(bullet: BulletData, gun: GunData = null) -> Dictionary:
+	var stats := {
+		"damage": bullet.damage,
+		"penetration": bullet.penetration,
+		"accuracy": bullet.accuracy,
+		"knockback": bullet.knockback,
+	}
+	if gun != null:
+		stats.damage += gun.passive_dmg_bonus + CaliberProfiles.bonus_for(bullet, gun, "damage")
+		stats.penetration += gun.passive_pen_bonus + CaliberProfiles.bonus_for(bullet, gun, "penetration")
+		stats.accuracy += gun.passive_acc_bonus + CaliberProfiles.bonus_for(bullet, gun, "accuracy")
+		stats.knockback += gun.passive_knockback_bonus + CaliberProfiles.bonus_for(bullet, gun, "knockback")
+	return stats

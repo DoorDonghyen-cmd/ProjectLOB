@@ -227,8 +227,8 @@ static func run(t) -> void:
 	var dist_before7: int = cm7.enemies[0].current_distance
 	cm7.fire()
 	t.eq(cm7.magazine.get_remaining(), 0, "⭐ 전술 기관단총 6발 전량 소비")
-	t.eq(cm7.enemies[0].current_hp, 91,
-		"⭐ 표식(1피해)+.45ACP(2피해) 3쌍 = 9피해, 버프 체인 작동")
+	t.eq(cm7.enemies[0].current_hp, 85,
+		"⭐ .45ACP 프로필 적용 후 연계 2 + 공격 3의 3쌍 = 15피해")
 	t.eq(dist_before7 - cm7.enemies[0].current_distance, 1,
 		"전술 기관단총 6발도 적 전진은 1회")
 	t.eq(cm7.pending_buff_acc, 0, "6발 체인 종료 후 보류 ACC 버프 없음")

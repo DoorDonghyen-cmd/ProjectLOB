@@ -8,6 +8,8 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-28 | **기본탄 고정 보급 슬롯 및 리로드 정량 복구** | `codex0728-basic-supply` | 기본탄을 런 덱에서 분리해 탄창+약실 상한의 고정 보급원으로 운용하고, 리로드 정량 복구·발당 슬롯 점유·LIFO를 유지. 전술탄만 제한 덱 자원으로 분리 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_basic_ammo_supply_2026-07-28.md) |
+| 2026-07-28 | **역할명 기반 표준 3종·전용 2종 고정 규격 및 역할 전환** | `codex0728-fixed-caliber` | 경량탄·소총탄·산탄을 초반 표준으로, 중량탄·저격탄을 특수 총기 전용으로 공개하고 실제 구경은 보조 기술 표기로 유지. 자기 기반탄+공용 전술탄 드래프트와 역할 전환 LIFO 효과로 이관 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_fixed_caliber_profiles_2026-07-28.md) |
 | 2026-07-28 | **첫 구역 이후 35층 연속 상승 복구** | `codex0728-continuous-ascent` | 해금 여부와 런 목적지 분리, 관문 즉시 해금·연속 진입, 자원 유지, 지도·브리핑·디브리핑의 조기 종료 상한 제거 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_continuous_ascent_2026-07-28.md) |
 | 2026-07-27 | **탄환 v6 런타임 마이그레이션** | `codex0727-ammo-v6-runtime` | 19종 데이터 계약 이관, 크리티컬·탄창 버프·교차 구경·영구 소실 런타임, 시작 덱·상점·UI·회귀의 원자적 교체 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_runtime_migration_2026-07-27.md) |
 | 2026-07-27 | **탄환 v6 수치 튜닝 및 해법 존재 검사** | `codex0727-ammo-v6-tuning` | 기반탄 3/3/3/4/5, 총기 시그니처 보정, 9총기×13적 거리·지원탄 전수 순열, 클래스별 시작 덱 56조합 탐색 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_tuning_2026-07-27.md) |
@@ -39,6 +41,8 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0728-basic-supply Plan](file:///D:/ProjectLoB/docs/implementation_plan_basic_ammo_supply_2026-07-28.md)
+* [Session codex0728-fixed-caliber Plan](file:///D:/ProjectLoB/docs/implementation_plan_fixed_caliber_profiles_2026-07-28.md)
 * [Session codex0728-continuous-ascent Plan](file:///D:/ProjectLoB/docs/implementation_plan_continuous_ascent_2026-07-28.md)
 * [Session codex0727-ammo-v6-runtime Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_runtime_migration_2026-07-27.md)
 * [Session codex0727-ammo-v6-tuning Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_v6_tuning_2026-07-27.md)

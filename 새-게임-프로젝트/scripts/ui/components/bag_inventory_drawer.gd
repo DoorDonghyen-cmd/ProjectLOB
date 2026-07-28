@@ -269,7 +269,29 @@ func refresh_ammo_drawer() -> void:
 		empty_text = "💀 소멸된 탄환이 없습니다."
 		
 	var has_any_bullet := false
+	# 기본탄은 전술 덱 수량과 무관하게 가방 첫 칸에 항상 고정한다.
+	# 잔량이 0이어도 슬롯을 숨기지 않아 "리로드 시 복구" 규칙을 계속 읽을 수 있게 한다.
+	if _active_drawer_tab == 0 and overlay._basic_supply_bullet != null:
+		var supply_bullet: BulletData = overlay._basic_supply_bullet
+		var supply_count: int = int(render_source.get(supply_bullet, overlay._basic_supply_current))
+		var supply_callback := Callable()
+		if is_interactive and supply_count > 0:
+			supply_callback = func():
+				overlay.request_insert_bullet(supply_bullet)
+		var supply_card := _create_inventory_card(
+			supply_bullet,
+			supply_count,
+			supply_callback,
+			overlay._basic_supply_capacity
+		)
+		if supply_count <= 0:
+			supply_card.modulate = Color(1.0, 1.0, 1.0, 0.55)
+		_drawer_inventory_grid.add_child(supply_card)
+		has_any_bullet = true
+
 	for bullet: BulletData in render_source:
+		if _active_drawer_tab == 0 and bullet == overlay._basic_supply_bullet:
+			continue
 		var count: int = render_source[bullet]
 		if count <= 0:
 			continue
@@ -347,15 +369,22 @@ func _refresh_drawer_stack() -> void:
 func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> Control:
 	return overlay._create_stack_slot(bullet, pos, width)
 
-func _create_inventory_card(bullet: BulletData, count: int, click_callback: Callable = Callable()) -> Control:
+func _create_inventory_card(
+	bullet: BulletData,
+	count: int,
+	click_callback: Callable = Callable(),
+	supply_capacity: int = 0
+) -> Control:
 	var card := PanelContainer.new()
 	card.custom_minimum_size = Vector2(120, 72)
 	card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
+	if supply_capacity > 0:
+		card.tooltip_text += "\n\n기본 보급탄 · 리로드 시 %d발까지 복구" % supply_capacity
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.11, 0.16)
 	style.border_width_left = 1; style.border_width_right = 1
 	style.border_width_top = 1; style.border_width_bottom = 1
-	style.border_color = Color(0.13, 0.18, 0.24)
+	style.border_color = parent_scene.C_SUCCESS if supply_capacity > 0 else Color(0.13, 0.18, 0.24)
 	style.corner_radius_top_left = 9; style.corner_radius_top_right = 9
 	style.corner_radius_bottom_left = 9; style.corner_radius_bottom_right = 9
 	card.add_theme_stylebox_override("panel", style)
@@ -417,9 +446,11 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	role_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(role_lbl)
 	
-	# 수량이 2개 이상일 때만 수량 표기 노출 (1개 이하일 때는 직관성을 위해 완전히 숨김)
-	if count > 1:
-		var count_lbl: Label = parent_scene.make_label("x%d" % count, 9.5, parent_scene.C_DIM)
+	# 기본 보급 슬롯은 잔량/상한을 항상 표시한다. 전술탄은 기존처럼 복수일 때만 수량을 표시한다.
+	if supply_capacity > 0 or count > 1:
+		var count_text := "보급 %d/%d" % [count, supply_capacity] if supply_capacity > 0 else "x%d" % count
+		var count_color: Color = parent_scene.C_SUCCESS if supply_capacity > 0 else parent_scene.C_DIM
+		var count_lbl: Label = parent_scene.make_label(count_text, 9.5, count_color)
 		count_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 		count_lbl.add_theme_constant_override("outline_size", 3)
 		title_hbox.add_child(count_lbl)

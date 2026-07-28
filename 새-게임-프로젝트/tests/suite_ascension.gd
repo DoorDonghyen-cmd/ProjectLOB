@@ -27,7 +27,7 @@ static func run(t) -> void:
 	var e0 := Ascension.effects_for(0)
 	t.eq(int(e0.armor_delta), 0, "0등급: 아머 보정 없음")
 	t.eq(float(e0.credit_mult), 1.0, "0등급: 크레딧 배율 1.0")
-	t.check(not bool(e0.no_caliber_safety), "0등급: 전용탄 보존 유지")
+	t.check(not e0.has("no_caliber_safety"), "0등급: 폐기된 회수 불가 스위치 없음")
 
 	# 등급 1은 아머 −1, 등급 7에서 하나 더 → 누적 −2
 	t.eq(int(Ascension.effects_for(1).armor_delta), -1, "1등급: 아머 −1")
@@ -38,10 +38,11 @@ static func run(t) -> void:
 	t.eq(int(round(Ascension.effects_for(2).credit_mult * 100)), 80, "2등급: 크레딧 ×0.8")
 	t.eq(int(round(Ascension.effects_for(10).credit_mult * 100)), 64, "⭐ 10등급: ×0.8 두 번 누적 = ×0.64 (곱연산)")
 
-	# 전용탄 보존 해제는 8등급부터 계속 유지된다.
-	t.check(not bool(Ascension.effects_for(7).no_caliber_safety), "7등급: 아직 전용탄 보존")
-	t.check(bool(Ascension.effects_for(8).no_caliber_safety), "⭐ 8등급: 전용탄 보존 해제(질적 벽)")
-	t.check(bool(Ascension.effects_for(10).no_caliber_safety), "10등급: 해제 상태 유지(누적)")
+	# 기본탄은 전 등급에서 고정 보급 계약을 유지하고, 8등급은 거리 압박을 누적한다.
+	t.check(not Ascension.effects_for(10).has("no_caliber_safety"),
+		"기본탄 보급과 충돌하는 회수 불가 스위치 미사용")
+	t.eq(int(Ascension.effects_for(7).start_dist_delta), -1, "7등급까지 시작 거리 −1m")
+	t.eq(int(Ascension.effects_for(8).start_dist_delta), -2, "⭐ 8등급: 시작 거리 누적 −2m")
 
 	# ── ② 단조성 — 등급이 오를수록 절대 쉬워지지 않는다 ──
 	# "등급 = 난이도"라는 신뢰가 이 성질에 달려 있다.

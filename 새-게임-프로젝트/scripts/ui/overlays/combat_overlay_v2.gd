@@ -27,6 +27,9 @@ const RewardDraftPanel = preload("res://scripts/ui/components/reward_draft_panel
 # ── 상태 ──
 var _bullet_pool: Dictionary = {}
 var _loaded_bullets: Array[BulletData] = []
+var _basic_supply_bullet: BulletData = null
+var _basic_supply_current: int = 0
+var _basic_supply_capacity: int = 0
 var _enemy_sprites: Dictionary:
 	get:
 		if is_instance_valid(_track_control):
@@ -1125,6 +1128,9 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	
 	# 각 인스턴스 정보 초기 셋팅 (인벤토리 덱 정보 동기화)
 	_bullet_pool.clear()
+	_basic_supply_bullet = run_manager.basic_supply_bullet if run_manager else null
+	_basic_supply_current = 0
+	_basic_supply_capacity = 0
 	if run_manager and run_manager.deck:
 		for b_data in run_manager.deck:
 			_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
@@ -1146,6 +1152,8 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 		combat_manager.draw_pile_updated.connect(_on_draw_pile_updated)
 	if combat_manager.has_signal("piles_updated"):
 		combat_manager.piles_updated.connect(_on_piles_updated)
+	if combat_manager.has_signal("basic_supply_updated"):
+		combat_manager.basic_supply_updated.connect(_on_basic_supply_updated)
 	combat_manager.bullet_fired.connect(_on_bullet_fired)
 	if combat_manager.has_signal("all_enemies_moved"):
 		combat_manager.all_enemies_moved.connect(_on_all_enemies_moved)
@@ -1178,10 +1186,12 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 		
 	var initial_deck: Array[BulletData] = []
 	var equipped_parts: Array[PartData] = []
+	var basic_supply: BulletData = null
 	if run_manager:
 		initial_deck = run_manager.deck
 		equipped_parts = run_manager.equipped_parts
-	combat_manager.start_encounter(gun, enemy_data_list, initial_deck, equipped_parts)
+		basic_supply = run_manager.basic_supply_bullet
+	combat_manager.start_encounter(gun, enemy_data_list, initial_deck, equipped_parts, basic_supply)
 
 func _on_encounter_started(enemy_list) -> void:
 	_last_bullet_count = -1
@@ -1476,9 +1486,7 @@ func _on_buttstroke_triggered(enemy_inst: EnemyInstance, new_distance: int) -> v
 		parent_scene.shake_camera()
 
 func _on_draw_pile_updated(draw_pile: Array[BulletData]) -> void:
-	_bullet_pool.clear()
-	for b_data in draw_pile:
-		_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
+	_rebuild_bullet_pool(draw_pile)
 	_refresh_ammo_drawer()
 
 func _on_piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletData], exile_pile: Array[BulletData]) -> void:
@@ -1496,12 +1504,28 @@ func _on_piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletD
 	if is_instance_valid(_drawer_tab_exile):
 		_drawer_tab_exile.text = "소멸 (%d)" % exile_pile.size()
 		
-	_bullet_pool.clear()
-	for b_data in draw_pile:
-		_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
+	_rebuild_bullet_pool(draw_pile)
 		
 	if _is_bag_expanded:
 		_refresh_ammo_drawer()
+
+
+func _on_basic_supply_updated(bullet: BulletData, current: int, capacity: int) -> void:
+	_basic_supply_bullet = bullet
+	_basic_supply_current = current
+	_basic_supply_capacity = capacity
+	if bullet != null:
+		_bullet_pool[bullet] = current
+	if _is_bag_expanded:
+		_refresh_ammo_drawer()
+
+
+func _rebuild_bullet_pool(draw_pile: Array[BulletData]) -> void:
+	_bullet_pool.clear()
+	for b_data in draw_pile:
+		_bullet_pool[b_data] = _bullet_pool.get(b_data, 0) + 1
+	if _basic_supply_bullet != null:
+		_bullet_pool[_basic_supply_bullet] = _basic_supply_current
 
 func _on_hud_counter_clicked(event: InputEvent, tab_idx: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -2056,8 +2080,8 @@ func request_insert_bullet(bullet: BulletData) -> void:
 			combat_manager.combat_log.emit("⚠ 가방에 남은 탄환이 없습니다.")
 			return
 			
-		_bullet_pool[bullet] -= 1
-		combat_manager.request_insert_bullet(bullet)
+		if not combat_manager.request_insert_bullet(bullet):
+			return
 		_animate_last_insert = true
 		_refresh_ammo_drawer()
 		_update_cylinder_visuals()

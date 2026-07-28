@@ -7,7 +7,7 @@ extends RefCounted
 
 # ── 영구 메타 데이터 (정적 보존) ──
 static var meta_credits: int = 100       # 시작 시 테스트용으로 100 크레딧 기본 제공
-static var meta_backpack_lvl: int = 0    # 시작 덱 크기 업그레이드 (최대 3)
+static var meta_backpack_lvl: int = 0    # 시작 전술탄 +1/레벨 업그레이드 (최대 3)
 static var meta_hp_armor_lvl: int = 0    # 시작 HP 버퍼 업그레이드 (최대 2 -> 버퍼 1~3)
 static var meta_discount_unlocked: bool = false # 탄환 폐기 수수료 면제
 static var meta_tactical_data_cores: int = 0 # 전술 데이터 코어 누적 자원
@@ -19,7 +19,7 @@ static var meta_unlocked_sections: Array[String] = ["section_a"] # 영구 해금
 static var meta_lore_fragments: Array[int] = [] # 1~20 범위의 수집된 파편 번호
 ## gambler 해금 임계 — 적을 시작 거리의 이 비율 이내로 들이면 실패.
 const GAMBLER_DIST_RATIO := 1.0 / 3.0
-## 클래스별 시작 덱 탄환 ID 정본: [기본 공격, 연계, 특수 공격].
+## 클래스별 시작 패키지 정본: [기본 보급탄, 연계, 특수 공격].
 ## 리소스 경로를 여러 분기에 복사하지 않아 탄환 마이그레이션 시 유령 참조를 막는다.
 const STARTING_AMMO_IDS := {
 	Enums.WeaponClass.PISTOL: ["cal_9mm", "borer", "shred"],
@@ -73,6 +73,9 @@ var run_stats := {
 }
 
 var deck: Array[BulletData] = []
+## 기본탄은 전술 덱에 들어가지 않는 총기 고정 보급원이다.
+## 전투마다 총기의 실제 장전 한도까지 지급되고 리로드 때 같은 상한으로 복구된다.
+var basic_supply_bullet: BulletData = null
 var discarded_bullets: Array[BulletData] = [] # Unload로 버려져 소실 위기에 놓인 탄환들
 # ── 맵 구조 데이터 ──
 ## ⚠️ 아래 두 변수는 **현재 계층의 맵을 가리키는 활성 뷰**다. 실체는 section_maps가 소유한다.
@@ -123,6 +126,7 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 	saved_vault_credits = 0
 	backpack_items.clear()
 	deck.clear()
+	basic_supply_bullet = null
 	discarded_bullets.clear()
 	has_chamber_polish = false
 	current_route_type = "stairs"
@@ -154,37 +158,16 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 	if current_gun != null and current_gun.default_part != null:
 		equipped_parts.append(current_gun.default_part)
 	
-	# 기본 덱 구성 (총기 클래스에 따라 동적 매핑)
+	# 시작 패키지 구성. 기본탄은 고정 보급원으로 분리하고 전술탄만 런 덱에 넣는다.
 	if current_gun != null:
 		var cls: int = current_gun.weapon_class
 		var basic_path := ""
 		var specA_path := ""
 		var specB_path := ""
-		var basic_cnt := 5
-		var specA_cnt := 2
-		var specB_cnt := 1
-
-		match cls:
-			Enums.WeaponClass.PISTOL:
-				basic_cnt = 5 + meta_backpack_lvl
-				specA_cnt = 2 + (1 if meta_backpack_lvl >= 2 else 0)
-				specB_cnt = 1
-			Enums.WeaponClass.SMG:
-				basic_cnt = 6 + meta_backpack_lvl
-				specA_cnt = 2
-				specB_cnt = 1
-			Enums.WeaponClass.RIFLE:
-				basic_cnt = 6 + meta_backpack_lvl
-				specA_cnt = 2
-				specB_cnt = 1
-			Enums.WeaponClass.DMR:
-				basic_cnt = 3 + meta_backpack_lvl
-				specA_cnt = 2
-				specB_cnt = 1
-			Enums.WeaponClass.SHOTGUN:
-				basic_cnt = 5 + meta_backpack_lvl
-				specA_cnt = 2
-				specB_cnt = 1
+		# 전술 백팩은 더 이상 무한 보급되는 기본탄을 늘리지 않는다.
+		# 레벨당 전술탄 1발을 A/B에 번갈아 지급해 기존 +1발 성장량을 보존한다.
+		var specA_cnt := 2 + ceili(float(meta_backpack_lvl) / 2.0)
+		var specB_cnt := 1 + floori(float(meta_backpack_lvl) / 2.0)
 
 		var ammo_ids: Array = STARTING_AMMO_IDS.get(cls, [])
 		if ammo_ids.size() == 3:
@@ -194,11 +177,10 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 		else:
 			push_error("RunManager: 클래스 %d의 시작 탄환 구성이 없습니다." % cls)
 
-		# 승천: 시작 덱 감소(§4.1 레버 ②). 각 계열에서 1발씩 빼되 최소 1발은 남긴다.
+		# 승천: 전술 시작 덱 감소(§4.1 레버 ②). 각 계열에서 1발씩 빼되 최소 1발은 남긴다.
 		# ⚠️ 0으로 만들면 해당 탄 계열이 통째로 사라져 빌드가 아니라 결함이 된다.
 		var deck_delta: int = int(ascension_effects().deck_delta)
 		if deck_delta != 0:
-			basic_cnt = maxi(basic_cnt + deck_delta, 1)
 			specA_cnt = maxi(specA_cnt + deck_delta, 1)
 			specB_cnt = maxi(specB_cnt + deck_delta, 1)
 
@@ -206,12 +188,14 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 		var sa_res: BulletData = load(specA_path)
 		var sb_res: BulletData = load(specB_path)
 
-		if b_res: _sync_bullet_stats_from_csv(b_res)
+		if b_res:
+			_sync_bullet_stats_from_csv(b_res)
+			basic_supply_bullet = b_res.duplicate()
+		elif basic_bullet != null:
+			basic_supply_bullet = basic_bullet.duplicate()
 		if sa_res: _sync_bullet_stats_from_csv(sa_res)
 		if sb_res: _sync_bullet_stats_from_csv(sb_res)
 
-		for i in range(basic_cnt):
-			if b_res: deck.append(b_res.duplicate())
 		for i in range(specA_cnt):
 			if sa_res: deck.append(sa_res.duplicate())
 		for i in range(specB_cnt):
@@ -337,18 +321,18 @@ func unload_bullet_to_discard(bullet: BulletData) -> void:
 			break
 
 
-## 소멸(Exile)되거나 분실된 탄환을 덱에서 영구 제거 (단, 기본 9mm는 리필 보장용으로 제거 생략)
+## 소멸(Exile)되거나 분실된 전술탄을 덱에서 영구 제거.
 func exile_bullet_from_deck(bullet: BulletData) -> void:
-	# 전용탄 보존 안전장치 — 주력 탄이 계속 소멸하면 쏠 것이 없어지므로 같은 구경은 보호한다.
+	# 기본탄은 덱 바깥의 고정 보급원이므로 어떤 난이도에서도 영구 제거 대상이 아니다.
+	if bullet == null or bullet.is_basic:
+		return
+	# 레거시 전용탄 보존 안전장치 — 컨버전 킷 세이브 호환을 위해 계약은 유지한다.
 	# 컨버전 킷은 지정 클래스도 전용탄으로 취급한다.
-	# ⚠️ 승천 8등급 "회수 불가"는 이 안전장치를 해제한다(§4.1 레버 ①).
-	#    잘못 고른 한 발이 곧 자원 손실이 되어, "이 적에게 무엇이 통하는가" 계산이 절실해진다.
-	if not bool(ascension_effects().no_caliber_safety):
-		if current_gun != null and bullet.weapon_class == current_gun.weapon_class:
-			return
-		var conversion_class := get_conversion_class()
-		if conversion_class != Enums.WeaponClass.UNIVERSAL and bullet.weapon_class == conversion_class:
-			return
+	if current_gun != null and bullet.weapon_class == current_gun.weapon_class:
+		return
+	var conversion_class := get_conversion_class()
+	if conversion_class != Enums.WeaponClass.UNIVERSAL and bullet.weapon_class == conversion_class:
+		return
 		
 	for i in range(deck.size()):
 		if deck[i].display_name == bullet.display_name:
@@ -844,7 +828,7 @@ func _update_conditional_paths_in(nodes_by_id: Dictionary) -> void:
 			var cond = node.unlock_condition_type
 			var can_unlock = false
 			if cond == "caliber_762":
-				if current_gun and (current_gun.display_name.to_upper().contains("HEAVY") or "7.62" in current_gun.display_name or "중장형" in current_gun.display_name):
+				if current_gun != null and current_gun.weapon_class == Enums.WeaponClass.DMR:
 					can_unlock = true
 			elif cond == "chamber_polish":
 				if has_chamber_polish:
@@ -886,6 +870,14 @@ func bullet_draft_weight(bullet: BulletData) -> int:
 			and bullet != null and bullet.weapon_class == conversion_class:
 		return 3
 	return 1
+
+
+## 구경은 선택 총기의 고정 프로필이다. 드래프트에는 해당 총기의 기반탄과 공용 전술탄만 나온다.
+func bullet_is_draft_eligible(bullet: BulletData) -> bool:
+	if bullet == null:
+		return false
+	# 기본탄은 총기 고정 보급 슬롯에서만 제공한다. 드래프트는 전술탄 선택에 집중한다.
+	return not bullet.is_basic and bullet.weapon_class == Enums.WeaponClass.UNIVERSAL
 
 
 ## 자기 클래스 킷과 복수 킷 장착을 차단한다.

@@ -105,7 +105,7 @@ func _build_ui() -> void:
 	var shop_title: Label = parent_scene.make_label(" 영구 메타 업그레이드 상점", 18, parent_scene.C_DIM)
 	shop_vbox.add_child(shop_title)
 
-	_meta_backpack_btn = parent_scene.make_button("전술 전개 백팩 Lv.0 -> Lv.1 (40 Cr)", _on_upgrade_backpack_pressed, parent_scene.C_PANEL)
+	_meta_backpack_btn = parent_scene.make_button("전술 백팩 (시작 전술탄 +1) Lv.0 -> Lv.1 (40 Cr)", _on_upgrade_backpack_pressed, parent_scene.C_PANEL)
 	_meta_backpack_btn.custom_minimum_size = Vector2(0, 36)
 	shop_vbox.add_child(_meta_backpack_btn)
 
@@ -131,7 +131,7 @@ func _refresh_shop_ui() -> void:
 		_lore_fragment_label.text = "기밀 정보 복원율: %d / 20" % RunManager.meta_lore_fragments.size()
 		
 	_meta_credit_label.text = "보유 크레딧: %d" % RunManager.meta_credits
-	_meta_backpack_btn.text = "전술 백팩 (시작 덱 용량) Lv.%d -> Lv.%d (40 Cr)" % [
+	_meta_backpack_btn.text = "전술 백팩 (시작 전술탄 +1) Lv.%d -> Lv.%d (40 Cr)" % [
 		RunManager.meta_backpack_lvl,
 		mini(RunManager.meta_backpack_lvl + 1, 3)
 	]

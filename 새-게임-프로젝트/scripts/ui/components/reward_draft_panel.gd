@@ -124,7 +124,9 @@ func _generate_draft_choices() -> Array[BulletData]:
 				if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
 					var clean_name: String = file_name.replace(".remap", "")
 					var res = load(path + clean_name)
-					if res is BulletData:
+					if res is BulletData and (
+							run_manager == null or run_manager.bullet_is_draft_eligible(res)
+					):
 						pool.append(res)
 			file_name = dir.get_next()
 		dir.list_dir_end()
@@ -189,16 +191,19 @@ func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	role_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(role_lbl)
 	
+	var effective := DamageCalculator.effective_stats(
+		bullet, run_manager.current_gun if run_manager != null else null
+	)
 	var stats_lbl: Label = parent_scene.make_label(
-		"DMG %d  ACC %d  PEN %d" % [bullet.damage, bullet.accuracy, bullet.penetration],
+		"DMG %d  ACC %d  PEN %d" % [effective.damage, effective.accuracy, effective.penetration],
 		13, parent_scene.C_DIM)
 	stats_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stats_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(stats_lbl)
 	
-	if bullet.knockback > 0 or bullet.slow > 0:
+	if int(effective.knockback) > 0 or bullet.slow > 0:
 		var util_lbl: Label = parent_scene.make_label(
-			"KB %d  Slow %d" % [bullet.knockback, bullet.slow], 13, parent_scene.C_DIST_SAFE)
+			"KB %d  Slow %d" % [effective.knockback, bullet.slow], 13, parent_scene.C_DIST_SAFE)
 		util_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		util_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vbox.add_child(util_lbl)

@@ -1,6 +1,8 @@
 class_name LoadoutOverlay
 extends PanelContainer
 
+const CaliberProfilesScript := preload("res://scripts/core/caliber_profiles.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 요원 작전 준비실 (Agent Tactical Loadout - HTML 이식 버전)
 ## ═══════════════════════════════════════════════════
@@ -59,7 +61,6 @@ const WEAPON_PROFILES := {
 		"cap": 4,
 		"ammo": 5,
 		"prev": 2,
-		"calibers": "[9mm] [45ACP] [전 구경]",
 		"passive": "- 균형잡힌 스탯 / 범용 파츠 시너지 우수\n- 표준 LIFO 디펜스의 탄탄한 기초 제공",
 		"penalty": "- 특화된 극딜/넉백 유틸리티 부재\n- 시그니처 혜택이 없는 것 자체가 리스크",
 		"unlock_desc": ""
@@ -72,9 +73,8 @@ const WEAPON_PROFILES := {
 		"cap": 4,
 		"ammo": 3,
 		"prev": 2,
-		"calibers": "[9mm] [5.56mm] [저격전용]",
-		"passive": "- 패시브 ACC+4 가산 보너스\n- 첫 탄 격발 시 적의 EVA(회피) 무시 확정 명중",
-		"penalty": "- 탄창 슬롯 3칸으로 좁아 연계 빌드 한계\n- 근거리 (DIST 1 이하) 격발 시 DMG 감소 취약",
+		"passive": "- 총기 ACC+1, 저격경 ACC+4 및 첫 탄 EVA 무시\n- 거리 2 이상에서는 저격 시그니처로 EVA 게이트 무시",
+		"penalty": "- 탄창 슬롯 3칸으로 좁아 연계 빌드 한계\n- 근거리 (DIST 1 이하)에서는 EVA 게이트 우회 해제",
 		"unlock_desc": "[원거리 통제] 평균 처치 거리 4.0 이상으로 완주"
 	},
 	"bruiser": {
@@ -85,7 +85,6 @@ const WEAPON_PROFILES := {
 		"cap": 5,
 		"ammo": 5,
 		"prev": 2,
-		"calibers": "[12Gauge] [Slug] [전 구경]",
 		"passive": "- 포인트블랭크 고유 파츠 기본 탑재 (근접 DMG 폭증)\n- 격발 당 근접 타격 넉백 거리 극대화 (+1 KB)",
 		"penalty": "- 기본 명중(ACC) 보정 게이트가 매우 낮음\n- 원거리 (DIST 4 이상) 타겟 대상 명중률 하락",
 		"unlock_desc": "[처치 연쇄] 한 턴 3마리 이상의 적 처치"
@@ -98,7 +97,6 @@ const WEAPON_PROFILES := {
 		"cap": 3,
 		"ammo": 6,
 		"prev": 6,
-		"calibers": "[.45ACP] [SMG] [시퀀스]",
 		"passive": "- 탄창 전체를 1턴에 순차 발사\n- 연계→공격 체인을 버스트 안에서 자동 완성",
 		"penalty": "- 발사 후 3턴 재장전 공백\n- 탄당 DMG -1, 발사 중 시퀀스 수정 불가",
 		"unlock_desc": "[계획 규율] 납탄(중간 삽탄) 격발 없이 완주"
@@ -111,7 +109,6 @@ const WEAPON_PROFILES := {
 		"cap": 4,
 		"ammo": 6,
 		"prev": 1,
-		"calibers": "[7.62mm] [대구경] [전 구경]",
 		"passive": "- 패시브 PEN+1 / DMG+1 / 넉백+1 버프 제공\n- 관통 게이트 통과 시 초과 PEN만큼 뒤 적 관통타격",
 		"penalty": "- 예고창이 1개로 엄격 차단되어 기억력 의존\n- 조준 불안정 패시브 ACC -1 감쇄 패널티",
 		"unlock_desc": "[시스템 파훼] 관통 피해 없이 파쇄만으로 탱커 처치"
@@ -124,7 +121,6 @@ const WEAPON_PROFILES := {
 		"cap": 3,
 		"ammo": 4,
 		"prev": 3,
-		"calibers": "[9mm] [45ACP] [전 구경]",
 		"passive": "- 예고창 3개로 뛰어난 가시성 제공\n- 턴당 1회 맨 위 탄을 맨 아래로 보내는 이젝트 사용 가능",
 		"penalty": "- 일반 개조 슬롯이 3칸으로 극도 제한\n- 이젝트 기믹으로 밀려난 탄환 격발 시 DMG -1 감쇄",
 		"unlock_desc": "[완벽 실행] 한 전투를 빗나감/0데미지 없이 클리어"
@@ -137,8 +133,7 @@ const WEAPON_PROFILES := {
 		"cap": 5,
 		"ammo": 5,
 		"prev": 0,
-		"calibers": "[전 구경 지원]",
-		"passive": "- 패시브 DMG+2 및 5칸의 넓은 개조 슬롯 지원\n- 탄창 내 아래에 깊숙이 묻힌 탄일수록 격발 위력 증가",
+		"passive": "- 중량탄 전술 프로필 DMG+1 및 5칸의 넓은 개조 슬롯 지원\n- 탄창 내 아래에 깊숙이 묻힌 탄일수록 격발 위력 증가",
 		"penalty": "- 예고창 0개로 블라인드 (발사 직전 1발만 명중 예고)\n- 탄창 관리 실수를 하면 빌드가 꼬이기 쉬움",
 		"unlock_desc": "[리스크 감수] 무손실 (근접 1m 허용 없이) 완주"
 	},
@@ -150,7 +145,6 @@ const WEAPON_PROFILES := {
 		"cap": 4,
 		"ammo": 5,
 		"prev": 2,
-		"calibers": "[전 구경 지원]",
 		"passive": "- 태세 예지 내장 (적 태세 전환 1턴 미리 예고)\n- 적의 태세 전환 턴에 모든 게이트 무시 (확정 명중/관통)",
 		"penalty": "- 태세 전환이 없는 적을 상대할 때는 시그니처 혜택 소멸\n- 낮은 범용성에 따른 빌드 불안정성",
 		"unlock_desc": "[시스템 파훼] 슬로우 없이 태세 전환 병사 처치"
@@ -163,9 +157,8 @@ const WEAPON_PROFILES := {
 		"cap": 3,
 		"ammo": 5,
 		"prev": 5,
-		"calibers": "[7.62mm] [소총 계열]",
 		"passive": "- 연발: 방아쇠를 당기면 탄창 5발이 한 턴에 전부 나갑니다\n- 앞의 적이 쓰러지면 남은 탄이 다음 적으로 이어집니다\n- 탄창 전체가 예고창에 보입니다",
-		"penalty": "- 재장전 3턴 — 쏟아붓고 나면 그동안 무방비입니다\n- 중간에 멈출 수 없어 통하지 않는 탄을 고르면 손실이 5배\n- 개조 슬롯 3칸 · 패시브 보정 없음",
+		"penalty": "- 재장전 4턴 — 쏟아붓고 나면 그동안 무방비입니다\n- 중간에 멈출 수 없어 통하지 않는 탄을 고르면 손실이 5배\n- 개조 슬롯 3칸 · 패시브 보정 없음",
 		"unlock_desc": "[전탄 소모] 탄창을 한 발도 남기지 않고 비운 채 전투 승리"
 	}
 }
@@ -400,12 +393,12 @@ func _build_ui() -> void:
 	_lbl_prev_size = parent_scene.make_label("2", 11, parent_scene.C_TEXT)
 	prev_val_hbox.add_child(_lbl_prev_size)
 	
-	# B5) CALIBERS 로우
+	# B5) AMMO STANDARD 로우
 	var cal_row := HBoxContainer.new()
 	right_vbox.add_child(cal_row)
-	cal_row.add_child(parent_scene.make_label("■ CALIBERS", 11, parent_scene.C_DIM))
+	cal_row.add_child(parent_scene.make_label("■ AMMO STANDARD", 11, parent_scene.C_DIM))
 	
-	_lbl_calibers = parent_scene.make_label("[9mm]", 11, C_NEON_GOLD)
+	_lbl_calibers = parent_scene.make_label("[표준 규격 · 경량탄 (9mm)]", 11, C_NEON_GOLD)
 	_lbl_calibers.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_lbl_calibers.horizontal_alignment = HorizontalAlignment.HORIZONTAL_ALIGNMENT_RIGHT
 	cal_row.add_child(_lbl_calibers)
@@ -507,6 +500,11 @@ func _refresh_stats_ui() -> void:
 		"shotgun": target_gun = _gun_shotgun
 		"smg": target_gun = _gun_smg
 		"dmr": target_gun = _gun_dmr
+		"heavy": target_gun = _gun_heavy
+		"trickster": target_gun = _gun_trickster
+		"gambler": target_gun = _gun_gambler
+		"stance_hunter": target_gun = _gun_stance_hunter
+		"suppressor": target_gun = _gun_suppressor
 		
 	if target_gun:
 		_gun_icon_rect.texture = target_gun.icon
@@ -530,8 +528,8 @@ func _refresh_stats_ui() -> void:
 	var base_prev: int = profile.prev
 	_lbl_prev_size.text = str(base_prev)
 		
-	# 5. 구경 및 설명 텍스트
-	_lbl_calibers.text = profile.calibers
+	# 5. 표준/전용 규격 및 고정 탄도 성향
+	_lbl_calibers.text = CaliberProfilesScript.display_text(target_gun)
 	
 	var is_unlocked := RunManager.meta_unlocked_weapons.has(selected_weapon_key)
 	if is_unlocked:

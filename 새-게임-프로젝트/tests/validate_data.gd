@@ -117,7 +117,7 @@ static func _validate_bullets(t) -> void:
 	var valid_roles := ["attack", "link", "control"]
 	var valid_triggers := ["none", "on_hit", "on_effective_hit"]
 	var valid_scopes := ["none", "next_shot", "target", "remaining_mag", "formation", "self"]
-	var valid_conditions := ["none", "previous_effective", "last_shot", "first_shot", "cross_caliber"]
+	var valid_conditions := ["none", "previous_effective", "last_shot", "first_shot", "role_change"]
 	for i in range(1, rows.size()):
 		var r: Variant = rows[i]
 		var where := "bullet 행 %d" % (i + 1)

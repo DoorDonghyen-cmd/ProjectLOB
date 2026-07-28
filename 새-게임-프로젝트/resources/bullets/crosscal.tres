@@ -5,15 +5,15 @@
 
 [resource]
 script = ExtResource("1")
-display_name = "교차탄"
-description = "직전과 다른 구경 뒤에 발사하면 피해 4를 더합니다."
+display_name = "교대탄"
+description = "직전 탄환과 역할이 다르면 피해 4를 더합니다."
 icon = ExtResource("2")
 family = "special"
 role = "attack"
 weapon_class = 5
 trigger = "on_effective_hit"
 scope = "self"
-condition = "cross_caliber"
+condition = "role_change"
 damage = 2
 accuracy = 5
 penetration = 1

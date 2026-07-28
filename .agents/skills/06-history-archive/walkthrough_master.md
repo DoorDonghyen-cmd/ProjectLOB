@@ -8,6 +8,8 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-07-28 | **기본탄 고정 보급 슬롯 및 리로드 정량 복구** | `codex0728-basic-supply` | 기본탄을 덱·드래프트에서 분리해 가방 고정 슬롯으로 표시하고 탄창+약실 상한까지 리로드 복구. 발당 탄창 슬롯과 LIFO는 유지하고 전술탄만 제한 자원으로 분리, 승천 8 계약과 회귀 동기화 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_basic_ammo_supply_2026-07-28.md) |
+| 2026-07-28 | **역할명 기반 표준 3종·전용 2종 고정 규격 및 역할 전환** | `codex0728-fixed-caliber` | 경량탄·소총탄·산탄 표준 규격과 중량탄·저격탄 전용 규격을 UI·카드·문서에 분리하고 실제 구경은 보조 표기로 유지. 공용 전술탄 프로필·자기 규격 드래프트·역할 파츠 시퀀스·DMR 게이트를 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_fixed_caliber_profiles_2026-07-28.md) |
 | 2026-07-28 | **첫 구역 이후 35층 연속 상승 복구** | `codex0728-continuous-ascent` | 침전 보스 뒤 메인 복귀하던 과거 런 길이 램프 제거. 다음 계층 즉시 해금·연속 진입, 덱·파츠·가방·크레딧 유지와 지도·브리핑·디브리핑 계약 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_continuous_ascent_2026-07-28.md) |
 | 2026-07-27 | **Phase 13-3 탄환 v6 런타임 마이그레이션** | `codex0727-ammo-v6-runtime` | 27종 v5를 19종 v6으로 교체하고 결정형 크리티컬·탄창 버프·교차 구경·영구 소실·UI 예고 구현. #009·#010 종결, 연발 넉백 2m 상한과 전체 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_runtime_migration_2026-07-27.md) |
 | 2026-07-27 | **Phase 13-2 탄환 v6 수치 튜닝** | `codex0727-ammo-v6-tuning` | 기반탄 3/3/3/4/5와 도박형·제압형 보정안, 9총기×13적 기본/환기구 해법 및 시작 덱 56조합 검증. 일반 적 무해법 0, 런타임 드리프트 2건 분리 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_tuning_2026-07-27.md) |
@@ -44,6 +46,8 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0728-basic-supply Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_basic_ammo_supply_2026-07-28.md)
+* [Session codex0728-fixed-caliber Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_fixed_caliber_profiles_2026-07-28.md)
 * [Session codex0728-continuous-ascent Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_continuous_ascent_2026-07-28.md)
 * [Session codex0727-ammo-v6-runtime Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_runtime_migration_2026-07-27.md)
 * [Session codex0727-ammo-v6-tuning Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_v6_tuning_2026-07-27.md)

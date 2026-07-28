@@ -10,6 +10,8 @@ const SuiteMagazine := preload("res://tests/suite_magazine.gd")
 const SuiteEnemy := preload("res://tests/suite_enemy.gd")
 const ValidateData := preload("res://tests/validate_data.gd")
 const SuiteAmmoIntegrity := preload("res://tests/suite_ammo_integrity.gd")
+const SuiteCaliberProfiles := preload("res://tests/suite_caliber_profiles.gd")
+const SuiteBasicSupply := preload("res://tests/suite_basic_supply.gd")
 const SuiteAmmoMatrix := preload("res://tests/suite_ammo_matrix.gd")
 const SuiteLIFODepthBaseline := preload("res://tests/suite_lifo_depth_baseline.gd")
 const SuiteAmmoV6Tuning := preload("res://tests/suite_ammo_v6_tuning.gd")
@@ -61,6 +63,8 @@ func _initialize() -> void:
 	SuiteEnemy.run(t)       # 적 태세 전환 · 거리 계산
 	ValidateData.run(t)     # CSV 데이터 정합성
 	SuiteAmmoIntegrity.run(t) # 탄환 CSV↔리소스↔시작 덱 완전 일치
+	SuiteCaliberProfiles.run(t) # 고정 구경 프로필·기반탄 비중복·드래프트 제한
+	SuiteBasicSupply.run(t)   # 기본탄 고정 보급 슬롯·리로드 정량 복구
 	SuiteAmmoMatrix.run(t)    # 실제 몬스터별 공격·연계·연발 처치 매트릭스
 	SuiteLIFODepthBaseline.run(t) # v5 순서 민감도 JSON 기준선
 	SuiteAmmoV6Tuning.run(t) # v6 후보 화력·거리·지원탄 해법 기준선
@@ -78,7 +82,7 @@ func _initialize() -> void:
 	SuiteContinuousRun.run(t) # 연속 런 구조(계층 체이닝·자원 유지·종료 시점)
 	SuiteSpawnTiers.run(t)    # 계층별 스폰 3구간이 모두 도달 가능한지
 	SuiteFireMode.run(t)      # 발사 방식(연발 버스트 + 단발 회귀)
-	SuiteConversionKit.run(t) # 컨버전 킷(장착 제한·소멸 면제·가중치·가격·승천8)
+	SuiteConversionKit.run(t) # 컨버전 킷(장착 제한·레거시 소멸 면제·가중치·가격)
 	SuiteDifficultyCurve.run(t) # 난이도 곡선 램프 + 진행 경제(35층 실측값 고정)
 	SuiteAscension.run(t)     # 승천(누적 적용·해금 사다리·공정성 바닥선)
 	SuiteUIDataDrift.run(t)   # UI가 계층 정보를 복사해 두지 않았는지(소스 레벨 드리프트 검사)

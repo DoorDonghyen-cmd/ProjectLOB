@@ -144,6 +144,10 @@ static func run(t, tree: SceneTree) -> void:
 		"⭐ 장전 UI에 연계 역할 배지 렌더")
 	t.check(_has_label_text(scene._combat_overlay, "[공격]"),
 		"⭐ 장전 UI에 공격 역할 배지 렌더")
+	scene._combat_overlay._toggle_drawer(true)
+	t.check(_has_label_text(scene._combat_overlay, "보급 6/6"),
+		"⭐ Tempo 가방 첫 칸에 약실 포함 기본 보급 6/6 표시")
+	scene._combat_overlay._toggle_drawer(false)
 
 	# ── 개발자 테스트: 제압형 연발 전투 숏컷이 실제로 도는가 ──
 	# ⚠️ 숏컷은 QA 진입점이라 깨져도 본 게임 흐름에서는 드러나지 않는다.

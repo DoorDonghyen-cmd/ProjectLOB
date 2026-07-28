@@ -37,6 +37,8 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_boss_gimmicks.gd` | 보스 기믹·호위 대열 — 2m 편성, 차징 포격, 강제전진, 페이즈 전환, 넉백 저항 |
 | `validate_data.gd` | CSV 정합성 — id 유니크·컬럼·정수·밴드(ERROR/WARN), `.tres` 매칭 |
 | `suite_ammo_integrity.gd` | 탄환 CSV↔리소스↔시작 덱 역할·수치 완전 일치 |
+| `suite_caliber_profiles.gd` | 고정 구경 프로필 — 공용 전술탄 보정, 기반탄 비중복, 다른 구경 드래프트 차단 |
+| `suite_basic_supply.gd` | 기본탄 고정 보급 슬롯 — 총기별 상한, 장전 차감, 리로드 정량 복구 |
 | `suite_ammo_matrix.gd` | 실제 몬스터별 공격·연계·연발 처치 조합 매트릭스 |
 | `lifo_depth_probe.gd` | 같은 6발의 고유 순열을 실제 CombatManager로 전투해 적별 최적 배치 산출 |
 | `suite_lifo_depth_baseline.gd` | `baseline/lifo_depth_v5.json`과 현행 v5 순서 민감도 비교 |
@@ -44,7 +46,7 @@ GODOT=/path/to/godot ./tests/run.sh
 | `ammo_v6_tuning_probe.gd` | v6 후보 피해·총기 보정의 사이클 화력, 거리별 도달성, 기반+지원탄 전수 순열 및 제어탄 구조 검사 |
 | `suite_ammo_v6_tuning.gd` | 후보 피해 3/3/3/4/4, 9총기 화력 밴드, 일반 적 해법, 지배 지원 패키지 부재를 기준 JSON으로 회귀 고정 |
 | `sim_harness.gd` | 결정론 전투 시뮬레이터 — 승패·마진·넉백락 산출(밸런스 회귀+튜닝) |
-| `suite_conversion_kit.gd` | 컨버전 킷 — 클래스별 데이터, 장착 제한, 소멸 면제, 드래프트 가중, 가격, 승천 8등급 |
+| `suite_conversion_kit.gd` | 컨버전 킷 — 클래스별 데이터, 장착 제한, 레거시 소멸 면제, 드래프트 가중, 가격 |
 | `suite_continuous_run.gd` | 연속 런 — 첫 관문 자동 해금·계층 체이닝, 자원 유지, 고정 35층 |
 | `suite_spawn_tiers.gd` | 계층별 스폰 3구간이 모두 도달 가능한지(사문화 콘텐츠 검출) |
 | `suite_ui_data_drift.gd` | UI 소스에 계층 이름·층수가 복사돼 있지 않은지(정본은 `MapGenerator`) |

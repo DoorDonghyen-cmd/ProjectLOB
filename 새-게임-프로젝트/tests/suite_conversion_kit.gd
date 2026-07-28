@@ -1,5 +1,5 @@
 extends RefCounted
-## 컨버전 킷 회귀 — 데이터, 장착 제한, 소멸 면제, 승천 8등급, 드래프트 가중, 무기고 가격.
+## 컨버전 킷 회귀 — 데이터, 장착 제한, 소멸 면제, 드래프트 가중, 무기고 가격.
 
 const MaintenanceOverlay := preload("res://scripts/ui/overlays/maintenance_overlay.gd")
 
@@ -97,13 +97,13 @@ static func run(t) -> void:
 	no_kit_rm.exile_bullet_from_deck(universal)
 	t.check(not _deck_has(no_kit_rm, "universal"), "킷 미장착 시 범용탄은 잘못 보호되지 않음")
 
-	# 승천 8등급은 주력·킷 안전장치를 모두 해제한다.
+	# 기본탄 고정 보급 도입 후 승천 8도 탄약 보존 계약을 예외 처리하지 않는다.
 	RunManager.meta_ascension_level = 8
 	rm.deck = [native, converted]
 	rm.exile_bullet_from_deck(native)
 	rm.exile_bullet_from_deck(converted)
-	t.check(not _deck_has(rm, "native"), "승천8: 주력탄 소멸 면제 해제")
-	t.check(not _deck_has(rm, "converted"), "승천8: 킷 탄 소멸 면제 해제")
+	t.check(_deck_has(rm, "native"), "승천8: 레거시 주력탄 보존 유지")
+	t.check(_deck_has(rm, "converted"), "승천8: 레거시 킷 탄 보존 유지")
 	RunManager.meta_ascension_level = old_ascension
 
 	# ── 무기고: 보류 중에는 킷을 진열하지 않는다 ──

@@ -95,7 +95,7 @@ static func run(t) -> void:
 
 	var guide := _fight("revolver", "dodger", ["guide", "cal_45acp"])
 	t.eq(int(guide.mag_acc), 1, "유도탄 잔여 탄창 ACC +1 유지")
-	t.eq(guide.damages, [2, 3], "유도 ACC+1로 .45ACP가 EVA7 통과")
+	t.eq(guide.damages, [2, 4], "유도 ACC+1로 고피해 .45ACP가 EVA7 통과")
 
 	var align := _fight("revolver", "boss_seraph", ["align", "cal_9mm"])
 	t.eq(int(align.mag_pen), 1, "정렬탄 잔여 탄창 PEN +1 유지")
@@ -111,10 +111,10 @@ static func run(t) -> void:
 	var opener := _fight("revolver", "tank", ["opener"])
 	t.eq(int(opener.def), 2, "선제탄 첫 발 명중 시 DEF -1")
 
-	# 구체 7.62를 발사한 뒤 범용 교차탄은 현재 권총 약실(9mm)로 적응해 경계를 만든다.
-	var crosscal := _fight("revolver", "rusher", ["cal_762", "crosscal"])
-	t.check(crosscal.dead, "교차탄이 실제 구체 구경 경계를 읽음")
-	t.eq(crosscal.damages, [4, 6], "교차탄 2+4")
+	# 연계 역할 뒤 공격 역할 교대탄을 발사하면 역할 경계를 읽는다.
+	var crosscal := _fight("revolver", "rusher", ["marker", "crosscal"])
+	t.check(crosscal.dead, "교대탄이 공격·연계 역할 경계를 읽음")
+	t.eq(crosscal.damages, [2, 6], "교대탄 2+4")
 
 	var control := _fight("revolver", "caster", ["impact"])
 	t.check(int(control.distance) > 10, "충격탄 넉백으로 비전진 적과 거리 확보")
