@@ -177,7 +177,7 @@ func open_gallery() -> void:
 		var stat_lbl = parent_scene.make_label("DMG:%d ACC:%d PEN:%d" % [b_data.damage, b_data.accuracy, b_data.penetration], 8, parent_scene.C_TEXT)
 		info_vbox.add_child(stat_lbl)
 		
-		# 표준 규격 3종과 총기 전용 규격 2종을 같은 어휘로 표시한다.
+		# 탄종 3계열 안에서 표준/강화 기술 규격을 같은 어휘로 표시한다.
 		var cal_name := CaliberProfilesScript.short_label_for_class(b_data.weapon_class)
 		var caliber_lbl = parent_scene.make_label("규격: %s" % cal_name, 8, parent_scene.C_DIM)
 		caliber_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

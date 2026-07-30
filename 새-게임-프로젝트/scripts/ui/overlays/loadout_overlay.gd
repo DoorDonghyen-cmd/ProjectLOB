@@ -98,7 +98,7 @@ const WEAPON_PROFILES := {
 		"ammo": 6,
 		"prev": 6,
 		"passive": "- 탄창 전체를 1턴에 순차 발사\n- 연계→공격 체인을 버스트 안에서 자동 완성",
-		"penalty": "- 발사 후 3턴 재장전 공백\n- 탄당 DMG -1, 발사 중 시퀀스 수정 불가",
+		"penalty": "- 발사 후 4턴 재장전 공백\n- 탄당 DMG -1, 발사 중 시퀀스 수정 불가",
 		"unlock_desc": "[계획 규율] 납탄(중간 삽탄) 격발 없이 완주"
 	},
 	"heavy": {
@@ -109,7 +109,7 @@ const WEAPON_PROFILES := {
 		"cap": 4,
 		"ammo": 6,
 		"prev": 1,
-		"passive": "- 패시브 PEN+1 / DMG+1 / 넉백+1 버프 제공\n- 관통 게이트 통과 시 초과 PEN만큼 뒤 적 관통타격",
+		"passive": "- 패시브 PEN+1 / DMG+1 / 넉백+1 버프 제공\n- 초과 PEN 시 첫 후열 관통 피해율 50%→75%",
 		"penalty": "- 예고창이 1개로 엄격 차단되어 기억력 의존\n- 조준 불안정 패시브 ACC -1 감쇄 패널티",
 		"unlock_desc": "[시스템 파훼] 관통 피해 없이 파쇄만으로 탱커 처치"
 	},
@@ -133,7 +133,7 @@ const WEAPON_PROFILES := {
 		"cap": 5,
 		"ammo": 5,
 		"prev": 0,
-		"passive": "- 중량탄 전술 프로필 DMG+1 및 5칸의 넓은 개조 슬롯 지원\n- 탄창 내 아래에 깊숙이 묻힌 탄일수록 격발 위력 증가",
+		"passive": "- 강화 경량탄 전술 프로필 DMG+1 및 5칸의 넓은 개조 슬롯 지원\n- 탄창 내 아래에 깊숙이 묻힌 탄일수록 격발 위력 증가",
 		"penalty": "- 예고창 0개로 블라인드 (발사 직전 1발만 명중 예고)\n- 탄창 관리 실수를 하면 빌드가 꼬이기 쉬움",
 		"unlock_desc": "[리스크 감수] 무손실 (근접 1m 허용 없이) 완주"
 	},
@@ -528,7 +528,7 @@ func _refresh_stats_ui() -> void:
 	var base_prev: int = profile.prev
 	_lbl_prev_size.text = str(base_prev)
 		
-	# 5. 표준/전용 규격 및 고정 탄도 성향
+	# 5. 탄종 3계열과 표준/강화 기술 규격
 	_lbl_calibers.text = CaliberProfilesScript.display_text(target_gun)
 	
 	var is_unlocked := RunManager.meta_unlocked_weapons.has(selected_weapon_key)

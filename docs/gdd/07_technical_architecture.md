@@ -194,8 +194,8 @@ CombatScene (Node2D)
 | **총알** | `basic_bullet.tres` | JHP 할로우포인트 (기본): DMG 3 / ACC 5 / PEN 0 — 표준 탄환 |
 | | `armor_piercing.tres` | FMJ 철갑탄: DMG 2 / ACC 5 / PEN 3 / Armor Shred -2 |
 | | `knockback_slug.tres` | 비살상 스턴탄 (슬러그): DMG 1 / ACC 4 / 넉백 2칸 |
-| | `heavy_bullet.tres` | 저격탄(7.62mm 기술 규격): DMG 4 / ACC 4 / 넉백 1 / 전용 규격 보너스 연동 |
-| | `slow_bullet.tres` | 슬로우 저격탄: DMG 3 / ACC 6 / 둔화 2 / 조준 시그니처 연동 |
+| | `heavy_bullet.tres` | 강화 소총탄(7.62mm 기술 규격): DMG 4 / ACC 4 / 넉백 1 / 강화 규격 보너스 연동 |
+| | `slow_bullet.tres` | 정밀 점착탄: DMG 3 / ACC 6 / 둔화 2 / 조준 시그니처 연동 |
 | **총** | `revolver.tres` | 리볼버: 6발 스택 / 리로드 1턴 / 약실 없음 — 기본 표준 무기 |
 | | `shotgun.tres` | 더블배럴 샷건: 2발 스택 / 리로드 1턴 / 넉백 +1 패시브 |
 | | `smg.tres` | 기관단총: 10발 스택 / 리로드 2턴 / 약실 있음 / DMG -1 패시브 |

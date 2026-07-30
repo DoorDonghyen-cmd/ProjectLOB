@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("1_script")
 display_name = "확산 격발 장치"
-description = "샷건 고유 내장 파츠. 탈거 불가. 사격 시 탄환이 확산 형태로 격발되며 넉백이 분산 적용됩니다."
+description = "샷건 고유 내장 파츠. 탈거 불가. 산탄 확산 대상과 허용 거리 차를 각각 +1 늘리고 확산 대상에게 주 넉백의 절반을 전파합니다."
 part_id = 22
 tier = 2

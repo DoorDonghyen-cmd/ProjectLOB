@@ -1,9 +1,9 @@
 id,display_name,caliber,family,is_basic,role,damage,penetration,accuracy,knockback,slow,effect_type,effect_value,trigger,scope,condition,description
-cal_9mm,경량탄,pistol,basic,true,attack,3,1,8,0,0,0,0,none,none,none,9mm 기술 규격의 가볍고 빠른 권총 탄약. 명중이 가장 높아 회피 전문 대상까지 단독으로 닿습니다.
-cal_45acp,중량탄,smg,basic,true,attack,4,1,7,0,0,0,0,none,none,none,.45ACP 기술 규격의 무겁고 느린 기관단총 탄약. 높은 단발 피해로 낮은 관통을 보완합니다.
-cal_556,소총탄,rifle,basic,true,attack,3,2,6,0,0,0,0,none,none,none,5.56mm 기술 규격의 표준 소총 탄약. 뚜렷한 약점이 없어 보조탄을 가장 적게 요구합니다.
-cal_762,저격탄,dmr,basic,true,attack,4,3,5,0,0,0,0,none,none,none,7.62mm 기술 규격의 풀파워 소총 탄약. 관통이 가장 높아 중장갑까지 단독으로 뚫습니다.
-cal_12g,산탄,shotgun,basic,true,attack,5,0,5,1,0,0,0,none,none,none,12게이지 기술 규격의 산탄 셸. 피해와 넉백이 가장 높지만 장갑을 전혀 관통하지 못합니다.
+cal_9mm,경량탄,pistol,basic,true,attack,3,1,8,0,0,0,0,none,none,none,9mm 표준 규격의 경량탄. 한 적을 세 번 유효 적중하면 집중 폭발로 피해 1을 추가합니다.
+cal_45acp,경량탄,smg,basic,true,attack,3,1,7,0,0,0,0,none,none,none,.45ACP 강화 규격의 경량탄. 한 적을 세 번 유효 적중하면 집중 폭발로 피해 2를 추가합니다.
+cal_556,소총탄,rifle,basic,true,attack,3,2,6,0,0,0,0,none,none,none,5.56mm 표준 규격의 소총탄. 유효 적중 시 바로 뒤의 적 한 명을 50% 피해로 관통합니다.
+cal_762,소총탄,dmr,basic,true,attack,4,3,5,0,0,0,0,none,none,none,7.62mm 강화 규격의 소총탄. 유효 적중 시 후열 세 명을 50%/25%/25% 피해로 관통합니다.
+cal_12g,산탄,shotgun,basic,true,attack,5,0,5,1,0,0,0,none,none,none,12게이지 표준 규격의 산탄. 3m 이내 유효 적중 시 거리 차 1m 이내의 적 한 명에게 50% 확산 피해를 줍니다.
 marker,표식탄,universal,support,false,link,2,1,8,0,0,7,3,on_effective_hit,next_shot,none,유효 적중 시 탄도 표식을 남겨 다음 1발의 명중을 3 높입니다.
 borer,천공탄,universal,support,false,link,2,3,6,0,0,8,3,on_effective_hit,next_shot,none,유효 적중 시 장갑을 천공해 다음 1발의 관통을 3 높입니다.
 jammer,교란탄,universal,support,false,link,2,1,9,0,0,9,2,on_hit,target,none,명중한 적의 회피를 영구히 2 낮춥니다.
@@ -11,7 +11,7 @@ shred,파쇄탄,universal,support,false,link,2,3,5,0,0,1,2,on_hit,target,none,�
 guide,유도탄,universal,support,false,link,2,1,7,0,0,10,1,on_effective_hit,remaining_mag,none,유효 적중 시 탄창에 남은 모든 발의 명중을 1 높입니다.
 align,정렬탄,universal,support,false,link,2,2,6,0,0,11,1,on_effective_hit,remaining_mag,none,유효 적중 시 탄창에 남은 모든 발의 관통을 1 높입니다.
 ap,철갑탄,universal,special,false,attack,2,4,6,0,0,0,0,none,none,none,경화 탄자로 어떤 장갑이든 단독으로 관통합니다.
-pierce,관통 저격탄,universal,special,false,attack,3,3,7,0,0,6,1,on_effective_hit,formation,none,전열의 적을 관통해 뒤에 선 대상까지 연속 타격합니다.
+pierce,관통탄,universal,special,false,attack,3,3,7,0,0,6,1,on_effective_hit,formation,none,이 격발의 직선 관통 깊이를 1명 늘립니다. 소총탄이 아니어도 후열 한 명을 관통합니다.
 chain,연쇄탄,universal,special,false,attack,2,1,6,0,0,2,3,on_effective_hit,self,previous_effective,직전 탄이 유효 적중했다면 연쇄 반응으로 피해 3을 더합니다.
 finale,마무리탄,universal,special,false,attack,3,1,6,0,0,3,4,on_effective_hit,self,last_shot,탄창의 마지막 발일 때 피해 4를 더합니다.
 opener,선제탄,universal,special,false,attack,3,1,6,1,0,4,2,on_hit,target,first_shot,탄창의 첫 발일 때 넉백 2를 더하고 적의 방어를 1 낮춥니다.

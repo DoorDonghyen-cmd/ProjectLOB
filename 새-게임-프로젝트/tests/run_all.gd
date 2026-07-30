@@ -11,6 +11,7 @@ const SuiteEnemy := preload("res://tests/suite_enemy.gd")
 const ValidateData := preload("res://tests/validate_data.gd")
 const SuiteAmmoIntegrity := preload("res://tests/suite_ammo_integrity.gd")
 const SuiteCaliberProfiles := preload("res://tests/suite_caliber_profiles.gd")
+const SuiteAmmoFamilyBehavior := preload("res://tests/suite_ammo_family_behavior.gd")
 const SuiteBasicSupply := preload("res://tests/suite_basic_supply.gd")
 const SuiteAmmoMatrix := preload("res://tests/suite_ammo_matrix.gd")
 const SuiteLIFODepthBaseline := preload("res://tests/suite_lifo_depth_baseline.gd")
@@ -64,6 +65,7 @@ func _initialize() -> void:
 	ValidateData.run(t)     # CSV 데이터 정합성
 	SuiteAmmoIntegrity.run(t) # 탄환 CSV↔리소스↔시작 덱 완전 일치
 	SuiteCaliberProfiles.run(t) # 고정 구경 프로필·기반탄 비중복·드래프트 제한
+	SuiteAmmoFamilyBehavior.run(t) # 경량 집중·소총 관통·산탄 확산
 	SuiteBasicSupply.run(t)   # 기본탄 고정 보급 슬롯·리로드 정량 복구
 	SuiteAmmoMatrix.run(t)    # 실제 몬스터별 공격·연계·연발 처치 매트릭스
 	SuiteLIFODepthBaseline.run(t) # v5 순서 민감도 JSON 기준선

@@ -5,13 +5,13 @@
 
 [resource]
 script = ExtResource("1")
-display_name = "중량탄"
-description = ".45ACP 기술 규격의 무겁고 느린 기관단총 탄약. 높은 단발 피해로 낮은 관통을 보완합니다."
+display_name = "경량탄"
+description = ".45ACP 강화 규격의 경량탄. 한 적을 세 번 유효 적중하면 집중 폭발로 피해 2를 추가합니다."
 icon = ExtResource("2")
 is_basic = true
 family = "basic"
 role = "attack"
 weapon_class = 1
-damage = 4
+damage = 3
 accuracy = 7
 penetration = 1

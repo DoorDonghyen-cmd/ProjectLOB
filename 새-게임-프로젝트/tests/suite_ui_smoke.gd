@@ -283,8 +283,12 @@ static func run(t, tree: SceneTree) -> void:
 			var hp_bg = es.get_node_or_null("HpBarBG")
 			var badge = es.get_node_or_null("BadgePanel")
 			var defp = es.get_node_or_null("DefPanel")
+			var focus_label = es.get_node_or_null("FocusLabel") as Label
+			var family_hint = es.get_node_or_null("FamilyPreviewLabel") as Label
 			t.check(hp_bg != null, "적 머리 위 HP 바 존재")
 			t.check(badge != null and defp != null, "아키타입·방어 배지 존재")
+			t.check(focus_label != null, "경량탄 집중 스택 라벨 존재")
+			t.check(family_hint != null, "소총탄·산탄 보조 타격 예고 라벨 존재")
 			if hp_bg and badge:
 				t.check(not hp_bg is Container, "⭐ HP 배경이 채움 폭을 자동 재배치하지 않음")
 				# 스프라이트는 y=0~80. HP 바는 그 위(음수), 배지는 그 아래(80 초과).
@@ -292,6 +296,23 @@ static func run(t, tree: SceneTree) -> void:
 				t.check(badge.position.y >= 80, "⭐ 아키타입 배지가 발 아래(y=%.0f)" % badge.position.y)
 				t.check(defp.position.y >= 80, "⭐ 방어 배지가 발 아래(y=%.0f)" % defp.position.y)
 				t.check(hp_bg.position.y < badge.position.y, "HP 바가 배지보다 위에 있음")
+			if focus_label:
+				tc.update_focus(any_enemy, 2, 3, false)
+				t.check(focus_label.visible and focus_label.text.find("2/3") != -1,
+					"⭐ 경량탄 집중 2/3이 적별로 표시됨")
+
+			# 탄종 이벤트는 동기 정산 시점에 도착한 뒤 정확히 다음 격발 연출에 묶인다.
+			ov._fire_fx_queue.clear()
+			ov._fx_playing = true
+			ov._pending_family_events.clear()
+			ov._on_ammo_family_triggered("focus", any_enemy, [any_enemy], 1)
+			ov._on_bullet_fired(b1, true, 1, any_enemy, any_enemy.current_hp)
+			var family_entry: Dictionary = ov._fire_fx_queue.back()
+			t.eq(family_entry.get("family_events", []).size(), 1,
+				"⭐ 탄종 이벤트가 해당 격발 연출 큐에 결합됨")
+			t.check(ov._pending_family_events.is_empty(),
+				"탄종 이벤트가 다음 발로 누출되지 않음")
+			ov._fire_fx_queue.clear()
 
 			# HP 바가 체력 변화를 따라가는가
 			any_enemy.current_hp = maxi(any_enemy.max_hp / 2, 1)

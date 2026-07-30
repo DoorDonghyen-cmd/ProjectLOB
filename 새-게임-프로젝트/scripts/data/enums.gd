@@ -13,6 +13,23 @@ enum WeaponClass {
 	UNIVERSAL,     ## 범용/교차구경
 }
 
+## 플레이어가 학습하는 최상위 탄종은 이 3계열뿐이다.
+## WeaponClass는 세이브·리소스 호환을 위해 5종을 유지하고, 전투 문법은 이 계열로 합친다.
+enum AmmoFamily {
+	LIGHT,         ## 경량탄 — 동일 적 유효 적중 3회 집중
+	RIFLE,         ## 소총탄 — 후열 직선 관통
+	SHOTGUN,       ## 산탄 — 근거리 거리 군집 확산
+	UNIVERSAL,     ## 총기 문맥이 없는 공용 데이터
+}
+
+## 같은 탄종 안에서 총기에 고정된 기술 규격의 단계.
+## 드래프트나 컨버전으로 교체하는 아이템 등급이 아니다.
+enum AmmoGrade {
+	STANDARD,
+	ENHANCED,
+	UNIVERSAL,
+}
+
 ## ── 발사 방식 (커밋 단위) ──
 ## 정본: docs/gdd/21_fire_mode.md
 ## ⚠️ 총기 고유 속성이다. 파츠로 변경 불가, 전투 중 전환 불가.
@@ -90,8 +107,8 @@ enum PartID {
 	SPREAD_SHOT,       ## 확산 격발 장치 (샷건 고유)
 	MARKSMAN_SCOPE,    ## 저격경 (Marksman 고유)
 	CONVERSION_PISTOL, ## 경량탄(9mm) 컨버전 킷
-	CONVERSION_SMG,    ## 중량탄(.45ACP) 컨버전 킷
+	CONVERSION_SMG,    ## 강화 경량탄(.45ACP) 컨버전 킷
 	CONVERSION_RIFLE,  ## 소총탄(5.56mm) 컨버전 킷
-	CONVERSION_DMR,    ## 저격탄(7.62mm) 컨버전 킷
+	CONVERSION_DMR,    ## 강화 소총탄(7.62mm) 컨버전 킷
 	CONVERSION_SHOTGUN,## 산탄(12게이지) 컨버전 킷
 }

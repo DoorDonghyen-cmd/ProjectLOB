@@ -6,12 +6,12 @@
 [resource]
 script = ExtResource("3_script")
 display_name = "전술 기관단총 (Tempo)"
-description = "탄창 5발과 약실 1발을 한 턴에 순차 발사하는 6발 시퀀스 설계형 총기. 연계탄과 공격탄의 조합을 한 번에 완성하지만 발사 후 3턴의 재장전 공백을 감수합니다."
+description = "탄창 5발과 약실 1발을 한 턴에 순차 발사하는 6발 시퀀스 설계형 총기. 집중을 최대 두 번 폭발시키지만 발사 후 4턴의 재장전 공백을 감수합니다."
 icon = ExtResource("1_icon")
 magazine_capacity = 5
 has_chamber = true
 magazine_structure = 0
-reload_turns = 3
+reload_turns = 4
 parts_capacity = 3
 conversion_cost = 1.0
 passive_dmg_bonus = -1

@@ -61,7 +61,7 @@ static func run(t) -> void:
 	t.check(bool(smg_csv.has_chamber), "전술 기관단총 약실 = +1발")
 	t.eq(int(smg_csv.magazine_capacity) + (1 if bool(smg_csv.has_chamber) else 0), 6,
 		"⭐ 전술 기관단총 총 실장탄수 = 6발")
-	t.eq(int(smg_csv.reload_turns), 3, "전술 기관단총 리로드 = 3턴")
+	t.eq(int(smg_csv.reload_turns), 4, "전술 기관단총 리로드 = 4턴")
 	t.eq(int(smg_csv.preview_window_size), 6, "전술 기관단총 예고창 = 6발")
 	t.eq(int(smg_csv.parts_capacity), 3, "전술 기관단총 파츠 슬롯 = 3")
 	var smg_res: GunData = load(G_SMG)
@@ -148,14 +148,14 @@ static func run(t) -> void:
 			survivors += 1
 			back_hp = e.current_hp
 	t.eq(survivors, 1, "앞 적 사망, 뒤 적 생존")
-	t.eq(back_hp, 14, "⭐ 오버킬 이월 — 남은 3발이 다음 적에게 (20 → 14)")
+	t.eq(back_hp, 12, "⭐ 소총탄 후열 피해와 오버킬 이월이 함께 적용됨 (20 → 12)")
 	t.eq(fired_targets.size(), 5, "연발 5발 모두 실제 피격 대상 스냅샷 전달")
 	t.check(fired_targets[0] == cm2.enemies[0] and fired_targets[1] == cm2.enemies[0],
 		"⭐ 처치까지 첫 2발은 앞 적을 가리킴")
 	t.check(fired_targets[2] == cm2.enemies[1] and fired_targets[4] == cm2.enemies[1],
 		"⭐ 남은 3발의 연출 대상도 뒤 적으로 이월")
-	t.check(fired_remaining == [2, 0, 18, 16, 14],
-		"⭐ 발별 HP 스냅샷 4→2→0 / 20→18→16→14")
+	t.check(fired_remaining == [2, 0, 16, 14, 12],
+		"⭐ 앞 적을 맞힌 소총탄의 후열 피해까지 포함한 HP 스냅샷")
 	cm2.free()
 
 	# ── 막힌 탄: 관통 게이트 미달이면 전량 무효 ──
@@ -227,8 +227,8 @@ static func run(t) -> void:
 	var dist_before7: int = cm7.enemies[0].current_distance
 	cm7.fire()
 	t.eq(cm7.magazine.get_remaining(), 0, "⭐ 전술 기관단총 6발 전량 소비")
-	t.eq(cm7.enemies[0].current_hp, 85,
-		"⭐ .45ACP 프로필 적용 후 연계 2 + 공격 3의 3쌍 = 15피해")
+	t.eq(cm7.enemies[0].current_hp, 84,
+		"⭐ 경량탄 체인 = 기본 피해 12 + 집중 폭발 2회×2 = 16피해")
 	t.eq(dist_before7 - cm7.enemies[0].current_distance, 1,
 		"전술 기관단총 6발도 적 전진은 1회")
 	t.eq(cm7.pending_buff_acc, 0, "6발 체인 종료 후 보류 ACC 버프 없음")
@@ -258,11 +258,12 @@ static func run(t) -> void:
 		"⭐ 기본 적재 턴당 DMG %.2f — 기존 밴드(2.14~3.33) 내" % dpt)
 
 	var smg_cycle: int = 1 + int(smg_csv.reload_turns)
-	var smg_basic_dpt := float(6 * (3 + int(smg_csv.passive_dmg_bonus))) / float(smg_cycle)
-	var smg_chain_dpt := 9.0 / float(smg_cycle)
-	t.eq(smg_cycle, 4, "전술 기관단총 사이클 = 4턴")
-	t.eq(smg_basic_dpt, 3.0, "⭐ 전술 기관단총 기본 6발 = 3.00 DMG/턴")
-	t.eq(smg_chain_dpt, 2.25, "⭐ 전술 기관단총 표식→.45ACP 체인 = 2.25 DMG/턴")
+	var smg_basic_damage := 6 * (3 + int(smg_csv.passive_dmg_bonus)) + 4
+	var smg_basic_dpt := float(smg_basic_damage) / float(smg_cycle)
+	var smg_chain_dpt := 16.0 / float(smg_cycle)
+	t.eq(smg_cycle, 5, "전술 기관단총 사이클 = 5턴")
+	t.eq(smg_basic_dpt, 3.2, "⭐ 강화 경량탄 6발 = 기본 12 + 집중 4, 3.20 DMG/턴")
+	t.eq(smg_chain_dpt, 3.2, "⭐ 전술 기관단총 표식·강화 경량탄 체인 = 3.20 DMG/턴")
 
 	# 리듬 챔버를 선택 장착해도 연속 횟수만큼 폭증하지 않고 2·4·6번째에 +1씩만 붙는다.
 	var rhythm_loadout: Array[BulletData] = []
@@ -274,8 +275,8 @@ static func run(t) -> void:
 	rhythm_cm.start_encounter(smg_res, rhythm_enemies, rhythm_loadout, rhythm_parts)
 	rhythm_cm.confirm_loading(rhythm_loadout)
 	rhythm_cm.fire()
-	t.eq(rhythm_cm.enemies[0].current_hp, 85,
-		"⭐ 리듬 챔버 6발 = 기본 12 + 짝수 박자 3, 폭증 차단")
+	t.eq(rhythm_cm.enemies[0].current_hp, 81,
+		"⭐ 리듬 챔버 6발 = 기본 12 + 짝수 박자 3 + 집중 폭발 4")
 	rhythm_cm.free()
 
 	# ⚠️ 연발 총의 패시브는 탄창 크기만큼 증폭된다. 특히 PEN은 이진 게이트라 절벽이다.

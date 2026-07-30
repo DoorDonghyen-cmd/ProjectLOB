@@ -40,6 +40,15 @@ signal piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletDat
 ## 기본 보급탄은 덱과 분리된 고정 슬롯 하나로 표시한다.
 signal basic_supply_updated(bullet: BulletData, current: int, capacity: int)
 signal buttstroke_triggered(enemy: EnemyInstance, new_distance: int)
+## 경량탄 집중 표식. triggered=true면 이번 격발에서 집중 폭발이 발생했다.
+signal focus_updated(enemy_inst: EnemyInstance, stacks: int, threshold: int, triggered: bool)
+## 탄종 전용 연출 이벤트. kind = focus / rifle / shotgun.
+signal ammo_family_triggered(
+	kind: String,
+	source: EnemyInstance,
+	targets: Array,
+	value: int
+)
 
 # ── 상태 ──
 enum State { INACTIVE, LOADING, PLAYER_TURN, RELOADING, WON, LOST }
@@ -73,7 +82,10 @@ var chaser_pen_bonus: int = 0
 var target_marker_active: bool = false
 var same_stance_hit_count: int = 0
 var last_stance: Enums.EnemyStance = Enums.EnemyStance.NONE
+var last_inertia_target: EnemyInstance = null
 var consecutive_role_count: int = 0
+## 적 인스턴스별 경량탄 집중. 적 사망·재장전·인카운터 종료 시 제거한다.
+var focus_stacks: Dictionary = {}
 
 ## ── 셋업 버프 (정본: docs/gdd/22_ammo_expansion.md §22.2) ──
 ## **다음 1발**에만 적용된다. 탄창 전체 지속이면 "셋업 하나 깔고 나머지 전부 고화력"이
@@ -170,6 +182,7 @@ func start_encounter(
 	is_magazine_first_shot = true
 	_is_full_auto_burst = false
 	_burst_knockback_budget = 0
+	focus_stacks.clear()
 	
 	# 탄약 순환 자원 데이터 및 긴급 격퇴 초기화
 	basic_supply_bullet = supply_bullet
@@ -215,6 +228,7 @@ func start_encounter(
 	target_marker_active = false
 	same_stance_hit_count = 0
 	last_stance = Enums.EnemyStance.NONE
+	last_inertia_target = null
 	consecutive_role_count = 0
 	pending_buff_acc = 0
 	pending_buff_pen = 0
@@ -346,12 +360,23 @@ func preview_next_shot() -> Dictionary:
 	pen += pending_buff_pen
 	var target := _get_nearest_enemy()
 	var critical := false
+	var family := CaliberProfiles.family_for_gun(gun)
+	var focus_current := get_focus_stacks(target)
+	var focus_will_trigger := false
+	var line_targets: Array[EnemyInstance] = []
+	var scatter_targets: Array[EnemyInstance] = []
 	if target != null:
 		var hit_without := acc_without_adjacent >= target.current_evasion
 		var pen_without := pen_without_adjacent >= target.current_def
 		var hit_with := acc >= target.current_evasion
 		var pen_with := pen >= target.current_def
 		critical = hit_with and pen_with and (not hit_without or not pen_without)
+		if hit_with and pen_with:
+			focus_will_trigger = family == Enums.AmmoFamily.LIGHT \
+				and focus_current + 1 >= CaliberProfiles.FOCUS_THRESHOLD
+			var snapshot := _alive_enemies_by_distance()
+			line_targets = _preview_line_targets(b, target, pen, snapshot)
+			scatter_targets = _preview_scatter_targets(target, snapshot, line_targets)
 	return {
 		"bullet": b,
 		"acc": acc,
@@ -362,6 +387,12 @@ func preview_next_shot() -> Dictionary:
 		"magazine_buff_pen": magazine_buff_pen,
 		"critical": critical,
 		"permanent_loss_on_failure": not _bullet_is_caliber_safe(b),
+		"ammo_family": family,
+		"focus_current": focus_current,
+		"focus_threshold": CaliberProfiles.FOCUS_THRESHOLD,
+		"focus_will_trigger": focus_will_trigger,
+		"line_targets": line_targets,
+		"scatter_targets": scatter_targets,
 	}
 
 
@@ -555,6 +586,13 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	last_shot_hit = hit
 
 	if hit:
+		# 다중 타격 대상은 주 피해 전에 고정한다. 주 대상 사망으로 생존 배열 인덱스가
+		# 당겨져도 같은 격발의 관통·확산 대상이 바뀌면 안 된다.
+		var formation_snapshot := _alive_enemies_by_distance()
+		var collateral_kills: Array[EnemyInstance] = []
+		var scatter_targets: Array[EnemyInstance] = []
+		var family_events: Array[Dictionary] = []
+
 		# ── 2. 대미지 및 관통 파츠 가산 ──
 		var part_dmg_bonus := 0
 		var part_pen_bonus := magazine_buff_pen + buff_pen
@@ -611,16 +649,6 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			part_dmg_bonus += long_bonus
 			combat_log.emit("   ↳ 🎯 [롱샷] 원거리 저격! DMG +%d 가산" % long_bonus)
 			
-		# 관성 격발 (INERTIA_FIRE): 적 태세 고정 중 연속 명중 시 피해 누적 증가
-		if _has_part(Enums.PartID.INERTIA_FIRE):
-			if target.current_stance == last_stance:
-				same_stance_hit_count += 1
-				part_dmg_bonus += same_stance_hit_count
-				combat_log.emit("   ↳ 📈 [관성 격발] 동일 태세 명중 유지! DMG +%d 누적 가산" % same_stance_hit_count)
-			else:
-				same_stance_hit_count = 0
-			last_stance = target.current_stance
-
 		# 체이서 (CHASER): 누적 PEN 가산
 		if _has_part(Enums.PartID.CHASER):
 			part_pen_bonus += chaser_pen_bonus
@@ -693,8 +721,33 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			combat_log.emit("   ↳ ✦ [크리티컬] 보조탄으로 게이트 개방! 피해 %d → %d" % [
 				before_critical, damage
 			])
+
+		# 관성 격발: 같은 적·같은 태세에 대한 유효 적중 3회마다 정액 +2.
+		# 과거 무제한 +1 누적은 연발에서 자동 폭증했으므로 3회 주기 보상으로 제한한다.
+		if _has_part(Enums.PartID.INERTIA_FIRE):
+			if _advance_inertia_chain(target, damage > 0):
+				part_dmg_bonus += 2
+				combat_log.emit("   ↳ 📈 [관성 격발] 동일 태세 유효 적중 3회! DMG +2")
+
+		# 보조 타격은 탄·총기·탄 조건·크리티컬까지만 복제한다.
+		# 이후의 파츠 정액, 집중, 처형은 주 대상 전용이다.
+		var collateral_base_damage := damage
 		if damage > 0:
 			damage = maxi(damage + part_dmg_bonus, 0)
+
+		# 경량탄 집중은 별도 피격이 아니라 이번 주 피해에 정액 합산한다.
+		# 흡수체 배리어가 한 발에 두 칸 차감되거나 적중 효과가 재귀하지 않는다.
+		var focus_result := _advance_focus(target, damage > 0)
+		var focus_bonus := int(focus_result.get("bonus", 0))
+		if focus_bonus > 0:
+			damage += focus_bonus
+			combat_log.emit("   ↳ ✦ [집중 폭발] 3회 유효 적중 완성! 피해 +%d" % focus_bonus)
+		if bool(focus_result.get("updated", false)):
+			family_events.append({
+				"kind": "focus",
+				"targets": [target],
+				"value": focus_bonus,
+			})
 
 		# 처형자 (EXECUTIONER): 거리 1 이하에서 체력이 3 이하인 적 즉사
 		if _has_part(Enums.PartID.EXECUTIONER) and target.current_distance <= 1 and target.current_hp <= 3:
@@ -725,33 +778,33 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 					combat_log.emit("   ↳ ✨ [정렬] 탄창 잔여 PEN +%d" % bullet.effect_value)
 		else:
 			battle_stats.zero_damage_hits += 1
+
+		# ── 3.5 탄종 계열 보조 타격 ──
+		var collateral_result := _apply_family_collateral(
+			bullet,
+			target,
+			collateral_base_damage,
+			gate_total_pen,
+			formation_snapshot
+		)
+		collateral_kills.assign(collateral_result.get("kills", []))
+		scatter_targets.assign(collateral_result.get("scatter_targets", []))
+		for event in collateral_result.get("events", []):
+			family_events.append(event)
+		# UI는 이 이벤트를 다음 bullet_fired 큐 항목에 붙여 탄환 도착 시 재생한다.
+		for event in family_events:
+			ammo_family_triggered.emit(
+				str(event.get("kind", "")),
+				target,
+				event.get("targets", []),
+				int(event.get("value", 0))
+			)
+
 		combat_log.emit("🔫 %s → [%s] 명중! %d 대미지" % [bullet.display_name, target.data.display_name, damage])
 		combat_log.emit("   %s" % breakdown)
 		var remaining_durability := target.current_hp if not target.is_stack_sponge else target.barrier_cells
 		bullet_fired.emit(bullet, true, damage, target, remaining_durability)
 		enemy_damaged.emit(target, damage, remaining_durability, true)
-
-		# ── 중장형(Heavy) 총기 시그니처: 과관통 ──
-		if _gun_is("heavy"):
-			var total_pen := bullet.penetration + part_pen_bonus
-			if gun: total_pen += gun.passive_pen_bonus
-			var excess_pen := total_pen - target.current_def
-			if excess_pen > 0:
-				var alive_list := get_alive_enemies()
-				alive_list.sort_custom(func(a, b): return a.current_distance < b.current_distance)
-				var target_idx := alive_list.find(target)
-				if target_idx != -1 and target_idx + 1 < alive_list.size():
-					var e2: EnemyInstance = alive_list[target_idx + 1]
-					if excess_pen >= e2.current_def:
-						var dmg2 := bullet.damage + part_dmg_bonus
-						if gun: dmg2 += gun.passive_dmg_bonus
-						dmg2 = maxi(dmg2, 1)
-						_apply_damage_to_enemy(e2, dmg2)
-						combat_log.emit("   ↳ 🎯 [중장형 과관통] 초과 관통(PEN %d vs DEF %d)으로 [%s] 관통! %d 대미지" % [excess_pen, e2.current_def, e2.data.display_name, dmg2])
-						enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells, false)
-						if e2.is_dead():
-							combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
-							enemy_killed.emit(e2)
 
 		# ── 4. 피격 후 효과 ──
 		_apply_post_hit_effects(bullet, target, is_first, is_last)
@@ -761,31 +814,6 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			target.apply_armor_shred(1)
 			armor_shredded.emit(target, target.current_def, 1)
 			combat_log.emit("   ↳ ⚙ [파쇄 총구] 명중 피드백으로 적 DEF -1 영구 파쇄!")
-
-		# ── 4.5 관통 다중 타격 (PIERCE 효과) ──
-		if bullet.effect_type == Enums.BulletEffect.PIERCE and damage > 0:
-			var alive_list := get_alive_enemies()
-			alive_list.sort_custom(func(a, b): return a.current_distance < b.current_distance)
-			var target_idx := alive_list.find(target)
-			if target_idx != -1:
-				if target_idx + 1 < alive_list.size():
-					var e2: EnemyInstance = alive_list[target_idx + 1]
-					var dmg2: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e2.current_def, gun) * 0.5)))
-					_apply_damage_to_enemy(e2, dmg2)
-					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (50%% 감쇄)" % [e2.data.display_name, dmg2])
-					enemy_damaged.emit(e2, dmg2, e2.current_hp if not e2.is_stack_sponge else e2.barrier_cells, false)
-					if e2.is_dead():
-						combat_log.emit("💀 [%s] 처치!" % e2.data.display_name)
-						enemy_killed.emit(e2)
-				if target_idx + 2 < alive_list.size():
-					var e3: EnemyInstance = alive_list[target_idx + 2]
-					var dmg3: int = maxi(1, int(round(DamageCalculator.calculate_damage(bullet, e3.current_def, gun) * 0.25)))
-					_apply_damage_to_enemy(e3, dmg3)
-					combat_log.emit("   ↳ 🎯 [관통 다중타] → [%s] 명중! %d 대미지 (75%% 감쇄)" % [e3.data.display_name, dmg3])
-					enemy_damaged.emit(e3, dmg3, e3.current_hp if not e3.is_stack_sponge else e3.barrier_cells, false)
-					if e3.is_dead():
-						combat_log.emit("💀 [%s] 처치!" % e3.data.display_name)
-						enemy_killed.emit(e3)
 
 		# ── 5. 넉백 ──
 		var calc_bullet_kb := bullet.duplicate()
@@ -820,25 +848,18 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			else:
 				combat_log.emit("   ↳ 넉백 저항! 적의 저항으로 밀려나지 않음 (저항 %d)" % target.knockback_resistance)
 				
-			# 확산 격발 장치 (SPREAD_SHOT - 샷건 고유): 주 타겟 양옆의 적들에게도 넉백 전파
-			if _has_part(Enums.PartID.SPREAD_SHOT):
-				var alive_list := get_alive_enemies()
-				alive_list.sort_custom(func(a, b): return a.current_distance < b.current_distance)
-				var idx := alive_list.find(target)
-				if idx != -1:
-					var splash_kb: int = maxi(1, int(kb / 2))
-					if idx > 0:
-						var prev_e: EnemyInstance = alive_list[idx - 1]
-						var eff_prev_kb := prev_e.apply_knockback(splash_kb)
-						if eff_prev_kb > 0:
-							enemy_knocked_back.emit(prev_e, prev_e.current_distance, eff_prev_kb)
-							combat_log.emit("     ↳ ☄ [확산 격발] 인접 적 [%s]에게 넉백 %d 전파" % [prev_e.data.display_name, eff_prev_kb])
-					if idx + 1 < alive_list.size():
-						var next_e: EnemyInstance = alive_list[idx + 1]
-						var eff_next_kb := next_e.apply_knockback(splash_kb)
-						if eff_next_kb > 0:
-							enemy_knocked_back.emit(next_e, next_e.current_distance, eff_next_kb)
-							combat_log.emit("     ↳ ☄ [확산 격발] 인접 적 [%s]에게 넉백 %d 전파" % [next_e.data.display_name, eff_next_kb])
+			# 확산 격발 장치는 실제 확산 피해 대상으로만 넉백을 전파한다.
+			if _has_part(Enums.PartID.SPREAD_SHOT) and not scatter_targets.is_empty():
+				var splash_kb: int = maxi(1, floori(float(kb) * 0.5))
+				for splash_target in scatter_targets:
+					if splash_target == null or splash_target.is_dead():
+						continue
+					var eff_splash := splash_target.apply_knockback(splash_kb)
+					if eff_splash > 0:
+						enemy_knocked_back.emit(splash_target, splash_target.current_distance, eff_splash)
+						combat_log.emit("     ↳ ☄ [확산 격발] [%s]에게 넉백 %d 전파" % [
+							splash_target.data.display_name, eff_splash
+						])
 
 		# ── 6. 둔화 ──
 		var slow_val := bullet.slow
@@ -851,52 +872,12 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			combat_log.emit("   ↳ 둔화 -%d (다음 턴)" % slow_val)
 
 		# ── 7. 적 사망 체크 ──
-		if target.is_dead():
-			combat_log.emit("💀 [%s] 처치!" % target.data.display_name)
-			enemy_killed.emit(target)
-			
-			# 전투 통계 가산
-			battle_stats.total_kills += 1
-			battle_stats.total_kill_dist_sum += target.current_distance
-			battle_stats.kills_this_turn += 1
-			
-			# 탱커 파쇄 처치 판정 (관통이 방어력을 넘지 않았는데 처치)
-			if target.data.archetype == Enums.EnemyArchetype.TANK:
-				if calc_bullet.penetration <= target.current_def:
-					battle_stats.shred_only_tank_kills += 1
-					
-			# 태세병 슬로우 없이 처치 판정
-			if target.current_stance != Enums.EnemyStance.NONE and target.slow_stacks == 0:
-				battle_stats.stance_kills_without_slow += 1
-			
-			# 돌격형(Bruiser) 총기 시그니처: 끌어당김
-			if _gun_is("shotgun"):
-				var alive_list := get_alive_enemies()
-				var next_enemy: EnemyInstance = null
-				var min_dist := 999
-				for e in alive_list:
-					if e != target and e.current_distance < min_dist:
-						min_dist = e.current_distance
-						next_enemy = e
-				if next_enemy:
-					next_enemy.current_distance = maxi(next_enemy.current_distance - 1, 0)
-					combat_log.emit("   ↳ ⚠ [돌격형 시그니처] 끌어당김 발동! 다음 적 [%s]이 1칸 전진! (현재 거리 %dm)" % [next_enemy.data.display_name, next_enemy.current_distance])
-					enemy_moved.emit(next_enemy, next_enemy.current_distance, -1)
-			
-			# 체이서 (CHASER): 처치 성공 시 다음 사격 PEN +2 누적
-			if _has_part(Enums.PartID.CHASER):
-				chaser_pen_bonus += 2
-				combat_log.emit("   ↳ 🚀 [체이서] 처치 성공! 다음 격발 PEN +2 충전")
-				
-			# 리코일 푸시 (RECOIL_PUSH): 처치 시 뒷 적들 넉백 +1
-			if _has_part(Enums.PartID.RECOIL_PUSH):
-				combat_log.emit("   ↳ 🛡 [리코일 푸시] 처치 반동 발동!")
-				for e in enemies:
-					if not e.is_dead() and e != target:
-						e.apply_knockback(1)
-						enemy_knocked_back.emit(e, e.current_distance, 1)
-						combat_log.emit("     ↳ [%s] 강제 넉백 1칸 → 거리 %d" % [e.data.display_name, e.current_distance])
+		var killed_this_shot: Array[EnemyInstance] = collateral_kills.duplicate()
+		if target.is_dead() and target not in killed_this_shot:
+			killed_this_shot.append(target)
+		_register_kills_for_shot(killed_this_shot, calc_bullet)
 	else:
+		_reset_inertia_chain()
 		last_shot_effective = false
 		combat_log.emit("🔫 %s → [%s] 빗나감! (ACC %d < EVA %d)" % [
 			bullet.display_name, target.data.display_name, bullet.accuracy, target.current_evasion
@@ -948,6 +929,314 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 탄창 비었으면 알림
 	if magazine.is_empty() and state == State.PLAYER_TURN:
 		combat_log.emit("⚠ 탄창 소진! 리로드가 필요합니다.")
+
+
+## 적별 경량탄 집중을 UI·테스트가 읽는 단일 정본.
+func get_focus_stacks(target: EnemyInstance) -> int:
+	if target == null:
+		return 0
+	return int(focus_stacks.get(target, 0))
+
+
+## 경량탄 유효 적중을 3회 주기로 정산한다.
+## 빗나감·도탄은 스택을 올리지도 지우지도 않는다.
+func _advance_focus(target: EnemyInstance, effective: bool) -> Dictionary:
+	var result := {
+		"updated": false,
+		"triggered": false,
+		"stacks": get_focus_stacks(target),
+		"bonus": 0,
+	}
+	if target == null or not effective \
+			or CaliberProfiles.family_for_gun(gun) != Enums.AmmoFamily.LIGHT:
+		return result
+
+	var stacks := get_focus_stacks(target) + 1
+	var triggered := stacks >= CaliberProfiles.FOCUS_THRESHOLD
+	var bonus := 0
+	if triggered:
+		stacks = 0
+		bonus = CaliberProfiles.focus_bonus_for_gun(gun)
+	focus_stacks[target] = stacks
+	focus_updated.emit(target, stacks, CaliberProfiles.FOCUS_THRESHOLD, triggered)
+	combat_log.emit("   ↳ ◉ [경량탄 집중] %d/%d%s" % [
+		stacks if not triggered else CaliberProfiles.FOCUS_THRESHOLD,
+		CaliberProfiles.FOCUS_THRESHOLD,
+		" — 폭발" if triggered else "",
+	])
+	result.updated = true
+	result.triggered = triggered
+	result.stacks = stacks
+	result.bonus = bonus
+	return result
+
+
+func _clear_focus() -> void:
+	for key in focus_stacks.keys():
+		if key is EnemyInstance:
+			focus_updated.emit(key, 0, CaliberProfiles.FOCUS_THRESHOLD, false)
+	focus_stacks.clear()
+
+
+## 관성 격발은 같은 적·같은 태세의 유효 적중만 잇는다.
+## 3회째에 +2를 반환하고 주기를 0으로 되돌린다.
+func _advance_inertia_chain(target: EnemyInstance, effective: bool) -> bool:
+	if not effective or target == null:
+		_reset_inertia_chain()
+		return false
+	if target != last_inertia_target or target.current_stance != last_stance:
+		same_stance_hit_count = 1
+	else:
+		same_stance_hit_count += 1
+	last_inertia_target = target
+	last_stance = target.current_stance
+	if same_stance_hit_count >= 3:
+		same_stance_hit_count = 0
+		return true
+	return false
+
+
+func _reset_inertia_chain() -> void:
+	same_stance_hit_count = 0
+	last_inertia_target = null
+	last_stance = Enums.EnemyStance.NONE
+
+
+func _alive_enemies_by_distance() -> Array[EnemyInstance]:
+	var snapshot := get_alive_enemies()
+	snapshot.sort_custom(func(a: EnemyInstance, b: EnemyInstance) -> bool:
+		if a.current_distance == b.current_distance:
+			return enemies.find(a) < enemies.find(b)
+		return a.current_distance < b.current_distance
+	)
+	return snapshot
+
+
+func _preview_line_targets(
+	bullet: BulletData,
+	target: EnemyInstance,
+	total_pen: int,
+	snapshot: Array[EnemyInstance]
+) -> Array[EnemyInstance]:
+	var result: Array[EnemyInstance] = []
+	if target == null:
+		return result
+	var depth := CaliberProfiles.line_depth_for_gun(gun, bullet)
+	if depth <= 0:
+		return result
+	var target_idx := snapshot.find(target)
+	if target_idx < 0:
+		return result
+	for depth_index in range(depth):
+		var idx := target_idx + depth_index + 1
+		if idx >= snapshot.size():
+			break
+		var candidate := snapshot[idx]
+		# 직선 관통은 중간 게이트가 막히면 뒤 대상을 건너뛰지 않는다.
+		if total_pen < candidate.current_def:
+			break
+		result.append(candidate)
+	return result
+
+
+func _scatter_candidates(
+	target: EnemyInstance,
+	snapshot: Array[EnemyInstance]
+) -> Array[EnemyInstance]:
+	var result: Array[EnemyInstance] = []
+	if target == null \
+			or CaliberProfiles.family_for_gun(gun) != Enums.AmmoFamily.SHOTGUN \
+			or target.current_distance > CaliberProfiles.SHOTGUN_MAX_RANGE:
+		return result
+	var radius := CaliberProfiles.scatter_radius_for_gun(
+		gun, _has_part(Enums.PartID.SPREAD_SHOT)
+	)
+	for candidate in snapshot:
+		if candidate == target or candidate.is_dead():
+			continue
+		if absi(candidate.current_distance - target.current_distance) <= radius:
+			result.append(candidate)
+	result.sort_custom(func(a: EnemyInstance, b: EnemyInstance) -> bool:
+		var da := absi(a.current_distance - target.current_distance)
+		var db := absi(b.current_distance - target.current_distance)
+		if da == db:
+			if a.current_distance == b.current_distance:
+				return enemies.find(a) < enemies.find(b)
+			return a.current_distance < b.current_distance
+		return da < db
+	)
+	return result
+
+
+func _preview_scatter_targets(
+	target: EnemyInstance,
+	snapshot: Array[EnemyInstance],
+	excluded: Array[EnemyInstance] = []
+) -> Array[EnemyInstance]:
+	var result: Array[EnemyInstance] = []
+	var count := CaliberProfiles.scatter_count_for_gun(
+		gun, _has_part(Enums.PartID.SPREAD_SHOT)
+	)
+	if count <= 0:
+		return result
+	for candidate in _scatter_candidates(target, snapshot):
+		if candidate in excluded:
+			continue
+		result.append(candidate)
+		if result.size() >= count:
+			break
+	return result
+
+
+## 주 적중 뒤에 발생하는 탄종 보조 피해.
+## 파츠 정액·집중·탄 후속 효과를 복제하지 않는 비재귀 경로다.
+func _apply_family_collateral(
+	bullet: BulletData,
+	target: EnemyInstance,
+	base_damage: int,
+	total_pen: int,
+	snapshot: Array[EnemyInstance]
+) -> Dictionary:
+	var kills: Array[EnemyInstance] = []
+	var events: Array[Dictionary] = []
+	var scatter_targets: Array[EnemyInstance] = []
+	if target == null or base_damage <= 0:
+		return {
+			"kills": kills,
+			"events": events,
+			"scatter_targets": scatter_targets,
+		}
+
+	var used_targets: Dictionary = {}
+	var line_targets := _preview_line_targets(bullet, target, total_pen, snapshot)
+	var successful_line: Array[EnemyInstance] = []
+	var heavy_boost := _gun_is("heavy") and total_pen > target.current_def
+	for depth_index in range(line_targets.size()):
+		var line_target := line_targets[depth_index]
+		used_targets[line_target] = true
+		var ratio := CaliberProfiles.line_falloff_for_gun(gun, depth_index, heavy_boost)
+		var collateral := CaliberProfiles.collateral_damage(base_damage, ratio)
+		if collateral <= 0:
+			continue
+		_apply_damage_to_enemy(line_target, collateral)
+		successful_line.append(line_target)
+		combat_log.emit("   ↳ ➜ [직선 관통 %d] [%s] %d 피해 (%d%%)" % [
+			depth_index + 1,
+			line_target.data.display_name,
+			collateral,
+			roundi(ratio * 100.0),
+		])
+		enemy_damaged.emit(
+			line_target,
+			collateral,
+			line_target.current_hp if not line_target.is_stack_sponge else line_target.barrier_cells,
+			false
+		)
+		if line_target.is_dead() and line_target not in kills:
+			kills.append(line_target)
+	if not successful_line.is_empty():
+		events.append({
+			"kind": "rifle",
+			"targets": successful_line,
+			"value": successful_line.size(),
+		})
+
+	var scatter_limit := CaliberProfiles.scatter_count_for_gun(
+		gun, _has_part(Enums.PartID.SPREAD_SHOT)
+	)
+	var scatter_attempts := 0
+	for scatter_target in _scatter_candidates(target, snapshot):
+		if used_targets.has(scatter_target):
+			continue
+		scatter_attempts += 1
+		if scatter_attempts > scatter_limit:
+			break
+		# 산탄 펠릿은 후보별로 PEN 게이트를 검사하되 다른 후보까지 막지는 않는다.
+		if total_pen < scatter_target.current_def:
+			combat_log.emit("   ↳ ◁ [산탄 확산] [%s] DEF %d에 막힘" % [
+				scatter_target.data.display_name, scatter_target.current_def
+			])
+			continue
+		var scatter_damage := CaliberProfiles.collateral_damage(base_damage, 0.5)
+		if scatter_damage <= 0:
+			continue
+		_apply_damage_to_enemy(scatter_target, scatter_damage)
+		scatter_targets.append(scatter_target)
+		combat_log.emit("   ↳ ◁ [산탄 확산] [%s] %d 피해 (50%%)" % [
+			scatter_target.data.display_name, scatter_damage
+		])
+		enemy_damaged.emit(
+			scatter_target,
+			scatter_damage,
+			scatter_target.current_hp if not scatter_target.is_stack_sponge else scatter_target.barrier_cells,
+			false
+		)
+		if scatter_target.is_dead() and scatter_target not in kills:
+			kills.append(scatter_target)
+	if not scatter_targets.is_empty():
+		events.append({
+			"kind": "shotgun",
+			"targets": scatter_targets,
+			"value": scatter_targets.size(),
+		})
+
+	return {
+		"kills": kills,
+		"events": events,
+		"scatter_targets": scatter_targets,
+	}
+
+
+## 한 격발에서 주·보조 대상으로 발생한 처치를 일괄 등록한다.
+## 체이서·리코일 푸시·샷건 끌어당김은 대상 수와 무관하게 한 번만 발동한다.
+func _register_kills_for_shot(
+	killed_enemies: Array[EnemyInstance],
+	calc_bullet: BulletData
+) -> void:
+	if killed_enemies.is_empty():
+		return
+	var unique: Array[EnemyInstance] = []
+	for killed in killed_enemies:
+		if killed == null or killed in unique:
+			continue
+		unique.append(killed)
+		combat_log.emit("💀 [%s] 처치!" % killed.data.display_name)
+		enemy_killed.emit(killed)
+		battle_stats.total_kills += 1
+		battle_stats.total_kill_dist_sum += killed.current_distance
+		battle_stats.kills_this_turn += 1
+		if killed.data.archetype == Enums.EnemyArchetype.TANK \
+				and calc_bullet.penetration <= killed.current_def:
+			battle_stats.shred_only_tank_kills += 1
+		if killed.current_stance != Enums.EnemyStance.NONE and killed.slow_stacks == 0:
+			battle_stats.stance_kills_without_slow += 1
+		if focus_stacks.has(killed):
+			focus_stacks.erase(killed)
+
+	if _gun_is("shotgun"):
+		var alive_list := _alive_enemies_by_distance()
+		if not alive_list.is_empty():
+			var next_enemy := alive_list[0]
+			next_enemy.current_distance = maxi(next_enemy.current_distance - 1, 0)
+			combat_log.emit("   ↳ ⚠ [돌격형 시그니처] 처치 격발로 다음 적 [%s]이 1칸 전진! (현재 거리 %dm)" % [
+				next_enemy.data.display_name, next_enemy.current_distance
+			])
+			enemy_moved.emit(next_enemy, next_enemy.current_distance, -1)
+
+	if _has_part(Enums.PartID.CHASER):
+		chaser_pen_bonus += 2
+		combat_log.emit("   ↳ 🚀 [체이서] 처치 격발! 다음 격발 PEN +2 충전")
+
+	if _has_part(Enums.PartID.RECOIL_PUSH):
+		combat_log.emit("   ↳ 🛡 [리코일 푸시] 처치 격발 반동!")
+		for alive in enemies:
+			if alive.is_dead():
+				continue
+			alive.apply_knockback(1)
+			enemy_knocked_back.emit(alive, alive.current_distance, 1)
+			combat_log.emit("     ↳ [%s] 강제 넉백 1칸 → 거리 %d" % [
+				alive.data.display_name, alive.current_distance
+			])
 
 
 
@@ -1123,6 +1412,8 @@ func request_reload() -> void:
 				draw_pile.append(b)
 
 	magazine.clear()
+	_clear_focus()
+	_reset_inertia_chain()
 	# 셋업 버프는 리로드로 소멸한다.
 	# ⚠️ 유지되면 "탄창 끝에 셋업 깔아두기"가 항상 이득이 되어 리로드 공백의 비용이 흐려진다.
 	pending_buff_acc = 0

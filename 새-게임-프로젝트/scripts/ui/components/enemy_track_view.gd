@@ -93,6 +93,7 @@ func connect_enemy_gui_input(callback: Callable) -> void:
 const _BADGE_ROW_Y := 84.0
 const _HP_BAR_Y := -18.0
 const _HP_BAR_W := 76.0
+const _FOCUS_LABEL_Y := -42.0
 
 func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	# ── HP 바 (머리 위) ──
@@ -128,6 +129,26 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 
 	# HP 바 내 수치는 표기하지 않는다 — 막대 길이만으로 충분하고, 작은 숫자는 잡음이다.
 	_refresh_hp_bar(es, enemy)
+
+	# 경량탄 집중 스택. 실제 스택이 생길 때만 켜서 평상시 화면 잡음을 막는다.
+	var focus_label: Label = parent_scene.make_label("", 11, Color(1.0, 0.82, 0.28))
+	focus_label.name = "FocusLabel"
+	focus_label.position = Vector2(5, _FOCUS_LABEL_Y)
+	focus_label.size = Vector2(70, 18)
+	focus_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	focus_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	focus_label.visible = false
+	es.add_child(focus_label)
+
+	# 다음 탄의 계열 보조 타격 대상 예고. 직선 관통과 산탄 확산을 색·기호로 구분한다.
+	var family_hint: Label = parent_scene.make_label("", 10, Color.WHITE)
+	family_hint.name = "FamilyPreviewLabel"
+	family_hint.position = Vector2(5, 106)
+	family_hint.size = Vector2(70, 18)
+	family_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	family_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	family_hint.visible = false
+	es.add_child(family_hint)
 
 	# ── 아키타입 배지 (발 아래) ──
 	var badge_panel := PanelContainer.new()
@@ -297,6 +318,41 @@ func refresh_all_hp_bars() -> void:
 			_refresh_hp_bar(es, enemy)
 
 
+## 경량탄의 적별 집중 스택을 머리 위에 표시한다.
+## 폭발 순간에는 3/3을 잠깐 보여 준 뒤 다음 프레임부터 0으로 숨긴다.
+func update_focus(
+	enemy: EnemyInstance,
+	stacks: int,
+	threshold: int,
+	triggered: bool = false
+) -> void:
+	var es = enemy_sprites.get(enemy)
+	if not is_instance_valid(es):
+		return
+	var label := es.get_node_or_null("FocusLabel") as Label
+	if label == null:
+		return
+	label.visible = triggered or stacks > 0
+	label.text = "집중 %d/%d%s" % [
+		threshold if triggered else stacks,
+		threshold,
+		" ✦" if triggered else "",
+	]
+	label.add_theme_color_override(
+		"font_color",
+		Color(1.0, 0.94, 0.48) if triggered else Color(1.0, 0.72, 0.24)
+	)
+	if triggered:
+		label.modulate = Color(1.45, 1.45, 1.45, 1.0)
+		var tween := label.create_tween()
+		tween.tween_property(label, "modulate", Color.WHITE, 0.22)
+		tween.tween_interval(0.28)
+		tween.tween_callback(func():
+			if is_instance_valid(label):
+				label.visible = false
+		)
+
+
 func update_enemy_position_and_scale() -> void:
 	if not combat_manager:
 		return
@@ -387,6 +443,8 @@ func update_penetration_indicators(_next_bullet: BulletData) -> void:
 	var has_bullet: bool = not preview.is_empty()
 	var total_pen: int = int(preview.get("pen", 0))
 	var total_acc: int = int(preview.get("acc", 0))
+	var line_targets: Array = preview.get("line_targets", [])
+	var scatter_targets: Array = preview.get("scatter_targets", [])
 
 	var c_dim = parent_scene.C_DIM if parent_scene and "C_DIM" in parent_scene else Color(0.55, 0.55, 0.65)
 	var c_success = parent_scene.C_SUCCESS if parent_scene and "C_SUCCESS" in parent_scene else Color(0.30, 1.0, 0.50)
@@ -431,6 +489,18 @@ func update_penetration_indicators(_next_bullet: BulletData) -> void:
 			var def_lbl = def_panel.get_node_or_null("DefHBox/DefLabel") as Label
 			if def_lbl:
 				def_lbl.text = str(enemy.current_def)
+
+		var family_hint := es.get_node_or_null("FamilyPreviewLabel") as Label
+		if family_hint:
+			family_hint.visible = false
+			if enemy in line_targets:
+				family_hint.text = "➜ 관통"
+				family_hint.add_theme_color_override("font_color", Color(0.35, 0.86, 1.0))
+				family_hint.visible = true
+			elif enemy in scatter_targets:
+				family_hint.text = "◁ 확산"
+				family_hint.add_theme_color_override("font_color", Color(1.0, 0.58, 0.22))
+				family_hint.visible = true
 
 		# HP 바 갱신
 		_refresh_hp_bar(es, enemy)

@@ -95,7 +95,7 @@ static func run(t) -> void:
 
 	var guide := _fight("revolver", "dodger", ["guide", "cal_45acp"])
 	t.eq(int(guide.mag_acc), 1, "유도탄 잔여 탄창 ACC +1 유지")
-	t.eq(guide.damages, [2, 4], "유도 ACC+1로 고피해 .45ACP가 EVA7 통과")
+	t.eq(guide.damages, [2, 3], "유도 ACC+1로 .45ACP 강화 규격이 EVA7 통과")
 
 	var align := _fight("revolver", "boss_seraph", ["align", "cal_9mm"])
 	t.eq(int(align.mag_pen), 1, "정렬탄 잔여 탄창 PEN +1 유지")

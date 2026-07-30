@@ -164,7 +164,7 @@ static func run(t) -> void:
 		gun, _enemy(40, 0, 0), [_part(Enums.PartID.INTERRUPTER)] as Array[PartData],
 		2, 7, 0, alternating_roles
 	)
-	t.eq(interrupt_on, 28, "인터럽터: 공격→연계→공격 교대 2회로 총 12 대미지")
+	t.eq(interrupt_on, 27, "인터럽터 12 + 경량탄 세 번째 집중 1 = 총 13 대미지")
 
 	# 리듬 챔버: 역할을 유지한 2·4번째 박자만 DMG+1, 역할을 바꾸면 카운트가 리셋된다.
 	var same_role_four: Array[String] = ["attack", "attack", "attack", "attack"]
@@ -177,23 +177,23 @@ static func run(t) -> void:
 		gun, _enemy(40, 0, 0), [_part(Enums.PartID.RHYTHM_CHAMBER)] as Array[PartData],
 		2, 7, 0, alternating_four
 	)
-	t.eq(rhythm_same, 30, "리듬챔버: 동일 역할 4연속 중 2·4번째 박자 보너스")
-	t.eq(rhythm_alternating, 32, "리듬챔버: 역할 교대 시 연속 박자 리셋")
+	t.eq(rhythm_same, 29, "리듬챔버 10 + 경량탄 집중 1 = 총 11 대미지")
+	t.eq(rhythm_alternating, 31, "역할 교대 리듬 8 + 경량탄 집중 1 = 총 9 대미지")
 
 	# 블라인드파이어(DMG+2): 발당 +2 → 5발 기준 +10
 	var bf_off := _fire_and_get_hp(gun, _enemy(40, 0, 0), none_parts, 3, 7, 0, 5)
 	var bf_on := _fire_and_get_hp(gun, _enemy(40, 0, 0), [_part(Enums.PartID.BLIND_FIRE)] as Array[PartData], 3, 7, 0, 5)
-	t.eq(bf_off, 25, "블라인드파이어 미장착: 3×5=15 대미지 (HP 40→25)")
-	t.eq(bf_on, 15, "블라인드파이어 장착: (3+2)×5=25 대미지 (HP 40→15)")
+	t.eq(bf_off, 24, "블라인드파이어 미장착: 3×5 + 집중1 = 16 대미지")
+	t.eq(bf_on, 14, "블라인드파이어 장착: (3+2)×5 + 집중1 = 26 대미지")
 
 	# 언더플로우(마지막 탄 DMG+5): 마지막 1발에만 가산 → 총 +5
 	var uf_on := _fire_and_get_hp(gun, _enemy(40, 0, 0), [_part(Enums.PartID.UNDERFLOW)] as Array[PartData], 3, 7, 0, 5)
-	t.eq(uf_on, 20, "언더플로우 장착: 마지막 탄만 +5 → 총 20 대미지 (HP 40→20)")
+	t.eq(uf_on, 19, "언더플로우: 기본15 + 마지막5 + 집중1 = 총 21 대미지")
 
 	# 롱샷(거리 3+ 시 DMG + (거리-2)): 정지 적 거리 12 → 발당 +10
 	var ls_off := _fire_and_get_hp(gun, _enemy(80, 0, 0), none_parts, 3, 7, 0, 5)
 	var ls_on := _fire_and_get_hp(gun, _enemy(80, 0, 0), [_part(Enums.PartID.LONG_SHOT)] as Array[PartData], 3, 7, 0, 5)
-	t.eq(ls_off, 65, "롱샷 미장착: 3×5=15 대미지 (HP 80→65)")
+	t.eq(ls_off, 64, "롱샷 미장착: 3×5 + 집중1 = 16 대미지")
 	t.check(ls_on < ls_off, "롱샷 장착: 원거리 비례 보너스로 추가 대미지 발생 (%d < %d)" % [ls_on, ls_off])
 
 	# ── 태세 고정(STANCE_LOCK): 전투당 1회 태세 전환을 차단 ──

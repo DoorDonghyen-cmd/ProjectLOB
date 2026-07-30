@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("2_script")
 display_name = "중장형 소총 (Heavy)"
-description = "중장형 탱커 킬러. 철갑 관통(PEN) 가산과 예고창 1칸 패널티를 지니며 관통 게이트 돌파 시 초과 PEN만큼 뒤의 적까지 관통 타격을 입힙니다."
+description = "중장형 탱커 킬러. 철갑 관통(PEN) 가산과 예고창 1칸 패널티를 지니며 초과 PEN이 남으면 첫 후열 관통 피해율을 50%에서 75%로 높입니다."
 icon = ExtResource("1_icon")
 magazine_capacity = 6
 has_chamber = false

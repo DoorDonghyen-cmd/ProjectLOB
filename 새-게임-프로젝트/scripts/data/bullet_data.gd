@@ -15,7 +15,7 @@ extends Resource
 @export_enum("basic", "support", "special", "control") var family: String = "basic"
 ## 덱 구성 역할. 표시 문구와 색상은 BulletRoleUI에서 중앙 관리한다.
 @export_enum("attack", "link", "control") var role: String = "attack"
-## 실제 구경. 기반탄 5종만 구체 구경을 가지며 나머지는 UNIVERSAL이다.
+## 내부 기술 규격. 플레이어가 학습하는 탄종은 3계열이며, 기반탄만 구체 규격을 가진다.
 @export var weapon_class: Enums.WeaponClass = Enums.WeaponClass.PISTOL
 ## 효과 발동 계약을 데이터와 UI가 직접 설명하는 v6 메타데이터.
 @export var trigger: String = "none"

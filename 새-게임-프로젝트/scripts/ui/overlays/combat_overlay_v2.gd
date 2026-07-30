@@ -110,6 +110,8 @@ const POST_KILL_HOLD := 0.18
 
 var _fire_fx_queue: Array[Dictionary] = []
 var _fx_playing: bool = false
+## ammo_family_triggered는 bullet_fired보다 먼저 오므로 다음 격발 큐 항목에 묶어 둔다.
+var _pending_family_events: Array[Dictionary] = []
 ## 연출이 재생되는 동안 도착한 전투 결과(승리/패배)를 보류해 둔다.
 ## 연발은 버스트가 동기로 돌아 적이 죽는 순간 encounter_won이 **즉시** 발생하는데,
 ## 그 시점엔 총알 연출이 아직 큐에만 있다. 결과 화면을 바로 띄우면
@@ -1155,6 +1157,10 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	if combat_manager.has_signal("basic_supply_updated"):
 		combat_manager.basic_supply_updated.connect(_on_basic_supply_updated)
 	combat_manager.bullet_fired.connect(_on_bullet_fired)
+	if combat_manager.has_signal("focus_updated"):
+		combat_manager.focus_updated.connect(_on_focus_updated)
+	if combat_manager.has_signal("ammo_family_triggered"):
+		combat_manager.ammo_family_triggered.connect(_on_ammo_family_triggered)
 	if combat_manager.has_signal("all_enemies_moved"):
 		combat_manager.all_enemies_moved.connect(_on_all_enemies_moved)
 	if combat_manager.has_signal("loading_phase_started"):
@@ -1195,6 +1201,7 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 
 func _on_encounter_started(enemy_list) -> void:
 	_last_bullet_count = -1
+	_pending_family_events.clear()
 	
 	if is_instance_valid(_track_control):
 		_track_control.setup_encounter(enemy_list)
@@ -1265,6 +1272,24 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 		outcome_line = "\n[color=#ffd166]✦ 크리티컬 ⟨게이트 개방⟩ ×1.5[/color]"
 	elif (not acc_ok or not pen_ok) and bool(preview.permanent_loss_on_failure):
 		outcome_line = "\n[color=#ff6868]⚠ 실패 시 이 범용탄은 런 덱에서 영구 소실[/color]"
+	var family: int = int(preview.get("ammo_family", Enums.AmmoFamily.UNIVERSAL))
+	if family == Enums.AmmoFamily.LIGHT:
+		var focus_current := int(preview.get("focus_current", 0))
+		var focus_threshold := int(preview.get("focus_threshold", 3))
+		if bool(preview.get("focus_will_trigger", false)):
+			outcome_line += "\n[color=#ffd166]✦ 유효 적중 시 집중 폭발 (%d/%d)[/color]" % [
+				focus_threshold, focus_threshold
+			]
+		else:
+			outcome_line += "\n[color=#ffb83e]◉ 집중 %d/%d — 유효 적중마다 누적[/color]" % [
+				focus_current, focus_threshold
+			]
+	elif family == Enums.AmmoFamily.RIFLE:
+		var line_count: int = preview.get("line_targets", []).size()
+		outcome_line += "\n[color=#59dcff]➜ 후열 %d명 직선 관통 예고[/color]" % line_count
+	elif family == Enums.AmmoFamily.SHOTGUN:
+		var scatter_count: int = preview.get("scatter_targets", []).size()
+		outcome_line += "\n[color=#ff9438]◁ 인접 %d명 산탄 확산 예고[/color]" % scatter_count
 	_hit_info_label.text = "사격탄: %s\n%s\n%s%s" % [
 		next_bullet.display_name, acc_line, pen_line, outcome_line
 	]
@@ -1550,6 +1575,34 @@ func _on_magazine_updated(remaining: int = 0, capacity: int = 0) -> void:
 	_update_action_buttons()
 	_update_penetration_indicators()
 
+
+func _on_focus_updated(
+	enemy_inst: EnemyInstance,
+	stacks: int,
+	threshold: int,
+	triggered: bool
+) -> void:
+	if is_instance_valid(_track_control):
+		_track_control.update_focus(enemy_inst, stacks, threshold, triggered)
+	var nearest = combat_manager.enemy if combat_manager else null
+	if nearest:
+		_update_hit_info(nearest)
+
+
+func _on_ammo_family_triggered(
+	kind: String,
+	source: EnemyInstance,
+	targets: Array,
+	value: int
+) -> void:
+	_pending_family_events.append({
+		"kind": kind,
+		"source": source,
+		"targets": targets.duplicate(),
+		"value": value,
+	})
+
+
 ## 격발 이벤트 수신 — 연출을 **큐에 쌓고** 순차 재생한다.
 ##
 ## 표적 위치와 잔여 HP는 이 시점에 스냅샷한다. 재생 시점에는 적이 이미 죽었거나
@@ -1582,7 +1635,9 @@ func _on_bullet_fired(
 		"remaining_durability": remaining_durability,
 		"killed": killed,
 		"final_kill": final_kill,
+		"family_events": _pending_family_events.duplicate(true),
 	})
+	_pending_family_events.clear()
 
 	if not _fx_playing:
 		_pump_fire_fx()
@@ -1711,6 +1766,8 @@ func _play_fire_fx(entry: Dictionary) -> void:
 func _apply_queued_hit_feedback(entry: Dictionary) -> void:
 	if not is_instance_valid(self) or not is_inside_tree():
 		return
+	for family_event in entry.get("family_events", []):
+		_play_family_feedback(family_event)
 	var hit := bool(entry.get("hit", false))
 	var damage := int(entry.get("damage", 0))
 	var target_inst = entry.get("target")
@@ -1729,6 +1786,94 @@ func _apply_queued_hit_feedback(entry: Dictionary) -> void:
 		_spawn_bullet_refund_floating(target_inst, bullet)
 	if bool(entry.get("killed", false)):
 		_animate_enemy_death(target_inst)
+
+
+## 탄종의 규칙 차이를 수치 로그가 아니라 공간 연출로 보여 준다.
+## 경량탄은 같은 대상에서 응축되고, 소총탄은 후열로 직선 이동하며,
+## 산탄은 주 대상에서 주변 대상으로 갈라지는 방향성을 갖는다.
+func _play_family_feedback(event: Dictionary) -> void:
+	var kind := str(event.get("kind", ""))
+	var source: EnemyInstance = event.get("source")
+	var targets: Array = event.get("targets", [])
+	var value := int(event.get("value", 0))
+	if kind == "focus":
+		if value > 0 and not targets.is_empty():
+			_spawn_family_text(targets[0], "✦ 집중 폭발 +%d" % value, Color(1.0, 0.84, 0.25))
+			_pulse_enemy(targets[0], Color(1.0, 0.86, 0.3))
+		elif source != null:
+			_pulse_enemy(source, Color(1.0, 0.62, 0.2))
+		return
+
+	var source_pos := _enemy_center(source)
+	if source_pos == Vector2.ZERO:
+		return
+	var color := Color(0.35, 0.86, 1.0) if kind == "rifle" else Color(1.0, 0.52, 0.18)
+	for target in targets:
+		if not target is EnemyInstance:
+			continue
+		var target_pos := _enemy_center(target)
+		if target_pos == Vector2.ZERO:
+			continue
+		_spawn_family_link(source_pos, target_pos, color)
+		_pulse_enemy(target, color)
+	_spawn_family_text(
+		source,
+		"➜ 직선 관통 ×%d" % targets.size() if kind == "rifle" \
+			else "◁ 산탄 확산 ×%d" % targets.size(),
+		color
+	)
+
+
+func _enemy_center(enemy_inst: EnemyInstance) -> Vector2:
+	if enemy_inst == null:
+		return Vector2.ZERO
+	var es = _enemy_sprites.get(enemy_inst)
+	if not is_instance_valid(es):
+		return Vector2.ZERO
+	return es.global_position + es.size / 2.0
+
+
+func _spawn_family_link(from_pos: Vector2, to_pos: Vector2, color: Color) -> void:
+	if not is_instance_valid(_fx_layer):
+		return
+	var distance := from_pos.distance_to(to_pos)
+	if distance <= 1.0:
+		return
+	var link := ColorRect.new()
+	link.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	link.color = color
+	link.size = Vector2(distance, 3)
+	link.pivot_offset = Vector2(0, 1.5)
+	link.rotation = (to_pos - from_pos).angle()
+	link.global_position = from_pos
+	_fx_layer.add_child(link)
+	var tween := create_tween()
+	tween.tween_property(link, "modulate:a", 0.0, 0.32)
+	tween.tween_callback(link.queue_free)
+
+
+func _pulse_enemy(enemy_inst: EnemyInstance, color: Color) -> void:
+	var es = _enemy_sprites.get(enemy_inst)
+	if not is_instance_valid(es):
+		return
+	es.modulate = color.lightened(0.35)
+	var tween := create_tween()
+	tween.tween_property(es, "modulate", Color.WHITE, 0.24)
+
+
+func _spawn_family_text(enemy_inst: EnemyInstance, text: String, color: Color) -> void:
+	var es = _enemy_sprites.get(enemy_inst)
+	if not is_instance_valid(es) or not is_instance_valid(_floating_layer):
+		return
+	var label: Label = parent_scene.make_label(text, 15, color)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_floating_layer.add_child(label)
+	var local_pos: Vector2 = es.global_position - _floating_layer.global_position
+	label.position = local_pos + Vector2(-10, -54)
+	var tween := create_tween()
+	tween.tween_property(label, "position", label.position + Vector2(0, -34), 0.75)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.75)
+	tween.tween_callback(label.queue_free)
 
 
 func _animate_enemy_death(enemy_inst: EnemyInstance) -> void:

@@ -35,12 +35,12 @@ static func run(t) -> void:
 	t.section("CaliberProfiles(fixed identity)")
 
 	t.eq(CaliberProfilesScript.STANDARD_CLASSES.size(), 3, "플레이어 기본 학습 규격은 3종")
-	t.eq(CaliberProfilesScript.SIGNATURE_CLASSES.size(), 2, "특수 총기 전용 규격은 2종")
+	t.eq(CaliberProfilesScript.ENHANCED_CLASSES.size(), 2, "같은 탄종의 강화 규격은 2종")
 	t.check(CaliberProfilesScript.is_standard_class(Enums.WeaponClass.PISTOL), "9mm는 표준 규격")
 	t.check(CaliberProfilesScript.is_standard_class(Enums.WeaponClass.RIFLE), "5.56mm는 표준 규격")
 	t.check(CaliberProfilesScript.is_standard_class(Enums.WeaponClass.SHOTGUN), "12게이지는 표준 규격")
-	t.check(CaliberProfilesScript.is_signature_class(Enums.WeaponClass.SMG), ".45ACP는 전용 규격")
-	t.check(CaliberProfilesScript.is_signature_class(Enums.WeaponClass.DMR), "7.62mm는 전용 규격")
+	t.check(CaliberProfilesScript.is_enhanced_class(Enums.WeaponClass.SMG), ".45ACP는 경량탄 강화 규격")
+	t.check(CaliberProfilesScript.is_enhanced_class(Enums.WeaponClass.DMR), "7.62mm는 소총탄 강화 규격")
 	t.eq(
 		CaliberProfilesScript.short_label_for_class(Enums.WeaponClass.PISTOL),
 		"표준 규격 · 경량탄 (9mm)",
@@ -48,15 +48,15 @@ static func run(t) -> void:
 	)
 	t.eq(
 		CaliberProfilesScript.short_label_for_class(Enums.WeaponClass.DMR),
-		"전용 규격 · 저격탄 (7.62mm)",
-		"전용 규격 UI 라벨"
+		"강화 규격 · 소총탄 (7.62mm)",
+		"강화 규격 UI 라벨"
 	)
 	var expected_names := {
 		Enums.WeaponClass.PISTOL: ["경량탄", "9mm"],
 		Enums.WeaponClass.RIFLE: ["소총탄", "5.56mm"],
 		Enums.WeaponClass.SHOTGUN: ["산탄", "12게이지"],
-		Enums.WeaponClass.SMG: ["중량탄", ".45ACP"],
-		Enums.WeaponClass.DMR: ["저격탄", "7.62mm"],
+		Enums.WeaponClass.SMG: ["경량탄", ".45ACP"],
+		Enums.WeaponClass.DMR: ["소총탄", "7.62mm"],
 	}
 	for weapon_class in expected_names:
 		var named_profile := CaliberProfilesScript.profile_for_class(weapon_class)
@@ -114,10 +114,37 @@ static func run(t) -> void:
 	var tempo: GunData = load("res://resources/guns/smg.tres")
 	t.eq(DamageCalculatorScript.effective_stats(native_9mm, revolver).accuracy, 8,
 		"9mm 기반탄에는 전술탄 ACC 프로필을 중복 적용하지 않음")
-	t.eq(DamageCalculatorScript.effective_stats(native_45, gambler).damage, 4,
-		".45ACP 기반탄 DMG 4를 프로필로 중복 가산하지 않음")
-	t.eq(DamageCalculatorScript.effective_stats(native_45, tempo).damage, 3,
+	t.eq(DamageCalculatorScript.effective_stats(native_45, gambler).damage, 3,
+		".45ACP 기반탄 DMG 3을 프로필로 중복 가산하지 않음")
+	t.eq(DamageCalculatorScript.effective_stats(native_45, tempo).damage, 2,
 		"Tempo 고유 DMG -1은 .45ACP 기반탄에 정상 적용")
+
+	# 5개 무기 클래스는 플레이어가 학습하는 3개 탄종 계열로 합쳐진다.
+	t.eq(
+		CaliberProfilesScript.family_for_class(Enums.WeaponClass.PISTOL),
+		Enums.AmmoFamily.LIGHT,
+		"9mm → 경량탄 계열"
+	)
+	t.eq(
+		CaliberProfilesScript.family_for_class(Enums.WeaponClass.SMG),
+		Enums.AmmoFamily.LIGHT,
+		".45 ACP → 경량탄 계열"
+	)
+	t.eq(
+		CaliberProfilesScript.family_for_class(Enums.WeaponClass.RIFLE),
+		Enums.AmmoFamily.RIFLE,
+		"5.56mm → 소총탄 계열"
+	)
+	t.eq(
+		CaliberProfilesScript.family_for_class(Enums.WeaponClass.DMR),
+		Enums.AmmoFamily.RIFLE,
+		"7.62mm → 소총탄 계열"
+	)
+	t.eq(
+		CaliberProfilesScript.family_for_class(Enums.WeaponClass.SHOTGUN),
+		Enums.AmmoFamily.SHOTGUN,
+		"12게이지 → 산탄 계열"
+	)
 
 	# 기본탄은 고정 보급 슬롯 전용이며 보상 드래프트는 공용 전술탄 14종으로 고정된다.
 	var bullets := _all_bullets()

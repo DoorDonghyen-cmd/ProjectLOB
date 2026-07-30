@@ -63,8 +63,8 @@ static func run(t) -> void:
 	var last3: Array[BulletData] = [_bullet(4, 7, 0, Enums.BulletEffect.LAST_SHOT, 4), _bullet(4, 7, 0), _bullet(4, 7, 0)]
 	var r_plain := _fire(_enemy(50, 0, 0, 10), plain3)
 	var r_last := _fire(_enemy(50, 0, 0, 10), last3)
-	t.eq(r_plain.hp, 38, "기준: 4x3=12 대미지 (HP 50→38)")
-	t.eq(r_last.hp, 34, "마무리탄: 마지막 탄 4→8(+4) → 16 대미지 (HP 50→34)")
+	t.eq(r_plain.hp, 37, "기준: 4x3 + 경량탄 집중1 = 13 대미지")
+	t.eq(r_last.hp, 33, "마무리탄 16 + 경량탄 집중1 = 17 대미지")
 
 	# ── COMBO: 직전 격발이 명중했을 때 추가 대미지 ──
 	# 첫 발은 직전 명중 이력이 없어 보너스 없음, 2발째부터 가산
@@ -73,7 +73,7 @@ static func run(t) -> void:
 		_bullet(3, 7, 0, Enums.BulletEffect.COMBO, 2),
 		_bullet(3, 7, 0, Enums.BulletEffect.COMBO, 2)]
 	var r_combo := _fire(_enemy(50, 0, 0, 10), combo3)
-	t.eq(r_combo.hp, 37, "콤보 사격: 3 + 5 + 5 = 13 대미지 (HP 50→37)")
+	t.eq(r_combo.hp, 36, "콤보 13 + 경량탄 집중1 = 14 대미지")
 
 	# ── CALIBER_DIFF(직렬화 값 유지): 역할 교대 뒤에서만 추가 대미지 ──
 	var uni2: Array[BulletData] = [
@@ -101,7 +101,7 @@ static func run(t) -> void:
 	for i in range(4):
 		attack_only.append(_bullet(5, 5, 1))
 	var r_solo := _fire(_enemy(30, 0, 5, 10), attack_only)
-	t.eq(int(r_solo.hp), 10, "⭐ 공격탄 단독 → 일반 EVA5 적에게 5×4=20 피해")
+	t.eq(int(r_solo.hp), 9, "⭐ 공격탄 5×4 + 경량탄 집중1 = 21 피해")
 
 	# ── 연계탄은 같은 공격탄의 대응 범위를 고회피 적까지 넓힌다 ──
 	var chained: Array[BulletData] = []
@@ -109,15 +109,15 @@ static func run(t) -> void:
 		chained.append(_bullet(5, 5, 1))                                             # 공격(먼저 적재)
 		chained.append(_bullet(1, 8, 1, Enums.BulletEffect.BUFF_ACC, 3))             # 연계(나중 적재)
 	var r_chain := _fire(_enemy(30, 0, 7, 10), chained)
-	t.eq(int(r_chain.hp), 14,
-		"⭐ ACC 연계→크리티컬 공격 2쌍 = 16 피해, EVA7 전문 적까지 대응")
+	t.eq(int(r_chain.hp), 13,
+		"⭐ ACC 연계→크리티컬 16 + 경량탄 집중1 = 17 피해")
 
 	# ── PEN2 공격탄은 일반 장갑에 단독으로 작동한다 ──
 	var pen_solo: Array[BulletData] = []
 	for i in range(4):
 		pen_solo.append(_bullet(5, 7, 2))
 	var r_pen_solo := _fire(_enemy(40, 2, 0, 10), pen_solo)
-	t.eq(int(r_pen_solo.hp), 20, "⭐ PEN2 공격탄 단독 → 일반 DEF2 적에게 5×4=20 피해")
+	t.eq(int(r_pen_solo.hp), 19, "⭐ PEN2 공격탄 20 + 경량탄 집중1 = 21 피해")
 
 	# PEN 연계는 동일 공격탄을 DEF3 전문 적까지 확장한다.
 	var pen_chain: Array[BulletData] = []
@@ -125,8 +125,8 @@ static func run(t) -> void:
 		pen_chain.append(_bullet(5, 7, 2))
 		pen_chain.append(_bullet(1, 7, 3, Enums.BulletEffect.BUFF_PEN, 3))
 	var r_pen_chain := _fire(_enemy(40, 3, 0, 10), pen_chain)
-	t.eq(int(r_pen_chain.hp), 24,
-		"⭐ PEN 연계→크리티컬 공격 2쌍 = 16 피해, DEF3 전문 적까지 대응")
+	t.eq(int(r_pen_chain.hp), 23,
+		"⭐ PEN 연계→크리티컬 16 + 경량탄 집중1 = 17 피해")
 
 	# ── 버프는 다음 1발만 (탄창 전체 지속 아님) ──
 	# 연계 1발 + 공격 3발 → 첫 공격만 맞고 나머지 둘은 빗나가야 한다.

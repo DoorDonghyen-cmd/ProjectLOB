@@ -28,7 +28,7 @@ extends Resource
 
 @export_group("리로드")
 ## 리로드 턴 수 — 리로드에 소모되는 턴 (이 동안 적이 전진)
-@export_range(1, 3) var reload_turns: int = 1
+@export_range(1, 5) var reload_turns: int = 1
 
 @export_group("파츠 슬롯")
 ## 일반 파츠 장착 가능한 최대 슬롯 개수
