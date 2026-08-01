@@ -373,6 +373,8 @@ func update_enemy_position_and_scale() -> void:
 		# [절대 규칙] anchor_left = 거리 / 최대거리로 수평 자유 배치
 		var min_anchor := 0.16
 		var anchor_ratio := min_anchor + ratio * (0.88 - min_anchor)
+		var formation_offset := _same_distance_formation_offset(e)
+		anchor_ratio = clampf(anchor_ratio + formation_offset.x, 0.12, 0.92)
 		
 		# [Phase 4] 전진 이동 시 부드러운 트윈 및 뒤뚱거림 모션 구현
 		var old_anchor = es.anchor_left
@@ -405,13 +407,36 @@ func update_enemy_position_and_scale() -> void:
 		# 중심점이 앵커에 오도록 마진 오프셋 계산 (80px 크기)
 		es.offset_left = -40
 		es.offset_right = 40
-		es.offset_top = -40
-		es.offset_bottom = 40
+		es.offset_top = -40 + formation_offset.y
+		es.offset_bottom = 40 + formation_offset.y
 		
 		# 타겟 링 표시 갱신
 		var ring = es.get_node_or_null("RingPanel")
 		if ring:
 			ring.visible = (e == nearest)
+
+## 같은 거리에 선 적들이 완전히 겹치지 않도록 작은 대각 편성 슬롯을 부여한다.
+## x축은 거리 정보가 흐려지지 않는 범위로 제한하고 y축은 선택 영역을 분리한다.
+func _same_distance_formation_offset(enemy: EnemyInstance) -> Vector2:
+	if combat_manager == null:
+		return Vector2.ZERO
+
+	var peers: Array[EnemyInstance] = []
+	for other in enemy_sprites.keys():
+		if other is EnemyInstance and not other.is_dead() and other.current_distance == enemy.current_distance:
+			peers.append(other)
+	if peers.size() <= 1:
+		return Vector2.ZERO
+
+	peers.sort_custom(func(a: EnemyInstance, b: EnemyInstance) -> bool:
+		return combat_manager.enemies.find(a) < combat_manager.enemies.find(b)
+	)
+	var slot := peers.find(enemy)
+	if slot < 0:
+		return Vector2.ZERO
+	var centered_slot := float(slot) - float(peers.size() - 1) * 0.5
+	return Vector2(centered_slot * 0.04, centered_slot * 26.0)
+
 
 func update_distance_display(enemy: EnemyInstance) -> void:
 	if not enemy or enemy.is_dead():

@@ -8,6 +8,7 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-01 | **플레이테스트 텔레메트리·일반전 증원·개발자 도구** | `codex0801-playtest-telemetry` | 런별 전투·탄종·파츠 JSON 로깅, 공역 이후 일반전 3~4체 증원과 동거리 4체 분산, 모든 무기 9종 영구 해금 버튼 구현. 전체 2,543 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_playtest_telemetry_density_dev_tools_2026-08-01.md) |
 | 2026-07-30 | **탄종 3계열 행동·기술 규격·파츠 시너지** | `codex0730-ammo-family` | 경량탄 적별 3회 집중, 소총탄 후열 직선 관통, 산탄 3m 군집 확산과 표준/강화 기술 규격 구현. 관통탄·Heavy·확산 격발·관성 격발 중복 해소, 대상별 예고·계열별 연출, Tempo 3.20 DPT 및 전체 2,476 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_family_behaviors_2026-07-30.md) |
 | 2026-07-28 | **개발자 테스트 전체 데이터 초기화** | `codex0728-dev-reset` | 확인 대화상자를 거쳐 현재 런·영구 진행·메타 세이브를 첫 실행 상태로 복원하고 타이틀 UI 갱신. 삭제 실패 폴백과 저장·UI 회귀 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_dev_reset_all_2026-07-28.md) |
 | 2026-07-28 | **기본탄 고정 보급 슬롯 및 리로드 정량 복구** | `codex0728-basic-supply` | 기본탄을 덱·드래프트에서 분리해 가방 고정 슬롯으로 표시하고 탄창+약실 상한까지 리로드 복구. 발당 탄창 슬롯과 LIFO는 유지하고 전술탄만 제한 자원으로 분리, 승천 8 계약과 회귀 동기화 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_basic_ammo_supply_2026-07-28.md) |
@@ -48,6 +49,7 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0801-playtest-telemetry Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_playtest_telemetry_density_dev_tools_2026-08-01.md)
 * [Session codex0730-ammo-family Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_family_behaviors_2026-07-30.md)
 * [Session codex0728-dev-reset Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_dev_reset_all_2026-07-28.md)
 * [Session codex0728-basic-supply Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_basic_ammo_supply_2026-07-28.md)

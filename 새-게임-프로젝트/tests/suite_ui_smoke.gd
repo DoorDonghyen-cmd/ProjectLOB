@@ -45,6 +45,32 @@ static func run(t, tree: SceneTree) -> void:
 		return
 
 	tree.root.add_child(scene)
+
+	# 일반전 증원은 첫 구역 초반/보스를 건드리지 않고 구역별 목표 범위만 올린다.
+	var density_cases := [
+		["section_a", 0, 0.9, [scene._enemy_rusher], 1],
+		["section_a", 1, 0.1, [scene._enemy_rusher, scene._enemy_tank], 2],
+		["section_a", 1, 0.9, [scene._enemy_rusher, scene._enemy_tank], 3],
+		["section_a", 2, 0.9, [scene._enemy_rusher, scene._enemy_tank, scene._enemy_dodger], 3],
+		["section_b", 0, 0.1, [scene._enemy_rusher, scene._enemy_dodger], 3],
+		["section_b", 1, 0.1, [scene._enemy_rusher, scene._enemy_tank, scene._enemy_drone], 3],
+		["section_b", 1, 0.9, [scene._enemy_rusher, scene._enemy_tank, scene._enemy_drone], 4],
+		["section_b", 2, 0.1, [scene._enemy_tank, scene._enemy_caster, scene._enemy_drone], 4],
+		["section_c", 0, 0.1, [scene._enemy_rusher, scene._enemy_tank, scene._enemy_dodger], 3],
+		["section_c", 1, 0.1, [scene._enemy_tank, scene._enemy_caster, scene._enemy_drone], 4],
+		["section_c", 2, 0.1, [scene._enemy_absorber, scene._enemy_rusher, scene._enemy_caster], 4],
+		["section_d", 0, 0.1, [scene._enemy_rusher, scene._enemy_tank], 3],
+		["section_d", 1, 0.1, [scene._enemy_tank, scene._enemy_dodger, scene._enemy_caster], 4],
+		["section_d", 2, 0.1, [scene._enemy_absorber, scene._enemy_scrambler, scene._enemy_neuro_caster], 4],
+		["section_e", 0, 0.1, [scene._enemy_scrambler, scene._enemy_dodger], 3],
+		["section_e", 2, 0.1, [scene._enemy_tank, scene._enemy_stalker, scene._enemy_caster], 4],
+	]
+	for density_case in density_cases:
+		var expanded: Array = scene._increase_regular_enemy_density(
+			str(density_case[0]), int(density_case[1]), density_case[3], float(density_case[2]))
+		t.eq(expanded.size(), int(density_case[4]),
+			"일반전 밀도 %s T%d" % [str(density_case[0]), int(density_case[1])])
+		t.check(expanded.size() <= 4, "일반전 1차 조정 상한 4체")
 	t.check(scene.is_inside_tree(), "메인 씬이 트리에 진입(_ready 실행됨)")
 
 	# ── 상승 브리핑: 해금 상태별로 갱신이 오류 없이 도는가 ──
@@ -83,6 +109,31 @@ static func run(t, tree: SceneTree) -> void:
 	scene._title_overlay._on_dev_test_pressed()
 	var reset_btn := _find_button_text(scene._title_overlay._dev_test_panel, "전부 초기화")
 	t.check(reset_btn != null, "개발자 테스트 메뉴에 전부 초기화 버튼 존재")
+	var log_btn := _find_button_text(scene._title_overlay._dev_test_panel, "플레이테스트 로그")
+	t.check(log_btn != null, "개발자 테스트 메뉴에 플레이테스트 로그 폴더 버튼 존재")
+	var unlock_weapons_btn := _find_button_text(scene._title_overlay._dev_test_panel, "모든 무기 해금")
+	t.check(unlock_weapons_btn != null, "개발자 테스트 메뉴에 모든 무기 해금 버튼 존재")
+	var prev_unlocked_weapons: Array[String] = RunManager.meta_unlocked_weapons.duplicate()
+	if unlock_weapons_btn != null:
+		RunManager.meta_unlocked_weapons = ["workhorse"] as Array[String]
+		unlock_weapons_btn.pressed.emit()
+		t.eq(RunManager.meta_unlocked_weapons.size(), LoadoutOverlay.WEAPON_PROFILES.size(),
+			"모든 무기 해금 버튼은 준비실 무기 전체를 중복 없이 해금")
+		for weapon_key_variant in LoadoutOverlay.WEAPON_PROFILES.keys():
+			var weapon_key := String(weapon_key_variant)
+			t.check(RunManager.meta_unlocked_weapons.has(weapon_key),
+				"모든 무기 해금에 %s 포함" % weapon_key)
+
+		var saved_meta := ConfigFile.new()
+		t.eq(saved_meta.load(RunManager.save_path_override), OK,
+			"모든 무기 해금 결과가 메타 세이브에 기록됨")
+		var saved_weapons: Array = saved_meta.get_value("meta", "unlocked_weapons", [])
+		t.eq(saved_weapons.size(), LoadoutOverlay.WEAPON_PROFILES.size(),
+			"메타 세이브에도 준비실 무기 전체가 유지됨")
+		t.check(scene._title_overlay._weapon_unlock_result_dialog.visible,
+			"모든 무기 해금 완료 안내창 표시")
+		scene._title_overlay._weapon_unlock_result_dialog.hide()
+	RunManager.meta_unlocked_weapons = prev_unlocked_weapons
 	if reset_btn != null:
 		reset_btn.pressed.emit()
 		t.check(scene._title_overlay._reset_confirmation.visible,
@@ -377,6 +428,23 @@ static func run(t, tree: SceneTree) -> void:
 		ov._result_overlay.visible = false
 
 	# ── 디브리핑: 사망 / 정점 도달(결말). 결말은 로어 20개 유무로 한 번 더 갈린다 ──
+	# 4체가 같은 거리에 있어도 선택 대상과 상태 배지가 완전히 겹치지 않는다.
+	var four_enemy_data: Array = scene._increase_regular_enemy_density(
+		"section_b", 2,
+		[scene._enemy_tank, scene._enemy_caster, scene._enemy_drone], 0.9)
+	scene._start_combat_phase(four_enemy_data)
+	t.eq(scene._cm.enemies.size(), 4, "일반전 최대 4체가 실제 전투 UI에 배치됨")
+	var four_track = scene._combat_overlay._track_control
+	if is_instance_valid(four_track):
+		var slot_signatures := {}
+		for formation_enemy in scene._cm.enemies:
+			formation_enemy.current_distance = 10
+		for formation_enemy in scene._cm.enemies:
+			var offset: Vector2 = four_track._same_distance_formation_offset(formation_enemy)
+			slot_signatures["%.3f/%.1f" % [offset.x, offset.y]] = true
+		t.eq(slot_signatures.size(), 4, "동거리 4체에 서로 다른 편성 슬롯 부여")
+		four_track.update_enemy_position_and_scale()
+
 	var prev_credits: int = RunManager.meta_credits
 	var prev_lore: Array[int] = RunManager.meta_lore_fragments.duplicate()
 

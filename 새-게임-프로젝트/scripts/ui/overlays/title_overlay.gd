@@ -6,6 +6,7 @@ extends PanelContainer
 ## ═══════════════════════════════════════════════════
 
 const DataLoader = preload("res://scripts/core/data_loader.gd")
+const PlaytestLoggerScript = preload("res://scripts/core/playtest_logger.gd")
 
 var parent_scene: Control
 var run_manager: RunManager
@@ -20,6 +21,7 @@ var _meta_vault_btn: Button
 var _dev_test_panel: PanelContainer
 var _reset_confirmation: ConfirmationDialog
 var _reset_result_dialog: AcceptDialog
+var _weapon_unlock_result_dialog: AcceptDialog
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
@@ -468,6 +470,17 @@ func _build_dev_test_panel() -> void:
 	btn_unlock_test.add_theme_font_size_override("font_size", 11)
 	btn_unlock_test.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_unlock_test)
+
+	# 다른 메타 진행도를 건드리지 않고 모든 무기만 영구 해금한다.
+	var btn_unlock_all_weapons = parent_scene.make_button("🔓 모든 무기 해금", func():
+		_on_unlock_all_weapons_pressed()
+	, parent_scene.C_WARNING)
+	btn_unlock_all_weapons.name = "UnlockAllWeaponsButton"
+	btn_unlock_all_weapons.tooltip_text = "준비실의 모든 무기를 영구 해금합니다. '전부 초기화'로 되돌릴 수 있습니다."
+	btn_unlock_all_weapons.custom_minimum_size = Vector2(0, 36)
+	btn_unlock_all_weapons.add_theme_font_size_override("font_size", 11)
+	btn_unlock_all_weapons.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_unlock_all_weapons)
 	
 	# 6. 📊 밸런스 매트릭스 뷰 버튼
 	var btn_matrix = parent_scene.make_button("📊 밸런스 매트릭스 뷰", func():
@@ -477,6 +490,19 @@ func _build_dev_test_panel() -> void:
 	btn_matrix.add_theme_font_size_override("font_size", 11)
 	btn_matrix.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_matrix)
+
+	# 플레이테스트 JSON을 바로 공유할 수 있게 로컬 저장 폴더를 연다.
+	var btn_playtest_logs = parent_scene.make_button("🗂 플레이테스트 로그", func():
+		var error := PlaytestLoggerScript.open_log_directory()
+		if error != OK:
+			push_warning("플레이테스트 로그 폴더 열기 실패: %d" % error)
+	, parent_scene.C_ACCENT)
+	btn_playtest_logs.name = "OpenPlaytestLogFolderButton"
+	btn_playtest_logs.tooltip_text = "런별 전투·탄환·파츠 활용 내역이 저장된 JSON 폴더를 엽니다."
+	btn_playtest_logs.custom_minimum_size = Vector2(0, 36)
+	btn_playtest_logs.add_theme_font_size_override("font_size", 11)
+	btn_playtest_logs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_playtest_logs)
 	
 	# 7. 🗺️ 모든 작전 구역 해금 디버그 숏컷
 	var btn_unlock_zones = parent_scene.make_button("🔓 모든 작전 지역 해금", func():
@@ -525,6 +551,11 @@ func _build_dev_test_panel() -> void:
 	_reset_result_dialog.name = "ResetAllProgressResult"
 	_reset_result_dialog.title = "전체 데이터 초기화"
 	add_child(_reset_result_dialog)
+
+	_weapon_unlock_result_dialog = AcceptDialog.new()
+	_weapon_unlock_result_dialog.name = "UnlockAllWeaponsResult"
+	_weapon_unlock_result_dialog.title = "모든 무기 해금"
+	add_child(_weapon_unlock_result_dialog)
 	
 	# ── 보스 전투 테스트 숏컷 ──
 	# 보스 #1: 디렉터 강 (구역 1 보스)
@@ -578,6 +609,31 @@ func _build_dev_test_panel() -> void:
 	btn_close.custom_minimum_size = Vector2(240, 36)
 	btn_close.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	vbox.add_child(btn_close)
+
+
+func _on_unlock_all_weapons_pressed() -> void:
+	var added_count := 0
+	for weapon_key_variant in LoadoutOverlay.WEAPON_PROFILES.keys():
+		var weapon_key := String(weapon_key_variant)
+		if not RunManager.meta_unlocked_weapons.has(weapon_key):
+			RunManager.meta_unlocked_weapons.append(weapon_key)
+			added_count += 1
+
+	var result := RunManager.save_meta()
+	_refresh_shop_ui()
+	if result == OK:
+		_weapon_unlock_result_dialog.dialog_text = (
+			"모든 무기 %d종을 사용할 수 있습니다.\n이번에 새로 해금: %d종"
+			% [LoadoutOverlay.WEAPON_PROFILES.size(), added_count]
+		)
+		print("디버그: 모든 무기 %d종 영구 해금 완료 (신규 %d종)." % [
+			LoadoutOverlay.WEAPON_PROFILES.size(), added_count])
+	else:
+		_weapon_unlock_result_dialog.dialog_text = (
+			"메모리에는 반영했지만 세이브 파일 갱신에 실패했습니다.\n오류 코드: %d" % result
+		)
+		push_error("모든 무기 해금 세이브 처리 실패: %d" % result)
+	_weapon_unlock_result_dialog.popup_centered()
 
 
 func _on_reset_all_confirmed() -> void:

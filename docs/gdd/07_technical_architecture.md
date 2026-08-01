@@ -205,3 +205,13 @@ CombatScene (Node2D)
 | | `dodger.tres` | 침투 요원 (Dodger): SPD 2 / DEF 1 / HP 6 / EVA 6 — 높은 회피형 적 |
 | | `caster.tres` | 술사 요원 (Caster): SPD 0 / DEF 1 / HP 8 / EVA 2 — 전진 없이 원거리 차징 공격 |
 | | `sentry_drone.tres` | 경보 공중 드론 (Drone): SPD 2 / DEF 0 / HP 4 / EVA 5 — 공중 비행 기체 |
+
+### 7.7 플레이테스트 텔레메트리
+
+`PlaytestLogger` (`scripts/core/playtest_logger.gd`)는 게임 세이브와 분리된
+`user://playtest_logs` 폴더에 런별 JSON을 저장한다. `RunManager`가 런 시작·종료와
+구역·로드아웃 문맥을 책임지고, `CombatManager`가 발사·탄종·파츠·원문 전투
+이벤트를 구조화한다. 각 전투 종료 시 현재 런 파일을 즉시 갱신해 중도
+종료에서도 직전 완료 전투까지 복구한다.
+
+세부 필드와 사용 절차는 [`playtest_logging.md`](../playtest_logging.md)를 따른다.

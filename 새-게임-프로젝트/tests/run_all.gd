@@ -4,6 +4,7 @@ extends SceneTree
 ## 종료 코드 0 = 전체 통과, 1 = 실패 있음 (CI 연동 가능).
 
 const LobTest := preload("res://tests/lob_test.gd")
+const PlaytestLoggerScript := preload("res://scripts/core/playtest_logger.gd")
 const SuiteScriptParse := preload("res://tests/suite_script_parse.gd")
 const SuiteDamage := preload("res://tests/suite_damage.gd")
 const SuiteMagazine := preload("res://tests/suite_magazine.gd")
@@ -12,6 +13,7 @@ const ValidateData := preload("res://tests/validate_data.gd")
 const SuiteAmmoIntegrity := preload("res://tests/suite_ammo_integrity.gd")
 const SuiteCaliberProfiles := preload("res://tests/suite_caliber_profiles.gd")
 const SuiteAmmoFamilyBehavior := preload("res://tests/suite_ammo_family_behavior.gd")
+const SuitePlaytestLogging := preload("res://tests/suite_playtest_logging.gd")
 const SuiteBasicSupply := preload("res://tests/suite_basic_supply.gd")
 const SuiteAmmoMatrix := preload("res://tests/suite_ammo_matrix.gd")
 const SuiteLIFODepthBaseline := preload("res://tests/suite_lifo_depth_baseline.gd")
@@ -52,6 +54,8 @@ func _initialize() -> void:
 	print("\n╔══════ Last on Board · 자동 검증 ══════╗")
 	# 테스트 중 메타 저장이 실제 세이브(user://meta_save.cfg)를 덮어쓰지 않도록 임시 경로로 리다이렉트
 	RunManager.save_path_override = OVERRIDE_PATH
+	# 일반 회귀 시뮬레이션은 실제 플레이테스트 폴더에 로그를 남기지 않는다.
+	PlaytestLoggerScript.enabled = false
 
 	var t := LobTest.new()
 	_t = t
@@ -66,6 +70,7 @@ func _initialize() -> void:
 	SuiteAmmoIntegrity.run(t) # 탄환 CSV↔리소스↔시작 덱 완전 일치
 	SuiteCaliberProfiles.run(t) # 고정 구경 프로필·기반탄 비중복·드래프트 제한
 	SuiteAmmoFamilyBehavior.run(t) # 경량 집중·소총 관통·산탄 확산
+	SuitePlaytestLogging.run(t) # 런별 전투·탄·파츠 텔레메트리 JSON
 	SuiteBasicSupply.run(t)   # 기본탄 고정 보급 슬롯·리로드 정량 복구
 	SuiteAmmoMatrix.run(t)    # 실제 몬스터별 공격·연계·연발 처치 매트릭스
 	SuiteLIFODepthBaseline.run(t) # v5 순서 민감도 JSON 기준선

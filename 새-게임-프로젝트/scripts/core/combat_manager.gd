@@ -2,6 +2,34 @@ class_name CombatManager
 extends Node
 
 const CaliberProfiles = preload("res://scripts/core/caliber_profiles.gd")
+const PlaytestLoggerScript = preload("res://scripts/core/playtest_logger.gd")
+
+## 화면 로그의 표준 태그와 실제 장착 파츠를 연결한다.
+## 파츠 효과 메시지가 바뀌면 이 맵과 회귀 테스트도 함께 갱신해야 한다.
+const PART_LOG_TOKENS := {
+	Enums.PartID.DEEP_LOADER: "[딥로더]",
+	Enums.PartID.RHYTHM_CHAMBER: "[리듬 챔버]",
+	Enums.PartID.INTERRUPTER: "[인터럽터]",
+	Enums.PartID.UNDERFLOW: "[언더플로우]",
+	Enums.PartID.CHASER: "[체이서]",
+	Enums.PartID.POINT_BLANK: "[돌격형 시그니처]",
+	Enums.PartID.LONG_SHOT: "[롱샷]",
+	Enums.PartID.EXECUTIONER: "[처형자]",
+	Enums.PartID.RECOIL_PUSH: "[리코일 푸시]",
+	Enums.PartID.HIGH_PRECISION: "[고정밀 총열]",
+	Enums.PartID.ARMOR_PIERCING: "[철갑 총열]",
+	Enums.PartID.SHRED_MUZZLE: "[파쇄 총구]",
+	Enums.PartID.VERSATILE_CHAMBER: "[만능 약실]",
+	Enums.PartID.TARGET_INDICATOR: "[표적 지시기]",
+	Enums.PartID.CHAIN_ACC: "[연동 조준]",
+	Enums.PartID.STANCE_FORESIGHT: "[태세 예지]",
+	Enums.PartID.STANCE_LOCK: "[태세 고정]",
+	Enums.PartID.INERTIA_FIRE: "[관성 격발]",
+	Enums.PartID.BLIND_FIRE: "[블라인드파이어]",
+	Enums.PartID.QUICK_LOAD: "[퀵로드]",
+	Enums.PartID.SPREAD_SHOT: "[확산 격발]",
+	Enums.PartID.MARKSMAN_SCOPE: "[저격경]",
+}
 
 ## 전투 루프 오케스트레이터 (다수 적 공유 트랙 + Tier 2 확장 버전)
 ## 상태 머신으로 전투 플로우를 제어하고, 시그널로 UI에 이벤트를 전달한다.
@@ -122,6 +150,27 @@ var battle_stats := {
 	"min_dist_ratio": 1.0
 }
 
+# ── 플레이테스트 텔레메트리 ──
+var telemetry_started_at: String = ""
+var telemetry_initial_enemies: Array[Dictionary] = []
+var telemetry_shots: Array[Dictionary] = []
+var telemetry_family_events: Array[Dictionary] = []
+var telemetry_part_events: Array[Dictionary] = []
+var telemetry_combat_log: Array[String] = []
+var telemetry_bullet_summary: Dictionary = {}
+var telemetry_family_summary: Dictionary = {}
+var telemetry_part_summary: Dictionary = {}
+var telemetry_reload_count: int = 0
+var telemetry_reload_turns: int = 0
+var _telemetry_pending_family_events: Array[Dictionary] = []
+
+
+func _init() -> void:
+	combat_log.connect(_capture_telemetry_log)
+	bullet_fired.connect(_capture_telemetry_shot)
+	ammo_family_triggered.connect(_capture_telemetry_family)
+	reload_started.connect(_capture_telemetry_reload)
+
 
 ## 태세 고정(STANCE_LOCK) 사용 여부 — 전투당 1회
 var _stance_lock_used: bool = false
@@ -163,6 +212,7 @@ func start_encounter(
 	parts: Array[PartData] = [],
 	supply_bullet: BulletData = null
 ) -> void:
+	_reset_telemetry()
 	gun = gun_data
 	enemies.clear()
 	var offset := 0
@@ -243,6 +293,7 @@ func start_encounter(
 		visible_magazine_slots = max(1, visible_magazine_slots - 1)
 		
 	_stance_lock_used = false
+	telemetry_initial_enemies = _telemetry_enemy_snapshots()
 
 	# 태세 예지 (STANCE_FORESIGHT): 전투 개시 시 태세 전환 주기를 미리 공개한다.
 	# 전환 타이밍을 알면 LIFO 적재 순서를 그에 맞춰 설계할 수 있다.
@@ -1584,6 +1635,212 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 				combat_log.emit("   ↳ 선제탄 첫 발 조건 불충족 — 추가 효과 없음")
 		_:
 			pass
+
+
+## 플레이테스트 보고서는 화면용 BBCode 문자열을 보존하되,
+## 탄·파츠·탄종 효과는 별도 필드로 저장해 자동 비교가 가능하게 한다.
+func _reset_telemetry() -> void:
+	telemetry_started_at = Time.get_datetime_string_from_system(false, true)
+	telemetry_initial_enemies.clear()
+	telemetry_shots.clear()
+	telemetry_family_events.clear()
+	telemetry_part_events.clear()
+	telemetry_combat_log.clear()
+	telemetry_bullet_summary.clear()
+	telemetry_family_summary.clear()
+	telemetry_part_summary.clear()
+	telemetry_reload_count = 0
+	telemetry_reload_turns = 0
+	_telemetry_pending_family_events.clear()
+
+
+func _capture_telemetry_log(message: String) -> void:
+	telemetry_combat_log.append(message)
+	for part in equipped_parts:
+		if part == null:
+			continue
+		var token := str(PART_LOG_TOKENS.get(part.part_id, ""))
+		if token.is_empty() or not message.contains(token):
+			continue
+		var snapshot := PlaytestLoggerScript.resource_snapshot(part)
+		var part_id := str(snapshot.get("id", "part_%d" % part.part_id))
+		var event := {
+			"event_index": telemetry_part_events.size() + 1,
+			"after_shot": telemetry_shots.size(),
+			"part": snapshot,
+			"message": message,
+			"declared_bonus_damage": _telemetry_declared_bonus(message, "DMG +"),
+			"declared_bonus_accuracy": _telemetry_declared_bonus(message, "ACC +"),
+			"declared_bonus_penetration": _telemetry_declared_bonus(message, "PEN +"),
+		}
+		telemetry_part_events.append(event)
+		var summary: Dictionary = telemetry_part_summary.get(part_id, {
+			"part": snapshot,
+			"effect_events": 0,
+			"declared_bonus_damage": 0,
+			"declared_bonus_accuracy": 0,
+			"declared_bonus_penetration": 0,
+		})
+		summary.effect_events = int(summary.effect_events) + 1
+		summary.declared_bonus_damage = int(summary.declared_bonus_damage) \
+			+ int(event.declared_bonus_damage)
+		summary.declared_bonus_accuracy = int(summary.declared_bonus_accuracy) \
+			+ int(event.declared_bonus_accuracy)
+		summary.declared_bonus_penetration = int(summary.declared_bonus_penetration) \
+			+ int(event.declared_bonus_penetration)
+		telemetry_part_summary[part_id] = summary
+
+
+func _capture_telemetry_family(
+	kind: String,
+	source: EnemyInstance,
+	targets: Array,
+	value: int
+) -> void:
+	var target_snapshots: Array[Dictionary] = []
+	for target in targets:
+		if target is EnemyInstance:
+			target_snapshots.append(_telemetry_enemy_snapshot(target, enemies.find(target)))
+	var event := {
+		"event_index": telemetry_family_events.size() + 1,
+		"shot_number": telemetry_shots.size() + 1,
+		"kind": kind,
+		"source": _telemetry_enemy_snapshot(source, enemies.find(source)),
+		"targets": target_snapshots,
+		"value": value,
+	}
+	telemetry_family_events.append(event)
+	_telemetry_pending_family_events.append(event.duplicate(true))
+	var summary: Dictionary = telemetry_family_summary.get(kind, {
+		"events": 0,
+		"triggers": 0,
+		"value_total": 0,
+		"targets_total": 0,
+	})
+	summary.events = int(summary.events) + 1
+	# 경량탄은 1/3·2/3 진행 갱신도 같은 시그널을 쓴다.
+	# 실제 폭발(value > 0)만 trigger로 세어 체감 지표를 부풀리지 않는다.
+	if value > 0:
+		summary.triggers = int(summary.triggers) + 1
+	summary.value_total = int(summary.value_total) + value
+	summary.targets_total = int(summary.targets_total) + target_snapshots.size()
+	telemetry_family_summary[kind] = summary
+
+
+func _capture_telemetry_shot(
+	bullet: BulletData,
+	hit: bool,
+	damage: int,
+	target: EnemyInstance,
+	remaining_durability: int
+) -> void:
+	var bullet_snapshot := PlaytestLoggerScript.resource_snapshot(bullet)
+	bullet_snapshot["role"] = bullet.role
+	bullet_snapshot["family"] = bullet.family
+	bullet_snapshot["is_basic"] = bullet.is_basic
+	bullet_snapshot["damage"] = bullet.damage
+	bullet_snapshot["penetration"] = bullet.penetration
+	bullet_snapshot["accuracy"] = bullet.accuracy
+	var bullet_id := str(bullet_snapshot.get("id", "unknown"))
+	var shot := {
+		"shot_number": telemetry_shots.size() + 1,
+		"bullet": bullet_snapshot,
+		"target_after": _telemetry_enemy_snapshot(target, enemies.find(target)),
+		"hit": hit,
+		"effective": hit and damage > 0,
+		"primary_damage": damage,
+		"remaining_durability": remaining_durability,
+		"magazine_remaining": magazine.get_remaining() if magazine != null else 0,
+		"family_events": _telemetry_pending_family_events.duplicate(true),
+		"combat_log_lines": telemetry_combat_log.size(),
+	}
+	telemetry_shots.append(shot)
+	_telemetry_pending_family_events.clear()
+	var summary: Dictionary = telemetry_bullet_summary.get(bullet_id, {
+		"bullet": bullet_snapshot,
+		"shots": 0,
+		"hits": 0,
+		"effective_hits": 0,
+		"primary_damage": 0,
+	})
+	summary.shots = int(summary.shots) + 1
+	if hit:
+		summary.hits = int(summary.hits) + 1
+	if hit and damage > 0:
+		summary.effective_hits = int(summary.effective_hits) + 1
+	summary.primary_damage = int(summary.primary_damage) + damage
+	telemetry_bullet_summary[bullet_id] = summary
+
+
+func _capture_telemetry_reload(turns: int) -> void:
+	telemetry_reload_count += 1
+	telemetry_reload_turns += turns
+
+
+func _telemetry_declared_bonus(message: String, marker: String) -> int:
+	var index := message.find(marker)
+	if index < 0:
+		return 0
+	return message.substr(index + marker.length()).to_int()
+
+
+func _telemetry_enemy_snapshot(enemy_inst: EnemyInstance, slot: int) -> Dictionary:
+	if enemy_inst == null:
+		return {}
+	return {
+		"slot": slot,
+		"id": PlaytestLoggerScript.resource_id(enemy_inst.data),
+		"display_name": enemy_inst.data.display_name,
+		"hp": enemy_inst.current_hp,
+		"max_hp": enemy_inst.max_hp,
+		"defense": enemy_inst.current_def,
+		"evasion": enemy_inst.current_evasion,
+		"speed": enemy_inst.current_speed,
+		"distance": enemy_inst.current_distance,
+		"start_distance": enemy_inst.start_distance,
+		"barrier_cells": enemy_inst.barrier_cells if enemy_inst.is_stack_sponge else 0,
+		"dead": enemy_inst.is_dead(),
+	}
+
+
+func _telemetry_enemy_snapshots() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for index in range(enemies.size()):
+		result.append(_telemetry_enemy_snapshot(enemies[index], index))
+	return result
+
+
+func build_playtest_report() -> Dictionary:
+	var result_name := "in_progress"
+	match state:
+		State.WON: result_name = "won"
+		State.LOST: result_name = "lost"
+	var part_snapshots: Array[Dictionary] = []
+	for part in equipped_parts:
+		part_snapshots.append(PlaytestLoggerScript.resource_snapshot(part))
+	return {
+		"started_at": telemetry_started_at,
+		"finished_at": Time.get_datetime_string_from_system(false, true),
+		"result": result_name,
+		"gun": PlaytestLoggerScript.resource_snapshot(gun),
+		"basic_ammo": PlaytestLoggerScript.resource_snapshot(basic_supply_bullet),
+		"equipped_parts": part_snapshots,
+		"initial_enemies": telemetry_initial_enemies.duplicate(true),
+		"final_enemies": _telemetry_enemy_snapshots(),
+		"summary": {
+			"shots": telemetry_shots.size(),
+			"reloads": telemetry_reload_count,
+			"reload_turns": telemetry_reload_turns,
+			"battle_stats": battle_stats.duplicate(true),
+			"bullets": telemetry_bullet_summary.duplicate(true),
+			"ammo_families": telemetry_family_summary.duplicate(true),
+			"parts": telemetry_part_summary.duplicate(true),
+		},
+		"shots": telemetry_shots.duplicate(true),
+		"family_events": telemetry_family_events.duplicate(true),
+		"part_events": telemetry_part_events.duplicate(true),
+		"combat_log": telemetry_combat_log.duplicate(),
+	}
 
 
 ## 총기 시그니처 판정 — 표시명(문구 변경·현지화에 취약) 대신 리소스 ID로 안정 판정한다.

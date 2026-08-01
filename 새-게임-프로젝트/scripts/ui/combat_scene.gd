@@ -586,12 +586,63 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 						else:
 							enemy_list = [_enemy_rusher, _enemy_stalker, _enemy_drone, _enemy_neuro_caster]
 
+			enemy_list = _increase_regular_enemy_density(section, tier, enemy_list)
+
 		_start_combat_phase(enemy_list)
 	else:
 		_combat_margin.visible = false
 		if _combat_overlay:
 			_combat_overlay.visible = false
 		_start_maintenance_phase(selected_node)
+
+
+## 탄종 행동이 실제 전투에서 드러나도록 일반전 밀도를 단계적으로 높인다.
+## 첫 구역 초반과 보스 편성은 건드리지 않으며, 1차 조정의 상한은 4체다.
+## roll 인자는 자동 테스트에서 2~3체/3~4체 분기를 결정론적으로 검증할 때 사용한다.
+func _increase_regular_enemy_density(
+	section: String,
+	tier: int,
+	enemy_list: Array,
+	roll: float = -1.0
+) -> Array:
+	var result: Array = enemy_list.duplicate()
+	var density_roll := randf() if roll < 0.0 else clampf(roll, 0.0, 1.0)
+	var target_count := result.size()
+	var candidates: Array = []
+
+	match section:
+		"section_a":
+			# 온보딩은 유지하고 중반에만 간헐적으로 3체 편성을 노출한다.
+			if tier == 1 and density_roll >= 0.67:
+				target_count = 3
+			candidates = [_enemy_rusher, _enemy_dodger, _enemy_tank]
+		"section_b":
+			if tier == 0:
+				target_count = 3
+			elif tier == 1:
+				target_count = 4 if density_roll >= 0.5 else 3
+			else:
+				target_count = 4
+			candidates = [_enemy_rusher, _enemy_dodger, _enemy_drone, _enemy_caster, _enemy_tank]
+		"section_c":
+			target_count = 3 if tier == 0 else 4
+			candidates = [_enemy_rusher, _enemy_drone, _enemy_dodger, _enemy_caster, _enemy_tank, _enemy_absorber]
+		_:
+			# 관리 계층과 정점은 일반전만 3/4/4체로 고정한다.
+			target_count = 3 if tier == 0 else 4
+			candidates = [
+				_enemy_rusher, _enemy_drone, _enemy_dodger, _enemy_caster,
+				_enemy_scrambler, _enemy_stalker, _enemy_neuro_caster,
+				_enemy_tank, _enemy_absorber,
+			]
+
+	# 같은 적을 중복 추가하지 않아 기존 편성의 역할 조합을 보존한다.
+	for candidate in candidates:
+		if result.size() >= target_count:
+			break
+		if not result.has(candidate):
+			result.append(candidate)
+	return result
 
 
 func _start_combat_phase(enemy_datas: Array) -> void:
@@ -659,6 +710,9 @@ func handle_combat_finished(is_dead: bool) -> void:
 	if _combat_overlay:
 		_combat_overlay.visible = false
 	if _is_shortcut_mode:
+		if _cm:
+			_rm.record_playtest_encounter(_cm.build_playtest_report())
+		_rm.finish_playtest_log("debug_finished")
 		_is_shortcut_mode = false
 		_show_title_screen()
 		return
@@ -682,6 +736,10 @@ func handle_combat_finished(is_dead: bool) -> void:
 		# 완벽 실행 (빗나감과 0뎀 타격이 없고, 최소 1킬 이상 처치)
 		if _cm.battle_stats.misses == 0 and _cm.battle_stats.zero_damage_hits == 0 and _cm.battle_stats.total_kills > 0:
 			_rm.run_stats.perfect_battles_count += 1
+
+		var log_error := _rm.record_playtest_encounter(_cm.build_playtest_report())
+		if log_error != OK:
+			push_warning("플레이테스트 전투 로그 저장 실패: %d" % log_error)
 
 	if is_dead:
 		_show_debriefing(false)
@@ -805,6 +863,9 @@ func _show_section_transition(prev_name: String, next_name: String) -> void:
 
 
 func _show_debriefing(won: bool) -> void:
+	var log_error := _rm.finish_playtest_log("won" if won else "lost")
+	if log_error != OK:
+		push_warning("플레이테스트 런 로그 마감 실패: %d" % log_error)
 	if _combat_overlay:
 		_combat_overlay.queue_free()
 		_combat_overlay = null

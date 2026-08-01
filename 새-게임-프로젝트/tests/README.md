@@ -39,6 +39,7 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_ammo_integrity.gd` | 탄환 CSV↔리소스↔시작 덱 역할·수치 완전 일치 |
 | `suite_caliber_profiles.gd` | 3계열 고정 기술 규격 — 표준/강화 매핑, 공용 전술탄 보정, 기반탄 비중복 |
 | `suite_ammo_family_behavior.gd` | 탄종 행동 — 경량 집중, 소총 직선 관통, 산탄 군집 확산, 중복 파츠·DPT 불변식 |
+| `suite_playtest_logging.gd` | 런별 JSON 저장, 전투 문맥, 탄 사용·집중·파츠 효과 기여 집계 |
 | `suite_basic_supply.gd` | 기본탄 고정 보급 슬롯 — 총기별 상한, 장전 차감, 리로드 정량 복구 |
 | `suite_save_load.gd` | 메타 저장·로드와 개발자 전체 초기화 — 세이브 삭제, 영구 진행·현재 런 기본값 복원 |
 | `suite_ammo_matrix.gd` | 실제 몬스터별 공격·연계·연발 처치 조합 매트릭스 |
@@ -53,7 +54,7 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_spawn_tiers.gd` | 계층별 스폰 3구간이 모두 도달 가능한지(사문화 콘텐츠 검출) |
 | `suite_ui_data_drift.gd` | UI 소스에 계층 이름·층수가 복사돼 있지 않은지(정본은 `MapGenerator`) |
 | `suite_doc_drift.gd` | GDD·스킬 문서에 폐기된 세계관 설정이 남아 있지 않은지 |
-| `suite_ui_smoke.gd` | 메인 씬을 실제로 인스턴스화하고 오버레이를 호출 — 런타임 오류 검출 |
+| `suite_ui_smoke.gd` | 메인 씬을 실제로 인스턴스화하고 오버레이를 호출 — 런타임 오류, 구역별 일반전 밀도, 동거리 4체 편성 슬롯 검출 |
 
 ### 드리프트 검사에 대해
 

@@ -1,6 +1,8 @@
 class_name RunManager
 extends RefCounted
 
+const PlaytestLoggerScript = preload("res://scripts/core/playtest_logger.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 로그라이크 런 및 메타 영구 해금 매니저
 ## ═══════════════════════════════════════════════════
@@ -56,6 +58,9 @@ var pending_combat_distance_modifier: int = 0
 var has_chamber_polish: bool = false     # 약실 소탕 리로드 면제 버프
 var visible_magazine_slots: int = 2      # 전투 중 보여질 예고창 탄환 개수 (기본 2칸)
 var tactical_data_cores: int = 0         # 이번 런에서 획득한 전술 데이터 코어 수
+
+## 게임 세이브와 분리된 로컬 플레이테스트 텔레메트리.
+var playtest_logger = PlaytestLoggerScript.new()
 
 # ── 런 도전 과제 판정 통계 ──
 var run_stats := {
@@ -205,6 +210,47 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 	# 맵 데이터 생성 및 조건부 우회 경로 업데이트
 	generate_run_map()
 	update_conditional_paths()
+	var log_error := playtest_logger.begin_run(playtest_snapshot())
+	if log_error != OK:
+		push_warning("플레이테스트 로그 시작 실패: %d" % log_error)
+
+
+## 전투 종료 시 CombatManager의 구조화 보고서와 현재 런 문맥을 함께 저장한다.
+func record_playtest_encounter(encounter_report: Dictionary) -> Error:
+	return playtest_logger.append_encounter(playtest_snapshot(), encounter_report)
+
+
+func finish_playtest_log(result: String) -> Error:
+	return playtest_logger.finish_run(result, playtest_snapshot())
+
+
+func playtest_log_path() -> String:
+	return playtest_logger.latest_file_path()
+
+
+func playtest_snapshot() -> Dictionary:
+	var parts: Array[Dictionary] = []
+	for part in equipped_parts:
+		parts.append(PlaytestLoggerScript.resource_snapshot(part))
+	var deck_counts: Dictionary = {}
+	for bullet in deck:
+		var bullet_id := PlaytestLoggerScript.resource_id(bullet)
+		deck_counts[bullet_id] = int(deck_counts.get(bullet_id, 0)) + 1
+	return {
+		"section": current_section,
+		"floor": current_floor,
+		"node_id": current_node_id,
+		"route": current_route_type,
+		"ascension": meta_ascension_level,
+		"infiltration_risk": infiltration_risk_level,
+		"gun": PlaytestLoggerScript.resource_snapshot(current_gun),
+		"basic_ammo": PlaytestLoggerScript.resource_snapshot(basic_supply_bullet),
+		"equipped_parts": parts,
+		"deck_counts": deck_counts,
+		"credits": credits,
+		"hp_buffer": hp_buffer,
+		"run_stats": run_stats.duplicate(true),
+	}
 
 
 func _sync_gun_stats_from_csv(g: GunData) -> void:
