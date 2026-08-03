@@ -27,6 +27,18 @@ static func run(t) -> void:
 	t.check(not log_path.is_empty(), "런 시작 시 플레이테스트 로그 경로 생성")
 	t.check(FileAccess.file_exists(log_path), "런 시작 JSON 즉시 저장")
 
+	var rhythm: PartData = load("res://resources/parts/rhythm_chamber.tres")
+	var interrupter: PartData = load("res://resources/parts/interrupter.tres")
+	var shop_offers := [
+		PlaytestLoggerScript.resource_snapshot(rhythm),
+		PlaytestLoggerScript.resource_snapshot(interrupter),
+	]
+	t.eq(rm.record_playtest_event("shop_offers", {
+		"source": "initial",
+		"reroll_count": 0,
+		"offers": shop_offers,
+	}), OK, "상점 분기 이벤트 런 JSON 추가")
+
 	var bullets: Array[BulletData] = [basic, basic, basic]
 	var enemies: Array[EnemyData] = [enemy]
 	var parts: Array[PartData] = [inertia]
@@ -53,7 +65,11 @@ static func run(t) -> void:
 	var parsed = JSON.parse_string(file.get_as_text()) if file != null else null
 	t.check(parsed is Dictionary, "플레이테스트 로그 JSON 파싱")
 	if parsed is Dictionary:
-		t.eq(int(parsed.schema_version), 1, "플레이테스트 로그 스키마 v1")
+		t.eq(int(parsed.schema_version), 2, "플레이테스트 로그 스키마 v2")
+		t.eq(parsed.events.size(), 1, "런 로그에 비전투 선택 이벤트 1건 누적")
+		t.eq(str(parsed.events[0].type), "shop_offers", "상점 진열 이벤트 유형 저장")
+		t.eq(str(parsed.events[0].details.offers[0].id), "rhythm_chamber", "상점 파츠 후보 스냅샷")
+		t.eq(int(parsed.events[0].context.credits), rm.credits, "상점 이벤트 시점 런 문맥 저장")
 		t.eq(parsed.encounters.size(), 1, "런 로그에 전투 1건 누적")
 		t.eq(str(parsed.encounters[0].context.equipped_parts[0].id), "inertia_fire",
 			"전투 시점 장착 파츠 스냅샷")

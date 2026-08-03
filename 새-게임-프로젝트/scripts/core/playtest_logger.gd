@@ -4,7 +4,7 @@ extends RefCounted
 ## 플레이테스트 런을 로컬 JSON으로 남긴다.
 ## 게임 세이브와 분리해 초기화·손상이 진행 데이터에 영향을 주지 않는다.
 
-const SCHEMA_VERSION := 1
+const SCHEMA_VERSION := 2
 const DEFAULT_LOG_DIR := "user://playtest_logs"
 
 ## 헤드리스 테스트가 실제 사용자 로그 폴더를 오염시키지 않게 한다.
@@ -75,9 +75,30 @@ func begin_run(run_context: Dictionary) -> Error:
 		"updated_at": Time.get_datetime_string_from_system(false, true),
 		"result": "in_progress",
 		"run_start": run_context.duplicate(true),
+		"events": [],
 		"encounters": [],
 		"run_end": {},
 	}
+	return _flush()
+
+
+## 전투 밖의 의사결정(상점 진열·리롤·구매 등)을 런 타임라인에 기록한다.
+func append_event(event_type: String, context: Dictionary, details: Dictionary) -> Error:
+	if not enabled:
+		return OK
+	if report.is_empty():
+		var error := begin_run(context)
+		if error != OK:
+			return error
+	if not report.has("events"):
+		report["events"] = []
+	report.events.append({
+		"type": event_type,
+		"at": Time.get_datetime_string_from_system(false, true),
+		"context": context.duplicate(true),
+		"details": details.duplicate(true),
+	})
+	report.updated_at = Time.get_datetime_string_from_system(false, true)
 	return _flush()
 
 

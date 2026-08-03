@@ -878,6 +878,14 @@ func start_maintenance_phase(node: RunManager.RunNode) -> void:
 	_event_log_lbl.text = ""
 
 	_generate_shop_items()
+	if _node_kind == NodeKind.SHOP:
+		_record_shop_event("shop_offers", {
+			"source": "initial",
+			"reroll_count": _reroll_count,
+			"credits_before": run_manager.credits,
+			"credits_after": run_manager.credits,
+			"offers": _shop_offer_snapshots(),
+		})
 	_apply_entry_effects()
 	_apply_node_kind_ui()
 
@@ -1031,7 +1039,9 @@ func _refresh_shop_tab() -> void:
 		elif item is PartData:
 			display_name = item.display_name
 			type_str = str(slot_data.get("offer_label", "개조 파츠"))
-			desc_str = item.description
+			var offer_reason := str(slot_data.get("offer_reason", ""))
+			desc_str = item.description if offer_reason.is_empty() \
+				else "%s\n%s" % [offer_reason, item.description]
 			icon_emoji = _get_part_emoji(item.part_id)
 		elif item is ConsumableItem:
 			display_name = item.display_name
@@ -1092,10 +1102,18 @@ func _refresh_shop_tab() -> void:
 		
 		var btn_buy: Button
 		if sold_out:
-			btn_buy = parent_scene.make_button("SOLD OUT", func(): pass, parent_scene.C_PANEL)
+			var sold_text := "SOLD OUT"
+			if bool(slot_data.get("selected", false)):
+				sold_text = "✓ 선택 완료"
+			elif bool(slot_data.get("locked_by_choice", false)):
+				sold_text = "반대 분기 폐쇄"
+			btn_buy = parent_scene.make_button(sold_text, func(): pass, parent_scene.C_PANEL)
 			btn_buy.disabled = true
 		else:
-			btn_buy = parent_scene.make_button("💳 구매 (%d)" % price, func(): _on_buy_item_pressed(i), C_GOLD)
+			var buy_text := "💳 구매 (%d)" % price
+			if not str(slot_data.get("exclusive_group", "")).is_empty():
+				buy_text = "선택 (%d Cr) · 1개 한정" % price
+			btn_buy = parent_scene.make_button(buy_text, func(): _on_buy_item_pressed(i), C_GOLD)
 			btn_buy.disabled = run_manager.credits < price
 			
 		btn_buy.custom_minimum_size = Vector2(0, 32)
@@ -1317,9 +1335,17 @@ func _refresh_bag_detail_panel() -> void:
 ## 1. 상점 리롤 버튼 클릭 시
 func _on_reroll_pressed() -> void:
 	var cost = 3 * (_reroll_count + 1)
+	var credits_before := run_manager.credits
 	if run_manager.spend_credits(cost):
 		_reroll_count += 1
 		_generate_shop_items()
+		_record_shop_event("shop_reroll", {
+			"cost": cost,
+			"reroll_count": _reroll_count,
+			"credits_before": credits_before,
+			"credits_after": run_manager.credits,
+			"offers": _shop_offer_snapshots(),
+		})
 		_refresh_current_tab_ui()
 
 
@@ -1334,10 +1360,21 @@ func _on_buy_item_pressed(slot_idx: int) -> void:
 	if run_manager.backpack_items.size() >= run_manager.BACKPACK_CAPACITY:
 		print("❌ 가방 용량 부족! 구매할 수 없습니다.")
 		return
-		
+
+	var credits_before := run_manager.credits
+	var offers_before := _shop_offer_snapshots()
 	if run_manager.spend_credits(price):
 		run_manager.add_to_backpack(item)
 		_mark_shop_offer_sold(slot_idx)
+		_record_shop_event("shop_purchase", {
+			"slot": slot_idx,
+			"price": price,
+			"credits_before": credits_before,
+			"credits_after": run_manager.credits,
+			"reroll_count": _reroll_count,
+			"selected": _shop_offer_snapshots()[slot_idx],
+			"offers_before_purchase": offers_before,
+		})
 		_refresh_current_tab_ui()
 
 
@@ -1348,10 +1385,38 @@ func _mark_shop_offer_sold(slot_idx: int) -> void:
 	var exclusive_group := str(_shop_items[slot_idx].get("exclusive_group", ""))
 	if exclusive_group.is_empty():
 		_shop_items[slot_idx]["sold_out"] = true
+		_shop_items[slot_idx]["selected"] = true
 		return
 	for idx in range(_shop_items.size()):
 		if str(_shop_items[idx].get("exclusive_group", "")) == exclusive_group:
 			_shop_items[idx]["sold_out"] = true
+			_shop_items[idx]["selected"] = idx == slot_idx
+			_shop_items[idx]["locked_by_choice"] = idx != slot_idx
+
+
+func _shop_offer_snapshots() -> Array[Dictionary]:
+	var snapshots: Array[Dictionary] = []
+	for idx in range(_shop_items.size()):
+		var entry: Dictionary = _shop_items[idx]
+		var snapshot := PlaytestLogger.resource_snapshot(entry.get("item"))
+		snapshot["slot"] = idx
+		snapshot["price"] = int(entry.get("price", 0))
+		snapshot["sold_out"] = bool(entry.get("sold_out", false))
+		snapshot["selected"] = bool(entry.get("selected", false))
+		snapshot["locked_by_choice"] = bool(entry.get("locked_by_choice", false))
+		snapshot["exclusive_group"] = str(entry.get("exclusive_group", ""))
+		snapshot["offer_kind"] = str(entry.get("offer_kind", ""))
+		snapshot["offer_label"] = str(entry.get("offer_label", ""))
+		snapshots.append(snapshot)
+	return snapshots
+
+
+func _record_shop_event(event_type: String, details: Dictionary) -> void:
+	if run_manager == null:
+		return
+	var error := run_manager.record_playtest_event(event_type, details)
+	if error != OK:
+		push_warning("플레이테스트 상점 이벤트 기록 실패: %d" % error)
 
 
 ## 3. 파츠 장착 해제 (탈거)
@@ -1473,13 +1538,17 @@ func _generate_shop_items() -> void:
 	var part_price := FIRST_SECTION_PART_PRICE \
 		if run_manager != null and run_manager.current_section == "section_a" \
 		else randi_range(30, 45)
-	for part_res in _generate_part_offers():
+	for part_offer in _generate_part_offers():
+		var part_res: PartData = part_offer.item
+		var presentation := _part_offer_presentation(str(part_offer.kind), part_res)
 		_shop_items.append({
 			"item": part_res,
 			"price": part_price,
 			"sold_out": false,
 			"exclusive_group": PART_CHOICE_GROUP,
-			"offer_label": "빌드 분기 파츠 · 둘 중 하나",
+			"offer_kind": part_offer.kind,
+			"offer_label": presentation.label,
+			"offer_reason": presentation.reason,
 		})
 
 	# 보류 해제 시 빌드 선언용 컨버전 킷 1종을 다시 진열한다.
@@ -1500,18 +1569,25 @@ func _generate_shop_items() -> void:
 
 
 ## 장착/가방/임시 보관 중인 파츠는 불리언 효과가 중복되지 않으므로 후보에서 제외한다.
-func _owned_part_ids() -> Dictionary:
-	var owned := {}
+func _owned_parts() -> Array[PartData]:
+	var parts: Array[PartData] = []
 	if run_manager == null:
-		return owned
+		return parts
 	for part in run_manager.equipped_parts:
 		if part != null:
-			owned[part.part_id] = true
+			parts.append(part)
 	for item in run_manager.backpack_items:
 		if item is PartData:
-			owned[item.part_id] = true
+			parts.append(item)
 	if run_manager.hold_part != null:
-		owned[run_manager.hold_part.part_id] = true
+		parts.append(run_manager.hold_part)
+	return parts
+
+
+func _owned_part_ids() -> Dictionary:
+	var owned := {}
+	for part in _owned_parts():
+		owned[part.part_id] = true
 	return owned
 
 
@@ -1538,22 +1614,74 @@ func _followup_part_paths(owned_ids: Dictionary) -> Array:
 	return result
 
 
+func _followup_anchor_names(candidate_id: int) -> Array[String]:
+	var names: Array[String] = []
+	for owned_part in _owned_parts():
+		for path in PART_FOLLOWUP_PATHS.get(owned_part.part_id, []):
+			var followup := load(str(path)) as PartData
+			if followup != null and followup.part_id == candidate_id \
+				and not names.has(owned_part.display_name):
+				names.append(owned_part.display_name)
+	return names
+
+
+func _part_offer_presentation(kind: String, part: PartData) -> Dictionary:
+	match kind:
+		"maintain":
+			return {
+				"label": "A · 연속 운용",
+				"reason": "같은 흐름을 이어 쌓아 연속 격발 이득을 노립니다.",
+			}
+		"switch":
+			return {
+				"label": "B · 운용 전환",
+				"reason": "탄 역할 교대나 순서 수정으로 장전 문법을 바꿉니다.",
+			}
+		"followup":
+			var anchor_names := _followup_anchor_names(part.part_id)
+			var anchor_text := "보유 파츠"
+			if not anchor_names.is_empty():
+				anchor_text = ", ".join(anchor_names)
+			return {
+				"label": "A · 후속 시너지",
+				"reason": "%s의 규칙을 한 단계 더 강화합니다." % anchor_text,
+			}
+		"affinity":
+			var gun_name := "현재 총기"
+			if run_manager != null and run_manager.current_gun != null:
+				gun_name = run_manager.current_gun.display_name
+			return {
+				"label": "B · 총기 친화",
+				"reason": "%s의 발사 방식과 교전 거리에 맞춘 후보입니다." % gun_name,
+			}
+	return {
+		"label": "보완 후보",
+		"reason": "이미 가진 파츠를 제외한 범용 빌드 후보입니다.",
+	}
+
+
 ## 첫 상점은 리듬 유지 vs 역할 전환을 확정 제시한다.
 ## 이후 상점은 현재 빌드 후속 파츠 vs 총기 친화 파츠로 선택의 의미를 유지한다.
-func _generate_part_offers() -> Array[PartData]:
-	var offers: Array[PartData] = []
+func _generate_part_offers() -> Array[Dictionary]:
+	var offers: Array[Dictionary] = []
 	var excluded := _owned_part_ids()
 	var first_paths: Array = []
 	var second_paths: Array = []
+	var first_kind := "followup"
+	var second_kind := "affinity"
 	var is_first_branch := run_manager != null \
 		and run_manager.current_section == "section_a" and _reroll_count == 0
 
 	if is_first_branch:
 		first_paths = ["res://resources/parts/rhythm_chamber.tres"]
 		second_paths = ["res://resources/parts/interrupter.tres"]
+		first_kind = "maintain"
+		second_kind = "switch"
 	elif run_manager != null and run_manager.current_section == "section_a":
 		first_paths = MAINTAIN_PART_PATHS.duplicate()
 		second_paths = SWITCH_PART_PATHS.duplicate()
+		first_kind = "maintain"
+		second_kind = "switch"
 	else:
 		first_paths = _followup_part_paths(excluded)
 		if first_paths.is_empty():
@@ -1567,15 +1695,17 @@ func _generate_part_offers() -> Array[PartData]:
 	var first := _pick_part_from_paths(first_paths, excluded)
 	if first == null:
 		first = _pick_part_from_paths(SHOP_GENERAL_PART_PATHS, excluded)
+		first_kind = "general"
 	if first != null:
-		offers.append(first)
+		offers.append({"item": first, "kind": first_kind})
 		excluded[first.part_id] = true
 
 	var second := _pick_part_from_paths(second_paths, excluded)
 	if second == null:
 		second = _pick_part_from_paths(SHOP_GENERAL_PART_PATHS, excluded)
+		second_kind = "general"
 	if second != null:
-		offers.append(second)
+		offers.append({"item": second, "kind": second_kind})
 	return offers
 
 

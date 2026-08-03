@@ -220,6 +220,10 @@ func record_playtest_encounter(encounter_report: Dictionary) -> Error:
 	return playtest_logger.append_encounter(playtest_snapshot(), encounter_report)
 
 
+func record_playtest_event(event_type: String, details: Dictionary) -> Error:
+	return playtest_logger.append_event(event_type, playtest_snapshot(), details)
+
+
 func finish_playtest_log(result: String) -> Error:
 	return playtest_logger.finish_run(result, playtest_snapshot())
 

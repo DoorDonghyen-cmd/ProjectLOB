@@ -38,14 +38,26 @@ static func run(t) -> void:
 	if first_parts.size() == 2:
 		t.eq(first_parts[0].item.part_id, Enums.PartID.RHYTHM_CHAMBER, "첫 분기 A는 동일 역할 유지용 리듬 챔버")
 		t.eq(first_parts[1].item.part_id, Enums.PartID.INTERRUPTER, "첫 분기 B는 역할 전환용 인터럽터")
+		t.eq(str(first_parts[0].offer_kind), "maintain", "첫 분기 A의 연속 운용 문법 태그")
+		t.eq(str(first_parts[0].offer_label), "A · 연속 운용", "첫 분기 A를 카드에서 직접 설명")
+		t.eq(str(first_parts[1].offer_kind), "switch", "첫 분기 B의 운용 전환 문법 태그")
+		t.eq(str(first_parts[1].offer_label), "B · 운용 전환", "첫 분기 B를 카드에서 직접 설명")
 		for entry in first_parts:
 			t.eq(entry.price, MaintenanceOverlay.FIRST_SECTION_PART_PRICE, "첫 구역 파츠 가격 30Cr 고정")
 			t.eq(str(entry.exclusive_group), MaintenanceOverlay.PART_CHOICE_GROUP, "두 파츠가 동일 배타 그룹")
+			t.check(not str(entry.offer_reason).is_empty(), "분기 카드에 선택 이유 표시")
 
 	shop._mark_shop_offer_sold(1)
 	t.check(not bool(shop._shop_items[0].sold_out), "파츠 구매 후 전술탄 카드는 유지")
 	t.check(bool(shop._shop_items[1].sold_out), "구매한 파츠 품절")
 	t.check(bool(shop._shop_items[2].sold_out), "반대 빌드 분기도 함께 품절")
+	t.check(bool(shop._shop_items[1].selected), "구매한 카드는 선택 완료 상태")
+	t.check(bool(shop._shop_items[2].locked_by_choice), "반대 카드는 분기 폐쇄 상태")
+	var offer_snapshots := shop._shop_offer_snapshots()
+	t.eq(str(offer_snapshots[1].id), "rhythm_chamber", "로그 스냅샷에 선택 파츠 ID")
+	t.eq(str(offer_snapshots[1].offer_kind), "maintain", "로그 스냅샷에 빌드 분기 유형")
+	t.check(bool(offer_snapshots[1].selected), "로그 스냅샷에 선택 완료 상태")
+	t.check(bool(offer_snapshots[2].locked_by_choice), "로그 스냅샷에 반대 분기 폐쇄 상태")
 	shop.free()
 
 	# 일반 풀은 실제 장착 가능한 20종만 포함하며 고유/전용/컨버전 파츠를 섞지 않는다.
@@ -85,6 +97,10 @@ static func run(t) -> void:
 		)
 		t.check(followup_ids.has(later_parts[0].item.part_id), "첫 카드는 현재 리듬 빌드의 후속 시너지")
 		t.eq(later_parts[1].item.part_id, Enums.PartID.RECOIL_PUSH, "둘째 카드는 보유 중복을 뺀 권총 친화 파츠")
+		t.eq(str(later_parts[0].offer_label), "A · 후속 시너지", "후속 파츠 선택 이유 라벨")
+		t.check(str(later_parts[0].offer_reason).contains("리듬 챔버"), "후속 시너지 설명에 실제 앵커 파츠명 표시")
+		t.eq(str(later_parts[1].offer_label), "B · 총기 친화", "총기 친화 선택 이유 라벨")
+		t.check(str(later_parts[1].offer_reason).contains(later_rm.current_gun.display_name), "친화 설명에 현재 총기명 표시")
 		t.check(later_parts[0].item.part_id != later_parts[1].item.part_id, "두 분기 파츠는 서로 다름")
 		for entry in later_parts:
 			t.check(entry.item.part_id != Enums.PartID.RHYTHM_CHAMBER, "장착 파츠 중복 제안 제외")
