@@ -88,7 +88,9 @@ func show_draft(confirm_btn: Button, efficiency: int = 100, grade: String = "B",
 		
 	_draft_selected = null
 	is_credit_selected = false
-	earned_credits = credits
+	# 승천 배급 페널티는 이 런의 구매력에 직접 닿아야 한다.
+	# 여기서 한 번 보정하면 기본 정산과 크레딧 카드가 동일한 표시값·지급값을 사용한다.
+	earned_credits = RunManager.adjusted_combat_credit_reward(credits)
 	visible = true
 	
 	if is_instance_valid(_btn_add): _btn_add.disabled = true
@@ -443,8 +445,9 @@ func _on_btn_swap_pressed() -> void:
 		_open_deck_swap_popup()
 
 func _on_btn_skip_pressed() -> void:
-	run_manager.credits += 10
-	overlay.add_combat_log("[color=#37e0ac]💳 건너뛰기 선택: 위로 보조금 +10 Cr 획득 (보유 크레딧: %d)[/color]" % run_manager.credits)
+	var subsidy := RunManager.adjusted_combat_credit_reward(10)
+	run_manager.credits += subsidy
+	overlay.add_combat_log("[color=#37e0ac]💳 건너뛰기 선택: 위로 보조금 +%d Cr 획득 (보유 크레딧: %d)[/color]" % [subsidy, run_manager.credits])
 	_finish_draft_flow()
 
 func _execute_swap_action(deck_idx: int) -> void:

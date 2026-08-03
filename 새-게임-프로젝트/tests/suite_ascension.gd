@@ -13,6 +13,12 @@ extends RefCounted
 const SL_PATH := "user://__test_ascension.cfg"
 
 
+static func _shots_before_contact(enemy: EnemyInstance) -> int:
+	if enemy.current_speed <= 0:
+		return 999
+	return ceili(float(maxi(enemy.current_distance - 1, 0)) / float(enemy.current_speed))
+
+
 static func run(t) -> void:
 	t.section("Ascension")
 
@@ -26,23 +32,30 @@ static func run(t) -> void:
 
 	var e0 := Ascension.effects_for(0)
 	t.eq(int(e0.armor_delta), 0, "0등급: 아머 보정 없음")
-	t.eq(float(e0.credit_mult), 1.0, "0등급: 크레딧 배율 1.0")
+	t.eq(float(e0.combat_credit_mult), 1.0, "0등급: 전투 크레딧 배율 1.0")
 	t.check(not e0.has("no_caliber_safety"), "0등급: 폐기된 회수 불가 스위치 없음")
 
-	# 등급 1은 아머 −1, 등급 7에서 하나 더 → 누적 −2
-	t.eq(int(Ascension.effects_for(1).armor_delta), -1, "1등급: 아머 −1")
-	t.eq(int(Ascension.effects_for(7).armor_delta), -2, "⭐ 7등급: 아머 누적 −2 (1등급 것이 계속 적용)")
+	# 시작 전술탄은 1등급과 7등급에서 한 번씩 조인다.
+	t.eq(int(Ascension.effects_for(1).deck_delta), -1, "1등급: 시작 전술탄 각 계열 −1")
+	t.eq(int(Ascension.effects_for(7).deck_delta), -2, "⭐ 7등급: 시작 전술탄 누적 −2")
 
-	# 크레딧은 곱연산으로 누적된다.
+	# 런 중 전투 크레딧만 곱연산으로 누적된다. 완주 후 메타 환전은 건드리지 않는다.
 	# ⚠️ 합연산이면 등급이 오를수록 수입이 0 이하로 떨어져 경제가 죽는다.
-	t.eq(int(round(Ascension.effects_for(2).credit_mult * 100)), 80, "2등급: 크레딧 ×0.8")
-	t.eq(int(round(Ascension.effects_for(10).credit_mult * 100)), 64, "⭐ 10등급: ×0.8 두 번 누적 = ×0.64 (곱연산)")
+	t.eq(int(round(Ascension.effects_for(2).combat_credit_mult * 100)), 90, "2등급: 전투 크레딧 ×0.9")
+	t.eq(int(round(Ascension.effects_for(6).combat_credit_mult * 100)), 81, "⭐ 6등급: ×0.9 두 번 누적 = ×0.81")
+	t.check(not Ascension.effects_for(10).has("credit_mult"), "완주 후 메타 환전 감소 레버 제거")
 
-	# 기본탄은 전 등급에서 고정 보급 계약을 유지하고, 8등급은 거리 압박을 누적한다.
+	# 기본탄은 전 등급에서 고정 보급 계약을 유지하고, 거리는 세 번에 걸쳐 조인다.
 	t.check(not Ascension.effects_for(10).has("no_caliber_safety"),
 		"기본탄 보급과 충돌하는 회수 불가 스위치 미사용")
-	t.eq(int(Ascension.effects_for(7).start_dist_delta), -1, "7등급까지 시작 거리 −1m")
+	t.eq(int(Ascension.effects_for(3).start_dist_delta), -1, "3등급: 시작 거리 −1m")
 	t.eq(int(Ascension.effects_for(8).start_dist_delta), -2, "⭐ 8등급: 시작 거리 누적 −2m")
+	t.eq(int(Ascension.effects_for(10).start_dist_delta), -3, "⭐ 10등급: 시작 거리 누적 −3m")
+
+	# 한 등급은 한 조건만 추가한다. 최고 등급에서 두 레버가 한꺼번에 붙던 급상승을 막는다.
+	for tier in Ascension.TIERS:
+		t.eq((tier.effects as Dictionary).size(), 1,
+			"%d등급은 새 압박 조건 1개만 추가" % int(tier.level))
 
 	# ── ② 단조성 — 등급이 오를수록 절대 쉬워지지 않는다 ──
 	# "등급 = 난이도"라는 신뢰가 이 성질에 달려 있다.
@@ -52,7 +65,7 @@ static func run(t) -> void:
 		var prev := Ascension.effects_for(lv - 1)
 		var cur := Ascension.effects_for(lv)
 		if int(cur.armor_delta) > int(prev.armor_delta): monotonic = false; detail = "아머 lv%d" % lv
-		if float(cur.credit_mult) > float(prev.credit_mult): monotonic = false; detail = "크레딧 lv%d" % lv
+		if float(cur.combat_credit_mult) > float(prev.combat_credit_mult): monotonic = false; detail = "전투 크레딧 lv%d" % lv
 		if int(cur.deck_delta) > int(prev.deck_delta): monotonic = false; detail = "덱 lv%d" % lv
 		if int(cur.start_dist_delta) > int(prev.start_dist_delta): monotonic = false; detail = "거리 lv%d" % lv
 		if int(cur.enemy_spd_delta) < int(prev.enemy_spd_delta): monotonic = false; detail = "SPD lv%d" % lv
@@ -67,9 +80,16 @@ static func run(t) -> void:
 	var armor_at_top: int = maxi(1 + 2 + int(top.armor_delta), 1)
 	t.check(armor_at_top >= 1, "⭐ 최고 등급 + 최대 메타에서도 시작 아머 ≥ 1 (%d)" % armor_at_top)
 
-	# 크레딧: 수입이 0이 되면 메타 진행이 정지한다.
-	var income_at_top: int = int(round((35 * 15 + 50) * float(top.credit_mult)))
-	t.check(income_at_top > 0, "⭐ 최고 등급에서도 완주 수입 > 0 (%d Cr)" % income_at_top)
+	# 완주 메타 환전은 승천으로 깎지 않는다. 현재 런의 구매력만 조인다.
+	var meta_income_at_top: int = 35 * 15 + 50
+	t.eq(meta_income_at_top, 575, "⭐ 최고 등급에서도 완주 메타 환전 575 Cr 유지")
+	RunManager.meta_ascension_level = 0
+	t.eq(RunManager.adjusted_combat_credit_reward(20), 20, "0등급 B 전투 보상 20 Cr")
+	RunManager.meta_ascension_level = 2
+	t.eq(RunManager.adjusted_combat_credit_reward(20), 18, "2등급 B 전투 보상 18 Cr")
+	RunManager.meta_ascension_level = 6
+	t.eq(RunManager.adjusted_combat_credit_reward(20), 16, "6등급 B 전투 보상 16 Cr")
+	t.eq(RunManager.adjusted_combat_credit_reward(1), 1, "⭐ 최고 배급 압박에서도 양수 보상 최소 1 Cr")
 
 	# 시작 덱: 각 계열 최소 1발은 남아야 빌드가 성립한다.
 	t.check(int(top.deck_delta) > -5, "최고 등급 덱 감소가 기본 구성을 지우지 않음 (%d)" % int(top.deck_delta))
@@ -84,7 +104,7 @@ static func run(t) -> void:
 		if lv >= 2:
 			break  # 대표 표본만 확인 (전 등급 반복은 로그만 늘린다)
 
-	# ── ⑤ 실제 적용: 적 스탯에 거리·SPD가 반영되는가 ──
+	# ── ⑤ 실제 적용: 적 스탯은 속도 절벽 없이 시작 거리만 조이는가 ──
 	RunManager.infiltration_risk_level = 1
 	RunManager.meta_ascension_unlocked = Ascension.MAX_LEVEL
 
@@ -100,10 +120,28 @@ static func run(t) -> void:
 
 	t.check(e_top.start_distance < base_dist,
 		"⭐ 승천 최고 등급: 시작 거리가 좁혀짐 (%d → %d)" % [base_dist, e_top.start_distance])
-	t.check(e_top.current_speed > base_spd,
-		"⭐ 승천 최고 등급: 적 SPD 상승 (%d → %d)" % [base_spd, e_top.current_speed])
+	t.eq(e_top.current_speed, base_spd,
+		"⭐ 승천 최고 등급: 적 SPD 유지 (%d) — 저속 적 상대 급상승 제거" % base_spd)
 	t.eq(e_top.current_def, base_def, "⭐ 적 DEF는 승천에 영향받지 않음 (이진 게이트 보호)")
 	t.eq(e_top.current_evasion, base_eva, "⭐ 적 EVA도 영향받지 않음")
+
+	# 대표 이동형 3종의 실제 접촉 전 사격 기회. 거리 −3m는 시간을 줄이되 저속 적을
+	# SPD +2로 3배속화하던 기존 최고 등급처럼 붕괴시키지 않는다.
+	for enemy_path in [
+		"res://resources/enemies/rusher.tres",
+		"res://resources/enemies/tank.tres",
+		"res://resources/enemies/dodger.tres",
+	]:
+		RunManager.meta_ascension_level = 0
+		var base_enemy := EnemyInstance.new(load(enemy_path))
+		RunManager.meta_ascension_level = Ascension.MAX_LEVEL
+		var top_enemy := EnemyInstance.new(load(enemy_path))
+		var base_shots := _shots_before_contact(base_enemy)
+		var top_shots := _shots_before_contact(top_enemy)
+		t.check(top_shots >= 2,
+			"%s: 최고 등급에서도 접촉 전 최소 2발 기회 (%d→%d)" % [enemy_path.get_file(), base_shots, top_shots])
+		t.check(base_shots - top_shots <= 3,
+			"%s: 최고 등급 사격 기회 감소가 3발 이내 (%d→%d)" % [enemy_path.get_file(), base_shots, top_shots])
 
 	# ── ⑥ 해금 사다리 ──
 	RunManager.meta_ascension_unlocked = 0

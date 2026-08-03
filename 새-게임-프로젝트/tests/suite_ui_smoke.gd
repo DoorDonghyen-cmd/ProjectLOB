@@ -113,7 +113,11 @@ static func run(t, tree: SceneTree) -> void:
 	t.check(log_btn != null, "개발자 테스트 메뉴에 플레이테스트 로그 폴더 버튼 존재")
 	var unlock_weapons_btn := _find_button_text(scene._title_overlay._dev_test_panel, "모든 무기 해금")
 	t.check(unlock_weapons_btn != null, "개발자 테스트 메뉴에 모든 무기 해금 버튼 존재")
+	var unlock_ascension_btn := _find_button_text(scene._title_overlay._dev_test_panel, "모든 승천 해금")
+	t.check(unlock_ascension_btn != null, "개발자 테스트 메뉴에 모든 승천 해금 버튼 존재")
 	var prev_unlocked_weapons: Array[String] = RunManager.meta_unlocked_weapons.duplicate()
+	var prev_ascension_unlocked := RunManager.meta_ascension_unlocked
+	var prev_ascension_level := RunManager.meta_ascension_level
 	if unlock_weapons_btn != null:
 		RunManager.meta_unlocked_weapons = ["workhorse"] as Array[String]
 		unlock_weapons_btn.pressed.emit()
@@ -134,6 +138,25 @@ static func run(t, tree: SceneTree) -> void:
 			"모든 무기 해금 완료 안내창 표시")
 		scene._title_overlay._weapon_unlock_result_dialog.hide()
 	RunManager.meta_unlocked_weapons = prev_unlocked_weapons
+	if unlock_ascension_btn != null:
+		RunManager.meta_ascension_unlocked = 0
+		RunManager.meta_ascension_level = 0
+		unlock_ascension_btn.pressed.emit()
+		t.eq(RunManager.meta_ascension_unlocked, Ascension.MAX_LEVEL,
+			"모든 승천 해금 버튼은 최고 등급까지 개방")
+		t.eq(RunManager.meta_ascension_level, 0,
+			"모든 승천 해금은 현재 적용 등급을 강제로 바꾸지 않음")
+
+		var saved_ascension := ConfigFile.new()
+		t.eq(saved_ascension.load(RunManager.save_path_override), OK,
+			"모든 승천 해금 결과가 메타 세이브에 기록됨")
+		t.eq(int(saved_ascension.get_value("meta", "ascension_unlocked", 0)), Ascension.MAX_LEVEL,
+			"메타 세이브에도 최고 승천 등급이 유지됨")
+		t.check(scene._title_overlay._ascension_unlock_result_dialog.visible,
+			"모든 승천 해금 완료 안내창 표시")
+		scene._title_overlay._ascension_unlock_result_dialog.hide()
+	RunManager.meta_ascension_unlocked = prev_ascension_unlocked
+	RunManager.meta_ascension_level = prev_ascension_level
 	if reset_btn != null:
 		reset_btn.pressed.emit()
 		t.check(scene._title_overlay._reset_confirmation.visible,

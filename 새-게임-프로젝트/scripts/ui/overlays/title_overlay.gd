@@ -22,6 +22,7 @@ var _dev_test_panel: PanelContainer
 var _reset_confirmation: ConfirmationDialog
 var _reset_result_dialog: AcceptDialog
 var _weapon_unlock_result_dialog: AcceptDialog
+var _ascension_unlock_result_dialog: AcceptDialog
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
@@ -481,6 +482,17 @@ func _build_dev_test_panel() -> void:
 	btn_unlock_all_weapons.add_theme_font_size_override("font_size", 11)
 	btn_unlock_all_weapons.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_unlock_all_weapons)
+
+	# 실제 플레이 튜닝 시 10회 완주 없이 원하는 승천 등급을 즉시 비교한다.
+	var btn_unlock_all_ascension = parent_scene.make_button("🔺 모든 승천 해금", func():
+		_on_unlock_all_ascension_pressed()
+	, parent_scene.C_WARNING)
+	btn_unlock_all_ascension.name = "UnlockAllAscensionButton"
+	btn_unlock_all_ascension.tooltip_text = "승천 0~10등급을 모두 선택할 수 있게 영구 해금합니다. 현재 적용 등급은 바꾸지 않습니다."
+	btn_unlock_all_ascension.custom_minimum_size = Vector2(0, 36)
+	btn_unlock_all_ascension.add_theme_font_size_override("font_size", 11)
+	btn_unlock_all_ascension.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_unlock_all_ascension)
 	
 	# 6. 📊 밸런스 매트릭스 뷰 버튼
 	var btn_matrix = parent_scene.make_button("📊 밸런스 매트릭스 뷰", func():
@@ -556,6 +568,11 @@ func _build_dev_test_panel() -> void:
 	_weapon_unlock_result_dialog.name = "UnlockAllWeaponsResult"
 	_weapon_unlock_result_dialog.title = "모든 무기 해금"
 	add_child(_weapon_unlock_result_dialog)
+
+	_ascension_unlock_result_dialog = AcceptDialog.new()
+	_ascension_unlock_result_dialog.name = "UnlockAllAscensionResult"
+	_ascension_unlock_result_dialog.title = "모든 승천 해금"
+	add_child(_ascension_unlock_result_dialog)
 	
 	# ── 보스 전투 테스트 숏컷 ──
 	# 보스 #1: 디렉터 강 (구역 1 보스)
@@ -634,6 +651,29 @@ func _on_unlock_all_weapons_pressed() -> void:
 		)
 		push_error("모든 무기 해금 세이브 처리 실패: %d" % result)
 	_weapon_unlock_result_dialog.popup_centered()
+
+
+func _on_unlock_all_ascension_pressed() -> void:
+	var previous_unlocked := RunManager.meta_ascension_unlocked
+	RunManager.meta_ascension_unlocked = Ascension.MAX_LEVEL
+	# 비교 중이던 등급을 갑자기 바꾸지 않는다. 해금 범위만 넓힌다.
+	RunManager.meta_ascension_level = clampi(
+		RunManager.meta_ascension_level, 0, RunManager.meta_ascension_unlocked)
+
+	var result := RunManager.save_meta()
+	if result == OK:
+		_ascension_unlock_result_dialog.dialog_text = (
+			"승천 0~%d등급을 모두 선택할 수 있습니다.\n현재 적용 등급: %d (변경 없음)"
+			% [Ascension.MAX_LEVEL, RunManager.meta_ascension_level]
+		)
+		print("디버그: 승천 %d등급 전체 영구 해금 완료 (기존 %d등급)." % [
+			Ascension.MAX_LEVEL, previous_unlocked])
+	else:
+		_ascension_unlock_result_dialog.dialog_text = (
+			"메모리에는 반영했지만 세이브 파일 갱신에 실패했습니다.\n오류 코드: %d" % result
+		)
+		push_error("모든 승천 해금 세이브 처리 실패: %d" % result)
+	_ascension_unlock_result_dialog.popup_centered()
 
 
 func _on_reset_all_confirmed() -> void:

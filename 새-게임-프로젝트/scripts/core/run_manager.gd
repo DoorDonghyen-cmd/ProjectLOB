@@ -461,8 +461,8 @@ func floor_distance_modifier() -> int:
 func end_run(won: bool) -> int:
 	var won_bonus := 50 if won else 0
 	var earned := (total_floors_climbed() * 15) + won_bonus
-	# 승천: 크레딧 수입 감소(곱연산). 합연산이면 등급이 오를수록 수입이 0 이하가 된다.
-	earned = int(round(float(earned) * float(ascension_effects().credit_mult)))
+	# 승천은 이미 클리어한 플레이어의 영구 성장 반복을 늦추지 않는다.
+	# 크레딧 압박은 현재 런의 전투 보상에 적용해 상점 구매 판단으로 체감시킨다.
 	meta_credits += earned
 
 	# 전술 데이터 코어 영구 누적
@@ -530,6 +530,15 @@ func enter_section(section_id: String) -> void:
 ## 이번 런에 적용되는 승천 효과 묶음. 정본: scripts/core/ascension.gd
 static func ascension_effects() -> Dictionary:
 	return Ascension.effects_for(meta_ascension_level)
+
+
+## 승천 배급 페널티가 반영된 런 중 전투 크레딧.
+## 양수 보상은 최고 등급에서도 최소 1 Cr을 보장해 보상 선택지가 0이 되지 않게 한다.
+static func adjusted_combat_credit_reward(base_amount: int) -> int:
+	if base_amount <= 0:
+		return base_amount
+	var mult: float = float(ascension_effects().combat_credit_mult)
+	return maxi(int(round(float(base_amount) * mult)), 1)
 
 
 ## 승천 등급 해금 판정 — **정점까지 완주**했을 때만.

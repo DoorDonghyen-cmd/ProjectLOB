@@ -29,69 +29,72 @@ const MAX_LEVEL := 10
 ##   - 앞쪽에 큰 것을 넣으면 영원히 누적되어 후반이 감당 불가능해진다 → 작은 것부터
 ##   - 메타 파워(HP아머 +2 / 가방 +3 / 금고)를 상쇄하도록 분산 배치(§5)
 ##   - 기본탄은 전 난이도에서 총기 고정 보급이므로 승천도 보급 계약을 깨지 않는다
+##   - 전역 SPD 증가는 배제한다. SPD 1→2와 3→4의 상대 압박이 다르고 고정형 적에는 적용되지 않아
+##     총기·적 조합별 난도 편차가 커진다. 시간 압박은 시작 거리로만 조인다.
+##   - 크레딧 감소는 완주 후 메타 환전이 아니라 **런 중 전투 보상**에만 적용한다.
+##     이미 클리어한 플레이어의 영구 성장 반복을 늦추지 않고, 현재 런의 구매 판단을 압박한다.
 const TIERS := [
 	{
-		"level": 1, "title": "가벼운 짐",
-		"desc": "시작 아머 −1",
-		"effects": {"armor_delta": -1},
-	},
-	{
-		"level": 2, "title": "얇은 배급",
-		"desc": "크레딧 수입 −20%",
-		"effects": {"credit_mult": 0.8},
-	},
-	{
-		"level": 3, "title": "빈 주머니",
-		"desc": "시작 덱 −1발",
+		"level": 1, "title": "빠듯한 보급",
+		"desc": "시작 전술탄 각 계열 −1발",
 		"effects": {"deck_delta": -1},
 	},
 	{
-		"level": 4, "title": "좁은 통로",
+		"level": 2, "title": "얇은 배급",
+		"desc": "전투 크레딧 보상 −10%",
+		"effects": {"combat_credit_mult": 0.9},
+	},
+	{
+		"level": 3, "title": "좁은 통로",
 		"desc": "교전 시작 거리 −1m",
 		"effects": {"start_dist_delta": -1},
 	},
 	{
-		"level": 5, "title": "빨라진 것들",
-		"desc": "적 SPD +1",
-		"effects": {"enemy_spd_delta": 1},
+		"level": 4, "title": "가벼운 짐",
+		"desc": "시작 아머 −1",
+		"effects": {"armor_delta": -1},
 	},
 	{
-		"level": 6, "title": "마른 보급",
-		"desc": "드래프트 선택지 3 → 2장",
+		"level": 5, "title": "마른 보급",
+		"desc": "탄환 드래프트 2장 → 1장",
 		"effects": {"draft_slots_delta": -1},
 	},
 	{
-		"level": 7, "title": "무거운 짐",
-		"desc": "시작 아머 −1 (누적 −2)",
-		"effects": {"armor_delta": -1},
+		"level": 6, "title": "더 얇은 배급",
+		"desc": "전투 크레딧 보상 −10% (누적 −19%)",
+		"effects": {"combat_credit_mult": 0.9},
+	},
+	{
+		"level": 7, "title": "빈 보급함",
+		"desc": "시작 전술탄 각 계열 −1발 (누적 −2)",
+		"effects": {"deck_delta": -1},
 	},
 	{
 		"level": 8, "title": "더 좁은 통로",
 		"desc": "교전 시작 거리 −1m (누적 −2m)",
-		# 기본탄 보급 계약을 예외 처리하지 않고 기존 총기 중립 거리 레버를 한 번 더 누적한다.
 		"effects": {"start_dist_delta": -1},
 	},
 	{
-		"level": 9, "title": "더 빈 주머니",
-		"desc": "시작 덱 −1발 (누적 −2)",
-		"effects": {"deck_delta": -1},
+		"level": 9, "title": "무거운 짐",
+		"desc": "시작 아머 −1 (누적 −2)",
+		"effects": {"armor_delta": -1},
 	},
 	{
-		"level": 10, "title": "정점의 무게",
-		"desc": "크레딧 수입 −20% (누적 −40%) · 적 SPD +1 (누적 +2)",
-		"effects": {"credit_mult": 0.8, "enemy_spd_delta": 1},
+		"level": 10, "title": "정점의 압박",
+		"desc": "교전 시작 거리 −1m (누적 −3m)",
+		"effects": {"start_dist_delta": -1},
 	},
 ]
 
 
 ## 등급 N에서 누적 적용되는 효과의 합. level 0이면 전부 기본값.
 ##
-## ⚠️ 곱연산(credit_mult)과 합연산(delta)을 구분해 누적한다.
+## ⚠️ 곱연산(combat_credit_mult)과 합연산(delta)을 구분해 누적한다.
 ##    크레딧을 합연산으로 하면 등급이 오를수록 0 이하로 떨어져 수입이 사라진다.
 static func effects_for(level: int) -> Dictionary:
 	var acc := {
 		"armor_delta": 0,
-		"credit_mult": 1.0,
+		"combat_credit_mult": 1.0,
 		"deck_delta": 0,
 		"start_dist_delta": 0,
 		"enemy_spd_delta": 0,
@@ -104,8 +107,8 @@ static func effects_for(level: int) -> Dictionary:
 		var eff: Dictionary = tier.effects
 		for key in eff.keys():
 			match key:
-				"credit_mult":
-					acc.credit_mult *= float(eff[key])
+				"combat_credit_mult":
+					acc.combat_credit_mult *= float(eff[key])
 				_:
 					acc[key] = int(acc[key]) + int(eff[key])
 	return acc
