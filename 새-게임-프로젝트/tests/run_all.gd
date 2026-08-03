@@ -24,6 +24,7 @@ const SuiteSaveLoad := preload("res://tests/suite_save_load.gd")
 const SuiteBossGimmicks := preload("res://tests/suite_boss_gimmicks.gd")
 const SuiteFullRun := preload("res://tests/suite_full_run.gd")
 const SuiteParts := preload("res://tests/suite_parts.gd")
+const SuitePartShop := preload("res://tests/suite_part_shop.gd")
 const SuiteGunSignatures := preload("res://tests/suite_gun_signatures.gd")
 const SuiteBulletEffects := preload("res://tests/suite_bullet_effects.gd")
 const SuiteWeaponUnlock := preload("res://tests/suite_weapon_unlock.gd")
@@ -81,6 +82,7 @@ func _initialize() -> void:
 	SuiteBossGimmicks.run(t) # 보스/특수 기믹 유닛(앱소버·캐스터·삼단태세·페이즈전환)
 	SuiteFullRun.run(t)     # 풀 런 통합 스캔(맵 도달성 + 전투 크래시 스캔)
 	SuiteParts.run(t)       # 파츠 적용 회귀(파츠 전달 시 전투 효과 반영)
+	SuitePartShop.run(t)    # 파츠 중심 상점 분기(첫 빌드 선언·시너지·중복 방지)
 	SuiteGunSignatures.run(t) # 총기 시그니처 발동 회귀(리소스 ID 판정)
 	SuiteBulletEffects.run(t) # 탄환 특수효과 발동 실증
 	SuiteWeaponUnlock.run(t)  # 무기 해금 조건 판정 + 영속화

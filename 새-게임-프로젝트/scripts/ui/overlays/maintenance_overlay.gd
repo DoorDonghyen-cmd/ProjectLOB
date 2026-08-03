@@ -12,6 +12,89 @@ const SHOP_BULLET_IDS := [
 	"ap", "pierce", "chain", "finale", "opener", "crosscal",
 	"impact", "adhesive",
 ]
+## 상점의 파츠 두 장은 같은 분기 그룹이다. 하나를 사면 다른 하나도 닫힌다.
+const PART_CHOICE_GROUP := "build_part_choice"
+const FIRST_SECTION_PART_PRICE := 30
+## 고유 기본 파츠(포인트블랭크/저격경)와 샷건 친화 전용 파츠(확산 격발)는
+## 일반 추첨에서 제외한다. 컨버전 킷은 별도 플래그로만 노출한다.
+const SHOP_GENERAL_PART_PATHS := [
+	"res://resources/parts/rhythm_chamber.tres",
+	"res://resources/parts/deep_loader.tres",
+	"res://resources/parts/recoil_push.tres",
+	"res://resources/parts/shred_muzzle.tres",
+	"res://resources/parts/interrupter.tres",
+	"res://resources/parts/underflow.tres",
+	"res://resources/parts/chaser.tres",
+	"res://resources/parts/long_shot.tres",
+	"res://resources/parts/executioner.tres",
+	"res://resources/parts/high_precision.tres",
+	"res://resources/parts/armor_piercing.tres",
+	"res://resources/parts/versatile_chamber.tres",
+	"res://resources/parts/target_indicator.tres",
+	"res://resources/parts/chain_acc.tres",
+	"res://resources/parts/inertia_fire.tres",
+	"res://resources/parts/blind_fire.tres",
+	"res://resources/parts/quick_load.tres",
+	"res://resources/parts/stance_foresight.tres",
+	"res://resources/parts/stance_lock.tres",
+	"res://resources/parts/scope.tres",
+]
+const MAINTAIN_PART_PATHS := [
+	"res://resources/parts/rhythm_chamber.tres",
+	"res://resources/parts/inertia_fire.tres",
+	"res://resources/parts/chain_acc.tres",
+]
+const SWITCH_PART_PATHS := [
+	"res://resources/parts/interrupter.tres",
+	"res://resources/parts/versatile_chamber.tres",
+	"res://resources/parts/quick_load.tres",
+]
+const PART_FOLLOWUP_PATHS := {
+	Enums.PartID.RHYTHM_CHAMBER: [
+		"res://resources/parts/inertia_fire.tres", "res://resources/parts/chain_acc.tres",
+		"res://resources/parts/deep_loader.tres", "res://resources/parts/underflow.tres",
+	],
+	Enums.PartID.INERTIA_FIRE: [
+		"res://resources/parts/rhythm_chamber.tres", "res://resources/parts/chain_acc.tres",
+		"res://resources/parts/deep_loader.tres",
+	],
+	Enums.PartID.INTERRUPTER: [
+		"res://resources/parts/versatile_chamber.tres", "res://resources/parts/quick_load.tres",
+		"res://resources/parts/deep_loader.tres",
+	],
+	Enums.PartID.VERSATILE_CHAMBER: [
+		"res://resources/parts/interrupter.tres", "res://resources/parts/quick_load.tres",
+		"res://resources/parts/high_precision.tres",
+	],
+	Enums.PartID.QUICK_LOAD: [
+		"res://resources/parts/interrupter.tres", "res://resources/parts/versatile_chamber.tres",
+	],
+	Enums.PartID.CHAIN_ACC: [
+		"res://resources/parts/rhythm_chamber.tres", "res://resources/parts/inertia_fire.tres",
+	],
+}
+const GUN_AFFINITY_PART_PATHS := {
+	Enums.WeaponClass.PISTOL: [
+		"res://resources/parts/recoil_push.tres", "res://resources/parts/target_indicator.tres",
+		"res://resources/parts/high_precision.tres",
+	],
+	Enums.WeaponClass.SMG: [
+		"res://resources/parts/rhythm_chamber.tres", "res://resources/parts/inertia_fire.tres",
+		"res://resources/parts/chain_acc.tres", "res://resources/parts/blind_fire.tres",
+	],
+	Enums.WeaponClass.RIFLE: [
+		"res://resources/parts/armor_piercing.tres", "res://resources/parts/chaser.tres",
+		"res://resources/parts/shred_muzzle.tres", "res://resources/parts/versatile_chamber.tres",
+	],
+	Enums.WeaponClass.DMR: [
+		"res://resources/parts/long_shot.tres", "res://resources/parts/deep_loader.tres",
+		"res://resources/parts/underflow.tres", "res://resources/parts/scope.tres",
+	],
+	Enums.WeaponClass.SHOTGUN: [
+		"res://resources/parts/spread_shot.tres", "res://resources/parts/executioner.tres",
+		"res://resources/parts/recoil_push.tres", "res://resources/parts/inertia_fire.tres",
+	],
+}
 ## 컨버전 킷은 플레이테스트 피드백에 따라 임시 보류 중이다.
 ## 런타임 계약과 리소스는 보존하고, 재설계가 끝날 때까지 상점 진열만 중단한다.
 const CONVERSION_KITS_ENABLED := false
@@ -947,7 +1030,7 @@ func _refresh_shop_tab() -> void:
 			icon_emoji = "🔴"
 		elif item is PartData:
 			display_name = item.display_name
-			type_str = "개조 파츠"
+			type_str = str(slot_data.get("offer_label", "개조 파츠"))
 			desc_str = item.description
 			icon_emoji = _get_part_emoji(item.part_id)
 		elif item is ConsumableItem:
@@ -1244,6 +1327,7 @@ func _on_reroll_pressed() -> void:
 func _on_buy_item_pressed(slot_idx: int) -> void:
 	if slot_idx < 0 or slot_idx >= _shop_items.size(): return
 	var slot_data = _shop_items[slot_idx]
+	if bool(slot_data.sold_out): return
 	var item = slot_data.item
 	var price = slot_data.price
 	
@@ -1253,8 +1337,21 @@ func _on_buy_item_pressed(slot_idx: int) -> void:
 		
 	if run_manager.spend_credits(price):
 		run_manager.add_to_backpack(item)
-		_shop_items[slot_idx].sold_out = true
+		_mark_shop_offer_sold(slot_idx)
 		_refresh_current_tab_ui()
+
+
+## 같은 빌드 분기에서 하나를 고르면 나머지 선택지도 함께 닫는다.
+func _mark_shop_offer_sold(slot_idx: int) -> void:
+	if slot_idx < 0 or slot_idx >= _shop_items.size():
+		return
+	var exclusive_group := str(_shop_items[slot_idx].get("exclusive_group", ""))
+	if exclusive_group.is_empty():
+		_shop_items[slot_idx]["sold_out"] = true
+		return
+	for idx in range(_shop_items.size()):
+		if str(_shop_items[idx].get("exclusive_group", "")) == exclusive_group:
+			_shop_items[idx]["sold_out"] = true
 
 
 ## 3. 파츠 장착 해제 (탈거)
@@ -1363,7 +1460,7 @@ func _on_exit_pressed() -> void:
 	parent_scene.handle_maintenance_finished()
 
 
-# ── 무작위 상점 진열 생성 ──
+# ── 상점 진열 생성 ──
 func _generate_shop_items() -> void:
 	_shop_items.clear()
 	
@@ -1373,32 +1470,17 @@ func _generate_shop_items() -> void:
 	var bullet_res = load(bullet_paths.pick_random())
 	_shop_items.append({ "item": bullet_res, "price": randi_range(20, 25), "sold_out": false })
 
-	var part_paths := [
-		"res://resources/parts/rhythm_chamber.tres",
-		"res://resources/parts/deep_loader.tres",
-		"res://resources/parts/point_blank.tres",
-		"res://resources/parts/recoil_push.tres",
-		"res://resources/parts/marksman_scope.tres",
-		"res://resources/parts/shred_muzzle.tres",
-		# ── 신규 편입 파츠 (전투 로직 기구현분 리소스화) ──
-		"res://resources/parts/interrupter.tres",
-		"res://resources/parts/underflow.tres",
-		"res://resources/parts/chaser.tres",
-		"res://resources/parts/long_shot.tres",
-		"res://resources/parts/executioner.tres",
-		"res://resources/parts/high_precision.tres",
-		"res://resources/parts/armor_piercing.tres",
-		"res://resources/parts/versatile_chamber.tres",
-		"res://resources/parts/target_indicator.tres",
-		"res://resources/parts/chain_acc.tres",
-		"res://resources/parts/inertia_fire.tres",
-		"res://resources/parts/blind_fire.tres",
-		"res://resources/parts/quick_load.tres",
-		"res://resources/parts/stance_foresight.tres",
-		"res://resources/parts/stance_lock.tres"
-	]
-	var part_res = load(part_paths.pick_random())
-	_shop_items.append({ "item": part_res, "price": randi_range(30, 45), "sold_out": false })
+	var part_price := FIRST_SECTION_PART_PRICE \
+		if run_manager != null and run_manager.current_section == "section_a" \
+		else randi_range(30, 45)
+	for part_res in _generate_part_offers():
+		_shop_items.append({
+			"item": part_res,
+			"price": part_price,
+			"sold_out": false,
+			"exclusive_group": PART_CHOICE_GROUP,
+			"offer_label": "빌드 분기 파츠 · 둘 중 하나",
+		})
 
 	# 보류 해제 시 빌드 선언용 컨버전 킷 1종을 다시 진열한다.
 	if CONVERSION_KITS_ENABLED and run_manager != null and run_manager.current_gun != null:
@@ -1415,22 +1497,86 @@ func _generate_shop_items() -> void:
 				"sold_out": false
 			})
 
-	var c1 := ConsumableItem.new()
-	c1.display_name = "응급 아머 키트"
-	c1.description = "요원의 외골격 아머를 즉시 긴급 정비합니다.\n[즉발 효과] 보유 HP 버퍼가 +1 충전됩니다 (최대 3)."
-	c1.price = 20
-	c1.type = "heal"
-	c1.icon_text = "✚"
 
-	var c2 := ConsumableItem.new()
-	c2.display_name = "부식성 전술 파쇄액"
-	c2.description = "화학 산화 약제가 들어있는 투척 플라스크입니다.\n[전투 예비] 적 장갑을 일시적으로 부식시켜 교전 돌입 시 적 수비를 감쇄합니다."
-	c2.price = 15
-	c2.type = "shred"
-	c2.icon_text = "◆"
-	
-	var c_res = c1 if randf() < 0.5 else c2
-	_shop_items.append({ "item": c_res, "price": c_res.price, "sold_out": false })
+
+## 장착/가방/임시 보관 중인 파츠는 불리언 효과가 중복되지 않으므로 후보에서 제외한다.
+func _owned_part_ids() -> Dictionary:
+	var owned := {}
+	if run_manager == null:
+		return owned
+	for part in run_manager.equipped_parts:
+		if part != null:
+			owned[part.part_id] = true
+	for item in run_manager.backpack_items:
+		if item is PartData:
+			owned[item.part_id] = true
+	if run_manager.hold_part != null:
+		owned[run_manager.hold_part.part_id] = true
+	return owned
+
+
+func _pick_part_from_paths(paths: Array, excluded_ids: Dictionary) -> PartData:
+	var candidates: Array[PartData] = []
+	for path in paths:
+		var part := load(str(path)) as PartData
+		if part != null and not excluded_ids.has(part.part_id):
+			candidates.append(part)
+	return null if candidates.is_empty() else candidates.pick_random()
+
+
+func _append_unique_paths(target: Array, source: Array) -> void:
+	for path in source:
+		if not target.has(path):
+			target.append(path)
+
+
+func _followup_part_paths(owned_ids: Dictionary) -> Array:
+	var result: Array = []
+	for part_id in PART_FOLLOWUP_PATHS:
+		if owned_ids.has(part_id):
+			_append_unique_paths(result, PART_FOLLOWUP_PATHS[part_id])
+	return result
+
+
+## 첫 상점은 리듬 유지 vs 역할 전환을 확정 제시한다.
+## 이후 상점은 현재 빌드 후속 파츠 vs 총기 친화 파츠로 선택의 의미를 유지한다.
+func _generate_part_offers() -> Array[PartData]:
+	var offers: Array[PartData] = []
+	var excluded := _owned_part_ids()
+	var first_paths: Array = []
+	var second_paths: Array = []
+	var is_first_branch := run_manager != null \
+		and run_manager.current_section == "section_a" and _reroll_count == 0
+
+	if is_first_branch:
+		first_paths = ["res://resources/parts/rhythm_chamber.tres"]
+		second_paths = ["res://resources/parts/interrupter.tres"]
+	elif run_manager != null and run_manager.current_section == "section_a":
+		first_paths = MAINTAIN_PART_PATHS.duplicate()
+		second_paths = SWITCH_PART_PATHS.duplicate()
+	else:
+		first_paths = _followup_part_paths(excluded)
+		if first_paths.is_empty():
+			_append_unique_paths(first_paths, MAINTAIN_PART_PATHS)
+			_append_unique_paths(first_paths, SWITCH_PART_PATHS)
+		var weapon_class := Enums.WeaponClass.UNIVERSAL
+		if run_manager != null and run_manager.current_gun != null:
+			weapon_class = run_manager.current_gun.weapon_class
+		second_paths = GUN_AFFINITY_PART_PATHS.get(weapon_class, SHOP_GENERAL_PART_PATHS).duplicate()
+
+	var first := _pick_part_from_paths(first_paths, excluded)
+	if first == null:
+		first = _pick_part_from_paths(SHOP_GENERAL_PART_PATHS, excluded)
+	if first != null:
+		offers.append(first)
+		excluded[first.part_id] = true
+
+	var second := _pick_part_from_paths(second_paths, excluded)
+	if second == null:
+		second = _pick_part_from_paths(SHOP_GENERAL_PART_PATHS, excluded)
+	if second != null:
+		offers.append(second)
+	return offers
 
 
 # ── 기타 헬퍼 유틸리티 함수 ──
