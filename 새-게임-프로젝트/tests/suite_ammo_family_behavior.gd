@@ -151,8 +151,19 @@ static func run(t) -> void:
 	)
 	_fire_count(rifle_cm, 1)
 	t.eq(rifle_cm.enemies[0].current_hp, 26, "5.56 주 대상 4 피해")
-	t.eq(rifle_cm.enemies[1].current_hp, 28, "5.56 후열 1명 50% 피해")
+	t.eq(rifle_cm.enemies[1].current_hp, 29, "5.56 후열 1명 고정 스침 피해 1")
 	rifle_cm.free()
+
+	# 주 대상 화력이 커져도 후열 피해는 함께 증폭되지 않는다.
+	var high_damage_rifle_cm := _start(
+		_gun(Enums.WeaponClass.RIFLE, 1),
+		[_enemy(), _enemy()] as Array[EnemyData],
+		[_bullet(Enums.WeaponClass.RIFLE, 8, 4)] as Array[BulletData]
+	)
+	_fire_count(high_damage_rifle_cm, 1)
+	t.eq(high_damage_rifle_cm.enemies[0].current_hp, 22, "고화력 5.56 주 대상 8 피해")
+	t.eq(high_damage_rifle_cm.enemies[1].current_hp, 29, "고화력 5.56도 후열은 고정 스침 피해 1")
+	high_damage_rifle_cm.free()
 
 	var dmr_enemies: Array[EnemyData] = [_enemy(), _enemy(), _enemy(), _enemy()]
 	var dmr_cm := _start(
@@ -162,9 +173,9 @@ static func run(t) -> void:
 	)
 	_fire_count(dmr_cm, 1)
 	t.eq(dmr_cm.enemies[0].current_hp, 26, "7.62 주 대상 4 피해")
-	t.eq(dmr_cm.enemies[1].current_hp, 28, "7.62 후열1 50%")
-	t.eq(dmr_cm.enemies[2].current_hp, 29, "7.62 후열2 25%")
-	t.eq(dmr_cm.enemies[3].current_hp, 29, "7.62 후열3 25%")
+	t.eq(dmr_cm.enemies[1].current_hp, 29, "7.62 후열1 고정 스침 피해 1")
+	t.eq(dmr_cm.enemies[2].current_hp, 29, "7.62 후열2 고정 스침 피해 1")
+	t.eq(dmr_cm.enemies[3].current_hp, 29, "7.62 후열3 고정 스침 피해 1")
 	dmr_cm.free()
 
 	# 중간 DEF 게이트가 막히면 그 뒤를 건너뛰지 않는다.
@@ -188,8 +199,8 @@ static func run(t) -> void:
 		)] as Array[BulletData]
 	)
 	_fire_count(pierce_cm, 1)
-	t.eq(pierce_cm.enemies[1].current_hp, 28, "관통탄+5.56 후열1 50%")
-	t.eq(pierce_cm.enemies[2].current_hp, 29, "관통탄+5.56 추가 후열 25%")
+	t.eq(pierce_cm.enemies[1].current_hp, 29, "관통탄+5.56 후열1 고정 스침 피해 1")
+	t.eq(pierce_cm.enemies[2].current_hp, 29, "관통탄+5.56 추가 후열도 고정 스침 피해 1")
 	pierce_cm.free()
 
 	# 파츠 정액 피해는 주 대상에만 적용되고 후열에 복제되지 않는다.
@@ -201,8 +212,20 @@ static func run(t) -> void:
 	)
 	_fire_count(blind_cm, 1)
 	t.eq(blind_cm.enemies[0].current_hp, 24, "블라인드파이어 +2는 주 대상에 적용")
-	t.eq(blind_cm.enemies[1].current_hp, 28, "후열은 파츠 +2를 복제하지 않고 기반 50%")
+	t.eq(blind_cm.enemies[1].current_hp, 29, "후열은 파츠 +2를 복제하지 않고 고정 스침 피해 1")
 	blind_cm.free()
+
+	# Heavy는 초과 PEN이 있을 때만 첫 후열 스침을 1에서 2로 강화한다.
+	var heavy: GunData = load("res://resources/guns/heavy.tres")
+	var heavy_cm := _start(
+		heavy,
+		[_enemy(), _enemy()] as Array[EnemyData],
+		[_bullet(Enums.WeaponClass.RIFLE, 4, 4)] as Array[BulletData]
+	)
+	_fire_count(heavy_cm, 1)
+	t.eq(heavy_cm.enemies[0].current_hp, 25, "Heavy 주 대상은 총기 DMG +1 포함 5 피해")
+	t.eq(heavy_cm.enemies[1].current_hp, 28, "Heavy 초과 PEN은 첫 후열 고정 스침 피해 2")
+	heavy_cm.free()
 
 	# ── 산탄: 3m 이내 거리 군집 ──
 	# start_encounter가 두 번째부터 +2m씩 배치하므로 3,2,0 → 실제 3,4,4m.
@@ -234,6 +257,7 @@ static func run(t) -> void:
 		[_bullet(Enums.WeaponClass.SHOTGUN, 4, 0)] as Array[BulletData]
 	)
 	_fire_count(far_scatter_cm, 1)
+	t.eq(far_scatter_cm.enemies[0].current_hp, 26, "일반 산탄 계열 규칙은 주 대상 피해를 바꾸지 않음")
 	t.eq(far_scatter_cm.enemies[1].current_hp, 30, "4m 이상에서는 산탄 확산 없음")
 	far_scatter_cm.free()
 

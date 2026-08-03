@@ -20,6 +20,9 @@ const SIGNATURE_CLASSES := ENHANCED_CLASSES
 
 const FOCUS_THRESHOLD := 3
 const SHOTGUN_MAX_RANGE := 3
+const SHOTGUN_LONG_RANGE_DAMAGE_PENALTY := 2
+const RIFLE_REAR_DAMAGE := 1
+const HEAVY_FIRST_REAR_DAMAGE := 2
 
 ## 총기의 구경은 런 중 바꾸는 빌드 축이 아니라, 모든 공용 전술탄에 적용되는 고정 탄도 성향이다.
 ## 기반탄 5종은 CSV 자체에 이미 구경 성향이 들어 있으므로 프로필을 중복 적용하지 않는다.
@@ -32,7 +35,6 @@ const PROFILES := {
 		"grade": Enums.AmmoGrade.STANDARD,
 		"focus_bonus": 1,
 		"line_depth": 0,
-		"line_falloff": [],
 		"scatter_count": 0,
 		"scatter_radius": 0,
 		"damage": 0, "penetration": 0, "accuracy": 1, "knockback": 0,
@@ -46,7 +48,6 @@ const PROFILES := {
 		"grade": Enums.AmmoGrade.ENHANCED,
 		"focus_bonus": 2,
 		"line_depth": 0,
-		"line_falloff": [],
 		"scatter_count": 0,
 		"scatter_radius": 0,
 		"damage": 1, "penetration": 0, "accuracy": 0, "knockback": 0,
@@ -60,11 +61,10 @@ const PROFILES := {
 		"grade": Enums.AmmoGrade.STANDARD,
 		"focus_bonus": 0,
 		"line_depth": 1,
-		"line_falloff": [0.5, 0.25],
 		"scatter_count": 0,
 		"scatter_radius": 0,
 		"damage": 0, "penetration": 1, "accuracy": 0, "knockback": 0,
-		"summary": "후열 1명 50% 관통 · 전술탄 PEN +1",
+		"summary": "후열 1명 스침 피해 1 · 전술탄 PEN +1",
 	},
 	Enums.WeaponClass.DMR: {
 		"name": "소총탄",
@@ -74,11 +74,10 @@ const PROFILES := {
 		"grade": Enums.AmmoGrade.ENHANCED,
 		"focus_bonus": 0,
 		"line_depth": 3,
-		"line_falloff": [0.5, 0.25, 0.25, 0.25],
 		"scatter_count": 0,
 		"scatter_radius": 0,
 		"damage": 1, "penetration": 1, "accuracy": -1, "knockback": 0,
-		"summary": "후열 3명 50/25/25% 관통 · 전술탄 DMG/PEN +1 · ACC -1",
+		"summary": "후열 3명 스침 피해 각 1 · 전술탄 DMG/PEN +1 · ACC -1",
 	},
 	Enums.WeaponClass.SHOTGUN: {
 		"name": "산탄",
@@ -88,11 +87,10 @@ const PROFILES := {
 		"grade": Enums.AmmoGrade.STANDARD,
 		"focus_bonus": 0,
 		"line_depth": 0,
-		"line_falloff": [],
 		"scatter_count": 1,
 		"scatter_radius": 1,
 		"damage": 1, "penetration": -1, "accuracy": -1, "knockback": 0,
-		"summary": "3m 이내 군집 1명 50% 확산 · 전술탄 DMG +1 · PEN/ACC -1",
+		"summary": "3m 이내 군집 1명 50% 확산 · 4m 이상 주 피해 -2 · 전술탄 DMG +1 · PEN/ACC -1",
 	},
 }
 
@@ -106,7 +104,6 @@ static func profile_for_class(weapon_class: int) -> Dictionary:
 		"grade": Enums.AmmoGrade.UNIVERSAL,
 		"focus_bonus": 0,
 		"line_depth": 0,
-		"line_falloff": [],
 		"scatter_count": 0,
 		"scatter_radius": 0,
 		"damage": 0, "penetration": 0, "accuracy": 0, "knockback": 0,
@@ -163,16 +160,22 @@ static func line_depth_for_gun(gun: GunData, bullet: BulletData = null) -> int:
 	return depth
 
 
-static func line_falloff_for_gun(gun: GunData, depth_index: int, heavy_boost: bool = false) -> float:
+static func line_damage_for_gun(_gun: GunData, depth_index: int, heavy_boost: bool = false) -> int:
 	if depth_index < 0:
-		return 0.0
+		return 0
 	if heavy_boost and depth_index == 0:
-		return 0.75
-	var values: Array = profile_for_gun(gun).get("line_falloff", [])
-	if depth_index < values.size():
-		return float(values[depth_index])
-	## 관통탄으로 추가된 마지막 깊이와 비소총 계열의 단발 관통은 제한된 감쇄율을 쓴다.
-	return 0.5 if depth_index == 0 else 0.25
+		return HEAVY_FIRST_REAR_DAMAGE
+	## 주 대상 피해·크리티컬·조건부 화력이 후열 수만큼 복제되지 않도록 고정 스침 피해를 쓴다.
+	## 관통탄으로 늘어난 깊이와 비소총 계열의 단발 관통도 같은 값을 사용한다.
+	return RIFLE_REAR_DAMAGE
+
+
+static func shotgun_damage_for_distance(base_damage: int, distance: int) -> int:
+	if base_damage <= 0:
+		return 0
+	if distance <= SHOTGUN_MAX_RANGE:
+		return base_damage
+	return maxi(base_damage - SHOTGUN_LONG_RANGE_DAMAGE_PENALTY, 1)
 
 
 static func scatter_count_for_gun(gun: GunData, spread_part: bool = false) -> int:

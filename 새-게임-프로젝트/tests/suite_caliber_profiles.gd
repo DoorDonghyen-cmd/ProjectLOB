@@ -112,6 +112,16 @@ static func run(t) -> void:
 	var revolver: GunData = load(GUN_PATHS[Enums.WeaponClass.PISTOL])
 	var gambler: GunData = load(GUN_PATHS[Enums.WeaponClass.SMG])
 	var tempo: GunData = load("res://resources/guns/smg.tres")
+	t.eq(CaliberProfilesScript.line_damage_for_gun(revolver, 0), 1,
+		"소총 후열 기본 스침 피해는 주 피해와 무관하게 1")
+	t.eq(CaliberProfilesScript.line_damage_for_gun(revolver, 0, true), 2,
+		"Heavy 초과 PEN의 첫 후열 스침 피해는 2")
+	t.eq(CaliberProfilesScript.shotgun_damage_for_distance(5, 3), 5,
+		"산탄 3m 이내 주 피해 유지")
+	t.eq(CaliberProfilesScript.shotgun_damage_for_distance(5, 4), 3,
+		"산탄 4m 이상 주 피해 2 감쇠")
+	t.eq(CaliberProfilesScript.shotgun_damage_for_distance(1, 8), 1,
+		"산탄 원거리 유효 피해 최소 1 보장")
 	t.eq(DamageCalculatorScript.effective_stats(native_9mm, revolver).accuracy, 8,
 		"9mm 기반탄에는 전술탄 ACC 프로필을 중복 적용하지 않음")
 	t.eq(DamageCalculatorScript.effective_stats(native_45, gambler).damage, 3,

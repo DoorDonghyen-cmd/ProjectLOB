@@ -52,6 +52,33 @@ static func _hp_after(gun_path: String, enemy_data: EnemyData, dmg: int, acc: in
 	return hp
 
 
+static func _state_after_bullet(
+	gun_path: String,
+	enemy_data: EnemyData,
+	bullet: BulletData,
+	shots: int
+) -> Dictionary:
+	var cm = CombatManagerScript.new()
+	var gun: GunData = load(gun_path)
+	var loadout: Array[BulletData] = []
+	for _i in range(shots):
+		loadout.append(bullet.duplicate())
+	var enemies: Array[EnemyData] = [enemy_data]
+	var no_parts: Array[PartData] = []
+	cm.start_encounter(gun, enemies, loadout, no_parts)
+	cm.confirm_loading(loadout)
+	var guard := 0
+	while not cm.magazine.is_empty() and guard < 20:
+		guard += 1
+		cm.fire()
+	var result := {
+		"hp": cm.enemies[0].current_hp,
+		"distance": cm.enemies[0].current_distance,
+	}
+	cm.free()
+	return result
+
+
 static func run(t) -> void:
 	t.section("GunSignatures")
 	RunManager.infiltration_risk_level = 1
@@ -73,12 +100,17 @@ static func run(t) -> void:
 	# 적이 보너스 구간에 머물러 3발 모두 +4를 받는다. (수정 전에는 첫 발만 적용되고 13 대미지)
 	t.eq(sg_close, 39, "샷건 초근접: 넉백 제외로 구간 유지 → (3+4)x3=21 대미지 (HP 60→39)")
 
-	# ── 샷건 원거리 페널티: 거리 >= 4에서 ACC -4 ──
-	# ACC5 탄 vs EVA2 적: 리볼버는 명중, 샷건은 ACC 1로 떨어져 빗나감
+	# ── 샷건 원거리 산개: 4m 이상에서 명중은 유지하고 주 피해 -2 ──
 	var rev_far := _hp_after(G_REVOLVER, _enemy(30, 0, 2, 10), 3, 5, 0, 3)
-	var sg_far := _hp_after(G_SHOTGUN, _enemy(30, 0, 2, 10), 3, 5, 0, 3)
 	t.eq(rev_far, 20, "리볼버 원거리: 3x3 + 집중1 = 10 대미지")
-	t.eq(sg_far, 30, "샷건 원거리 페널티: ACC-4로 EVA2 미달 → 전탄 빗나감 (HP 불변)")
+	var sg_far := _state_after_bullet(
+		G_SHOTGUN,
+		_enemy(30, 0, 2, 10),
+		load("res://resources/bullets/cal_12g.tres"),
+		3
+	)
+	t.eq(sg_far.hp, 21, "샷건 원거리: 기반 산탄 5→3 피해로 전탄 명중해 견제 가능")
+	t.eq(sg_far.distance, 13, "샷건 원거리: 총기 자체 KB는 빠지고 탄환 KB 1만 발당 유지")
 
 	# ── 스텔스 적 카운터: nano_stalker(EVA 9) ──
 	# 탄환 ACC 상한이 8이라 일반 총기로는 원천 명중 불가한 설계지만,

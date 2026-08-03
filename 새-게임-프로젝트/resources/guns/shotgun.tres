@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("3_script")
 display_name = "브리칭 샷건 (Bruiser)"
-description = "돌격형 브루이저 총기. 슬롯 5칸과 탄창 5발 사양을 가지며 적과의 거리가 극도로 가까울 때 대미지가 폭증하는 포인트블랭크 장치를 기본 내장하고 있습니다."
+description = "돌격형 브루이저 총기. 초근접에서 대미지가 폭증하고 3m에서는 자체 넉백이 작동합니다. 4m 이상에서도 명중할 수 있지만 산개로 주 피해가 2 감소합니다."
 icon = ExtResource("1_icon")
 magazine_capacity = 5
 has_chamber = false

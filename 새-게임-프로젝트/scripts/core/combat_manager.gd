@@ -620,11 +620,6 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	var calc_bullet_acc := bullet.duplicate()
 	calc_bullet_acc.accuracy += part_acc_bonus + magazine_buff_acc + buff_acc
 
-	# ── 돌격형(Bruiser) 총기 페널티: 원거리 조준 불안정 ──
-	if _gun_is("shotgun") and target.current_distance >= 4:
-		calc_bullet_acc.accuracy -= 4
-		combat_log.emit("   ↳ ⚠ [돌격형 페널티] 원거리 조준 불안정으로 이번 사격 ACC -4 감소!")
-
 	var hit := DamageCalculator.check_hit(calc_bullet_acc, target_evasion, gun)
 	var calc_bullet_without_adjacent := calc_bullet_acc.duplicate()
 	calc_bullet_without_adjacent.accuracy -= buff_acc
@@ -773,6 +768,17 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				before_critical, damage
 			])
 
+		# 샷건은 원거리에서도 명중할 수 있지만 산개로 주 피해가 약해진다.
+		# ACC를 낮춰 완전 무효로 만들지 않고, 최소 1의 견제 피해로 접근 턴을 의미 있게 유지한다.
+		if _gun_is("shotgun") and target.current_distance > CaliberProfiles.SHOTGUN_MAX_RANGE:
+			var before_attenuation := damage
+			damage = CaliberProfiles.shotgun_damage_for_distance(damage, target.current_distance)
+			if damage < before_attenuation:
+				breakdown += " + [원거리 산개] -%d" % (before_attenuation - damage)
+				combat_log.emit("   ↳ ⚠ [원거리 산개] 주 피해 %d → %d" % [
+					before_attenuation, damage
+				])
+
 		# 관성 격발: 같은 적·같은 태세에 대한 유효 적중 3회마다 정액 +2.
 		# 과거 무제한 +1 누적은 연발에서 자동 폭증했으므로 3회 주기 보상으로 제한한다.
 		if _has_part(Enums.PartID.INERTIA_FIRE):
@@ -879,11 +885,13 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			if kb < requested_kb:
 				combat_log.emit("   ↳ ⚠ [연발 제어 상한] 버스트 총 넉백 2칸 초과분 억제")
 
-		# 돌격형(샷건) 시그니처 보호: 초근접 보너스 구간(거리 <= 2)에서는 자체 패시브 넉백을 제외한다.
-		# 제외하지 않으면 샷건이 자기 사격으로 적을 보너스 구간 밖으로 밀어내
-		# 초근접 특화가 첫 발에만 적용되고 이후 원거리 페널티까지 받는 자기모순이 발생한다.
-		# (탄환 자체 넉백은 플레이어의 의도적 선택이므로 그대로 유지)
-		if gun and _gun_is("shotgun") and target.current_distance <= 2:
+		# 샷건 자체 넉백은 초근접 보너스를 스스로 끊지 않도록 <=2m에서 제외하고,
+		# 원거리에서는 적을 계속 밀어 접근을 봉쇄하지 않도록 >3m에서 제외한다.
+		# 탄환 자체 넉백은 플레이어의 의도적 선택이므로 두 구간 모두 그대로 유지한다.
+		if gun and _gun_is("shotgun") and (
+			target.current_distance <= 2
+			or target.current_distance > CaliberProfiles.SHOTGUN_MAX_RANGE
+		):
 			kb = maxi(kb - gun.passive_knockback_bonus, 0)
 
 		# 언더플로우 (UNDERFLOW): 피날레 넉백 2배 증폭
@@ -1165,17 +1173,15 @@ func _apply_family_collateral(
 	for depth_index in range(line_targets.size()):
 		var line_target := line_targets[depth_index]
 		used_targets[line_target] = true
-		var ratio := CaliberProfiles.line_falloff_for_gun(gun, depth_index, heavy_boost)
-		var collateral := CaliberProfiles.collateral_damage(base_damage, ratio)
+		var collateral := CaliberProfiles.line_damage_for_gun(gun, depth_index, heavy_boost)
 		if collateral <= 0:
 			continue
 		_apply_damage_to_enemy(line_target, collateral)
 		successful_line.append(line_target)
-		combat_log.emit("   ↳ ➜ [직선 관통 %d] [%s] %d 피해 (%d%%)" % [
+		combat_log.emit("   ↳ ➜ [직선 관통 %d] [%s] 스침 피해 %d" % [
 			depth_index + 1,
 			line_target.data.display_name,
 			collateral,
-			roundi(ratio * 100.0),
 		])
 		enemy_damaged.emit(
 			line_target,

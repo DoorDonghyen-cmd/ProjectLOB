@@ -1,5 +1,6 @@
 extends RefCounted
-## 탄환 v6 튜닝 후보를 런타임에 적용하지 않고 검증하는 순수 결정론 프로브.
+## 2026-07-27 탄환 v6 이관 전 후보를 런타임에 적용하지 않고 검증한 역사 스냅샷 프로브.
+## 현재 탄종 행동의 정본이나 시뮬레이터로 사용하지 않는다.
 ##
 ## - 후보 기반탄의 총기 시그니처 포함 사이클 화력을 계산한다.
 ## - v6 DEF 상한 3 계약을 적용한 적 상태에서 거리별 도달성을 측정한다.
@@ -118,7 +119,7 @@ static func _cycle_profile(gun_id: String, ammo_rows: Dictionary, tuned: bool) -
 		else shots + int(gun["reload_turns"])
 	var dpt := snappedf(float(total_damage) / float(cycle_turns), 0.01)
 	var in_band := dpt >= DPT_MIN and dpt <= DPT_MAX + 0.001
-	# 샷건은 시작 거리 ACC -4 때문에 기반탄 직통이 0/13이다.
+	# 당시 후보의 샷건은 시작 거리 ACC -4 때문에 기반탄 직통이 0/13이었다.
 	# 종이 DPT를 맞추려고 DMG를 깎으면 유일 최대 피해 정체성만 사라지므로 거리 게이트 예외로 둔다.
 	var range_gated_exception := gun_id == "shotgun" and dpt > DPT_MAX
 	return {

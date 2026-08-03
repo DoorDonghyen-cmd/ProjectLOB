@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1")
 display_name = "산탄"
-description = "12게이지 표준 규격의 산탄. 3m 이내 유효 적중 시 거리 차 1m 이내의 적 한 명에게 50% 확산 피해를 줍니다."
+description = "12게이지 표준 규격의 산탄. 3m 이내에서는 적 한 명에게 50% 확산하고 4m 이상에서는 확산 없이 주 피해가 2 감소합니다."
 icon = ExtResource("2")
 is_basic = true
 family = "basic"

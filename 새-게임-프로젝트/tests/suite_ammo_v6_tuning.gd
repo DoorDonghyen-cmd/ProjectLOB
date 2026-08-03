@@ -1,6 +1,6 @@
 extends RefCounted
-## v6 튜닝 후보의 비파괴 산출물을 고정한다.
-## 실제 런타임은 v5를 유지하며, 마이그레이션 승인 전 수치·해법 기준만 검사한다.
+## 2026-07-27 v6 튜닝 후보의 비파괴 산출물을 역사 스냅샷으로 고정한다.
+## 현재 런타임 밸런스 검증은 suite_ammo_family_behavior.gd와 suite_gun_signatures.gd가 담당한다.
 
 const Probe := preload("res://tests/ammo_v6_tuning_probe.gd")
 const REPORT_PATH := "res://tests/baseline/ammo_v6_tuning_matrix.json"

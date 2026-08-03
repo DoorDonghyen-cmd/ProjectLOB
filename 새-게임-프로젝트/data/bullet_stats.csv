@@ -1,9 +1,9 @@
 id,display_name,caliber,family,is_basic,role,damage,penetration,accuracy,knockback,slow,effect_type,effect_value,trigger,scope,condition,description
 cal_9mm,경량탄,pistol,basic,true,attack,3,1,8,0,0,0,0,none,none,none,9mm 표준 규격의 경량탄. 한 적을 세 번 유효 적중하면 집중 폭발로 피해 1을 추가합니다.
 cal_45acp,경량탄,smg,basic,true,attack,3,1,7,0,0,0,0,none,none,none,.45ACP 강화 규격의 경량탄. 한 적을 세 번 유효 적중하면 집중 폭발로 피해 2를 추가합니다.
-cal_556,소총탄,rifle,basic,true,attack,3,2,6,0,0,0,0,none,none,none,5.56mm 표준 규격의 소총탄. 유효 적중 시 바로 뒤의 적 한 명을 50% 피해로 관통합니다.
-cal_762,소총탄,dmr,basic,true,attack,4,3,5,0,0,0,0,none,none,none,7.62mm 강화 규격의 소총탄. 유효 적중 시 후열 세 명을 50%/25%/25% 피해로 관통합니다.
-cal_12g,산탄,shotgun,basic,true,attack,5,0,5,1,0,0,0,none,none,none,12게이지 표준 규격의 산탄. 3m 이내 유효 적중 시 거리 차 1m 이내의 적 한 명에게 50% 확산 피해를 줍니다.
+cal_556,소총탄,rifle,basic,true,attack,3,2,6,0,0,0,0,none,none,none,5.56mm 표준 규격의 소총탄. 유효 적중 시 바로 뒤의 적 한 명에게 고정 스침 피해 1을 줍니다.
+cal_762,소총탄,dmr,basic,true,attack,4,3,5,0,0,0,0,none,none,none,7.62mm 강화 규격의 소총탄. 유효 적중 시 후열 세 명에게 각각 고정 스침 피해 1을 줍니다.
+cal_12g,산탄,shotgun,basic,true,attack,5,0,5,1,0,0,0,none,none,none,12게이지 표준 규격의 산탄. 3m 이내에서는 적 한 명에게 50% 확산하고 4m 이상에서는 확산 없이 주 피해가 2 감소합니다.
 marker,표식탄,universal,support,false,link,2,1,8,0,0,7,3,on_effective_hit,next_shot,none,유효 적중 시 탄도 표식을 남겨 다음 1발의 명중을 3 높입니다.
 borer,천공탄,universal,support,false,link,2,3,6,0,0,8,3,on_effective_hit,next_shot,none,유효 적중 시 장갑을 천공해 다음 1발의 관통을 3 높입니다.
 jammer,교란탄,universal,support,false,link,2,1,9,0,0,9,2,on_hit,target,none,명중한 적의 회피를 영구히 2 낮춥니다.
