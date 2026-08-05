@@ -2,6 +2,7 @@ class_name LoadoutOverlay
 extends PanelContainer
 
 const CaliberProfilesScript := preload("res://scripts/core/caliber_profiles.gd")
+const ItemCatalogScript := preload("res://scripts/core/item_catalog.gd")
 
 ## ═══════════════════════════════════════════════════
 ## 요원 작전 준비실 (Agent Tactical Loadout - HTML 이식 버전)
@@ -605,11 +606,11 @@ func _build_starting_bonus_popup() -> void:
 	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
 	margin.add_child(vbox)
 	
-	var title = parent_scene.make_label("📥 본부 작전 스타팅 보증 보급", 18, C_NEON_GOLD)
+	var title = parent_scene.make_label("📥 잔여 보급 회수", 18, C_NEON_GOLD)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
 	
-	var desc = parent_scene.make_label("이전 작전의 구역 1 돌파를 격려하여\n본부에서 다음 보너스 중 1개를 지원합니다.", 12, parent_scene.C_TEXT)
+	var desc = parent_scene.make_label("이전 상승에서 4층 이상 확보했습니다.\n남겨 둔 보급 중 하나를 회수합니다.", 12, parent_scene.C_TEXT)
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(desc)
 	
@@ -630,39 +631,20 @@ func _build_starting_bonus_popup() -> void:
 
 func _on_bonus_credits_selected() -> void:
 	if run_manager:
-		run_manager.credits += 50
-		print("디버그: 스타팅 보증 크레딧 +50 Cr 획득!")
+		run_manager.queue_starting_bonus_credits(50)
+		print("디버그: 다음 상승 스타팅 보증 +50 Cr 예약")
 	_close_bonus_popup()
 
 func _on_bonus_part_selected() -> void:
 	if run_manager:
-		var path := "res://resources/parts/"
-		var dir := DirAccess.open(path)
-		var parts_pool: Array[PartData] = []
-		if dir:
-			dir.list_dir_begin()
-			var file_name = dir.get_next()
-			while file_name != "":
-				if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
-					if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
-						var clean_name = file_name.replace(".remap", "")
-						var res = load(path + clean_name)
-						if res is PartData:
-							parts_pool.append(res)
-				file_name = dir.get_next()
-			dir.list_dir_end()
-			
+		var parts_pool: Array[PartData] = ItemCatalogScript.general_parts(1)
 		if not parts_pool.is_empty():
-			var chosen = parts_pool.pick_random().duplicate() as PartData
-			var success = run_manager.add_to_backpack(chosen)
-			if success:
-				print("디버그: 스타팅 보증 무작위 1티어 파츠 획득! (%s)" % chosen.display_name)
-			else:
-				run_manager.credits += 50
-				print("디버그: 가방이 가득 차 파츠 대신 +50 Cr로 보증금이 대체 지급되었습니다.")
+			var chosen := parts_pool.pick_random() as PartData
+			run_manager.queue_starting_bonus_part(chosen)
+			print("디버그: 다음 상승 1티어 파츠 예약 (%s)" % chosen.display_name)
 		else:
-			run_manager.credits += 50
-			print("디버그: 파츠 풀이 비어있어 +50 Cr로 대체 지급되었습니다.")
+			run_manager.queue_starting_bonus_credits(50)
+			print("디버그: 1티어 파츠 풀이 비어 +50 Cr로 대체 예약")
 	_close_bonus_popup()
 
 func _close_bonus_popup() -> void:

@@ -18,6 +18,13 @@
 | #009 | 흡수체 배리어가 관통 실패 명중에도 감소함 | 높음 | ✅ Closed | `codex0727-ammo-v6-runtime` | 2026-07-27 | 2026-07-27 | [리포트](bug_009_absorber_barrier_counts_blocked_hits.md) |
 | #010 | 태세 사냥꾼 파훼가 2발 주기 오메가에 발동하지 않음 | 높음 | ✅ Closed | `codex0727-ammo-v6-runtime` | 2026-07-27 | 2026-07-27 | [리포트](bug_010_stance_hunter_misses_omega_interval.md) |
 | #011 | 첫 구역 보스 클리어 후 다음 구역 대신 메인 화면으로 복귀 | 높음 | ✅ Closed | `codex0728-continuous-ascent` | 2026-07-28 | 2026-07-28 | [리포트](bug_011_first_section_returns_to_title.md) |
+| #012 | 상점 주파수 재요청 후 가운데 파츠의 이전 설명 잔존 | 보통 | 🔍 Verified | `codex0805-shop-reroll-ui` | 2026-08-05 | 2026-08-05 | [리포트](bug_012_shop_reroll_stale_part_description.md) |
+| #013 | 기본탄만 사용하면 탄약 효율이 무조건 S등급으로 정산됨 | 높음 | 🔍 Verified | `codex0806-function-accuracy` | 2026-08-05 | 2026-08-06 | [리포트](bug_013_basic_ammo_always_s_grade.md) |
+| #014 | 파츠 1개 구매 제한이 리롤 후 초기화됨 | 높음 | 🔍 Verified | `codex0806-function-accuracy` | 2026-08-05 | 2026-08-06 | [리포트](bug_014_part_purchase_limit_resets_on_reroll.md) |
+| #015 | 캠페인 보스 노드에 실제 보스가 등장하지 않음 | 높음 | 🔍 Verified | `codex0805-campaign-integrity` | 2026-08-05 | 2026-08-05 | [리포트](bug_015_campaign_boss_nodes_omit_boss.md) |
+| #016 | 무작위 보상 풀이 보류·고유 항목을 우회하고 암시장 결제가 소실될 수 있음 | 높음 | 🔍 Verified | `codex0805-campaign-integrity` | 2026-08-05 | 2026-08-05 | [리포트](bug_016_random_reward_pool_bypasses_rules.md) |
+| #017 | 제압형 해금 정산에서 무기명이 알 수 없음으로 표시됨 | 낮음 | 🟡 Open | `codex0805-content-system-ui-audit` | 2026-08-05 | - | [리포트](bug_017_suppressor_unlock_unknown_name.md) |
+| #018 | 모바일에서 미지 노드 스캔 힌트를 확인할 수 없음 | 높음 | 🟡 Open | `codex0805-content-system-ui-audit` | 2026-08-05 | - | [리포트](bug_018_mobile_scan_hint_hover_only.md) |
 
 ---
 

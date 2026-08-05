@@ -35,6 +35,8 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_magazine.gd` | 탄창 LIFO — 발사 순서, 용량/약실, unload/insert |
 | `suite_enemy.gd` | 적 태세 전환(N발 주기), 전진/둔화/넉백 거리 계산 |
 | `suite_boss_gimmicks.gd` | 보스 기믹·호위 대열 — 2m 편성, 차징 포격, 강제전진, 페이즈 전환, 넉백 저항 |
+| `suite_campaign_integrity.gd` | 캠페인 관문 편성 — 보스 4종+정예 관문, 정식 보상 후보군, 스타팅 보증·암시장 결제 |
+| `suite_combat_rewards.gd` | 실제 격발 수 기반 탄약 효율 등급·전투 크레딧 정산 |
 | `validate_data.gd` | CSV 정합성 — id 유니크·컬럼·정수·밴드(ERROR/WARN), `.tres` 매칭 |
 | `suite_ammo_integrity.gd` | 탄환 CSV↔리소스↔시작 덱 역할·수치 완전 일치 |
 | `suite_caliber_profiles.gd` | 3계열 고정 기술 규격 — 표준/강화 매핑, 공용 전술탄 보정, 기반탄 비중복 |

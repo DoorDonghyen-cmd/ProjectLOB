@@ -6,39 +6,15 @@ extends PanelContainer
 ## ═══════════════════════════════════════════════════
 
 const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
+const ItemCatalogScript := preload("res://scripts/core/item_catalog.gd")
 ## 무기고 탄환 진열 정본. 무결성 테스트가 전 항목의 실제 로드 가능 여부를 검증한다.
-const SHOP_BULLET_IDS := [
-	"marker", "borer", "jammer", "shred", "guide", "align",
-	"ap", "pierce", "chain", "finale", "opener", "crosscal",
-	"impact", "adhesive",
-]
+const SHOP_BULLET_IDS := ItemCatalogScript.SHOP_BULLET_IDS
 ## 상점의 파츠 두 장은 같은 분기 그룹이다. 하나를 사면 다른 하나도 닫힌다.
 const PART_CHOICE_GROUP := "build_part_choice"
 const FIRST_SECTION_PART_PRICE := 30
 ## 고유 기본 파츠(포인트블랭크/저격경)와 샷건 친화 전용 파츠(확산 격발)는
 ## 일반 추첨에서 제외한다. 컨버전 킷은 별도 플래그로만 노출한다.
-const SHOP_GENERAL_PART_PATHS := [
-	"res://resources/parts/rhythm_chamber.tres",
-	"res://resources/parts/deep_loader.tres",
-	"res://resources/parts/recoil_push.tres",
-	"res://resources/parts/shred_muzzle.tres",
-	"res://resources/parts/interrupter.tres",
-	"res://resources/parts/underflow.tres",
-	"res://resources/parts/chaser.tres",
-	"res://resources/parts/long_shot.tres",
-	"res://resources/parts/executioner.tres",
-	"res://resources/parts/high_precision.tres",
-	"res://resources/parts/armor_piercing.tres",
-	"res://resources/parts/versatile_chamber.tres",
-	"res://resources/parts/target_indicator.tres",
-	"res://resources/parts/chain_acc.tres",
-	"res://resources/parts/inertia_fire.tres",
-	"res://resources/parts/blind_fire.tres",
-	"res://resources/parts/quick_load.tres",
-	"res://resources/parts/stance_foresight.tres",
-	"res://resources/parts/stance_lock.tres",
-	"res://resources/parts/scope.tres",
-]
+const SHOP_GENERAL_PART_PATHS := ItemCatalogScript.GENERAL_PART_PATHS
 const MAINTAIN_PART_PATHS := [
 	"res://resources/parts/rhythm_chamber.tres",
 	"res://resources/parts/inertia_fire.tres",
@@ -97,15 +73,9 @@ const GUN_AFFINITY_PART_PATHS := {
 }
 ## 컨버전 킷은 플레이테스트 피드백에 따라 임시 보류 중이다.
 ## 런타임 계약과 리소스는 보존하고, 재설계가 끝날 때까지 상점 진열만 중단한다.
-const CONVERSION_KITS_ENABLED := false
+const CONVERSION_KITS_ENABLED := ItemCatalogScript.CONVERSION_KITS_ENABLED
 const CONVERSION_KIT_BASE_PRICE := 80
-const CONVERSION_KIT_PATHS := [
-	"res://resources/parts/conversion_pistol.tres",
-	"res://resources/parts/conversion_smg.tres",
-	"res://resources/parts/conversion_rifle.tres",
-	"res://resources/parts/conversion_dmr.tres",
-	"res://resources/parts/conversion_shotgun.tres",
-]
+const CONVERSION_KIT_PATHS := ItemCatalogScript.CONVERSION_KIT_PATHS
 
 var parent_scene: Control
 var run_manager: RunManager
@@ -138,6 +108,9 @@ const REFUND_BONUS_MULT := 1.5
 # ── 전역 가변 상태 ──
 var _active_tab: int = 0 # 0: 보급 단말(Shop), 1: 무기 장비(Equip), 2: 정비(Service)
 var _reroll_count: int = 0
+## 한 상점 방문에서 파츠는 정확히 1개만 구매할 수 있다. 카드 상태가 아니라
+## 방문 세션이 소유해야 리롤로 진열을 다시 만들어도 제한이 유지된다.
+var _part_purchased_this_visit: bool = false
 var _shop_items: Array = [] # { "item": Resource, "price": int, "sold_out": bool }
 var _selected_bag_idx: int = -1
 var _node_kind: int = NodeKind.SHOP
@@ -870,6 +843,7 @@ func start_maintenance_phase(node: RunManager.RunNode) -> void:
 	current_node = node
 
 	_reroll_count = 0
+	_part_purchased_this_visit = false
 	_selected_bag_idx = -1
 	_selected_service_idx = -1
 	_node_kind = _resolve_node_kind(node)
@@ -1002,6 +976,9 @@ func _refresh_current_tab_ui() -> void:
 ## 1) 🛒 보급 단말 탭 진열대 그리기
 func _refresh_shop_tab() -> void:
 	for child in _shop_grid.get_children():
+		# queue_free()만 예약하면 현재 프레임 동안 구 카드가 HBox에 남아
+		# 리롤된 카드와 겹친다. 먼저 진열대에서 분리해 이전 설명을 즉시 숨긴다.
+		_shop_grid.remove_child(child)
 		child.queue_free()
 		
 	for i in range(_shop_items.size()):
@@ -1105,6 +1082,8 @@ func _refresh_shop_tab() -> void:
 			var sold_text := "SOLD OUT"
 			if bool(slot_data.get("selected", false)):
 				sold_text = "✓ 선택 완료"
+			elif bool(slot_data.get("locked_after_purchase", false)):
+				sold_text = "이번 상점 파츠 구매 완료"
 			elif bool(slot_data.get("locked_by_choice", false)):
 				sold_text = "반대 분기 폐쇄"
 			btn_buy = parent_scene.make_button(sold_text, func(): pass, parent_scene.C_PANEL)
@@ -1356,6 +1335,9 @@ func _on_buy_item_pressed(slot_idx: int) -> void:
 	if bool(slot_data.sold_out): return
 	var item = slot_data.item
 	var price = slot_data.price
+	if item is PartData and _part_purchased_this_visit:
+		print("❌ 이번 상점에서는 이미 파츠 1개를 구매했습니다.")
+		return
 	
 	if run_manager.backpack_items.size() >= run_manager.BACKPACK_CAPACITY:
 		print("❌ 가방 용량 부족! 구매할 수 없습니다.")
@@ -1382,6 +1364,8 @@ func _on_buy_item_pressed(slot_idx: int) -> void:
 func _mark_shop_offer_sold(slot_idx: int) -> void:
 	if slot_idx < 0 or slot_idx >= _shop_items.size():
 		return
+	if _shop_items[slot_idx].item is PartData:
+		_part_purchased_this_visit = true
 	var exclusive_group := str(_shop_items[slot_idx].get("exclusive_group", ""))
 	if exclusive_group.is_empty():
 		_shop_items[slot_idx]["sold_out"] = true
@@ -1404,6 +1388,7 @@ func _shop_offer_snapshots() -> Array[Dictionary]:
 		snapshot["sold_out"] = bool(entry.get("sold_out", false))
 		snapshot["selected"] = bool(entry.get("selected", false))
 		snapshot["locked_by_choice"] = bool(entry.get("locked_by_choice", false))
+		snapshot["locked_after_purchase"] = bool(entry.get("locked_after_purchase", false))
 		snapshot["exclusive_group"] = str(entry.get("exclusive_group", ""))
 		snapshot["offer_kind"] = str(entry.get("offer_kind", ""))
 		snapshot["offer_label"] = str(entry.get("offer_label", ""))
@@ -1544,7 +1529,8 @@ func _generate_shop_items() -> void:
 		_shop_items.append({
 			"item": part_res,
 			"price": part_price,
-			"sold_out": false,
+			"sold_out": _part_purchased_this_visit,
+			"locked_after_purchase": _part_purchased_this_visit,
 			"exclusive_group": PART_CHOICE_GROUP,
 			"offer_kind": part_offer.kind,
 			"offer_label": presentation.label,
@@ -1563,7 +1549,8 @@ func _generate_shop_items() -> void:
 			_shop_items.append({
 				"item": kit_res,
 				"price": conversion_kit_price(run_manager.current_gun),
-				"sold_out": false
+				"sold_out": _part_purchased_this_visit,
+				"locked_after_purchase": _part_purchased_this_visit,
 			})
 
 

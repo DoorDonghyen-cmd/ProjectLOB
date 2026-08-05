@@ -1,5 +1,8 @@
 extends Control
 
+const CampaignContentScript := preload("res://scripts/core/campaign_content.gd")
+const ItemCatalogScript := preload("res://scripts/core/item_catalog.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 전투 및 런 제어용 메인 씬 라우터 (리팩토링 버전)
 ## ═══════════════════════════════════════════════════
@@ -405,29 +408,14 @@ func trigger_boss_test(boss_id: String) -> void:
 		_combat_overlay.visible = true
 		_combat_overlay.clear_combat_log()
 	
-	var enemy_list: Array[EnemyData] = []
-	var boss_name := ""
-	
-	match boss_id:
-		"boss_director":
-			# 보스 #1: 디렉터 강 (단독 보스전)
-			enemy_list = [_boss_director]
-			boss_name = "디렉터 강"
-		"boss_seraph":
-			# 보스 #2: 세라프 프로토콜 (호위: rusher + tank)
-			enemy_list = [_enemy_rusher, _enemy_tank, _boss_seraph]
-			boss_name = "세라프 프로토콜"
-		"boss_omega":
-			# 보스 #3: 실험체 Ω (단독 보스전)
-			enemy_list = [_boss_omega]
-			boss_name = "실험체 Ω"
-		"boss_lob_core":
-			# 최종 보스: L.O.B 코어 (호위: rusher + dodger + tank)
-			enemy_list = [_enemy_rusher, _enemy_dodger, _enemy_tank, _boss_lob_core]
-			boss_name = "L.O.B 코어"
-		_:
-			enemy_list = [_boss_director]
-			boss_name = "보스 테스트"
+	var section := CampaignContentScript.section_for_boss(boss_id)
+	var enemy_list: Array[EnemyData] = CampaignContentScript.load_gate_encounter(section)
+	var boss_name: String = str({
+		"boss_director": "디렉터 강",
+		"boss_seraph": "세라프 프로토콜",
+		"boss_omega": "실험체 Ω",
+		"boss_lob_core": "L.O.B 코어",
+	}.get(boss_id, "보스 테스트"))
 	
 	_combat_overlay.add_combat_log("[color=#ff4444]⚠️ 보스전 테스트 개시: %s[/color]" % boss_name)
 	_start_combat_phase(enemy_list)
@@ -499,7 +487,8 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 	if selected_node.type_name.begins_with("???"):
 		target_type = selected_node.hidden_type
 		
-	if target_type.contains("전투") or target_type.contains("보스") or target_type.contains("Boss"):
+	var is_major_gate := CampaignContentScript.is_major_gate_type(target_type)
+	if target_type.contains("전투") or is_major_gate:
 		# 전투 로그 출력을 위해 Combat Overlay 및 컨테이너를 준비해 둠
 		_combat_margin.visible = true
 		if _combat_overlay:
@@ -510,26 +499,10 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		var floor_num := _rm.current_floor
 		var section := _rm.current_section
 		
-		# 보스는 계층마다 하나뿐이므로 층이 아니라 **계층**으로 분기한다.
-		# (과거 관리/정점 보스를 층수로 갈랐는데, 보스 층이 7·8층이라 `floor_num <= 10`이
-		#  항상 참이 되어 최종 보스 구성이 영영 등장하지 않았다.)
-		if selected_node.type_name.contains("보스") or selected_node.type_name.contains("Boss") or selected_node.type_name.contains("boss"):
-			match section:
-				"section_a":
-					# 침전 거주구: 탱크 + 회피
-					enemy_list = [_enemy_tank, _enemy_dodger]
-				"section_b":
-					# 공역: 탱크 + 술사
-					enemy_list = [_enemy_tank, _enemy_caster]
-				"section_c":
-					# 정비 계층: 흡수(스펀지) + 술사
-					enemy_list = [_enemy_absorber, _enemy_caster]
-				"section_d":
-					# 관리 계층: 흡수 + 돌격 + 신경술사
-					enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_neuro_caster]
-				_:
-					# 정점(최종): 흡수 + 추적 + 신경술사 + 교란
-					enemy_list = [_enemy_absorber, _enemy_stalker, _enemy_neuro_caster, _enemy_scrambler]
+		# 관문 편성은 CampaignContent가 단일 정본이다.
+		# A/B/C/E는 보스 4종, D는 기존 자물쇠를 종합한 정예 관문으로 구성한다.
+		if is_major_gate:
+			enemy_list = CampaignContentScript.load_gate_encounter(section)
 		else:
 			# 일반전 스폰 분기.
 			# 구간은 계층 층수에 비례한다(MapGenerator.floor_tier). 절대 층 번호로 가르면
@@ -1017,6 +990,40 @@ func _trigger_safehouse_event() -> void:
 	btn.add_theme_font_size_override("font_size", 12)
 	vbox.add_child(btn)
 
+func _blackmarket_part_candidates() -> Array[PartData]:
+	return ItemCatalogScript.general_parts(0, ItemCatalogScript.owned_part_ids(_rm))
+
+
+func _blackmarket_bullet_candidates() -> Array[BulletData]:
+	return ItemCatalogScript.tactical_bullets(_rm.current_gun)
+
+
+func _purchase_blackmarket_part(cost: int = 30) -> bool:
+	if _rm == null or _rm.backpack_items.size() >= RunManager.BACKPACK_CAPACITY:
+		return false
+	var candidates := _blackmarket_part_candidates()
+	if candidates.is_empty() or not _rm.spend_credits(cost):
+		return false
+	var chosen := (candidates.pick_random() as PartData).duplicate() as PartData
+	if not _rm.add_to_backpack(chosen):
+		_rm.credits += cost
+		return false
+	print("🕵️ 암시장 파츠 구매: %s" % chosen.display_name)
+	return true
+
+
+func _purchase_blackmarket_bullet(cost: int = 15) -> bool:
+	if _rm == null:
+		return false
+	var candidates := _blackmarket_bullet_candidates()
+	if candidates.is_empty() or not _rm.spend_credits(cost):
+		return false
+	var chosen := (candidates.pick_random() as BulletData).duplicate() as BulletData
+	_rm.add_to_deck(chosen)
+	print("🕵️ 암시장 탄환 구매: %s" % chosen.display_name)
+	return true
+
+
 func _trigger_blackmarket_event() -> void:
 	# 암시장 상인 (Black Market)
 	var popup := PanelContainer.new()
@@ -1061,61 +1068,29 @@ func _trigger_blackmarket_event() -> void:
 	vbox.add_child(btn_hbox)
 	
 	var btn_part = make_button("파츠 밀수 (30 Cr)", func():
-		if _rm.spend_credits(30):
-			var path := "res://resources/parts/"
-			var dir := DirAccess.open(path)
-			var parts_pool: Array[PartData] = []
-			if dir:
-				dir.list_dir_begin()
-				var file_name = dir.get_next()
-				while file_name != "":
-					if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
-						if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
-							var clean_name = file_name.replace(".remap", "")
-							var res = load(path + clean_name)
-							if res is PartData:
-								parts_pool.append(res)
-					file_name = dir.get_next()
-				dir.list_dir_end()
-			if not parts_pool.is_empty():
-				var chosen = parts_pool.pick_random().duplicate() as PartData
-				_rm.add_to_backpack(chosen)
-				print("🕵️ 암시장 파츠 구매: %s" % chosen.display_name)
+		if _purchase_blackmarket_part():
 			popup.queue_free()
 			_blackmarket_close_transition()
+		else:
+			desc.text = "가방 공간·크레딧·획득 가능한 파츠를 확인하십시오. 결제되지 않았습니다."
 	, C_WARNING)
 	btn_part.custom_minimum_size = Vector2(150, 40)
 	btn_part.add_theme_font_size_override("font_size", 11)
-	btn_part.disabled = _rm.credits < 30
+	btn_part.disabled = _rm.credits < 30 \
+		or _rm.backpack_items.size() >= RunManager.BACKPACK_CAPACITY \
+		or _blackmarket_part_candidates().is_empty()
 	btn_hbox.add_child(btn_part)
 	
 	var btn_bullet = make_button("탄환 밀수 (15 Cr)", func():
-		if _rm.spend_credits(15):
-			var path := "res://resources/bullets/"
-			var dir := DirAccess.open(path)
-			var bullets_pool: Array[BulletData] = []
-			if dir:
-				dir.list_dir_begin()
-				var file_name = dir.get_next()
-				while file_name != "":
-					if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
-						if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
-							var clean_name = file_name.replace(".remap", "")
-							var res = load(path + clean_name)
-							if res is BulletData:
-								bullets_pool.append(res)
-					file_name = dir.get_next()
-				dir.list_dir_end()
-			if not bullets_pool.is_empty():
-				var chosen = bullets_pool.pick_random().duplicate() as BulletData
-				_rm.add_to_deck(chosen)
-				print("🕵️ 암시장 탄환 구매: %s" % chosen.display_name)
+		if _purchase_blackmarket_bullet():
 			popup.queue_free()
 			_blackmarket_close_transition()
+		else:
+			desc.text = "크레딧 또는 현재 총기와 호환되는 전술탄 후보를 확인하십시오. 결제되지 않았습니다."
 	, C_WARNING)
 	btn_bullet.custom_minimum_size = Vector2(150, 40)
 	btn_bullet.add_theme_font_size_override("font_size", 11)
-	btn_bullet.disabled = _rm.credits < 15
+	btn_bullet.disabled = _rm.credits < 15 or _blackmarket_bullet_candidates().is_empty()
 	btn_hbox.add_child(btn_bullet)
 	
 	var btn_pass = make_button("지나친다", func():

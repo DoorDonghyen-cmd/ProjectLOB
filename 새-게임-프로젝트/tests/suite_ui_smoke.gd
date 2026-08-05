@@ -73,6 +73,32 @@ static func run(t, tree: SceneTree) -> void:
 		t.check(expanded.size() <= 4, "일반전 1차 조정 상한 4체")
 	t.check(scene.is_inside_tree(), "메인 씬이 트리에 진입(_ready 실행됨)")
 
+	# ── 상점: 주파수 재요청 시 진열 카드를 즉시 교체하는가 ──
+	# 회귀 배경(2026-08-05 보고): 가운데 파츠가 바뀌어도 이전 설명이 남아 보였다.
+	# queue_free()만 호출하면 삭제 대기 중인 구 카드가 같은 컨테이너에 계속 남으므로,
+	# 새 카드와 한 프레임 겹치며 이전 설명을 표시할 수 있다.
+	var shop = scene._maintenance_overlay
+	var rhythm = load("res://resources/parts/rhythm_chamber.tres")
+	var interrupter = load("res://resources/parts/interrupter.tres")
+	var inertia = load("res://resources/parts/inertia_fire.tres")
+	shop._shop_items = [
+		{"item": scene._bullets_ap, "price": 20, "sold_out": false},
+		{"item": rhythm, "price": 30, "sold_out": false,
+			"offer_label": "A · 연속 운용", "offer_reason": "초기 설명"},
+		{"item": interrupter, "price": 30, "sold_out": false,
+			"offer_label": "B · 운용 전환", "offer_reason": "전환 설명"},
+	]
+	shop._refresh_shop_tab()
+	shop._shop_items[1]["item"] = inertia
+	shop._shop_items[1]["offer_reason"] = "갱신 설명"
+	shop._refresh_shop_tab()
+	t.eq(shop._shop_grid.get_child_count(), shop._shop_items.size(),
+		"⭐ 주파수 재요청 직후 구 진열 카드가 컨테이너에서 제거됨")
+	t.check(_has_label_text(shop._shop_grid, "갱신 설명"),
+		"⭐ 가운데 파츠의 새 설명이 즉시 렌더됨")
+	t.check(not _has_label_text(shop._shop_grid, "초기 설명"),
+		"⭐ 가운데 파츠의 이전 설명이 진열대에 남지 않음")
+
 	# ── 상승 브리핑: 해금 상태별로 갱신이 오류 없이 도는가 ──
 	# 오버레이는 _ready()에서 이미 만들어져 있다. 표시 갱신 경로를 직접 때린다.
 	var prev_unlocked: Array[String] = RunManager.meta_unlocked_sections.duplicate()

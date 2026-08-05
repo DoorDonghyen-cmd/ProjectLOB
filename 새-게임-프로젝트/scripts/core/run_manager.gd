@@ -48,6 +48,10 @@ var hp_buffer: int = 1
 var credits: int = 0
 const BACKPACK_CAPACITY: int = 8
 var backpack_items: Array[Resource] = []
+## 준비 화면에서 고른 스타팅 보증은 런 초기화가 끝난 뒤 적용한다.
+## 선택 즉시 credits/backpack에 넣으면 start_new_run()의 초기화로 보상이 사라진다.
+var pending_starting_bonus_credits: int = 0
+var pending_starting_bonus_part: PartData = null
 var current_floor: int = 1
 var current_section: String = "section_a"        # 현재 런의 작전 구역 ID
 const AIR_DUCT_DISTANCE_PENALTY: int = -2
@@ -206,6 +210,8 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 			if sa_res: deck.append(sa_res.duplicate())
 		for i in range(specB_cnt):
 			if sb_res: deck.append(sb_res.duplicate())
+
+	_apply_pending_starting_bonus()
 			
 	# 맵 데이터 생성 및 조건부 우회 경로 업데이트
 	generate_run_map()
@@ -213,6 +219,32 @@ func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, a
 	var log_error := playtest_logger.begin_run(playtest_snapshot())
 	if log_error != OK:
 		push_warning("플레이테스트 로그 시작 실패: %d" % log_error)
+
+
+func queue_starting_bonus_credits(amount: int) -> void:
+	pending_starting_bonus_credits = maxi(amount, 0)
+	pending_starting_bonus_part = null
+
+
+func queue_starting_bonus_part(part: PartData) -> void:
+	pending_starting_bonus_credits = 0
+	pending_starting_bonus_part = null if part == null else part.duplicate()
+
+
+func _apply_pending_starting_bonus() -> void:
+	var has_pending := pending_starting_bonus_credits > 0 or pending_starting_bonus_part != null
+	if not has_pending:
+		return
+	if pending_starting_bonus_credits > 0:
+		credits += pending_starting_bonus_credits
+	elif pending_starting_bonus_part != null:
+		# 새 런은 빈 가방으로 시작하므로 정상 경로에서는 반드시 성공한다.
+		if not add_to_backpack(pending_starting_bonus_part):
+			credits += 50
+	pending_starting_bonus_credits = 0
+	pending_starting_bonus_part = null
+	starting_bonus_available = false
+	save_meta()
 
 
 ## 전투 종료 시 CombatManager의 구조화 보고서와 현재 런 문맥을 함께 저장한다.
@@ -348,7 +380,7 @@ func record_node_clear(node: RunNode) -> int:
 		return 0
 	var earned := 0
 	var resolved_type := node.hidden_type if node.type_name.begins_with("???") else node.type_name
-	if resolved_type.contains("보스") or resolved_type.contains("Boss"):
+	if CampaignContent.is_major_gate_type(resolved_type):
 		earned = 2
 	elif node.type_name.begins_with("???") or resolved_type.contains("우회") or resolved_type.contains("보급"):
 		earned = 1

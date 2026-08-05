@@ -136,6 +136,7 @@ var battle_stats := {
 	"misses": 0,
 	"zero_damage_hits": 0,
 	"kills_this_turn": 0,
+	"shots_fired": 0,
 	"lead_bullets_fired": 0,
 	"shred_only_tank_kills": 0,
 	"stance_kills_without_slow": 0,
@@ -260,6 +261,7 @@ func start_encounter(
 		"misses": 0,
 		"zero_damage_hits": 0,
 		"kills_this_turn": 0,
+		"shots_fired": 0,
 		"lead_bullets_fired": 0,
 		"shred_only_tank_kills": 0,
 		"stance_kills_without_slow": 0,
@@ -543,6 +545,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 격발 직전 탄창의 잔탄 개수
 	var remaining_before_fire := magazine.get_remaining()
 	var bullet := magazine.fire()
+	# 탄약 효율은 실제 발사체 수를 분모로 사용한다. 납탄 횟수(lead_bullets_fired)는
+	# Tempo 해금용 별도 통계이며 기본 보급탄 격발을 세지 않으므로 혼용하지 않는다.
+	battle_stats.shots_fired += 1
 	var role_changed := not last_fired_role.is_empty() and bullet.role != last_fired_role
 	if bullet.role == last_fired_role:
 		consecutive_role_count += 1

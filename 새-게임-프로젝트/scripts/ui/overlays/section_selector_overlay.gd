@@ -200,7 +200,8 @@ func refresh_unlocked_sections() -> void:
 	for sec in order:
 		total_floors += int(MapGenerator.section_info(sec).floors)
 	var summit_name: String = str(MapGenerator.section_info(str(order[order.size() - 1])).name)
-	_summary_label.text = "이번 상승: %d층 · 보스 %d체 · %s까지" % [total_floors, order.size(), summit_name]
+	_summary_label.text = "이번 상승: %d층 · 보스 %d체 + 정예 관문 1개 · %s까지" % [
+		total_floors, CampaignContent.boss_count(), summit_name]
 	_brief_label.text = "관문을 돌파하면 다음 계층이 즉시 열립니다. 덱과 장비를 유지한 채 정점까지 계속 오릅니다."
 
 	_refresh_ascension()

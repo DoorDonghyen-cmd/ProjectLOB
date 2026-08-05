@@ -48,6 +48,7 @@ static func run(t) -> void:
 			t.check(not str(entry.offer_reason).is_empty(), "분기 카드에 선택 이유 표시")
 
 	shop._mark_shop_offer_sold(1)
+	t.check(shop._part_purchased_this_visit, "파츠 구매 완료 상태를 상점 방문 세션에 기록")
 	t.check(not bool(shop._shop_items[0].sold_out), "파츠 구매 후 전술탄 카드는 유지")
 	t.check(bool(shop._shop_items[1].sold_out), "구매한 파츠 품절")
 	t.check(bool(shop._shop_items[2].sold_out), "반대 빌드 분기도 함께 품절")
@@ -58,6 +59,16 @@ static func run(t) -> void:
 	t.eq(str(offer_snapshots[1].offer_kind), "maintain", "로그 스냅샷에 빌드 분기 유형")
 	t.check(bool(offer_snapshots[1].selected), "로그 스냅샷에 선택 완료 상태")
 	t.check(bool(offer_snapshots[2].locked_by_choice), "로그 스냅샷에 반대 분기 폐쇄 상태")
+
+	# 구매 뒤 리롤해 카드 딕셔너리가 교체돼도 이번 방문의 파츠 1개 제한은 유지된다.
+	shop._reroll_count += 1
+	shop._generate_shop_items()
+	var rerolled_parts := _part_entries(shop)
+	t.eq(rerolled_parts.size(), 2, "리롤 뒤에도 파츠 후보 두 장은 정보용으로 표시")
+	for entry in rerolled_parts:
+		t.check(bool(entry.sold_out), "⭐ 구매 뒤 리롤한 파츠는 추가 구매 불가")
+		t.check(bool(entry.locked_after_purchase), "리롤 파츠에 이번 상점 구매 완료 사유 표시")
+	t.check(not bool(shop._shop_items[0].sold_out), "리롤 뒤 전술탄 구매는 계속 허용")
 	shop.free()
 
 	# 일반 풀은 실제 장착 가능한 20종만 포함하며 고유/전용/컨버전 파츠를 섞지 않는다.

@@ -1996,41 +1996,53 @@ func _on_encounter_won() -> void:
 	_present_encounter_won()
 
 
+## 실제 처치 수/격발 수를 기업 배급 등급으로 변환한다.
+## 전투 중 추가 납탄 횟수는 격발 수가 아니므로 이 계산에 사용하지 않는다.
+static func combat_reward_for_stats(total_kills: int, shots_fired: int) -> Dictionary:
+	var efficiency := 0
+	if shots_fired > 0:
+		efficiency = clampi(
+			int(round((float(total_kills) / float(shots_fired)) * 100.0)), 0, 100
+		)
+
+	var result := {
+		"efficiency": efficiency,
+		"grade": "D",
+		"credits": 5,
+		"description": "주의: 극심한 탄약 남용이 감지되었습니다. 시설 보급 한계치 임박. 탄약 절약이 강제 권고됩니다.",
+	}
+	if efficiency >= 95:
+		result.grade = "S"
+		result.credits = 50
+		result.description = "합리적 자원 통제 확인. 기업 크레딧 배급 한도 증액 승인. 요원의 생존 가능성을 극도로 높게 평가합니다."
+	elif efficiency >= 80:
+		result.grade = "A"
+		result.credits = 35
+		result.description = "자원 통제 수준 우수. 배급 한도가 임시 증액되었습니다. 귀하의 생존 효율은 자산 가치에 부합합니다."
+	elif efficiency >= 60:
+		result.grade = "B"
+		result.credits = 20
+		result.description = "표준 전투 범주 내 소비율 확인. 기본 배급 절차를 실행합니다."
+	elif efficiency >= 40:
+		result.grade = "C"
+		result.credits = 10
+		result.description = "탄약 사용 편차 누적 감지. 표준 배급량이 삭감 적용됩니다."
+	return result
+
+
 func _present_encounter_won() -> void:
 	_result_title.text = "전투 승리!"
 	_result_title.add_theme_color_override("font_color", parent_scene.C_SUCCESS)
 
 	# 탄약 효율성 평가 등급 산출
-	var total_kills = combat_manager.battle_stats.total_kills
-	var shots_fired = combat_manager.battle_stats.lead_bullets_fired
-	var efficiency = 100
-	if shots_fired > 0:
-		efficiency = clampi(int(round((float(total_kills) / float(shots_fired)) * 100.0)), 0, 100)
-		
-	var grade = "B"
-	var earned_credits = 20
-	var grade_desc = "표준 전투 범주 내 소비율 확인."
-	
-	if efficiency >= 95:
-		grade = "S"
-		earned_credits = 50
-		grade_desc = "합리적 자원 통제 확인. 기업 크레딧 배급 한도 증액 승인. 요원의 생존 가능성을 극도로 높게 평가합니다."
-	elif efficiency >= 80:
-		grade = "A"
-		earned_credits = 35
-		grade_desc = "자원 통제 수준 우수. 배급 한도가 임시 증액되었습니다. 귀하의 생존 효율은 자산 가치에 부합합니다."
-	elif efficiency >= 60:
-		grade = "B"
-		earned_credits = 20
-		grade_desc = "표준 전투 범주 내 소비율 확인. 기본 배급 절차를 실행합니다."
-	elif efficiency >= 40:
-		grade = "C"
-		earned_credits = 10
-		grade_desc = "탄약 사용 편차 누적 감지. 표준 배급량이 삭감 적용됩니다."
-	else:
-		grade = "D"
-		earned_credits = 5
-		grade_desc = "주의: 극심한 탄약 남용이 감지되었습니다. 시설 보급 한계치 임박. 탄약 절약이 강제 권고됩니다."
+	var reward := combat_reward_for_stats(
+		int(combat_manager.battle_stats.total_kills),
+		int(combat_manager.battle_stats.shots_fired)
+	)
+	var efficiency: int = reward.efficiency
+	var grade: String = reward.grade
+	var earned_credits: int = reward.credits
+	var grade_desc: String = reward.description
 
 	var enemy_name := "적"
 	if combat_manager.enemy and combat_manager.enemy.data:

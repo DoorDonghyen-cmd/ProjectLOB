@@ -284,7 +284,7 @@ func show_map_screen() -> void:
 				
 				# 목적지에 붙은 진입 통로 가격을 네온 테두리로 표시
 				var border_col: Color = parent_scene.C_ACCENT
-				if node.type_name.contains("보스"):
+				if CampaignContent.is_major_gate_type(node.type_name):
 					border_col = parent_scene.C_DANGER
 				elif route_to_node == "air_duct":
 					border_col = parent_scene.C_WARNING
@@ -352,7 +352,7 @@ func show_map_screen() -> void:
 			var title_color: Color = parent_scene.C_TEXT
 			if node.type_name.contains("전투"):
 				title_color = parent_scene.C_ACCENT
-			elif node.type_name.contains("보스"):
+			elif CampaignContent.is_major_gate_type(node.type_name):
 				title_color = parent_scene.C_DANGER
 			elif node.type_name.contains("정비") or node.type_name.contains("완충") or node.type_name.contains("보급"):
 				title_color = parent_scene.C_SUCCESS

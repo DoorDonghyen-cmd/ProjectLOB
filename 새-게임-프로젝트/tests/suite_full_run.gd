@@ -38,16 +38,16 @@ static func run(t) -> void:
 		t.check(rep.all_reachable, "%s: 1~%d층 도달 가능%s" % [sec, rep.max_floor, rep.detail])
 
 		# 노드 명칭이 비어 있지 않고, 기능 접미사(로직 분기용)가 보존되었는지 확인
-		var has_boss := false
+		var has_major_gate := false
 		var has_shop := false
 		for nid in rm_s.map_nodes.keys():
 			var tn: String = rm_s.map_nodes[nid].type_name
 			t.check(tn.strip_edges() != "", "%s 노드 %d: 명칭 비어있지 않음" % [sec, nid])
-			if tn.contains("보스"):
-				has_boss = true
+			if CampaignContent.is_major_gate_type(tn):
+				has_major_gate = true
 			if tn.contains("상점"):
 				has_shop = true
-		t.check(has_boss, "%s: 보스 노드 존재(전투 라우팅 보존)" % sec)
+		t.check(has_major_gate, "%s: 주요 관문 노드 존재(전투 라우팅 보존)" % sec)
 		t.check(has_shop, "%s: 상점 노드 존재(통로 배치 로직 보존)" % sec)
 
 		# 구역 메타데이터 정합 (표시 고도)
