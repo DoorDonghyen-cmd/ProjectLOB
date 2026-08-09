@@ -16,6 +16,16 @@ static func _reset_unlocks() -> void:
 static func run(t) -> void:
 	t.section("WeaponUnlock")
 
+	# 디브리핑과 준비실이 같은 정본 이름을 사용해야 신규 무기가 '알 수 없음'으로 보이지 않는다.
+	t.eq(LoadoutOverlay.weapon_display_name("suppressor"), "제압형 (SUPPRESSOR)",
+		"⭐ #017 제압형 해금 표시명")
+	for weapon_key_variant in LoadoutOverlay.WEAPON_PROFILES.keys():
+		var weapon_key := str(weapon_key_variant)
+		t.check(not LoadoutOverlay.weapon_display_name(weapon_key).contains("알 수 없음"),
+			"준비실 무기 %s의 공용 표시명 존재" % weapon_key)
+	t.eq(LoadoutOverlay.weapon_display_name("future_weapon"), "future_weapon",
+		"미등록 무기 키는 안전하게 키 자체로 폴백")
+
 	var prev_override: String = RunManager.save_path_override
 	RunManager.save_path_override = SL_PATH
 

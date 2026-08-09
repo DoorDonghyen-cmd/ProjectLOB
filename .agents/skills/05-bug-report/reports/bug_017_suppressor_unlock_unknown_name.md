@@ -2,7 +2,7 @@
 
 ## 1. 개요 (Overview)
 *   **제보 일시**: 2026-08-05
-*   **상태**: `Open`
+*   **상태**: `Verified`
 *   **중요도**: `낮음`
 *   **관련 컴포넌트**: 디브리핑 UI, 무기 해금
 
@@ -18,7 +18,10 @@
 *   `RunManager.check_weapon_unlocks()`는 `suppressor`를 반환하지만 `debriefing_overlay.gd`의 무기명 `match` 목록에는 `suppressor` 분기가 없다.
 
 ## 5. 해결 방안 (Resolution)
-*   미적용. 디브리핑이 `LoadoutOverlay.WEAPON_PROFILES`의 표시명을 재사용하도록 단일화하거나 최소한 `suppressor` 매핑을 추가한다.
+*   `LoadoutOverlay.weapon_display_name()`을 공용 조회점으로 추가하고 디브리핑의 로컬 `match` 복사본을 제거했다.
+*   등록되지 않은 미래 무기 키는 키 자체를 표시하고, 빈 키만 `알 수 없음`으로 처리하는 안전 폴백을 적용했다.
 
 ## 6. 검증 내용 (Verification)
-*   미검증. 정적 코드 감사로 누락을 확인했다.
+*   `suppressor`가 `제압형 (SUPPRESSOR)`로 표시되는 자동 회귀를 추가했다.
+*   준비실의 전 무기 프로필이 공용 조회에서 유효한 표시명을 반환하는지 검사했다.
+*   2026-08-09 전체 Godot 헤드리스 검증: 2,799 통과 / 0 실패 / 기존 경보 3.

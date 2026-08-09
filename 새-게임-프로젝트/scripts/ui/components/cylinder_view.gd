@@ -80,7 +80,7 @@ func _create_dynamic_bullet_card(
 	card.custom_minimum_size = Vector2(0, 32)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if not is_hidden:
-		card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
+		card.tooltip_text = BulletRoleUI.tooltip(bullet)
 	
 	var style := StyleBoxFlat.new()
 	if is_next:
@@ -151,6 +151,19 @@ func _create_dynamic_bullet_card(
 		var role_lbl: Label = parent_scene.make_label(
 			BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
 		hbox.add_child(role_lbl)
+		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
+		if not payoff_text.is_empty():
+			var payoff_lbl: Label = parent_scene.make_label(
+				payoff_text, 8.5, BulletRoleUI.payoff_color())
+			payoff_lbl.name = "PayoffBadge"
+			payoff_lbl.tooltip_text = BulletRoleUI.payoff_hint(bullet)
+			hbox.add_child(payoff_lbl)
+		var scope_text := BulletRoleUI.compact_scope_badge_text(bullet.scope)
+		if not scope_text.is_empty():
+			var scope_lbl: Label = parent_scene.make_label(scope_text, 8.5, Color(0.78, 0.59, 1.0))
+			scope_lbl.name = "ScopeBadge"
+			scope_lbl.tooltip_text = BulletRoleUI.scope_hint(bullet.scope)
+			hbox.add_child(scope_lbl)
 
 		# 버프탄은 **어떤 게이트를 여는지** 명시한다 (정본: 22_ammo_expansion §22.0-B 결정 #3).
 		# "연계"만으로는 무엇이 강화되는지 안 보인다 — 명중/관통을 직접 표기한다.

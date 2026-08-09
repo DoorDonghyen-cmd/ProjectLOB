@@ -2,6 +2,7 @@ class_name RewardDraftPanel
 extends VBoxContainer
 
 const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
+const ItemCatalogScript = preload("res://scripts/core/item_catalog.gd")
 
 ## ═══════════════════════════════════════════════════
 ## 전투 승리 후 탄환 보상 드래프트 선택 UI 컴포넌트
@@ -115,23 +116,11 @@ func clear_selected() -> void:
 	_draft_selected = null
 
 func _generate_draft_choices() -> Array[BulletData]:
-	var pool: Array[BulletData] = []
-	var path: String = "res://resources/bullets/"
-	var dir := DirAccess.open(path)
-	if dir:
-		dir.list_dir_begin()
-		var file_name: String = dir.get_next()
-		while file_name != "":
-			if not dir.current_is_dir() and not file_name.is_empty() and not file_name.ends_with(".import"):
-				if file_name.ends_with(".tres") or file_name.ends_with(".tres.remap") or file_name.ends_with(".res") or file_name.ends_with(".res.remap"):
-					var clean_name: String = file_name.replace(".remap", "")
-					var res = load(path + clean_name)
-					if res is BulletData and (
-							run_manager == null or run_manager.bullet_is_draft_eligible(res)
-					):
-						pool.append(res)
-			file_name = dir.get_next()
-		dir.list_dir_end()
+	var gun: GunData = run_manager.current_gun if run_manager != null else null
+	var pool: Array[BulletData] = ItemCatalogScript.tactical_bullets(gun)
+	if run_manager != null:
+		pool = pool.filter(func(bullet: BulletData) -> bool:
+			return run_manager.bullet_is_draft_eligible(bullet))
 	
 	if pool.is_empty():
 		pool = [_bullets_basic, _bullets_ap, _bullets_kb, _bullets_heavy, _bullets_slow]
@@ -142,8 +131,19 @@ func _generate_draft_choices() -> Array[BulletData]:
 	var slots: int = maxi(2 + int(RunManager.ascension_effects().draft_slots_delta), 1)
 
 	var result: Array[BulletData] = []
-	# 컨버전 킷 대상 클래스는 3배 가중치로 추첨하되, 같은 리소스 중복은 허용하지 않는다.
-	for i in range(min(slots, pool.size())):
+	var result_limit: int = mini(slots, pool.size())
+	# 시작 패키지로 연계탄은 배웠지만 결산탄을 아직 보지 못한 런에는 선택지 한 칸만 보증한다.
+	# 획득 강제가 아니며, 하나를 보유한 뒤에는 아래 일반 가중 추첨으로 즉시 복귀한다.
+	if result_limit > 0 and _needs_payoff_offer():
+		var payoff_pool: Array[BulletData] = pool.filter(func(bullet: BulletData) -> bool:
+			return BulletRoleUI.is_payoff(bullet))
+		if not payoff_pool.is_empty():
+			var payoff := payoff_pool[_weighted_pick_index(payoff_pool)]
+			result.append(payoff.duplicate())
+			pool.erase(payoff)
+
+	# 컨버전 우선도와 보유량 완화 중 높은 쪽을 사용하고, 같은 리소스 중복은 허용하지 않는다.
+	while result.size() < result_limit and not pool.is_empty():
 		var picked_idx := _weighted_pick_index(pool)
 		result.append(pool[picked_idx].duplicate())
 		pool.remove_at(picked_idx)
@@ -155,21 +155,61 @@ func _weighted_pick_index(pool: Array[BulletData]) -> int:
 		return 0
 	var total_weight := 0
 	for bullet in pool:
-		total_weight += run_manager.bullet_draft_weight(bullet) if run_manager != null else 1
+		total_weight += _draft_weight(bullet)
 	var roll := randi_range(1, maxi(total_weight, 1))
 	var cumulative := 0
 	for i in range(pool.size()):
-		cumulative += run_manager.bullet_draft_weight(pool[i]) if run_manager != null else 1
+		cumulative += _draft_weight(pool[i])
 		if roll <= cumulative:
 			return i
 	return pool.size() - 1
 
 
+func _draft_weight(bullet: BulletData) -> int:
+	if run_manager == null:
+		return 1
+	var conversion_weight := run_manager.bullet_draft_weight(bullet)
+	var owned_weight := maxi(1, 3 - _owned_bullet_count(bullet))
+	# 비활성 컨버전 킷이 재도입되어도 3×3처럼 곱으로 폭증하지 않는다.
+	return maxi(conversion_weight, owned_weight)
+
+
+func _owned_bullet_count(bullet: BulletData) -> int:
+	if run_manager == null or bullet == null:
+		return 0
+	var target_id := _bullet_id(bullet)
+	var count := 0
+	for owned in run_manager.deck:
+		if _bullet_id(owned) == target_id:
+			count += 1
+	return count
+
+
+func _needs_payoff_offer() -> bool:
+	if run_manager == null:
+		return false
+	var has_link := false
+	var has_payoff := false
+	for bullet in run_manager.deck:
+		if bullet == null:
+			continue
+		has_link = has_link or BulletRoleUI.normalize(bullet.role) == BulletRoleUI.LINK
+		has_payoff = has_payoff or BulletRoleUI.is_payoff(bullet)
+	return has_link and not has_payoff
+
+
+static func _bullet_id(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	var resource_id := bullet.resource_path.get_file().get_basename()
+	return resource_id if not resource_id.is_empty() else bullet.display_name
+
+
 func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(140, 145)
+	card.custom_minimum_size = Vector2(150, 160)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
-	card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
+	card.tooltip_text = BulletRoleUI.tooltip(bullet)
 	
 	var style := StyleBoxFlat.new()
 	style.bg_color = parent_scene.C_PANEL
@@ -187,11 +227,29 @@ func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(name_lbl)
 
+	var badge_row := HBoxContainer.new()
+	badge_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	badge_row.add_theme_constant_override("separation", 5)
+	badge_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(badge_row)
 	var role_lbl: Label = parent_scene.make_label(
 		BulletRoleUI.badge_text(bullet.role), 11, BulletRoleUI.color(bullet.role))
-	role_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	role_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	vbox.add_child(role_lbl)
+	badge_row.add_child(role_lbl)
+	var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
+	if not payoff_text.is_empty():
+		var payoff_lbl: Label = parent_scene.make_label(
+			payoff_text, 10, BulletRoleUI.payoff_color())
+		payoff_lbl.name = "PayoffBadge"
+		payoff_lbl.tooltip_text = BulletRoleUI.payoff_hint(bullet)
+		payoff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		badge_row.add_child(payoff_lbl)
+	var scope_text := BulletRoleUI.scope_badge_text(bullet.scope)
+	if not scope_text.is_empty():
+		var scope_lbl: Label = parent_scene.make_label(scope_text, 10, Color(0.78, 0.59, 1.0))
+		scope_lbl.name = "ScopeBadge"
+		scope_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		badge_row.add_child(scope_lbl)
 	
 	var effective := DamageCalculator.effective_stats(
 		bullet, run_manager.current_gun if run_manager != null else null
@@ -375,7 +433,7 @@ func _open_deck_swap_popup() -> void:
 		var card := PanelContainer.new()
 		card.custom_minimum_size = Vector2(0, 40)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
-		card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
+		card.tooltip_text = BulletRoleUI.tooltip(bullet)
 		
 		var style := StyleBoxFlat.new()
 		style.bg_color = parent_scene.C_PANEL_DARK
@@ -401,6 +459,18 @@ func _open_deck_swap_popup() -> void:
 		var role_lbl: Label = parent_scene.make_label(
 			BulletRoleUI.badge_text(bullet.role), 10, BulletRoleUI.color(bullet.role))
 		hbox.add_child(role_lbl)
+		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
+		if not payoff_text.is_empty():
+			var payoff_lbl: Label = parent_scene.make_label(
+				payoff_text, 9, BulletRoleUI.payoff_color())
+			payoff_lbl.name = "PayoffBadge"
+			payoff_lbl.tooltip_text = BulletRoleUI.payoff_hint(bullet)
+			hbox.add_child(payoff_lbl)
+		var scope_text := BulletRoleUI.scope_badge_text(bullet.scope)
+		if not scope_text.is_empty():
+			var scope_lbl: Label = parent_scene.make_label(scope_text, 9, Color(0.78, 0.59, 1.0))
+			scope_lbl.name = "ScopeBadge"
+			hbox.add_child(scope_lbl)
 		
 		var stats_lbl: Label = parent_scene.make_label("DMG %d PEN %d" % [bullet.damage, bullet.penetration], 10, parent_scene.C_DIM)
 		hbox.add_child(stats_lbl)

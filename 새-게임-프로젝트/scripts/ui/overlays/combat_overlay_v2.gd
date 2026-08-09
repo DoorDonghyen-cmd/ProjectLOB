@@ -2,6 +2,7 @@ class_name CombatOverlayV2
 extends MarginContainer
 
 const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
+const AmmoGuidance = preload("res://scripts/ui/ammo_guidance.gd")
 
 ## ═══════════════════════════════════════════════════
 ## 🧠 L.O.B 전투 UI V2 데모 오버레이 (새로운 노드 트리 구조 기반 설계)
@@ -56,6 +57,7 @@ var _battlefield_container: HBoxContainer
 var _loading_container: VBoxContainer
 var _loading_stack_vbox: VBoxContainer
 var _loading_stack_cap: Label
+var _loading_guidance_label: Label
 var _loading_ref_dist: Label
 var _loading_bag_ammo: VBoxContainer
 var _loading_bag_item: VBoxContainer
@@ -354,6 +356,12 @@ func _build_ui() -> void:
 	_loading_stack_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_loading_stack_vbox.add_theme_constant_override("separation", 6)
 	stackcol.add_child(_loading_stack_vbox)
+
+	_loading_guidance_label = parent_scene.make_label("", 10, parent_scene.C_WARNING)
+	_loading_guidance_label.name = "AmmoGuidanceLabel"
+	_loading_guidance_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_loading_guidance_label.visible = false
+	stackcol.add_child(_loading_guidance_label)
 	
 	# Bag (가방 패널)
 	var bag_panel = PanelContainer.new()
@@ -812,8 +820,8 @@ func _create_drawer_item(title: String, desc: String, can_use: bool, click_callb
 
 func _create_inventory_card(bullet: BulletData, count: int, click_callback: Callable = Callable()) -> Control:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(120, 72)
-	card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
+	card.custom_minimum_size = Vector2(120, 88)
+	card.tooltip_text = BulletRoleUI.tooltip(bullet)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.11, 0.16)
 	style.border_width_left = 1; style.border_width_right = 1
@@ -839,7 +847,7 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 		wrapper.add_child(bg_icon)
 		
 		bg_icon.size = Vector2(32, 32)
-		bg_icon.position = Vector2(120 - 32 - 6, 72 - 32 - 6) # 마진 및 우측 하단 절대 좌표 지정
+		bg_icon.position = Vector2(120 - 32 - 6, 88 - 32 - 6) # 마진 및 우측 하단 절대 좌표 지정
 		
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 8)
@@ -880,6 +888,22 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	role_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(role_lbl)
+	var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
+	if not payoff_text.is_empty():
+		var payoff_lbl: Label = parent_scene.make_label(
+			payoff_text, 9.0, BulletRoleUI.payoff_color())
+		payoff_lbl.name = "PayoffBadge"
+		payoff_lbl.tooltip_text = BulletRoleUI.payoff_hint(bullet)
+		payoff_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+		payoff_lbl.add_theme_constant_override("outline_size", 3)
+		title_hbox.add_child(payoff_lbl)
+	var scope_text := BulletRoleUI.scope_badge_text(bullet.scope)
+	if not scope_text.is_empty():
+		var scope_lbl: Label = parent_scene.make_label(scope_text, 9.0, Color(0.78, 0.59, 1.0))
+		scope_lbl.name = "ScopeBadge"
+		scope_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+		scope_lbl.add_theme_constant_override("outline_size", 3)
+		vbox.add_child(scope_lbl)
 	
 	# 수량이 2개 이상일 때만 수량 표기 노출 (1개 이하일 때는 직관성을 위해 완전히 숨김)
 	if count > 1:
@@ -2295,8 +2319,19 @@ func _refresh_loading_stack() -> void:
 			var tween := create_tween()
 			tween.tween_property(slot, "custom_minimum_size:y", 52.0, 0.25).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 			tween.parallel().tween_property(slot, "modulate:a", 1.0, 0.25)
-			
+
+	_refresh_loading_guidance()
 	_animate_last_insert = false
+
+
+func _refresh_loading_guidance() -> void:
+	if not is_instance_valid(_loading_guidance_label):
+		return
+	var target: EnemyInstance = combat_manager.enemy if combat_manager != null else null
+	var gun: GunData = combat_manager.gun if combat_manager != null else null
+	var summary := AmmoGuidance.summary_text(_loaded_bullets, gun, target)
+	_loading_guidance_label.visible = not summary.is_empty()
+	_loading_guidance_label.text = "연계·결산 예고\n%s" % summary if not summary.is_empty() else ""
 
 func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> Control:
 	var slot := PanelContainer.new()
@@ -2391,6 +2426,18 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 		var bullet_role_lbl: Label = parent_scene.make_label(
 			BulletRoleUI.badge_text(bullet.role), 9, BulletRoleUI.color(bullet.role))
 		top_hbox.add_child(bullet_role_lbl)
+		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
+		if not payoff_text.is_empty():
+			var payoff_lbl: Label = parent_scene.make_label(
+				payoff_text, 8.5, BulletRoleUI.payoff_color())
+			payoff_lbl.name = "PayoffBadge"
+			payoff_lbl.tooltip_text = BulletRoleUI.payoff_hint(bullet)
+			top_hbox.add_child(payoff_lbl)
+		var scope_text := BulletRoleUI.scope_badge_text(bullet.scope)
+		if not scope_text.is_empty():
+			var scope_lbl: Label = parent_scene.make_label(scope_text, 8.5, Color(0.78, 0.59, 1.0))
+			scope_lbl.name = "ScopeBadge"
+			top_hbox.add_child(scope_lbl)
 
 		var source_index := _loaded_bullets.size() - 1 - pos
 		var next_source_index := source_index - 1
@@ -2436,7 +2483,7 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 	vbox.add_child(name_lbl)
 
 	if not is_hidden:
-		slot.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
+		slot.tooltip_text = BulletRoleUI.tooltip(bullet)
 	
 	return slot
 

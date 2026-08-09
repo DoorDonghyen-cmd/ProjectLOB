@@ -18,6 +18,7 @@ var _node_buttons: Dictionary = {}
 
 var _scan_hint_panel: PanelContainer
 var _scan_hint_lbl: Label
+var _scan_touch_target: Button
 var _hp_buffer_label: Label
 
 
@@ -143,6 +144,7 @@ func _build_ui() -> void:
 
 func show_map_screen() -> void:
 	visible = true
+	_reset_scan_hint()
 	# 계층명 · 런 전체 진행도 · 도시 전체 기준 절대 고도(약 3000층 규모의 한 조각임을 전달)
 	var sec_info := MapGenerator.section_info(run_manager.current_section)
 	var climbed: int = run_manager.total_floors_climbed()
@@ -302,7 +304,8 @@ func show_map_screen() -> void:
 				normal_style.shadow_size = 6
 				
 				btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-				btn.pressed.connect(func(): _on_node_selected(node))
+				if not (node.type_name.begins_with("???") and node.scan_hint != ""):
+					btn.pressed.connect(func(): _on_node_selected(node))
 			else:
 				normal_style.bg_color = parent_scene.C_PANEL_DARK
 				# 비활성 노드는 차분하고 얇은 전술 외곽선으로 시각 정돈
@@ -331,10 +334,14 @@ func show_map_screen() -> void:
 				btn.add_theme_stylebox_override("hover", hover_style)
 				btn.add_theme_stylebox_override("pressed", hover_style)
 			
-			# 미지 노드인 경우 마우스 호버 전술 스캔 힌트 연결 (오직 선택 가능한 활성 노드일 때만)
+			# 미지 노드는 데스크톱 호버+클릭, 모바일 첫 탭 스캔+두 번째 탭 진입으로 분기한다.
+			# Button.pressed에 직접 연결하면 터치 첫 탭이 곧바로 이동까지 확정되어 힌트를 읽을 수 없다.
 			if is_here and node.type_name.begins_with("???") and node.scan_hint != "":
-				btn.mouse_entered.connect(func(): _show_scan_hint(node.scan_hint, btn))
-				btn.mouse_exited.connect(func(): _hide_scan_hint())
+				btn.mouse_entered.connect(func(): _show_scan_hint(node.scan_hint, btn, false))
+				btn.mouse_exited.connect(func(): _hide_scan_hint(false))
+				btn.gui_input.connect(func(event: InputEvent):
+					_on_unknown_node_gui_input(event, node, btn)
+				)
 				
 			nodes_hbox.add_child(btn)
 			# ⚠️ 노드 ID는 계층마다 재사용된다(침전 1F도 101, 공역 1F도 101).
@@ -479,9 +486,37 @@ func _make_locked_slot(is_boss_floor: bool) -> Control:
 
 
 func _on_node_selected(node: RunManager.RunNode) -> void:
+	_reset_scan_hint()
 	var route := run_manager.get_route_to_node(node.id)
 	visible = false
 	parent_scene.handle_route_selected(node, route)
+
+
+## 미지 노드 전용 입력 라우터.
+## 실제 터치는 첫 탭에 스캔만 열고 같은 버튼 두 번째 탭에서만 이동한다.
+## 실물 마우스는 기존처럼 호버로 정보를 읽은 뒤 한 번 클릭해 이동한다.
+func _on_unknown_node_gui_input(
+	event: InputEvent,
+	node: RunManager.RunNode,
+	target_btn: Button
+) -> void:
+	if event is InputEventScreenTouch and event.pressed:
+		accept_event()
+		if _scan_touch_target == target_btn:
+			_on_node_selected(node)
+		else:
+			_scan_touch_target = target_btn
+			_show_scan_hint(node.scan_hint, target_btn, true)
+		return
+
+	# 터치에서 합성된 마우스 이벤트(device < 0)는 위 ScreenTouch 처리 뒤 다시 들어올 수 있다.
+	# 이를 실제 마우스로 취급하면 첫 탭 직후 이동이 확정되므로 무시한다.
+	if event is InputEventMouseButton \
+			and event.button_index == MOUSE_BUTTON_LEFT \
+			and event.pressed \
+			and event.device >= 0:
+		accept_event()
+		_on_node_selected(node)
 
 
 func _on_exit_run_pressed() -> void:
@@ -603,19 +638,31 @@ func _build_scan_hint_panel() -> void:
 	_scan_hint_panel.visible = false
 
 
-func _show_scan_hint(hint: String, target_btn: Button) -> void:
+func _show_scan_hint(hint: String, target_btn: Button, touch_confirm: bool = false) -> void:
 	if not _scan_hint_panel:
 		_build_scan_hint_panel()
-	_scan_hint_lbl.text = hint
+	_scan_hint_lbl.text = hint + ("\n같은 노드를 다시 탭해 진입" if touch_confirm else "")
 	_scan_hint_panel.visible = true
+	_scan_hint_panel.custom_minimum_size.y = 62 if touch_confirm else 45
 	_scan_hint_panel.size = _scan_hint_panel.custom_minimum_size
 	
 	var local_pos = target_btn.global_position - global_position
 	_scan_hint_panel.position = Vector2(local_pos.x + (target_btn.size.x - _scan_hint_panel.size.x) / 2.0, local_pos.y - 50)
 
 
-func _hide_scan_hint() -> void:
-	if _scan_hint_panel:
+func _hide_scan_hint(clear_touch_target: bool = true) -> void:
+	# 터치 첫 탭 뒤 발생하는 합성 mouse_exited가 확인 패널을 즉시 닫지 않게 한다.
+	if not clear_touch_target and is_instance_valid(_scan_touch_target):
+		return
+	if clear_touch_target:
+		_scan_touch_target = null
+	if is_instance_valid(_scan_hint_panel):
+		_scan_hint_panel.visible = false
+
+
+func _reset_scan_hint() -> void:
+	_scan_touch_target = null
+	if is_instance_valid(_scan_hint_panel):
 		_scan_hint_panel.visible = false
 
 

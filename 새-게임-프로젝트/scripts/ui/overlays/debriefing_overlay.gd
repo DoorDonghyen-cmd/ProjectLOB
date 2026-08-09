@@ -111,15 +111,7 @@ func show_debriefing(won: bool) -> void:
 		# 무기는 사이보그에게 쓸모없어져 하층에 버려진 인간용 화기다. 해금 = 쓸 수 있게 됨.
 		log_text += "[color=#00ff66][b]🆕 인간용 화기 사용법을 익혔다 🆕[/b][/color]\n"
 		for w_key in unlocked_weapons:
-			var name_kor = "알 수 없음"
-			match w_key:
-				"marksman": name_kor = "저격형 (MARKSMAN)"
-				"bruiser": name_kor = "돌격형 (BRUISER)"
-				"tempo": name_kor = "속사형 (TEMPO)"
-				"trickster": name_kor = "곡예형 (TRICKSTER)"
-				"heavy": name_kor = "중장형 (HEAVY)"
-				"stance_hunter": name_kor = "태세사냥꾼 (STANCE HUNTER)"
-				"gambler": name_kor = "도박형 (GAMBLER)"
+			var name_kor := LoadoutOverlay.weapon_display_name(w_key)
 			log_text += "  ★ [b]%s[/b] — 다음 상승부터 고를 수 있다.\n" % name_kor
 		log_text += "\n"
 

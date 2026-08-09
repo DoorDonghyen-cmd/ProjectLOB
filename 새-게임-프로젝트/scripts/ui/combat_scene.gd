@@ -77,6 +77,7 @@ var _camera: Camera2D
 # ── 현재 상태 ──
 var _current_gun_data: GunData
 var _is_shortcut_mode: bool = false
+var _is_guidance_shortcut: bool = false
 
 
 func _ready() -> void:
@@ -385,6 +386,33 @@ func trigger_v2_ui_test() -> void:
 	_start_combat_phase(enemy_list)
 
 
+## 모바일 미지 노드 2탭과 연계→결산 예고·Tempo 2탄창 호흡을 한 흐름에서 확인한다.
+## 첫 화면은 2층 미지 노드이며, 진입하면 연계 6종·결산 2종이 든 장전 화면으로 이어진다.
+func trigger_scan_guidance_test() -> void:
+	_is_shortcut_mode = true
+	_is_guidance_shortcut = true
+	_title_overlay.visible = false
+	_current_gun_data = _gun_smg
+	_rm.start_new_run("section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+
+	_rm.deck.clear()
+	for bullet_id in [
+		"marker", "borer", "jammer", "shred", "guide", "align", "chain", "crosscal"
+	]:
+		var bullet: BulletData = load("res://resources/bullets/%s.tres" % bullet_id)
+		if bullet != null:
+			_rm.deck.append(bullet.duplicate())
+
+	# 1층 101에서 2층 미지 노드 202로 향하는 고정 QA 상태.
+	_rm.current_floor = 2
+	_rm.current_node_id = 101
+	var unknown: RunManager.RunNode = _rm.map_nodes.get(202)
+	if unknown != null:
+		unknown.hidden_type = "매복 구획 (전투)"
+		unknown.scan_hint = "스캔: 고속·장갑·회피 혼성 대열 감지 (연계·결산 QA)"
+	_show_map_screen()
+
+
 ## 🛠️ 보스 전투 테스트 — 개발자 테스트 메뉴에서 보스전을 즉시 실행한다.
 ## boss_id에 따라 해당 보스와 호위 대열을 조합하여 전투를 개시한다.
 func trigger_boss_test(boss_id: String) -> void:
@@ -436,6 +464,7 @@ func handle_loadout_finished() -> void:
 
 
 func _show_title_screen() -> void:
+	_is_guidance_shortcut = false
 	if _combat_overlay:
 		_combat_overlay.queue_free()
 		_combat_overlay = null
@@ -472,7 +501,9 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 	# 미지 노드 위험 완충망 처리
 	var triggered_safeguard := false
 	# ⚠️ hidden_type 문자열은 map_generator.gd의 ??? 노드 생성부와 정확히 일치해야 한다.
-	if selected_node.type_name.begins_with("???") and selected_node.hidden_type == "매복 구획 (전투)":
+	if not _is_guidance_shortcut \
+			and selected_node.type_name.begins_with("???") \
+			and selected_node.hidden_type == "매복 구획 (전투)":
 		if randf() < 0.3:
 			triggered_safeguard = true
 			if randf() < 0.5:
@@ -498,10 +529,15 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		var enemy_list: Array = []
 		var floor_num := _rm.current_floor
 		var section := _rm.current_section
+
+		if _is_guidance_shortcut:
+			enemy_list = [_enemy_rusher, _enemy_dodger, _enemy_tank]
 		
 		# 관문 편성은 CampaignContent가 단일 정본이다.
 		# A/B/C/E는 보스 4종, D는 기존 자물쇠를 종합한 정예 관문으로 구성한다.
-		if is_major_gate:
+		if _is_guidance_shortcut:
+			pass
+		elif is_major_gate:
 			enemy_list = CampaignContentScript.load_gate_encounter(section)
 		else:
 			# 일반전 스폰 분기.
@@ -687,6 +723,7 @@ func handle_combat_finished(is_dead: bool) -> void:
 			_rm.record_playtest_encounter(_cm.build_playtest_report())
 		_rm.finish_playtest_log("debug_finished")
 		_is_shortcut_mode = false
+		_is_guidance_shortcut = false
 		_show_title_screen()
 		return
 		

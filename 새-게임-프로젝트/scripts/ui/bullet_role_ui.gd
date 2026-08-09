@@ -7,7 +7,12 @@ extends RefCounted
 const ATTACK := "attack"
 const LINK := "link"
 const CONTROL := "control"
+const PAYOFF := "payoff"
 const VALID_ROLES := [ATTACK, LINK, CONTROL]
+const SCOPE_NONE := "none"
+const SCOPE_NEXT_SHOT := "next_shot"
+const SCOPE_TARGET := "target"
+const SCOPE_REMAINING_MAG := "remaining_mag"
 
 
 static func normalize(value: String) -> String:
@@ -37,6 +42,33 @@ static func badge_text(value: String) -> String:
 	return "[%s]" % label(value)
 
 
+static func is_payoff(bullet: BulletData) -> bool:
+	return bullet != null and bullet.effect_type in [
+		Enums.BulletEffect.COMBO,
+		Enums.BulletEffect.CALIBER_DIFF,
+	]
+
+
+static func payoff_badge_text(bullet: BulletData) -> String:
+	return "[결산]" if is_payoff(bullet) else ""
+
+
+static func payoff_color() -> Color:
+	return Color(1.0, 0.35, 0.78)
+
+
+static func payoff_hint(bullet: BulletData) -> String:
+	if not is_payoff(bullet):
+		return ""
+	match bullet.effect_type:
+		Enums.BulletEffect.COMBO:
+			return "결산탄: 직전 탄의 유효 적중을 조건부 추가 피해로 환산합니다."
+		Enums.BulletEffect.CALIBER_DIFF:
+			return "결산탄: 직전 탄과의 역할 교대를 조건부 추가 피해로 환산합니다."
+		_:
+			return ""
+
+
 static func color(value: String) -> Color:
 	match normalize(value):
 		LINK:
@@ -55,6 +87,71 @@ static func hint(value: String) -> String:
 			return "거리나 적 상태를 조작해 다음 판단을 유리하게 만듭니다."
 		_:
 			return "일반 적에게 단독으로 작동하며 연계탄을 받으면 대응 범위가 넓어집니다."
+
+
+static func normalize_scope(value: String) -> String:
+	var normalized := value.strip_edges().to_lower()
+	match normalized:
+		SCOPE_NEXT_SHOT, SCOPE_TARGET, SCOPE_REMAINING_MAG:
+			return normalized
+		_:
+			return SCOPE_NONE
+
+
+static func scope_label(value: String) -> String:
+	match normalize_scope(value):
+		SCOPE_NEXT_SHOT:
+			return "다음 1발"
+		SCOPE_TARGET:
+			return "대상 지속"
+		SCOPE_REMAINING_MAG:
+			return "잔여 탄창"
+		_:
+			return ""
+
+
+static func scope_badge_text(value: String) -> String:
+	var scope := scope_label(value)
+	return "[%s]" % scope if not scope.is_empty() else ""
+
+
+static func compact_scope_badge_text(value: String) -> String:
+	match normalize_scope(value):
+		SCOPE_NEXT_SHOT:
+			return "[1발]"
+		SCOPE_TARGET:
+			return "[대상]"
+		SCOPE_REMAINING_MAG:
+			return "[잔탄]"
+		_:
+			return ""
+
+
+static func scope_hint(value: String) -> String:
+	match normalize_scope(value):
+		SCOPE_NEXT_SHOT:
+			return "효과 범위: 바로 뒤에 발사되는 1발"
+		SCOPE_TARGET:
+			return "효과 범위: 명중한 대상에게 교전 동안 지속"
+		SCOPE_REMAINING_MAG:
+			return "효과 범위: 발동 뒤 탄창에 남은 모든 탄환"
+		_:
+			return ""
+
+
+static func tooltip(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	var lines: Array[String] = [hint(bullet.role)]
+	var payoff_line := payoff_hint(bullet)
+	if not payoff_line.is_empty():
+		lines.append(payoff_line)
+	var scope_line := scope_hint(bullet.scope)
+	if not scope_line.is_empty():
+		lines.append(scope_line)
+	if not bullet.description.is_empty():
+		lines.append(bullet.description)
+	return "\n".join(lines)
 
 
 static func is_link_chain(first_to_fire: BulletData, second_to_fire: BulletData) -> bool:

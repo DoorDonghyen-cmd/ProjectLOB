@@ -8,6 +8,8 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-09 | **조합탄 결산 구조·2탄창 전투 호흡** | `codex0809-ammo-payoff` | 연쇄탄·교대탄 `[결산]` 공용 표기와 LIFO 성공/실패·예상 주 피해 예고, 첫 결산탄 후보 보증, 동일 탄 보유량 가중치, Tempo 혼합 편성 재장전 생존 회귀. 전체 2,827 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_payoff_cadence_2026-08-09.md) |
+| 2026-08-09 | **모바일 스캔·해금 표기·조합탄 전술 예고** | `codex0809-mobile-guidance` | 미지 노드 첫 탭 스캔·재탭 진입, 제압형 해금명 단일화, 연계탄 3범위 배지와 LIFO 게이트 전환 예고, 통합 개발자 QA. 최종 전체 2,827 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_mobile_scan_unlock_ammo_guidance_2026-08-09.md) |
 | 2026-08-06 | **전투 효율 정산·상점 파츠 구매 제한 정확성 수정** | `codex0806-function-accuracy` | 실제 격발 수 기반 S~D 효율·크레딧 정산으로 기본탄 100% 폴백 제거. 파츠 구매 상태를 상점 방문에 귀속해 리롤 우회를 차단하고 전체 2,734 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_function_accuracy_2026-08-06.md) |
 | 2026-08-05 | **캠페인 보스 연결·보상 풀 정상화** | `codex0805-campaign-integrity` | A/B/C/E 실제 보스 4체와 D 관리 계층 정예 관문을 단일 편성 정본으로 연결. 일반 파츠·전술탄 후보를 정규화하고 스타팅 보너스 초기화 유실, 암시장 가방 포화 결제 소실을 차단. 전체 2,718 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_campaign_integrity_2026-08-05.md) |
 | 2026-08-01 | **플레이테스트 텔레메트리·일반전 증원·개발자 도구** | `codex0801-playtest-telemetry` | 런별 전투·탄종·파츠 JSON 로깅, 공역 이후 일반전 3~4체 증원과 동거리 4체 분산, 모든 무기 9종 영구 해금 버튼 구현. 전체 2,543 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_playtest_telemetry_density_dev_tools_2026-08-01.md) |
@@ -51,6 +53,8 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0809-ammo-payoff Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_payoff_cadence_2026-08-09.md)
+* [Session codex0809-mobile-guidance Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_mobile_scan_unlock_ammo_guidance_2026-08-09.md)
 * [Session codex0806-function-accuracy Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_function_accuracy_2026-08-06.md)
 * [Session codex0805-campaign-integrity Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_campaign_integrity_2026-08-05.md)
 * [Session codex0801-playtest-telemetry Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_playtest_telemetry_density_dev_tools_2026-08-01.md)

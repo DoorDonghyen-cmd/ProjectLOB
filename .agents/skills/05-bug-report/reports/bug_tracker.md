@@ -23,8 +23,8 @@
 | #014 | 파츠 1개 구매 제한이 리롤 후 초기화됨 | 높음 | 🔍 Verified | `codex0806-function-accuracy` | 2026-08-05 | 2026-08-06 | [리포트](bug_014_part_purchase_limit_resets_on_reroll.md) |
 | #015 | 캠페인 보스 노드에 실제 보스가 등장하지 않음 | 높음 | 🔍 Verified | `codex0805-campaign-integrity` | 2026-08-05 | 2026-08-05 | [리포트](bug_015_campaign_boss_nodes_omit_boss.md) |
 | #016 | 무작위 보상 풀이 보류·고유 항목을 우회하고 암시장 결제가 소실될 수 있음 | 높음 | 🔍 Verified | `codex0805-campaign-integrity` | 2026-08-05 | 2026-08-05 | [리포트](bug_016_random_reward_pool_bypasses_rules.md) |
-| #017 | 제압형 해금 정산에서 무기명이 알 수 없음으로 표시됨 | 낮음 | 🟡 Open | `codex0805-content-system-ui-audit` | 2026-08-05 | - | [리포트](bug_017_suppressor_unlock_unknown_name.md) |
-| #018 | 모바일에서 미지 노드 스캔 힌트를 확인할 수 없음 | 높음 | 🟡 Open | `codex0805-content-system-ui-audit` | 2026-08-05 | - | [리포트](bug_018_mobile_scan_hint_hover_only.md) |
+| #017 | 제압형 해금 정산에서 무기명이 알 수 없음으로 표시됨 | 낮음 | 🔍 Verified | `codex0809-scan-ammo-guidance` | 2026-08-05 | 2026-08-09 | [리포트](bug_017_suppressor_unlock_unknown_name.md) |
+| #018 | 모바일에서 미지 노드 스캔 힌트를 확인할 수 없음 | 높음 | 🔍 Verified | `codex0809-scan-ammo-guidance` | 2026-08-05 | 2026-08-09 | [리포트](bug_018_mobile_scan_hint_hover_only.md) |
 
 ---
 

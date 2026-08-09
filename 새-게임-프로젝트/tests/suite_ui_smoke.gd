@@ -141,6 +141,8 @@ static func run(t, tree: SceneTree) -> void:
 	t.check(unlock_weapons_btn != null, "개발자 테스트 메뉴에 모든 무기 해금 버튼 존재")
 	var unlock_ascension_btn := _find_button_text(scene._title_overlay._dev_test_panel, "모든 승천 해금")
 	t.check(unlock_ascension_btn != null, "개발자 테스트 메뉴에 모든 승천 해금 버튼 존재")
+	var scan_guidance_btn := _find_button_text(scene._title_overlay._dev_test_panel, "스캔·연계·결산 QA")
+	t.check(scan_guidance_btn != null, "⭐ 모바일 스캔·연계·결산 개발자 테스트 버튼 존재")
 	var prev_unlocked_weapons: Array[String] = RunManager.meta_unlocked_weapons.duplicate()
 	var prev_ascension_unlocked := RunManager.meta_ascension_unlocked
 	var prev_ascension_level := RunManager.meta_ascension_level
@@ -238,6 +240,96 @@ static func run(t, tree: SceneTree) -> void:
 		if not row.is_queued_for_deletion() and row is HBoxContainer:
 			rows_mid += 1
 	t.eq(rows_mid, 35, "⭐ 계층을 넘어가도 지도는 런 전체 35층을 유지")
+
+	# ── #018 + 조합탄 1단계: 모바일 첫 탭 스캔, 두 번째 탭 진입, 범위·기여 UI ──
+	scene.trigger_scan_guidance_test()
+	var unknown_node: RunManager.RunNode = scene._rm.map_nodes.get(202)
+	var unknown_btn: Button = scene._map_overlay._node_buttons.get("section_a:202")
+	t.check(unknown_node != null and unknown_btn != null,
+		"스캔·연계 QA 상태에 도달 가능한 2층 미지 노드 존재")
+	if unknown_node != null and unknown_btn != null:
+		var first_touch := InputEventScreenTouch.new()
+		first_touch.pressed = true
+		scene._map_overlay._on_unknown_node_gui_input(first_touch, unknown_node, unknown_btn)
+		t.eq(scene._rm.current_node_id, 101, "⭐ #018 첫 탭은 노드에 진입하지 않음")
+		t.check(scene._map_overlay.visible and scene._map_overlay._scan_hint_panel.visible,
+			"⭐ #018 첫 탭은 지도 위 스캔 패널만 표시")
+		t.check(scene._map_overlay._scan_hint_lbl.text.contains("다시 탭해 진입"),
+			"⭐ #018 터치 확정 안내 문구 표시")
+
+		var other_btn := Button.new()
+		scene._map_overlay.add_child(other_btn)
+		scene._map_overlay._on_unknown_node_gui_input(first_touch, unknown_node, other_btn)
+		t.eq(scene._rm.current_node_id, 101, "⭐ #018 다른 노드 첫 탭도 즉시 진입하지 않음")
+		t.check(scene._map_overlay._scan_touch_target == other_btn,
+			"⭐ #018 다른 노드 탭 시 확인 대상을 새 노드로 교체")
+		scene._map_overlay._on_unknown_node_gui_input(first_touch, unknown_node, unknown_btn)
+		t.eq(scene._rm.current_node_id, 101, "원래 노드로 돌아온 첫 탭도 재확인만 수행")
+		other_btn.free()
+
+		var second_touch := InputEventScreenTouch.new()
+		second_touch.pressed = true
+		scene._map_overlay._on_unknown_node_gui_input(second_touch, unknown_node, unknown_btn)
+		t.eq(scene._rm.current_node_id, 202, "⭐ #018 같은 노드 두 번째 탭은 정확히 진입")
+		t.check(scene._cm != null and scene._combat_overlay.visible,
+			"스캔 확정 뒤 장갑·회피 혼성 전투 장전 화면 진입")
+
+		var guidance_ov = scene._combat_overlay
+		guidance_ov._toggle_drawer(true)
+		t.check(_has_label_text(guidance_ov, "[다음 1발]"),
+			"⭐ 가방/장전 UI에 다음 1발 범위 배지 렌더")
+		t.check(_has_label_text(guidance_ov, "[대상 지속]"),
+			"⭐ 가방/장전 UI에 대상 지속 범위 배지 렌더")
+		t.check(_has_label_text(guidance_ov, "[잔여 탄창]"),
+			"⭐ 가방/장전 UI에 잔여 탄창 범위 배지 렌더")
+		t.check(_has_label_text(guidance_ov, "[결산]"),
+			"⭐ 가방/장전 UI에 연쇄·교대탄 결산 배지 렌더")
+		guidance_ov._toggle_drawer(false)
+
+		var preview_target: EnemyInstance = scene._cm.enemy
+		preview_target.current_def = 3
+		preview_target.current_evasion = 7
+		var preview_attack := BulletData.new()
+		preview_attack.display_name = "예고 공격탄"
+		preview_attack.role = BulletRoleUI.ATTACK
+		preview_attack.damage = 2
+		preview_attack.accuracy = 7
+		preview_attack.penetration = 0
+		preview_attack.effect_type = Enums.BulletEffect.CALIBER_DIFF
+		preview_attack.effect_value = 4
+		preview_attack.weapon_class = Enums.WeaponClass.UNIVERSAL
+		var preview_link := BulletData.new()
+		preview_link.display_name = "예고 천공탄"
+		preview_link.role = BulletRoleUI.LINK
+		preview_link.scope = BulletRoleUI.SCOPE_NEXT_SHOT
+		preview_link.trigger = "on_effective_hit"
+		preview_link.effect_type = Enums.BulletEffect.BUFF_PEN
+		preview_link.effect_value = 3
+		preview_link.accuracy = 7
+		preview_link.penetration = 3
+		guidance_ov._loaded_bullets = [preview_attack, preview_link] as Array[BulletData]
+		guidance_ov._refresh_loading_stack()
+		t.check(guidance_ov._loading_guidance_label.visible,
+			"⭐ 연계탄 적재 시 현재 기여 예고 영역 표시")
+		t.check(guidance_ov._loading_guidance_label.text.contains("관통 전환 1발"),
+			"⭐ 현재 LIFO 순서와 최근접 표적 기준 관통 전환 발수 표시")
+		t.check(guidance_ov._loading_guidance_label.text.contains("결산 성공"),
+			"⭐ 역할 교대 결산 성공 여부 표시")
+		t.check(guidance_ov._loading_guidance_label.text.contains("예상 주 피해 9"),
+			"⭐ 게이트 개방 크리티컬을 포함한 예상 주 피해 표시")
+		t.check(_has_label_text(guidance_ov._loading_stack_vbox, "[결산]"),
+			"⭐ 적재 스택에 결산 배지 렌더")
+
+		var compact_card = guidance_ov._lookahead_container._create_dynamic_bullet_card(
+			preview_link, 1, true, false, false)
+		t.check(_has_label_text(compact_card, "[1발]"),
+			"⭐ 좁은 실린더 카드에는 축약 범위 배지 렌더")
+		compact_card.free()
+		var compact_payoff = guidance_ov._lookahead_container._create_dynamic_bullet_card(
+			preview_attack, 2, false, false, false)
+		t.check(_has_label_text(compact_payoff, "[결산]"),
+			"⭐ 좁은 실린더 카드에도 결산 배지 렌더")
+		compact_payoff.free()
 
 	# ── #011: 첫 관문 돌파는 디브리핑이 아니라 공역으로 이어져야 한다 ──
 	RunManager.meta_unlocked_sections = ["section_a"] as Array[String]

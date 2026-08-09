@@ -376,8 +376,8 @@ func _create_inventory_card(
 	supply_capacity: int = 0
 ) -> Control:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(120, 72)
-	card.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(bullet.role), bullet.description]
+	card.custom_minimum_size = Vector2(120, 88)
+	card.tooltip_text = BulletRoleUI.tooltip(bullet)
 	if supply_capacity > 0:
 		card.tooltip_text += "\n\n기본 보급탄 · 리로드 시 %d발까지 복구" % supply_capacity
 	var style := StyleBoxFlat.new()
@@ -404,7 +404,7 @@ func _create_inventory_card(
 		wrapper.add_child(bg_icon)
 		
 		bg_icon.size = Vector2(32, 32)
-		bg_icon.position = Vector2(120 - 32 - 6, 72 - 32 - 6)
+		bg_icon.position = Vector2(120 - 32 - 6, 88 - 32 - 6)
 		
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 8)
@@ -445,6 +445,22 @@ func _create_inventory_card(
 	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	role_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(role_lbl)
+	var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
+	if not payoff_text.is_empty():
+		var payoff_lbl: Label = parent_scene.make_label(
+			payoff_text, 9.0, BulletRoleUI.payoff_color())
+		payoff_lbl.name = "PayoffBadge"
+		payoff_lbl.tooltip_text = BulletRoleUI.payoff_hint(bullet)
+		payoff_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+		payoff_lbl.add_theme_constant_override("outline_size", 3)
+		title_hbox.add_child(payoff_lbl)
+	var scope_text := BulletRoleUI.scope_badge_text(bullet.scope)
+	if not scope_text.is_empty():
+		var scope_lbl: Label = parent_scene.make_label(scope_text, 9.0, Color(0.78, 0.59, 1.0))
+		scope_lbl.name = "ScopeBadge"
+		scope_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+		scope_lbl.add_theme_constant_override("outline_size", 3)
+		vbox.add_child(scope_lbl)
 	
 	# 기본 보급 슬롯은 잔량/상한을 항상 표시한다. 전술탄은 기존처럼 복수일 때만 수량을 표시한다.
 	if supply_capacity > 0 or count > 1:

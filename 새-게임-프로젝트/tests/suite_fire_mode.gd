@@ -279,6 +279,38 @@ static func run(t) -> void:
 		"⭐ 리듬 챔버 6발 = 기본 12 + 짝수 박자 3 + 집중 폭발 4")
 	rhythm_cm.free()
 
+	# Tempo의 올바른 첫 탄창은 고속 전열을 해체하고 4턴 리로드 뒤 두 번째 적재 판단을 남긴다.
+	# LIFO 발사 순서: 표식 → 교대(게이트 개방 결산) → 기본탄 4발.
+	var cadence_loadout: Array[BulletData] = []
+	for i in range(4):
+		cadence_loadout.append((load(B_SURGE_SMG) as BulletData).duplicate())
+	cadence_loadout.append((load("res://resources/bullets/crosscal.tres") as BulletData).duplicate())
+	cadence_loadout.append((load(B_TUNER_SMG) as BulletData).duplicate())
+	var cadence_enemies: Array[EnemyData] = [
+		(load("res://resources/enemies/rusher.tres") as EnemyData).duplicate(),
+		(load("res://resources/enemies/dodger.tres") as EnemyData).duplicate(),
+		(load("res://resources/enemies/tank.tres") as EnemyData).duplicate(),
+	]
+	var cadence_cm = _setup(G_SMG, cadence_enemies, cadence_loadout)
+	cadence_cm.fire()
+	var cadence_survivors := 0
+	var cadence_survivor: EnemyInstance = null
+	for cadence_enemy in cadence_cm.enemies:
+		if not cadence_enemy.is_dead():
+			cadence_survivors += 1
+			cadence_survivor = cadence_enemy
+	t.eq(cadence_survivors, 1, "⭐ Tempo 첫 결산 탄창으로 회피병·돌격병 전열 해체")
+	if cadence_survivor != null:
+		t.eq(cadence_survivor.data.archetype, Enums.EnemyArchetype.TANK,
+			"첫 탄창 뒤 방패병만 남아 두 번째 탄창 목표가 명확함")
+		var before_reload_distance := cadence_survivor.current_distance
+		cadence_cm.request_reload()
+		t.eq(cadence_cm.state, CombatManagerScript.State.LOADING,
+			"⭐ 4턴 리로드 뒤 생존하여 두 번째 적재 단계 진입")
+		t.eq(before_reload_distance - cadence_survivor.current_distance, 4,
+			"방패병이 리로드 4턴 동안 정확히 4칸 접근")
+	cadence_cm.free()
+
 	# ⚠️ 연발 총의 패시브는 탄창 크기만큼 증폭된다. 특히 PEN은 이진 게이트라 절벽이다.
 	#    (전량 0 대미지 ↔ 전량 통과) 그래서 제압형의 패시브는 전부 0이어야 한다.
 	t.eq(int(sup_csv.passive_dmg_bonus), 0, "제압형 패시브 DMG = 0 (탄창 배 증폭 방지)")

@@ -320,6 +320,17 @@ func _build_dev_test_panel() -> void:
 	btn_v2_ui.add_theme_font_size_override("font_size", 11)
 	btn_v2_ui.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_v2_ui)
+
+	# 모바일 스캔과 연계→결산 예고, Tempo 2탄창 호흡을 한 흐름에서 확인하는 통합 QA.
+	var btn_guidance_ui = parent_scene.make_button("🔎 스캔·연계·결산 QA", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_scan_guidance_test()
+	, parent_scene.C_SUCCESS)
+	btn_guidance_ui.name = "ScanAmmoGuidanceTestButton"
+	btn_guidance_ui.custom_minimum_size = Vector2(0, 36)
+	btn_guidance_ui.add_theme_font_size_override("font_size", 11)
+	btn_guidance_ui.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_guidance_ui)
 	
 	# 4-3. ♻️ 덱 순환(버림/소멸) 테스트 실행 버튼
 	var btn_pile_test = parent_scene.make_button("♻️ 덱 순환 테스트 실행", func():

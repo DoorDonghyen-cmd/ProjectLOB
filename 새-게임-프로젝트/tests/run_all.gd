@@ -11,6 +11,7 @@ const SuiteMagazine := preload("res://tests/suite_magazine.gd")
 const SuiteEnemy := preload("res://tests/suite_enemy.gd")
 const ValidateData := preload("res://tests/validate_data.gd")
 const SuiteAmmoIntegrity := preload("res://tests/suite_ammo_integrity.gd")
+const SuiteAmmoGuidance := preload("res://tests/suite_ammo_guidance.gd")
 const SuiteCaliberProfiles := preload("res://tests/suite_caliber_profiles.gd")
 const SuiteAmmoFamilyBehavior := preload("res://tests/suite_ammo_family_behavior.gd")
 const SuitePlaytestLogging := preload("res://tests/suite_playtest_logging.gd")
@@ -71,6 +72,7 @@ func _initialize() -> void:
 	SuiteEnemy.run(t)       # 적 태세 전환 · 거리 계산
 	ValidateData.run(t)     # CSV 데이터 정합성
 	SuiteAmmoIntegrity.run(t) # 탄환 CSV↔리소스↔시작 덱 완전 일치
+	SuiteAmmoGuidance.run(t) # 조합탄 범위 배지·현재 LIFO 게이트 기여 예고
 	SuiteCaliberProfiles.run(t) # 고정 구경 프로필·기반탄 비중복·드래프트 제한
 	SuiteAmmoFamilyBehavior.run(t) # 경량 집중·소총 관통·산탄 확산
 	SuitePlaytestLogging.run(t) # 런별 전투·탄·파츠 텔레메트리 JSON

@@ -8,6 +8,8 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-09 | **조합탄 결산 구조·2탄창 전투 호흡** | `codex0809-ammo-payoff` | 연쇄탄·교대탄 결산 태그와 LIFO 예상 주 피해 예고, 연계 보유 시 첫 결산탄 후보 보증, 동일 탄 보유량 가중치 완화, Tempo 혼합 편성 2탄창 생존 회귀. 수치·시작 패키지 무변경 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_payoff_cadence_2026-08-09.md) |
+| 2026-08-09 | **모바일 스캔·해금 표기·조합탄 전술 예고** | `codex0809-mobile-guidance` | 미지 노드 첫 탭 스캔·재탭 진입, 무기 해금명 단일 정본, 연계탄 3범위 배지와 현재 LIFO 명중·관통 게이트 전환 예고. 수치·드래프트 무변경 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_mobile_scan_unlock_ammo_guidance_2026-08-09.md) |
 | 2026-07-30 | **탄종 3계열 행동·기술 규격·파츠 시너지** | `codex0730-ammo-family` | 경량탄 적별 3회 집중, 소총탄 후열 직선 관통, 산탄 근거리 군집 확산을 기본 행동으로 정립하고 9mm/.45 ACP·5.56/7.62를 표준/강화 규격으로 분리. 기존 관통·확산·관성 파츠 중복 해소와 계열별 예고·연출 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_family_behaviors_2026-07-30.md) |
 | 2026-07-28 | **개발자 테스트 전체 데이터 초기화** | `codex0728-dev-reset` | 메타·현재 런 초기화 진입점, 세이브 삭제 실패 시 기본값 덮어쓰기, 확인 대화상자와 메인 화면 갱신, 저장·UI 회귀 안전망 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_dev_reset_all_2026-07-28.md) |
 | 2026-07-28 | **기본탄 고정 보급 슬롯 및 리로드 정량 복구** | `codex0728-basic-supply` | 기본탄을 런 덱에서 분리해 탄창+약실 상한의 고정 보급원으로 운용하고, 리로드 정량 복구·발당 슬롯 점유·LIFO를 유지. 전술탄만 제한 덱 자원으로 분리 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_basic_ammo_supply_2026-07-28.md) |
@@ -43,6 +45,8 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0809-ammo-payoff Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_payoff_cadence_2026-08-09.md)
+* [Session codex0809-mobile-guidance Plan](file:///D:/ProjectLoB/docs/implementation_plan_mobile_scan_unlock_ammo_guidance_2026-08-09.md)
 * [Session codex0730-ammo-family Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_family_behaviors_2026-07-30.md)
 * [Session codex0728-dev-reset Plan](file:///D:/ProjectLoB/docs/implementation_plan_dev_reset_all_2026-07-28.md)
 * [Session codex0728-basic-supply Plan](file:///D:/ProjectLoB/docs/implementation_plan_basic_ammo_supply_2026-07-28.md)

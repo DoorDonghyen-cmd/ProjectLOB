@@ -165,6 +165,16 @@ const WEAPON_PROFILES := {
 }
 
 
+## 준비실·디브리핑 등 모든 UI가 같은 무기명을 사용하게 하는 단일 조회점.
+static func weapon_display_name(weapon_key: String) -> String:
+	if not WEAPON_PROFILES.has(weapon_key):
+		return weapon_key if not weapon_key.is_empty() else "알 수 없음"
+	var profile: Dictionary = WEAPON_PROFILES[weapon_key]
+	var kor := str(profile.get("display_name_kor", weapon_key))
+	var eng := str(profile.get("display_name_eng", ""))
+	return "%s (%s)" % [kor, eng] if not eng.is_empty() else kor
+
+
 func initialize(p_scene: Control, rm: RunManager) -> void:
 	parent_scene = p_scene
 	run_manager = rm
