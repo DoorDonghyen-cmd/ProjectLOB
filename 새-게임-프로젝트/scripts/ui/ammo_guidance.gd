@@ -32,7 +32,7 @@ static func preview_entries(
 	adjacent_accuracy_bonuses.fill(0)
 	adjacent_penetration_bonuses.fill(0)
 	var previous_effective := false
-	var previous_role := ""
+	var previous_specialty := ""
 	for index in range(fire_order.size()):
 		var bullet := fire_order[index]
 		if bullet == null:
@@ -53,11 +53,11 @@ static func preview_entries(
 			and int(stats.penetration) + penetration_bonuses[index] >= target.current_def
 		if BulletRoleUIScript.is_payoff(bullet):
 			entries.append(_preview_payoff(
-				bullet, stats, target, previous_effective, previous_role,
+				bullet, stats, target, previous_effective, previous_specialty,
 				hit, penetrated, accuracy_bonuses[index], penetration_bonuses[index],
 				adjacent_accuracy_bonuses[index], adjacent_penetration_bonuses[index]))
 		previous_effective = hit and penetrated
-		previous_role = BulletRoleUIScript.normalize(bullet.role)
+		previous_specialty = BulletRoleUIScript.normalize_specialty(bullet.specialty)
 	return entries
 
 
@@ -144,7 +144,7 @@ static func _preview_payoff(
 	stats: Dictionary,
 	target: EnemyInstance,
 	previous_effective: bool,
-	previous_role: String,
+	previous_specialty: String,
 	hit: bool,
 	penetrated: bool,
 	accuracy_bonus: int,
@@ -166,14 +166,14 @@ static func _preview_payoff(
 		Enums.BulletEffect.COMBO:
 			condition_met = previous_effective
 		Enums.BulletEffect.CALIBER_DIFF:
-			condition_met = not previous_role.is_empty() \
-				and previous_role != BulletRoleUIScript.normalize(bullet.role)
+			condition_met = not previous_specialty.is_empty() \
+				and previous_specialty != BulletRoleUIScript.normalize_specialty(bullet.specialty)
 
 	if not condition_met:
 		var need := (
 			"직전 유효 적중 필요"
 			if bullet.effect_type == Enums.BulletEffect.COMBO
-			else "역할 교대 필요"
+			else "전문축 교대 필요"
 		)
 		result.text = "%s: 결산 실패 · %s" % [bullet.display_name, need]
 		return result

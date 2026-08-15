@@ -6,11 +6,12 @@
 [resource]
 script = ExtResource("1")
 display_name = "철갑탄"
-description = "경화 탄자로 어떤 장갑이든 단독으로 관통합니다."
+description = "경화 탄자로 높은 장갑 게이트를 단독으로 관통합니다."
 icon = ExtResource("2")
 family = "special"
 role = "attack"
+specialty = "penetration"
 weapon_class = 5
 damage = 2
-accuracy = 6
+accuracy = 5
 penetration = 4

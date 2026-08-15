@@ -331,6 +331,40 @@ func _build_dev_test_panel() -> void:
 	btn_guidance_ui.add_theme_font_size_override("font_size", 11)
 	btn_guidance_ui.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_guidance_ui)
+
+	var btn_ammo_specialty = parent_scene.make_button("🎯 탄환 전문축 QA", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_ammo_specialty_test()
+	, parent_scene.C_SUCCESS)
+	btn_ammo_specialty.name = "AmmoSpecialtyTestButton"
+	btn_ammo_specialty.tooltip_text = "화력·관통·명중·제어 배지와 전문축 교대 결산을 즉시 확인합니다."
+	btn_ammo_specialty.custom_minimum_size = Vector2(0, 36)
+	btn_ammo_specialty.add_theme_font_size_override("font_size", 11)
+	btn_ammo_specialty.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_ammo_specialty)
+
+	# 계층을 다시 오르지 않고 동일한 Workhorse 탄약으로 상층 4체 편성을 비교한다.
+	var btn_management_roster = parent_scene.make_button("🏢 관리 계층 편성 QA", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_upper_roster_test("section_d")
+	, parent_scene.C_SUCCESS)
+	btn_management_roster.name = "ManagementRosterTestButton"
+	btn_management_roster.tooltip_text = "관리 계층 종반 대표 4체 편성을 Workhorse 공통 탄약으로 즉시 시작합니다."
+	btn_management_roster.custom_minimum_size = Vector2(0, 36)
+	btn_management_roster.add_theme_font_size_override("font_size", 11)
+	btn_management_roster.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_management_roster)
+
+	var btn_apex_roster = parent_scene.make_button("🔺 정점 편성 QA", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_upper_roster_test("section_e")
+	, parent_scene.C_SUCCESS)
+	btn_apex_roster.name = "ApexRosterTestButton"
+	btn_apex_roster.tooltip_text = "정점 종반 대표 4체 편성을 Workhorse 공통 탄약으로 즉시 시작합니다."
+	btn_apex_roster.custom_minimum_size = Vector2(0, 36)
+	btn_apex_roster.add_theme_font_size_override("font_size", 11)
+	btn_apex_roster.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_apex_roster)
 	
 	# 4-3. ♻️ 덱 순환(버림/소멸) 테스트 실행 버튼
 	var btn_pile_test = parent_scene.make_button("♻️ 덱 순환 테스트 실행", func():
@@ -596,8 +630,8 @@ func _build_dev_test_panel() -> void:
 	btn_boss1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_boss1)
 	
-	# 보스 #2: 세라프 프로토콜 (구역 2 보스)
-	var btn_boss2 = parent_scene.make_button("🟡 보스: 세라프", func():
+	# 보스 #2: 세라프 방어 프로토콜 (구역 2 보스)
+	var btn_boss2 = parent_scene.make_button("🟡 보스: 세라프 방어 프로토콜", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_boss_test("boss_seraph")
 	, parent_scene.C_DANGER)
@@ -606,8 +640,8 @@ func _build_dev_test_panel() -> void:
 	btn_boss2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_boss2)
 	
-	# 보스 #3: 실험체 Ω (구역 3 보스)
-	var btn_boss3 = parent_scene.make_button("🟠 보스: 실험체 Ω", func():
+	# 보스 #3: 적합성 개조체 Ω (구역 3 보스)
+	var btn_boss3 = parent_scene.make_button("🟠 보스: 적합성 개조체 Ω", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_boss_test("boss_omega")
 	, parent_scene.C_DANGER)

@@ -116,6 +116,6 @@ static func run(t) -> void:
 	# 탄환 ACC 상한이 8이라 일반 총기로는 원천 명중 불가한 설계지만,
 	# DMR 저격 시그니처(거리>1 명중 게이트 무시)가 전용 카운터로 작동해야 한다.
 	var stalker_rev := _hp_after(G_REVOLVER, load("res://resources/enemies/nano_stalker.tres").duplicate() as EnemyData, 3, 8, 0, 3)
-	t.eq(stalker_rev, 4, "나노 스토커: 리볼버 최대 ACC8 < EVA9 → 전탄 빗나감 (HP 4 불변)")
+	t.eq(stalker_rev, 4, "광학 추적체 03: 리볼버 최대 ACC8 < EVA9 → 전탄 빗나감 (HP 4 불변)")
 	var stalker_dmr := _hp_after(G_DMR, load("res://resources/enemies/nano_stalker.tres").duplicate() as EnemyData, 3, 8, 0, 3)
-	t.check(stalker_dmr < 4, "나노 스토커 카운터: DMR 저격 시그니처로 명중 성공 (HP %d < 4)" % stalker_dmr)
+	t.check(stalker_dmr < 4, "광학 추적체 03 카운터: DMR 저격 시그니처로 명중 성공 (HP %d < 4)" % stalker_dmr)

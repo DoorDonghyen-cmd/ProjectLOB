@@ -233,7 +233,8 @@ func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	badge_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(badge_row)
 	var role_lbl: Label = parent_scene.make_label(
-		BulletRoleUI.badge_text(bullet.role), 11, BulletRoleUI.color(bullet.role))
+		BulletRoleUI.specialty_badge_text(bullet.specialty), 11,
+		BulletRoleUI.specialty_color(bullet.specialty))
 	role_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge_row.add_child(role_lbl)
 	var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
@@ -457,7 +458,8 @@ func _open_deck_swap_popup() -> void:
 		hbox.add_child(name_lbl)
 
 		var role_lbl: Label = parent_scene.make_label(
-			BulletRoleUI.badge_text(bullet.role), 10, BulletRoleUI.color(bullet.role))
+			BulletRoleUI.specialty_badge_text(bullet.specialty), 10,
+			BulletRoleUI.specialty_color(bullet.specialty))
 		hbox.add_child(role_lbl)
 		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
 		if not payoff_text.is_empty():

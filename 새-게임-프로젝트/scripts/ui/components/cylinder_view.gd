@@ -149,7 +149,8 @@ func _create_dynamic_bullet_card(
 	var has_gate := false
 	if not is_hidden:
 		var role_lbl: Label = parent_scene.make_label(
-			BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
+			BulletRoleUI.specialty_badge_text(bullet.specialty), 9.0,
+			BulletRoleUI.specialty_color(bullet.specialty))
 		hbox.add_child(role_lbl)
 		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
 		if not payoff_text.is_empty():

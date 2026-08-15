@@ -17,6 +17,7 @@ const SuiteAmmoFamilyBehavior := preload("res://tests/suite_ammo_family_behavior
 const SuitePlaytestLogging := preload("res://tests/suite_playtest_logging.gd")
 const SuiteBasicSupply := preload("res://tests/suite_basic_supply.gd")
 const SuiteAmmoMatrix := preload("res://tests/suite_ammo_matrix.gd")
+const SuiteAmmoSpecialization := preload("res://tests/suite_ammo_specialization.gd")
 const SuiteLIFODepthBaseline := preload("res://tests/suite_lifo_depth_baseline.gd")
 const SuiteAmmoV6Tuning := preload("res://tests/suite_ammo_v6_tuning.gd")
 const SimHarness := preload("res://tests/sim_harness.gd")
@@ -25,6 +26,7 @@ const SuiteSaveLoad := preload("res://tests/suite_save_load.gd")
 const SuiteBossGimmicks := preload("res://tests/suite_boss_gimmicks.gd")
 const SuiteFullRun := preload("res://tests/suite_full_run.gd")
 const SuiteCampaignIntegrity := preload("res://tests/suite_campaign_integrity.gd")
+const SuiteEnemyRoster := preload("res://tests/suite_enemy_roster.gd")
 const SuiteCombatRewards := preload("res://tests/suite_combat_rewards.gd")
 const SuiteParts := preload("res://tests/suite_parts.gd")
 const SuitePartShop := preload("res://tests/suite_part_shop.gd")
@@ -78,6 +80,7 @@ func _initialize() -> void:
 	SuitePlaytestLogging.run(t) # 런별 전투·탄·파츠 텔레메트리 JSON
 	SuiteBasicSupply.run(t)   # 기본탄 고정 보급 슬롯·리로드 정량 복구
 	SuiteAmmoMatrix.run(t)    # 실제 몬스터별 공격·연계·연발 처치 매트릭스
+	SuiteAmmoSpecialization.run(t) # 9종 총기×13종 적 시작 탄창 전문축 검증
 	SuiteLIFODepthBaseline.run(t) # v5 순서 민감도 JSON 기준선
 	SuiteAmmoV6Tuning.run(t) # v6 후보 화력·거리·지원탄 해법 기준선
 	SimHarness.run(t)       # 결정론 전투 시뮬레이션
@@ -86,6 +89,7 @@ func _initialize() -> void:
 	SuiteBossGimmicks.run(t) # 보스/특수 기믹 유닛(앱소버·캐스터·삼단태세·페이즈전환)
 	SuiteFullRun.run(t)     # 풀 런 통합 스캔(맵 도달성 + 전투 크래시 스캔)
 	SuiteCampaignIntegrity.run(t) # 보스 4+정예 관문·보상 카탈로그·스타팅 보증
+	SuiteEnemyRoster.run(t) # 적 13종 계층별 일반전·관문 도달성 및 표시명 정합
 	SuiteCombatRewards.run(t) # 실제 격발 수 기반 탄약 효율·크레딧 정산
 	SuiteParts.run(t)       # 파츠 적용 회귀(파츠 전달 시 전투 효과 반영)
 	SuitePartShop.run(t)    # 파츠 중심 상점 분기(첫 빌드 선언·시너지·중복 방지)

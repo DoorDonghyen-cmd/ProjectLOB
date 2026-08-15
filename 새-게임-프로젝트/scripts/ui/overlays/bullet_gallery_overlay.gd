@@ -139,7 +139,7 @@ func open_gallery() -> void:
 	for b_data in bullet_datas:
 		var cell_panel := PanelContainer.new()
 		cell_panel.custom_minimum_size = Vector2(170, 112)
-		cell_panel.tooltip_text = "%s\n%s" % [BulletRoleUI.hint(b_data.role), b_data.description]
+		cell_panel.tooltip_text = BulletRoleUI.tooltip(b_data)
 		_apply_panel_style(cell_panel, C_PANEL_BG, Color(0.25, 0.25, 0.3))
 		_grid_container.add_child(cell_panel)
 		
@@ -171,7 +171,8 @@ func open_gallery() -> void:
 		info_vbox.add_child(name_lbl)
 
 		var role_lbl = parent_scene.make_label(
-			BulletRoleUI.badge_text(b_data.role), 9, BulletRoleUI.color(b_data.role))
+			BulletRoleUI.specialty_badge_text(b_data.specialty), 9,
+			BulletRoleUI.specialty_color(b_data.specialty))
 		info_vbox.add_child(role_lbl)
 		
 		var stat_lbl = parent_scene.make_label("DMG:%d ACC:%d PEN:%d" % [b_data.damage, b_data.accuracy, b_data.penetration], 8, parent_scene.C_TEXT)

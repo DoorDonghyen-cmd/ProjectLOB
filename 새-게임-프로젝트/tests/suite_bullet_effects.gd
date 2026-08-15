@@ -75,13 +75,14 @@ static func run(t) -> void:
 	var r_combo := _fire(_enemy(50, 0, 0, 10), combo3)
 	t.eq(r_combo.hp, 36, "콤보 13 + 경량탄 집중1 = 14 대미지")
 
-	# ── CALIBER_DIFF(직렬화 값 유지): 역할 교대 뒤에서만 추가 대미지 ──
+	# ── CALIBER_DIFF(직렬화 값 유지): 전문축 교대 뒤에서만 추가 대미지 ──
 	var uni2: Array[BulletData] = [
 		_bullet(3, 7, 0, Enums.BulletEffect.CALIBER_DIFF, 4, Enums.WeaponClass.UNIVERSAL),
 		_bullet(3, 7, 0, Enums.BulletEffect.NONE, 0, Enums.WeaponClass.DMR)]
-	uni2[1].role = "link"
+	uni2[0].specialty = "damage"
+	uni2[1].specialty = "accuracy"
 	var r_uni := _fire(_enemy(50, 0, 0, 10), uni2)
-	t.eq(r_uni.hp, 40, "역할 교대: 연계 3 + 공격(3+4)=10 대미지 (HP 50→40)")
+	t.eq(r_uni.hp, 40, "전문축 교대: 명중 3 + 화력(3+4)=10 대미지 (HP 50→40)")
 
 	# ── OPENING_SHOT: 첫 탄 넉백 + 장갑 파쇄 -1 ──
 	var opening: Array[BulletData] = [_bullet(3, 7, 3, Enums.BulletEffect.OPENING_SHOT, 2)]

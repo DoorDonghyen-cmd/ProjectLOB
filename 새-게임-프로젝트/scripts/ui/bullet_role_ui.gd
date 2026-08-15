@@ -9,6 +9,13 @@ const LINK := "link"
 const CONTROL := "control"
 const PAYOFF := "payoff"
 const VALID_ROLES := [ATTACK, LINK, CONTROL]
+const SPECIALTY_DAMAGE := "damage"
+const SPECIALTY_PENETRATION := "penetration"
+const SPECIALTY_ACCURACY := "accuracy"
+const SPECIALTY_CONTROL := "control"
+const VALID_SPECIALTIES := [
+	SPECIALTY_DAMAGE, SPECIALTY_PENETRATION, SPECIALTY_ACCURACY, SPECIALTY_CONTROL,
+]
 const SCOPE_NONE := "none"
 const SCOPE_NEXT_SHOT := "next_shot"
 const SCOPE_TARGET := "target"
@@ -42,6 +49,51 @@ static func badge_text(value: String) -> String:
 	return "[%s]" % label(value)
 
 
+static func normalize_specialty(value: String) -> String:
+	var normalized := value.strip_edges().to_lower()
+	return normalized if normalized in VALID_SPECIALTIES else SPECIALTY_DAMAGE
+
+
+static func specialty_label(value: String) -> String:
+	match normalize_specialty(value):
+		SPECIALTY_PENETRATION:
+			return "관통"
+		SPECIALTY_ACCURACY:
+			return "명중"
+		SPECIALTY_CONTROL:
+			return "제어"
+		_:
+			return "화력"
+
+
+static func specialty_badge_text(value: String) -> String:
+	return "[%s]" % specialty_label(value)
+
+
+static func specialty_color(value: String) -> Color:
+	match normalize_specialty(value):
+		SPECIALTY_PENETRATION:
+			return Color(0.32, 0.68, 1.0)
+		SPECIALTY_ACCURACY:
+			return Color(1.0, 0.82, 0.28)
+		SPECIALTY_CONTROL:
+			return Color(0.35, 0.9, 0.72)
+		_:
+			return Color(1.0, 0.35, 0.3)
+
+
+static func specialty_hint(value: String) -> String:
+	match normalize_specialty(value):
+		SPECIALTY_PENETRATION:
+			return "관통 특화: 높은 PEN으로 장갑 게이트를 열지만 화력과 명중은 제한적입니다."
+		SPECIALTY_ACCURACY:
+			return "명중 특화: 높은 ACC로 회피 게이트를 열지만 화력과 관통은 제한적입니다."
+		SPECIALTY_CONTROL:
+			return "제어 특화: 넉백·둔화로 거리와 행동 횟수를 확보하며 직접 화력은 낮습니다."
+		_:
+			return "화력 특화: 열린 명중·관통 게이트를 큰 피해로 결산합니다."
+
+
 static func is_payoff(bullet: BulletData) -> bool:
 	return bullet != null and bullet.effect_type in [
 		Enums.BulletEffect.COMBO,
@@ -64,7 +116,7 @@ static func payoff_hint(bullet: BulletData) -> String:
 		Enums.BulletEffect.COMBO:
 			return "결산탄: 직전 탄의 유효 적중을 조건부 추가 피해로 환산합니다."
 		Enums.BulletEffect.CALIBER_DIFF:
-			return "결산탄: 직전 탄과의 역할 교대를 조건부 추가 피해로 환산합니다."
+			return "결산탄: 직전 탄과의 전문축 교대를 조건부 추가 피해로 환산합니다."
 		_:
 			return ""
 
@@ -142,7 +194,10 @@ static func scope_hint(value: String) -> String:
 static func tooltip(bullet: BulletData) -> String:
 	if bullet == null:
 		return ""
-	var lines: Array[String] = [hint(bullet.role)]
+	var lines: Array[String] = [
+		specialty_hint(bullet.specialty),
+		"운용: %s — %s" % [label(bullet.role), hint(bullet.role)],
+	]
 	var payoff_line := payoff_hint(bullet)
 	if not payoff_line.is_empty():
 		lines.append(payoff_line)

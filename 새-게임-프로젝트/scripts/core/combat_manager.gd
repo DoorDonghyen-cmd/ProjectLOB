@@ -111,7 +111,7 @@ var target_marker_active: bool = false
 var same_stance_hit_count: int = 0
 var last_stance: Enums.EnemyStance = Enums.EnemyStance.NONE
 var last_inertia_target: EnemyInstance = null
-var consecutive_role_count: int = 0
+var consecutive_specialty_count: int = 0
 ## 적 인스턴스별 경량탄 집중. 적 사망·재장전·인카운터 종료 시 제거한다.
 var focus_stacks: Dictionary = {}
 
@@ -129,7 +129,7 @@ var final_kill_distance: int = 99
 
 # ── 탄환 역할 기반 순서 기억 ──
 ## 구경은 총기의 고정 프로필이며, 런 중 순서 빌드는 공격·연계·제어 역할 교대로 만든다.
-var last_fired_role: String = ""
+var last_fired_specialty: String = ""
 
 # ── 전투 세션 통계 ──
 var battle_stats := {
@@ -229,7 +229,7 @@ func start_encounter(
 	last_shot_effective = false
 	_insert_seal_active = false
 	has_inserted_bullet_this_turn = false
-	last_fired_role = ""
+	last_fired_specialty = ""
 	is_magazine_first_shot = true
 	_is_full_auto_burst = false
 	_burst_knockback_budget = 0
@@ -281,7 +281,7 @@ func start_encounter(
 	same_stance_hit_count = 0
 	last_stance = Enums.EnemyStance.NONE
 	last_inertia_target = null
-	consecutive_role_count = 0
+	consecutive_specialty_count = 0
 	pending_buff_acc = 0
 	pending_buff_pen = 0
 	magazine_buff_acc = 0
@@ -548,11 +548,14 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 탄약 효율은 실제 발사체 수를 분모로 사용한다. 납탄 횟수(lead_bullets_fired)는
 	# Tempo 해금용 별도 통계이며 기본 보급탄 격발을 세지 않으므로 혼용하지 않는다.
 	battle_stats.shots_fired += 1
-	var role_changed := not last_fired_role.is_empty() and bullet.role != last_fired_role
-	if bullet.role == last_fired_role:
-		consecutive_role_count += 1
+	var specialty_changed := (
+		not last_fired_specialty.is_empty()
+		and bullet.specialty != last_fired_specialty
+	)
+	if bullet.specialty == last_fired_specialty:
+		consecutive_specialty_count += 1
 	else:
-		consecutive_role_count = 1
+		consecutive_specialty_count = 1
 
 	# ── 1. 명중 판정 파츠 가산 ──
 	var part_acc_bonus := 0
@@ -564,10 +567,10 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		
 	# 만능 약실: 직전과 **역할이 다르면** ACC +1 (PEN은 아래에서 +1).
 	# 구경은 고정 프로필이므로 공격·연계·제어 역할 교대가 LIFO 순서 빌드를 담당한다.
-	var versatile_active := _has_part(Enums.PartID.VERSATILE_CHAMBER) and role_changed
+	var versatile_active := _has_part(Enums.PartID.VERSATILE_CHAMBER) and specialty_changed
 	if versatile_active:
 		part_acc_bonus += 1
-		combat_log.emit("   ↳ 🔧 [만능 약실] 역할 교대로 ACC +1 · PEN +1")
+		combat_log.emit("   ↳ 🔧 [만능 약실] 전문축 교대로 ACC +1 · PEN +1")
 
 	# 고정밀 총열 (HIGH_PRECISION): **직전 탄이 빗나갔으면** ACC +3 (실패 보정)
 	# ⚠️ 상시 ACC가 아니라 회복 조건이다. 명중 버프탄이 상황적으로 하는 걸,
@@ -671,18 +674,18 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				part_dmg_bonus += deep_bonus
 				combat_log.emit("   ↳ 📥 [딥로더] 탄창 깊이(%d)에 따른 DMG +%d 가산" % [deep_bonus, deep_bonus])
 				
-		# 리듬 챔버: 동일 역할의 짝수 번째 연속 격발에 DMG +1
+		# 리듬 챔버: 동일 전문축의 짝수 번째 연속 격발에 DMG +1
 		# ⚠️ 연속 횟수를 그대로 보너스로 쓰면 연발 6발에서 +20이 되어 발사 방식이
 		#    곧 지배 전략이 된다. 2·4·6번째 박자만 보상해 슬롯 가치만 남긴다.
 		if _has_part(Enums.PartID.RHYTHM_CHAMBER):
-			if consecutive_role_count % 2 == 0:
+			if consecutive_specialty_count % 2 == 0:
 				part_dmg_bonus += 1
-				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 역할 %d번째 박자! DMG +1" % consecutive_role_count)
+				combat_log.emit("   ↳ 🎶 [리듬 챔버] 동일 전문축 %d번째 박자! DMG +1" % consecutive_specialty_count)
 			
-		# 인터럽터: 직전 탄과 역할이 다를 시 DMG 보너스 (+3)
-		if _has_part(Enums.PartID.INTERRUPTER) and role_changed:
+		# 인터럽터: 직전 탄과 전문축이 다를 시 DMG 보너스 (+3)
+		if _has_part(Enums.PartID.INTERRUPTER) and specialty_changed:
 			part_dmg_bonus += 3
-			combat_log.emit("   ↳ 🔀 [인터럽터] 역할 교대 격발! DMG +3 가산")
+			combat_log.emit("   ↳ 🔀 [인터럽터] 전문축 교대 격발! DMG +3 가산")
 				
 		# 언더플로우 (UNDERFLOW): 탄창 가장 마지막 1발(바닥 탄) 발사 시 DMG +5
 		if _has_part(Enums.PartID.UNDERFLOW) and is_last:
@@ -754,14 +757,14 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			breakdown += " + [연쇄 보너스] %d" % bullet.effect_value
 			combat_log.emit("   ↳ 🔥 [연쇄탄] 직전 유효 적중 연계! 피해 +%d" % bullet.effect_value)
 
-		# ── 2.5 교대탄: 직전 탄환과 역할이 다를 때 발동 ──
+		# ── 2.5 교대탄: 직전 탄환과 전문축이 다를 때 발동 ──
 		if bullet.effect_type == Enums.BulletEffect.CALIBER_DIFF \
-				and role_changed \
+				and specialty_changed \
 				and core_damage > 0:
 			core_damage += bullet.effect_value
-			breakdown += " + [역할 교대] %d" % bullet.effect_value
-			combat_log.emit("   ↳ ⚡ [교대탄] 직전 역할(%s)과 달라 피해 +%d" % [
-				last_fired_role, bullet.effect_value
+			breakdown += " + [전문축 교대] %d" % bullet.effect_value
+			combat_log.emit("   ↳ ⚡ [교대탄] 직전 전문축(%s)과 달라 피해 +%d" % [
+				last_fired_specialty, bullet.effect_value
 			])
 
 		var damage := core_damage
@@ -960,8 +963,8 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		combat_log.emit("   ↳ 💀 [소멸] 관통 실패 또는 빗나감! 탄환이 이번 전투에서 소멸(Exile) 처리되었습니다.")
 	piles_updated.emit(draw_pile, discard_pile, exile_pile)
 
-	# 직전 역할 업데이트
-	last_fired_role = bullet.role
+	# 직전 전문축 업데이트
+	last_fired_specialty = bullet.specialty
 
 	# 탄창 상태 갱신
 	magazine_updated.emit(magazine.get_remaining(), magazine.get_capacity())
@@ -1747,6 +1750,7 @@ func _capture_telemetry_shot(
 ) -> void:
 	var bullet_snapshot := PlaytestLoggerScript.resource_snapshot(bullet)
 	bullet_snapshot["role"] = bullet.role
+	bullet_snapshot["specialty"] = bullet.specialty
 	bullet_snapshot["family"] = bullet.family
 	bullet_snapshot["is_basic"] = bullet.is_basic
 	bullet_snapshot["damage"] = bullet.damage

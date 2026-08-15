@@ -8,6 +8,10 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-15 | **조합탄 전투 전문축 분리** | `codex0815-ammo-specialty` | 화력/관통/명중/제어 전문축 데이터와 전 UI 배지, 교대/유지 파츠 판정, 시작 패키지·전용 QA를 구현. 9총기×13적 기본/환기구 대진 및 전체 3,424 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_stat_specialization_2026-08-15.md) |
+| 2026-08-15 | **격발 입력 잠금·총기별 연출 템포** | `codex0815-fire-pacing` | 연출 중 발사·빼내기·재장전·이젝트 재입력 차단, 입력 버퍼 금지, 단발 0.32~0.52초와 Tempo 0.13초·Suppressor 0.20초 표시 템포 분리. 전체 3,351 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_fire_input_pacing_2026-08-15.md) |
+| 2026-08-15 | **관리·정점 복합 편성 플레이테스트 지원** | `codex0815-upper-roster` | 정점 차저 중복 2개 후보 정리, 상층 전 후보 무대응 4~8행동 압력 회귀, 관리·정점 대표 4체 Workhorse QA 버튼. 전체 3,342 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_upper_roster_playtest_2026-08-15.md) |
+| 2026-08-15 | **몬스터 13종 계층 배치·표기명 정합** | `codex0815-enemy-roster` | `EnemyRoster` 편성 정본과 관리/정점 독립 편성, 일반·변종 9종 + 관문 보스 4종 도달성, 최초 등장·최대 4체·고속 적 중첩·CSV 표시명 회귀. 전체 3,297 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_enemy_roster_placement_2026-08-15.md) |
 | 2026-08-09 | **조합탄 결산 구조·2탄창 전투 호흡** | `codex0809-ammo-payoff` | 연쇄탄·교대탄 `[결산]` 공용 표기와 LIFO 성공/실패·예상 주 피해 예고, 첫 결산탄 후보 보증, 동일 탄 보유량 가중치, Tempo 혼합 편성 재장전 생존 회귀. 전체 2,827 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_payoff_cadence_2026-08-09.md) |
 | 2026-08-09 | **모바일 스캔·해금 표기·조합탄 전술 예고** | `codex0809-mobile-guidance` | 미지 노드 첫 탭 스캔·재탭 진입, 제압형 해금명 단일화, 연계탄 3범위 배지와 LIFO 게이트 전환 예고, 통합 개발자 QA. 최종 전체 2,827 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_mobile_scan_unlock_ammo_guidance_2026-08-09.md) |
 | 2026-08-06 | **전투 효율 정산·상점 파츠 구매 제한 정확성 수정** | `codex0806-function-accuracy` | 실제 격발 수 기반 S~D 효율·크레딧 정산으로 기본탄 100% 폴백 제거. 파츠 구매 상태를 상점 방문에 귀속해 리롤 우회를 차단하고 전체 2,734 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_function_accuracy_2026-08-06.md) |
@@ -53,11 +57,15 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0815-fire-pacing Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_fire_input_pacing_2026-08-15.md)
+* [Session codex0815-upper-roster Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_upper_roster_playtest_2026-08-15.md)
+* [Session codex0815-enemy-roster Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_enemy_roster_placement_2026-08-15.md)
 * [Session codex0809-ammo-payoff Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_payoff_cadence_2026-08-09.md)
 * [Session codex0809-mobile-guidance Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_mobile_scan_unlock_ammo_guidance_2026-08-09.md)
 * [Session codex0806-function-accuracy Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_function_accuracy_2026-08-06.md)
 * [Session codex0805-campaign-integrity Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_campaign_integrity_2026-08-05.md)
 * [Session codex0801-playtest-telemetry Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_playtest_telemetry_density_dev_tools_2026-08-01.md)
+* [Session codex0815-ammo-specialty Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_stat_specialization_2026-08-15.md)
 * [Session codex0730-ammo-family Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_family_behaviors_2026-07-30.md)
 * [Session codex0728-dev-reset Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_dev_reset_all_2026-07-28.md)
 * [Session codex0728-basic-supply Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_basic_ammo_supply_2026-07-28.md)

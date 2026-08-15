@@ -160,7 +160,8 @@ static func run(t) -> void:
 	var crosscal: BulletData = (load("res://resources/bullets/crosscal.tres") as BulletData).duplicate()
 	var first_payoff: Array[BulletData] = [crosscal]
 	var first_payoff_text := AmmoGuidanceScript.summary_text(first_payoff, gun, payoff_target)
-	t.check(first_payoff_text.contains("역할 교대 필요"), "첫 발 교대탄은 결산 실패 이유 예고")
+	t.check(first_payoff_text.contains("전문축 교대 필요"),
+		"첫 발 교대탄은 전문축 결산 실패 이유 예고")
 
 	var attack_only: Array[BulletData] = [low_pen]
 	t.eq(AmmoGuidanceScript.summary_text(attack_only, gun, armored), "",

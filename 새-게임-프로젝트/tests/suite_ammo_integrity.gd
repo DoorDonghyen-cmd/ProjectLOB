@@ -116,6 +116,7 @@ static func run(t) -> void:
 
 	var family_counts := {"basic": 0, "support": 0, "special": 0, "control": 0}
 	var role_counts := {"attack": 0, "link": 0, "control": 0}
+	var specialty_counts := {"damage": 0, "penetration": 0, "accuracy": 0, "control": 0}
 	var nonzero_effects: Dictionary = {}
 	var basics: Array[Dictionary] = []
 	for id in csv:
@@ -130,6 +131,7 @@ static func run(t) -> void:
 		t.eq(bullet.family, str(row.family), "'%s' 계열 CSV↔tres" % id)
 		t.eq(bullet.is_basic, str(row.is_basic).to_lower() == "true", "'%s' is_basic" % id)
 		t.eq(bullet.role, str(row.role), "'%s' 역할 CSV↔tres" % id)
+		t.eq(bullet.specialty, str(row.specialty), "'%s' 전문축 CSV↔tres" % id)
 		t.eq(bullet.trigger, str(row.trigger), "'%s' 발동 CSV↔tres" % id)
 		t.eq(bullet.scope, str(row.scope), "'%s' 범위 CSV↔tres" % id)
 		t.eq(bullet.condition, str(row.condition), "'%s' 조건 CSV↔tres" % id)
@@ -138,6 +140,7 @@ static func run(t) -> void:
 
 		family_counts[bullet.family] = int(family_counts.get(bullet.family, 0)) + 1
 		role_counts[bullet.role] = int(role_counts.get(bullet.role, 0)) + 1
+		specialty_counts[bullet.specialty] = int(specialty_counts.get(bullet.specialty, 0)) + 1
 		t.check(bullet.damage >= 2, "'%s' DMG ≥ 2 불변식" % id)
 		if bullet.is_basic:
 			t.eq(bullet.family, "basic", "'%s' 기반탄 계열" % id)
@@ -157,6 +160,7 @@ static func run(t) -> void:
 		if not loaded.is_empty():
 			t.eq(int(loaded.caliber), _class_id(str(row.caliber)), "'%s' 로더 구경" % id)
 			t.eq(str(loaded.family), str(row.family), "'%s' 로더 계열" % id)
+			t.eq(str(loaded.specialty), str(row.specialty), "'%s' 로더 전문축" % id)
 			t.eq(str(loaded.trigger), str(row.trigger), "'%s' 로더 발동" % id)
 			t.eq(str(loaded.scope), str(row.scope), "'%s' 로더 범위" % id)
 			t.eq(str(loaded.condition), str(row.condition), "'%s' 로더 조건" % id)
@@ -168,6 +172,10 @@ static func run(t) -> void:
 	t.eq(int(role_counts.attack), 11, "공격 역할 11종")
 	t.eq(int(role_counts.link), 6, "연계 역할 6종")
 	t.eq(int(role_counts.control), 2, "제어 역할 2종")
+	t.eq(int(specialty_counts.damage), 5, "화력 전문축 5종(기반탄 포함)")
+	t.eq(int(specialty_counts.penetration), 7, "관통 전문축 7종(기반탄 포함)")
+	t.eq(int(specialty_counts.accuracy), 4, "명중 전문축 4종(기반탄 포함)")
+	t.eq(int(specialty_counts.control), 3, "제어 전문축 3종")
 
 	for i in range(basics.size()):
 		for j in range(i + 1, basics.size()):
@@ -193,10 +201,15 @@ static func run(t) -> void:
 		var base: BulletData = load("%s/%s.tres" % [BULLET_DIR, ids[0]])
 		t.check(base != null and base.is_basic and base.weapon_class == int(cls),
 			"시작 기반탄 '%s'가 총기 구경과 일치" % ids[0])
+		var starting_specialties := {base.specialty: true}
 		for i in range(1, ids.size()):
 			var support: BulletData = load("%s/%s.tres" % [BULLET_DIR, ids[i]])
 			t.check(support != null and support.weapon_class == Enums.WeaponClass.UNIVERSAL,
 				"시작 보조/제어탄 '%s' 구경 무관" % ids[i])
+			if support != null:
+				starting_specialties[support.specialty] = true
+		t.check(starting_specialties.size() >= 2,
+			"클래스 %d 시작 패키지가 최소 2개 전투 전문축 제공" % cls)
 
 	t.eq(MaintenanceOverlay.SHOP_BULLET_IDS.size(), 14, "무기고 구경 무관 탄환 후보 14종")
 	for id in MaintenanceOverlay.SHOP_BULLET_IDS:
@@ -207,6 +220,10 @@ static func run(t) -> void:
 	t.eq(BulletRoleUI.label("attack"), "공격", "역할 UI: attack")
 	t.eq(BulletRoleUI.label("link"), "연계", "역할 UI: link")
 	t.eq(BulletRoleUI.label("control"), "제어", "역할 UI: control")
+	t.eq(BulletRoleUI.specialty_label("damage"), "화력", "전문축 UI: damage")
+	t.eq(BulletRoleUI.specialty_label("penetration"), "관통", "전문축 UI: penetration")
+	t.eq(BulletRoleUI.specialty_label("accuracy"), "명중", "전문축 UI: accuracy")
+	t.eq(BulletRoleUI.specialty_label("control"), "제어", "전문축 UI: control")
 
 	var gd_files: Array[String] = []
 	_gd_files("res://scripts", gd_files)

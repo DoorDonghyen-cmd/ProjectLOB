@@ -8,6 +8,10 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-15 | **조합탄 전투 전문축 분리** | `codex0815-ammo-specialty` | 기존 운용 분류와 별도로 화력/관통/명중/제어 전문축을 도입하고, 19종 수치 경계·카드 배지·LIFO 파츠 판정·시작 패키지를 9총기×13적 대진으로 검증 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_stat_specialization_2026-08-15.md) |
+| 2026-08-15 | **격발 입력 잠금·총기별 연출 템포** | `codex0815-fire-pacing` | 연출 중 전투 액션 재입력을 차단하고 입력 버퍼 없이 결과 판독 후 다음 선택을 받는다. 단발 0.32~0.52초 최소 표시 시간, Tempo 0.13초·Suppressor 0.20초 연발 간격을 UI 전용으로 분리 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_fire_input_pacing_2026-08-15.md) |
+| 2026-08-15 | **관리·정점 복합 편성 플레이테스트 지원** | `codex0815-upper-roster` | 상층 차저 중복을 제거하고 실제 전진·차징·긴급 격퇴 기준 4~8행동 압력을 회귀 고정. 관리·정점 대표 4체 즉시 QA와 공통 Workhorse 탄약 제공 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_upper_roster_playtest_2026-08-15.md) |
+| 2026-08-15 | **몬스터 13종 계층 배치·표기명 정합** | `codex0815-enemy-roster` | 일반·변종 9종의 5계층 초·중·종반 편성을 단일 정본으로 분리하고, 관문 보스 4종을 포함한 전체 도달성·최초 등장·편성 밀도·표시명 일치를 회귀 고정. 적 수치·기믹 무변경 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_enemy_roster_placement_2026-08-15.md) |
 | 2026-08-09 | **조합탄 결산 구조·2탄창 전투 호흡** | `codex0809-ammo-payoff` | 연쇄탄·교대탄 결산 태그와 LIFO 예상 주 피해 예고, 연계 보유 시 첫 결산탄 후보 보증, 동일 탄 보유량 가중치 완화, Tempo 혼합 편성 2탄창 생존 회귀. 수치·시작 패키지 무변경 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_payoff_cadence_2026-08-09.md) |
 | 2026-08-09 | **모바일 스캔·해금 표기·조합탄 전술 예고** | `codex0809-mobile-guidance` | 미지 노드 첫 탭 스캔·재탭 진입, 무기 해금명 단일 정본, 연계탄 3범위 배지와 현재 LIFO 명중·관통 게이트 전환 예고. 수치·드래프트 무변경 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_mobile_scan_unlock_ammo_guidance_2026-08-09.md) |
 | 2026-07-30 | **탄종 3계열 행동·기술 규격·파츠 시너지** | `codex0730-ammo-family` | 경량탄 적별 3회 집중, 소총탄 후열 직선 관통, 산탄 근거리 군집 확산을 기본 행동으로 정립하고 9mm/.45 ACP·5.56/7.62를 표준/강화 규격으로 분리. 기존 관통·확산·관성 파츠 중복 해소와 계열별 예고·연출 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_family_behaviors_2026-07-30.md) |
@@ -45,6 +49,10 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0815-fire-pacing Plan](file:///D:/ProjectLoB/docs/implementation_plan_fire_input_pacing_2026-08-15.md)
+* [Session codex0815-upper-roster Plan](file:///D:/ProjectLoB/docs/implementation_plan_upper_roster_playtest_2026-08-15.md)
+* [Session codex0815-ammo-specialty Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_stat_specialization_2026-08-15.md)
+* [Session codex0815-enemy-roster Plan](file:///D:/ProjectLoB/docs/implementation_plan_enemy_roster_placement_2026-08-15.md)
 * [Session codex0809-ammo-payoff Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_payoff_cadence_2026-08-09.md)
 * [Session codex0809-mobile-guidance Plan](file:///D:/ProjectLoB/docs/implementation_plan_mobile_scan_unlock_ammo_guidance_2026-08-09.md)
 * [Session codex0730-ammo-family Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_family_behaviors_2026-07-30.md)

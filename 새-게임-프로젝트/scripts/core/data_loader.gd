@@ -138,6 +138,7 @@ static func _load_bullet_stats() -> void:
 			"family": _s(line, cols, "family", "basic"),
 			"is_basic": _b(line, cols, "is_basic"),
 			"role": _s(line, cols, "role", "attack"),
+			"specialty": _s(line, cols, "specialty", "damage"),
 			"damage": _i(line, cols, "damage"),
 			"penetration": _i(line, cols, "penetration"),
 			"accuracy": _i(line, cols, "accuracy"),

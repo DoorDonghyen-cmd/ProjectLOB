@@ -36,6 +36,7 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_enemy.gd` | 적 태세 전환(N발 주기), 전진/둔화/넉백 거리 계산 |
 | `suite_boss_gimmicks.gd` | 보스 기믹·호위 대열 — 2m 편성, 차징 포격, 강제전진, 페이즈 전환, 넉백 저항 |
 | `suite_campaign_integrity.gd` | 캠페인 관문 편성 — 보스 4종+정예 관문, 정식 보상 후보군, 스타팅 보증·암시장 결제 |
+| `suite_enemy_roster.gd` | 일반·변종 9종의 계층 도달성, 표시명, 상층 차저 중첩과 실제 무대응 4~8행동 압력 |
 | `suite_combat_rewards.gd` | 실제 격발 수 기반 탄약 효율 등급·전투 크레딧 정산 |
 | `validate_data.gd` | CSV 정합성 — id 유니크·컬럼·정수·밴드(ERROR/WARN), `.tres` 매칭 |
 | `suite_ammo_integrity.gd` | 탄환 CSV↔리소스↔시작 덱 역할·수치 완전 일치 |
@@ -45,6 +46,7 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_basic_supply.gd` | 기본탄 고정 보급 슬롯 — 총기별 상한, 장전 차감, 리로드 정량 복구 |
 | `suite_save_load.gd` | 메타 저장·로드와 개발자 전체 초기화 — 세이브 삭제, 영구 진행·현재 런 기본값 복원 |
 | `suite_ammo_matrix.gd` | 실제 몬스터별 공격·연계·연발 처치 조합 매트릭스 |
+| `suite_ammo_specialization.gd` | 9종 총기×13종 적의 시작 탄창 전문축 조합 검증 |
 | `lifo_depth_probe.gd` | 같은 6발의 고유 순열을 실제 CombatManager로 전투해 적별 최적 배치 산출 |
 | `suite_lifo_depth_baseline.gd` | `baseline/lifo_depth_v5.json`과 현행 v5 순서 민감도 비교 |
 | `ammo_v6_preflight_probe.gd` | v6 초안 기반탄을 런타임 교체 없이 9총기×13적에 임시 주입 |
@@ -56,7 +58,7 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_spawn_tiers.gd` | 계층별 스폰 3구간이 모두 도달 가능한지(사문화 콘텐츠 검출) |
 | `suite_ui_data_drift.gd` | UI 소스에 계층 이름·층수가 복사돼 있지 않은지(정본은 `MapGenerator`) |
 | `suite_doc_drift.gd` | GDD·스킬 문서에 폐기된 세계관 설정이 남아 있지 않은지 |
-| `suite_ui_smoke.gd` | 메인 씬을 실제로 인스턴스화하고 오버레이를 호출 — 런타임 오류, 구역별 일반전 밀도, 동거리 4체 편성 슬롯 검출 |
+| `suite_ui_smoke.gd` | 메인 씬을 실제로 인스턴스화하고 오버레이를 호출 — 런타임 오류, 격발 중 재입력 잠금·총기별 표시 템포, 구역별 일반전 밀도, 상층 대표 편성 QA, 동거리 4체 편성 슬롯 검출 |
 
 ### 드리프트 검사에 대해
 

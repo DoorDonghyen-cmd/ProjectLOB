@@ -1,6 +1,7 @@
 extends Control
 
 const CampaignContentScript := preload("res://scripts/core/campaign_content.gd")
+const EnemyRosterScript := preload("res://scripts/core/enemy_roster.gd")
 const ItemCatalogScript := preload("res://scripts/core/item_catalog.gd")
 
 ## ═══════════════════════════════════════════════════
@@ -413,6 +414,68 @@ func trigger_scan_guidance_test() -> void:
 	_show_map_screen()
 
 
+## 화력/관통/명중/제어 전문축 카드와 전문축 교대 결산을 즉시 확인한다.
+func trigger_ammo_specialty_test() -> void:
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_current_gun_data = _gun_revolver
+	_rm.start_new_run("section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+
+	_rm.deck.clear()
+	for bullet_id in [
+		"marker", "jammer", "borer", "shred", "chain", "finale", "impact", "adhesive",
+	]:
+		var bullet: BulletData = load("res://resources/bullets/%s.tres" % bullet_id)
+		if bullet != null:
+			_rm.deck.append(bullet.duplicate())
+
+	_start_combat_phase([_enemy_tank, _enemy_dodger, _enemy_rusher] as Array[EnemyData])
+	if _combat_overlay:
+		_combat_overlay.clear_combat_log()
+		_combat_overlay.add_combat_log(
+			"[color=#ffff66]🛠️ 탄환 전문축 QA — [명중] [관통] [화력] [제어][/color]")
+		_combat_overlay.add_combat_log(
+			"[color=#88ff88]· 카드 첫 배지와 툴팁의 운용 분류를 비교하십시오.[/color]")
+		_combat_overlay.add_combat_log(
+			"[color=#ffcc44]· 서로 다른 전문축 뒤 교대탄 결산, 같은 전문축의 리듬 유지를 확인하십시오.[/color]")
+
+
+## 관리·정점의 대표 4체 일반전을 즉시 비교하는 수동 플레이테스트 진입점.
+## 편성은 EnemyRoster의 실제 종반 후보를 그대로 쓰고, Workhorse와 동일 전술탄 묶음으로
+## 계층 간 탄환 순서·거리 압력 차이만 비교한다.
+func trigger_upper_roster_test(section: String) -> void:
+	if not EnemyRosterScript.UPPER_QA_ENCOUNTER_IDS.has(section):
+		push_warning("상층 편성 QA를 지원하지 않는 계층: %s" % section)
+		return
+
+	_is_shortcut_mode = true
+	_title_overlay.visible = false
+	_current_gun_data = _gun_revolver
+	_rm.start_new_run(section, _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+
+	# 같은 전술탄 풀로 관리/정점을 번갈아 플레이해 편성 차이만 비교한다.
+	_rm.deck.clear()
+	for bullet_id in [
+		"marker", "borer", "jammer", "shred", "guide", "align",
+		"chain", "crosscal", "pierce", "finale", "impact",
+	]:
+		var bullet: BulletData = load("res://resources/bullets/%s.tres" % bullet_id)
+		if bullet != null:
+			_rm.deck.append(bullet.duplicate())
+
+	var enemy_list: Array[EnemyData] = EnemyRosterScript.load_upper_qa_encounter(section)
+	_start_combat_phase(enemy_list)
+	if _combat_overlay:
+		var section_name := str(MapGenerator.section_info(section).get("name", section))
+		_combat_overlay.clear_combat_log()
+		_combat_overlay.add_combat_log(
+			"[color=#ffff66]🛠️ %s 종반 4체 편성 QA — Workhorse 공통 탄약[/color]" % section_name)
+		_combat_overlay.add_combat_log(
+			"[color=#88ff88]· 적의 거리·게이트를 읽고 마지막에 넣은 탄부터 발사되도록 순서를 설계하십시오.[/color]")
+		_combat_overlay.add_combat_log(
+			"[color=#ffcc44]· 승패보다 첫 위협 제거 시점, 긴급 격퇴 사용 시점, 재장전 가능 여부를 비교하십시오.[/color]")
+
+
 ## 🛠️ 보스 전투 테스트 — 개발자 테스트 메뉴에서 보스전을 즉시 실행한다.
 ## boss_id에 따라 해당 보스와 호위 대열을 조합하여 전투를 개시한다.
 func trigger_boss_test(boss_id: String) -> void:
@@ -440,8 +503,8 @@ func trigger_boss_test(boss_id: String) -> void:
 	var enemy_list: Array[EnemyData] = CampaignContentScript.load_gate_encounter(section)
 	var boss_name: String = str({
 		"boss_director": "디렉터 강",
-		"boss_seraph": "세라프 프로토콜",
-		"boss_omega": "실험체 Ω",
+		"boss_seraph": "세라프 방어 프로토콜",
+		"boss_omega": "적합성 개조체 Ω",
 		"boss_lob_core": "L.O.B 코어",
 	}.get(boss_id, "보스 테스트"))
 	
@@ -540,61 +603,10 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 		elif is_major_gate:
 			enemy_list = CampaignContentScript.load_gate_encounter(section)
 		else:
-			# 일반전 스폰 분기.
-			# 구간은 계층 층수에 비례한다(MapGenerator.floor_tier). 절대 층 번호로 가르면
-			# 층수가 적은 계층에서 종반 구성이 통째로 도달 불가가 된다.
+			# 일반전 편성은 EnemyRoster가 단일 정본이다. 구간은 계층 층수에 비례하며,
+			# 관리 계층과 정점은 서로 다른 후보 풀을 사용한다.
 			var tier := MapGenerator.floor_tier(section, floor_num)
-			match section:
-				"section_a":
-					# 침전 거주구: 입문 - 기본 3종만 스폰
-					if tier == 0:
-						enemy_list = [_enemy_rusher] if randf() < 0.5 else [_enemy_rusher, _enemy_dodger]
-					elif tier == 1:
-						enemy_list = [_enemy_rusher, _enemy_tank] if randf() < 0.5 else [_enemy_dodger, _enemy_tank]
-					else:
-						enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
-				"section_b":
-					# 공역: 초급 - 술사(Caster), 드론(Drone) 유입
-					if tier == 0:
-						enemy_list = [_enemy_rusher, _enemy_dodger]
-					elif tier == 1:
-						enemy_list = [_enemy_rusher, _enemy_tank, _enemy_drone]
-					else:
-						enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
-				"section_c":
-					# 정비 계층: 중급 - 스펀지(Absorber) 유입
-					if tier == 0:
-						enemy_list = [_enemy_rusher, _enemy_tank, _enemy_dodger]
-					elif tier == 1:
-						enemy_list = [_enemy_tank, _enemy_caster, _enemy_drone]
-					else:
-						enemy_list = [_enemy_absorber, _enemy_rusher, _enemy_caster]
-				_:
-					# 관리 계층 & 정점: 상급/도전.
-					# 이 계층에 도달했다면 이미 20층 이상 오른 상태라 입문 구성은 두지 않는다.
-					var r := randf()
-					if tier == 0:
-						if r < 0.33:
-							enemy_list = [_enemy_rusher, _enemy_tank]
-						elif r < 0.66:
-							enemy_list = [_enemy_rusher, _enemy_drone, _enemy_caster]
-						else:
-							enemy_list = [_enemy_scrambler, _enemy_dodger]
-					elif tier == 1:
-						if r < 0.33:
-							enemy_list = [_enemy_tank, _enemy_dodger, _enemy_caster]
-						elif r < 0.66:
-							enemy_list = [_enemy_scrambler, _enemy_drone, _enemy_caster]
-						else:
-							enemy_list = [_enemy_stalker, _enemy_scrambler, _enemy_tank]
-					else:
-						if r < 0.33:
-							enemy_list = [_enemy_absorber, _enemy_scrambler, _enemy_neuro_caster]
-						elif r < 0.66:
-							enemy_list = [_enemy_tank, _enemy_stalker, _enemy_caster]
-						else:
-							enemy_list = [_enemy_rusher, _enemy_stalker, _enemy_drone, _enemy_neuro_caster]
-
+			enemy_list = EnemyRosterScript.load_regular_encounter(section, tier)
 			enemy_list = _increase_regular_enemy_density(section, tier, enemy_list)
 
 		_start_combat_phase(enemy_list)
@@ -616,34 +628,8 @@ func _increase_regular_enemy_density(
 ) -> Array:
 	var result: Array = enemy_list.duplicate()
 	var density_roll := randf() if roll < 0.0 else clampf(roll, 0.0, 1.0)
-	var target_count := result.size()
-	var candidates: Array = []
-
-	match section:
-		"section_a":
-			# 온보딩은 유지하고 중반에만 간헐적으로 3체 편성을 노출한다.
-			if tier == 1 and density_roll >= 0.67:
-				target_count = 3
-			candidates = [_enemy_rusher, _enemy_dodger, _enemy_tank]
-		"section_b":
-			if tier == 0:
-				target_count = 3
-			elif tier == 1:
-				target_count = 4 if density_roll >= 0.5 else 3
-			else:
-				target_count = 4
-			candidates = [_enemy_rusher, _enemy_dodger, _enemy_drone, _enemy_caster, _enemy_tank]
-		"section_c":
-			target_count = 3 if tier == 0 else 4
-			candidates = [_enemy_rusher, _enemy_drone, _enemy_dodger, _enemy_caster, _enemy_tank, _enemy_absorber]
-		_:
-			# 관리 계층과 정점은 일반전만 3/4/4체로 고정한다.
-			target_count = 3 if tier == 0 else 4
-			candidates = [
-				_enemy_rusher, _enemy_drone, _enemy_dodger, _enemy_caster,
-				_enemy_scrambler, _enemy_stalker, _enemy_neuro_caster,
-				_enemy_tank, _enemy_absorber,
-			]
+	var target_count := EnemyRosterScript.target_count(section, tier, result.size(), density_roll)
+	var candidates: Array = EnemyRosterScript.load_density_candidates(section)
 
 	# 같은 적을 중복 추가하지 않아 기존 편성의 역할 조합을 보존한다.
 	for candidate in candidates:

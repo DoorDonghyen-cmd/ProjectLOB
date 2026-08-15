@@ -59,14 +59,14 @@ static func _fire_and_get_hp(gun: GunData, enemy_data: EnemyData, parts: Array[P
 	return hp
 
 
-## 역할 순서를 실제 격발 순서대로 받아 LIFO 탄창에 역순 장전한다.
+## 전문축 순서를 실제 격발 순서대로 받아 LIFO 탄창에 역순 장전한다.
 static func _fire_roles_and_get_hp(gun: GunData, enemy_data: EnemyData, parts: Array[PartData],
-		dmg: int, acc: int, pen: int, roles_in_fire_order: Array[String]) -> int:
+		dmg: int, acc: int, pen: int, specialties_in_fire_order: Array[String]) -> int:
 	var cm = CombatManagerScript.new()
 	var loadout: Array[BulletData] = []
-	for i in range(roles_in_fire_order.size() - 1, -1, -1):
+	for i in range(specialties_in_fire_order.size() - 1, -1, -1):
 		var bullet := _bullet(dmg, acc, pen)
-		bullet.role = roles_in_fire_order[i]
+		bullet.specialty = specialties_in_fire_order[i]
 		loadout.append(bullet)
 	var enemies: Array[EnemyData] = [enemy_data]
 	cm.start_encounter(gun, enemies, loadout, parts)
@@ -146,29 +146,29 @@ static func run(t) -> void:
 	# ⭐ 상시가 아님을 못박는다: 만약 상시 PEN+1이었다면 전탄 관통(HP 5)이 됐을 것.
 	t.check(ap_on > 5, "⭐ 철갑총열은 상시 PEN이 아님 — 전탄 관통(HP 5)이 아니어야 함")
 
-	# ── 만능 약실: **직전과 역할이 다를 때만** ACC+1/PEN+1 (역할 교대 조건) ──
-	# 같은 역할만 연사하면 발동하지 않으므로 PEN2 < DEF3 도탄이 유지된다.
+	# ── 만능 약실: **직전과 전문축이 다를 때만** ACC+1/PEN+1 ──
+	# 같은 전문축만 연사하면 발동하지 않으므로 PEN2 < DEF3 도탄이 유지된다.
 	# (상시 PEN+1이었다면 전탄 관통해 HP 5가 됐을 것 — 그렇지 않음을 확인한다.)
 	var vc_same := _fire_and_get_hp(gun, _enemy(20, 3, 0), [_part(Enums.PartID.VERSATILE_CHAMBER)] as Array[PartData], 3, 7, 2, 5)
-	t.check(vc_same > 5, "⭐ 만능약실: 동일 역할 연사 시 상시 보정 아님 (HP %d)" % vc_same)
-	var alternating_roles: Array[String] = ["attack", "link", "attack"]
+	t.check(vc_same > 5, "⭐ 만능약실: 동일 전문축 연사 시 상시 보정 아님 (HP %d)" % vc_same)
+	var alternating_roles: Array[String] = ["damage", "accuracy", "damage"]
 	var vc_alternating := _fire_roles_and_get_hp(
 		gun, _enemy(20, 3, 0), [_part(Enums.PartID.VERSATILE_CHAMBER)] as Array[PartData],
 		3, 7, 2, alternating_roles
 	)
 	t.eq(vc_alternating, 14,
-		"만능약실: 첫 탄 이후 역할 교대 2회에 PEN+1이 붙어 2발 관통")
+		"만능약실: 첫 탄 이후 전문축 교대 2회에 PEN+1이 붙어 2발 관통")
 
-	# 인터럽터: 첫 탄은 기본 피해, 이후 역할 교대마다 DMG+3.
+	# 인터럽터: 첫 탄은 기본 피해, 이후 전문축 교대마다 DMG+3.
 	var interrupt_on := _fire_roles_and_get_hp(
 		gun, _enemy(40, 0, 0), [_part(Enums.PartID.INTERRUPTER)] as Array[PartData],
 		2, 7, 0, alternating_roles
 	)
 	t.eq(interrupt_on, 27, "인터럽터 12 + 경량탄 세 번째 집중 1 = 총 13 대미지")
 
-	# 리듬 챔버: 역할을 유지한 2·4번째 박자만 DMG+1, 역할을 바꾸면 카운트가 리셋된다.
-	var same_role_four: Array[String] = ["attack", "attack", "attack", "attack"]
-	var alternating_four: Array[String] = ["attack", "link", "attack", "link"]
+	# 리듬 챔버: 전문축을 유지한 2·4번째 박자만 DMG+1, 전문축을 바꾸면 카운트가 리셋된다.
+	var same_role_four: Array[String] = ["damage", "damage", "damage", "damage"]
+	var alternating_four: Array[String] = ["damage", "accuracy", "damage", "accuracy"]
 	var rhythm_same := _fire_roles_and_get_hp(
 		gun, _enemy(40, 0, 0), [_part(Enums.PartID.RHYTHM_CHAMBER)] as Array[PartData],
 		2, 7, 0, same_role_four

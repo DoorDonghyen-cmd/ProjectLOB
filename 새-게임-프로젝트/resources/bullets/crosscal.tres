@@ -6,10 +6,11 @@
 [resource]
 script = ExtResource("1")
 display_name = "교대탄"
-description = "직전 탄환과 역할이 다르면 피해 4를 더합니다."
+description = "직전 탄환과 전문축이 다르면 피해 4를 더합니다."
 icon = ExtResource("2")
 family = "special"
 role = "attack"
+specialty = "damage"
 weapon_class = 5
 trigger = "on_effective_hit"
 scope = "self"

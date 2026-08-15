@@ -48,6 +48,9 @@ static func resource_snapshot(resource: Resource) -> Dictionary:
 		result["part_id"] = int(resource.part_id)
 	if resource is GunData or resource is BulletData:
 		result["weapon_class"] = int(resource.weapon_class)
+	if resource is BulletData:
+		result["role"] = resource.role
+		result["specialty"] = resource.specialty
 	return result
 
 

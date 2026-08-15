@@ -47,8 +47,8 @@
 
 1. **폭동 돌격병 (Rusher)**: HP 8 / SPD 3 / DEF 1 / PRES 0 / EVA 2 — 초근접 고속 돌격으로 신속 처치 요구.
 2. **진압 방패병 (Tank)**: HP 12 / SPD 1 / DEF 5 / PRES 2 / EVA 1 — **3발 격발 후 회피 돌격 태세**(`IRON_SHIELD` ↔ `ACTIVE_DODGER`) 교대. LIFO 장전 순서 및 Unload 유도를 강제하는 핵심 기믹 적.
-3. **나노 침투병 (Dodger)**: HP 6 / SPD 2 / DEF 1 / PRES 0 / EVA 6 — 높은 회피력으로 AP탄을 무력화하며 매치그레이드나 JHP 탄을 강제함.
-4. **경보 공중 드론 (Sentry Drone)**: HP 4 / SPD 2 / DEF 0 / PRES 0 / EVA 5 — 거리에 따른 넉백에 대해 면역 또는 상쇄(넉백 거리 -1 감산) 능력을 지닌 비행 기체.
+3. **광학 굴절병 (Dodger)**: HP 6 / SPD 2 / DEF 1 / PRES 0 / EVA 6 — 높은 회피력으로 AP탄을 무력화하며 매치그레이드나 JHP 탄을 강제함.
+4. **경보 순찰 드론 (Sentry Drone)**: HP 4 / SPD 2 / DEF 0 / PRES 0 / EVA 5 — 거리에 따른 넉백에 대해 면역 또는 상쇄(넉백 거리 -1 감산) 능력을 지닌 비행 기체.
 5. **특수보안 부장 '센트리' (Boss)**: HP 30 / SPD 1 / DEF 4 / PRES 2 / EVA 4 — 일정 거리 진입 시 넉백 방지 실드를 전개하고 2페이즈 돌입 시 SPD가 2로 상승.
 
 ### 10.2 인지적 스탯 밴드 (Cognitive Stat Bands)

@@ -97,7 +97,7 @@ static func run(t) -> void:
 	t.check(cs.advance_charger(), "3턴째 충전 완료 → 격발")
 	t.check(not cs.advance_charger(), "격발 후 카운터 리셋")
 
-	# ── 삼단 태세(실험체 Ω): IRON→DODGER→RUSH→IRON, 2발 주기 ──
+	# ── 삼단 태세(적합성 개조체 Ω): IRON→DODGER→RUSH→IRON, 2발 주기 ──
 	var om := _enemy(Enums.EnemyArchetype.BOSS_SCRAMBLER)
 	t.check(om.has_triple_stance, "Ω 삼단 태세 활성")
 	t.eq(om.current_stance, Enums.EnemyStance.IRON_SHIELD, "시작 IRON_SHIELD")

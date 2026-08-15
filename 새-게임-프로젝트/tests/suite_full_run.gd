@@ -62,7 +62,7 @@ static func run(t) -> void:
 	# 9mm 고정 프로필은 고명중 전술탄 ACC8을 9로 올려 EVA9에 정확히 닿는다.
 	# DMR은 전용 우회, 9mm는 탄환 선택을 요구하는 보조 카운터로 역할이 다르다.
 	t.eq(_encounter(gun, "res://resources/enemies/nano_stalker.tres", B_MAXACC).result, "won",
-		"나노 스토커 EVA9 — 9mm 고명중 프로필로 임계값 도달")
+		"광학 추적체 03 EVA9 — 9mm 고명중 프로필로 임계값 도달")
 
 	# 크래시/행 없이 종결되는지 스캔 (일반 특수 적 + 보스 4종 = 보스 전용 코드 경로 구동)
 	var scan := [

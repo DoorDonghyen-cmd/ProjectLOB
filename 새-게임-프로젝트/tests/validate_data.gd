@@ -96,7 +96,7 @@ static func _validate_bullets(t) -> void:
 	var seen: Dictionary = {}
 	var cols := _col_map(rows[0])
 	var required := [
-		"id", "display_name", "caliber", "family", "is_basic", "role",
+		"id", "display_name", "caliber", "family", "is_basic", "role", "specialty",
 		"damage", "penetration", "accuracy", "knockback", "slow",
 		"effect_type", "effect_value", "trigger", "scope", "condition", "description"
 	]
@@ -115,6 +115,7 @@ static func _validate_bullets(t) -> void:
 	var valid_classes := ["pistol", "smg", "rifle", "dmr", "shotgun", "universal"]
 	var valid_families := ["basic", "support", "special", "control"]
 	var valid_roles := ["attack", "link", "control"]
+	var valid_specialties := ["damage", "penetration", "accuracy", "control"]
 	var valid_triggers := ["none", "on_hit", "on_effective_hit"]
 	var valid_scopes := ["none", "next_shot", "target", "remaining_mag", "formation", "self"]
 	var valid_conditions := ["none", "previous_effective", "last_shot", "first_shot", "role_change"]
@@ -131,6 +132,7 @@ static func _validate_bullets(t) -> void:
 
 		var is_basic := _cell(r, cols, "is_basic").to_lower()
 		var role := _cell(r, cols, "role").to_lower()
+		var specialty := _cell(r, cols, "specialty").to_lower()
 		var cls := _cell(r, cols, "caliber").to_lower()
 		var family := _cell(r, cols, "family").to_lower()
 		var trigger := _cell(r, cols, "trigger").to_lower()
@@ -138,6 +140,8 @@ static func _validate_bullets(t) -> void:
 		var condition := _cell(r, cols, "condition").to_lower()
 		t.check(is_basic in ["true", "false"], "%s: is_basic bool" % where)
 		t.check(role in valid_roles, "%s: role '%s' 유효" % [where, role])
+		t.check(specialty in valid_specialties,
+			"%s: specialty '%s' 유효" % [where, specialty])
 		t.check(cls in valid_classes, "%s: caliber '%s' 유효" % [where, cls])
 		t.check(family in valid_families, "%s: family '%s' 유효" % [where, family])
 		t.check(trigger in valid_triggers, "%s: trigger '%s' 유효" % [where, trigger])

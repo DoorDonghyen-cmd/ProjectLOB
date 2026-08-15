@@ -83,8 +83,8 @@ static func run(t) -> void:
 	t.eq(pen_critical.damages, [2, 4], "⭐ 천공→9mm 결정형 PEN 크리티컬")
 	t.eq(int(pen_critical.pending_pen), 0, "인접 PEN 버프는 다음 1발에서 소비")
 
-	# 관통 실패한 파쇄탄도 '명중' 효과는 적용되지만 흡수체 셀은 유지된다.
-	var shred_gate := _fight("revolver", "absorber_mech", ["shred"])
+	# 산탄 프로필에서 PEN이 1 감소한 파쇄탄은 도탄해도 '명중' 효과를 적용한다.
+	var shred_gate := _fight("shotgun", "absorber_mech", ["shred"])
 	t.eq(int(shred_gate.def), 2, "⭐ 파쇄탄 명중으로 흡수체 DEF 4→2")
 	t.eq(int(shred_gate.exile), 1, "피해 0 범용 파쇄탄은 전투 풀에서 소멸")
 	t.check(not shred_gate.dead, "피해 0은 흡수체 배리어 유효타가 아님")
@@ -111,9 +111,9 @@ static func run(t) -> void:
 	var opener := _fight("revolver", "tank", ["opener"])
 	t.eq(int(opener.def), 2, "선제탄 첫 발 명중 시 DEF -1")
 
-	# 연계 역할 뒤 공격 역할 교대탄을 발사하면 역할 경계를 읽는다.
+	# 명중 전문축 뒤 화력 전문축 교대탄을 발사하면 전문축 경계를 읽는다.
 	var crosscal := _fight("revolver", "rusher", ["marker", "crosscal"])
-	t.check(crosscal.dead, "교대탄이 공격·연계 역할 경계를 읽음")
+	t.check(crosscal.dead, "교대탄이 명중·화력 전문축 경계를 읽음")
 	t.eq(crosscal.damages, [2, 6], "교대탄 2+4")
 
 	var control := _fight("revolver", "caster", ["impact"])

@@ -10,6 +10,7 @@ extends RefCounted
 ## 렌더링 없이 이 계층의 오류를 잡을 수 있다.
 
 const MAIN_SCENE := "res://scenes/combat/combat_scene.tscn"
+const EnemyRosterScript := preload("res://scripts/core/enemy_roster.gd")
 
 
 static func _has_label_text(root: Node, fragment: String) -> bool:
@@ -143,6 +144,12 @@ static func run(t, tree: SceneTree) -> void:
 	t.check(unlock_ascension_btn != null, "개발자 테스트 메뉴에 모든 승천 해금 버튼 존재")
 	var scan_guidance_btn := _find_button_text(scene._title_overlay._dev_test_panel, "스캔·연계·결산 QA")
 	t.check(scan_guidance_btn != null, "⭐ 모바일 스캔·연계·결산 개발자 테스트 버튼 존재")
+	var ammo_specialty_btn := _find_button_text(scene._title_overlay._dev_test_panel, "탄환 전문축 QA")
+	t.check(ammo_specialty_btn != null, "⭐ 화력·관통·명중·제어 개발자 테스트 버튼 존재")
+	var management_roster_btn := _find_button_text(scene._title_overlay._dev_test_panel, "관리 계층 편성 QA")
+	t.check(management_roster_btn != null, "⭐ 관리 계층 편성 개발자 테스트 버튼 존재")
+	var apex_roster_btn := _find_button_text(scene._title_overlay._dev_test_panel, "정점 편성 QA")
+	t.check(apex_roster_btn != null, "⭐ 정점 편성 개발자 테스트 버튼 존재")
 	var prev_unlocked_weapons: Array[String] = RunManager.meta_unlocked_weapons.duplicate()
 	var prev_ascension_unlocked := RunManager.meta_ascension_unlocked
 	var prev_ascension_level := RunManager.meta_ascension_level
@@ -191,6 +198,34 @@ static func run(t, tree: SceneTree) -> void:
 			"전부 초기화는 오작동 방지 확인창을 표시")
 		scene._title_overlay._reset_confirmation.hide()
 	scene._title_overlay._dev_test_panel.visible = false
+
+	# ── 상층 편성 QA: 실제 EnemyRoster 대표 후보로 즉시 전투 진입 ──
+	scene.trigger_upper_roster_test("section_d")
+	t.check(scene._cm != null and scene._cm.gun_is("revolver"),
+		"관리 계층 편성 QA는 공통 Workhorse로 시작")
+	if scene._cm != null:
+		var management_names: Array[String] = []
+		var expected_management_names: Array[String] = []
+		for enemy in scene._cm.enemies:
+			management_names.append(enemy.data.display_name)
+		for enemy_id in EnemyRosterScript.upper_qa_encounter_ids("section_d"):
+			var expected_enemy := load("res://resources/enemies/%s.tres" % enemy_id) as EnemyData
+			expected_management_names.append(expected_enemy.display_name)
+		t.eq(management_names, expected_management_names,
+			"⭐ 관리 계층 대표 4체가 실제 전투에 배치")
+
+	scene.trigger_upper_roster_test("section_e")
+	if scene._cm != null:
+		var apex_names: Array[String] = []
+		var expected_apex_names: Array[String] = []
+		for enemy in scene._cm.enemies:
+			apex_names.append(enemy.data.display_name)
+		for enemy_id in EnemyRosterScript.upper_qa_encounter_ids("section_e"):
+			var expected_enemy := load("res://resources/enemies/%s.tres" % enemy_id) as EnemyData
+			expected_apex_names.append(expected_enemy.display_name)
+		t.eq(apex_names, expected_apex_names,
+			"⭐ 정점 대표 4체가 실제 전투에 배치")
+	scene._is_shortcut_mode = false
 
 	# ── 준비실: 시작 계층 표기 갱신 ──
 	scene.show_loadout_screen(str(RunManager.SECTION_ORDER[0]))
@@ -292,6 +327,7 @@ static func run(t, tree: SceneTree) -> void:
 		var preview_attack := BulletData.new()
 		preview_attack.display_name = "예고 공격탄"
 		preview_attack.role = BulletRoleUI.ATTACK
+		preview_attack.specialty = BulletRoleUI.SPECIALTY_DAMAGE
 		preview_attack.damage = 2
 		preview_attack.accuracy = 7
 		preview_attack.penetration = 0
@@ -301,6 +337,7 @@ static func run(t, tree: SceneTree) -> void:
 		var preview_link := BulletData.new()
 		preview_link.display_name = "예고 천공탄"
 		preview_link.role = BulletRoleUI.LINK
+		preview_link.specialty = BulletRoleUI.SPECIALTY_PENETRATION
 		preview_link.scope = BulletRoleUI.SCOPE_NEXT_SHOT
 		preview_link.trigger = "on_effective_hit"
 		preview_link.effect_type = Enums.BulletEffect.BUFF_PEN
@@ -314,7 +351,7 @@ static func run(t, tree: SceneTree) -> void:
 		t.check(guidance_ov._loading_guidance_label.text.contains("관통 전환 1발"),
 			"⭐ 현재 LIFO 순서와 최근접 표적 기준 관통 전환 발수 표시")
 		t.check(guidance_ov._loading_guidance_label.text.contains("결산 성공"),
-			"⭐ 역할 교대 결산 성공 여부 표시")
+			"⭐ 전문축 교대 결산 성공 여부 표시")
 		t.check(guidance_ov._loading_guidance_label.text.contains("예상 주 피해 9"),
 			"⭐ 게이트 개방 크리티컬을 포함한 예상 주 피해 표시")
 		t.check(_has_label_text(guidance_ov._loading_stack_vbox, "[결산]"),
@@ -353,10 +390,10 @@ static func run(t, tree: SceneTree) -> void:
 	if scene._cm != null:
 		t.check(scene._cm.gun_is("smg"), "⭐ 기관단총 연발 체인 테스트가 Tempo로 시작됨")
 		t.check(scene._cm.is_full_auto(), "기관단총 QA 숏컷도 연발")
-	t.check(_has_label_text(scene._combat_overlay, "[연계]"),
-		"⭐ 장전 UI에 연계 역할 배지 렌더")
-	t.check(_has_label_text(scene._combat_overlay, "[공격]"),
-		"⭐ 장전 UI에 공격 역할 배지 렌더")
+	t.check(_has_label_text(scene._combat_overlay, "[명중]"),
+		"⭐ 장전 UI에 명중 전문축 배지 렌더")
+	t.check(_has_label_text(scene._combat_overlay, "[화력]"),
+		"⭐ 장전 UI에 화력 전문축 배지 렌더")
 	scene._combat_overlay._toggle_drawer(true)
 	t.check(_has_label_text(scene._combat_overlay, "보급 6/6"),
 		"⭐ Tempo 가방 첫 칸에 약실 포함 기본 보급 6/6 표시")
@@ -396,6 +433,50 @@ static func run(t, tree: SceneTree) -> void:
 	#    "펑" 하고 끝나 장전 순서가 전혀 읽히지 않는다. 로직은 그대로 두고
 	#    bullet_fired를 큐에 쌓아 간격을 두고 재생한다(정본 §21.5).
 	if ov != null:
+		# ── 격발 입력 잠금과 총기별 표시 템포 ──
+		# 회귀 배경(2026-08-15 플레이테스트): 첫 탄의 피격 연출 전에 발사 버튼을
+		# 연타하면 여러 턴이 즉시 정산되어 단발 총기도 연발처럼 느껴졌다.
+		t.eq(ov.fire_step_interval_for_gun_id("smg"), 0.13,
+			"⭐ Tempo 연발 내부 간격 0.13초")
+		t.eq(ov.fire_step_interval_for_gun_id("suppressor"), 0.20,
+			"⭐ Suppressor 연발 내부 간격 0.20초")
+		t.check(
+			ov.minimum_fire_lock_for_gun_id("gambler")
+			< ov.minimum_fire_lock_for_gun_id("dmr"),
+			"단발 기관단총보다 DMR의 표시 회복 시간이 김"
+		)
+		t.check(
+			ov.minimum_fire_lock_for_gun_id("shotgun") <= 0.55,
+			"샷건 표시 회복 시간이 35층 반복 플레이 상한 안에 있음"
+		)
+
+		# 버튼 disabled만으로는 동일 프레임 재호출을 막을 수 없으므로 핸들러도 잠근다.
+		ov._fire_fx_queue.clear()
+		ov._fx_playing = false
+		var lock_bullet: BulletData = scene._cm.basic_supply_bullet
+		t.check(lock_bullet != null, "입력 잠금 검증용 기본 보급탄 존재")
+		if lock_bullet != null:
+			var lock_load: Array[BulletData] = [lock_bullet, lock_bullet]
+			scene._cm.confirm_loading(lock_load)
+			var remaining_before_lock: int = scene._cm.magazine.get_remaining()
+			var state_before_lock: int = scene._cm.state
+			ov._fx_playing = true
+			ov._update_action_buttons()
+			t.check(
+				ov._fire_btn.disabled and ov._unload_btn.disabled and ov._reload_btn.disabled,
+				"⭐ 격발 연출 중 전투 액션 버튼 일괄 잠금"
+			)
+			ov._on_fire_pressed()
+			ov._on_unload_pressed()
+			ov._on_reload_pressed()
+			t.eq(scene._cm.magazine.get_remaining(), remaining_before_lock,
+				"⭐ 연출 중 재입력이 탄창을 추가 소비하지 않음")
+			t.eq(scene._cm.state, state_before_lock,
+				"⭐ 연출 중 재입력이 다음 턴·재장전을 선계산하지 않음")
+			ov._fx_playing = false
+			ov._update_action_buttons()
+			t.check(not ov._fire_btn.disabled, "연출 종료 후 발사 입력 재개")
+
 		ov._fire_fx_queue.clear()
 		ov._fx_playing = false
 		var b1 := BulletData.new()

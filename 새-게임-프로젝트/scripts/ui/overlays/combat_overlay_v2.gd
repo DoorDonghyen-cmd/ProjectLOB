@@ -102,7 +102,21 @@ var _recoil_tween: Tween
 ##    그렇다고 전투 로직을 비동기로 만들면 결정론이 흔들리므로,
 ##    로직은 그대로 두고 `bullet_fired` 이벤트를 큐에 쌓아 간격을 두고 재생한다.
 ##    (GDD §21.5: "다탄 발사는 반드시 순차 연출")
-const FX_STEP_INTERVAL := 0.18   ## 발 사이 간격(초). "타닥 타닥"이 느껴지는 최소치
+const FX_STEP_INTERVAL := 0.18   ## 총기 식별 실패 시 사용하는 기본 발 사이 간격(초)
+const TEMPO_FX_STEP_INTERVAL := 0.13
+const SUPPRESSOR_FX_STEP_INTERVAL := 0.20
+const FULL_AUTO_POST_BURST_HOLD := 0.18
+## 단발 총기의 한 번 격발이 다음 입력을 열기까지 보장하는 최소 표시 시간.
+## 전투 턴·대미지에는 영향을 주지 않고, 피격 결과를 읽기 전에 다음 턴이 선계산되는 것만 막는다.
+const SINGLE_FIRE_LOCK_SECONDS := {
+	"gambler": 0.32,
+	"revolver": 0.34,
+	"trickster": 0.34,
+	"stance_hunter": 0.42,
+	"heavy": 0.44,
+	"dmr": 0.48,
+	"shotgun": 0.52,
+}
 ## 탄알이 총구에서 표적까지 날아가는 시간.
 ## ⚠️ 너무 짧으면(≤0.08s = 5프레임 이하) 궤적이 아니라 번쩍임으로 보인다.
 const TRACER_TRAVEL := 0.28
@@ -884,7 +898,8 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	title_hbox.add_child(title_lbl)
 
 	var role_lbl: Label = parent_scene.make_label(
-		BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
+		BulletRoleUI.specialty_badge_text(bullet.specialty), 9.0,
+		BulletRoleUI.specialty_color(bullet.specialty))
 	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	role_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(role_lbl)
@@ -1351,6 +1366,15 @@ func _update_action_buttons() -> void:
 		_reload_btn.disabled = true
 		if _eject_btn.visible: _eject_btn.disabled = true
 		return
+
+	# 시뮬레이션은 즉시 끝나도 플레이어는 아직 그 결과를 보고 있다.
+	# 큐 재생 중 다음 행동을 받으면 단발 총기도 연발처럼 여러 턴을 선계산하게 된다.
+	if _is_action_resolution_locked():
+		_fire_btn.disabled = true
+		_unload_btn.disabled = true
+		_reload_btn.disabled = true
+		if _eject_btn.visible: _eject_btn.disabled = true
+		return
 		
 	var has_ammo := not combat_manager.magazine.is_empty()
 	_fire_btn.disabled = not has_ammo
@@ -1408,6 +1432,8 @@ func _on_fire_pressed() -> void:
 			_on_loading_confirm()
 			return
 		if combat_manager.state == CombatManager.State.PLAYER_TURN:
+			if _is_action_resolution_locked():
+				return
 			clear_combat_log()
 			
 			# 연발은 탄창 전체가 한 번에 처리되므로, 연출이 한 발씩 재생되는 동안
@@ -1447,6 +1473,8 @@ func _on_unload_pressed() -> void:
 		
 	# PLAYER_TURN 중 빼내기 로직 활성화
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
+		if _is_action_resolution_locked():
+			return
 		if combat_manager.has_method("request_unload"):
 			combat_manager.request_unload()
 		else:
@@ -1455,12 +1483,16 @@ func _on_unload_pressed() -> void:
 
 func _on_reload_pressed() -> void:
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
+		if _is_action_resolution_locked():
+			return
 		combat_manager.request_reload()
 		_update_action_buttons()
 		_update_phase_state()
 
 func _on_eject_pressed() -> void:
 	if combat_manager and combat_manager.state == CombatManager.State.PLAYER_TURN:
+		if _is_action_resolution_locked():
+			return
 		if combat_manager.has_method("request_eject"):
 			combat_manager.request_eject()
 		_update_action_buttons()
@@ -1665,6 +1697,7 @@ func _on_bullet_fired(
 
 	if not _fx_playing:
 		_pump_fire_fx()
+	_update_action_buttons()
 
 
 ## 큐를 하나씩 꺼내 간격을 두고 재생한다.
@@ -1672,6 +1705,10 @@ func _pump_fire_fx() -> void:
 	if _fx_playing:
 		return
 	_fx_playing = true
+	var action_started_msec := Time.get_ticks_msec()
+	var gun_id := _current_gun_id()
+	var step_interval := fire_step_interval_for_gun_id(gun_id)
+	var is_full_auto_action := combat_manager != null and combat_manager.is_full_auto()
 
 	# ⚠️ 재생 후 **항상 간격을 기다린 뒤** 큐를 다시 본다.
 	#    대기 전에 종료를 판정하면, 버스트의 나머지 탄이 아직 도착하지 않은
@@ -1690,13 +1727,13 @@ func _pump_fire_fx() -> void:
 
 		if not is_inside_tree():
 			break
-		await get_tree().create_timer(FX_STEP_INTERVAL).timeout
+		await get_tree().create_timer(step_interval).timeout
 		if not is_instance_valid(self) or not is_inside_tree():
 			return
 
 	# 마지막 탄도 실제 표적에 도착할 때까지 기다린다. 발사 간격보다 비행 시간이 길어
 	# 이 꼬리 시간을 두지 않으면 마지막 피격 전에 결과창이 전투 화면을 덮는다.
-	var tracer_tail := maxf(TRACER_TRAVEL - FX_STEP_INTERVAL, 0.0)
+	var tracer_tail := maxf(TRACER_TRAVEL - step_interval, 0.0)
 	if tracer_tail > 0.0 and is_inside_tree():
 		await get_tree().create_timer(tracer_tail).timeout
 		if not is_instance_valid(self) or not is_inside_tree():
@@ -1708,11 +1745,29 @@ func _pump_fire_fx() -> void:
 		if not is_instance_valid(self) or not is_inside_tree():
 			return
 
+	# 적 이동은 결과가 탄환 도착으로 드러난 뒤 시작한다. 이 상태에서도 입력 잠금은 유지한다.
+	_update_enemy_position_and_scale(null, true)
+
+	if not saw_final_kill and is_inside_tree():
+		var post_resolution_hold := 0.0
+		if is_full_auto_action:
+			post_resolution_hold = FULL_AUTO_POST_BURST_HOLD
+		else:
+			var elapsed := float(Time.get_ticks_msec() - action_started_msec) / 1000.0
+			post_resolution_hold = maxf(
+				minimum_fire_lock_for_gun_id(gun_id) - elapsed,
+				0.0
+			)
+		if post_resolution_hold > 0.0:
+			await get_tree().create_timer(post_resolution_hold).timeout
+			if not is_instance_valid(self) or not is_inside_tree():
+				return
+
 	_mag_display_override.clear()
 	_fx_playing = false
 	if is_instance_valid(self) and is_inside_tree():
 		_update_cylinder_visuals()
-		_update_enemy_position_and_scale(null, true)
+		_update_action_buttons()
 
 	# 연출이 다 끝났으니 보류해 둔 전투 결과를 이제 띄운다.
 	if _pending_result != "":
@@ -1722,6 +1777,29 @@ func _pump_fire_fx() -> void:
 			_present_encounter_won()
 		elif result == "lost":
 			_present_player_died()
+
+
+func _is_action_resolution_locked() -> bool:
+	return _fx_playing or not _fire_fx_queue.is_empty()
+
+
+func _current_gun_id() -> String:
+	if combat_manager == null or combat_manager.gun == null:
+		return ""
+	return combat_manager.gun.resource_path.get_file().get_basename()
+
+
+static func fire_step_interval_for_gun_id(gun_id: String) -> float:
+	match gun_id:
+		"smg":
+			return TEMPO_FX_STEP_INTERVAL
+		"suppressor":
+			return SUPPRESSOR_FX_STEP_INTERVAL
+	return FX_STEP_INTERVAL
+
+
+static func minimum_fire_lock_for_gun_id(gun_id: String) -> float:
+	return float(SINGLE_FIRE_LOCK_SECONDS.get(gun_id, 0.40))
 
 
 func _play_fire_fx(entry: Dictionary) -> void:
@@ -2424,7 +2502,8 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 
 	if not is_hidden:
 		var bullet_role_lbl: Label = parent_scene.make_label(
-			BulletRoleUI.badge_text(bullet.role), 9, BulletRoleUI.color(bullet.role))
+			BulletRoleUI.specialty_badge_text(bullet.specialty), 9,
+			BulletRoleUI.specialty_color(bullet.specialty))
 		top_hbox.add_child(bullet_role_lbl)
 		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
 		if not payoff_text.is_empty():

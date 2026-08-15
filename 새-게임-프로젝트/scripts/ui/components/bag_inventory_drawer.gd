@@ -441,7 +441,8 @@ func _create_inventory_card(
 	title_hbox.add_child(title_lbl)
 
 	var role_lbl: Label = parent_scene.make_label(
-		BulletRoleUI.badge_text(bullet.role), 9.0, BulletRoleUI.color(bullet.role))
+		BulletRoleUI.specialty_badge_text(bullet.specialty), 9.0,
+		BulletRoleUI.specialty_color(bullet.specialty))
 	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	role_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(role_lbl)

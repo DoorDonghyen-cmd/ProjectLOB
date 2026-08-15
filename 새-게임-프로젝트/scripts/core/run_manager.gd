@@ -22,14 +22,15 @@ static var meta_unlocked_sections: Array[String] = ["section_a"] # 영구 해금
 static var meta_lore_fragments: Array[int] = [] # 1~20 범위의 수집된 파편 번호
 ## gambler 해금 임계 — 적을 시작 거리의 이 비율 이내로 들이면 실패.
 const GAMBLER_DIST_RATIO := 1.0 / 3.0
-## 클래스별 시작 패키지 정본: [기본 보급탄, 연계, 특수 공격].
+## 클래스별 시작 패키지 정본: [기본 보급탄, 전술 A, 전술 B].
+## 기반탄의 전문축을 보완하도록 화력/관통/명중/제어 중 서로 다른 전술축을 지급한다.
 ## 리소스 경로를 여러 분기에 복사하지 않아 탄환 마이그레이션 시 유령 참조를 막는다.
 const STARTING_AMMO_IDS := {
-	Enums.WeaponClass.PISTOL: ["cal_9mm", "borer", "shred"],
-	Enums.WeaponClass.SMG: ["cal_45acp", "borer", "shred"],
-	Enums.WeaponClass.RIFLE: ["cal_556", "borer", "marker"],
-	Enums.WeaponClass.DMR: ["cal_762", "borer", "shred"],
-	Enums.WeaponClass.SHOTGUN: ["cal_12g", "borer", "impact"],
+	Enums.WeaponClass.PISTOL: ["cal_9mm", "borer", "chain"],
+	Enums.WeaponClass.SMG: ["cal_45acp", "marker", "borer"],
+	Enums.WeaponClass.RIFLE: ["cal_556", "borer", "chain"],
+	Enums.WeaponClass.DMR: ["cal_762", "borer", "chain"],
+	Enums.WeaponClass.SHOTGUN: ["cal_12g", "shred", "impact"],
 }
 
 ## ── 승천(Ascension) ── 정본: docs/gdd/20_ascension_intention.md
@@ -326,6 +327,7 @@ func _sync_bullet_stats_from_csv(b: BulletData) -> void:
 		b.family = csv.family
 		b.is_basic = csv.is_basic
 		b.role = csv.role
+		b.specialty = csv.specialty
 		b.effect_type = csv.effect_type
 		b.effect_value = csv.effect_value
 		b.trigger = csv.trigger

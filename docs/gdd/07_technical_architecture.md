@@ -204,7 +204,7 @@ CombatScene (Node2D)
 | | `tank.tres` | 방패 요원 (Tank): SPD 1 / DEF 5 / PRES 2 / HP 12 / EVA 1 — 태세 전환 기믹 적 |
 | | `dodger.tres` | 침투 요원 (Dodger): SPD 2 / DEF 1 / HP 6 / EVA 6 — 높은 회피형 적 |
 | | `caster.tres` | 술사 요원 (Caster): SPD 0 / DEF 1 / HP 8 / EVA 2 — 전진 없이 원거리 차징 공격 |
-| | `sentry_drone.tres` | 경보 공중 드론 (Drone): SPD 2 / DEF 0 / HP 4 / EVA 5 — 공중 비행 기체 |
+| | `sentry_drone.tres` | 경보 순찰 드론 (Drone): SPD 2 / DEF 0 / HP 4 / EVA 5 — 공중 비행 기체 |
 
 ### 7.7 플레이테스트 텔레메트리
 

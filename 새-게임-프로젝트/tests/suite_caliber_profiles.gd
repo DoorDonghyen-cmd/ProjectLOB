@@ -89,15 +89,15 @@ static func run(t) -> void:
 
 	var marker: BulletData = load("res://resources/bullets/marker.tres")
 	_assert_stats(t, DamageCalculatorScript.effective_stats(marker, load(GUN_PATHS[Enums.WeaponClass.PISTOL])),
-		{"damage": 2, "penetration": 1, "accuracy": 9, "knockback": 0}, "9mm+표식탄")
+		{"damage": 2, "penetration": 1, "accuracy": 10, "knockback": 0}, "9mm+표식탄")
 	_assert_stats(t, DamageCalculatorScript.effective_stats(marker, load(GUN_PATHS[Enums.WeaponClass.SMG])),
-		{"damage": 3, "penetration": 1, "accuracy": 8, "knockback": 0}, ".45ACP+표식탄")
+		{"damage": 3, "penetration": 1, "accuracy": 9, "knockback": 0}, ".45ACP+표식탄")
 	_assert_stats(t, DamageCalculatorScript.effective_stats(marker, load(GUN_PATHS[Enums.WeaponClass.RIFLE])),
-		{"damage": 2, "penetration": 2, "accuracy": 8, "knockback": 0}, "5.56mm+표식탄")
+		{"damage": 2, "penetration": 2, "accuracy": 9, "knockback": 0}, "5.56mm+표식탄")
 	_assert_stats(t, DamageCalculatorScript.effective_stats(marker, load(GUN_PATHS[Enums.WeaponClass.DMR])),
-		{"damage": 3, "penetration": 2, "accuracy": 8, "knockback": 0}, "7.62mm+표식탄")
+		{"damage": 3, "penetration": 2, "accuracy": 9, "knockback": 0}, "7.62mm+표식탄")
 	_assert_stats(t, DamageCalculatorScript.effective_stats(marker, load(GUN_PATHS[Enums.WeaponClass.SHOTGUN])),
-		{"damage": 3, "penetration": 0, "accuracy": 7, "knockback": 1}, "12게이지+표식탄")
+		{"damage": 3, "penetration": 0, "accuracy": 8, "knockback": 1}, "12게이지+표식탄")
 
 	# 샷건 넉백 +1은 총기 자체 성향이다. 구경 프로필이 또 더해져 +2가 되면 안 된다.
 	t.eq(
