@@ -441,8 +441,8 @@ func _create_inventory_card(
 	title_hbox.add_child(title_lbl)
 
 	var role_lbl: Label = parent_scene.make_label(
-		BulletRoleUI.specialty_badge_text(bullet.specialty), 9.0,
-		BulletRoleUI.specialty_color(bullet.specialty))
+		BulletRoleUI.primary_badge_text(bullet, true), 10.0,
+		BulletRoleUI.primary_color(bullet))
 	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	role_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(role_lbl)
@@ -455,10 +455,13 @@ func _create_inventory_card(
 		payoff_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 		payoff_lbl.add_theme_constant_override("outline_size", 3)
 		title_hbox.add_child(payoff_lbl)
-	var scope_text := BulletRoleUI.scope_badge_text(bullet.scope)
-	if not scope_text.is_empty():
-		var scope_lbl: Label = parent_scene.make_label(scope_text, 9.0, Color(0.78, 0.59, 1.0))
+	var effect_text := BulletRoleUI.effect_summary(bullet)
+	if effect_text.is_empty() and bullet.is_basic:
+		effect_text = BulletRoleUI.basic_trait_label(bullet)
+	if not effect_text.is_empty():
+		var scope_lbl: Label = parent_scene.make_label(effect_text, 10.0, BulletRoleUI.primary_color(bullet))
 		scope_lbl.name = "ScopeBadge"
+		scope_lbl.tooltip_text = BulletRoleUI.tooltip(bullet)
 		scope_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 		scope_lbl.add_theme_constant_override("outline_size", 3)
 		vbox.add_child(scope_lbl)

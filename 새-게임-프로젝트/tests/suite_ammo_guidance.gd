@@ -50,6 +50,7 @@ static func run(t) -> void:
 	var expected_scopes := {
 		"marker": BulletRoleUI.SCOPE_NEXT_SHOT,
 		"borer": BulletRoleUI.SCOPE_NEXT_SHOT,
+		"chain": BulletRoleUI.SCOPE_NEXT_SHOT,
 		"jammer": BulletRoleUI.SCOPE_TARGET,
 		"shred": BulletRoleUI.SCOPE_TARGET,
 		"guide": BulletRoleUI.SCOPE_REMAINING_MAG,
@@ -74,10 +75,11 @@ static func run(t) -> void:
 		t.check(not BulletRoleUI.compact_scope_badge_text(bullet.scope).is_empty(),
 			"%s 축약 범위 배지 제공" % bullet.display_name)
 		counts[expected_scope] += 1
-	for scope in counts:
-		t.eq(counts[scope], 2, "%s 범위 연계탄이 정확히 2종" % BulletRoleUI.scope_label(scope))
+	t.eq(int(counts[BulletRoleUI.SCOPE_NEXT_SHOT]), 3, "다음 1발 ACC/PEN/DMG 연계탄이 정확히 3종")
+	t.eq(int(counts[BulletRoleUI.SCOPE_TARGET]), 2, "대상 지속 연계탄이 정확히 2종")
+	t.eq(int(counts[BulletRoleUI.SCOPE_REMAINING_MAG]), 2, "잔여 탄창 연계탄이 정확히 2종")
 
-	for payoff_id in ["chain", "crosscal"]:
+	for payoff_id in ["crosscal"]:
 		var payoff: BulletData = load("res://resources/bullets/%s.tres" % payoff_id)
 		t.check(BulletRoleUI.is_payoff(payoff), "%s 결산탄 분류" % payoff.display_name)
 		t.eq(BulletRoleUI.payoff_badge_text(payoff), "[결산]", "%s 결산 배지" % payoff.display_name)
@@ -144,18 +146,19 @@ static func run(t) -> void:
 		t.check(bool(chained_entries[1].triggered), "앞 연계 보정을 받아 교란탄이 발동 가능")
 		t.eq(int(chained_entries[1].converted), 1, "교란탄이 뒤 공격탄 명중을 전환")
 
-	# 결산탄은 선행 연계의 실제 게이트 개방과 조건부 피해를 전투 순서대로 합산한다.
-	var payoff_target := _make_enemy(0, 8)
-	var chain: BulletData = (load("res://resources/bullets/chain.tres") as BulletData).duplicate()
-	var payoff_stack: Array[BulletData] = [chain, marker]
-	var payoff_entries := AmmoGuidanceScript.preview_entries(payoff_stack, gun, payoff_target)
-	t.eq(payoff_entries.size(), 2, "표식탄→연쇄탄은 연계·결산 예고 2건 생성")
-	if payoff_entries.size() == 2:
-		t.eq(str(payoff_entries[1].kind), "payoff", "두 번째 예고는 결산 결과")
-		t.check(bool(payoff_entries[1].triggered), "직전 유효 적중으로 연쇄탄 결산 성공")
-		t.check(bool(payoff_entries[1].critical), "표식탄이 명중 게이트를 열어 결정형 크리티컬 예고")
-		t.eq(int(payoff_entries[1].expected_damage), 7, "연쇄탄 2+3 뒤 크리티컬 = 예상 주 피해 7")
-		t.check(str(payoff_entries[1].text).contains("결산 성공"), "결산 성공 문구 제공")
+	# 피해 증폭탄은 게이트 전환이 아니라 다음 1발의 주 피해 증가를 직접 예고한다.
+	var payoff_target := _make_enemy(0, 5)
+	var booster := _make_link(
+		"장약 증폭탄", Enums.BulletEffect.BUFF_DMG, 2,
+		BulletRoleUI.SCOPE_NEXT_SHOT, "on_effective_hit", 8, 1)
+	var boosted_attack := _make_attack("피해 후속탄", 6, 1)
+	var booster_stack: Array[BulletData] = [boosted_attack, booster]
+	var booster_entries := AmmoGuidanceScript.preview_entries(booster_stack, gun, payoff_target)
+	t.eq(booster_entries.size(), 1, "장약 증폭탄은 피해 연계 예고 1건 생성")
+	if booster_entries.size() == 1:
+		t.eq(str(booster_entries[0].axis), "damage", "피해 증폭 전용축으로 분류")
+		t.eq(int(booster_entries[0].converted), 1, "다음 1발을 피해 증폭 대상으로 계산")
+		t.check(str(booster_entries[0].text).contains("피해 +2"), "정확한 피해 증가량 제공")
 
 	var crosscal: BulletData = (load("res://resources/bullets/crosscal.tres") as BulletData).duplicate()
 	var first_payoff: Array[BulletData] = [crosscal]
@@ -180,10 +183,12 @@ static func run(t) -> void:
 	var offered_payoff := false
 	for choice in choices:
 		offered_payoff = offered_payoff or BulletRoleUI.is_payoff(choice)
-	t.check(offered_payoff, "⭐ 결산탄 미보유 드래프트 1칸에 연쇄/교대탄 보증")
+	t.check(offered_payoff, "⭐ 결산탄 미보유 드래프트 1칸에 교대탄 보증")
 	t.eq(draft._draft_weight(crosscal), 3, "미보유 탄환 드래프트 가중치 3")
-	rm.deck.append(chain.duplicate())
+	rm.deck.append(crosscal.duplicate())
 	t.check(not draft._needs_payoff_offer(), "결산탄 1발 획득 뒤 첫 노출 보증 해제")
+	var chain: BulletData = (load("res://resources/bullets/chain.tres") as BulletData).duplicate()
+	rm.deck.append(chain.duplicate())
 	t.eq(draft._draft_weight(chain), 2, "동일 탄 1발 보유 시 가중치 2")
 	rm.deck.append(chain.duplicate())
 	t.eq(draft._draft_weight(chain), 1, "동일 탄 2발 이상 보유 시 최소 가중치 1")

@@ -840,7 +840,7 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	style.bg_color = Color(0.08, 0.11, 0.16)
 	style.border_width_left = 1; style.border_width_right = 1
 	style.border_width_top = 1; style.border_width_bottom = 1
-	style.border_color = Color(0.13, 0.18, 0.24)
+	style.border_color = BulletRoleUI.primary_color(bullet).darkened(0.25)
 	style.corner_radius_top_left = 9; style.corner_radius_top_right = 9
 	style.corner_radius_bottom_left = 9; style.corner_radius_bottom_right = 9
 	card.add_theme_stylebox_override("panel", style)
@@ -898,8 +898,8 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 	title_hbox.add_child(title_lbl)
 
 	var role_lbl: Label = parent_scene.make_label(
-		BulletRoleUI.specialty_badge_text(bullet.specialty), 9.0,
-		BulletRoleUI.specialty_color(bullet.specialty))
+		BulletRoleUI.primary_badge_text(bullet, true), 10.0,
+		BulletRoleUI.primary_color(bullet))
 	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 	role_lbl.add_theme_constant_override("outline_size", 3)
 	title_hbox.add_child(role_lbl)
@@ -912,10 +912,13 @@ func _create_inventory_card(bullet: BulletData, count: int, click_callback: Call
 		payoff_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 		payoff_lbl.add_theme_constant_override("outline_size", 3)
 		title_hbox.add_child(payoff_lbl)
-	var scope_text := BulletRoleUI.scope_badge_text(bullet.scope)
-	if not scope_text.is_empty():
-		var scope_lbl: Label = parent_scene.make_label(scope_text, 9.0, Color(0.78, 0.59, 1.0))
+	var effect_text := BulletRoleUI.effect_summary(bullet)
+	if effect_text.is_empty() and bullet.is_basic:
+		effect_text = BulletRoleUI.basic_trait_label(bullet)
+	if not effect_text.is_empty():
+		var scope_lbl: Label = parent_scene.make_label(effect_text, 10.0, BulletRoleUI.primary_color(bullet))
 		scope_lbl.name = "ScopeBadge"
+		scope_lbl.tooltip_text = BulletRoleUI.tooltip(bullet)
 		scope_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
 		scope_lbl.add_theme_constant_override("outline_size", 3)
 		vbox.add_child(scope_lbl)
@@ -2502,8 +2505,8 @@ func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> C
 
 	if not is_hidden:
 		var bullet_role_lbl: Label = parent_scene.make_label(
-			BulletRoleUI.specialty_badge_text(bullet.specialty), 9,
-			BulletRoleUI.specialty_color(bullet.specialty))
+			BulletRoleUI.primary_badge_text(bullet, true), 9.5,
+			BulletRoleUI.primary_color(bullet))
 		top_hbox.add_child(bullet_role_lbl)
 		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
 		if not payoff_text.is_empty():
@@ -2635,6 +2638,9 @@ func _bullet_effect_name(effect: Enums.BulletEffect) -> String:
 		Enums.BulletEffect.COMBO: return "[콤보 사격]"
 		Enums.BulletEffect.LAST_SHOT: return "[막탄 강화]"
 		Enums.BulletEffect.OPENING_SHOT: return "[선제 사격]"
+		Enums.BulletEffect.BUFF_ACC: return "[다음 1발 ACC 강화]"
+		Enums.BulletEffect.BUFF_PEN: return "[다음 1발 PEN 강화]"
+		Enums.BulletEffect.BUFF_DMG: return "[다음 1발 DMG 강화]"
 	return ""
 
 func _trigger_perfect_kill_decal() -> void:

@@ -8,6 +8,7 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-21 | **조합탄 전문축 가독성·피해 증폭탄** | `codex0821-ammo-axis` | 기본탄과 ACC/PEN/DMG/CTRL 전술 배지를 분리하고, 기존 연쇄탄을 유효 적중 시 다음 1발 DMG +2인 장약 증폭탄으로 전환. 카드 효과 한 줄·QA·전체 3,431 테스트와 9×13 대진 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_axis_readability_2026-08-17.md) |
 | 2026-08-15 | **조합탄 전투 전문축 분리** | `codex0815-ammo-specialty` | 화력/관통/명중/제어 전문축 데이터와 전 UI 배지, 교대/유지 파츠 판정, 시작 패키지·전용 QA를 구현. 9총기×13적 기본/환기구 대진 및 전체 3,424 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_stat_specialization_2026-08-15.md) |
 | 2026-08-15 | **격발 입력 잠금·총기별 연출 템포** | `codex0815-fire-pacing` | 연출 중 발사·빼내기·재장전·이젝트 재입력 차단, 입력 버퍼 금지, 단발 0.32~0.52초와 Tempo 0.13초·Suppressor 0.20초 표시 템포 분리. 전체 3,351 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_fire_input_pacing_2026-08-15.md) |
 | 2026-08-15 | **관리·정점 복합 편성 플레이테스트 지원** | `codex0815-upper-roster` | 정점 차저 중복 2개 후보 정리, 상층 전 후보 무대응 4~8행동 압력 회귀, 관리·정점 대표 4체 Workhorse QA 버튼. 전체 3,342 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_upper_roster_playtest_2026-08-15.md) |
@@ -57,6 +58,7 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0821-ammo-axis Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_axis_readability_2026-08-17.md)
 * [Session codex0815-fire-pacing Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_fire_input_pacing_2026-08-15.md)
 * [Session codex0815-upper-roster Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_upper_roster_playtest_2026-08-15.md)
 * [Session codex0815-enemy-roster Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_enemy_roster_placement_2026-08-15.md)

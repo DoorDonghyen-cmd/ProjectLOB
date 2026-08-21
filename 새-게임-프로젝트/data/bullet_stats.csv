@@ -12,7 +12,7 @@ guide,유도탄,universal,support,false,link,accuracy,2,1,8,0,0,10,1,on_effectiv
 align,정렬탄,universal,support,false,link,penetration,2,3,5,0,0,11,1,on_effective_hit,remaining_mag,none,유효 적중 시 탄창에 남은 모든 발의 관통을 1 높입니다.
 ap,철갑탄,universal,special,false,attack,penetration,2,4,5,0,0,0,0,none,none,none,경화 탄자로 높은 장갑 게이트를 단독으로 관통합니다.
 pierce,관통탄,universal,special,false,attack,penetration,2,3,6,0,0,6,1,on_effective_hit,formation,none,이 격발의 직선 관통 깊이를 1명 늘립니다. 소총탄이 아니어도 후열 한 명을 관통합니다.
-chain,연쇄탄,universal,special,false,attack,damage,2,1,5,0,0,2,3,on_effective_hit,self,previous_effective,직전 탄이 유효 적중했다면 연쇄 반응으로 피해 3을 더합니다.
+chain,장약 증폭탄,universal,special,false,link,damage,2,1,5,0,0,12,2,on_effective_hit,next_shot,none,유효 적중 시 다음 1발의 주 피해를 2 높입니다.
 finale,마무리탄,universal,special,false,attack,damage,3,1,5,0,0,3,4,on_effective_hit,self,last_shot,탄창의 마지막 발일 때 피해 4를 더합니다.
 opener,선제탄,universal,special,false,attack,control,2,1,7,1,0,4,2,on_hit,target,first_shot,탄창의 첫 발일 때 넉백 2를 더하고 적의 방어를 1 낮춥니다.
 crosscal,교대탄,universal,special,false,attack,damage,2,1,5,0,0,5,4,on_effective_hit,self,role_change,직전 탄환과 전문축이 다르면 피해 4를 더합니다.

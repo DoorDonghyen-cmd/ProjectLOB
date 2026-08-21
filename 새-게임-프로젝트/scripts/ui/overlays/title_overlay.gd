@@ -337,7 +337,7 @@ func _build_dev_test_panel() -> void:
 		parent_scene.trigger_ammo_specialty_test()
 	, parent_scene.C_SUCCESS)
 	btn_ammo_specialty.name = "AmmoSpecialtyTestButton"
-	btn_ammo_specialty.tooltip_text = "화력·관통·명중·제어 배지와 전문축 교대 결산을 즉시 확인합니다."
+	btn_ammo_specialty.tooltip_text = "기본탄과 ACC·PEN·DMG·CTRL 전술탄 배지, 다음 1발 강화를 즉시 확인합니다."
 	btn_ammo_specialty.custom_minimum_size = Vector2(0, 36)
 	btn_ammo_specialty.add_theme_font_size_override("font_size", 11)
 	btn_ammo_specialty.size_flags_horizontal = Control.SIZE_EXPAND_FILL

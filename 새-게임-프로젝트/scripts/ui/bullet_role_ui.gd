@@ -57,17 +57,60 @@ static func normalize_specialty(value: String) -> String:
 static func specialty_label(value: String) -> String:
 	match normalize_specialty(value):
 		SPECIALTY_PENETRATION:
-			return "관통"
+			return "장갑 파훼"
 		SPECIALTY_ACCURACY:
-			return "명중"
+			return "명중 보정"
 		SPECIALTY_CONTROL:
-			return "제어"
+			return "거리 제어"
 		_:
-			return "화력"
+			return "피해 증폭"
+
+
+static func specialty_code(value: String) -> String:
+	match normalize_specialty(value):
+		SPECIALTY_PENETRATION:
+			return "PEN"
+		SPECIALTY_ACCURACY:
+			return "ACC"
+		SPECIALTY_CONTROL:
+			return "CTRL"
+		_:
+			return "DMG"
 
 
 static func specialty_badge_text(value: String) -> String:
-	return "[%s]" % specialty_label(value)
+	return "[%s %s]" % [specialty_code(value), specialty_label(value)]
+
+
+static func compact_specialty_badge_text(value: String) -> String:
+	return "[%s]" % specialty_code(value)
+
+
+static func basic_trait_label(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	match normalize_specialty(bullet.specialty):
+		SPECIALTY_PENETRATION:
+			return "고관통"
+		SPECIALTY_ACCURACY:
+			return "고명중"
+		_:
+			return "고화력"
+
+
+static func primary_badge_text(bullet: BulletData, compact: bool = false) -> String:
+	if bullet == null:
+		return ""
+	if bullet.is_basic:
+		return "[기본탄]" if compact else "[기본탄] %s" % basic_trait_label(bullet)
+	return compact_specialty_badge_text(bullet.specialty) \
+		if compact else specialty_badge_text(bullet.specialty)
+
+
+static func primary_color(bullet: BulletData) -> Color:
+	if bullet == null or bullet.is_basic:
+		return Color(0.72, 0.78, 0.86)
+	return specialty_color(bullet.specialty)
 
 
 static func specialty_color(value: String) -> Color:
@@ -85,13 +128,44 @@ static func specialty_color(value: String) -> Color:
 static func specialty_hint(value: String) -> String:
 	match normalize_specialty(value):
 		SPECIALTY_PENETRATION:
-			return "관통 특화: 높은 PEN으로 장갑 게이트를 열지만 화력과 명중은 제한적입니다."
+			return "PEN 장갑 파훼: 높은 관통으로 장갑 게이트를 엽니다."
 		SPECIALTY_ACCURACY:
-			return "명중 특화: 높은 ACC로 회피 게이트를 열지만 화력과 관통은 제한적입니다."
+			return "ACC 명중 보정: 높은 명중으로 회피 게이트를 엽니다."
 		SPECIALTY_CONTROL:
-			return "제어 특화: 넉백·둔화로 거리와 행동 횟수를 확보하며 직접 화력은 낮습니다."
+			return "CTRL 거리 제어: 넉백·둔화로 안전 거리와 행동 횟수를 확보합니다."
 		_:
-			return "화력 특화: 열린 명중·관통 게이트를 큰 피해로 결산합니다."
+			return "DMG 피해 증폭: 열린 명중·관통 게이트를 더 큰 주 피해로 전환합니다."
+
+
+static func effect_summary(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	var value := maxi(bullet.effect_value, 0)
+	match bullet.effect_type:
+		Enums.BulletEffect.BUFF_ACC:
+			return "다음 1발 ACC +%d" % value
+		Enums.BulletEffect.BUFF_PEN:
+			return "다음 1발 PEN +%d" % value
+		Enums.BulletEffect.BUFF_DMG:
+			return "다음 1발 DMG +%d" % value
+		Enums.BulletEffect.DEBUFF_EVA:
+			return "대상 EVA -%d" % value
+		Enums.BulletEffect.ARMOR_SHRED:
+			return "대상 DEF -%d" % value
+		Enums.BulletEffect.BUFF_MAG_ACC:
+			return "남은 탄창 ACC +%d" % value
+		Enums.BulletEffect.BUFF_MAG_PEN:
+			return "남은 탄창 PEN +%d" % value
+		Enums.BulletEffect.COMBO:
+			return "직전 유효 적중 시 이 탄 DMG +%d" % value
+		Enums.BulletEffect.LAST_SHOT:
+			return "마지막 발: 이 탄 DMG +%d" % value
+		Enums.BulletEffect.CALIBER_DIFF:
+			return "전문축 교대: 이 탄 DMG +%d" % value
+		Enums.BulletEffect.OPENING_SHOT:
+			return "첫 발: KB +%d" % value
+		_:
+			return ""
 
 
 static func is_payoff(bullet: BulletData) -> bool:
@@ -194,10 +268,15 @@ static func scope_hint(value: String) -> String:
 static func tooltip(bullet: BulletData) -> String:
 	if bullet == null:
 		return ""
-	var lines: Array[String] = [
-		specialty_hint(bullet.specialty),
-		"운용: %s — %s" % [label(bullet.role), hint(bullet.role)],
-	]
+	var identity := (
+		"기본 보급탄 · %s 성향" % basic_trait_label(bullet)
+		if bullet.is_basic
+		else specialty_hint(bullet.specialty)
+	)
+	var lines: Array[String] = [identity]
+	var effect_line := effect_summary(bullet)
+	if not effect_line.is_empty():
+		lines.append("효과: %s" % effect_line)
 	var payoff_line := payoff_hint(bullet)
 	if not payoff_line.is_empty():
 		lines.append(payoff_line)
@@ -206,6 +285,7 @@ static func tooltip(bullet: BulletData) -> String:
 		lines.append(scope_line)
 	if not bullet.description.is_empty():
 		lines.append(bullet.description)
+	lines.append("운용 분류: %s" % label(bullet.role))
 	return "\n".join(lines)
 
 

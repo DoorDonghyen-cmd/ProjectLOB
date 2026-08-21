@@ -121,6 +121,7 @@ var focus_stacks: Dictionary = {}
 ## 중첩 없이 덮어쓰며, 리로드 시 소멸한다(탄창 끝에 셋업 깔아두기 방지).
 var pending_buff_acc: int = 0
 var pending_buff_pen: int = 0
+var pending_buff_dmg: int = 0
 ## 유도탄·정렬탄이 부여하는 현재 탄창 잔여 전체 버프. 리로드 시 소멸한다.
 var magazine_buff_acc: int = 0
 var magazine_buff_pen: int = 0
@@ -284,6 +285,7 @@ func start_encounter(
 	consecutive_specialty_count = 0
 	pending_buff_acc = 0
 	pending_buff_pen = 0
+	pending_buff_dmg = 0
 	magazine_buff_acc = 0
 	magazine_buff_pen = 0
 	
@@ -386,7 +388,7 @@ func is_full_auto() -> bool:
 	return gun != null and gun.fire_mode == Enums.FireMode.FULL_AUTO
 
 
-## 다음에 발사될 탄의 **유효 ACC/PEN**을 미리 계산한다 (게이트 판정 표시의 단일 정본).
+## 다음에 발사될 탄의 **유효 DMG/ACC/PEN**을 미리 계산한다 (사격 예고의 단일 정본).
 ##
 ## ⚠️ UI가 이 계산을 자기 안에서 중복하지 않게 한 곳에 둔다.
 ##    포함: 탄 기본값 + 총기 패시브 + **대기 중인 셋업 버프**.
@@ -398,11 +400,14 @@ func preview_next_shot() -> Dictionary:
 	if magazine == null or magazine.is_empty():
 		return {}
 	var b := magazine.peek()
+	var dmg := b.damage
 	var acc := b.accuracy
 	var pen := b.penetration
 	if gun != null:
+		dmg += gun.passive_dmg_bonus
 		acc += gun.passive_acc_bonus
 		pen += gun.passive_pen_bonus
+		dmg += CaliberProfiles.bonus_for(b, gun, "damage")
 		acc += CaliberProfiles.bonus_for(b, gun, "accuracy")
 		pen += CaliberProfiles.bonus_for(b, gun, "penetration")
 	acc += magazine_buff_acc
@@ -411,6 +416,7 @@ func preview_next_shot() -> Dictionary:
 	var pen_without_adjacent := pen
 	acc += pending_buff_acc
 	pen += pending_buff_pen
+	dmg += pending_buff_dmg
 	var target := _get_nearest_enemy()
 	var critical := false
 	var family := CaliberProfiles.family_for_gun(gun)
@@ -432,8 +438,10 @@ func preview_next_shot() -> Dictionary:
 			scatter_targets = _preview_scatter_targets(target, snapshot, line_targets)
 	return {
 		"bullet": b,
+		"dmg": dmg,
 		"acc": acc,
 		"pen": pen,
+		"buffed_dmg": pending_buff_dmg > 0,
 		"buffed_acc": pending_buff_acc > 0,
 		"buffed_pen": pending_buff_pen > 0,
 		"magazine_buff_acc": magazine_buff_acc,
@@ -620,10 +628,14 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 	# 대기 중인 셋업 버프를 이번 탄에 소비한다(다음 1발 한정이므로 즉시 비운다).
 	var buff_acc := pending_buff_acc
 	var buff_pen := pending_buff_pen
+	var buff_dmg := pending_buff_dmg
 	pending_buff_acc = 0
 	pending_buff_pen = 0
-	if buff_acc > 0 or buff_pen > 0:
-		combat_log.emit("   ↳ 🎯 [셋업 적용] ACC +%d · PEN +%d" % [buff_acc, buff_pen])
+	pending_buff_dmg = 0
+	if buff_acc > 0 or buff_pen > 0 or buff_dmg > 0:
+		combat_log.emit("   ↳ 🎯 [셋업 적용] ACC +%d · PEN +%d · DMG +%d" % [
+			buff_acc, buff_pen, buff_dmg
+		])
 
 	var calc_bullet_acc := bullet.duplicate()
 	calc_bullet_acc.accuracy += part_acc_bonus + magazine_buff_acc + buff_acc
@@ -745,13 +757,20 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		)
 		var breakdown := DamageCalculator.damage_breakdown(calc_bullet, target.current_def, gun)
 
+		# 다음 1발 피해 증폭은 명중·관통 게이트를 우회하지 않는다. 관통한 탄의 코어 피해에
+		# 더한 뒤 결정형 크리티컬을 계산해 ACC/PEN/DMG 연계탄이 같은 보상 구조를 갖게 한다.
+		if buff_dmg > 0 and core_damage > 0:
+			core_damage += buff_dmg
+			breakdown += " + [피해 증폭] %d" % buff_dmg
+			combat_log.emit("   ↳ 💥 [피해 증폭] 다음 1발 DMG +%d" % buff_dmg)
+
 		# ── 2.3 마무리탄: 배율이 아닌 정액 +4 ──
 		if bullet.effect_type == Enums.BulletEffect.LAST_SHOT and is_last and core_damage > 0:
 			core_damage += bullet.effect_value
 			breakdown += " + [막탄 보너스] %d" % bullet.effect_value
 			combat_log.emit("   ↳ 🎯 [마무리탄] 탄창 최종 격발! 피해 +%d" % bullet.effect_value)
 
-		# ── 2.4 연쇄탄: 직전 '명중'이 아니라 직전 유효 적중 ──
+		# ── 2.4 레거시 연쇄 효과: 구버전 COMBO 리소스 호환 ──
 		if bullet.effect_type == Enums.BulletEffect.COMBO and prev_shot_effective and core_damage > 0:
 			core_damage += bullet.effect_value
 			breakdown += " + [연쇄 보너스] %d" % bullet.effect_value
@@ -835,6 +854,9 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				Enums.BulletEffect.BUFF_PEN:
 					pending_buff_pen = bullet.effect_value
 					combat_log.emit("   ↳ ✨ [연계] 다음 탄 PEN +%d" % bullet.effect_value)
+				Enums.BulletEffect.BUFF_DMG:
+					pending_buff_dmg = bullet.effect_value
+					combat_log.emit("   ↳ ✨ [연계] 다음 탄 DMG +%d" % bullet.effect_value)
 				Enums.BulletEffect.BUFF_MAG_ACC:
 					magazine_buff_acc += bullet.effect_value
 					combat_log.emit("   ↳ ✨ [유도] 탄창 잔여 ACC +%d" % bullet.effect_value)
@@ -1483,6 +1505,7 @@ func request_reload() -> void:
 	# ⚠️ 유지되면 "탄창 끝에 셋업 깔아두기"가 항상 이득이 되어 리로드 공백의 비용이 흐려진다.
 	pending_buff_acc = 0
 	pending_buff_pen = 0
+	pending_buff_dmg = 0
 	magazine_buff_acc = 0
 	magazine_buff_pen = 0
 

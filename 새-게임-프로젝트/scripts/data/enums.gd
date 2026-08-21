@@ -56,6 +56,7 @@ enum BulletEffect {
 	DEBUFF_EVA,    ## 명중한 적 EVA 영구 -N
 	BUFF_MAG_ACC,  ## 유효 적중 시 탄창 잔여 전부 ACC +N
 	BUFF_MAG_PEN,  ## 유효 적중 시 탄창 잔여 전부 PEN +N
+	BUFF_DMG,      ## 유효 적중 시 다음 1발 DMG +N
 }
 
 ## ── 적 아키타입 ──

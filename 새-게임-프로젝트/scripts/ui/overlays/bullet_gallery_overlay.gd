@@ -171,8 +171,8 @@ func open_gallery() -> void:
 		info_vbox.add_child(name_lbl)
 
 		var role_lbl = parent_scene.make_label(
-			BulletRoleUI.specialty_badge_text(b_data.specialty), 9,
-			BulletRoleUI.specialty_color(b_data.specialty))
+			BulletRoleUI.primary_badge_text(b_data), 10,
+			BulletRoleUI.primary_color(b_data))
 		info_vbox.add_child(role_lbl)
 		
 		var stat_lbl = parent_scene.make_label("DMG:%d ACC:%d PEN:%d" % [b_data.damage, b_data.accuracy, b_data.penetration], 8, parent_scene.C_TEXT)
@@ -202,6 +202,7 @@ func open_gallery() -> void:
 				Enums.BulletEffect.DEBUFF_EVA: eff_name = "적 EVA 영구 감소"
 				Enums.BulletEffect.BUFF_MAG_ACC: eff_name = "탄창 잔여 ACC 강화"
 				Enums.BulletEffect.BUFF_MAG_PEN: eff_name = "탄창 잔여 PEN 강화"
+				Enums.BulletEffect.BUFF_DMG: eff_name = "다음 1발 DMG 강화"
 			var eff_lbl = parent_scene.make_label("★ %s (%d)" % [eff_name, b_data.effect_value], 8, Color(0.3, 0.9, 0.5))
 			info_vbox.add_child(eff_lbl)
 

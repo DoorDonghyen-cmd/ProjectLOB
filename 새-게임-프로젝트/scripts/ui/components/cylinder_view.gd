@@ -149,8 +149,8 @@ func _create_dynamic_bullet_card(
 	var has_gate := false
 	if not is_hidden:
 		var role_lbl: Label = parent_scene.make_label(
-			BulletRoleUI.specialty_badge_text(bullet.specialty), 9.0,
-			BulletRoleUI.specialty_color(bullet.specialty))
+			BulletRoleUI.primary_badge_text(bullet, true), 9.5,
+			BulletRoleUI.primary_color(bullet))
 		hbox.add_child(role_lbl)
 		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
 		if not payoff_text.is_empty():
@@ -176,6 +176,7 @@ func _create_dynamic_bullet_card(
 			Enums.BulletEffect.ARMOR_SHRED: gate = "⬇방어"
 			Enums.BulletEffect.BUFF_MAG_ACC: gate = "⇢명중"
 			Enums.BulletEffect.BUFF_MAG_PEN: gate = "⇢관통"
+			Enums.BulletEffect.BUFF_DMG: gate = "⬆피해"
 		if gate != "":
 			has_gate = true
 			var gate_lbl: Label = parent_scene.make_label(gate, 9.0, Color(0.78, 0.59, 1.0))

@@ -169,8 +169,8 @@ static func run(t) -> void:
 	t.eq(int(family_counts.support), 6, "보조탄 6종")
 	t.eq(int(family_counts.special), 6, "조건부 공격탄 6종")
 	t.eq(int(family_counts.control), 2, "제어탄 2종")
-	t.eq(int(role_counts.attack), 11, "공격 역할 11종")
-	t.eq(int(role_counts.link), 6, "연계 역할 6종")
+	t.eq(int(role_counts.attack), 10, "공격 역할 10종")
+	t.eq(int(role_counts.link), 7, "연계 역할 7종")
 	t.eq(int(role_counts.control), 2, "제어 역할 2종")
 	t.eq(int(specialty_counts.damage), 5, "화력 전문축 5종(기반탄 포함)")
 	t.eq(int(specialty_counts.penetration), 7, "관통 전문축 7종(기반탄 포함)")
@@ -220,10 +220,18 @@ static func run(t) -> void:
 	t.eq(BulletRoleUI.label("attack"), "공격", "역할 UI: attack")
 	t.eq(BulletRoleUI.label("link"), "연계", "역할 UI: link")
 	t.eq(BulletRoleUI.label("control"), "제어", "역할 UI: control")
-	t.eq(BulletRoleUI.specialty_label("damage"), "화력", "전문축 UI: damage")
-	t.eq(BulletRoleUI.specialty_label("penetration"), "관통", "전문축 UI: penetration")
-	t.eq(BulletRoleUI.specialty_label("accuracy"), "명중", "전문축 UI: accuracy")
-	t.eq(BulletRoleUI.specialty_label("control"), "제어", "전문축 UI: control")
+	t.eq(BulletRoleUI.specialty_label("damage"), "피해 증폭", "전문축 UI: damage")
+	t.eq(BulletRoleUI.specialty_label("penetration"), "장갑 파훼", "전문축 UI: penetration")
+	t.eq(BulletRoleUI.specialty_label("accuracy"), "명중 보정", "전문축 UI: accuracy")
+	t.eq(BulletRoleUI.specialty_label("control"), "거리 제어", "전문축 UI: control")
+	var basic_9mm: BulletData = load("%s/cal_9mm.tres" % BULLET_DIR)
+	var marker_ui: BulletData = load("%s/marker.tres" % BULLET_DIR)
+	t.eq(BulletRoleUI.primary_badge_text(basic_9mm), "[기본탄] 고명중",
+		"기본탄은 전술 전문축과 분리된 성향 배지")
+	t.eq(BulletRoleUI.primary_badge_text(marker_ui), "[ACC 명중 보정]",
+		"전술탄은 축 코드와 효용을 함께 표시")
+	t.eq(BulletRoleUI.effect_summary(load("%s/chain.tres" % BULLET_DIR)), "다음 1발 DMG +2",
+		"장약 증폭탄 카드에 정확한 효과 한 줄")
 
 	var gd_files: Array[String] = []
 	_gd_files("res://scripts", gd_files)

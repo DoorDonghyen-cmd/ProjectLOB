@@ -1705,11 +1705,11 @@ static func conversion_kit_price(gun: GunData) -> int:
 
 
 func _get_bullet_effect_desc(bullet: BulletData) -> String:
+	var summary := BulletRoleUI.effect_summary(bullet)
+	if not summary.is_empty():
+		return summary
 	match bullet.effect_type:
-		Enums.BulletEffect.ARMOR_SHRED: return "타격 시 적 장갑 영구 파쇄"
-		Enums.BulletEffect.COMBO: return "연속 적중 시 콤보 피해"
-		Enums.BulletEffect.LAST_SHOT: return "탄창 마지막 탄 위력 극대화"
-		Enums.BulletEffect.OPENING_SHOT: return "첫 사격 시 기습 치명상"
+		Enums.BulletEffect.PIERCE: return "후열 적에게 관통 피해"
 	return "없음"
 
 func _apply_tab_style(btn: Button, active: bool) -> void:

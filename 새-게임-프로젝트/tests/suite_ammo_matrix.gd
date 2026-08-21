@@ -56,6 +56,7 @@ static func _fight(gun_id: String, enemy_id: String, fire_order: Array[String]) 
 		"remaining": cm.magazine.get_remaining(),
 		"pending_acc": cm.pending_buff_acc,
 		"pending_pen": cm.pending_buff_pen,
+		"pending_dmg": cm.pending_buff_dmg,
 		"mag_acc": cm.magazine_buff_acc,
 		"mag_pen": cm.magazine_buff_pen,
 		"discard": cm.discard_pile.size(),
@@ -101,9 +102,10 @@ static func run(t) -> void:
 	t.eq(int(align.mag_pen), 1, "정렬탄 잔여 탄창 PEN +1 유지")
 	t.eq(align.damages, [2, 3], "정렬 PEN+1로 9mm가 DEF2 통과")
 
-	var chain := _fight("revolver", "rusher", ["cal_9mm", "chain"])
-	t.check(chain.dead, "연쇄탄이 직전 유효 적중을 읽음")
-	t.eq(chain.damages, [3, 5], "연쇄탄 2+3")
+	var booster := _fight("revolver", "rusher", ["chain", "cal_9mm"])
+	t.check(booster.dead, "장약 증폭탄이 다음 1발의 피해를 높임")
+	t.eq(booster.damages, [2, 5], "장약 증폭탄 2 뒤 9mm 피해 3+2")
+	t.eq(int(booster.pending_dmg), 0, "인접 DMG 버프는 다음 1발에서 소비")
 
 	var finale := _fight("revolver", "rusher", ["cal_9mm", "finale"])
 	t.eq(finale.damages, [3, 7], "마무리탄 마지막 발 정액 +4")

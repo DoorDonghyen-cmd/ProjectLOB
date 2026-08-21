@@ -5,18 +5,18 @@
 
 [resource]
 script = ExtResource("1")
-display_name = "연쇄탄"
-description = "직전 탄이 유효 적중했다면 연쇄 반응으로 피해 3을 더합니다."
+display_name = "장약 증폭탄"
+description = "유효 적중 시 다음 1발의 주 피해를 2 높입니다."
 icon = ExtResource("2")
 family = "special"
-role = "attack"
+role = "link"
 specialty = "damage"
 weapon_class = 5
 trigger = "on_effective_hit"
-scope = "self"
-condition = "previous_effective"
+scope = "next_shot"
+condition = "none"
 damage = 2
 accuracy = 5
 penetration = 1
-effect_type = 2
-effect_value = 3
+effect_type = 12
+effect_value = 2

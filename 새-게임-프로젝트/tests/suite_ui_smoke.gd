@@ -145,7 +145,7 @@ static func run(t, tree: SceneTree) -> void:
 	var scan_guidance_btn := _find_button_text(scene._title_overlay._dev_test_panel, "스캔·연계·결산 QA")
 	t.check(scan_guidance_btn != null, "⭐ 모바일 스캔·연계·결산 개발자 테스트 버튼 존재")
 	var ammo_specialty_btn := _find_button_text(scene._title_overlay._dev_test_panel, "탄환 전문축 QA")
-	t.check(ammo_specialty_btn != null, "⭐ 화력·관통·명중·제어 개발자 테스트 버튼 존재")
+	t.check(ammo_specialty_btn != null, "⭐ ACC·PEN·DMG·CTRL 개발자 테스트 버튼 존재")
 	var management_roster_btn := _find_button_text(scene._title_overlay._dev_test_panel, "관리 계층 편성 QA")
 	t.check(management_roster_btn != null, "⭐ 관리 계층 편성 개발자 테스트 버튼 존재")
 	var apex_roster_btn := _find_button_text(scene._title_overlay._dev_test_panel, "정점 편성 QA")
@@ -311,12 +311,12 @@ static func run(t, tree: SceneTree) -> void:
 
 		var guidance_ov = scene._combat_overlay
 		guidance_ov._toggle_drawer(true)
-		t.check(_has_label_text(guidance_ov, "[다음 1발]"),
-			"⭐ 가방/장전 UI에 다음 1발 범위 배지 렌더")
-		t.check(_has_label_text(guidance_ov, "[대상 지속]"),
-			"⭐ 가방/장전 UI에 대상 지속 범위 배지 렌더")
-		t.check(_has_label_text(guidance_ov, "[잔여 탄창]"),
-			"⭐ 가방/장전 UI에 잔여 탄창 범위 배지 렌더")
+		t.check(_has_label_text(guidance_ov, "다음 1발 ACC +3"),
+			"⭐ 가방/장전 UI에 다음 1발 효과·수치 렌더")
+		t.check(_has_label_text(guidance_ov, "대상 EVA -2"),
+			"⭐ 가방/장전 UI에 대상 지속 효과·수치 렌더")
+		t.check(_has_label_text(guidance_ov, "남은 탄창 ACC +1"),
+			"⭐ 가방/장전 UI에 잔여 탄창 효과·수치 렌더")
 		t.check(_has_label_text(guidance_ov, "[결산]"),
 			"⭐ 가방/장전 UI에 연쇄·교대탄 결산 배지 렌더")
 		guidance_ov._toggle_drawer(false)
@@ -390,9 +390,9 @@ static func run(t, tree: SceneTree) -> void:
 	if scene._cm != null:
 		t.check(scene._cm.gun_is("smg"), "⭐ 기관단총 연발 체인 테스트가 Tempo로 시작됨")
 		t.check(scene._cm.is_full_auto(), "기관단총 QA 숏컷도 연발")
-	t.check(_has_label_text(scene._combat_overlay, "[명중]"),
+	t.check(_has_label_text(scene._combat_overlay, "[ACC]"),
 		"⭐ 장전 UI에 명중 전문축 배지 렌더")
-	t.check(_has_label_text(scene._combat_overlay, "[화력]"),
+	t.check(_has_label_text(scene._combat_overlay, "[DMG]"),
 		"⭐ 장전 UI에 화력 전문축 배지 렌더")
 	scene._combat_overlay._toggle_drawer(true)
 	t.check(_has_label_text(scene._combat_overlay, "보급 6/6"),

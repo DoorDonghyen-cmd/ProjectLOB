@@ -414,7 +414,7 @@ func trigger_scan_guidance_test() -> void:
 	_show_map_screen()
 
 
-## 화력/관통/명중/제어 전문축 카드와 전문축 교대 결산을 즉시 확인한다.
+## 기본탄 성향과 ACC/PEN/DMG/CTRL 전술탄 카드, 다음 1발 강화 효과를 즉시 확인한다.
 func trigger_ammo_specialty_test() -> void:
 	_is_shortcut_mode = true
 	_title_overlay.visible = false
@@ -423,7 +423,8 @@ func trigger_ammo_specialty_test() -> void:
 
 	_rm.deck.clear()
 	for bullet_id in [
-		"marker", "jammer", "borer", "shred", "chain", "finale", "impact", "adhesive",
+		"cal_9mm", "cal_556", "cal_12g",
+		"marker", "borer", "chain", "impact", "finale",
 	]:
 		var bullet: BulletData = load("res://resources/bullets/%s.tres" % bullet_id)
 		if bullet != null:
@@ -433,11 +434,11 @@ func trigger_ammo_specialty_test() -> void:
 	if _combat_overlay:
 		_combat_overlay.clear_combat_log()
 		_combat_overlay.add_combat_log(
-			"[color=#ffff66]🛠️ 탄환 전문축 QA — [명중] [관통] [화력] [제어][/color]")
+			"[color=#ffff66]🛠️ 탄환 전문축 QA — [ACC] [PEN] [DMG] [CTRL] · [기본탄][/color]")
 		_combat_overlay.add_combat_log(
-			"[color=#88ff88]· 카드 첫 배지와 툴팁의 운용 분류를 비교하십시오.[/color]")
+			"[color=#88ff88]· 기본탄 성향과 전술탄의 전문축·효과 한 줄을 비교하십시오.[/color]")
 		_combat_overlay.add_combat_log(
-			"[color=#ffcc44]· 서로 다른 전문축 뒤 교대탄 결산, 같은 전문축의 리듬 유지를 확인하십시오.[/color]")
+			"[color=#ffcc44]· 표식/천공/장약 증폭탄의 다음 1발 ACC/PEN/DMG 강화를 확인하십시오.[/color]")
 
 
 ## 관리·정점의 대표 4체 일반전을 즉시 비교하는 수동 플레이테스트 진입점.

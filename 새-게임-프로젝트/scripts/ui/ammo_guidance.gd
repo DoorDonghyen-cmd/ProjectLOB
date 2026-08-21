@@ -21,14 +21,17 @@ static func preview_entries(
 	var entries: Array[Dictionary] = []
 	var accuracy_bonuses: Array[int] = []
 	var penetration_bonuses: Array[int] = []
+	var damage_bonuses: Array[int] = []
 	var adjacent_accuracy_bonuses: Array[int] = []
 	var adjacent_penetration_bonuses: Array[int] = []
 	accuracy_bonuses.resize(fire_order.size())
 	penetration_bonuses.resize(fire_order.size())
+	damage_bonuses.resize(fire_order.size())
 	adjacent_accuracy_bonuses.resize(fire_order.size())
 	adjacent_penetration_bonuses.resize(fire_order.size())
 	accuracy_bonuses.fill(0)
 	penetration_bonuses.fill(0)
+	damage_bonuses.fill(0)
 	adjacent_accuracy_bonuses.fill(0)
 	adjacent_penetration_bonuses.fill(0)
 	var previous_effective := false
@@ -43,10 +46,11 @@ static func preview_entries(
 			if not axis.is_empty():
 				entries.append(_preview_link(
 					bullet, index, fire_order, gun, target, axis,
-					accuracy_bonuses, penetration_bonuses,
+					accuracy_bonuses, penetration_bonuses, damage_bonuses,
 					adjacent_accuracy_bonuses, adjacent_penetration_bonuses))
 
 		var stats := DamageCalculatorScript.effective_stats(bullet, gun)
+		stats.damage += damage_bonuses[index]
 		var hit := target != null \
 			and int(stats.accuracy) + accuracy_bonuses[index] >= target.current_evasion
 		var penetrated := target != null \
@@ -82,10 +86,13 @@ static func _preview_link(
 	axis: String,
 	accuracy_bonuses: Array[int],
 	penetration_bonuses: Array[int],
+	damage_bonuses: Array[int],
 	adjacent_accuracy_bonuses: Array[int],
 	adjacent_penetration_bonuses: Array[int]
 ) -> Dictionary:
-	var axis_label := "명중" if axis == "accuracy" else "관통"
+	var axis_label: String = str({
+		"accuracy": "명중", "penetration": "관통", "damage": "피해"
+	}.get(axis, ""))
 	var result := {
 		"kind": "link",
 		"bullet_name": link.display_name,
@@ -113,29 +120,38 @@ static func _preview_link(
 		if bullet == null:
 			continue
 		var stats := DamageCalculatorScript.effective_stats(bullet, gun)
-		var before := (
-			int(stats.accuracy) + accuracy_bonuses[affected_index]
-			if axis == "accuracy"
-			else int(stats.penetration) + penetration_bonuses[affected_index]
-		)
+		var before := int(stats.damage) + damage_bonuses[affected_index]
+		if axis == "accuracy":
+			before = int(stats.accuracy) + accuracy_bonuses[affected_index]
+		elif axis == "penetration":
+			before = int(stats.penetration) + penetration_bonuses[affected_index]
 		var after := before + maxi(link.effect_value, 0)
-		if before < gate and after >= gate:
+		if axis == "damage":
+			converted += 1
+		elif before < gate and after >= gate:
 			converted += 1
 		if axis == "accuracy":
 			accuracy_bonuses[affected_index] += maxi(link.effect_value, 0)
 			if BulletRoleUIScript.normalize_scope(link.scope) == BulletRoleUIScript.SCOPE_NEXT_SHOT:
 				adjacent_accuracy_bonuses[affected_index] += maxi(link.effect_value, 0)
-		else:
+		elif axis == "penetration":
 			penetration_bonuses[affected_index] += maxi(link.effect_value, 0)
 			if BulletRoleUIScript.normalize_scope(link.scope) == BulletRoleUIScript.SCOPE_NEXT_SHOT:
 				adjacent_penetration_bonuses[affected_index] += maxi(link.effect_value, 0)
+		else:
+			damage_bonuses[affected_index] += maxi(link.effect_value, 0)
 
 	result.converted = converted
-	result.text = (
-		"%s: %s 전환 %d발" % [link.display_name, axis_label, converted]
-		if converted > 0
-		else "%s: 현재 대열 게이트 전환 없음" % link.display_name
-	)
+	if axis == "damage":
+		result.text = "%s: 다음 %d발 피해 +%d" % [
+			link.display_name, converted, maxi(link.effect_value, 0)
+		]
+	else:
+		result.text = (
+			"%s: %s 전환 %d발" % [link.display_name, axis_label, converted]
+			if converted > 0
+			else "%s: 현재 대열 게이트 전환 없음" % link.display_name
+		)
 	return result
 
 
@@ -248,5 +264,7 @@ static func _effect_axis(effect_type: int) -> String:
 			return "accuracy"
 		Enums.BulletEffect.BUFF_PEN, Enums.BulletEffect.ARMOR_SHRED, Enums.BulletEffect.BUFF_MAG_PEN:
 			return "penetration"
+		Enums.BulletEffect.BUFF_DMG:
+			return "damage"
 		_:
 			return ""

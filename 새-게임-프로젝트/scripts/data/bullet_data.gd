@@ -43,6 +43,6 @@ extends Resource
 @export var effect_type: Enums.BulletEffect = Enums.BulletEffect.NONE
 ## 효과 수치 — ARMOR_SHRED: 방어 감소량, COMBO: 대미지 보너스, 
 ## LAST_SHOT: 마지막 발 정액 피해, OPENING_SHOT: 넉백 보너스,
-## BUFF_ACC / BUFF_PEN: 다음 1발, DEBUFF_EVA: 적 영구,
+## BUFF_ACC / BUFF_PEN / BUFF_DMG: 다음 1발, DEBUFF_EVA: 적 영구,
 ## BUFF_MAG_ACC / BUFF_MAG_PEN: 탄창 잔여 전체에 더하는 해당 스탯
 @export var effect_value: int = 0

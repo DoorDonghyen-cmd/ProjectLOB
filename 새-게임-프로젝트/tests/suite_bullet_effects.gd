@@ -91,7 +91,7 @@ static func run(t) -> void:
 	t.eq(r_open.dist, 12, "선제 사격: 첫 탄 넉백 +2 → 거리 10→12")
 
 	# ══════════════════════════════════════════════════════════
-	# 연계 버프 (BUFF_ACC / BUFF_PEN) — 정본: docs/gdd/22_ammo_expansion.md §22.2
+	# 연계 버프 (BUFF_ACC / BUFF_PEN / BUFF_DMG) — 정본: docs/gdd/22_ammo_expansion.md §22.2
 	#
 	# 규칙: 다음 1발만 · 유효 적중 시에만 · 중첩 없음 · 리로드 소멸
 	# ⚠️ LIFO — 나중에 넣은 탄이 먼저 나간다. 연계탄을 뒤에 적재해야 먼저 발사된다.
@@ -128,6 +128,22 @@ static func run(t) -> void:
 	var r_pen_chain := _fire(_enemy(40, 3, 0, 10), pen_chain)
 	t.eq(int(r_pen_chain.hp), 23,
 		"⭐ PEN 연계→크리티컬 16 + 경량탄 집중1 = 17 피해")
+
+	# DMG 연계는 게이트를 우회하지 않고, 통과한 다음 1발의 주 피해에 정액 +2를 준다.
+	var dmg_chain: Array[BulletData] = [
+		_bullet(5, 7, 1),
+		_bullet(1, 7, 1, Enums.BulletEffect.BUFF_DMG, 2),
+	]
+	var r_dmg_chain := _fire(_enemy(30, 1, 0, 10), dmg_chain)
+	t.eq(int(r_dmg_chain.hp), 22, "⭐ DMG 연계 1 + 다음 1발 5+2 = 8 피해")
+
+	var blocked_dmg_chain: Array[BulletData] = [
+		_bullet(5, 7, 2),
+		_bullet(1, 7, 0, Enums.BulletEffect.BUFF_DMG, 2),
+	]
+	var r_blocked_dmg := _fire(_enemy(30, 2, 0, 10), blocked_dmg_chain)
+	t.eq(int(r_blocked_dmg.hp), 25,
+		"⭐ 도탄한 DMG 연계는 버프 미부여 — 후속탄 기본 피해 5만 적용")
 
 	# ── 버프는 다음 1발만 (탄창 전체 지속 아님) ──
 	# 연계 1발 + 공격 3발 → 첫 공격만 맞고 나머지 둘은 빗나가야 한다.
@@ -199,3 +215,14 @@ static func run(t) -> void:
 	t.check(bool(pv_loss.permanent_loss_on_failure),
 		"⭐ 범용탄 게이트 실패의 런 덱 영구 소실 위험 사전 표시")
 	cm4.free()
+
+	var cm5 := CombatManagerScript.new()
+	var e5: Array[EnemyData] = [_enemy(30, 0, 0, 10)]
+	var lo5: Array[BulletData] = [_bullet(5, 7, 1)]
+	cm5.start_encounter(gun2, e5, lo5, np2)
+	cm5.confirm_loading(lo5)
+	cm5.pending_buff_dmg = 2
+	var pv_dmg := cm5.preview_next_shot()
+	t.eq(int(pv_dmg.dmg), 7, "⭐ 피해 증폭 대기 시 다음 탄 미리보기 DMG 5→7")
+	t.check(bool(pv_dmg.buffed_dmg), "⭐ 미리보기가 DMG 버프 적용을 표시")
+	cm5.free()

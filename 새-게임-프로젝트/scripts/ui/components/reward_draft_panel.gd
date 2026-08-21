@@ -217,6 +217,11 @@ func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	style.corner_radius_bottom_right = 10
 	style.corner_radius_top_left = 10
 	style.corner_radius_top_right = 10
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.border_color = BulletRoleUI.primary_color(bullet).darkened(0.2)
 	card.add_theme_stylebox_override("panel", style)
 	
 	var vbox := vbox_layout_init(card)
@@ -233,8 +238,8 @@ func _make_draft_card(bullet: BulletData) -> PanelContainer:
 	badge_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(badge_row)
 	var role_lbl: Label = parent_scene.make_label(
-		BulletRoleUI.specialty_badge_text(bullet.specialty), 11,
-		BulletRoleUI.specialty_color(bullet.specialty))
+		BulletRoleUI.primary_badge_text(bullet), 12,
+		BulletRoleUI.primary_color(bullet))
 	role_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge_row.add_child(role_lbl)
 	var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
@@ -270,7 +275,7 @@ func _make_draft_card(bullet: BulletData) -> PanelContainer:
 		vbox.add_child(util_lbl)
 		
 	if bullet.effect_type != Enums.BulletEffect.NONE:
-		var eff_lbl: Label = parent_scene.make_label(overlay._bullet_effect_name(bullet.effect_type), 12, parent_scene.C_WARNING)
+		var eff_lbl: Label = parent_scene.make_label(BulletRoleUI.effect_summary(bullet), 12, BulletRoleUI.primary_color(bullet))
 		eff_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		eff_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vbox.add_child(eff_lbl)
@@ -458,8 +463,8 @@ func _open_deck_swap_popup() -> void:
 		hbox.add_child(name_lbl)
 
 		var role_lbl: Label = parent_scene.make_label(
-			BulletRoleUI.specialty_badge_text(bullet.specialty), 10,
-			BulletRoleUI.specialty_color(bullet.specialty))
+			BulletRoleUI.primary_badge_text(bullet), 11,
+			BulletRoleUI.primary_color(bullet))
 		hbox.add_child(role_lbl)
 		var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
 		if not payoff_text.is_empty():
