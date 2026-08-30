@@ -4,7 +4,7 @@ extends RefCounted
 ## 플레이테스트 런을 로컬 JSON으로 남긴다.
 ## 게임 세이브와 분리해 초기화·손상이 진행 데이터에 영향을 주지 않는다.
 
-const SCHEMA_VERSION := 2
+const SCHEMA_VERSION := 3
 const DEFAULT_LOG_DIR := "user://playtest_logs"
 
 ## 헤드리스 테스트가 실제 사용자 로그 폴더를 오염시키지 않게 한다.
@@ -74,6 +74,8 @@ func begin_run(run_context: Dictionary) -> Error:
 	report = {
 		"schema_version": SCHEMA_VERSION,
 		"run_id": run_id,
+		"session_id": str(run_context.get("qa_session_id", "")),
+		"gameplay_seed": int(run_context.get("gameplay_seed", 0)),
 		"started_at": Time.get_datetime_string_from_system(false, true),
 		"updated_at": Time.get_datetime_string_from_system(false, true),
 		"result": "in_progress",

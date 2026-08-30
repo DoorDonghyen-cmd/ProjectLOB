@@ -3,6 +3,7 @@ extends Control
 const CampaignContentScript := preload("res://scripts/core/campaign_content.gd")
 const EnemyRosterScript := preload("res://scripts/core/enemy_roster.gd")
 const ItemCatalogScript := preload("res://scripts/core/item_catalog.gd")
+const RandomStreamsScript := preload("res://scripts/core/random_streams.gd")
 
 ## ═══════════════════════════════════════════════════
 ## 전투 및 런 제어용 메인 씬 라우터 (리팩토링 버전)
@@ -79,6 +80,8 @@ var _camera: Camera2D
 var _current_gun_data: GunData
 var _is_shortcut_mode: bool = false
 var _is_guidance_shortcut: bool = false
+var _qa_gameplay_seed: int = 0
+var _qa_session_id: String = ""
 
 
 func _ready() -> void:
@@ -215,12 +218,20 @@ func set_current_gun(gun: GunData) -> void:
 	_current_gun_data = gun
 
 
+func configure_qa_run(gameplay_seed: int, session_id: String) -> void:
+	_qa_gameplay_seed = gameplay_seed
+	_qa_session_id = session_id
+
+
 func trigger_camera_shake(intensity: float = 8.0, duration: float = 0.2) -> void:
 	if not _camera:
 		return
 	var tween := create_tween()
 	for i in range(5):
-		var offset := Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
+		var offset := Vector2(
+			RandomStreamsScript.fx_float_range(-intensity, intensity),
+			RandomStreamsScript.fx_float_range(-intensity, intensity)
+		)
 		tween.tween_property(_camera, "offset", offset, duration / 6.0)
 	tween.tween_property(_camera, "offset", Vector2.ZERO, duration / 6.0)
 
@@ -344,7 +355,10 @@ func trigger_full_auto_test() -> void:
 	_title_overlay.visible = false
 	_current_gun_data = _gun_suppressor
 
-	_rm.start_new_run(RunManager.SECTION_ORDER[0], _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	_rm.start_new_run(
+		RunManager.SECTION_ORDER[0], _current_gun_data,
+		_bullets_basic, _bullets_ap, _bullets_kb,
+		_qa_gameplay_seed, _qa_session_id)
 
 	_combat_margin.visible = true
 	if _combat_overlay:
@@ -523,7 +537,10 @@ func handle_loadout_finished() -> void:
 	# ⚠️ 연속 런 구조: 런은 항상 최하층(section_a)에서 시작해 정점까지 35층을 이어 오른다.
 	#    잠긴 계층은 바로 아래 관문을 돌파하는 순간 해금되며 런을 끊지 않는다.
 	#    정본: docs/gdd/20_ascension_intention.md §3
-	_rm.start_new_run(RunManager.SECTION_ORDER[0], _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb)
+	_rm.start_new_run(
+		RunManager.SECTION_ORDER[0], _current_gun_data,
+		_bullets_basic, _bullets_ap, _bullets_kb,
+		_qa_gameplay_seed, _qa_session_id)
 	_show_map_screen()
 
 
@@ -568,9 +585,9 @@ func handle_route_selected(selected_node: RunManager.RunNode, route: String) -> 
 	if not _is_guidance_shortcut \
 			and selected_node.type_name.begins_with("???") \
 			and selected_node.hidden_type == "매복 구획 (전투)":
-		if randf() < 0.3:
+		if RandomStreamsScript.gameplay_float("event") < 0.3:
 			triggered_safeguard = true
-			if randf() < 0.5:
+			if RandomStreamsScript.gameplay_float("event") < 0.5:
 				_trigger_safehouse_event()
 			else:
 				_trigger_blackmarket_event()
@@ -628,7 +645,8 @@ func _increase_regular_enemy_density(
 	roll: float = -1.0
 ) -> Array:
 	var result: Array = enemy_list.duplicate()
-	var density_roll := randf() if roll < 0.0 else clampf(roll, 0.0, 1.0)
+	var density_roll := RandomStreamsScript.gameplay_float("encounter") \
+		if roll < 0.0 else clampf(roll, 0.0, 1.0)
 	var target_count := EnemyRosterScript.target_count(section, tier, result.size(), density_roll)
 	var candidates: Array = EnemyRosterScript.load_density_candidates(section)
 
@@ -686,13 +704,13 @@ func handle_maintenance_finished() -> void:
 		elif _current_node.id == 802:
 			fid = 18
 		else:
-			if randf() < 0.10:
+			if RandomStreamsScript.gameplay_float("reward") < 0.10:
 				var uncollected: Array[int] = []
 				for i in range(1, 21):
 					if not RunManager.meta_lore_fragments.has(i):
 						uncollected.append(i)
 				if not uncollected.is_empty():
-					fid = uncollected.pick_random()
+					fid = int(RandomStreamsScript.gameplay_pick(uncollected, "reward"))
 					
 		if fid > 0:
 			if _rm.collect_lore_fragment(fid):
@@ -754,13 +772,13 @@ func handle_combat_finished(is_dead: bool) -> void:
 		elif _current_node.id == 802:
 			fid = 18 # 8층 약실 조율실 확정
 		else:
-			if randf() < 0.30:
+			if RandomStreamsScript.gameplay_float("reward") < 0.30:
 				var uncollected: Array[int] = []
 				for i in range(1, 21):
 					if not RunManager.meta_lore_fragments.has(i):
 						uncollected.append(i)
 				if not uncollected.is_empty():
-					fid = uncollected.pick_random()
+					fid = int(RandomStreamsScript.gameplay_pick(uncollected, "reward"))
 					
 		if fid > 0:
 			if _rm.collect_lore_fragment(fid):
@@ -1028,7 +1046,7 @@ func _purchase_blackmarket_part(cost: int = 30) -> bool:
 	var candidates := _blackmarket_part_candidates()
 	if candidates.is_empty() or not _rm.spend_credits(cost):
 		return false
-	var chosen := (candidates.pick_random() as PartData).duplicate() as PartData
+	var chosen := (RandomStreamsScript.gameplay_pick(candidates, "shop") as PartData).duplicate() as PartData
 	if not _rm.add_to_backpack(chosen):
 		_rm.credits += cost
 		return false
@@ -1042,7 +1060,7 @@ func _purchase_blackmarket_bullet(cost: int = 15) -> bool:
 	var candidates := _blackmarket_bullet_candidates()
 	if candidates.is_empty() or not _rm.spend_credits(cost):
 		return false
-	var chosen := (candidates.pick_random() as BulletData).duplicate() as BulletData
+	var chosen := (RandomStreamsScript.gameplay_pick(candidates, "shop") as BulletData).duplicate() as BulletData
 	_rm.add_to_deck(chosen)
 	print("🕵️ 암시장 탄환 구매: %s" % chosen.display_name)
 	return true

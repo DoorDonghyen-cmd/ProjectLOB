@@ -65,7 +65,7 @@ static func run(t) -> void:
 	var parsed = JSON.parse_string(file.get_as_text()) if file != null else null
 	t.check(parsed is Dictionary, "플레이테스트 로그 JSON 파싱")
 	if parsed is Dictionary:
-		t.eq(int(parsed.schema_version), 2, "플레이테스트 로그 스키마 v2")
+		t.eq(int(parsed.schema_version), 3, "플레이테스트 로그 스키마 v3")
 		t.eq(parsed.events.size(), 1, "런 로그에 비전투 선택 이벤트 1건 누적")
 		t.eq(str(parsed.events[0].type), "shop_offers", "상점 진열 이벤트 유형 저장")
 		t.eq(str(parsed.events[0].details.offers[0].id), "rhythm_chamber", "상점 파츠 후보 스냅샷")

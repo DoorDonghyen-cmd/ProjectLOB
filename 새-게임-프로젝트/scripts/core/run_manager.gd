@@ -2,6 +2,7 @@ class_name RunManager
 extends RefCounted
 
 const PlaytestLoggerScript = preload("res://scripts/core/playtest_logger.gd")
+const RandomStreamsScript = preload("res://scripts/core/random_streams.gd")
 
 ## ═══════════════════════════════════════════════════
 ## 로그라이크 런 및 메타 영구 해금 매니저
@@ -66,6 +67,8 @@ var tactical_data_cores: int = 0         # 이번 런에서 획득한 전술 데
 
 ## 게임 세이브와 분리된 로컬 플레이테스트 텔레메트리.
 var playtest_logger = PlaytestLoggerScript.new()
+var gameplay_seed: int = 0
+var qa_session_id: String = ""
 
 # ── 런 도전 과제 판정 통계 ──
 var run_stats := {
@@ -121,7 +124,17 @@ class RunNode:
 
 
 ## 신규 런 시작 및 상태 초기화
-func start_new_run(section_id: String, gun: GunData, basic_bullet: BulletData, ap_bullet: BulletData, kb_bullet: BulletData) -> void:
+func start_new_run(
+	section_id: String,
+	gun: GunData,
+	basic_bullet: BulletData,
+	ap_bullet: BulletData,
+	kb_bullet: BulletData,
+	seed: int = 0,
+	session_id: String = ""
+) -> void:
+	gameplay_seed = RandomStreamsScript.begin_run(seed)
+	qa_session_id = session_id
 	# 런타임 시작 시 CSV 데이터 동기화
 	_sync_gun_stats_from_csv(gun)
 	_sync_bullet_stats_from_csv(basic_bullet)
@@ -274,6 +287,9 @@ func playtest_snapshot() -> Dictionary:
 		var bullet_id := PlaytestLoggerScript.resource_id(bullet)
 		deck_counts[bullet_id] = int(deck_counts.get(bullet_id, 0)) + 1
 	return {
+		"qa_session_id": qa_session_id,
+		"gameplay_seed": gameplay_seed,
+		"rng": RandomStreamsScript.snapshot(),
 		"section": current_section,
 		"floor": current_floor,
 		"node_id": current_node_id,

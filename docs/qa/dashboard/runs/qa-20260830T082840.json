@@ -1,0 +1,395 @@
+{
+	"build": {
+		"commit": "9559e5626aee48989ed88a48a6c5fa45d2061922",
+		"dirty_worktree": true,
+		"engine": "4.7-stable (official)",
+		"gameplay_seed": 424243,
+		"platform": "Windows"
+	},
+	"combat_metrics": {
+		"completed_encounters": 9,
+		"min_distance": 2,
+		"reloads": 10,
+		"shots": 73
+	},
+	"core_fun": {
+		"confidence": "medium",
+		"evidence": {
+			"ammo_loads": 80,
+			"completed_encounters": 9,
+			"contextual_reasons": 11,
+			"losses_or_run_ends": 4,
+			"mixed_better_than_basic_scenarios": 4,
+			"order_sensitive_scenarios": 4,
+			"planned_better_scenarios": 4,
+			"scenario_count": 4,
+			"tactical_loads": 11,
+			"tactical_profiles": 3,
+			"tested_seeds": [
+				424243
+			],
+			"victories": 5
+		},
+		"gates": [
+			{
+				"evidence": "4/4 상황에서 순서에 따라 결과 변화, 계획 순서 우세 4회",
+				"id": "sequence_leverage",
+				"passed": true,
+				"question": "같은 탄환도 순서가 결과를 바꾸는가"
+			},
+			{
+				"evidence": "서로 다른 해법 축 4개: accuracy, penetration, damage, position",
+				"id": "context_specific_solutions",
+				"passed": true,
+				"question": "적 자물쇠에 따라 필요한 조합이 바뀌는가"
+			},
+			{
+				"evidence": "4/4 상황에서 계획 혼합 장전이 기본탄 비교보다 우세",
+				"id": "mixed_load_value",
+				"passed": true,
+				"question": "상황 맞춤 혼합 장전이 기본탄 반복보다 나은가"
+			},
+			{
+				"evidence": "전술탄 사용 성향 3/4, 상황 근거 장전 11회, 총 전투 9회",
+				"id": "actual_decision_pressure",
+				"passed": true,
+				"question": "실제 캠페인에서 조합을 선택할 필요가 발생했는가"
+			},
+			{
+				"evidence": "검증 시드 1개, 총 전투 9회, 승리 5회, 패배·종료 4회",
+				"id": "sample_coverage",
+				"passed": false,
+				"question": "서로 다른 진행에서도 같은 재미 구조가 반복되는가"
+			}
+		],
+		"headline": "순서 퍼즐은 작동하지만 실제 플레이에서 요구되는 빈도와 깊이가 부족함",
+		"human_confirmation": [
+			"장전 고민이 즐거운지와 정답 발견 후 다시 시도하고 싶은지",
+			"발사·타격·결산 연출이 계획 성공의 쾌감을 충분히 전달하는지",
+			"장시간 플레이에서 장전 입력과 계산이 피로보다 만족을 주는지"
+		],
+		"next_actions": [
+			"최소 3개 시드·12전투 이상에서 같은 순서 가치가 반복되는지 확인",
+			"사람 플레이에서 재계획 욕구와 결산 쾌감 확인"
+		],
+		"schema_version": 1,
+		"summary": "결정론적 순서 효과는 3/3 게이트를 통과했지만 실제 캠페인 압박은 확인됨. 잠재력과 현재 체감 빈도를 구분해야 한다.",
+		"verdict": "PROMISING_BUT_THIN"
+	},
+	"counts": {
+		"blocked": 0,
+		"candidate": 0,
+		"conflict": 0,
+		"fail": 0,
+		"infra": 0,
+		"pass": 6,
+		"seeded": 0,
+		"signal": 4
+	},
+	"created_at": "2026-08-30 17:34:57",
+	"evidence_links": [
+		{
+			"label": "프로필 비교 원본",
+			"path": "profile_comparison.json"
+		},
+		{
+			"label": "통합 QA 원본",
+			"path": "integrated_summary.json"
+		},
+		{
+			"label": "핵심 재미 판정",
+			"path": "core_fun_assessment.json"
+		},
+		{
+			"label": "동일 탄환 순서 대조",
+			"path": "core_fun_probe.json"
+		}
+	],
+	"findings": [
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "diversity",
+			"classification": "SIGNAL",
+			"confidence": "observation",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "balance_risk",
+			"key": "tactical_ammo_unused",
+			"observation": "1개 프로필에서 tactical_ammo_unused 신호가 관찰됨; 종합 재미 판정이 아닌 행동 증거임",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "low"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "balance",
+			"classification": "SIGNAL",
+			"confidence": "observation",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "balance_risk",
+			"key": "dominant_reward_credits",
+			"observation": "프로필 간 선택이 credits에 60.0% 집중됨; 재미 성공이 아니라 지배 전략 후보임",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "moderate"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "core_fun",
+			"classification": "SIGNAL",
+			"confidence": "strong_signal",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "fun_issue",
+			"key": "core_fun_sample_coverage",
+			"observation": "서로 다른 진행에서도 같은 재미 구조가 반복되는가 — 검증 시드 1개, 총 전투 9회, 승리 5회, 패배·종료 4회",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "moderate"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "core_fun",
+			"classification": "SIGNAL",
+			"confidence": "strong_signal",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "fun_issue",
+			"key": "core_fun_verdict",
+			"observation": "순서 퍼즐은 작동하지만 실제 플레이에서 요구되는 빈도와 깊이가 부족함 — 결정론적 순서 효과는 3/3 게이트를 통과했지만 실제 캠페인 압박은 확인됨. 잠재력과 현재 체감 빈도를 구분해야 한다.",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "moderate"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "flow",
+			"classification": "PASS",
+			"confidence": "confirmed",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "pass",
+			"key": "runtime_public_contracts",
+			"observation": "네 프로필의 합법 행동이 거절 없이 실제 플레이 경로를 완료함",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"functional_qa"
+			],
+			"severity": "none"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "core_fun",
+			"classification": "PASS",
+			"confidence": "confirmed",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "pass",
+			"key": "core_fun_sequence_leverage",
+			"observation": "같은 탄환도 순서가 결과를 바꾸는가 — 4/4 상황에서 순서에 따라 결과 변화, 계획 순서 우세 4회",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "none"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "core_fun",
+			"classification": "PASS",
+			"confidence": "confirmed",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "pass",
+			"key": "core_fun_context_specific_solutions",
+			"observation": "적 자물쇠에 따라 필요한 조합이 바뀌는가 — 서로 다른 해법 축 4개: accuracy, penetration, damage, position",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "none"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "core_fun",
+			"classification": "PASS",
+			"confidence": "confirmed",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "pass",
+			"key": "core_fun_mixed_load_value",
+			"observation": "상황 맞춤 혼합 장전이 기본탄 반복보다 나은가 — 4/4 상황에서 계획 혼합 장전이 기본탄 비교보다 우세",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "none"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "core_fun",
+			"classification": "PASS",
+			"confidence": "confirmed",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "pass",
+			"key": "core_fun_actual_decision_pressure",
+			"observation": "실제 캠페인에서 조합을 선택할 필요가 발생했는가 — 전술탄 사용 성향 3/4, 상황 근거 장전 11회, 총 전투 9회",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"experience_qa"
+			],
+			"severity": "none"
+		},
+		{
+			"actual": "",
+			"artifact_path": "",
+			"category": "combat",
+			"classification": "PASS",
+			"confidence": "confirmed",
+			"confirmation_state": "not_applicable",
+			"defect_fingerprint": "",
+			"expected": "",
+			"issue_type": "pass",
+			"key": "automatic_regression",
+			"observation": "자동 회귀와 실제 프로필 전투가 실패 없이 완료됨",
+			"reproduction": {
+				"attempts": 0.0,
+				"deterministic": false,
+				"reproduced": 0.0,
+				"seeds": []
+			},
+			"reproduction_steps": [],
+			"roles": [
+				"combat_simulator"
+			],
+			"severity": "none"
+		}
+	],
+	"mode": "fun_and_bug_playtest",
+	"regression": {
+		"failed": 0,
+		"passed": 3599,
+		"warnings": 3
+	},
+	"roles": [
+		{
+			"completed_at": "2026-08-30 17:34:56",
+			"counts": {
+				"BLOCKED": 0,
+				"FAIL": 0,
+				"INFRA": 0,
+				"PASS": 1,
+				"SIGNAL": 0
+			},
+			"role": "functional_qa"
+		},
+		{
+			"completed_at": "2026-08-30 17:34:56",
+			"counts": {
+				"BLOCKED": 0,
+				"FAIL": 0,
+				"INFRA": 0,
+				"PASS": 4,
+				"SIGNAL": 4
+			},
+			"role": "experience_qa"
+		},
+		{
+			"completed_at": "2026-08-30 17:34:56",
+			"counts": {
+				"BLOCKED": 0,
+				"FAIL": 0,
+				"INFRA": 0,
+				"PASS": 1,
+				"SIGNAL": 0
+			},
+			"role": "combat_simulator"
+		}
+	],
+	"run_id": "qa-20260830T082840",
+	"schema_version": 1,
+	"scope": "총 9전투 / 4프로필",
+	"status": "REVIEW"
+}

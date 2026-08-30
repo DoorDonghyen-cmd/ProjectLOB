@@ -3,6 +3,7 @@ extends VBoxContainer
 
 const BulletRoleUI = preload("res://scripts/ui/bullet_role_ui.gd")
 const ItemCatalogScript = preload("res://scripts/core/item_catalog.gd")
+const RandomStreamsScript := preload("res://scripts/core/random_streams.gd")
 
 ## ═══════════════════════════════════════════════════
 ## 전투 승리 후 탄환 보상 드래프트 선택 UI 컴포넌트
@@ -156,7 +157,7 @@ func _weighted_pick_index(pool: Array[BulletData]) -> int:
 	var total_weight := 0
 	for bullet in pool:
 		total_weight += _draft_weight(bullet)
-	var roll := randi_range(1, maxi(total_weight, 1))
+	var roll := RandomStreamsScript.gameplay_int(1, maxi(total_weight, 1), "reward")
 	var cumulative := 0
 	for i in range(pool.size()):
 		cumulative += _draft_weight(pool[i])

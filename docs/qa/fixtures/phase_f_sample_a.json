@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "sample_id": "phase_f_sample_a",
+  "screen": "shop",
+  "player_visible_sequence": [
+    {
+      "step": 7,
+      "action": "shop_open",
+      "reroll_count": 0,
+      "cards": [
+        {"slot": 0, "title": "장약 증폭탄", "description": "유효 적중 시 다음 1발의 피해가 증가합니다."},
+        {"slot": 1, "title": "리듬 챔버", "description": "같은 계열 탄환을 연속 운용할 때 보너스를 얻습니다."},
+        {"slot": 2, "title": "반동 밀어내기", "description": "첫 적중 뒤 적을 추가로 밀어냅니다."}
+      ]
+    },
+    {
+      "step": 8,
+      "action": "reroll_shop",
+      "accepted": true,
+      "reroll_count": 1,
+      "cards": [
+        {"slot": 0, "title": "천공탄", "description": "유효 적중 시 다음 1발의 관통이 증가합니다."},
+        {"slot": 1, "title": "퀵로드", "description": "재장전 시간을 줄여 다음 탄창을 빠르게 준비합니다."},
+        {"slot": 2, "title": "관성 격발", "description": "조건을 만족하면 후속 격발을 지원합니다."}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>ProjectLoB · QA Operations</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">본문으로 이동</a>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand" aria-label="ProjectLoB QA Operations">
+      <span class="brand-mark" aria-hidden="true">L/B</span>
+      <span>
+        <strong>QA OPERATIONS</strong>
+        <small>PROJECT LAST ON BOARD</small>
+      </span>
+    </div>
+    <div class="topbar-actions">
+      <label class="run-picker">
+        <span>실행 이력</span>
+        <select id="run-select" aria-label="QA 실행 이력 선택"></select>
+      </label>
+      <span id="data-time" class="data-time"></span>
+    </div>
+  </header>
+
+  <main id="main-content" class="shell">
+    <section class="qa-control" aria-labelledby="qa-control-title">
+      <div class="qa-control-copy">
+        <div class="eyebrow"><span id="controller-dot" class="pulse-dot"></span> LOCAL QA PLAYTEST CONTROLLER</div>
+        <h1 id="qa-control-title">실제 재미·버그 플레이테스트</h1>
+        <p>네 플레이 성향이 같은 빌드와 시드에서 실제 UI·전투를 독립 실행합니다. 재미 신호와 제품 버그는 별도로 판정합니다.</p>
+      </div>
+      <div class="qa-control-actions">
+        <label>
+          <span>게임플레이 시드</span>
+          <input id="qa-seed" type="number" min="1" step="1" value="424242">
+        </label>
+        <label>
+          <span>프로필당 전투</span>
+          <select id="qa-encounters">
+            <option value="2">2회 · 빠른 확인</option>
+            <option value="3" selected>3회 · 기본</option>
+            <option value="5">5회 · 심층</option>
+          </select>
+        </label>
+        <div class="qa-control-buttons">
+          <button id="qa-start" class="primary-action" type="button">QA 플레이테스트 시작</button>
+          <button id="qa-cancel" class="secondary-action" type="button" hidden>실행 취소</button>
+        </div>
+      </div>
+      <div class="qa-progress" aria-live="polite">
+        <div class="qa-progress-line">
+          <strong id="qa-state">컨트롤러 확인 중</strong>
+          <span id="qa-progress-label">0%</span>
+        </div>
+        <div class="qa-progress-track"><span id="qa-progress-bar"></span></div>
+        <p id="qa-message">대시보드를 로컬 컨트롤러로 열면 테스트를 시작할 수 있습니다.</p>
+      </div>
+    </section>
+
+    <section class="hero" aria-labelledby="run-title">
+      <div>
+        <div class="eyebrow"><span class="pulse-dot"></span> INDEPENDENT QA TEAM REPORT</div>
+        <h1 id="run-title">QA 실행 결과</h1>
+        <p id="run-subtitle" class="hero-copy"></p>
+      </div>
+      <div class="verdict-panel">
+        <span class="verdict-label">FINAL VERDICT</span>
+        <strong id="verdict" class="verdict">—</strong>
+        <span id="verdict-note" class="verdict-note"></span>
+      </div>
+    </section>
+
+    <section class="panel core-fun-panel" aria-labelledby="core-fun-title">
+      <div class="panel-heading">
+        <div>
+          <span class="section-index">CORE</span>
+          <h2 id="core-fun-title">이 게임의 탄환 순서 설계가 재미있는가?</h2>
+        </div>
+        <span id="core-fun-confidence" class="micro-badge neutral">판정 대기</span>
+      </div>
+      <strong id="core-fun-headline" class="core-fun-headline">핵심 재미 증거가 없습니다.</strong>
+      <p id="core-fun-summary" class="core-fun-summary"></p>
+      <div id="core-fun-gates" class="core-fun-gates"></div>
+      <div class="core-fun-columns">
+        <div>
+          <h3>다음 조치</h3>
+          <ul id="core-fun-actions"></ul>
+        </div>
+        <div>
+          <h3>사람이 직접 확인할 부분</h3>
+          <ul id="core-fun-human"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="summary-grid" class="summary-grid" aria-label="판정 요약"></section>
+
+    <div class="dashboard-grid">
+      <section class="panel build-panel" aria-labelledby="build-title">
+        <div class="panel-heading">
+          <div>
+            <span class="section-index">01</span>
+            <h2 id="build-title">빌드 추적</h2>
+          </div>
+          <span id="dirty-badge" class="micro-badge"></span>
+        </div>
+        <dl id="build-meta" class="meta-grid"></dl>
+      </section>
+
+      <section class="panel regression-panel" aria-labelledby="regression-title">
+        <div class="panel-heading">
+          <div>
+            <span class="section-index">02</span>
+            <h2 id="regression-title">자동 회귀</h2>
+          </div>
+          <span id="regression-total" class="panel-total"></span>
+        </div>
+        <div id="regression-numbers" class="regression-numbers"></div>
+        <div class="regression-track" aria-label="자동 회귀 비율">
+          <span id="regression-pass-bar" class="bar-pass"></span>
+          <span id="regression-fail-bar" class="bar-fail"></span>
+          <span id="regression-warn-bar" class="bar-warn"></span>
+        </div>
+        <p id="regression-caption" class="panel-caption"></p>
+      </section>
+
+      <section class="panel combat-panel" aria-labelledby="combat-title">
+        <div class="panel-heading">
+          <div>
+            <span class="section-index">03</span>
+            <h2 id="combat-title">전투 텔레메트리</h2>
+          </div>
+          <span class="micro-badge neutral">HUMAN LOG</span>
+        </div>
+        <div id="combat-metrics" class="metric-grid"></div>
+      </section>
+
+      <section class="panel roles-panel" aria-labelledby="roles-title">
+        <div class="panel-heading">
+          <div>
+            <span class="section-index">04</span>
+            <h2 id="roles-title">독립 역할 보고</h2>
+          </div>
+          <span class="micro-badge neutral">POST-SHARE</span>
+        </div>
+        <div id="role-list" class="role-list"></div>
+      </section>
+    </div>
+
+    <section class="panel findings-panel" aria-labelledby="findings-title">
+      <div class="panel-heading findings-heading">
+        <div>
+          <span class="section-index">05</span>
+          <h2 id="findings-title">판정 항목</h2>
+        </div>
+        <label class="search-box">
+          <span class="sr-only">판정 검색</span>
+          <input id="finding-search" type="search" placeholder="항목·근거 검색">
+        </label>
+      </div>
+      <div id="filter-row" class="filter-row" role="group" aria-label="판정 분류 필터"></div>
+      <div id="finding-list" class="finding-list"></div>
+      <p id="finding-empty" class="empty-state" hidden>조건에 맞는 판정 항목이 없습니다.</p>
+    </section>
+
+    <div class="lower-grid">
+      <section class="panel evidence-panel" aria-labelledby="evidence-title">
+        <div class="panel-heading">
+          <div>
+            <span class="section-index">06</span>
+            <h2 id="evidence-title">원본 증거</h2>
+          </div>
+        </div>
+        <div id="evidence-list" class="evidence-list"></div>
+      </section>
+
+      <section class="panel history-panel" aria-labelledby="history-title">
+        <div class="panel-heading">
+          <div>
+            <span class="section-index">07</span>
+            <h2 id="history-title">실행 이력</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>시각</th><th>범위</th><th>판정</th><th>회귀</th></tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <span>ProjectLoB QA Dashboard</span>
+    <span>판정 정본은 원본 QA 리포트이며, 이 화면은 결과를 재분류하지 않습니다.</span>
+  </footer>
+
+  <noscript>이 대시보드는 JavaScript가 필요합니다.</noscript>
+  <script src="dashboard_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

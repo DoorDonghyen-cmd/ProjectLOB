@@ -1,6 +1,8 @@
 class_name EnemyTrackView
 extends Control
 
+const RandomStreamsScript := preload("res://scripts/core/random_streams.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 다중 적 트랙 배치 및 스케일링/위험도 표시 컴포넌트
 ## ═══════════════════════════════════════════════════
@@ -54,7 +56,7 @@ func setup_encounter(enemy_list: Array) -> void:
 		
 		# [Phase 4] 적 대기 숨쉬기/흐느적거림 무한 트윈 루프 적용
 		(func(sprite: TextureRect):
-			var delay_offset := randf() * 0.5
+			var delay_offset := RandomStreamsScript.fx_float() * 0.5
 			# 1. 좌우 흔들림 트윈 (회전)
 			var rot_tween := sprite.create_tween().set_loops()
 			rot_tween.tween_property(sprite, "rotation_degrees", 2.2, 0.8 + delay_offset).set_trans(Tween.TRANS_SINE)
@@ -391,7 +393,7 @@ func update_enemy_position_and_scale() -> void:
 			es.set_meta("move_tween", move_tween)
 			
 			# 전진하는 동안 뒤뚱거림(회전 흔들림) 트윈 병행
-			var side := 1.0 if randf() > 0.5 else -1.0
+			var side := 1.0 if RandomStreamsScript.fx_float() > 0.5 else -1.0
 			var rot_tween = es.create_tween()
 			rot_tween.tween_property(es, "rotation_degrees", 8.0 * side, 0.12).set_trans(Tween.TRANS_SINE)
 			rot_tween.tween_property(es, "rotation_degrees", -6.0 * side, 0.12).set_trans(Tween.TRANS_SINE)

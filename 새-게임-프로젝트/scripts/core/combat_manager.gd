@@ -3,6 +3,7 @@ extends Node
 
 const CaliberProfiles = preload("res://scripts/core/caliber_profiles.gd")
 const PlaytestLoggerScript = preload("res://scripts/core/playtest_logger.gd")
+const RandomStreamsScript = preload("res://scripts/core/random_streams.gd")
 
 ## 화면 로그의 표준 태그와 실제 장착 파츠를 연결한다.
 ## 파츠 효과 메시지가 바뀌면 이 맵과 회귀 테스트도 함께 갱신해야 한다.
@@ -1527,7 +1528,7 @@ func request_reload() -> void:
 			if not _is_basic_supply_bullet(b):
 				draw_pile.append(b)
 		discard_pile.clear()
-		draw_pile.shuffle()
+		RandomStreamsScript.gameplay_shuffle(draw_pile, "combat")
 		combat_log.emit("♻ 버린 더미의 탄환들이 가방(Draw Pile)으로 셔플 순환되었습니다.")
 	# 실패·빼내기로 소멸된 기본탄 표시는 복구와 함께 제거한다. 전술탄 소멸 기록은 유지한다.
 	for i in range(exile_pile.size() - 1, -1, -1):

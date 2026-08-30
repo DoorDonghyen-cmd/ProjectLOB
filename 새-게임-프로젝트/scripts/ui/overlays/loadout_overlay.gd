@@ -3,6 +3,7 @@ extends PanelContainer
 
 const CaliberProfilesScript := preload("res://scripts/core/caliber_profiles.gd")
 const ItemCatalogScript := preload("res://scripts/core/item_catalog.gd")
+const RandomStreamsScript := preload("res://scripts/core/random_streams.gd")
 
 ## ═══════════════════════════════════════════════════
 ## 요원 작전 준비실 (Agent Tactical Loadout - HTML 이식 버전)
@@ -649,7 +650,7 @@ func _on_bonus_part_selected() -> void:
 	if run_manager:
 		var parts_pool: Array[PartData] = ItemCatalogScript.general_parts(1)
 		if not parts_pool.is_empty():
-			var chosen := parts_pool.pick_random() as PartData
+			var chosen := RandomStreamsScript.gameplay_pick(parts_pool, "reward") as PartData
 			run_manager.queue_starting_bonus_part(chosen)
 			print("디버그: 다음 상승 1티어 파츠 예약 (%s)" % chosen.display_name)
 		else:

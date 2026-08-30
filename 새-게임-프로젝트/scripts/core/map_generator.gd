@@ -1,6 +1,8 @@
 class_name MapGenerator
 extends RefCounted
 
+const RandomStreamsScript := preload("res://scripts/core/random_streams.gd")
+
 ## ═══════════════════════════════════════════════════
 ## 런 맵 생성기 — 계층별 침투 맵 구조 제너레이터 (RunManager에서 분리, SRP)
 ##
@@ -181,7 +183,7 @@ static func generate(section: String) -> Dictionary:
 
 		# ??? 미지 노드 스캔 힌트 설정
 		if type.begins_with("???"):
-			var r = randf()
+			var r := RandomStreamsScript.gameplay_float("map")
 			if r < 0.35:
 				# ⚠️ 이 문자열은 combat_scene.gd의 정확 일치 검사와 연동됨. 함께 수정할 것.
 				node.hidden_type = "매복 구획 (전투)"
@@ -307,8 +309,8 @@ static func _finalize_route_graph(map_nodes: Dictionary) -> void:
 	if armory_ids.size() < 2:
 		return
 
-	armory_ids.shuffle()
-	var air_duct_count := randi_range(1, armory_ids.size() - 1)
+	RandomStreamsScript.gameplay_shuffle(armory_ids, "map")
+	var air_duct_count := RandomStreamsScript.gameplay_int(1, armory_ids.size() - 1, "map")
 	var air_duct_armories: Array[int] = []
 	for i in range(air_duct_count):
 		air_duct_armories.append(armory_ids[i])

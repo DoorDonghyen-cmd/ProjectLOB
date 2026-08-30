@@ -8,6 +8,11 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-30 | **LIFO 탄환 조합 핵심 재미 정밀 QA** | `codex0830-core-fun-qa` | 순서 영향·상황별 해법·혼합 장전 가치·실제 선택 압력·표본 범위를 독립 게이트로 판정하고, 자동화 불가 체감은 사람 확인으로 분리하는 보수적 핵심 재미 평가 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_lifo_core_fun_qa_2026-08-30.md) |
+| 2026-08-30 | **QA 대시보드 Windows 실행 파일 런처** | `codex0830-qa-exe` | 저장소 상대 경로에서 기존 QA 컨트롤러를 고정 호출하고 localhost 준비 뒤 브라우저를 여는 경량 EXE. 자체 점검·live probe·포트/Godot 지정과 재현 가능한 Windows 기본 컴파일 제공 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_qa_windows_launcher_2026-08-30.md) |
+| 2026-08-23 | **QA 실제 플레이테스트 컨트롤러** | `codex0823-qa-controller` | 루프백 전용 대시보드 컨트롤러가 격리된 사용자 데이터에서 전체 회귀와 4성향 실제 메인 씬 플레이를 실행. 재미 신호는 REVIEW, 제품 버그는 동일 지문 2/2 재현 시 FAIL로 분리 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_qa_playtest_controller_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA HTML 대시보드** | `codex0823-qa-dashboard` | 기존 QA 통합 분류를 재계산하지 않는 실행 이력 schema와 자동 exporter를 두고, file 프로토콜에서 동작하는 외부 의존성 없는 반응형 HTML로 빌드·판정·전투·역할·증거·이력을 표시 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_qa_html_dashboard_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA 팀** | `codex0823-qa-team` | 기능 QA 리드·블랙박스 경험 테스터·기존 전투 시뮬레이터를 독립 실행하고, Godot 상태/행동 브리지·UI 체크포인트·RNG 재현·통합 리포트로 고정 전투부터 전체 런까지 단계 확장 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_playtest_qa_team_2026-08-23.md) |
 | 2026-08-17 | **조합탄 전문축 가독성·피해 증폭탄** | `codex0821-ammo-axis` | 기본탄과 전술탄의 표시 언어를 분리하고 ACC/PEN/DMG/CTRL 전체·축약 배지를 정의. 연쇄탄을 다음 1발 DMG +2 셋업탄으로 전환하되 게이트·소비·리로드·크리티컬 순서를 결정론적으로 고정 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_axis_readability_2026-08-17.md) |
 | 2026-08-15 | **조합탄 전투 전문축 분리** | `codex0815-ammo-specialty` | 기존 운용 분류와 별도로 화력/관통/명중/제어 전문축을 도입하고, 19종 수치 경계·카드 배지·LIFO 파츠 판정·시작 패키지를 9총기×13적 대진으로 검증 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_ammo_stat_specialization_2026-08-15.md) |
 | 2026-08-15 | **격발 입력 잠금·총기별 연출 템포** | `codex0815-fire-pacing` | 연출 중 전투 액션 재입력을 차단하고 입력 버퍼 없이 결과 판독 후 다음 선택을 받는다. 단발 0.32~0.52초 최소 표시 시간, Tempo 0.13초·Suppressor 0.20초 연발 간격을 UI 전용으로 분리 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_fire_input_pacing_2026-08-15.md) |
@@ -50,6 +55,10 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0830-core-fun-qa Plan](file:///D:/ProjectLoB/docs/implementation_plan_lifo_core_fun_qa_2026-08-30.md)
+* [Session codex0830-qa-exe Plan](file:///D:/ProjectLoB/docs/implementation_plan_qa_windows_launcher_2026-08-30.md)
+* [Session codex0823-qa-controller Plan](file:///D:/ProjectLoB/docs/implementation_plan_qa_playtest_controller_2026-08-23.md)
+* [Session codex0823-qa-team Plan](file:///D:/ProjectLoB/docs/implementation_plan_playtest_qa_team_2026-08-23.md)
 * [Session codex0821-ammo-axis Plan](file:///D:/ProjectLoB/docs/implementation_plan_ammo_axis_readability_2026-08-17.md)
 * [Session codex0815-fire-pacing Plan](file:///D:/ProjectLoB/docs/implementation_plan_fire_input_pacing_2026-08-15.md)
 * [Session codex0815-upper-roster Plan](file:///D:/ProjectLoB/docs/implementation_plan_upper_roster_playtest_2026-08-15.md)

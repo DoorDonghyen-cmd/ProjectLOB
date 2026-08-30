@@ -15,6 +15,13 @@ const SuiteAmmoGuidance := preload("res://tests/suite_ammo_guidance.gd")
 const SuiteCaliberProfiles := preload("res://tests/suite_caliber_profiles.gd")
 const SuiteAmmoFamilyBehavior := preload("res://tests/suite_ammo_family_behavior.gd")
 const SuitePlaytestLogging := preload("res://tests/suite_playtest_logging.gd")
+const SuiteQABridge := preload("res://tests/suite_qa_bridge.gd")
+const SuiteQAUICheckpoints := preload("res://tests/suite_qa_ui_checkpoints.gd")
+const SuiteQARNGReplay := preload("res://tests/suite_qa_rng_replay.gd")
+const SuiteQAExperienceMetrics := preload("res://tests/suite_qa_experience_metrics.gd")
+const SuiteQACoreFun := preload("res://tests/suite_qa_core_fun.gd")
+const SuiteQATeamOrchestration := preload("res://tests/suite_qa_team_orchestration.gd")
+const SuiteQADashboard := preload("res://tests/suite_qa_dashboard.gd")
 const SuiteBasicSupply := preload("res://tests/suite_basic_supply.gd")
 const SuiteAmmoMatrix := preload("res://tests/suite_ammo_matrix.gd")
 const SuiteAmmoSpecialization := preload("res://tests/suite_ammo_specialization.gd")
@@ -78,6 +85,12 @@ func _initialize() -> void:
 	SuiteCaliberProfiles.run(t) # 고정 구경 프로필·기반탄 비중복·드래프트 제한
 	SuiteAmmoFamilyBehavior.run(t) # 경량 집중·소총 관통·산탄 확산
 	SuitePlaytestLogging.run(t) # 런별 전투·탄·파츠 텔레메트리 JSON
+	SuiteQABridge.run(t)      # 전용 QA manifest·상태/행동 브리지·공개/오라클 분리
+	SuiteQARNGReplay.run(t)   # gameplay/FX 난수 분리·seed 재현·강제 종료 저널
+	SuiteQAExperienceMetrics.run(t) # 4플로필 보고서·재미 지표·지배 선택 비교
+	SuiteQACoreFun.run(t)      # 동일 탄 멀티셋 순서 대조·핵심 재미 독립 게이트 판정
+	SuiteQATeamOrchestration.run(t) # 독립 역할 패킷·원본 보고·후공유 통합·오탐/미탐 검증
+	SuiteQADashboard.run(t) # QA 통합 결과·실행 이력·HTML 데이터 스크립트 계약
 	SuiteBasicSupply.run(t)   # 기본탄 고정 보급 슬롯·리로드 정량 복구
 	SuiteAmmoMatrix.run(t)    # 실제 몬스터별 공격·연계·연발 처치 매트릭스
 	SuiteAmmoSpecialization.run(t) # 9종 총기×13종 적 시작 탄창 전문축 검증
@@ -116,6 +129,7 @@ func _process(_delta: float) -> bool:
 
 	if _frame == 1:
 		SuiteUISmoke.run(_t, self)   # 메인 씬 실제 인스턴스화 + 오버레이 호출(런타임 오류 검출)
+		SuiteQAUICheckpoints.run(_t, self) # 실제 씬 의미 행동·UI 상태·상점 리롤 체크포인트
 		SuiteDragScroll.run(_t, self) # 버튼이 깔린 스크롤 영역의 드래그 스크롤(터치 조작)
 		return false
 
@@ -124,6 +138,17 @@ func _process(_delta: float) -> bool:
 	RunManager.save_path_override = ""
 
 	var code: int = _t.summary()
+	var structured_summary_path := OS.get_environment("QA_TEST_SUMMARY_PATH")
+	if not structured_summary_path.is_empty():
+		var summary_file := FileAccess.open(structured_summary_path, FileAccess.WRITE)
+		if summary_file != null:
+			summary_file.store_string(JSON.stringify({
+				"schema_version": 1,
+				"passed": _t.passed,
+				"failed": _t.failed,
+				"warnings": _t.warned,
+				"exit_code": code,
+			}, "\t") + "\n")
 	print("╚═════════════════════════════════════╝")
 	quit(code)
 	return true

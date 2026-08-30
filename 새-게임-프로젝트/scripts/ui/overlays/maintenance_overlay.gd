@@ -7,6 +7,7 @@ extends PanelContainer
 
 const ConsumableItem = preload("res://scripts/data/consumable_item.gd")
 const ItemCatalogScript := preload("res://scripts/core/item_catalog.gd")
+const RandomStreamsScript := preload("res://scripts/core/random_streams.gd")
 ## 무기고 탄환 진열 정본. 무결성 테스트가 전 항목의 실제 로드 가능 여부를 검증한다.
 const SHOP_BULLET_IDS := ItemCatalogScript.SHOP_BULLET_IDS
 ## 상점의 파츠 두 장은 같은 분기 그룹이다. 하나를 사면 다른 하나도 닫힌다.
@@ -1517,12 +1518,16 @@ func _generate_shop_items() -> void:
 	var bullet_paths: Array[String] = []
 	for id in SHOP_BULLET_IDS:
 		bullet_paths.append("res://resources/bullets/%s.tres" % id)
-	var bullet_res = load(bullet_paths.pick_random())
-	_shop_items.append({ "item": bullet_res, "price": randi_range(20, 25), "sold_out": false })
+	var bullet_res = load(str(RandomStreamsScript.gameplay_pick(bullet_paths, "shop")))
+	_shop_items.append({
+		"item": bullet_res,
+		"price": RandomStreamsScript.gameplay_int(20, 25, "shop"),
+		"sold_out": false,
+	})
 
 	var part_price := FIRST_SECTION_PART_PRICE \
 		if run_manager != null and run_manager.current_section == "section_a" \
-		else randi_range(30, 45)
+		else RandomStreamsScript.gameplay_int(30, 45, "shop")
 	for part_offer in _generate_part_offers():
 		var part_res: PartData = part_offer.item
 		var presentation := _part_offer_presentation(str(part_offer.kind), part_res)
@@ -1545,7 +1550,7 @@ func _generate_shop_items() -> void:
 			if kit != null and kit.conversion_class != run_manager.current_gun.weapon_class:
 				kit_candidates.append(kit)
 		if not kit_candidates.is_empty():
-			var kit_res: PartData = kit_candidates.pick_random()
+			var kit_res: PartData = RandomStreamsScript.gameplay_pick(kit_candidates, "shop") as PartData
 			_shop_items.append({
 				"item": kit_res,
 				"price": conversion_kit_price(run_manager.current_gun),
@@ -1584,7 +1589,8 @@ func _pick_part_from_paths(paths: Array, excluded_ids: Dictionary) -> PartData:
 		var part := load(str(path)) as PartData
 		if part != null and not excluded_ids.has(part.part_id):
 			candidates.append(part)
-	return null if candidates.is_empty() else candidates.pick_random()
+	return null if candidates.is_empty() \
+		else RandomStreamsScript.gameplay_pick(candidates, "shop") as PartData
 
 
 func _append_unique_paths(target: Array, source: Array) -> void:

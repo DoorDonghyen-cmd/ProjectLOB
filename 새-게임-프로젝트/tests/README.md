@@ -23,6 +23,69 @@ GODOT=/path/to/godot ./tests/run.sh
 <Godot실행파일> --headless --path <새-게임-프로젝트경로> --script res://tests/run_all.gd
 ```
 
+고정 전투 QA 브리지 실행:
+
+```powershell
+$env:QA_OUTPUT_DIR = "user://qa_runtime/fixed_ammo"
+<Godot실행파일> --headless --path <새-게임-프로젝트경로> --script res://tests/qa_session_runner.gd
+```
+
+실행기가 `state_0000.json`을 만든 뒤 같은 폴더의 `command_0000.json`을 기다린다.
+명령이 수락되면 단계 번호가 증가하며 승패가 확정될 때까지 다음 command 파일을 처리한다.
+
+실제 UI 체크포인트와 PNG 캡처 실행:
+
+```powershell
+$env:QA_OUTPUT_DIR = "user://qa_runtime/ui_phase_c"
+<Godot실행파일> --headless --path <새-게임-프로젝트경로> --script res://tests/qa_ui_session_runner.gd
+```
+
+렌더 이미지가 없는 환경에서도 JSON 의미 계약은 계속 기록되며, 캡처 실패는
+게임 결함이 아닌 `qa_infrastructure`로 분리된다.
+
+재현 가능한 1~2구역 캠페인 실행:
+
+```powershell
+$env:QA_OUTPUT_DIR = "user://qa_runtime/campaign_phase_d"
+$env:QA_GAMEPLAY_SEED = "424242"
+$env:QA_TARGET_SECTIONS = "2"
+$env:QA_SESSION_ID = "qa-phase-d-424242"
+<Godot실행파일> --headless --path <새-게임-프로젝트경로> --script res://tests/qa_campaign_replay_runner.gd
+```
+
+실행기는 실제 메인 씬에서 타이틀→준비실→지도→전투 결과→보상·상점→다음 구역을
+의미 행동으로 진행한다. `progress.json`은 매 행동 뒤 갱신되며, `replay_result.json`과
+스키마 v3 플레이테스트 로그에 seed·세션 ID가 함께 남는다. `APPDATA`를 전용 경로로
+지정하면 실제 사용자 세이브와 로그를 오염시키지 않는다.
+
+네 경험 프로필 보고서 비교:
+
+```powershell
+$env:QA_REPORT_DIR = "user://qa_runtime/profile_reports"
+$env:QA_COMPARISON_OUTPUT = "user://qa_runtime/profile_reports/profile_comparison.json"
+<Godot실행파일> --headless --path <새-게임-프로젝트경로> --script res://tests/qa_profile_compare_runner.gd
+```
+
+보고서 폴더에 `beginner.json`, `aggressive.json`, `conservative.json`,
+`experimental.json`을 둔다. 네 파일의 commit·scenario·gameplay seed·시작 조건이
+같아야 하며, 동일 행동열이면 비교 실패로 종료한다.
+
+독립 QA 팀 실행 계약:
+
+1. `QATeamOrchestrator.prepare()`로 동일 manifest에서 역할별 패킷을 만든다.
+2. 기능 QA·경험 QA·전투 시뮬레이터는 서로의 결과를 받지 않고 각 패킷의 artifact만 읽는다.
+3. 각 역할은 `QATeamReport` 계약으로 `reports/<role>.json`을 완료한다.
+4. 세 원본이 모두 끝난 뒤에만 `integrate_from_directory()`를 호출한다.
+
+경험 QA 패킷에는 소스·테스트·오라클·실제 플레이 원시 로그를 넣을 수 없다. 경험 QA는
+기능 FAIL을 확정할 수 없고, 시뮬레이터는 UI FAIL을 확정할 수 없다. FAIL은 기대/실제,
+재현 단계와 원본 artifact 경로가 모두 있을 때만 통합 리포트의 확정 버그 후보가 된다.
+
+세 원본 통합이 성공하면 같은 QA runtime 폴더에 `dashboard_run.json`과
+`dashboard_data.js`도 생성된다. 보관된 여러 실행을 다시 묶을 때는
+`qa_dashboard_history_runner.gd`를 사용한다. HTML 운영 방법은
+`docs/qa/dashboard/README.md`를 따른다.
+
 종료 코드 **0 = 전체 통과**, **1 = 실패** (CI에서 레드/그린 판정 가능).
 
 ## 구성
@@ -43,6 +106,16 @@ GODOT=/path/to/godot ./tests/run.sh
 | `suite_caliber_profiles.gd` | 3계열 고정 기술 규격 — 표준/강화 매핑, 공용 전술탄 보정, 기반탄 비중복 |
 | `suite_ammo_family_behavior.gd` | 탄종 행동 — 경량 집중, 소총 직선 관통, 산탄 군집 확산, 중복 파츠·DPT 불변식 |
 | `suite_playtest_logging.gd` | 런별 JSON 저장, 전투 문맥, 탄 사용·집중·파츠 효과 기여 집계 |
+| `suite_qa_bridge.gd` | 전용 QA manifest, 단계별 상태/행동 JSON, 공개 상태/오라클 분리, 실제 전투 왕복 |
+| `suite_qa_ui_checkpoints.gd` | 실제 메인 씬의 타이틀→구역→준비실→지도→전투→보상→상점 의미 행동, 공개 UI 상태·리롤 설명 정합·캡처 폴백 |
+| `suite_qa_rng_replay.gd` | 게임플레이/FX RNG 분리, 명시적 스트림 독립성, seed 재현, manifest v2와 행동별 진행 저널 |
+| `suite_qa_experience_metrics.gd` | 네 블랙박스 프로필 리포트, 재미 지표, 동일 행동열 거절, 지배 선택·강한 신호 비교 |
+| `suite_qa_team_orchestration.gd` | 기능·경험·시뮬레이터 독립 입력 패킷, 원본 보고 계약, 후공유 통합, 정상 샘플 오탐·결함 샘플 미탐 방지 |
+| `suite_qa_dashboard.gd` | QA 통합 결과의 실행 이력 JSON, 최종 판정, 역할·판정 집계, file 프로토콜용 데이터 스크립트 |
+| `suite_qa_core_fun.gd` | 동일 탄환 멀티셋의 계획·역순·기본탄 실제 CombatManager 대조와 순서·상황·혼합·실전 압박 핵심 재미 게이트 |
+| `qa_autonomous_playtest_runner.gd` | 실제 메인 씬과 CombatManager를 사용하는 4성향 블랙박스 플레이. 공개 UI 상태만 보고 행동 이유·기대·대안을 결과 전에 기록 |
+| `qa_core_fun_probe_runner.gd` | 회피·장갑·피해 결산·마지막 탄의 동일 탄환 순서 반사실 결과를 JSON으로 생성 |
+| `qa_playtest_finalize_runner.gd` | 독립 프로필 결과를 재미 신호·버그 후보·확정 버그로 분리하고 대시보드 실행 JSON 생성 |
 | `suite_basic_supply.gd` | 기본탄 고정 보급 슬롯 — 총기별 상한, 장전 차감, 리로드 정량 복구 |
 | `suite_save_load.gd` | 메타 저장·로드와 개발자 전체 초기화 — 세이브 삭제, 영구 진행·현재 런 기본값 복원 |
 | `suite_ammo_matrix.gd` | 실제 몬스터별 공격·연계·연발 처치 조합 매트릭스 |

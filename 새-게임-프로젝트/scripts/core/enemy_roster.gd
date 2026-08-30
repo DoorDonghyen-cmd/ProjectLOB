@@ -1,6 +1,8 @@
 class_name EnemyRoster
 extends RefCounted
 
+const RandomStreamsScript := preload("res://scripts/core/random_streams.gd")
+
 ## 35층 연속 캠페인의 일반전 편성 정본.
 ## 관문은 CampaignContent가 담당하며, 이 파일은 일반·변종 9종의 학습 순서와 밀도만 관리한다.
 
@@ -106,7 +108,8 @@ static func regular_encounter_ids(section: String, tier: int, roll: float = -1.0
 	var result: Array[String] = []
 	if variants.is_empty():
 		return result
-	var choice_roll := randf() if roll < 0.0 else clampf(roll, 0.0, 1.0)
+	var choice_roll := RandomStreamsScript.gameplay_float("encounter") \
+		if roll < 0.0 else clampf(roll, 0.0, 1.0)
 	var index := mini(int(floor(choice_roll * variants.size())), variants.size() - 1)
 	for enemy_id in variants[index]:
 		result.append(str(enemy_id))

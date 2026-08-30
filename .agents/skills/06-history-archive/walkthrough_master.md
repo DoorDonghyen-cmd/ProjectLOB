@@ -8,6 +8,15 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-08-30 | **LIFO 탄환 조합 핵심 재미 정밀 QA** | `codex0830-core-fun-qa` | 동일 탄환 묶음 순서 대조, 상황 대응 장전, 총점 없는 5개 재미 게이트와 대시보드 우선 결론. 실주행은 가능성 있으나 표본·깊이가 부족하다고 보수 판정, 전체 3,599 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_lifo_core_fun_qa_2026-08-30.md) |
+| 2026-08-30 | **QA 대시보드 Windows 실행 파일 런처** | `codex0830-qa-exe` | `ProjectLoB-QA.exe` 더블클릭으로 QA 컨트롤러와 브라우저 자동 실행. 상대 경로 탐색, check/live probe, 포트·Godot 지정, Ctrl+C 종료와 재빌드 제공. Godot 4.7 자동 탐지·localhost 응답·종료 정리 검증 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_qa_windows_launcher_2026-08-30.md) |
+| 2026-08-23 | **QA 실제 플레이테스트 컨트롤러** | `codex0823-qa-controller` | 대시보드 시작·취소·진행률, 격리 세이브, 실제 메인 씬 4성향 플레이와 행동 근거 수집, 재미 REVIEW·버그 후보·제품 버그 2/2 확정 분리. 실주행 4교전·76행동·25격발·신호 5·확정 버그 0, 전체 3,587 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_qa_playtest_controller_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA HTML 대시보드** | `codex0823-qa-dashboard` | QA 통합 결과를 판정 변경 없이 실행 이력 JSON으로 내보내고, 빌드·회귀·전투·역할·판정·증거·이력을 오프라인 반응형 HTML로 시각화. 자동 export, 필터·검색, 브라우저 렌더와 전체 3,582 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_qa_html_dashboard_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA 팀 Phase F·구축 완료** | `codex0823-qa-team-front-validation` | 세 역할 독립 입력 패킷·원본 보고·후공유 통합 계약과 정상/seeded 결함 오탐·미탐 회귀. 실제 동시 전방 검증에서 신규 버그 0, sample 오탐·미탐 0, 최근 인간 로그 16발 수식 불일치 0. 전체 3,562 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_playtest_qa_team_phase_f_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA 팀 Phase E** | `codex0823-qa-team-metrics` | reference 기반 4프로필, player_view 전용 증거 계약과 7종 재미 지표, 동일 행동열 거절·지배 대안 격차·강한 신호/인간 확인 비교. 전체 3,541 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_playtest_qa_team_phase_e_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA 팀 Phase D** | `codex0823-qa-team-rng` | 게임플레이 6개 스트림과 FX RNG 분리, manifest v2·로그 v3 seed/세션 기록, 행동별 진행 저널. 깨끗한 전용 세이브에서 2구역 46행동·13노드 재생 및 동일 seed 독립 실행 일치, 전체 3,515 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_playtest_qa_team_phase_d_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA 팀 Phase C** | `codex0823-qa-team-ui` | 실제 메인 씬의 타이틀→전투→보상→상점 의미 행동과 9개 UI 체크포인트, 공개 컨트롤·상점 카드 JSON, 리롤 설명/잔존 카드 검출, Viewport PNG 및 headless 폴백. 전체 3,502 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_playtest_qa_team_phase_c_2026-08-23.md) |
+| 2026-08-23 | **전용 플레이 QA 팀 Phase A~B** | `codex0823-qa-team` | 기능 QA 리드·블랙박스 경험 테스터 스킬과 실제 CombatManager 상태/행동 JSON 브리지 구현. 공개/오라클 분리, 단계·합법 행동 계약, LIFO 2발 고정 전투와 합법 행동 20단계 왕복 및 전체 3,471 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_playtest_qa_team_phase_ab_2026-08-23.md) |
 | 2026-08-21 | **조합탄 전문축 가독성·피해 증폭탄** | `codex0821-ammo-axis` | 기본탄과 ACC/PEN/DMG/CTRL 전술 배지를 분리하고, 기존 연쇄탄을 유효 적중 시 다음 1발 DMG +2인 장약 증폭탄으로 전환. 카드 효과 한 줄·QA·전체 3,431 테스트와 9×13 대진 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_axis_readability_2026-08-17.md) |
 | 2026-08-15 | **조합탄 전투 전문축 분리** | `codex0815-ammo-specialty` | 화력/관통/명중/제어 전문축 데이터와 전 UI 배지, 교대/유지 파츠 판정, 시작 패키지·전용 QA를 구현. 9총기×13적 기본/환기구 대진 및 전체 3,424 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_ammo_stat_specialization_2026-08-15.md) |
 | 2026-08-15 | **격발 입력 잠금·총기별 연출 템포** | `codex0815-fire-pacing` | 연출 중 발사·빼내기·재장전·이젝트 재입력 차단, 입력 버퍼 금지, 단발 0.32~0.52초와 Tempo 0.13초·Suppressor 0.20초 표시 템포 분리. 전체 3,351 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_fire_input_pacing_2026-08-15.md) |
@@ -58,6 +67,10 @@
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0830-core-fun-qa Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_lifo_core_fun_qa_2026-08-30.md)
+* [Session codex0830-qa-exe Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_qa_windows_launcher_2026-08-30.md)
+* [Session codex0823-qa-controller Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_qa_playtest_controller_2026-08-23.md)
+* [Session codex0823-qa-team Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_playtest_qa_team_phase_ab_2026-08-23.md)
 * [Session codex0821-ammo-axis Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_ammo_axis_readability_2026-08-17.md)
 * [Session codex0815-fire-pacing Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_fire_input_pacing_2026-08-15.md)
 * [Session codex0815-upper-roster Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_upper_roster_playtest_2026-08-15.md)
