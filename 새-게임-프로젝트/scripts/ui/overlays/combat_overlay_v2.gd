@@ -47,6 +47,15 @@ var _slow_target_enemy: EnemyInstance = null
 # 1. TopBar
 var _top_log_toast: Label
 var _phase_label: Label
+var _ammo_ab_banner: PanelContainer
+var _ammo_ab_banner_label: Label
+var _ammo_reveal_layer: Control
+var _ammo_reveal_panel: PanelContainer
+var _ammo_reveal_title: Label
+var _ammo_reveal_summary: Label
+var _ammo_reveal_cards: HBoxContainer
+var _ammo_reveal_tween: Tween
+var _last_ammo_hand_transition: Dictionary = {}
 
 # 2. DistanceLabel (CenterContainer로 감싸서 관리)
 var _distance_container: CenterContainer
@@ -260,7 +269,18 @@ func _build_ui() -> void:
 	main_flow.grow_vertical = Control.GROW_DIRECTION_BOTH
 	
 	# (1-A) TopBar 제거됨 (전투 대기 중 라벨은 Battlefield 우상단으로 오버레이 이관, 상황 대기 중 라벨은 거리 표시 밑으로 이관)
-	
+	_ammo_ab_banner = PanelContainer.new()
+	_ammo_ab_banner.name = "AmmoABComparisonBanner"
+	_ammo_ab_banner.custom_minimum_size = Vector2(0, 58)
+	_ammo_ab_banner.visible = false
+	main_flow.add_child(_ammo_ab_banner)
+
+	_ammo_ab_banner_label = parent_scene.make_label("", 14, Color.WHITE)
+	_ammo_ab_banner_label.name = "AmmoABComparisonLabel"
+	_ammo_ab_banner_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_ammo_ab_banner_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_ammo_ab_banner_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_ammo_ab_banner.add_child(_ammo_ab_banner_label)
 
 	
 	# (1-C) Battlefield (HBoxContainer)
@@ -775,9 +795,63 @@ func _build_ui() -> void:
 	_floating_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_floating_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_floating_layer)
+	_build_ammo_hand_reveal_layer()
 	
 	# ════ 3. BagDrawer (PanelContainer, anchors: Bottom Wide) ════
 	_build_drawer_panel()
+
+
+func _build_ammo_hand_reveal_layer() -> void:
+	_ammo_reveal_layer = Control.new()
+	_ammo_reveal_layer.name = "AmmoHandRevealLayer"
+	_ammo_reveal_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_ammo_reveal_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_ammo_reveal_layer.z_index = 80
+	_ammo_reveal_layer.visible = false
+	_floating_layer.add_child(_ammo_reveal_layer)
+
+	var dim := ColorRect.new()
+	dim.color = Color(0.015, 0.025, 0.045, 0.82)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ammo_reveal_layer.add_child(dim)
+
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ammo_reveal_layer.add_child(center)
+
+	_ammo_reveal_panel = PanelContainer.new()
+	_ammo_reveal_panel.name = "AmmoHandRevealPanel"
+	_ammo_reveal_panel.custom_minimum_size = Vector2(720, 188)
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.045, 0.065, 0.10, 0.98)
+	panel_style.border_width_left = 2; panel_style.border_width_right = 2
+	panel_style.border_width_top = 2; panel_style.border_width_bottom = 2
+	panel_style.border_color = parent_scene.C_WARNING
+	panel_style.corner_radius_top_left = 10; panel_style.corner_radius_top_right = 10
+	panel_style.corner_radius_bottom_left = 10; panel_style.corner_radius_bottom_right = 10
+	panel_style.content_margin_left = 16; panel_style.content_margin_right = 16
+	panel_style.content_margin_top = 10; panel_style.content_margin_bottom = 10
+	_ammo_reveal_panel.add_theme_stylebox_override("panel", panel_style)
+	center.add_child(_ammo_reveal_panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 5)
+	_ammo_reveal_panel.add_child(content)
+	_ammo_reveal_title = parent_scene.make_label("탄도 선택지 셔플", 18, parent_scene.C_WARNING)
+	_ammo_reveal_title.name = "AmmoHandRevealTitle"
+	_ammo_reveal_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(_ammo_reveal_title)
+	_ammo_reveal_summary = parent_scene.make_label("", 11, parent_scene.C_TEXT)
+	_ammo_reveal_summary.name = "AmmoHandRevealSummary"
+	_ammo_reveal_summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(_ammo_reveal_summary)
+	_ammo_reveal_cards = HBoxContainer.new()
+	_ammo_reveal_cards.name = "AmmoHandRevealCards"
+	_ammo_reveal_cards.alignment = BoxContainer.ALIGNMENT_CENTER
+	_ammo_reveal_cards.add_theme_constant_override("separation", 5)
+	content.add_child(_ammo_reveal_cards)
 
 func _build_drawer_panel() -> void:
 	_drawer_panel = BagInventoryDrawer.new()
@@ -832,181 +906,193 @@ func _create_drawer_item(title: String, desc: String, can_use: bool, click_callb
 		
 	return item_hbox
 
-func _create_inventory_card(bullet: BulletData, count: int, click_callback: Callable = Callable()) -> Control:
+func _create_inventory_card(
+	bullet: BulletData,
+	count: int,
+	click_callback: Callable = Callable(),
+	supply_capacity: int = 0
+) -> Control:
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(120, 88)
+	card.name = "BulletCard_%s" % bullet.resource_path.get_file().get_basename()
+	card.custom_minimum_size = Vector2(140, 128)
 	card.tooltip_text = BulletRoleUI.tooltip(bullet)
+	if supply_capacity > 0:
+		card.tooltip_text += "\n\n기본 보급탄 · 리로드 시 %d발까지 복구" % supply_capacity
+
+	var role_color := BulletRoleUI.primary_color(bullet)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.11, 0.16)
-	style.border_width_left = 1; style.border_width_right = 1
-	style.border_width_top = 1; style.border_width_bottom = 1
-	style.border_color = BulletRoleUI.primary_color(bullet).darkened(0.25)
-	style.corner_radius_top_left = 9; style.corner_radius_top_right = 9
-	style.corner_radius_bottom_left = 9; style.corner_radius_bottom_right = 9
+	style.bg_color = Color(0.055, 0.075, 0.11)
+	style.border_width_left = 2; style.border_width_right = 2
+	style.border_width_top = 2; style.border_width_bottom = 2
+	style.border_color = role_color
+	style.corner_radius_top_left = 8; style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8; style.corner_radius_bottom_right = 8
 	card.add_theme_stylebox_override("panel", style)
-	
-	# 고대비 오버레이 대형 워터마크 추가 (Absolute Wrapper 노드를 사용해 PanelContainer의 강제 확장을 우회)
-	var icon_tex := _get_bullet_icon(bullet)
-	if icon_tex:
-		var wrapper := Control.new()
-		wrapper.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		card.add_child(wrapper)
-		
-		var bg_icon := TextureRect.new()
-		bg_icon.texture = icon_tex
-		bg_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		bg_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		bg_icon.modulate = Color(1, 1, 1, 0.45) # 45%의 선명한 불투명도
-		bg_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		wrapper.add_child(bg_icon)
-		
-		bg_icon.size = Vector2(32, 32)
-		bg_icon.position = Vector2(120 - 32 - 6, 88 - 32 - 6) # 마진 및 우측 하단 절대 좌표 지정
-		
+
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 8)
 	margin.add_theme_constant_override("margin_right", 8)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_bottom", 8)
+	margin.add_theme_constant_override("margin_top", 7)
+	margin.add_theme_constant_override("margin_bottom", 7)
 	card.add_child(margin)
-	
+
 	var vbox := VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 2)
 	margin.add_child(vbox)
-	
-	var caliber_str := ""
-	var type_name := "탄환"
-	var parts := bullet.display_name.split(" ")
-	if parts.size() >= 2:
-		caliber_str = parts[0]
-		type_name = parts[1]
-	else:
-		caliber_str = bullet.display_name
-		
-	# 5차 폴리싱: 타이틀과 구경/타입 병합 및 행 감축 (세로 4행 -> 3행 정돈)
-	var title_hbox := HBoxContainer.new()
-	title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.add_child(title_hbox)
-	
-	var title_text := "%s %s" % [caliber_str, type_name]
-	var cal_color = parent_scene.C_WARNING if bullet.penetration > 0 else Color.WHITE
-	var title_lbl: Label = parent_scene.make_label(title_text, 11.5, cal_color)
-	title_lbl.clip_text = true
-	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	title_lbl.add_theme_constant_override("outline_size", 3)
-	title_hbox.add_child(title_lbl)
 
-	var role_lbl: Label = parent_scene.make_label(
-		BulletRoleUI.primary_badge_text(bullet, true), 10.0,
-		BulletRoleUI.primary_color(bullet))
-	role_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
+	var header := HBoxContainer.new()
+	header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_child(header)
+
+	var role_lbl: Label = parent_scene.make_label(BulletRoleUI.visual_role_text(bullet), 11.0, role_color)
+	role_lbl.name = "BulletVisualRole"
+	role_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	role_lbl.add_theme_color_override("font_outline_color", Color(0.02, 0.03, 0.05))
 	role_lbl.add_theme_constant_override("outline_size", 3)
-	title_hbox.add_child(role_lbl)
-	var payoff_text := BulletRoleUI.payoff_badge_text(bullet)
-	if not payoff_text.is_empty():
-		var payoff_lbl: Label = parent_scene.make_label(
-			payoff_text, 9.0, BulletRoleUI.payoff_color())
-		payoff_lbl.name = "PayoffBadge"
-		payoff_lbl.tooltip_text = BulletRoleUI.payoff_hint(bullet)
-		payoff_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-		payoff_lbl.add_theme_constant_override("outline_size", 3)
-		title_hbox.add_child(payoff_lbl)
-	var effect_text := BulletRoleUI.effect_summary(bullet)
-	if effect_text.is_empty() and bullet.is_basic:
-		effect_text = BulletRoleUI.basic_trait_label(bullet)
+	header.add_child(role_lbl)
+
+	if supply_capacity > 0 or count > 1:
+		var count_text := "보급 %d/%d" % [count, supply_capacity] if supply_capacity > 0 else "×%d" % count
+		var count_lbl: Label = parent_scene.make_label(count_text, 9.5,
+			parent_scene.C_SUCCESS if supply_capacity > 0 else parent_scene.C_DIM)
+		count_lbl.name = "BulletCount"
+		header.add_child(count_lbl)
+
+	var title_lbl: Label = parent_scene.make_label(bullet.display_name, 12.0, Color.WHITE)
+	title_lbl.name = "BulletDisplayName"
+	title_lbl.clip_text = true
+	title_lbl.add_theme_color_override("font_outline_color", Color(0.02, 0.03, 0.05))
+	title_lbl.add_theme_constant_override("outline_size", 3)
+	vbox.add_child(title_lbl)
+
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 4)
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(body)
+
+	var text_box := VBoxContainer.new()
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_box.add_theme_constant_override("separation", 1)
+	body.add_child(text_box)
+
+	var outcome_lbl: Label = parent_scene.make_label(BulletRoleUI.primary_outcome_text(bullet), 10.5, Color.WHITE)
+	outcome_lbl.name = "BulletPrimaryOutcome"
+	outcome_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text_box.add_child(outcome_lbl)
+
+	var effect_text := BulletRoleUI.effect_outcome_text(bullet)
+	if effect_text.is_empty() and supply_capacity > 0:
+		effect_text = "리로드 시 정량 복구"
 	if not effect_text.is_empty():
-		var scope_lbl: Label = parent_scene.make_label(effect_text, 10.0, BulletRoleUI.primary_color(bullet))
-		scope_lbl.name = "ScopeBadge"
-		scope_lbl.tooltip_text = BulletRoleUI.tooltip(bullet)
-		scope_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-		scope_lbl.add_theme_constant_override("outline_size", 3)
-		vbox.add_child(scope_lbl)
-	
-	# 수량이 2개 이상일 때만 수량 표기 노출 (1개 이하일 때는 직관성을 위해 완전히 숨김)
-	if count > 1:
-		var count_lbl: Label = parent_scene.make_label("x%d" % count, 9.5, parent_scene.C_DIM)
-		count_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-		count_lbl.add_theme_constant_override("outline_size", 3)
-		title_hbox.add_child(count_lbl)
-	
-	# 1행 HBox (DMG, ACC) - 가독 한계 크기 10.5 확보 및 정식 명칭 사용
-	var row1_hbox := HBoxContainer.new()
-	row1_hbox.add_theme_constant_override("separation", 10)
-	vbox.add_child(row1_hbox)
-	
-	# DMG (대미지)
-	var dmg_color = Color.WHITE if bullet.damage > 0 else parent_scene.C_DIM.darkened(0.2)
-	var dmg_lbl = parent_scene.make_label("DMG %d" % bullet.damage, 10.5, dmg_color)
-	dmg_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	dmg_lbl.add_theme_constant_override("outline_size", 3)
-	row1_hbox.add_child(dmg_lbl)
-	
-	# ACC (명중률)
-	var acc_color = Color.WHITE if bullet.accuracy > 0 else parent_scene.C_DIM.darkened(0.2)
-	var acc_lbl = parent_scene.make_label("ACC %d" % bullet.accuracy, 10.5, acc_color)
-	acc_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	acc_lbl.add_theme_constant_override("outline_size", 3)
-	row1_hbox.add_child(acc_lbl)
-	
-	# 2행 HBox (PEN, KB, SLOW) - 폰트 크기를 10.5로 통일
-	var row2_hbox := HBoxContainer.new()
-	row2_hbox.add_theme_constant_override("separation", 6)
-	vbox.add_child(row2_hbox)
-	
-	# PEN (관통)
-	var pen_color = Color(0.3, 0.9, 0.6) if bullet.penetration > 0 else parent_scene.C_DIM.darkened(0.4)
-	var pen_lbl = parent_scene.make_label("PEN %d" % bullet.penetration, 10.5, pen_color)
-	pen_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	pen_lbl.add_theme_constant_override("outline_size", 3)
-	row2_hbox.add_child(pen_lbl)
-	
-	# KB (넉백)
-	var kb_color = Color(1.0, 0.6, 0.2) if bullet.knockback > 0 else parent_scene.C_DIM.darkened(0.4)
-	var kb_lbl = parent_scene.make_label("KB %d" % bullet.knockback, 10.5, kb_color)
-	kb_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	kb_lbl.add_theme_constant_override("outline_size", 3)
-	row2_hbox.add_child(kb_lbl)
-	
-	# SLOW (슬로우)
-	var slow_color = Color(0.2, 0.6, 1.0) if bullet.slow > 0 else parent_scene.C_DIM.darkened(0.4)
-	var slow_lbl = parent_scene.make_label("SLOW %d" % bullet.slow, 10.5, slow_color)
-	slow_lbl.add_theme_color_override("font_outline_color", Color(0.05, 0.07, 0.11))
-	slow_lbl.add_theme_constant_override("outline_size", 3)
-	row2_hbox.add_child(slow_lbl)
-		
+		var effect_lbl: Label = parent_scene.make_label(effect_text, 9.5, role_color)
+		effect_lbl.name = "BulletEffectOutcome"
+		effect_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		text_box.add_child(effect_lbl)
+
+	var gate_result := _candidate_gate_result(bullet)
+	if not gate_result.is_empty():
+		var gate_lbl: Label = parent_scene.make_label(str(gate_result.text), 9.5, gate_result.color)
+		gate_lbl.name = "BulletGateResult"
+		gate_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		text_box.add_child(gate_lbl)
+
+	var icon_tex := _get_bullet_icon(bullet)
+	if icon_tex:
+		var icon := TextureRect.new()
+		icon.name = "BulletPrimaryIcon"
+		icon.texture = icon_tex
+		icon.custom_minimum_size = Vector2(48, 48)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		icon.modulate = Color.WHITE
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		body.add_child(icon)
+
+	var stats_lbl: Label = parent_scene.make_label(BulletRoleUI.secondary_stats_text(bullet), 9.5, parent_scene.C_DIM)
+	stats_lbl.name = "BulletSecondaryStats"
+	stats_lbl.clip_text = true
+	vbox.add_child(stats_lbl)
+
 	if click_callback.is_valid():
 		var btn := Button.new()
-		var empty_style := StyleBoxEmpty.new()
-		btn.add_theme_stylebox_override("normal", empty_style)
-		btn.add_theme_stylebox_override("hover", empty_style)
-		btn.add_theme_stylebox_override("pressed", empty_style)
-		btn.add_theme_stylebox_override("focus", empty_style)
-		btn.add_theme_stylebox_override("disabled", empty_style)
+		for state_name in ["normal", "hover", "pressed", "focus", "disabled"]:
+			btn.add_theme_stylebox_override(state_name, StyleBoxEmpty.new())
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.tooltip_text = card.tooltip_text
-		
 		btn.gui_input.connect(func(event: InputEvent):
 			if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 				var tw := create_tween()
-				tw.tween_property(card, "scale", Vector2(0.9, 0.9), 0.05)
-				tw.tween_property(card, "scale", Vector2(1.0, 1.0), 0.1)
+				tw.tween_property(card, "scale", Vector2(0.94, 0.94), 0.05)
+				tw.tween_property(card, "scale", Vector2.ONE, 0.10)
 				click_callback.call()
 		)
 		btn.set_anchors_preset(Control.PRESET_FULL_RECT)
 		card.add_child(btn)
-		
 		btn.mouse_entered.connect(func():
-			style.border_color = parent_scene.C_SUCCESS
-			style.bg_color = Color(0.12, 0.16, 0.23)
+			style.border_color = role_color.lightened(0.2)
+			style.bg_color = Color(0.09, 0.13, 0.18)
 		)
 		btn.mouse_exited.connect(func():
-			style.border_color = Color(0.13, 0.18, 0.24)
-			style.bg_color = Color(0.08, 0.11, 0.16)
+			style.border_color = role_color
+			style.bg_color = Color(0.055, 0.075, 0.11)
 		)
-		
+
 	card.pivot_offset = card.custom_minimum_size / 2.0
 	return card
+
+
+func _candidate_gate_result(bullet: BulletData) -> Dictionary:
+	if combat_manager == null or not combat_manager.has_method("preview_candidate_bullet"):
+		return {}
+	var preview: Dictionary = combat_manager.preview_candidate_bullet(bullet)
+	var target: EnemyInstance = preview.get("target")
+	if target == null:
+		return {}
+	var acc_mark := "✓" if bool(preview.get("acc_ok", false)) else "✕"
+	var pen_mark := "✓" if bool(preview.get("pen_ok", false)) else "✕"
+	var both_ok := bool(preview.get("acc_ok", false)) and bool(preview.get("pen_ok", false))
+	return {
+		"text": "현재 적: 명중 %s · 관통 %s" % [acc_mark, pen_mark],
+		"color": parent_scene.C_SUCCESS if both_ok else parent_scene.C_DANGER,
+	}
+
+
+func _create_ammo_preview_chip(bullet: BulletData, order: int) -> Control:
+	var chip := PanelContainer.new()
+	chip.name = "AmmoPreviewChip%d" % order
+	chip.custom_minimum_size = Vector2(118, 48)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.07, 0.10, 0.15)
+	style.border_width_left = 1; style.border_width_right = 1
+	style.border_width_top = 1; style.border_width_bottom = 1
+	style.border_color = BulletRoleUI.primary_color(bullet)
+	style.corner_radius_top_left = 5; style.corner_radius_top_right = 5
+	style.corner_radius_bottom_left = 5; style.corner_radius_bottom_right = 5
+	chip.add_theme_stylebox_override("panel", style)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 4)
+	chip.add_child(row)
+	var icon_tex := _get_bullet_icon(bullet)
+	if icon_tex:
+		var icon := TextureRect.new()
+		icon.texture = icon_tex
+		icon.custom_minimum_size = Vector2(34, 34)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		row.add_child(icon)
+	var text_box := VBoxContainer.new()
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(text_box)
+	var order_lbl: Label = parent_scene.make_label("%d · %s" % [order, BulletRoleUI.visual_role_text(bullet)], 9.5,
+		BulletRoleUI.primary_color(bullet))
+	text_box.add_child(order_lbl)
+	var name_lbl: Label = parent_scene.make_label(bullet.display_name, 10.0, Color.WHITE)
+	name_lbl.clip_text = true
+	text_box.add_child(name_lbl)
+	return chip
 
 func _get_bullet_icon(bullet: BulletData) -> Texture2D:
 	if not bullet: return null
@@ -1159,7 +1245,15 @@ func _on_bag_clicked() -> void:
 # ── 전투 로직 바인딩 및 이벤트 핸들링 (호환성) ──
 
 func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
+	# 전투 인스턴스를 교체할 때 이전 패 공개 연출의 입력 잠금이 남지 않게 정리한다.
+	# 새 탄환 패 전투라면 start_encounter()의 transition 신호가 새 연출을 다시 연다.
+	if is_instance_valid(_ammo_reveal_tween):
+		_ammo_reveal_tween.kill()
+	if is_instance_valid(_ammo_reveal_layer):
+		_ammo_reveal_layer.visible = false
+		_ammo_reveal_layer.modulate = Color.WHITE
 	combat_manager = cm
+	_refresh_ammo_ab_comparison_ui()
 	_current_gun_data = gun
 	_current_enemy_data = enemy_list[0] if enemy_list.size() > 0 else null
 	
@@ -1194,6 +1288,10 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 	combat_manager.buttstroke_triggered.connect(_on_buttstroke_triggered)
 	if combat_manager.has_signal("draw_pile_updated"):
 		combat_manager.draw_pile_updated.connect(_on_draw_pile_updated)
+	if combat_manager.has_signal("ammo_hand_updated"):
+		combat_manager.ammo_hand_updated.connect(_on_ammo_hand_updated)
+	if combat_manager.has_signal("ammo_hand_transitioned"):
+		combat_manager.ammo_hand_transitioned.connect(_on_ammo_hand_transitioned)
 	if combat_manager.has_signal("piles_updated"):
 		combat_manager.piles_updated.connect(_on_piles_updated)
 	if combat_manager.has_signal("basic_supply_updated"):
@@ -1570,28 +1668,204 @@ func _on_buttstroke_triggered(enemy_inst: EnemyInstance, new_distance: int) -> v
 		parent_scene.shake_camera()
 
 func _on_draw_pile_updated(draw_pile: Array[BulletData]) -> void:
-	_rebuild_bullet_pool(draw_pile)
+	var visible_bullets := combat_manager.available_tactical_bullets() \
+		if combat_manager != null else draw_pile
+	_rebuild_bullet_pool(visible_bullets)
 	_refresh_ammo_drawer()
+
+
+func _on_ammo_hand_updated(hand: Array[BulletData], _preview: Array[BulletData]) -> void:
+	_rebuild_bullet_pool(hand)
+	_refresh_ammo_drawer()
+
+
+func _on_ammo_hand_transitioned(transition: Dictionary) -> void:
+	_last_ammo_hand_transition = transition.duplicate(true)
+	_show_ammo_hand_transition(transition)
+
+
+func _show_ammo_hand_transition(transition: Dictionary) -> void:
+	if not is_instance_valid(_ammo_reveal_layer) or transition.is_empty():
+		return
+	if combat_manager == null or not combat_manager.ammo_hand_mode_enabled:
+		return
+	if is_instance_valid(_ammo_reveal_tween):
+		_ammo_reveal_tween.kill()
+	for child in _ammo_reveal_cards.get_children():
+		_ammo_reveal_cards.remove_child(child)
+		child.queue_free()
+
+	var reason := str(transition.get("reason", "refill"))
+	match reason:
+		"initial": _ammo_reveal_title.text = "탄도 선택지 셔플"
+		"reshuffle": _ammo_reveal_title.text = "버린 전술탄 재혼합"
+		_: _ammo_reveal_title.text = "공개 패 보충"
+	var hand: Array = transition.get("hand", [])
+	var added: Array = transition.get("added", [])
+	var retained: Array = transition.get("retained", [])
+	_ammo_reveal_summary.text = "공개 %d/%d · 신규 %d · 유지 %d · 미공개 %d" % [
+		hand.size(), int(transition.get("hand_size", hand.size())), added.size(), retained.size(),
+		int(transition.get("hidden_count", 0))]
+
+	var added_counts := _bullet_multiset(added)
+	var cards: Array[Control] = []
+	for bullet_variant in hand:
+		var bullet: BulletData = bullet_variant
+		var key := _bullet_visual_key(bullet)
+		var is_added := int(added_counts.get(key, 0)) > 0
+		if is_added:
+			added_counts[key] = int(added_counts[key]) - 1
+		var card := _create_ammo_reveal_card(bullet, "신규" if is_added else "유지")
+		card.modulate.a = 0.0
+		card.scale = Vector2(0.86, 0.86)
+		_ammo_reveal_cards.add_child(card)
+		cards.append(card)
+
+	_ammo_reveal_layer.modulate = Color.WHITE
+	_ammo_reveal_layer.visible = true
+	_ammo_reveal_tween = create_tween()
+	_ammo_reveal_tween.tween_interval(0.12 if reason == "initial" else 0.06)
+	for card in cards:
+		_ammo_reveal_tween.tween_property(card, "modulate:a", 1.0, 0.05)
+		_ammo_reveal_tween.parallel().tween_property(card, "scale", Vector2.ONE, 0.05)
+	_ammo_reveal_tween.tween_interval(0.16 if reason == "initial" else 0.10)
+	_ammo_reveal_tween.tween_property(_ammo_reveal_layer, "modulate:a", 0.0, 0.10)
+	_ammo_reveal_tween.tween_callback(func():
+		if is_instance_valid(_ammo_reveal_layer):
+			_ammo_reveal_layer.visible = false
+			_ammo_reveal_layer.modulate = Color.WHITE
+	)
+
+
+func _create_ammo_reveal_card(bullet: BulletData, status: String) -> Control:
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(90, 102)
+	card.pivot_offset = card.custom_minimum_size / 2.0
+	var role_color := BulletRoleUI.primary_color(bullet)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.085, 0.13)
+	style.border_width_left = 1; style.border_width_right = 1
+	style.border_width_top = 1; style.border_width_bottom = 1
+	style.border_color = role_color
+	style.corner_radius_top_left = 6; style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6; style.corner_radius_bottom_right = 6
+	style.content_margin_left = 4; style.content_margin_right = 4
+	style.content_margin_top = 3; style.content_margin_bottom = 3
+	card.add_theme_stylebox_override("panel", style)
+	var column := VBoxContainer.new()
+	column.alignment = BoxContainer.ALIGNMENT_CENTER
+	card.add_child(column)
+	var status_lbl: Label = parent_scene.make_label(status, 9.5,
+		parent_scene.C_WARNING if status == "신규" else parent_scene.C_DIM)
+	status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(status_lbl)
+	var role_lbl: Label = parent_scene.make_label(BulletRoleUI.visual_role_text(bullet), 9.5, role_color)
+	role_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(role_lbl)
+	var icon_tex := _get_bullet_icon(bullet)
+	if icon_tex:
+		var icon := TextureRect.new()
+		icon.texture = icon_tex
+		icon.custom_minimum_size = Vector2(42, 42)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		column.add_child(icon)
+	var name_lbl: Label = parent_scene.make_label(bullet.display_name, 9.5, Color.WHITE)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.clip_text = true
+	column.add_child(name_lbl)
+	return card
+
+
+func _bullet_visual_key(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	return bullet.resource_path if not bullet.resource_path.is_empty() else bullet.display_name
+
+
+func _bullet_multiset(bullets: Array) -> Dictionary:
+	var counts: Dictionary = {}
+	for bullet_variant in bullets:
+		var bullet: BulletData = bullet_variant
+		var key := _bullet_visual_key(bullet)
+		counts[key] = int(counts.get(key, 0)) + 1
+	return counts
 
 func _on_piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletData], exile_pile: Array[BulletData]) -> void:
 	if is_instance_valid(_hud_lbl_draw):
-		_hud_lbl_draw.text = "🎒 %d" % draw_pile.size()
+		if combat_manager != null and combat_manager.ammo_hand_comparison_variant == "A":
+			_hud_lbl_draw.text = "🅰 전체 덱 %d" % draw_pile.size()
+		elif combat_manager != null and combat_manager.ammo_hand_mode_enabled:
+			_hud_lbl_draw.text = "🎴 %d · 🎒 %d" % [combat_manager.ammo_hand.size(), draw_pile.size()]
+		else:
+			_hud_lbl_draw.text = "🎒 %d" % draw_pile.size()
 	if is_instance_valid(_hud_lbl_discard):
 		_hud_lbl_discard.text = "♻ %d" % discard_pile.size()
 	if is_instance_valid(_hud_lbl_exile):
 		_hud_lbl_exile.text = "💀 %d" % exile_pile.size()
 		
 	if is_instance_valid(_drawer_tab_ammo):
-		_drawer_tab_ammo.text = "가방 (%d)" % draw_pile.size()
+		if combat_manager != null and combat_manager.ammo_hand_comparison_variant == "A":
+			_drawer_tab_ammo.text = "🅰 A 전체 덱 (%d)" % draw_pile.size()
+		elif combat_manager != null and combat_manager.ammo_hand_mode_enabled:
+			_drawer_tab_ammo.text = "🅱 B 공개 패 (%d/%d)" % [
+				combat_manager.ammo_hand.size(), combat_manager.ammo_hand_size]
+		else:
+			_drawer_tab_ammo.text = "가방 (%d)" % draw_pile.size()
 	if is_instance_valid(_drawer_tab_discard):
 		_drawer_tab_discard.text = "버림 (%d)" % discard_pile.size()
 	if is_instance_valid(_drawer_tab_exile):
 		_drawer_tab_exile.text = "소멸 (%d)" % exile_pile.size()
 		
-	_rebuild_bullet_pool(draw_pile)
+	var visible_bullets := combat_manager.available_tactical_bullets() \
+		if combat_manager != null else draw_pile
+	_rebuild_bullet_pool(visible_bullets)
 		
 	if _is_bag_expanded:
 		_refresh_ammo_drawer()
+
+
+func _refresh_ammo_ab_comparison_ui() -> void:
+	if not is_instance_valid(_ammo_ab_banner) or not is_instance_valid(_ammo_ab_banner_label):
+		return
+	var variant := combat_manager.ammo_hand_comparison_variant if combat_manager != null else ""
+	_ammo_ab_banner.visible = not variant.is_empty()
+	if variant.is_empty():
+		return
+
+	var style := StyleBoxFlat.new()
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
+	style.border_width_left = 2
+	style.border_width_right = 2
+	style.border_width_top = 2
+	style.border_width_bottom = 2
+	style.content_margin_left = 12
+	style.content_margin_right = 12
+	style.content_margin_top = 7
+	style.content_margin_bottom = 7
+	if variant == "A":
+		style.bg_color = Color(0.08, 0.18, 0.30, 0.96)
+		style.border_color = parent_scene.C_ACCENT
+		_ammo_ab_banner_label.text = "🅰 A안 · 기존 방식 — 12발 전체에서 매번 원하는 탄을 자유롭게 선택"
+		_ammo_ab_banner_label.tooltip_text = "비교 기준: 모든 전술탄이 항상 보여 같은 최적 조합을 반복하기 쉽습니다."
+	else:
+		style.bg_color = Color(0.22, 0.16, 0.04, 0.96)
+		style.border_color = parent_scene.C_WARNING
+		match combat_manager.ammo_hand_test_mode:
+			"random_experience":
+				_ammo_ab_banner_label.text = "🎲 B안 · 새 패 체험 — 실행마다 다른 7발 공개 (미사용 유지 · 리로드 보충)"
+				_ammo_ab_banner_label.tooltip_text = "매번 새 시드를 사용하며 실제 시드는 플레이테스트 보고서에 저장됩니다."
+			"presentation_qa":
+				_ammo_ab_banner_label.text = "🎬 B안 · 보충 연출 QA — 1발 사용 후 리로드하여 유지/신규/예고 확인"
+				_ammo_ab_banner_label.tooltip_text = "보충 연출 검증용 고정 시드입니다."
+			_:
+				_ammo_ab_banner_label.text = "🅱 B안 · 고정 시드 비교 — 같은 7발로 A안과 조합 차이 비교"
+				_ammo_ab_banner_label.tooltip_text = "비교 재현성을 위해 실행마다 같은 패를 사용합니다. 랜덤 체감은 별도 새 패 체험을 사용하십시오."
+	_ammo_ab_banner.add_theme_stylebox_override("panel", style)
 
 
 func _on_basic_supply_updated(bullet: BulletData, current: int, capacity: int) -> void:
@@ -1783,7 +2057,8 @@ func _pump_fire_fx() -> void:
 
 
 func _is_action_resolution_locked() -> bool:
-	return _fx_playing or not _fire_fx_queue.is_empty()
+	return _fx_playing or not _fire_fx_queue.is_empty() \
+		or (is_instance_valid(_ammo_reveal_layer) and _ammo_reveal_layer.visible)
 
 
 func _current_gun_id() -> String:

@@ -157,7 +157,7 @@ func _find_available_bullet(bullet_id: String) -> BulletData:
 			pending_count += 1
 
 	var candidates: Array[BulletData] = []
-	for bullet in combat_manager.draw_pile:
+	for bullet in combat_manager.available_tactical_bullets():
 		if PlaytestLoggerScript.resource_id(bullet) == bullet_id:
 			candidates.append(bullet)
 	if combat_manager.basic_supply_bullet != null \

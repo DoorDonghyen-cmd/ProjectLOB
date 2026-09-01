@@ -232,6 +232,14 @@ static func run(t) -> void:
 		"전술탄은 축 코드와 효용을 함께 표시")
 	t.eq(BulletRoleUI.effect_summary(load("%s/chain.tres" % BULLET_DIR)), "다음 1발 DMG +2",
 		"장약 증폭탄 카드에 정확한 효과 한 줄")
+	t.eq(BulletRoleUI.visual_role_text(marker_ui), "◎ 명중",
+		"카드 1차 역할은 색 외에도 한국어 명칭·기호 병기")
+	t.eq(BulletRoleUI.primary_outcome_text(marker_ui), "회피 9까지 명중",
+		"ACC 원시 수치를 플레이 결과 문장으로 번역")
+	t.eq(BulletRoleUI.effect_outcome_text(marker_ui), "적중 시 → 다음 1발 명중 +3",
+		"효과 문장은 발동 조건→결과 순서의 한국어 표현")
+	t.eq(BulletRoleUI.secondary_stats_text(marker_ui), "피해 2 · 관통 1",
+		"주 전문축 외 수치는 보조 정보로 축약")
 
 	var gd_files: Array[String] = []
 	_gd_files("res://scripts", gd_files)

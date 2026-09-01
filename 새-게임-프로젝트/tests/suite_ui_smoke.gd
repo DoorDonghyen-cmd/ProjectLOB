@@ -144,8 +144,16 @@ static func run(t, tree: SceneTree) -> void:
 	t.check(unlock_ascension_btn != null, "개발자 테스트 메뉴에 모든 승천 해금 버튼 존재")
 	var scan_guidance_btn := _find_button_text(scene._title_overlay._dev_test_panel, "스캔·연계·결산 QA")
 	t.check(scan_guidance_btn != null, "⭐ 모바일 스캔·연계·결산 개발자 테스트 버튼 존재")
-	var ammo_specialty_btn := _find_button_text(scene._title_overlay._dev_test_panel, "탄환 전문축 QA")
-	t.check(ammo_specialty_btn != null, "⭐ ACC·PEN·DMG·CTRL 개발자 테스트 버튼 존재")
+	var ammo_specialty_btn := _find_button_text(scene._title_overlay._dev_test_panel, "탄환 카드 가독성 QA")
+	t.check(ammo_specialty_btn != null, "⭐ 탄환 역할·결과 중심 카드 개발자 테스트 버튼 존재")
+	var ammo_hand_a_btn := _find_button_text(scene._title_overlay._dev_test_panel, "A 기존 · 12발 전체 선택")
+	t.check(ammo_hand_a_btn != null, "⭐ 탄환 조합 A 전체 덱 개발자 테스트 버튼 존재")
+	var ammo_hand_b_btn := _find_button_text(scene._title_overlay._dev_test_panel, "B 비교 · 고정 패 7발")
+	t.check(ammo_hand_b_btn != null, "⭐ 탄환 조합 B 고정 비교 패 개발자 테스트 버튼 존재")
+	var ammo_hand_random_btn := _find_button_text(scene._title_overlay._dev_test_panel, "B 체감 · 매번 새 패")
+	t.check(ammo_hand_random_btn != null, "⭐ 실행마다 새 시드를 쓰는 랜덤 체감 버튼 존재")
+	var ammo_hand_refill_btn := _find_button_text(scene._title_overlay._dev_test_panel, "패 보충 연출 QA")
+	t.check(ammo_hand_refill_btn != null, "⭐ 유지·신규·예고 보충 연출 QA 버튼 존재")
 	var management_roster_btn := _find_button_text(scene._title_overlay._dev_test_panel, "관리 계층 편성 QA")
 	t.check(management_roster_btn != null, "⭐ 관리 계층 편성 개발자 테스트 버튼 존재")
 	var apex_roster_btn := _find_button_text(scene._title_overlay._dev_test_panel, "정점 편성 QA")
@@ -198,6 +206,75 @@ static func run(t, tree: SceneTree) -> void:
 			"전부 초기화는 오작동 방지 확인창을 표시")
 		scene._title_overlay._reset_confirmation.hide()
 	scene._title_overlay._dev_test_panel.visible = false
+
+	# ── 탄환 패 A/B: 실제 숏컷에서 차이가 고정 배너로 읽히는지 확인 ──
+	scene.trigger_ammo_hand_ab_test(false)
+	t.check(scene._cm != null and scene._cm.ammo_hand_comparison_variant == "A",
+		"⭐ 탄환 조합 A 숏컷이 기존 전체 덱 비교 모드로 전투 시작")
+	if scene._combat_overlay != null:
+		t.check(scene._combat_overlay._ammo_ab_banner.visible
+			and scene._combat_overlay._ammo_ab_banner_label.text.contains("12발 전체"),
+			"⭐ A안 전투 상단에 전체 12발 자유 선택 차이 고정 표시")
+
+	scene.trigger_ammo_hand_ab_test(true)
+	t.check(scene._cm != null and scene._cm.ammo_hand_mode_enabled,
+		"⭐ 탄환 조합 B 숏컷이 공개 패 모드로 전투 시작")
+	if scene._cm != null:
+		t.eq(scene._cm.ammo_hand.size(), 7, "⭐ B안 실제 전투 시작 패 7발")
+		t.eq(scene._cm.next_ammo_hand_preview().size(), 2, "⭐ B안 실제 전투 다음 보충 2발 예고")
+		var hand_report: Dictionary = scene._cm.build_playtest_report().get("ammo_hand", {})
+		t.eq((hand_report.get("initial_hand", []) as Array).size(), 7,
+			"B안 플레이테스트 보고서에 초기 공개 패 기록")
+		t.eq(str(hand_report.get("comparison_variant", "")), "B",
+			"B안 플레이테스트 보고서에 비교 variant 기록")
+		t.eq(str(hand_report.get("test_mode", "")), "fixed_comparison",
+			"B안 비교 숏컷은 고정 시드 모드로 보고")
+	if scene._combat_overlay != null and scene._combat_overlay._drawer_panel != null:
+		t.check(scene._combat_overlay._ammo_ab_banner.visible
+			and scene._combat_overlay._ammo_ab_banner_label.text.contains("고정 시드 비교"),
+			"⭐ B안 비교 전투는 같은 패를 쓰는 고정 시드임을 표시")
+		t.check(scene._combat_overlay._ammo_reveal_layer.visible
+			and str(scene._combat_overlay._last_ammo_hand_transition.get("reason", "")) == "initial",
+			"⭐ B안 시작 시 탄도 선택지 셔플 공개 연출 표시")
+		t.eq(scene._combat_overlay._ammo_reveal_cards.get_child_count(), 7,
+			"⭐ 시작 패 7장이 공개 연출 카드로 렌더")
+		var hand_hint: Label = scene._combat_overlay._drawer_panel._ammo_hand_hint
+		var hand_state: Label = scene._combat_overlay._drawer_panel._ammo_hand_state_label
+		t.check(hand_hint != null and hand_hint.text.contains("고정 비교 패"),
+			"⭐ 장전 UI가 고정 비교 패와 새 패 체험을 구분")
+		t.check(hand_state != null and hand_state.text.contains("공개 7/7")
+			and hand_state.text.contains("미공개 5"),
+			"⭐ 장전 UI에 공개·미공개 탄환 수를 함께 표시")
+		t.eq(scene._combat_overlay._drawer_panel._ammo_preview_row.get_child_count(), 2,
+			"⭐ 다음 보충 2발을 텍스트가 아닌 개별 예고 칩으로 렌더")
+
+	scene.trigger_ammo_hand_random_experience_test()
+	t.check(scene._cm != null and scene._cm.ammo_hand_test_mode == "random_experience",
+		"⭐ 랜덤 체감 숏컷은 별도 신규 시드 모드로 전투 시작")
+	if scene._cm != null:
+		t.check(scene._rm.gameplay_seed != 0 and scene._rm.gameplay_seed != 731042,
+			"⭐ 랜덤 체감 숏컷은 고정 비교 시드가 아닌 실행 시드를 저장")
+	if scene._combat_overlay != null:
+		t.check(scene._combat_overlay._ammo_ab_banner_label.text.contains("새 패 체험"),
+			"⭐ 랜덤 체감 전투 상단에 실행마다 다른 패임을 표시")
+
+	var marker_card_bullet: BulletData = load("res://resources/bullets/marker.tres")
+	var readability_card: Control = scene._combat_overlay._create_inventory_card(marker_card_bullet, 1)
+	t.check(_has_label_text(readability_card, "◎ 명중"),
+		"⭐ 탄환 카드가 영문 ACC 대신 한국어 역할·기호를 1차 정보로 표시")
+	t.check(_has_label_text(readability_card, "회피 9까지 명중"),
+		"⭐ 탄환 카드가 원시 ACC 수치를 결과 문장으로 번역")
+	t.check(_has_label_text(readability_card, "다음 1발 명중 +3"),
+		"⭐ 탄환 카드가 발동 조건과 다음 탄 효과를 한국어로 표시")
+	var primary_icon := readability_card.find_child("BulletPrimaryIcon", true, false) as TextureRect
+	t.check(primary_icon != null and primary_icon.custom_minimum_size.x >= 48.0
+		and primary_icon.modulate.a >= 0.99,
+		"⭐ 탄환 이미지를 48px 이상·완전 불투명 주 이미지로 표시")
+	readability_card.free()
+	scene._ammo_hand_prototype_enabled = false
+	scene._ammo_hand_ab_variant = ""
+	scene._ammo_hand_test_mode = ""
+	scene._is_shortcut_mode = false
 
 	# ── 상층 편성 QA: 실제 EnemyRoster 대표 후보로 즉시 전투 진입 ──
 	scene.trigger_upper_roster_test("section_d")
@@ -311,14 +388,14 @@ static func run(t, tree: SceneTree) -> void:
 
 		var guidance_ov = scene._combat_overlay
 		guidance_ov._toggle_drawer(true)
-		t.check(_has_label_text(guidance_ov, "다음 1발 ACC +3"),
+		t.check(_has_label_text(guidance_ov, "적중 시 → 다음 1발 명중 +3"),
 			"⭐ 가방/장전 UI에 다음 1발 효과·수치 렌더")
-		t.check(_has_label_text(guidance_ov, "대상 EVA -2"),
+		t.check(_has_label_text(guidance_ov, "명중 시 → 대상 회피 -2"),
 			"⭐ 가방/장전 UI에 대상 지속 효과·수치 렌더")
-		t.check(_has_label_text(guidance_ov, "남은 탄창 ACC +1"),
+		t.check(_has_label_text(guidance_ov, "적중 시 → 남은 탄창 명중 +1"),
 			"⭐ 가방/장전 UI에 잔여 탄창 효과·수치 렌더")
-		t.check(_has_label_text(guidance_ov, "[결산]"),
-			"⭐ 가방/장전 UI에 연쇄·교대탄 결산 배지 렌더")
+		t.check(_has_label_text(guidance_ov, "전문축 교대 시 피해 +4"),
+			"⭐ 가방/장전 UI에 연쇄·교대탄 결산 조건·결과 렌더")
 		guidance_ov._toggle_drawer(false)
 
 		var preview_target: EnemyInstance = scene._cm.enemy
@@ -390,10 +467,10 @@ static func run(t, tree: SceneTree) -> void:
 	if scene._cm != null:
 		t.check(scene._cm.gun_is("smg"), "⭐ 기관단총 연발 체인 테스트가 Tempo로 시작됨")
 		t.check(scene._cm.is_full_auto(), "기관단총 QA 숏컷도 연발")
-	t.check(_has_label_text(scene._combat_overlay, "[ACC]"),
-		"⭐ 장전 UI에 명중 전문축 배지 렌더")
-	t.check(_has_label_text(scene._combat_overlay, "[DMG]"),
-		"⭐ 장전 UI에 화력 전문축 배지 렌더")
+	t.check(_has_label_text(scene._combat_overlay, "◎ 명중"),
+		"⭐ 장전 UI에 명중 전문축 역할·기호 렌더")
+	t.check(_has_label_text(scene._combat_overlay, "✦ 화력"),
+		"⭐ 장전 UI에 화력 전문축 역할·기호 렌더")
 	scene._combat_overlay._toggle_drawer(true)
 	t.check(_has_label_text(scene._combat_overlay, "보급 6/6"),
 		"⭐ Tempo 가방 첫 칸에 약실 포함 기본 보급 6/6 표시")

@@ -26,6 +26,9 @@ var _drawer_stack_vbox: VBoxContainer
 var _drawer_stack_cap: Label
 var _drawer_undo_btn: Button
 var _drawer_confirm_btn: Button
+var _ammo_hand_hint: Label
+var _ammo_hand_state_label: Label
+var _ammo_preview_row: HBoxContainer
 
 func initialize(p_scene: Control, rm: RunManager, cm: CombatManager, overlay_v2: Control) -> void:
 	parent_scene = p_scene
@@ -155,6 +158,22 @@ func _build_ui() -> void:
 	right_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	drawer_main_hbox.add_child(right_vbox)
+
+	_ammo_hand_hint = parent_scene.make_label("", 11, parent_scene.C_WARNING)
+	_ammo_hand_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_ammo_hand_hint.visible = false
+	right_vbox.add_child(_ammo_hand_hint)
+
+	_ammo_hand_state_label = parent_scene.make_label("", 10.5, parent_scene.C_TEXT)
+	_ammo_hand_state_label.name = "AmmoHandStateLabel"
+	_ammo_hand_state_label.visible = false
+	right_vbox.add_child(_ammo_hand_state_label)
+
+	_ammo_preview_row = HBoxContainer.new()
+	_ammo_preview_row.name = "AmmoHandPreviewRow"
+	_ammo_preview_row.add_theme_constant_override("separation", 6)
+	_ammo_preview_row.visible = false
+	right_vbox.add_child(_ammo_preview_row)
 	
 	# 소모품 스크롤
 	var item_scroll := ScrollContainer.new()
@@ -231,6 +250,7 @@ func _switch_drawer_tab_idx(tab_idx: int) -> void:
 
 func refresh_ammo_drawer() -> void:
 	_refresh_drawer_stack()
+	_refresh_ammo_hand_hint()
 	
 	if _active_drawer_tab == 3:
 		_refresh_consumables_drawer()
@@ -278,7 +298,7 @@ func refresh_ammo_drawer() -> void:
 		if is_interactive and supply_count > 0:
 			supply_callback = func():
 				overlay.request_insert_bullet(supply_bullet)
-		var supply_card := _create_inventory_card(
+		var supply_card: Control = overlay._create_inventory_card(
 			supply_bullet,
 			supply_count,
 			supply_callback,
@@ -299,11 +319,11 @@ func refresh_ammo_drawer() -> void:
 		
 		var card: Control
 		if is_interactive:
-			card = _create_inventory_card(bullet, count, func():
+			card = overlay._create_inventory_card(bullet, count, func():
 				overlay.request_insert_bullet(bullet)
 			)
 		else:
-			card = _create_inventory_card(bullet, count, Callable())
+			card = overlay._create_inventory_card(bullet, count, Callable())
 			card.modulate = Color(1.0, 1.0, 1.0, 0.45)
 			
 		_drawer_inventory_grid.add_child(card)
@@ -325,6 +345,46 @@ func refresh_ammo_drawer() -> void:
 		else:
 			_drawer_confirm_btn.text = "가방 닫기 ✕"
 			_drawer_confirm_btn.disabled = false
+
+
+func _refresh_ammo_hand_hint() -> void:
+	if not is_instance_valid(_ammo_hand_hint):
+		return
+	var variant := combat_manager.ammo_hand_comparison_variant if combat_manager != null else ""
+	var enabled := combat_manager != null and combat_manager.ammo_hand_mode_enabled
+	_ammo_hand_hint.visible = (enabled or not variant.is_empty()) and _active_drawer_tab == 0
+	if is_instance_valid(_ammo_hand_state_label):
+		_ammo_hand_state_label.visible = _ammo_hand_hint.visible and enabled
+	if is_instance_valid(_ammo_preview_row):
+		_ammo_preview_row.visible = _ammo_hand_hint.visible and enabled
+	if not _ammo_hand_hint.visible:
+		return
+	if variant == "A":
+		_ammo_hand_hint.text = "🅰 A안 · 전체 덱 선택\n전술탄 %d발이 모두 공개됩니다. 원하는 탄을 매번 자유롭게 골라 같은 조합을 반복할 수 있습니다." % combat_manager.draw_pile.size()
+		_ammo_hand_hint.tooltip_text = "A안 비교 기준: 전체 덱에 항상 접근할 수 있는 기존 방식입니다."
+		return
+	var preview_names: Array[String] = []
+	for bullet in combat_manager.next_ammo_hand_preview():
+		preview_names.append(bullet.display_name)
+	var mode := combat_manager.ammo_hand_test_mode
+	var prefix := "🅱 B안 · 매번 새 패" if mode == "random_experience" else "🅱 B안 · 고정 비교 패"
+	_ammo_hand_hint.text = "%s\n현재 공개 패와 기본탄만 선택 · 미사용 탄은 리로드 후 유지" % prefix
+	_ammo_hand_hint.tooltip_text = "공개 패와 고정 기본탄만 장전할 수 있습니다. 발사 순서는 기존 LIFO 규칙 그대로입니다."
+	if is_instance_valid(_ammo_hand_state_label):
+		_ammo_hand_state_label.text = "공개 %d/%d · 미공개 %d · 다음 보충 %d" % [
+			combat_manager.ammo_hand.size(), combat_manager.ammo_hand_size,
+			combat_manager.draw_pile.size(), preview_names.size()]
+	if is_instance_valid(_ammo_preview_row):
+		for child in _ammo_preview_row.get_children():
+			_ammo_preview_row.remove_child(child)
+			child.queue_free()
+		if preview_names.is_empty():
+			_ammo_preview_row.add_child(parent_scene.make_label("다음 보충 없음", 10, parent_scene.C_DIM))
+		else:
+			var order := 1
+			for bullet in combat_manager.next_ammo_hand_preview():
+				_ammo_preview_row.add_child(overlay._create_ammo_preview_chip(bullet, order))
+				order += 1
 
 func _refresh_drawer_stack() -> void:
 	if not is_instance_valid(_drawer_stack_vbox): return

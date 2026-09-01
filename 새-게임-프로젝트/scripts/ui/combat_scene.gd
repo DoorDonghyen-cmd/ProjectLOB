@@ -80,6 +80,9 @@ var _camera: Camera2D
 var _current_gun_data: GunData
 var _is_shortcut_mode: bool = false
 var _is_guidance_shortcut: bool = false
+var _ammo_hand_prototype_enabled: bool = false
+var _ammo_hand_ab_variant: String = ""
+var _ammo_hand_test_mode: String = ""
 var _qa_gameplay_seed: int = 0
 var _qa_session_id: String = ""
 
@@ -455,6 +458,59 @@ func trigger_ammo_specialty_test() -> void:
 			"[color=#ffcc44]· 표식/천공/장약 증폭탄의 다음 1발 ACC/PEN/DMG 강화를 확인하십시오.[/color]")
 
 
+## A/B 비교는 고정 시드, 랜덤 체감은 실행마다 새 시드를 사용한다.
+## 두 경로 모두 실제 시드를 RunManager와 플레이테스트 보고서에 남겨 재현성을 보존한다.
+func trigger_ammo_hand_ab_test(hand_mode: bool, fresh_seed: bool = false, test_mode: String = "") -> void:
+	_is_shortcut_mode = true
+	_ammo_hand_prototype_enabled = hand_mode
+	_ammo_hand_ab_variant = "B" if hand_mode else "A"
+	_ammo_hand_test_mode = test_mode if not test_mode.is_empty() else (
+		"random_experience" if hand_mode and fresh_seed else "fixed_comparison")
+	_title_overlay.visible = false
+	_current_gun_data = _gun_revolver
+	var requested_seed := 0 if fresh_seed else 731042
+	var session_id := "ammo_hand_random" if fresh_seed else "ammo_hand_ab"
+	_rm.start_new_run(
+		"section_a", _current_gun_data, _bullets_basic, _bullets_ap, _bullets_kb,
+		requested_seed, session_id)
+
+	_rm.deck.clear()
+	for bullet_id in [
+		"marker", "borer", "chain", "impact", "finale", "jammer",
+		"guide", "align", "crosscal", "shred", "pierce", "opener",
+	]:
+		var bullet: BulletData = load("res://resources/bullets/%s.tres" % bullet_id)
+		if bullet != null:
+			_rm.deck.append(bullet.duplicate())
+
+	_start_combat_phase([_enemy_tank, _enemy_dodger, _enemy_rusher] as Array[EnemyData])
+	if _combat_overlay:
+		_combat_overlay.clear_combat_log()
+		var variant_name := "B · 공개 탄환 패" if hand_mode else "A · 전체 덱 선택"
+		var seed_label := "신규 시드 %d" % _rm.gameplay_seed if fresh_seed else "고정 시드 731042"
+		_combat_overlay.add_combat_log(
+			"[color=#ffff66]🧪 탄환 조합 A/B — %s · %s[/color]" % [variant_name, seed_label])
+		if hand_mode:
+			_combat_overlay.add_combat_log(
+				"[color=#88ff88]· 공개된 7발과 기본탄으로 순서를 짜십시오. 미사용 패는 유지됩니다.[/color]")
+			_combat_overlay.add_combat_log(
+				"[color=#ffcc44]· 재장전 시 부족분 보충 · 다음 2발 예고 · 명중/피해/관통은 기존 결정론 유지[/color]")
+		else:
+			_combat_overlay.add_combat_log(
+				"[color=#88ff88]· 기존 규칙입니다. 12발 전체에서 원하는 탄을 자유롭게 골라 비교하십시오.[/color]")
+
+
+func trigger_ammo_hand_random_experience_test() -> void:
+	trigger_ammo_hand_ab_test(true, true, "random_experience")
+
+
+func trigger_ammo_hand_refill_presentation_test() -> void:
+	trigger_ammo_hand_ab_test(true, false, "presentation_qa")
+	if _combat_overlay:
+		_combat_overlay.add_combat_log(
+			"[color=#59e6b8]🎬 보충 연출 QA — 전술탄 1발 장전·격발 후 리로드하여 유지/신규/예고를 확인하십시오.[/color]")
+
+
 ## 관리·정점의 대표 4체 일반전을 즉시 비교하는 수동 플레이테스트 진입점.
 ## 편성은 EnemyRoster의 실제 종반 후보를 그대로 쓰고, Workhorse와 동일 전술탄 묶음으로
 ## 계층 간 탄환 순서·거리 압력 차이만 비교한다.
@@ -665,6 +721,8 @@ func _start_combat_phase(enemy_datas: Array) -> void:
 	_cm = CombatManager.new()
 	_cm.name = "CombatManager"
 	add_child(_cm)
+	_cm.configure_ammo_hand_prototype(
+		_ammo_hand_prototype_enabled, 7, 2, _ammo_hand_ab_variant, _ammo_hand_test_mode)
 	
 	if not is_instance_valid(_combat_overlay):
 		_combat_overlay = preload("res://scenes/ui/overlays/combat_overlay_v2.tscn").instantiate()
@@ -729,6 +787,9 @@ func handle_combat_finished(is_dead: bool) -> void:
 		_rm.finish_playtest_log("debug_finished")
 		_is_shortcut_mode = false
 		_is_guidance_shortcut = false
+		_ammo_hand_prototype_enabled = false
+		_ammo_hand_ab_variant = ""
+		_ammo_hand_test_mode = ""
 		_show_title_screen()
 		return
 		

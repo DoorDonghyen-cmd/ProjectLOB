@@ -78,6 +78,106 @@ static func specialty_code(value: String) -> String:
 			return "DMG"
 
 
+static func specialty_short_label(value: String) -> String:
+	match normalize_specialty(value):
+		SPECIALTY_PENETRATION:
+			return "관통"
+		SPECIALTY_ACCURACY:
+			return "명중"
+		SPECIALTY_CONTROL:
+			return "제어"
+		_:
+			return "화력"
+
+
+## 색을 보지 못해도 전문축을 구분하는 카드 공용 기호.
+static func specialty_symbol(value: String) -> String:
+	match normalize_specialty(value):
+		SPECIALTY_PENETRATION:
+			return "◆"
+		SPECIALTY_ACCURACY:
+			return "◎"
+		SPECIALTY_CONTROL:
+			return "↔"
+		_:
+			return "✦"
+
+
+static func visual_role_text(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	var text := "%s %s" % [specialty_symbol(bullet.specialty), specialty_short_label(bullet.specialty)]
+	return "%s · 기본" % text if bullet.is_basic else text
+
+
+## 원시 스탯 이름보다 먼저 읽히는 한 문장 효용.
+static func primary_outcome_text(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	match normalize_specialty(bullet.specialty):
+		SPECIALTY_ACCURACY:
+			return "회피 %d까지 명중" % bullet.accuracy
+		SPECIALTY_PENETRATION:
+			return "방어 %d까지 관통" % bullet.penetration
+		SPECIALTY_CONTROL:
+			if bullet.knockback > 0:
+				return "명중 시 거리 +%dm" % bullet.knockback
+			if bullet.slow > 0:
+				return "다음 이동 속도 -%d" % bullet.slow
+			return "적 행동·거리를 제어"
+		_:
+			return "관통 성공 시 피해 %d" % bullet.damage
+
+
+## 카드 본문용 발동 조건 → 결과 문장. 기존 effect_summary는 레거시 축약 UI를 위해 유지한다.
+static func effect_outcome_text(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	var value := maxi(bullet.effect_value, 0)
+	match bullet.effect_type:
+		Enums.BulletEffect.BUFF_ACC:
+			return "적중 시 → 다음 1발 명중 +%d" % value
+		Enums.BulletEffect.BUFF_PEN:
+			return "적중 시 → 다음 1발 관통 +%d" % value
+		Enums.BulletEffect.BUFF_DMG:
+			return "적중 시 → 다음 1발 피해 +%d" % value
+		Enums.BulletEffect.DEBUFF_EVA:
+			return "명중 시 → 대상 회피 -%d" % value
+		Enums.BulletEffect.ARMOR_SHRED:
+			return "명중 시 → 대상 방어 -%d" % value
+		Enums.BulletEffect.BUFF_MAG_ACC:
+			return "적중 시 → 남은 탄창 명중 +%d" % value
+		Enums.BulletEffect.BUFF_MAG_PEN:
+			return "적중 시 → 남은 탄창 관통 +%d" % value
+		Enums.BulletEffect.COMBO:
+			return "직전 유효 적중 시 피해 +%d" % value
+		Enums.BulletEffect.LAST_SHOT:
+			return "마지막 발이면 피해 +%d" % value
+		Enums.BulletEffect.CALIBER_DIFF:
+			return "전문축 교대 시 피해 +%d" % value
+		Enums.BulletEffect.OPENING_SHOT:
+			return "첫 발이면 거리 +%dm" % value
+		Enums.BulletEffect.PIERCE:
+			return "유효 적중 시 → 후열 1명 관통"
+		_:
+			return ""
+
+
+static func secondary_stats_text(bullet: BulletData) -> String:
+	if bullet == null:
+		return ""
+	match normalize_specialty(bullet.specialty):
+		SPECIALTY_ACCURACY:
+			return "피해 %d · 관통 %d" % [bullet.damage, bullet.penetration]
+		SPECIALTY_PENETRATION:
+			return "피해 %d · 명중 %d" % [bullet.damage, bullet.accuracy]
+		SPECIALTY_DAMAGE:
+			return "명중 %d · 관통 %d" % [bullet.accuracy, bullet.penetration]
+		_:
+			return "피해 %d · 명중 %d · 관통 %d" % [
+				bullet.damage, bullet.accuracy, bullet.penetration]
+
+
 static func specialty_badge_text(value: String) -> String:
 	return "[%s %s]" % [specialty_code(value), specialty_label(value)]
 

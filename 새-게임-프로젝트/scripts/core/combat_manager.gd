@@ -66,6 +66,11 @@ signal bullet_unloaded(bullet: BulletData)
 signal bullet_exiled(bullet: BulletData)
 signal draw_pile_updated(bullets: Array[BulletData])
 signal piles_updated(draw_pile: Array[BulletData], discard_pile: Array[BulletData], exile_pile: Array[BulletData])
+## 탄환 패 프로토타입의 공개 선택지와 다음 보충 순서를 알린다.
+## 전투 결과 난수에는 손대지 않고, 장전 전에 보이는 선택지만 제한한다.
+signal ammo_hand_updated(hand: Array[BulletData], preview: Array[BulletData])
+## 패 목록 자체와 별도로, UI가 셔플·유지·보충 사건을 정확히 연출하도록 전환 원인을 전달한다.
+signal ammo_hand_transitioned(transition: Dictionary)
 ## 기본 보급탄은 덱과 분리된 고정 슬롯 하나로 표시한다.
 signal basic_supply_updated(bullet: BulletData, current: int, capacity: int)
 signal buttstroke_triggered(enemy: EnemyInstance, new_distance: int)
@@ -100,6 +105,14 @@ var _burst_knockback_budget: int = 0
 var draw_pile: Array[BulletData] = []
 var discard_pile: Array[BulletData] = []
 var exile_pile: Array[BulletData] = []
+var ammo_hand_mode_enabled: bool = false
+## 개발자 A/B 비교에서만 사용한다. 일반 전투는 빈 문자열이다.
+var ammo_hand_comparison_variant: String = ""
+## fixed_comparison / random_experience / presentation_qa. 전투 규칙에는 영향을 주지 않는다.
+var ammo_hand_test_mode: String = ""
+var ammo_hand_size: int = 7
+var ammo_preview_size: int = 2
+var ammo_hand: Array[BulletData] = []
 var basic_supply_bullet: BulletData = null
 var basic_supply_current: int = 0
 var basic_supply_capacity: int = 0
@@ -165,6 +178,9 @@ var telemetry_family_summary: Dictionary = {}
 var telemetry_part_summary: Dictionary = {}
 var telemetry_reload_count: int = 0
 var telemetry_reload_turns: int = 0
+var telemetry_ammo_hand_initial: Array[Dictionary] = []
+var telemetry_ammo_hand_initial_preview: Array[Dictionary] = []
+var telemetry_ammo_hand_refills: Array[Dictionary] = []
 var _telemetry_pending_family_events: Array[Dictionary] = []
 
 
@@ -206,6 +222,86 @@ func get_alive_enemies() -> Array[EnemyInstance]:
 	return alive
 
 
+## 공개 탄환 패 A/B 프로토타입을 전투 시작 전에 설정한다.
+## false일 때는 기존 전체 덱 장전 규칙을 그대로 유지한다.
+func configure_ammo_hand_prototype(
+	enabled: bool,
+	hand_size: int = 7,
+	preview_size: int = 2,
+	comparison_variant: String = "",
+	test_mode: String = ""
+) -> void:
+	ammo_hand_mode_enabled = enabled
+	ammo_hand_comparison_variant = comparison_variant.to_upper() \
+		if comparison_variant.to_upper() in ["A", "B"] else ""
+	ammo_hand_size = maxi(hand_size, 1)
+	ammo_preview_size = maxi(preview_size, 0)
+	ammo_hand_test_mode = test_mode.strip_edges().to_lower()
+	ammo_hand.clear()
+
+
+## 플레이어와 블랙박스 QA가 실제로 선택할 수 있는 전술탄만 반환한다.
+func available_tactical_bullets() -> Array[BulletData]:
+	var available: Array[BulletData] = []
+	if ammo_hand_mode_enabled:
+		available.assign(ammo_hand)
+	else:
+		available.assign(draw_pile)
+	return available
+
+
+## 다음 리로드 때 패에 들어올 순서 중 앞쪽 N발을 공개한다.
+func next_ammo_hand_preview() -> Array[BulletData]:
+	var preview: Array[BulletData] = []
+	if not ammo_hand_mode_enabled:
+		return preview
+	var count := mini(ammo_preview_size, draw_pile.size())
+	for offset in range(count):
+		preview.append(draw_pile[draw_pile.size() - 1 - offset])
+	return preview
+
+
+func _emit_ammo_inventory_state() -> void:
+	draw_pile_updated.emit(draw_pile)
+	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	ammo_hand_updated.emit(available_tactical_bullets(), next_ammo_hand_preview())
+
+
+func _refill_ammo_hand(reason: String = "refill") -> Dictionary:
+	var retained: Array[BulletData] = []
+	retained.assign(ammo_hand)
+	var added: Array[BulletData] = []
+	var reshuffled := false
+	if not ammo_hand_mode_enabled:
+		return {}
+	while ammo_hand.size() < ammo_hand_size:
+		if draw_pile.is_empty():
+			if discard_pile.is_empty():
+				break
+			for bullet in discard_pile:
+				if not _is_basic_supply_bullet(bullet):
+					draw_pile.append(bullet)
+			discard_pile.clear()
+			if draw_pile.is_empty():
+				break
+			RandomStreamsScript.gameplay_shuffle(draw_pile, "combat")
+			reshuffled = true
+			combat_log.emit("♻ 버린 전술탄을 섞어 다음 탄환 패를 보충합니다.")
+		var drawn: BulletData = draw_pile.pop_back()
+		ammo_hand.append(drawn)
+		added.append(drawn)
+	return {
+		"reason": "reshuffle" if reshuffled else reason,
+		"retained": retained,
+		"added": added,
+		"hand": ammo_hand.duplicate(),
+		"preview": next_ammo_hand_preview(),
+		"hidden_count": draw_pile.size(),
+		"hand_size": ammo_hand_size,
+		"test_mode": ammo_hand_test_mode,
+	}
+
+
 ## 인카운터를 시작한다. 기본 보급탄은 전술 덱과 분리해 총기 장전 한도만큼 지급한다.
 ## 마지막 인자는 선택 사항이라 테스트용 임의 전투와 레거시 호출은 기존 동작을 유지한다.
 func start_encounter(
@@ -242,6 +338,7 @@ func start_encounter(
 	basic_supply_capacity = _max_load_capacity() if basic_supply_bullet != null else 0
 	basic_supply_current = basic_supply_capacity
 	draw_pile.clear()
+	ammo_hand.clear()
 	for bullet in deck_bullets:
 		# 구 세션/세이브가 덱 안에 기반탄을 보유해도 고정 보급과 중복시키지 않는다.
 		if basic_supply_bullet != null and _is_basic_supply_bullet(bullet):
@@ -250,8 +347,15 @@ func start_encounter(
 	discard_pile.clear()
 	exile_pile.clear()
 	buttstroke_used_this_encounter = false
-	draw_pile_updated.emit(draw_pile)
-	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	var initial_hand_transition: Dictionary = {}
+	if ammo_hand_mode_enabled:
+		RandomStreamsScript.gameplay_shuffle(draw_pile, "combat")
+		initial_hand_transition = _refill_ammo_hand("initial")
+		telemetry_ammo_hand_initial = _telemetry_bullet_snapshots(ammo_hand)
+		telemetry_ammo_hand_initial_preview = _telemetry_bullet_snapshots(next_ammo_hand_preview())
+	_emit_ammo_inventory_state()
+	if not initial_hand_transition.is_empty():
+		ammo_hand_transitioned.emit(initial_hand_transition)
 	basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 	
 	# 전투 통계 초기화
@@ -338,15 +442,17 @@ func confirm_loading(bullets: Array[BulletData]) -> void:
 			basic_supply_current -= 1
 			accepted.append(b)
 			continue
-		var draw_idx := _find_draw_pile_index(b)
-		if draw_idx < 0:
+		var available_idx := _find_available_tactical_index(b)
+		if available_idx < 0:
 			continue
 		accepted.append(b)
-		draw_pile.remove_at(draw_idx)
+		if ammo_hand_mode_enabled:
+			ammo_hand.remove_at(available_idx)
+		else:
+			draw_pile.remove_at(available_idx)
 
 	magazine.load_bullets(accepted)
-	draw_pile_updated.emit(draw_pile)
-	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	_emit_ammo_inventory_state()
 	basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 	
 	state = State.PLAYER_TURN
@@ -371,10 +477,22 @@ func _is_basic_supply_bullet(bullet: BulletData) -> bool:
 
 
 func _find_draw_pile_index(bullet: BulletData) -> int:
+	return _find_bullet_index(draw_pile, bullet)
+
+
+func _find_ammo_hand_index(bullet: BulletData) -> int:
+	return _find_bullet_index(ammo_hand, bullet)
+
+
+func _find_available_tactical_index(bullet: BulletData) -> int:
+	return _find_ammo_hand_index(bullet) if ammo_hand_mode_enabled else _find_draw_pile_index(bullet)
+
+
+func _find_bullet_index(source: Array[BulletData], bullet: BulletData) -> int:
 	if bullet == null:
 		return -1
-	for i in range(draw_pile.size()):
-		var candidate := draw_pile[i]
+	for i in range(source.size()):
+		var candidate := source[i]
 		if candidate == bullet or (
 			candidate != null
 			and candidate.resource_path == bullet.resource_path
@@ -455,6 +573,38 @@ func preview_next_shot() -> Dictionary:
 		"focus_will_trigger": focus_will_trigger,
 		"line_targets": line_targets,
 		"scatter_targets": scatter_targets,
+	}
+
+
+## 가방에서 고르는 탄을 지금 강제 대상에게 **다음 발로 쏜다면** 통과하는지 보여준다.
+## 조건부 파츠는 실제 격발 시점까지 확정되지 않으므로 기존 preview_next_shot과 같은 범위만 계산한다.
+func preview_candidate_bullet(bullet: BulletData) -> Dictionary:
+	if bullet == null:
+		return {}
+	var dmg := bullet.damage
+	var acc := bullet.accuracy
+	var pen := bullet.penetration
+	if gun != null:
+		dmg += gun.passive_dmg_bonus
+		acc += gun.passive_acc_bonus
+		pen += gun.passive_pen_bonus
+		dmg += CaliberProfiles.bonus_for(bullet, gun, "damage")
+		acc += CaliberProfiles.bonus_for(bullet, gun, "accuracy")
+		pen += CaliberProfiles.bonus_for(bullet, gun, "penetration")
+	acc += magazine_buff_acc + pending_buff_acc
+	pen += magazine_buff_pen + pending_buff_pen
+	dmg += pending_buff_dmg
+	var target := _get_nearest_enemy()
+	return {
+		"bullet": bullet,
+		"dmg": dmg,
+		"acc": acc,
+		"pen": pen,
+		"target": target,
+		"target_evasion": target.current_evasion if target != null else 0,
+		"target_defense": target.current_def if target != null else 0,
+		"acc_ok": target != null and acc >= target.current_evasion,
+		"pen_ok": target != null and pen >= target.current_def,
 	}
 
 
@@ -1435,13 +1585,15 @@ func request_insert_bullet(bullet: BulletData) -> bool:
 		basic_supply_current -= 1
 		basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 	else:
-		var draw_idx := _find_draw_pile_index(bullet)
-		if draw_idx < 0:
+		var available_idx := _find_available_tactical_index(bullet)
+		if available_idx < 0:
 			combat_log.emit("⚠ 가방에 남은 탄환이 없습니다.")
 			return false
-		draw_pile.remove_at(draw_idx)
-		draw_pile_updated.emit(draw_pile)
-		piles_updated.emit(draw_pile, discard_pile, exile_pile)
+		if ammo_hand_mode_enabled:
+			ammo_hand.remove_at(available_idx)
+		else:
+			draw_pile.remove_at(available_idx)
+		_emit_ammo_inventory_state()
 		
 	magazine.insert_bullet(bullet)
 	battle_stats.lead_bullets_fired += 1
@@ -1497,7 +1649,10 @@ func request_reload() -> void:
 		while not magazine.is_empty():
 			var b := magazine.unload()
 			if b and not _is_basic_supply_bullet(b):
-				draw_pile.append(b)
+				if ammo_hand_mode_enabled:
+					ammo_hand.append(b)
+				else:
+					draw_pile.append(b)
 
 	magazine.clear()
 	_clear_focus()
@@ -1523,7 +1678,19 @@ func request_reload() -> void:
 			return
 
 	# 리로드 완료: 전술탄만 버린 더미에서 순환한다. 기본탄은 고정 보급량으로 일괄 복구한다.
-	if not discard_pile.is_empty():
+	var hand_transition: Dictionary = {}
+	if ammo_hand_mode_enabled:
+		var hand_before := _telemetry_bullet_snapshots(ammo_hand)
+		var preview_before := _telemetry_bullet_snapshots(next_ammo_hand_preview())
+		hand_transition = _refill_ammo_hand("refill")
+		telemetry_ammo_hand_refills.append({
+			"reload": telemetry_reload_count,
+			"hand_before": hand_before,
+			"preview_before": preview_before,
+			"hand_after": _telemetry_bullet_snapshots(ammo_hand),
+			"preview_after": _telemetry_bullet_snapshots(next_ammo_hand_preview()),
+		})
+	elif not discard_pile.is_empty():
 		for b in discard_pile:
 			if not _is_basic_supply_bullet(b):
 				draw_pile.append(b)
@@ -1535,8 +1702,9 @@ func request_reload() -> void:
 		if _is_basic_supply_bullet(exile_pile[i]):
 			exile_pile.remove_at(i)
 	basic_supply_current = basic_supply_capacity
-	draw_pile_updated.emit(draw_pile)
-	piles_updated.emit(draw_pile, discard_pile, exile_pile)
+	_emit_ammo_inventory_state()
+	if ammo_hand_mode_enabled and not hand_transition.is_empty():
+		ammo_hand_transitioned.emit(hand_transition)
 	basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 
 	reload_finished.emit()
@@ -1689,7 +1857,17 @@ func _reset_telemetry() -> void:
 	telemetry_part_summary.clear()
 	telemetry_reload_count = 0
 	telemetry_reload_turns = 0
+	telemetry_ammo_hand_initial.clear()
+	telemetry_ammo_hand_initial_preview.clear()
+	telemetry_ammo_hand_refills.clear()
 	_telemetry_pending_family_events.clear()
+
+
+func _telemetry_bullet_snapshots(bullets: Array[BulletData]) -> Array[Dictionary]:
+	var snapshots: Array[Dictionary] = []
+	for bullet in bullets:
+		snapshots.append(PlaytestLoggerScript.resource_snapshot(bullet))
+	return snapshots
 
 
 func _capture_telemetry_log(message: String) -> void:
@@ -1874,6 +2052,16 @@ func build_playtest_report() -> Dictionary:
 			"bullets": telemetry_bullet_summary.duplicate(true),
 			"ammo_families": telemetry_family_summary.duplicate(true),
 			"parts": telemetry_part_summary.duplicate(true),
+		},
+		"ammo_hand": {
+			"enabled": ammo_hand_mode_enabled,
+			"comparison_variant": ammo_hand_comparison_variant,
+			"test_mode": ammo_hand_test_mode,
+			"hand_size": ammo_hand_size,
+			"preview_size": ammo_preview_size,
+			"initial_hand": telemetry_ammo_hand_initial.duplicate(true),
+			"initial_preview": telemetry_ammo_hand_initial_preview.duplicate(true),
+			"refills": telemetry_ammo_hand_refills.duplicate(true),
 		},
 		"shots": telemetry_shots.duplicate(true),
 		"family_events": telemetry_family_events.duplicate(true),

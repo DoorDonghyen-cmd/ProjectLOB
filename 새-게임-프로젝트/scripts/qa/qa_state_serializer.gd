@@ -106,6 +106,15 @@ static func player_view(
 		},
 		"pending_load_order": pending,
 		"available_ammo": available_ammo(cm, pending_load),
+		"ammo_hand": {
+			"enabled": cm.ammo_hand_mode_enabled,
+			"comparison_variant": cm.ammo_hand_comparison_variant,
+			"test_mode": cm.ammo_hand_test_mode,
+			"visible_count": cm.ammo_hand.size(),
+			"capacity": cm.ammo_hand_size,
+			"hidden_count": cm.draw_pile.size() if cm.ammo_hand_mode_enabled else 0,
+			"next_refill_preview": _bullet_list(cm.next_ammo_hand_preview()),
+		},
 		"legal_actions": legal_actions,
 		"last_result": last_result.duplicate(true),
 	}
@@ -137,6 +146,11 @@ static func oracle_state(cm: CombatManager, pending_load: Array[BulletData], ste
 		"magazine_fire_order": fire_order,
 		"pending_load_order": pending,
 		"draw_pile": _bullet_list(cm.draw_pile),
+		"ammo_hand_mode_enabled": cm.ammo_hand_mode_enabled,
+		"ammo_hand_comparison_variant": cm.ammo_hand_comparison_variant,
+		"ammo_hand_test_mode": cm.ammo_hand_test_mode,
+		"ammo_hand": _bullet_list(cm.ammo_hand),
+		"ammo_hand_preview": _bullet_list(cm.next_ammo_hand_preview()),
 		"discard_pile": _bullet_list(cm.discard_pile),
 		"exile_pile": _bullet_list(cm.exile_pile),
 		"basic_supply_current": cm.basic_supply_current,
@@ -150,7 +164,7 @@ static func oracle_state(cm: CombatManager, pending_load: Array[BulletData], ste
 
 static func available_ammo(cm: CombatManager, pending_load: Array[BulletData]) -> Array[Dictionary]:
 	var grouped: Dictionary = {}
-	for bullet in cm.draw_pile:
+	for bullet in cm.available_tactical_bullets():
 		_add_available(grouped, bullet, 1)
 	if cm.basic_supply_bullet != null:
 		_add_available(grouped, cm.basic_supply_bullet, cm.basic_supply_current)

@@ -332,16 +332,60 @@ func _build_dev_test_panel() -> void:
 	btn_guidance_ui.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_guidance_ui)
 
-	var btn_ammo_specialty = parent_scene.make_button("🎯 탄환 전문축 QA", func():
+	var btn_ammo_specialty = parent_scene.make_button("🎯 탄환 카드 가독성 QA", func():
 		_dev_test_panel.visible = false
 		parent_scene.trigger_ammo_specialty_test()
 	, parent_scene.C_SUCCESS)
 	btn_ammo_specialty.name = "AmmoSpecialtyTestButton"
-	btn_ammo_specialty.tooltip_text = "기본탄과 ACC·PEN·DMG·CTRL 전술탄 배지, 다음 1발 강화를 즉시 확인합니다."
+	btn_ammo_specialty.tooltip_text = "기본탄과 명중·관통·화력·제어 역할, 결과 문장과 현재 적 게이트 판독을 확인합니다."
 	btn_ammo_specialty.custom_minimum_size = Vector2(0, 36)
 	btn_ammo_specialty.add_theme_font_size_override("font_size", 11)
 	btn_ammo_specialty.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_child(btn_ammo_specialty)
+
+	var btn_ammo_hand_a = parent_scene.make_button("🅰 A 기존 · 12발 전체 선택", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_ammo_hand_ab_test(false)
+	, parent_scene.C_ACCENT)
+	btn_ammo_hand_a.name = "AmmoHandVariantAButton"
+	btn_ammo_hand_a.tooltip_text = "기존 방식: 12발 전체가 항상 보여 원하는 최적 조합을 매번 반복할 수 있습니다."
+	btn_ammo_hand_a.custom_minimum_size = Vector2(0, 36)
+	btn_ammo_hand_a.add_theme_font_size_override("font_size", 11)
+	btn_ammo_hand_a.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_ammo_hand_a)
+
+	var btn_ammo_hand_b = parent_scene.make_button("🅱 B 비교 · 고정 패 7발", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_ammo_hand_ab_test(true)
+	, parent_scene.C_SUCCESS)
+	btn_ammo_hand_b.name = "AmmoHandVariantBButton"
+	btn_ammo_hand_b.tooltip_text = "비교용 고정 시드: 실행마다 같은 7발로 A안과 공정하게 비교합니다."
+	btn_ammo_hand_b.custom_minimum_size = Vector2(0, 36)
+	btn_ammo_hand_b.add_theme_font_size_override("font_size", 11)
+	btn_ammo_hand_b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_ammo_hand_b)
+
+	var btn_ammo_hand_random = parent_scene.make_button("🎲 B 체감 · 매번 새 패", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_ammo_hand_random_experience_test()
+	, parent_scene.C_WARNING)
+	btn_ammo_hand_random.name = "AmmoHandRandomExperienceButton"
+	btn_ammo_hand_random.tooltip_text = "실행할 때마다 새 시드로 다른 7발을 공개합니다. 실제 시드는 보고서에 저장됩니다."
+	btn_ammo_hand_random.custom_minimum_size = Vector2(0, 36)
+	btn_ammo_hand_random.add_theme_font_size_override("font_size", 11)
+	btn_ammo_hand_random.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_ammo_hand_random)
+
+	var btn_ammo_hand_refill = parent_scene.make_button("🎬 패 보충 연출 QA", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_ammo_hand_refill_presentation_test()
+	, parent_scene.C_SUCCESS)
+	btn_ammo_hand_refill.name = "AmmoHandRefillPresentationButton"
+	btn_ammo_hand_refill.tooltip_text = "전술탄 1발을 쏜 뒤 리로드하여 미사용 유지·신규 보충·다음 2발 예고를 확인합니다."
+	btn_ammo_hand_refill.custom_minimum_size = Vector2(0, 36)
+	btn_ammo_hand_refill.add_theme_font_size_override("font_size", 11)
+	btn_ammo_hand_refill.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_child(btn_ammo_hand_refill)
 
 	# 계층을 다시 오르지 않고 동일한 Workhorse 탄약으로 상층 4체 편성을 비교한다.
 	var btn_management_roster = parent_scene.make_button("🏢 관리 계층 편성 QA", func():

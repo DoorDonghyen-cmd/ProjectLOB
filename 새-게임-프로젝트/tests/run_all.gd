@@ -23,6 +23,7 @@ const SuiteQACoreFun := preload("res://tests/suite_qa_core_fun.gd")
 const SuiteQATeamOrchestration := preload("res://tests/suite_qa_team_orchestration.gd")
 const SuiteQADashboard := preload("res://tests/suite_qa_dashboard.gd")
 const SuiteBasicSupply := preload("res://tests/suite_basic_supply.gd")
+const SuiteAmmoHandPrototype := preload("res://tests/suite_ammo_hand_prototype.gd")
 const SuiteAmmoMatrix := preload("res://tests/suite_ammo_matrix.gd")
 const SuiteAmmoSpecialization := preload("res://tests/suite_ammo_specialization.gd")
 const SuiteLIFODepthBaseline := preload("res://tests/suite_lifo_depth_baseline.gd")
@@ -92,6 +93,7 @@ func _initialize() -> void:
 	SuiteQATeamOrchestration.run(t) # 독립 역할 패킷·원본 보고·후공유 통합·오탐/미탐 검증
 	SuiteQADashboard.run(t) # QA 통합 결과·실행 이력·HTML 데이터 스크립트 계약
 	SuiteBasicSupply.run(t)   # 기본탄 고정 보급 슬롯·리로드 정량 복구
+	SuiteAmmoHandPrototype.run(t) # 선택형 seeded 공개 패·리로드 보충·LIFO A/B
 	SuiteAmmoMatrix.run(t)    # 실제 몬스터별 공격·연계·연발 처치 매트릭스
 	SuiteAmmoSpecialization.run(t) # 9종 총기×13종 적 시작 탄창 전문축 검증
 	SuiteLIFODepthBaseline.run(t) # v5 순서 민감도 JSON 기준선
