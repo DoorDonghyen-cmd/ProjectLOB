@@ -8,6 +8,7 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-11 | **Godot 시각 전투 개선** | `codex0911-visual-combat` | 거리 전장·탄창·순차 연출, 화면43·연출39·전체UI493·독립100 통과. 브랜치 검증, main 미병합 | [문서](../../../../docs/implementation_plan_visual_combat_2026-09-11.md) |
 | 2026-09-11 | **별도 브랜치 핵심 재설계 계획** | `codex0911-core-redesign` | 2총기/8탄종/7교전, 규칙48·독립37·UI43·전체UI493 통과. 인간 재미 판단 별도 | [문서](../../../../docs/implementation_plan_core_redesign_2026-09-11.md) |
 | 2026-09-11 | **전술 장전 작업대 개선 계획** | `codex0911-tactical-workbench` | UI 변경 위임, 공개 적/순서/후보 통합과 비용·실제 입력 검증 | [implementation_plan.md](../../../../docs/implementation_plan_tactical_workbench_2026-09-11.md) |
 | 2026-09-11 | **아트 이전 전체 개발 실행 계획** | `codex0911-preart` | 기능·기록·A/B·정렬·로어·패키징과 사람 체감/실기 승인 경계 | [implementation_plan.md](../../../../docs/implementation_plan_preart_completion_2026-09-11.md) |

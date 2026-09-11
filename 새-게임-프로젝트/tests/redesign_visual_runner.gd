@@ -15,6 +15,7 @@ func check(ok: bool, message: String) -> void:
 
 func settle() -> void:
 	for i in range(5): await process_frame
+	while is_instance_valid(screen) and screen.busy: await process_frame
 	await RenderingServer.frame_post_draw
 
 func click(key: String) -> void:
@@ -39,6 +40,7 @@ func capture(label: String) -> void:
 func _run() -> void:
 	root.size = Vector2i(1280, 800)
 	screen = load("res://redesign/main.tscn").instantiate()
+	screen.presentation_speed = 0.05
 	screen.save_enabled = false
 	root.add_child(screen)
 	await capture("01_menu")

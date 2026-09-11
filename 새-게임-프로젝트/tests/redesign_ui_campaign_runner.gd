@@ -23,6 +23,8 @@ func check(ok: bool, message: String) -> bool:
 func settle() -> void:
 	for i in range(3):
 		await process_frame
+	while is_instance_valid(screen) and screen.busy:
+		await process_frame
 	await RenderingServer.frame_post_draw
 
 func summary() -> Dictionary:
@@ -59,6 +61,7 @@ func fresh_screen() -> void:
 	if is_instance_valid(screen):
 		screen.free()
 	screen = load("res://redesign/main.tscn").instantiate()
+	screen.presentation_speed = 0.05
 	# This runner requires a QA-only application profile, checked before this call.
 	screen.save_enabled = true
 	root.add_child(screen)
