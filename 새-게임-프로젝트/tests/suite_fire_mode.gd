@@ -368,6 +368,30 @@ static func run(t) -> void:
 	cm9.free()
 
 	# ── UI 등록: 준비실 목록에 제압형이 있는가 ──
+	# 모든 넉백 원천에 같은 버스트 예산 적용: 선제 효과와 파츠 증폭도 예외가 아니다.
+	for capped_gun in [G_SMG, G_SUPPRESSOR]:
+		for use_underflow in [false, true]:
+			var capped_deck: Array[BulletData] = [
+				load("res://resources/bullets/impact.tres"),
+				load("res://resources/bullets/opener.tres"),
+			]
+			var capped_parts: Array[PartData] = []
+			if use_underflow:
+				capped_parts.append(load("res://resources/parts/underflow.tres"))
+			var capped_cm := CombatManagerScript.new()
+			capped_cm.start_encounter(load(capped_gun),
+				[load("res://resources/enemies/neuro_caster.tres")] as Array[EnemyData],
+				capped_deck, capped_parts)
+			capped_cm.confirm_loading(capped_deck)
+			var pushed: Array[int] = []
+			capped_cm.enemy_knocked_back.connect(func(_target, _distance, amount): pushed.append(amount))
+			capped_cm.fire()
+			var total_push := 0
+			for amount in pushed:
+				total_push += amount
+			t.eq(total_push, 2, "선제탄·UNDERFLOW도 연발 전체 넉백 2칸 상한 준수")
+			capped_cm.free()
+
 	# ⚠️ 총기를 만들어도 준비실에 등록하지 않으면 플레이어가 영영 고를 수 없다.
 	t.check(LoadoutOverlay.WEAPON_PROFILES.has("suppressor"), "⭐ 준비실 무기 목록에 제압형 등록됨")
 	if LoadoutOverlay.WEAPON_PROFILES.has("suppressor"):

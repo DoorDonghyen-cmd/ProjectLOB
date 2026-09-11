@@ -46,6 +46,18 @@ static func run(t, tree: SceneTree) -> void:
 		return
 
 	tree.root.add_child(scene)
+	var lore_catalog = preload("res://scripts/core/lore_catalog.gd")
+	t.eq(lore_catalog.FRAGMENTS.size(), 20, "선택형 로어 본문 20개 제공")
+	var archive_text: String = lore_catalog.collected_text([1] as Array[int])
+	t.check(archive_text.contains(lore_catalog.entry(1).text), "수집한 기록 본문 공개")
+	t.check(not archive_text.contains(lore_catalog.entry(2).text), "미수집 기록 본문 숨김")
+	scene._title_overlay._show_loading_guide()
+	t.check(scene._title_overlay._reading_dialog.visible, "타이틀에서 장전 안내 진입")
+	t.check(scene._title_overlay._reading_body.text.contains("마지막에 넣은 탄"), "LIFO 조작 규칙 안내")
+	scene._title_overlay._reading_dialog.hide()
+	scene._title_overlay._show_lore_archive()
+	t.check(scene._title_overlay._reading_dialog.visible, "타이틀에서 수집 기록 진입")
+	scene._title_overlay._reading_dialog.hide()
 
 	# 일반전 증원은 첫 구역 초반/보스를 건드리지 않고 구역별 목표 범위만 올린다.
 	var density_cases := [
@@ -732,6 +744,8 @@ static func run(t, tree: SceneTree) -> void:
 		"section_b", 2,
 		[scene._enemy_tank, scene._enemy_caster, scene._enemy_drone], 0.9)
 	scene._start_combat_phase(four_enemy_data)
+	t.check(scene._combat_overlay._hit_info_label.text.contains("가방에서 탄환"),
+		"처음 장전 중에는 비활성 리로드 대신 가방 사용을 안내")
 	t.eq(scene._cm.enemies.size(), 4, "일반전 최대 4체가 실제 전투 UI에 배치됨")
 	var four_track = scene._combat_overlay._track_control
 	if is_instance_valid(four_track):
@@ -741,8 +755,21 @@ static func run(t, tree: SceneTree) -> void:
 		for formation_enemy in scene._cm.enemies:
 			var offset: Vector2 = four_track._same_distance_formation_offset(formation_enemy)
 			slot_signatures["%.3f/%.1f" % [offset.x, offset.y]] = true
+			t.eq(offset.y, 0.0, "동거리 적도 공통 바닥선 유지")
+			var anchor: TextureRect = four_track.enemy_sprites[formation_enemy]
+			var visual: TextureRect = anchor.get_node("EnemyVisual")
+			t.check(is_equal_approx(visual.position.y + visual.size.y,
+				80.0 - formation_enemy.data.visual_ground_offset_y), "실제 아트 하단이 명시된 지상 높이에 정렬")
+			t.eq(anchor.scale, Vector2.ONE, "적 대기 모션은 HP·배지·선택 영역을 변형하지 않음")
 		t.eq(slot_signatures.size(), 4, "동거리 4체에 서로 다른 편성 슬롯 부여")
 		four_track.update_enemy_position_and_scale()
+		var padded_image := Image.create(16, 24, false, Image.FORMAT_RGBA8)
+		padded_image.fill(Color.TRANSPARENT)
+		padded_image.fill_rect(Rect2i(3, 2, 8, 10), Color.WHITE)
+		var padded_texture := ImageTexture.create_from_image(padded_image)
+		var display_texture: AtlasTexture = four_track._grounded_texture(padded_texture)
+		t.eq(display_texture.region, Rect2(3, 2, 8, 10), "투명 여백과 무관하게 불투명 표시 영역 정규화")
+		t.eq(padded_texture.get_size(), Vector2(16, 24), "원본 아트는 변경하지 않음")
 
 	var prev_credits: int = RunManager.meta_credits
 	var prev_lore: Array[int] = RunManager.meta_lore_fragments.duplicate()

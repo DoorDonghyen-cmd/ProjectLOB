@@ -1388,7 +1388,10 @@ func _update_hit_info(enemy: EnemyInstance) -> void:
 	# 유효 스탯은 CombatManager가 정본(버프 반영). UI는 비교만 한다.
 	var preview: Dictionary = combat_manager.preview_next_shot() if combat_manager else {}
 	if preview.is_empty():
-		_hit_info_label.text = "[color=#ff4242]약실 비어있음 - 리로드 필요[/color]"
+		if combat_manager and combat_manager.state == CombatManager.State.LOADING:
+			_hit_info_label.text = "[color=#37e0ac]가방에서 탄환을 골라 장전하세요[/color]"
+		else:
+			_hit_info_label.text = "[color=#ff4242]약실 비어있음 - 리로드 필요[/color]"
 		return
 
 	var next_bullet: BulletData = preview.bullet
@@ -2977,6 +2980,7 @@ func _on_loading_phase_started() -> void:
 		tex.region = Rect2(0, 0, 278, 278)
 	_is_bag_expanded = false
 	_update_phase_state()
+	_update_hit_info(combat_manager.enemy)
 
 func _on_combat_log(msg: String) -> void:
 	add_combat_log(msg)

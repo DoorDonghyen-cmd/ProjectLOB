@@ -25,7 +25,12 @@
 | #016 | 무작위 보상 풀이 보류·고유 항목을 우회하고 암시장 결제가 소실될 수 있음 | 높음 | 🔍 Verified | `codex0805-campaign-integrity` | 2026-08-05 | 2026-08-05 | [리포트](bug_016_random_reward_pool_bypasses_rules.md) |
 | #017 | 제압형 해금 정산에서 무기명이 알 수 없음으로 표시됨 | 낮음 | 🔍 Verified | `codex0809-scan-ammo-guidance` | 2026-08-05 | 2026-08-09 | [리포트](bug_017_suppressor_unlock_unknown_name.md) |
 | #018 | 모바일에서 미지 노드 스캔 힌트를 확인할 수 없음 | 높음 | 🔍 Verified | `codex0809-scan-ammo-guidance` | 2026-08-05 | 2026-08-09 | [리포트](bug_018_mobile_scan_hint_hover_only.md) |
-| #019 | 4체 편성 몬스터의 시각적 바닥선 불일치 | 보통 | 🟢 Open | `codex0815-enemy-baseline` | 2026-08-15 | - | [리포트](bug_019_enemy_formation_baseline_misalignment.md) |
+| #019 | 4체 편성 몬스터의 시각적 바닥선 불일치 | 보통 | 🔍 Verified | `codex0911-preart` | 2026-08-15 | 2026-09-11 | [리포트](bug_019_enemy_formation_baseline_misalignment.md) |
+| #020 | 연발 넉백 증폭·선제 효과의 예산 우회 | 높음 | 🔍 Verified | `codex0911-preart` | 2026-09-11 | 2026-09-11 | [리포트](bug_020_burst_knockback_budget_bypass.md) |
+| #021 | 최종 관문 뒤 36층으로 메타 보상 과다 정산 | 높음 | 🔍 Verified | `codex0911-preart` | 2026-09-11 | 2026-09-11 | [리포트](bug_021_summit_floor_overpayment.md) |
+| #022 | 암시장 업그레이드 설명과 분해 환급 효과 불일치 | 낮음 | 🔍 Verified | `codex0911-preart` | 2026-09-11 | 2026-09-11 | [리포트](bug_022_meta_refund_label.md) |
+| #023 | 첫 장전 화면에서 사용할 수 없는 리로드 안내 | 보통 | 🔍 Verified | `codex0911-preart` | 2026-09-11 | 2026-09-11 | [리포트](bug_023_initial_loading_hint.md) |
+| #024 | 경험 QA 행동 결과 누락 및 구매 방문 오분류 | 보통 | 🔍 Verified | `codex0911-preart` | 2026-09-11 | 2026-09-11 | [리포트](bug_024_experience_outcome_missing.md) |
 
 ---
 

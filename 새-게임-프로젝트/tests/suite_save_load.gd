@@ -93,5 +93,12 @@ static func run(t) -> void:
 	t.eq(int(rm.run_stats.total_kills), 0, "현재 런 통계 초기화")
 
 	# ── 정리 ──
+	var old_override := RunManager.save_path_override
+	RunManager.save_path_override = SL_PATH
+	t.check(rm.collect_lore_fragment(4), "새 로어 수집 성공")
+	RunManager.meta_lore_fragments.clear()
+	RunManager.load_meta(SL_PATH)
+	t.eq(RunManager.meta_lore_fragments, [4], "런 종료 전에도 수집 기록 영구 저장")
+	RunManager.save_path_override = old_override
 	DirAccess.remove_absolute(SL_PATH)
 	DirAccess.remove_absolute(RESET_PATH)

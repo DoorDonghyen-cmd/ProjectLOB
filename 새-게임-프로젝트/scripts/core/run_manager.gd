@@ -478,7 +478,9 @@ func total_floors_climbed() -> int:
 		if sec == current_section:
 			break
 		total += int(MapGenerator.section_info(sec).floors)
-	return total + current_floor
+	# 최종 관문 처리에서는 다음 층(9)으로 먼저 증가한 뒤 종료한다.
+	# 정산·진척도는 실제 건물 길이를 넘을 수 없다.
+	return mini(total + current_floor, total_run_length())
 
 
 ## 이번 런의 총 길이. 해금 상태와 무관하게 5계층·35층 전체가 한 번의 상승이다.
@@ -1030,6 +1032,9 @@ func collect_lore_fragment(fragment_id: int) -> bool:
 	if not meta_lore_fragments.has(fragment_id):
 		meta_lore_fragments.append(fragment_id)
 		meta_lore_fragments.sort()
+		var save_error := save_meta()
+		if save_error != OK:
+			push_warning("수집 기록 저장 실패: %d" % save_error)
 		return true # 신규 수집 성공
 	return false # 이미 수집됨
 

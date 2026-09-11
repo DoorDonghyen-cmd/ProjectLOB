@@ -112,6 +112,9 @@ static func run(t) -> void:
 	rm5.enter_section("section_e")
 	rm5.current_floor = int(MapGenerator.section_info("section_e").floors)
 	t.eq(rm5.total_floors_climbed(), 35, "정점 최상층 = 누적 35층 (런 완주)")
+	rm5.current_floor += 1
+	t.eq(rm5.total_floors_climbed(), 35, "최종 관문 이후 다음 층으로 증가해도 완주 정산은 35층")
+	rm5.current_floor -= 1
 
 	# ── 교전 거리 보정은 런 진척도를 따라 단조 감소해야 한다 ──
 	# 회귀 배경: 보정이 계층 내 층 번호 기준이라 계층마다 리셋됐다.

@@ -51,6 +51,7 @@ static func resource_snapshot(resource: Resource) -> Dictionary:
 	if resource is BulletData:
 		result["role"] = resource.role
 		result["specialty"] = resource.specialty
+		result["is_basic"] = resource.is_basic
 	return result
 
 

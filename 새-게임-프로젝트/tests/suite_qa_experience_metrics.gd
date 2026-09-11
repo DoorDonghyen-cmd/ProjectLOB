@@ -31,6 +31,13 @@ static func run(t) -> void:
 		"공개 상태와 선택 이유 기록")
 	t.check(not recorded.actions[0].has("oracle_state"), "상태 bundle에서 공개 player_view만 기록")
 	t.eq(int(recorded.actions[0].player_view.enemies[0].distance), 5, "공개 최소 거리 증거 보존")
+	t.eq(ReportScript.record_outcome(recorded, 0, state_bundle), ERR_INVALID_DATA,
+		"행동 전 상태를 행동 결과로 기록하지 않음")
+	state_bundle.step = 100
+	state_bundle.player_view.enemies[0].distance = 4
+	t.eq(ReportScript.record_outcome(recorded, 0, state_bundle), OK, "다음 프레임 공개 결과를 행동에 연결")
+	t.eq(recorded.actions[0].outcome.player_view.enemies[0].distance, 4, "행동 전 5m와 결과 4m 증거 구분")
+	t.check(not recorded.actions[0].outcome.player_view.has("oracle_state"), "행동 결과에도 오라클 제외")
 
 	var aggressive_metrics := MetricsScript.aggregate(reports[1])
 	t.check(bool(aggressive_metrics.valid), "공격형 행동 지표 집계")

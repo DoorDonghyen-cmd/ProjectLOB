@@ -72,6 +72,24 @@ static func record_action(
 	return OK
 
 
+## 행동 다음 프레임의 공개 상태를 해당 행동에 연결한다. 오라클은 복사하지 않는다.
+static func record_outcome(report: Dictionary, index: int, state_bundle: Dictionary) -> Error:
+	var actions: Array = report.get("actions", [])
+	if index < 0 or index >= actions.size():
+		return ERR_INVALID_PARAMETER
+	if int(state_bundle.get("step", -1)) <= int(actions[index].get("step", -1)):
+		return ERR_INVALID_DATA
+	var public_view: Dictionary = state_bundle.get("player_view", state_bundle).duplicate(true)
+	public_view.erase("oracle_state")
+	actions[index]["outcome"] = {
+		"step": int(state_bundle.get("step", -1)),
+		"screen": str(state_bundle.get("screen", "unknown")),
+		"observation_timing": "next_frame_public_state",
+		"player_view": public_view,
+	}
+	return OK
+
+
 static func add_observation(
 	report: Dictionary,
 	signal_key: String,

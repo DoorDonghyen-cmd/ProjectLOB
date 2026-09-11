@@ -25,10 +25,12 @@ var _completed_encounters := 0
 var _encounter_active := false
 var _reward_seen := false
 var _shop_rerolled := false
+var _shop_purchased := false
 var _used_choices: Dictionary = {}
 var _issue_keys: Dictionary = {}
 var _abandonment_events: Array = []
 var _finished := false
+var _pending_outcome_index := -1
 
 
 func _initialize() -> void:
@@ -79,8 +81,14 @@ func _process(_delta: float) -> bool:
 		return _abort("action_limit", "최대 행동 수 %d에 도달" % _max_actions)
 
 	var state: Dictionary = _bridge.state_bundle("profile_%s" % _profile)
+	if _pending_outcome_index >= 0:
+		ReportScript.record_outcome(_report, _pending_outcome_index, state)
+		_pending_outcome_index = -1
 	var screen := str(state.get("screen", "unknown"))
 	if screen != _last_screen:
+		if screen == "shop":
+			_shop_rerolled = false
+			_shop_purchased = false
 		_bridge.checkpoint("%03d_%s" % [_bridge.step, screen], _capture_enabled())
 		_last_screen = screen
 		_reward_seen = false if screen != "reward" else _reward_seen
@@ -259,11 +267,12 @@ func _shop_action(state: Dictionary, legal: Array) -> Dictionary:
 		if _profile == "conservative": index = mini(1, slots.size() - 1)
 		elif _profile == "experimental": index = slots.size() - 1
 		return {"action": "buy", "offer_slot": int(slots[index])}
-	_abandonment_events.append({
-		"step": int(state.get("step", -1)), "screen": "shop", "abandonment_type": "shop_exit_without_purchase",
-		"visible_trigger": "구매 가능한 제안 없음", "chosen_fallback": "use_maintenance",
-		"reason": "현재 공개 가격과 보유 크레딧에서 구매 행동이 제공되지 않음",
-	})
+	if not _shop_purchased:
+		_abandonment_events.append({
+			"step": int(state.get("step", -1)), "screen": "shop", "abandonment_type": "shop_exit_without_purchase",
+			"visible_trigger": "구매 가능한 제안 없음", "chosen_fallback": "use_maintenance",
+			"reason": "현재 공개 가격과 보유 크레딧에서 구매 행동이 제공되지 않음",
+		})
 	return _simple_action(legal, "use_maintenance")
 
 
@@ -284,6 +293,10 @@ func _submit(state: Dictionary, action: Dictionary) -> bool:
 		tags.append("planned_sequence")
 	ReportScript.record_action(
 		_report, state, action, result, expected, reason, alternatives, category, choice_id, tags)
+	if bool(result.get("accepted", false)):
+		_pending_outcome_index = _report.get("actions", []).size() - 1
+		if str(action.get("action", "")) == "buy":
+			_shop_purchased = true
 	if not bool(result.get("accepted", false)):
 		var artifact := "%s/ui/checkpoint_%04d_action_rejected.json" % [_output_directory, int(state.get("step", 0))]
 		ReportScript.add_issue_candidate(
@@ -323,6 +336,9 @@ func _finish(result: String, code: int) -> bool:
 	ReportScript.add_observation(_report, "physical_feel_requires_human", "feedback",
 		"타격감·사운드·애니메이션 속도와 장시간 피로는 자동 확정하지 않음", [], "human_confirmation")
 	ReportScript.finish(_report, result, _completed_encounters, _abandonment_events)
+	if _bridge != null:
+		var final_state: Dictionary = _bridge.state_bundle("session_end")
+		_report.session_summary["final_public_state"] = final_state.get("player_view", final_state)
 	var save_error := ReportScript.save(_report, "%s/%s.json" % [_report_directory.trim_suffix("/"), _profile])
 	if save_error != OK:
 		code = 3

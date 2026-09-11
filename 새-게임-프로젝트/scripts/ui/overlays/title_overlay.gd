@@ -7,6 +7,7 @@ extends PanelContainer
 
 const DataLoader = preload("res://scripts/core/data_loader.gd")
 const PlaytestLoggerScript = preload("res://scripts/core/playtest_logger.gd")
+const LoreCatalog := preload("res://scripts/core/lore_catalog.gd")
 
 var parent_scene: Control
 var run_manager: RunManager
@@ -23,6 +24,8 @@ var _reset_confirmation: ConfirmationDialog
 var _reset_result_dialog: AcceptDialog
 var _weapon_unlock_result_dialog: AcceptDialog
 var _ascension_unlock_result_dialog: AcceptDialog
+var _reading_dialog: AcceptDialog
+var _reading_body: RichTextLabel
 
 
 func initialize(p_scene: Control, rm: RunManager) -> void:
@@ -71,6 +74,11 @@ func _build_ui() -> void:
 	_lore_fragment_label = parent_scene.make_label("기밀 정보 복원율: 0 / 20", 14, parent_scene.C_SUCCESS)
 	_lore_fragment_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left_vbox.add_child(_lore_fragment_label)
+	var reading_buttons := HBoxContainer.new()
+	reading_buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	left_vbox.add_child(reading_buttons)
+	reading_buttons.add_child(parent_scene.make_button("장전 안내", _show_loading_guide, parent_scene.C_PANEL))
+	reading_buttons.add_child(parent_scene.make_button("수집 기록", _show_lore_archive, parent_scene.C_PANEL))
 
 	# 빈 스페이스를 두어 시작 버튼이 하단에 예쁘게 깔리도록 함
 	var spacer := Control.new()
@@ -149,10 +157,10 @@ func _refresh_shop_ui() -> void:
 	_meta_hp_armor_btn.disabled = RunManager.meta_hp_armor_lvl >= 2 or RunManager.meta_credits < 50
 	
 	if RunManager.meta_discount_unlocked:
-		_meta_discount_btn.text = "암시장 커넥션 (폐기 무료화) [해금 완료]"
+		_meta_discount_btn.text = "암시장 커넥션 (분해 환급 +50%) [해금 완료]"
 		_meta_discount_btn.disabled = true
 	else:
-		_meta_discount_btn.text = "암시장 커넥션 해금 (30 Cr)"
+		_meta_discount_btn.text = "암시장 커넥션 (분해 환급 +50%) 해금 (30 Cr)"
 		_meta_discount_btn.disabled = RunManager.meta_credits < 30
 
 	var vault_cost := 0
@@ -195,6 +203,39 @@ func _on_upgrade_vault_pressed() -> void:
 
 func _on_start_run_pressed() -> void:
 	parent_scene.show_section_selector()
+
+
+func _show_reading(title_text: String, content: String) -> void:
+	if not is_instance_valid(_reading_dialog):
+		_reading_dialog = AcceptDialog.new()
+		_reading_dialog.ok_button_text = "닫기"
+		add_child(_reading_dialog)
+		_reading_body = RichTextLabel.new()
+		_reading_body.bbcode_enabled = true
+		_reading_body.add_theme_font_size_override("normal_font_size", 18)
+		_reading_body.add_theme_font_size_override("bold_font_size", 18)
+		_reading_body.custom_minimum_size = Vector2(280, 180)
+		_reading_dialog.add_child(_reading_body)
+	_reading_dialog.title = title_text
+	_reading_body.text = content
+	_reading_body.scroll_to_line(0)
+	var viewport_size := get_viewport_rect().size
+	_reading_dialog.popup_centered(Vector2i(minf(680, viewport_size.x - 32), minf(420, viewport_size.y - 32)))
+
+
+func _show_loading_guide() -> void:
+	_show_reading("장전 순서가 사격 순서가 된다",
+		"[b]1. 적을 읽는다[/b]\n명중(ACC)이 회피(EVA) 이상, 관통(PEN)이 방어(DEF) 이상이면 피해를 준다. 거리와 다음 태세도 확인한다.\n\n" +
+		"[b]2. 마지막에 넣은 탄이 먼저 나간다[/b]\n기본탄을 먼저 넣고 장약 증폭탄을 마지막에 넣으면 증폭탄 → 기본탄 순서로 발사된다. 증폭탄이 유효하게 적중하면 다음 1발의 피해가 +2다.\n\n" +
+		"[b]3. 예고를 확인하고 격발한다[/b]\n명중·관통·피해는 확률로 정하지 않는다. 명중 보정, 장갑 파훼, 피해 증폭, 거리 제어 중 지금 필요한 역할을 고른다. 연발 총기는 남은 탄을 한 번에 사용한다.\n\n" +
+		"[b]4. 거리가 행동 예산이다[/b]\n장전 중에는 탄을 자유롭게 되돌릴 수 있다. 교전이 시작되면 사격과 빼내기, 리로드 동안 적이 접근한다. 교전 중 빼낸 전술탄은 소실되므로 다음 탄의 이득과 거리를 함께 비교한다. 리로드 턴은 총기마다 다르다.\n\n" +
+		"[b]5. 기본탄은 리로드하면 정량 보급된다[/b]\n기본탄도 탄창 자리를 쓴다. 전술탄의 유효 사용·소실 여부를 읽고 다음 전투를 준비한다.\n\n" +
+		"[b]6. 한 번의 상승은 35층이다[/b]\n탄환 보상과 파츠를 골라 운용을 바꾼다. 환기구는 다음 교전 시작 거리를 2m 줄인다. 모은 기록은 이 화면에서 선택적으로 읽을 수 있다.")
+
+
+func _show_lore_archive() -> void:
+	_show_reading("수집 기록 · %d / 20" % RunManager.meta_lore_fragments.size(),
+		LoreCatalog.collected_text(RunManager.meta_lore_fragments))
 
 
 func _on_dev_test_pressed() -> void:
@@ -250,6 +291,15 @@ func _build_dev_test_panel() -> void:
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(grid)
+	for reading in [["장전 안내 QA", _show_loading_guide], ["수집 기록 QA", _show_lore_archive]]:
+		var reading_callback: Callable = reading[1]
+		var reading_button: Button = parent_scene.make_button(reading[0], func():
+			_dev_test_panel.visible = false
+			reading_callback.call()
+		, parent_scene.C_ACCENT)
+		reading_button.custom_minimum_size = Vector2(0, 36)
+		reading_button.add_theme_font_size_override("font_size", 11)
+		grid.add_child(reading_button)
 	
 	# 1. 무기고 3탭 단말기 테스트 숏컷 버튼
 	var btn_parts = parent_scene.make_button("🛠️ 무기고 3탭 단말기 테스트", func():

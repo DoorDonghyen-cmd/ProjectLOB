@@ -11,6 +11,10 @@ extends Resource
 @export_multiline var description: String = ""
 @export var icon: Texture2D
 @export var sprite_sheet: Texture2D
+## 전투 표시 전용. 실제 불투명 하단을 기준으로 높이를 맞춘다 (전투 거리와 무관).
+@export_range(24, 80) var visual_height: float = 64.0
+## 부유형 아트의 의도적인 지상 높이. 투명 여백은 자동 제외된다.
+@export_range(0, 24) var visual_ground_offset_y: float = 0.0
 ## 아키타입 — 속도↔방어 역상관 축 위의 위치
 @export var archetype: Enums.EnemyArchetype = Enums.EnemyArchetype.RUSHER
 ## 보스 여부 — true면 보스 전용 로직(페이즈 전환, 태세 주기 등) 활성화

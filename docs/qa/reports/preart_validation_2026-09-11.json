@@ -1,0 +1,30 @@
+﻿{
+    "human_acceptance":  "pending",
+    "campaign":  {
+                     "combat":  "explicit victory fixture",
+                     "nodes":  35,
+                     "checks":  24,
+                     "failures":  0
+                 },
+    "windows_build":  {
+                          "sha256":  "21EDBB40E1CD85E13B7D79B738890EF28946F11ED0B38DA3325FFA451155F837",
+                          "readiness":  "functional review; human gameplay acceptance pending",
+                          "built_at":  "2026-09-11T05:47:03.1873248Z",
+                          "smoke":  "headless startup passed",
+                          "includes_working_tree":  true,
+                          "source_commit":  "b76484966c2b7035571af27dde86e14aa724159c"
+                      },
+    "ammo_compare":  {
+                         "policy":  "fixed public heuristic",
+                         "fights":  72,
+                         "decision":  "HUMAN_PLAY_REQUIRED",
+                         "pairs":  36
+                     },
+    "regression":  {
+                       "exit_code":  0,
+                       "failed":  0,
+                       "passed":  3690,
+                       "schema_version":  1,
+                       "warnings":  3
+                   }
+}

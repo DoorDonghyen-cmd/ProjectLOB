@@ -181,6 +181,8 @@ var telemetry_reload_turns: int = 0
 var telemetry_ammo_hand_initial: Array[Dictionary] = []
 var telemetry_ammo_hand_initial_preview: Array[Dictionary] = []
 var telemetry_ammo_hand_refills: Array[Dictionary] = []
+var telemetry_loadouts: Array[Dictionary] = []
+var telemetry_initial_deck: Array[Dictionary] = []
 var _telemetry_pending_family_events: Array[Dictionary] = []
 
 
@@ -312,6 +314,7 @@ func start_encounter(
 	supply_bullet: BulletData = null
 ) -> void:
 	_reset_telemetry()
+	telemetry_initial_deck = _telemetry_bullet_snapshots(deck_bullets)
 	gun = gun_data
 	enemies.clear()
 	var offset := 0
@@ -429,6 +432,8 @@ func _enter_loading_phase() -> void:
 func confirm_loading(bullets: Array[BulletData]) -> void:
 	if state != State.LOADING:
 		return
+	var offered := _telemetry_bullet_snapshots(available_tactical_bullets())
+	var supply_before := basic_supply_current
 
 	# UI 상태와 별개로 실제 보유량을 다시 검증한다. 기본탄은 고정 보급 잔량에서,
 	# 전술탄은 draw_pile에서 꺼내므로 중복 장전이 생기지 않는다.
@@ -452,6 +457,19 @@ func confirm_loading(bullets: Array[BulletData]) -> void:
 			draw_pile.remove_at(available_idx)
 
 	magazine.load_bullets(accepted)
+	if not accepted.is_empty():
+		var firing_order := accepted.duplicate()
+		firing_order.reverse()
+		telemetry_loadouts.append({
+			"index": telemetry_loadouts.size(),
+			"after_shot": telemetry_shots.size(),
+			"reload_index": telemetry_reload_count,
+			"available_tactical": offered,
+			"basic_supply": supply_before,
+			"load_order": _telemetry_bullet_snapshots(accepted),
+			"fire_order": _telemetry_bullet_snapshots(firing_order),
+			"enemies": _telemetry_enemy_snapshots(),
+		})
 	_emit_ammo_inventory_state()
 	basic_supply_updated.emit(basic_supply_bullet, basic_supply_current, basic_supply_capacity)
 	
@@ -1059,12 +1077,6 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 		calc_bullet_kb.penetration += part_pen_bonus
 		
 		var kb := DamageCalculator.calculate_knockback(calc_bullet_kb, gun)
-		if _is_full_auto_burst and kb > 0:
-			var requested_kb := kb
-			kb = mini(kb, _burst_knockback_budget)
-			_burst_knockback_budget = maxi(_burst_knockback_budget - kb, 0)
-			if kb < requested_kb:
-				combat_log.emit("   ↳ ⚠ [연발 제어 상한] 버스트 총 넉백 2칸 초과분 억제")
 
 		# 샷건 자체 넉백은 초근접 보너스를 스스로 끊지 않도록 <=2m에서 제외하고,
 		# 원거리에서는 적을 계속 밀어 접근을 봉쇄하지 않도록 >3m에서 제외한다.
@@ -1081,7 +1093,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 			combat_log.emit("   ↳ 💥 [언더플로우] 피날레 넉백 2배 증폭 적용!")
 			
 		if kb > 0:
-			var eff_kb := target.apply_knockback(kb)
+			var eff_kb := _apply_bounded_knockback(target, kb)
 			if eff_kb > 0:
 				enemy_knocked_back.emit(target, target.current_distance, eff_kb)
 				combat_log.emit("   ↳ 넉백 %d칸 → 거리 %d" % [eff_kb, target.current_distance])
@@ -1094,7 +1106,7 @@ func _fire_internal(target: EnemyInstance, advance_enemies: bool = true) -> void
 				for splash_target in scatter_targets:
 					if splash_target == null or splash_target.is_dead():
 						continue
-					var eff_splash := splash_target.apply_knockback(splash_kb)
+					var eff_splash := _apply_bounded_knockback(splash_target, splash_kb)
 					if eff_splash > 0:
 						enemy_knocked_back.emit(splash_target, splash_target.current_distance, eff_splash)
 						combat_log.emit("     ↳ ☄ [확산 격발] [%s]에게 넉백 %d 전파" % [
@@ -1831,7 +1843,7 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 			if is_first:
 				target.apply_armor_shred(1)
 				armor_shredded.emit(target, target.current_def, 1)
-				var eff_kb := target.apply_knockback(bullet.effect_value)
+				var eff_kb := _apply_bounded_knockback(target, bullet.effect_value)
 				if eff_kb > 0:
 					enemy_knocked_back.emit(target, target.current_distance, eff_kb)
 					combat_log.emit("   ↳ 선제 사격! 추가 넉백 +%d 및 장갑 파쇄 -1 적용 (실제 밀려남: %d칸)" % [bullet.effect_value, eff_kb])
@@ -1845,6 +1857,16 @@ func _apply_post_hit_effects(bullet: BulletData, target: EnemyInstance, is_first
 
 ## 플레이테스트 보고서는 화면용 BBCode 문자열을 보존하되,
 ## 탄·파츠·탄종 효과는 별도 필드로 저장해 자동 비교가 가능하게 한다.
+func _apply_bounded_knockback(target: EnemyInstance, requested: int) -> int:
+	var allowed := maxi(requested, 0)
+	if _is_full_auto_burst:
+		allowed = mini(allowed, _burst_knockback_budget)
+		_burst_knockback_budget -= allowed
+		if allowed < requested:
+			combat_log.emit("   ↳ ⚠ [연발 제어 상한] 버스트 총 넉백 2칸 초과분 억제")
+	return target.apply_knockback(allowed) if allowed > 0 else 0
+
+
 func _reset_telemetry() -> void:
 	telemetry_started_at = Time.get_datetime_string_from_system(false, true)
 	telemetry_initial_enemies.clear()
@@ -1860,6 +1882,8 @@ func _reset_telemetry() -> void:
 	telemetry_ammo_hand_initial.clear()
 	telemetry_ammo_hand_initial_preview.clear()
 	telemetry_ammo_hand_refills.clear()
+	telemetry_loadouts.clear()
+	telemetry_initial_deck.clear()
 	_telemetry_pending_family_events.clear()
 
 
@@ -2042,6 +2066,14 @@ func build_playtest_report() -> Dictionary:
 		"gun": PlaytestLoggerScript.resource_snapshot(gun),
 		"basic_ammo": PlaytestLoggerScript.resource_snapshot(basic_supply_bullet),
 		"equipped_parts": part_snapshots,
+		"comparison": {
+			"seed": RandomStreamsScript.gameplay_seed(),
+			"scenario": telemetry_initial_enemies.duplicate(true),
+			"gun_id": PlaytestLoggerScript.resource_id(gun),
+			"parts": part_snapshots.duplicate(true),
+			"deck": telemetry_initial_deck.duplicate(true),
+			"policy": "interactive_or_qa",
+		},
 		"initial_enemies": telemetry_initial_enemies.duplicate(true),
 		"final_enemies": _telemetry_enemy_snapshots(),
 		"summary": {
@@ -2064,6 +2096,7 @@ func build_playtest_report() -> Dictionary:
 			"refills": telemetry_ammo_hand_refills.duplicate(true),
 		},
 		"shots": telemetry_shots.duplicate(true),
+		"loadouts": telemetry_loadouts.duplicate(true),
 		"family_events": telemetry_family_events.duplicate(true),
 		"part_events": telemetry_part_events.duplicate(true),
 		"combat_log": telemetry_combat_log.duplicate(),

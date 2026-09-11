@@ -91,6 +91,10 @@ static func run(t) -> void:
 	var load_order: Array[BulletData] = [lower, upper]
 	lifo.confirm_loading(load_order)
 	t.check(lifo.magazine.peek() == upper, "공개 패에서도 마지막에 넣은 탄이 먼저 발사되는 LIFO 유지")
+	var loadouts: Array = lifo.build_playtest_report().get("loadouts", [])
+	t.eq(loadouts.size(), 1, "발사 전에도 실제 장전 결정 1회 기록")
+	t.eq(loadouts[0].available_tactical.size(), 7, "장전 직전 공개 후보 기록")
+	t.eq(loadouts[0].fire_order[0].id, PlaytestLoggerScript.resource_id(upper), "장전과 격발 순서를 별도 기록")
 	lifo.free()
 
 	# 한 발을 소비한 뒤 리로드하면 기존 6발은 유지되고 예고 첫 탄만 보충된다.

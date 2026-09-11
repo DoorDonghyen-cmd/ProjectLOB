@@ -14,6 +14,7 @@ var top_log_toast: Label
 
 var enemy_sprites: Dictionary = {}
 var global_max_dist: float = 24.0
+var _display_textures: Dictionary = {}
 
 func initialize(p_scene: Control, cm: CombatManager, dist_lbl: Label, toast_lbl: Label) -> void:
 	parent_scene = p_scene
@@ -32,15 +33,16 @@ func setup_encounter(enemy_list: Array) -> void:
 	# 수평 트랙 상에 적 리스트 생성 및 정렬
 	for enemy in enemy_list:
 		var es := TextureRect.new()
+		var source_texture: Texture2D
 		if enemy.data and enemy.data.icon:
-			es.texture = enemy.data.icon
+			source_texture = enemy.data.icon
 		else:
-			es.texture = load("res://assets/sprites/zombie_sheet.png")
-			if es.texture:
+			source_texture = load("res://assets/sprites/zombie_sheet.png")
+			if source_texture:
 				var atlas := AtlasTexture.new()
-				atlas.atlas = es.texture
+				atlas.atlas = source_texture
 				atlas.region = Rect2(0, 0, 380, 380)
-				es.texture = atlas
+				source_texture = atlas
 				
 		es.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		es.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -51,22 +53,37 @@ func setup_encounter(enemy_list: Array) -> void:
 		
 		add_child(es)
 		enemy_sprites[enemy] = es
+		# 선택 영역과 정보 배지는 고정하고, 아트만 하단 기준으로 배치한다.
+		var visual := TextureRect.new()
+		visual.name = "EnemyVisual"
+		visual.texture = _grounded_texture(source_texture)
+		visual.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		visual.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		visual.stretch_mode = TextureRect.STRETCH_SCALE
+		visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var height: float = enemy.data.visual_height
+		var width := height
+		if visual.texture != null and visual.texture.get_height() > 0:
+			width = height * float(visual.texture.get_width()) / visual.texture.get_height()
+			if width > 76.0:
+				height *= 76.0 / width
+				width = 76.0
+		visual.size = Vector2(width, height)
+		visual.position = Vector2(40.0 - width * 0.5,
+			80.0 - height - enemy.data.visual_ground_offset_y)
+		visual.pivot_offset = Vector2(width * 0.5, height)
+		es.add_child(visual)
 		
 		_build_enemy_badge(es, enemy)
 		
 		# [Phase 4] 적 대기 숨쉬기/흐느적거림 무한 트윈 루프 적용
 		(func(sprite: TextureRect):
 			var delay_offset := RandomStreamsScript.fx_float() * 0.5
-			# 1. 좌우 흔들림 트윈 (회전)
-			var rot_tween := sprite.create_tween().set_loops()
-			rot_tween.tween_property(sprite, "rotation_degrees", 2.2, 0.8 + delay_offset).set_trans(Tween.TRANS_SINE)
-			rot_tween.tween_property(sprite, "rotation_degrees", -2.2, 0.8 + delay_offset).set_trans(Tween.TRANS_SINE)
-			
-			# 2. 상하 숨쉬기 트윈 (스케일)
+			# 발끝 피벗을 고정한 숨쉬기. 배지·HP·선택 영역에는 적용하지 않는다.
 			var scale_tween := sprite.create_tween().set_loops()
-			scale_tween.tween_property(sprite, "scale", Vector2(0.84, 0.76), 0.7 + delay_offset).set_trans(Tween.TRANS_SINE)
-			scale_tween.tween_property(sprite, "scale", Vector2(0.76, 0.84), 0.7 + delay_offset).set_trans(Tween.TRANS_SINE)
-		).call(es)
+			scale_tween.tween_property(sprite, "scale", Vector2(1.02, 0.98), 0.7 + delay_offset).set_trans(Tween.TRANS_SINE)
+			scale_tween.tween_property(sprite, "scale", Vector2(0.98, 1.02), 0.7 + delay_offset).set_trans(Tween.TRANS_SINE)
+		).call(visual)
 		
 	global_max_dist = 24.0
 	var max_found := 0
@@ -87,6 +104,28 @@ func connect_enemy_gui_input(callback: Callable) -> void:
 		var es = enemy_sprites[enemy]
 		if is_instance_valid(es):
 			es.gui_input.connect(func(event): callback.call(event, enemy))
+
+
+## 원본 PNG를 수정하지 않고 표시 영역만 투명 여백에서 분리한다.
+## 아트 교체 시에도 같은 하단 기준을 적용하며 이미지 분석은 텍스처당 한 번이다.
+func _grounded_texture(source: Texture2D) -> Texture2D:
+	if source == null:
+		return null
+	if _display_textures.has(source):
+		return _display_textures[source]
+	var source_image := source.get_image()
+	if source_image == null:
+		return source
+	if source_image.is_compressed() and source_image.decompress() != OK:
+		return source
+	var used := source_image.get_used_rect()
+	if not used.has_area():
+		return source
+	var display := AtlasTexture.new()
+	display.atlas = source
+	display.region = Rect2(used)
+	_display_textures[source] = display
+	return display
 
 ## 적 표시 배치 (2026-07-25 개편):
 ##   - 머리 위(y ≈ -18): **HP 프로그레스 바** — 남은 체력을 한눈에
@@ -392,12 +431,6 @@ func update_enemy_position_and_scale() -> void:
 			move_tween.tween_property(es, "anchor_right", anchor_ratio, 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 			es.set_meta("move_tween", move_tween)
 			
-			# 전진하는 동안 뒤뚱거림(회전 흔들림) 트윈 병행
-			var side := 1.0 if RandomStreamsScript.fx_float() > 0.5 else -1.0
-			var rot_tween = es.create_tween()
-			rot_tween.tween_property(es, "rotation_degrees", 8.0 * side, 0.12).set_trans(Tween.TRANS_SINE)
-			rot_tween.tween_property(es, "rotation_degrees", -6.0 * side, 0.12).set_trans(Tween.TRANS_SINE)
-			rot_tween.tween_property(es, "rotation_degrees", 0.0, 0.11).set_trans(Tween.TRANS_SINE)
 		else:
 			# 즉시 반영 (첫 셋업 시 등)
 			es.anchor_left = anchor_ratio
@@ -417,8 +450,7 @@ func update_enemy_position_and_scale() -> void:
 		if ring:
 			ring.visible = (e == nearest)
 
-## 같은 거리에 선 적들이 완전히 겹치지 않도록 작은 대각 편성 슬롯을 부여한다.
-## x축은 거리 정보가 흐려지지 않는 범위로 제한하고 y축은 선택 영역을 분리한다.
+## 동거리 적은 수평 슬롯으로 구분한다. 그룹 전체를 화면 안에 보존한다.
 func _same_distance_formation_offset(enemy: EnemyInstance) -> Vector2:
 	if combat_manager == null:
 		return Vector2.ZERO
@@ -437,7 +469,11 @@ func _same_distance_formation_offset(enemy: EnemyInstance) -> Vector2:
 	if slot < 0:
 		return Vector2.ZERO
 	var centered_slot := float(slot) - float(peers.size() - 1) * 0.5
-	return Vector2(centered_slot * 0.04, centered_slot * 26.0)
+	var step := minf(80.0 / maxf(size.x, 320.0), 0.8 / float(peers.size()))
+	var half_span := float(peers.size() - 1) * step * 0.5
+	var base := 0.16 + float(enemy.current_distance) / global_max_dist * 0.72
+	var center := clampf(base, 0.12 + half_span, 0.92 - half_span)
+	return Vector2(center - base + centered_slot * step, 0.0)
 
 
 func update_distance_display(enemy: EnemyInstance) -> void:
