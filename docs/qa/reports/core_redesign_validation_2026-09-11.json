@@ -1,0 +1,39 @@
+{
+  "branch": "prototype/core-redesign",
+  "baseline": "f5da527",
+  "rules": {
+    "passed": 48,
+    "failed": 0
+  },
+  "independent_combat": {
+    "passed": 37,
+    "failed": 0
+  },
+  "visual": {
+    "passed": 43,
+    "failed": 0
+  },
+  "ui_campaign": {
+    "checks": 493,
+    "failed": 0,
+    "buttons": 214,
+    "campaigns": 2
+  },
+  "search_replay": {
+    "wins": 6,
+    "runs": 6,
+    "seeds": [
+      731042,
+      42,
+      901
+    ],
+    "not_human_win_rate": true
+  },
+  "legacy_regression": {
+    "passed": 3730,
+    "failed": 0,
+    "existing_warnings": 3
+  },
+  "windows_sha256": "1BECF514BBEA98FCFBC79B1D0A394962CED90E3B16954449839FC37B077200FC",
+  "readiness": "playable comparison prototype; human fun and overall balance unverified"
+}

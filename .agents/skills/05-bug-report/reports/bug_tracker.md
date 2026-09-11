@@ -7,6 +7,10 @@
 
 | 번호 | 제목 | 중요도 | 상태 | 담당 세션 | 생성일 | 해결일 | 리포트 링크 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| RD-01 | 큰 시드 저장 재개 후 다음 교전 패 변경 | 보통 | 🔍 Verified | `codex0911-core-redesign` | 2026-09-11 | 2026-09-11 | [리포트](bug_core_seed_precision.md) |
+| RD-02 | 비정상 저장이 4칸 총기에 5발 계획을 허용 | 보통 | 🔍 Verified | `codex0911-core-redesign` | 2026-09-11 | 2026-09-11 | [리포트](bug_core_save_capacity.md) |
+| RD-03 | 재설계 UI의 행동 노출과 수치 기준 불명확 | 보통 | 🔍 Verified | `codex0911-core-redesign` | 2026-09-11 | 2026-09-11 | [리포트](bug_core_ui_readability.md) |
+| RD-04 | 개발자 연습에서 같은 시드 재시도 시 저장 경계 해제 | 보통 | 🔍 Verified | `codex0911-core-redesign` | 2026-09-11 | 2026-09-11 | [리포트](bug_core_practice_retry.md) |
 | #025 | 실제 전투의 적 복제가 CSV 기준 스탯을 누락 | 높음 | 🔍 Verified | `codex0911-tactical-workbench` | 2026-09-11 | 2026-09-11 | [리포트](bug_025_enemy_copy_skips_csv.md) |
 | #026 | 전투 중 추가 장전 후 일부 닫기 경로에서 적 전진 비용 누락 | 높음 | 🔍 Verified | `codex0911-tactical-workbench` | 2026-09-11 | 2026-09-11 | [리포트](bug_026_drawer_close_bypasses_insertion_tax.md) |
 | #001 | 에이전트 초기 이식 및 정적 링크 검증 | 낮음 | ✅ Closed | - | 2026-06-27 | 2026-06-27 | [링크](#) |

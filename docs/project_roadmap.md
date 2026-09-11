@@ -1,3 +1,5 @@
+> **재설계 브랜치 최신 상태 (2026-09-11):** 이 worktree는 `prototype/core-redesign`의 7교전 독립 후보입니다. main은 보존. [새 실행/규칙/검증](walkthrough_core_redesign_2026-09-11.md)을 우선 참조하세요. 아래 내용은 원래 35층 게임의 로드맵이며 새 후보 채택/사람 체감은 별도입니다.
+
 # 🗺️ Last on Board (L.O.B) — 개발 현황 및 향후 로드맵 (Status & Roadmap)
 
 > **2026-09-11 후속:** UI 변경 위임에 따라 [전술 장전 작업대·전투 정합 개선](walkthrough_tactical_workbench_2026-09-11.md)을 구현했다. 전체3730/0 및 실제 UI54검증 통과, 후반 대표10조건의 합법 해법을 확인했다. 사람 체감·전체 경제/승천 밸런스·Android 실기 확인은 진행 항목으로 유지한다.

@@ -3,6 +3,27 @@ name: 04-daily-logs
 description: ProjectLoB 일일 작업 내역 요약 및 히스토리 트래킹용 스킬. 대화 및 작업 종료 시 오늘 진행한 작업, 작성한 코드, 해결한 이슈, 다음 할 일 등을 일자별로 정리하여 기록합니다.
 ---
 
+## 2026-09-11 - 별도 브랜치 핵심 재설계 프로토타입
+
+### 🎯 목표
+사용자가 승인한 별도 branch/worktree 재설계와 규칙 변경 위임으로, 핵심을 유지하는 7교전 비교 후보를 만든다.
+
+### 🛠️ 개발 내역
+- main f5da527와 기존 빌드 보존, prototype/core-redesign worktree 생성.
+- 기존 DamageCalculator/BulletData를 재사용하고 독립 content/model/screen 구현.
+- 2총기·8탄종·5장공개패·기본공급3·7교전, 보상/정제/파츠, 저장/재개, 시드재시도, 개발자연습.
+- RD-01 큰 시드 문자열 보존, RD-02 저장검증/확정방어, RD-03 가독성, RD-04 연습재시도 저장분리 수정.
+- 신규규칙48/0, 독립전투37/0, 화면43/0, 실제UI493/0·214버튼·두총기완주, 6개실제명령완주경로, 기존3730/0/경보3.
+- Windows 내장PCK 빌드/시작검사 통과, 원본·수정후 QA 보고 보존.
+
+### 📁 주요 파일
+`redesign/content.gd`, `model.gd`, `screen.gd`, `main.tscn`, `project.godot`, 신규 QA4종, Windows/QA 스크립트, docs/implementation_plan_core_redesign_2026-09-11.md, docs/walkthrough_core_redesign_2026-09-11.md.
+
+### 💡 다음 예정 작업
+사람의 조합 성공감/피로/총기·보상 선택과 균형 확인. 최적 재미 또는 최종 아트 착수 승인은 미확정. main 병합/원격 푸시 미수행. 기존 개인 설정 변경 보존.
+
+
+
 ## 2026-09-11 (Fri) - 전술 장전 작업대와 실제 전투 정합 개선
 
 ### 🎯 목표

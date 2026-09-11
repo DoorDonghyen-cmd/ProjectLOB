@@ -1,0 +1,7874 @@
+{
+	"failures": 0,
+	"method": "bounded search, real command replay, no forced wins; not human win rate",
+	"reports": [
+		{
+			"floor": 6,
+			"gun": "single",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"mark",
+							"pierce",
+							"charge",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 4,
+								"hit": true,
+								"hp": 3,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 2
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 2
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"push",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 0,
+								"hit": true,
+								"hp": 10,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 3
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 6,
+								"hit": true,
+								"hp": 4,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 6 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 4
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 5
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 5
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 5
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"charge",
+							"precise",
+							"pierce"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2,
+					"turn": 5
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 6
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 7
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 7
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge"
+						],
+						"load_order": [
+							"precise",
+							"push",
+							"slow",
+							"charge"
+						]
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 7,
+								"hit": true,
+								"hp": 0,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "점착탄 → 운반 사족체: 7 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 9
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 12,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 10
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge",
+							"mark",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 6,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 4,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 13
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 14
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 14
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 14
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"precise"
+						],
+						"load_order": [
+							"pierce",
+							"basic",
+							"basic",
+							"mark"
+						]
+					},
+					"floor": 4,
+					"turn": 14
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 명중 +4"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 15
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 4,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 16
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 운반 사족체: 6 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 18
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 4,
+					"turn": 19
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"precise",
+							"charge",
+							"charge"
+						],
+						"load_order": [
+							"basic"
+						]
+					},
+					"floor": 4,
+					"turn": 19
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 20
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 20
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 20
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"precise",
+							"charge",
+							"push",
+							"slow"
+						]
+					},
+					"floor": 5,
+					"turn": 20
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 23
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 굴절 선체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 24
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 25
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						]
+					},
+					"floor": 5,
+					"turn": 25
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 12,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 10,
+								"id": "charge",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 27
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 10,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 10 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 28
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 28
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 28
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow"
+						],
+						"load_order": [
+							"mark",
+							"charge",
+							"precise",
+							"charge"
+						]
+					},
+					"floor": 6,
+					"turn": 28
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 29
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow",
+							"precise",
+							"mark"
+						],
+						"load_order": [
+							"pierce",
+							"basic",
+							"bore"
+						]
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 18,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 32
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 14,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 33
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 8,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"charge",
+							"slow",
+							"push"
+						]
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 8,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 36
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 8,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 37
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "장약 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 38
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 39
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 40
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"mark",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"pierce",
+							"bore"
+						]
+					},
+					"floor": 6,
+					"turn": 40
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 6,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 41
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 7,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 42
+				}
+			],
+			"paths": [
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 3,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"charge"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 3,
+						"load": [
+							"precise",
+							"push",
+							"slow",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 3,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"pierce",
+							"basic",
+							"basic",
+							"mark"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"precise",
+							"charge",
+							"push",
+							"slow"
+						],
+						"reload": false
+					},
+					{
+						"fires": 3,
+						"load": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 2,
+						"load": [
+							"mark",
+							"charge",
+							"precise",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 3,
+						"load": [
+							"pierce",
+							"basic",
+							"bore"
+						],
+						"reload": true
+					},
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"charge",
+							"slow",
+							"push"
+						],
+						"reload": true
+					},
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic",
+							"pierce",
+							"bore"
+						],
+						"reload": true
+					}
+				]
+			],
+			"seed": 731042,
+			"shots": 36,
+			"turns": 42,
+			"won": true
+		},
+		{
+			"floor": 6,
+			"gun": "single",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"push",
+							"pierce",
+							"bore",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 4,
+								"hit": true,
+								"hp": 3,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 2
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 2
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"push",
+							"bore",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"pierce",
+							"charge"
+						]
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 0,
+								"hit": true,
+								"hp": 10,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 3
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 4,
+								"damage": 10,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 10 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 4
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 4
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 4
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"charge",
+							"slow",
+							"bore",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2,
+					"turn": 4
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 5
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 6
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 6
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 6
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore"
+						],
+						"load_order": [
+							"pierce",
+							"charge",
+							"precise",
+							"push"
+						]
+					},
+					"floor": 3,
+					"turn": 6
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 3,
+								"hit": true,
+								"hp": 6,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 운반 사족체: 3 피해 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 4,
+								"hit": true,
+								"hp": 2,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 0,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 2 피해 · 처치 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 9
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 10,
+								"hit": true,
+								"hp": 2,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 10 피해"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 10
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"charge",
+							"slow",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"bore"
+						]
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 0,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 처치 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 12
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 12
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"precise",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"pierce",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 14
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 운반 사족체: 6 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 15
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 16
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 16
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 16
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise"
+						],
+						"load_order": [
+							"slow",
+							"pierce",
+							"charge"
+						]
+					},
+					"floor": 5,
+					"turn": 16
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 10,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 10 피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 18
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 19
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"charge",
+							"bore"
+						]
+					},
+					"floor": 5,
+					"turn": 19
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 2,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 20
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 0,
+								"id": "charge",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 2 피해 · 처치 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 8,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 8 피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 23
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 23
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 23
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"bore",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 6,
+					"turn": 23
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 24
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 25
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 18,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 14,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 27
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 28
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"charge",
+							"slow",
+							"push"
+						]
+					},
+					"floor": 6,
+					"turn": 28
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 29
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "장약 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 32
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 33
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"precise",
+							"precise",
+							"pierce"
+						]
+					},
+					"floor": 6,
+					"turn": 33
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 8,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"mark",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 36
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 6,
+								"hit": true,
+								"hp": 2,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 6 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 37
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 38
+				}
+			],
+			"paths": [
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic",
+							"pierce",
+							"charge"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"pierce",
+							"charge",
+							"precise",
+							"push"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"bore"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"pierce",
+							"basic",
+							"charge"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 2,
+						"load": [
+							"slow",
+							"pierce",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"basic",
+							"charge",
+							"bore"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"bore",
+							"basic",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"charge",
+							"slow",
+							"push"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"precise",
+							"precise",
+							"pierce"
+						],
+						"reload": true
+					},
+					{
+						"fires": 3,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"charge"
+						],
+						"reload": true
+					}
+				]
+			],
+			"seed": 42,
+			"shots": 33,
+			"turns": 38,
+			"won": true
+		},
+		{
+			"floor": 6,
+			"gun": "single",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"mark",
+							"precise",
+							"push",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 4,
+								"hit": true,
+								"hp": 3,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 2
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 2
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"pierce",
+							"charge"
+						]
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 0,
+								"hit": true,
+								"hp": 10,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 3
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 4,
+								"damage": 10,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 10 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 4
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 4
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 4
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow",
+							"charge",
+							"pierce",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2,
+					"turn": 4
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 5
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 6
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 6
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 6
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge",
+							"slow"
+						],
+						"load_order": [
+							"precise",
+							"bore",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 3,
+					"turn": 6
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 10,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 9
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 4,
+								"hit": true,
+								"hp": 6,
+								"id": "precise",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 융합 장갑벽: 4 피해"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 10
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge",
+							"slow",
+							"mark",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"pierce"
+						]
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 12
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 12
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"precise",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"push",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 6,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 14
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "push",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 15
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 6,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 16
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 4,
+					"turn": 17
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"precise",
+							"slow",
+							"pierce"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 4,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 18
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 19
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 19
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 19
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						]
+					},
+					"floor": 5,
+					"turn": 19
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 12,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 20
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 10,
+								"id": "charge",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 10,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 10 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 6,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 23
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 24
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow",
+							"precise",
+							"charge",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 5,
+					"turn": 24
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 25
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 26
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 26
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise",
+							"bore"
+						],
+						"load_order": [
+							"pierce",
+							"basic",
+							"basic",
+							"slow"
+						]
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 운반 사족체: 3 피해 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 27
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 3,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 28
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 29
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 14,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"mark",
+							"precise",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 32
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 6,
+								"hit": true,
+								"hp": 8,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 6 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 33
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 4,
+								"hit": true,
+								"hp": 4,
+								"id": "precise",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 융합 장갑벽: 4 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"charge",
+							"push",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"pierce"
+						]
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 36
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 6,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 37
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 38
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 39
+				}
+			],
+			"paths": [
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic",
+							"pierce",
+							"charge"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"precise",
+							"bore",
+							"basic",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"pierce"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"push",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					},
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						],
+						"reload": false
+					},
+					{
+						"fires": 2,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 4,
+						"load": [
+							"pierce",
+							"basic",
+							"basic",
+							"slow"
+						],
+						"reload": false
+					},
+					{
+						"fires": 3,
+						"load": [
+							"mark",
+							"precise",
+							"bore",
+							"charge"
+						],
+						"reload": true
+					},
+					{
+						"fires": 4,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"pierce"
+						],
+						"reload": true
+					}
+				]
+			],
+			"seed": 901,
+			"shots": 34,
+			"turns": 39,
+			"won": true
+		},
+		{
+			"floor": 6,
+			"gun": "burst",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"mark",
+							"pierce",
+							"charge",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"precise",
+							"bore",
+							"charge",
+							"push"
+						]
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 7,
+								"damage": 0,
+								"hit": true,
+								"hp": 10,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							},
+							{
+								"acc": 8,
+								"damage": 0,
+								"hit": true,
+								"hp": 10,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 5,
+								"hit": true,
+								"hp": 5,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 10,
+								"damage": 3,
+								"hit": true,
+								"hp": 2,
+								"id": "precise",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 융합 장갑벽: 3 피해"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 1,
+					"turn": 5
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow",
+							"bore",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"pierce"
+						]
+					},
+					"floor": 1,
+					"turn": 5
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 4,
+								"damage": 5,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 6
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 6
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 6
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"charge",
+							"precise",
+							"pierce"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2,
+					"turn": 6
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 5,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 7
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 7
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"charge"
+						],
+						"load_order": [
+							"push",
+							"basic",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 7 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							},
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 12,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"bore",
+							"charge",
+							"pierce"
+						]
+					},
+					"floor": 3,
+					"turn": 11
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 7,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 2,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 12
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 12
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"pierce",
+							"mark"
+						]
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 굴절 선체: 5 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 4,
+					"turn": 16
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow",
+							"precise",
+							"charge",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"precise"
+						]
+					},
+					"floor": 4,
+					"turn": 16
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 17
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 17
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge"
+						],
+						"load_order": [
+							"mark",
+							"precise",
+							"push",
+							"slow"
+						]
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							},
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							},
+							{
+								"acc": 12,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 융합 장갑벽: 장갑에 막힘"
+							},
+							{
+								"acc": 12,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 명중 +4"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 18
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"charge",
+							"bore"
+						],
+						"load_order": [
+							"pierce",
+							"basic",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 7 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							},
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 9,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 25
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"charge",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 5,
+					"turn": 25
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 3,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 26
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 26
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge"
+						],
+						"load_order": [
+							"precise",
+							"slow",
+							"charge",
+							"mark"
+						]
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 14,
+								"damage": 1,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 11,
+								"damage": 6,
+								"hit": true,
+								"hp": 2,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 운반 사족체: 6 피해 · 다음 전진 −2"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 27
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"pierce",
+							"precise",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 20,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 15,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 12,
+								"id": "precise",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 융합 장갑벽: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 7,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"charge",
+							"pierce",
+							"charge"
+						]
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 6,
+								"damage": 9,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해 · 처치"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "장약 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 7 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 38
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"push",
+							"precise",
+							"slow",
+							"mark"
+						],
+						"load_order": [
+							"basic"
+						]
+					},
+					"floor": 6,
+					"turn": 38
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 39
+				}
+			],
+			"paths": [
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"precise",
+							"bore",
+							"charge",
+							"push"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"pierce"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"push",
+							"basic",
+							"basic",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"bore",
+							"charge",
+							"pierce"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"pierce",
+							"mark"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"precise"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"mark",
+							"precise",
+							"push",
+							"slow"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"pierce",
+							"basic",
+							"basic",
+							"charge"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"precise",
+							"slow",
+							"charge",
+							"mark"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"pierce",
+							"precise",
+							"bore",
+							"charge"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"charge",
+							"pierce",
+							"charge"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic"
+						],
+						"reload": true
+					}
+				]
+			],
+			"seed": 731042,
+			"shots": 51,
+			"turns": 39,
+			"won": true
+		},
+		{
+			"floor": 6,
+			"gun": "burst",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"push",
+							"pierce",
+							"bore",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"push",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						]
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 1,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 4,
+								"damage": 9,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 2
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"charge",
+							"slow",
+							"bore",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2,
+					"turn": 2
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 5,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 3
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 3
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 3
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore"
+						],
+						"load_order": [
+							"pierce",
+							"precise",
+							"charge",
+							"push"
+						]
+					},
+					"floor": 3,
+					"turn": 3
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 2,
+								"hit": true,
+								"hp": 7,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 운반 사족체: 2 피해 · 2m 밀기"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 6,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 12,
+								"damage": 7,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 7 피해 · 처치"
+							},
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 7,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 4
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 2,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 8
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore"
+						],
+						"load_order": [
+							"pierce",
+							"precise",
+							"precise",
+							"charge"
+						]
+					},
+					"floor": 4,
+					"turn": 8
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 12,
+								"damage": 7,
+								"hit": true,
+								"hp": 2,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 굴절 선체: 7 피해"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 굴절 선체: 3 피해 · 처치"
+							},
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 5,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 운반 사족체: 5 피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 9
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"charge",
+							"slow",
+							"mark",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 13
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise"
+						],
+						"load_order": [
+							"slow",
+							"pierce",
+							"charge",
+							"mark"
+						]
+					},
+					"floor": 5,
+					"turn": 13
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 14,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 6,
+								"damage": 9,
+								"hit": true,
+								"hp": 5,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해"
+							},
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 5,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 14
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"push",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"precise",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 5,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 0,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 처치 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "precise",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 18
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"push",
+							"precise",
+							"charge",
+							"precise",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 22
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"push"
+						],
+						"load_order": [
+							"slow",
+							"basic",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 6,
+					"turn": 22
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 7 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							},
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 20,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 23
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"mark",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"push",
+							"bore"
+						]
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 19,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 9,
+								"damage": 2,
+								"hit": true,
+								"hp": 17,
+								"id": "push",
+								"pen": 4,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 2 피해 · 2m 밀기"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 27
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise"
+						],
+						"load_order": [
+							"pierce",
+							"charge",
+							"basic",
+							"mark"
+						]
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 1,
+								"hit": true,
+								"hp": 3,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "조준 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							},
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 17,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 6,
+								"damage": 9,
+								"hit": true,
+								"hp": 8,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 3,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 2,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 35
+				}
+			],
+			"paths": [
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"pierce",
+							"precise",
+							"charge",
+							"push"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"charge"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"pierce",
+							"precise",
+							"precise",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"slow",
+							"pierce",
+							"charge",
+							"mark"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"precise",
+							"bore",
+							"charge"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"slow",
+							"basic",
+							"basic",
+							"charge"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"push",
+							"bore"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"pierce",
+							"charge",
+							"basic",
+							"mark"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						],
+						"reload": true
+					}
+				]
+			],
+			"seed": 42,
+			"shots": 47,
+			"turns": 35,
+			"won": true
+		},
+		{
+			"floor": 6,
+			"gun": "burst",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"mark",
+							"precise",
+							"push",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						]
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 1,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 4,
+								"damage": 9,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 2
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow",
+							"charge",
+							"pierce",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2,
+					"turn": 2
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 5,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 3
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 3
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 3
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow"
+						],
+						"load_order": [
+							"bore",
+							"charge",
+							"charge",
+							"precise"
+						]
+					},
+					"floor": 3,
+					"turn": 3
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 6,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 5,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 0,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 5 피해 · 처치 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 7,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 4
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow",
+							"mark",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"pierce",
+							"charge"
+						]
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 6,
+								"damage": 9,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 8
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"precise",
+							"slow"
+						],
+						"load_order": [
+							"push",
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 4,
+					"turn": 8
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 9,
+								"damage": 2,
+								"hit": true,
+								"hp": 0,
+								"id": "push",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 굴절 선체: 2 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 9
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"precise",
+							"slow",
+							"pierce"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"mark"
+						]
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "조준 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 6,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 3,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 13
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"pierce",
+							"charge",
+							"slow",
+							"bore"
+						]
+					},
+					"floor": 5,
+					"turn": 13
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 13,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 11,
+								"damage": 2,
+								"hit": true,
+								"hp": 11,
+								"id": "slow",
+								"pen": 5,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 융합 장갑벽: 2 피해 · 다음 전진 −2"
+							},
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 11,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 6,
+								"damage": 9,
+								"hit": true,
+								"hp": 2,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 14
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"precise",
+							"charge",
+							"precise",
+							"push"
+						]
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 2,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 6,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 12,
+								"damage": 7,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 굴절 선체: 7 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 18
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"charge",
+							"precise",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"bore"
+						]
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 1,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 22
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"bore",
+							"slow",
+							"precise",
+							"pierce"
+						]
+					},
+					"floor": 6,
+					"turn": 22
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 5,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 운반 사족체: 5 피해"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 2,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 11,
+								"damage": 2,
+								"hit": true,
+								"hp": 0,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "점착탄 → 운반 사족체: 2 피해 · 처치"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 19,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 23
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"charge",
+							"mark",
+							"push"
+						]
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 19,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							},
+							{
+								"acc": 12,
+								"damage": 0,
+								"hit": true,
+								"hp": 19,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "조준 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 14,
+								"damage": 0,
+								"hit": true,
+								"hp": 19,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 0,
+								"hit": true,
+								"hp": 19,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 장갑에 막힘"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 27
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"charge",
+							"precise",
+							"push"
+						]
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 19,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "정밀탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 6,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "장약 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 7 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 31
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"pierce",
+							"precise",
+							"bore",
+							"slow"
+						]
+					},
+					"floor": 6,
+					"turn": 34
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 19,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 18,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 15,
+								"id": "precise",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 융합 장갑벽: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 10,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 35
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 38
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"bore",
+							"charge",
+							"pierce"
+						]
+					},
+					"floor": 6,
+					"turn": 38
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 5,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 5,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 0,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 처치 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 39
+				}
+			],
+			"paths": [
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"bore",
+							"charge",
+							"charge",
+							"precise"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"pierce",
+							"charge"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"push",
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"mark"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"pierce",
+							"charge",
+							"slow",
+							"bore"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"precise",
+							"charge",
+							"precise",
+							"push"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"bore"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"fires": 1,
+						"load": [
+							"bore",
+							"slow",
+							"precise",
+							"pierce"
+						],
+						"reload": false
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"charge",
+							"mark",
+							"push"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"charge",
+							"precise",
+							"push"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"pierce",
+							"precise",
+							"bore",
+							"slow"
+						],
+						"reload": true
+					},
+					{
+						"fires": 1,
+						"load": [
+							"basic",
+							"bore",
+							"charge",
+							"pierce"
+						],
+						"reload": true
+					}
+				]
+			],
+			"seed": 901,
+			"shots": 52,
+			"turns": 39,
+			"won": true
+		}
+	]
+}

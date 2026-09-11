@@ -8,6 +8,7 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-11 | **독립 핵심 재설계 7교전** | `codex0911-core-redesign` | 2총기/8탄종/7교전, 규칙48·독립37·UI43·전체UI493 통과. 인간 재미 판단 별도 | [문서](../../../../docs/walkthrough_core_redesign_2026-09-11.md) |
 | 2026-09-11 | **전술 장전 작업대·CSV 전투 정합** | `codex0911-tactical-workbench` | 3730/0, UI54/0, 후반10조건 해법과 Windows 빌드. 인간 체감 별도 | [walkthrough.md](../../../../docs/walkthrough_tactical_workbench_2026-09-11.md) |
 | 2026-09-11 | **아트 이전 기능 검토 빌드** | `codex0911-preart` | 3690/0, 캠페인24검증, A/B36쌍, Windows 빌드. 사람 체감·후반 밸런스·실기 미완료 | [walkthrough.md](../../../../docs/walkthrough_preart_completion_2026-09-11.md) |
 | 2026-08-30 | **LIFO 탄환 조합 핵심 재미 정밀 QA** | `codex0830-core-fun-qa` | 동일 탄환 묶음 순서 대조, 상황 대응 장전, 총점 없는 5개 재미 게이트와 대시보드 우선 결론. 실주행은 가능성 있으나 표본·깊이가 부족하다고 보수 판정, 전체 3,599 테스트 고정 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_lifo_core_fun_qa_2026-08-30.md) |
