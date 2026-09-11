@@ -8,6 +8,7 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-11 | **전술 장전 작업대 개선 계획** | `codex0911-tactical-workbench` | UI 변경 위임, 공개 적/순서/후보 통합과 비용·실제 입력 검증 | [implementation_plan.md](../../../../docs/implementation_plan_tactical_workbench_2026-09-11.md) |
 | 2026-09-11 | **아트 이전 전체 개발 실행 계획** | `codex0911-preart` | 기능·기록·A/B·정렬·로어·패키징과 사람 체감/실기 승인 경계 | [implementation_plan.md](../../../../docs/implementation_plan_preart_completion_2026-09-11.md) |
 | 2026-08-30 | **LIFO 탄환 조합 핵심 재미 정밀 QA** | `codex0830-core-fun-qa` | 순서 영향·상황별 해법·혼합 장전 가치·실제 선택 압력·표본 범위를 독립 게이트로 판정하고, 자동화 불가 체감은 사람 확인으로 분리하는 보수적 핵심 재미 평가 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_lifo_core_fun_qa_2026-08-30.md) |
 | 2026-08-30 | **QA 대시보드 Windows 실행 파일 런처** | `codex0830-qa-exe` | 저장소 상대 경로에서 기존 QA 컨트롤러를 고정 호출하고 localhost 준비 뒤 브라우저를 여는 경량 EXE. 자체 점검·live probe·포트/Godot 지정과 재현 가능한 Windows 기본 컴파일 제공 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_qa_windows_launcher_2026-08-30.md) |

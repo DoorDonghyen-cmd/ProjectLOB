@@ -224,13 +224,13 @@ func _show_reading(title_text: String, content: String) -> void:
 
 
 func _show_loading_guide() -> void:
-	_show_reading("장전 순서가 사격 순서가 된다",
-		"[b]1. 적을 읽는다[/b]\n명중(ACC)이 회피(EVA) 이상, 관통(PEN)이 방어(DEF) 이상이면 피해를 준다. 거리와 다음 태세도 확인한다.\n\n" +
-		"[b]2. 마지막에 넣은 탄이 먼저 나간다[/b]\n기본탄을 먼저 넣고 장약 증폭탄을 마지막에 넣으면 증폭탄 → 기본탄 순서로 발사된다. 증폭탄이 유효하게 적중하면 다음 1발의 피해가 +2다.\n\n" +
-		"[b]3. 예고를 확인하고 격발한다[/b]\n명중·관통·피해는 확률로 정하지 않는다. 명중 보정, 장갑 파훼, 피해 증폭, 거리 제어 중 지금 필요한 역할을 고른다. 연발 총기는 남은 탄을 한 번에 사용한다.\n\n" +
-		"[b]4. 거리가 행동 예산이다[/b]\n장전 중에는 탄을 자유롭게 되돌릴 수 있다. 교전이 시작되면 사격과 빼내기, 리로드 동안 적이 접근한다. 교전 중 빼낸 전술탄은 소실되므로 다음 탄의 이득과 거리를 함께 비교한다. 리로드 턴은 총기마다 다르다.\n\n" +
-		"[b]5. 기본탄은 리로드하면 정량 보급된다[/b]\n기본탄도 탄창 자리를 쓴다. 전술탄의 유효 사용·소실 여부를 읽고 다음 전투를 준비한다.\n\n" +
-		"[b]6. 한 번의 상승은 35층이다[/b]\n탄환 보상과 파츠를 골라 운용을 바꾼다. 환기구는 다음 교전 시작 거리를 2m 줄인다. 모은 기록은 이 화면에서 선택적으로 읽을 수 있다.")
+	_show_reading("마지막에 넣은 탄이 먼저 발사된다",
+		"[b]1. 적의 두 조건을 연다[/b]\n명중(ACC) ≥ 회피(EVA), 관통(PEN) ≥ 방어(DEF). 결과는 확률이 아니다.\n\n" +
+		"[b]2. 역순으로 장전한다[/b]\n기본탄 → 장약 증폭탄을 넣으면 증폭탄이 먼저 발사된다. 유효 적중 시 다음 1발 피해 +2.\n\n" +
+		"[b]3. 확정한 다음 발사한다[/b]\n장전 중 취소는 무료. 장전 확정은 발사와 별도다. 연발은 남은 탄 전체를 1턴에 쓴다.\n\n" +
+		"[b]4. 거리와 비용을 비교한다[/b]\n사격·리로드 동안 적이 행동한다. 전투 중 추가 장전은 가방을 닫을 때 적 1회 전진. 빼내기는 탄을 잃으며, 위험도5부터 적도 전진한다.\n\n" +
+		"[b]5. 리로드로 다시 설계한다[/b]\n남은 탄은 반환하고 기본탄을 정량 복구한다. 집중·셋업은 초기화된다. 소요 턴은 총기마다 다르다.\n\n" +
+		"[b]6. 35층을 오른다[/b]\n탄환·파츠 보상으로 운용을 바꾼다. 환기구는 다음 교전 시작 거리 −2m. 수집 기록은 선택해서 읽는다.")
 
 
 func _show_lore_archive() -> void:
@@ -291,6 +291,14 @@ func _build_dev_test_panel() -> void:
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	vbox.add_child(grid)
+	var workbench_button: Button = parent_scene.make_button("전술 장전 작업대 QA", func():
+		_dev_test_panel.visible = false
+		parent_scene.trigger_upper_roster_test("section_d")
+		parent_scene._combat_overlay._toggle_drawer(true)
+	, parent_scene.C_ACCENT)
+	workbench_button.custom_minimum_size = Vector2(0, 36)
+	workbench_button.add_theme_font_size_override("font_size", 11)
+	grid.add_child(workbench_button)
 	for reading in [["장전 안내 QA", _show_loading_guide], ["수집 기록 QA", _show_lore_archive]]:
 		var reading_callback: Callable = reading[1]
 		var reading_button: Button = parent_scene.make_button(reading[0], func():

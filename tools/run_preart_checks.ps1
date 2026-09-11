@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('regression', 'ammo', 'campaign', 'simulator', 'visual', 'experience')][string]$Mode = 'regression',
+    [ValidateSet('regression', 'ammo', 'campaign', 'simulator', 'visual', 'experience', 'workbench')][string]$Mode = 'regression',
     [ValidateSet('beginner', 'aggressive', 'conservative', 'experimental')][string]$Profile = 'beginner',
     [ValidateRange(1, 2147483647)][int]$Seed = 424242,
     [ValidatePattern('^[a-zA-Z0-9_-]{0,32}$')][string]$RunLabel = '',
@@ -34,6 +34,7 @@ $scripts = @{
     simulator = 'res://tests/preart_simulator_probe.gd'
     visual = 'res://tests/qa_preart_visual_runner.gd'
     experience = 'res://tests/qa_autonomous_playtest_runner.gd'
+    workbench = 'res://tests/qa_tactical_workbench_runner.gd'
 }
 $log = Join-Path $runtime 'stdout.log'
 $err = Join-Path $runtime 'stderr.log'

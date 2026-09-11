@@ -90,6 +90,9 @@ Play-Preart.cmd를 실행하면 이 폴더의 qa-profile에 진행도를 저장�
 기존 개발용 메타 저장 데이터와 분리해 처음부터 검토할 수 있습니다.
 
 타이틀의 장전 안내 / 수집 기록 버튼에서 규칙과 모은 로어를 읽습니다.
+장전 시 적 정보·탄환 후보·발사 순서를 함께 보는 전술 작업대가 열립니다.
+최근 장전 취소는 무료이며 장전 확정 다음에 별도로 발사합니다.
+전투 중 추가 장전은 작업대를 닫을 때 적의 전진 비용이 적용됩니다.
 개발자 테스트에는 A/B 비교, 랜덤 패 체감, 탄환 카드 가독성,
 관리/정점 적 편성 등 검토용 진입점이 있습니다.
 
@@ -99,6 +102,7 @@ Play-Preart.cmd를 실행하면 이 폴더의 qa-profile에 진행도를 저장�
 
 재생성: tools/export_windows_preart.ps1
 세부 검증: docs/walkthrough_preart_completion_2026-09-11.md
+전술 작업대 개선: docs/walkthrough_tactical_workbench_2026-09-11.md
 '@
     [IO.File]::WriteAllText((Join-Path $build 'README.txt'), $readme, $utf8)
 } finally {

@@ -37,3 +37,16 @@ extends Resource
 @export_range(3, 20) var start_distance: int = 10
 ## 넉백 저항 — 피격 시 넉백되는 거리를 N칸 만큼 감소시킨다.
 @export_range(0, 3) var knockback_resistance: int = 0
+
+
+## CSV 기준값을 먼저 복사한 뒤 조우의 거리 비용을 적용한다.
+## 복제 리소스는 resource_path가 비어 EnemyInstance에서 CSV를 재조회하지 않는다.
+## 경로 없는 합성 QA 적은 지정한 스탯을 그대로 유지한다.
+func for_encounter(distance_modifier: int = 0) -> EnemyData:
+	var prepared := duplicate() as EnemyData
+	var csv := DataLoader.get_enemy(resource_path.get_file().get_basename())
+	if not csv.is_empty():
+		for property in ["display_name", "archetype", "max_hp", "defense", "evasion", "speed", "start_distance", "knockback_resistance"]:
+			prepared.set(property, csv[property])
+	prepared.start_distance = maxi(prepared.start_distance + distance_modifier, 4)
+	return prepared

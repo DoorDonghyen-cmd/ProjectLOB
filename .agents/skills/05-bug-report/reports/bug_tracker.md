@@ -7,6 +7,8 @@
 
 | 번호 | 제목 | 중요도 | 상태 | 담당 세션 | 생성일 | 해결일 | 리포트 링크 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| #025 | 실제 전투의 적 복제가 CSV 기준 스탯을 누락 | 높음 | 🔍 Verified | `codex0911-tactical-workbench` | 2026-09-11 | 2026-09-11 | [리포트](bug_025_enemy_copy_skips_csv.md) |
+| #026 | 전투 중 추가 장전 후 일부 닫기 경로에서 적 전진 비용 누락 | 높음 | 🔍 Verified | `codex0911-tactical-workbench` | 2026-09-11 | 2026-09-11 | [리포트](bug_026_drawer_close_bypasses_insertion_tax.md) |
 | #001 | 에이전트 초기 이식 및 정적 링크 검증 | 낮음 | ✅ Closed | - | 2026-06-27 | 2026-06-27 | [링크](#) |
 | #002 | Tempo 조율탄 피해 0으로 셋업 효과 미발동 | 보통 | ✅ Closed | `codex0724-smg-role` | 2026-07-24 | 2026-07-24 | [리포트](bug_002_tempo_tuner_zero_damage.md) |
 | #003 | 리듬 챔버 6발 연발 보너스 +20 폭증 | 보통 | ✅ Closed | `codex0724-smg-role` | 2026-07-24 | 2026-07-24 | [리포트](bug_003_rhythm_chamber_full_auto_scaling.md) |

@@ -1,0 +1,33 @@
+﻿{
+    "final_ui":  {
+                     "checks":  54,
+                     "failures":  0
+                 },
+    "late_combat":  {
+                        "scope":  "declared fixtures, not campaign win rate",
+                        "repeats_identical":  true,
+                        "candidates_per_case":  193,
+                        "cases":  10,
+                        "witnessed_solutions":  10
+                    },
+    "windows_build":  {
+                          "sha256":  "D8378EF001A451029FC6D4382C2E7117D00D7111AE6E7261B1D7BE0054B8B210",
+                          "readiness":  "functional review; human gameplay acceptance pending",
+                          "built_at":  "2026-09-11T06:29:02.7024340Z",
+                          "smoke":  "headless startup passed",
+                          "includes_working_tree":  true,
+                          "source_commit":  "3a116ad34ac87c6e353b3cc8a76d4eacb8a81a97"
+                      },
+    "human_acceptance":  "pending",
+    "regression":  {
+                       "exit_code":  0,
+                       "failed":  0,
+                       "passed":  3730,
+                       "schema_version":  1,
+                       "warnings":  3
+                   },
+    "visual":  {
+                   "evidence":  "qa_runtime/preart_20260911/visual/final_delivery/artifacts",
+                   "captures":  12
+               }
+}

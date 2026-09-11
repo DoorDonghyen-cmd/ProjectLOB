@@ -29,6 +29,11 @@ var _drawer_confirm_btn: Button
 var _ammo_hand_hint: Label
 var _ammo_hand_state_label: Label
 var _ammo_preview_row: HBoxContainer
+var _context_title: Label
+var _enemy_context: HBoxContainer
+var _planning_note: Label
+var _drawer_stack_scroll: ScrollContainer
+var _drawer_actions: HBoxContainer
 
 func initialize(p_scene: Control, rm: RunManager, cm: CombatManager, overlay_v2: Control) -> void:
 	parent_scene = p_scene
@@ -37,7 +42,7 @@ func initialize(p_scene: Control, rm: RunManager, cm: CombatManager, overlay_v2:
 	overlay = overlay_v2
 	
 	var drawer_style := StyleBoxFlat.new()
-	drawer_style.bg_color = Color(0.05, 0.07, 0.11, 0.96)
+	drawer_style.bg_color = Color(0.05, 0.07, 0.11, 1.0)
 	drawer_style.border_width_top = 2
 	drawer_style.border_width_left = 2
 	drawer_style.border_width_right = 2
@@ -46,18 +51,42 @@ func initialize(p_scene: Control, rm: RunManager, cm: CombatManager, overlay_v2:
 	
 	if get_child_count() == 0:
 		_build_ui()
+		minimum_size_changed.connect(func(): layout_workbench.call_deferred())
 	toggle_drawer(false)
 
 func _build_ui() -> void:
-	custom_minimum_size = Vector2(700, 390)
-	mouse_filter = Control.MOUSE_FILTER_PASS
+	custom_minimum_size = Vector2(0, 0)
+	mouse_filter = Control.MOUSE_FILTER_STOP
 	
 	var drawer_vbox := VBoxContainer.new()
 	drawer_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	drawer_vbox.add_theme_constant_override("separation", 6)
 	add_child(drawer_vbox)
+
+	var heading := HBoxContainer.new()
+	drawer_vbox.add_child(heading)
+	_context_title = parent_scene.make_label("순서 설계 · 장전 중 턴 진행 없음", 16, parent_scene.C_SUCCESS)
+	_context_title.name = "WorkbenchTitle"
+	_context_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	heading.add_child(_context_title)
+	var battlefield_btn: Button = parent_scene.make_button("전장 보기", func(): overlay._toggle_drawer(false), parent_scene.C_PANEL)
+	battlefield_btn.name = "WorkbenchBattlefieldButton"
+	battlefield_btn.custom_minimum_size = Vector2(110, 44)
+	battlefield_btn.add_theme_font_size_override("font_size", 14)
+	heading.add_child(battlefield_btn)
+
+	_enemy_context = HBoxContainer.new()
+	_enemy_context.name = "PublicEnemyRoster"
+	_enemy_context.add_theme_constant_override("separation", 6)
+	drawer_vbox.add_child(_enemy_context)
+	_planning_note = parent_scene.make_label("마지막에 넣은 탄부터 발사합니다.", 11, parent_scene.C_TEXT)
+	_planning_note.name = "PlanningRule"
+	_planning_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	drawer_vbox.add_child(_planning_note)
 	
 	# 탭 바
 	var tab_hbox := HBoxContainer.new()
+	tab_hbox.custom_minimum_size.y = 34
 	tab_hbox.add_theme_constant_override("separation", 0)
 	drawer_vbox.add_child(tab_hbox)
 	
@@ -94,10 +123,11 @@ func _build_ui() -> void:
 	tab_hbox.add_child(_drawer_tab_item)
 	
 	var close_btn := Button.new()
-	close_btn.text = "✕"
+	close_btn.name = "WorkbenchCloseTab"
+	close_btn.text = "전장"
 	close_btn.focus_mode = Control.FOCUS_NONE
 	close_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	close_btn.pressed.connect(func(): toggle_drawer(false))
+	close_btn.pressed.connect(func(): overlay._toggle_drawer(false))
 	
 	var close_style := StyleBoxFlat.new()
 	close_style.bg_color = Color.TRANSPARENT
@@ -142,16 +172,24 @@ func _build_ui() -> void:
 	drawer_stackcol.add_child(d_stack_h)
 	
 	var d_stack_t: Label = parent_scene.make_label("▲ 탄창 상태", 11, parent_scene.C_DIM)
+	d_stack_t.text = "발사 순서 · 위부터 ↓"
 	d_stack_t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	d_stack_h.add_child(d_stack_t)
 	
 	_drawer_stack_cap = parent_scene.make_label("0/0", 12, parent_scene.C_SUCCESS)
 	d_stack_h.add_child(_drawer_stack_cap)
 	
+	_drawer_stack_scroll = ScrollContainer.new()
+	_drawer_stack_scroll.name = "FiringOrderScroll"
+	_drawer_stack_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_drawer_stack_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	DragScroll.attach(_drawer_stack_scroll)
+	drawer_stackcol.add_child(_drawer_stack_scroll)
 	_drawer_stack_vbox = VBoxContainer.new()
+	_drawer_stack_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_drawer_stack_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_drawer_stack_vbox.add_theme_constant_override("separation", 4)
-	drawer_stackcol.add_child(_drawer_stack_vbox)
+	_drawer_stack_scroll.add_child(_drawer_stack_vbox)
 	
 	# 우측 본문 VBox
 	var right_vbox := VBoxContainer.new()
@@ -208,15 +246,22 @@ func _build_ui() -> void:
 	
 	# 하단 버튼
 	var drawer_actions := HBoxContainer.new()
+	_drawer_actions = drawer_actions
+	drawer_actions.name = "WorkbenchActions"
+	drawer_actions.custom_minimum_size.y = 44
 	drawer_actions.add_theme_constant_override("separation", 10)
-	right_vbox.add_child(drawer_actions)
+	drawer_vbox.add_child(drawer_actions)
 	
-	_drawer_undo_btn = parent_scene.make_button("납탄 (맨 위 제거)", func(): _on_drawer_undo_pressed(), parent_scene.C_WARNING)
+	_drawer_undo_btn = parent_scene.make_button("최근 장전 취소 · 비용 없음", func(): _on_drawer_undo_pressed(), parent_scene.C_WARNING)
 	_drawer_undo_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_drawer_undo_btn.custom_minimum_size.y = 44
+	_drawer_undo_btn.add_theme_font_size_override("font_size", 14)
 	drawer_actions.add_child(_drawer_undo_btn)
 	
 	_drawer_confirm_btn = parent_scene.make_button("장전 완료 ▸", func(): _on_drawer_confirm_pressed(), parent_scene.C_SUCCESS)
 	_drawer_confirm_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_drawer_confirm_btn.custom_minimum_size.y = 44
+	_drawer_confirm_btn.add_theme_font_size_override("font_size", 14)
 	drawer_actions.add_child(_drawer_confirm_btn)
 	
 	_switch_drawer_tab_idx(0)
@@ -225,16 +270,74 @@ func toggle_drawer(expand: bool) -> void:
 	overlay._is_bag_expanded = expand
 	visible = expand
 	
-	var overlay_w = overlay.size.x if overlay.size.x > 100 else get_viewport_rect().size.x
-	var overlay_h = overlay.size.y if overlay.size.y > 100 else get_viewport_rect().size.y
-	
-	var target_x = (overlay_w - 700) / 2.0 if overlay_w > 700 else 24.0
+	layout_workbench()
 	if expand:
-		size = Vector2(700, 390)
-		position = Vector2(target_x, overlay_h - 390 - 48)
 		refresh_ammo_drawer()
-	else:
-		position = Vector2(target_x, overlay_h)
+
+
+func layout_workbench() -> void:
+	if not is_instance_valid(overlay):
+		return
+	var bounds: Vector2 = get_viewport_rect().size
+	position = Vector2(12, 12) - overlay.global_position
+	size = Vector2(maxf(bounds.x - 24, 0), maxf(bounds.y - 24, 0))
+
+
+func _refresh_public_context() -> void:
+	if not is_instance_valid(_enemy_context) or combat_manager == null:
+		return
+	for child in _enemy_context.get_children():
+		_enemy_context.remove_child(child)
+		child.queue_free()
+	var loading := combat_manager.state == CombatManager.State.LOADING
+	_context_title.text = "순서 설계 · 장전 중 턴 진행 없음" if loading else "탄환 확인 · 교전 중"
+	_planning_note.text = "마지막 장전 → 첫 발사  |  카드의 명중·관통은 현재 첫 표적 기준 (조건부 파츠 제외)"
+	if not loading:
+		_planning_note.text = "전투 중 추가 장전은 닫을 때 적 전체 1회 전진 · 탄환을 넣지 않고 확인만 하면 비용 없음"
+	var alive: Array[EnemyInstance] = []
+	for enemy: EnemyInstance in combat_manager.enemies:
+		if not enemy.is_dead():
+			# 같은 거리의 원래 배열 순서가 실제 강제 타겟 우선순위다.
+			var at := 0
+			while at < alive.size() and alive[at].current_distance <= enemy.current_distance:
+				at += 1
+			alive.insert(at, enemy)
+	for index in range(alive.size()):
+		var enemy := alive[index]
+		var panel := PanelContainer.new()
+		panel.name = "PublicEnemy%d" % index
+		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(0.08, 0.11, 0.16)
+		style.border_width_left = 3
+		style.border_color = parent_scene.C_WARNING if index == 0 else parent_scene.C_DIM
+		style.content_margin_left = 8
+		style.content_margin_right = 8
+		style.content_margin_top = 5
+		style.content_margin_bottom = 5
+		panel.add_theme_stylebox_override("panel", style)
+		_enemy_context.add_child(panel)
+		var column := VBoxContainer.new()
+		column.add_theme_constant_override("separation", 2)
+		panel.add_child(column)
+		var title: Label = parent_scene.make_label(("첫 표적 · " if index == 0 else "%d · " % (index + 1)) + enemy.data.display_name, 12, Color.WHITE)
+		title.clip_text = true
+		title.tooltip_text = enemy.data.display_name
+		column.add_child(title)
+		var durability := "방벽 %d/%d" % [enemy.barrier_cells, enemy.max_barrier_cells] if enemy.is_stack_sponge else "HP %d" % enemy.current_hp
+		column.add_child(parent_scene.make_label("%s · 방어 %d · 회피 %d" % [durability, enemy.current_def, enemy.current_evasion], 11, parent_scene.C_TEXT))
+		column.add_child(parent_scene.make_label("거리 %dm · 속도 %d" % [enemy.current_distance, enemy.current_speed], 11, parent_scene.C_WARNING))
+		var mechanics: Array[String] = []
+		if enemy.is_charger:
+			mechanics.append("차징 %d/%d" % [enemy.charge_turns_current, enemy.charge_turns_max])
+		if enemy.current_stance != Enums.EnemyStance.NONE:
+			mechanics.append("태세 전환 %d발 뒤" % maxi(enemy.stance_shift_interval - enemy.shot_counter, 0))
+		if enemy.slow_stacks > 0:
+			mechanics.append("둔화 %d" % enemy.slow_stacks)
+		if not mechanics.is_empty():
+			var detail: Label = parent_scene.make_label(" · ".join(mechanics), 10, parent_scene.C_ACCENT)
+			detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			column.add_child(detail)
 
 func _switch_drawer_tab_idx(tab_idx: int) -> void:
 	_active_drawer_tab = tab_idx
@@ -249,6 +352,8 @@ func _switch_drawer_tab_idx(tab_idx: int) -> void:
 	refresh_ammo_drawer()
 
 func refresh_ammo_drawer() -> void:
+	layout_workbench.call_deferred()
+	_refresh_public_context()
 	_refresh_drawer_stack()
 	_refresh_ammo_hand_hint()
 	
@@ -260,6 +365,7 @@ func refresh_ammo_drawer() -> void:
 		return
 		
 	for child in _drawer_inventory_grid.get_children():
+		_drawer_inventory_grid.remove_child(child)
 		child.queue_free()
 		
 	var can_insert := false
@@ -340,7 +446,7 @@ func refresh_ammo_drawer() -> void:
 			
 	if is_instance_valid(_drawer_confirm_btn):
 		if combat_manager and combat_manager.state == CombatManager.State.LOADING:
-			_drawer_confirm_btn.text = "장전 완료 ▸"
+			_drawer_confirm_btn.text = "%d발 장전 확정 · 발사는 별도" % overlay._loaded_bullets.size()
 			_drawer_confirm_btn.disabled = overlay._loaded_bullets.is_empty()
 		else:
 			_drawer_confirm_btn.text = "가방 닫기 ✕"
@@ -360,7 +466,7 @@ func _refresh_ammo_hand_hint() -> void:
 	if not _ammo_hand_hint.visible:
 		return
 	if variant == "A":
-		_ammo_hand_hint.text = "🅰 A안 · 전체 덱 선택\n전술탄 %d발이 모두 공개됩니다. 원하는 탄을 매번 자유롭게 골라 같은 조합을 반복할 수 있습니다." % combat_manager.draw_pile.size()
+		_ammo_hand_hint.text = "A · 전술탄 %d발 전체 선택" % combat_manager.draw_pile.size()
 		_ammo_hand_hint.tooltip_text = "A안 비교 기준: 전체 덱에 항상 접근할 수 있는 기존 방식입니다."
 		return
 	var preview_names: Array[String] = []
@@ -368,7 +474,7 @@ func _refresh_ammo_hand_hint() -> void:
 		preview_names.append(bullet.display_name)
 	var mode := combat_manager.ammo_hand_test_mode
 	var prefix := "🅱 B안 · 매번 새 패" if mode == "random_experience" else "🅱 B안 · 고정 비교 패"
-	_ammo_hand_hint.text = "%s\n현재 공개 패와 기본탄만 선택 · 미사용 탄은 리로드 후 유지" % prefix
+	_ammo_hand_hint.text = "%s · 미사용 탄은 리로드 후 유지" % prefix
 	_ammo_hand_hint.tooltip_text = "공개 패와 고정 기본탄만 장전할 수 있습니다. 발사 순서는 기존 LIFO 규칙 그대로입니다."
 	if is_instance_valid(_ammo_hand_state_label):
 		_ammo_hand_state_label.text = "공개 %d/%d · 미공개 %d · 다음 보충 %d" % [
@@ -403,13 +509,9 @@ func _refresh_drawer_stack() -> void:
 			bullets = combat_manager.magazine.get_loaded_bullets()
 			
 	var loaded := bullets.size()
-	_drawer_stack_vbox.custom_minimum_size.y = max_cap * 52 + (max_cap - 1) * 4
+	_drawer_stack_vbox.custom_minimum_size.y = max_cap * 42 + (max_cap - 1) * 4
 	if is_instance_valid(_drawer_stack_cap):
 		_drawer_stack_cap.text = "%d/%d" % [loaded, max_cap]
-		
-	for i in range(max_cap - loaded):
-		var slot := _create_stack_slot(null, -1, 200.0)
-		_drawer_stack_vbox.add_child(slot)
 		
 	for i in range(loaded - 1, -1, -1):
 		var pos: int = (loaded - 1) - i
@@ -419,15 +521,56 @@ func _refresh_drawer_stack() -> void:
 		if overlay._animate_last_insert and pos == 0:
 			slot.custom_minimum_size.y = 0
 			var tw := create_tween()
-			tw.tween_property(slot, "custom_minimum_size:y", 52.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			tw.tween_property(slot, "custom_minimum_size:y", 42.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 			slot.modulate.a = 0.0
 			var tw_fade := create_tween()
 			tw_fade.tween_property(slot, "modulate:a", 1.0, 0.15)
+	for i in range(max_cap - loaded):
+		var slot := _create_stack_slot(null, -1, 200.0)
+		_drawer_stack_vbox.add_child(slot)
 			
 	overlay._animate_last_insert = false
 
 func _create_stack_slot(bullet: BulletData, pos: int, width: float = 180.0) -> Control:
-	return overlay._create_stack_slot(bullet, pos, width)
+	var slot := PanelContainer.new()
+	slot.custom_minimum_size = Vector2(width, 42)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.08, 0.11, 0.16)
+	style.border_width_left = 3
+	style.border_color = parent_scene.C_SUCCESS if pos == 0 else parent_scene.C_DIM
+	style.content_margin_left = 7
+	style.content_margin_right = 7
+	style.content_margin_top = 3
+	style.content_margin_bottom = 3
+	slot.add_theme_stylebox_override("panel", style)
+	if bullet == null:
+		var empty: Label = parent_scene.make_label("빈 슬롯 · 탄환을 선택하세요", 11, parent_scene.C_DIM)
+		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		slot.add_child(empty)
+		return slot
+	var hidden := combat_manager != null and combat_manager.state != CombatManager.State.LOADING and pos >= 2
+	if not hidden:
+		slot.tooltip_text = BulletRoleUI.tooltip(bullet)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 7)
+	slot.add_child(row)
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(28, 28)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	icon.texture = overlay._get_bullet_icon(bullet) if not hidden else null
+	row.add_child(icon)
+	var copy := VBoxContainer.new()
+	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	copy.add_theme_constant_override("separation", 1)
+	row.add_child(copy)
+	var order_text := "%d · %s" % [pos + 1, "다음 발사" if pos == 0 else "발사 대기"]
+	copy.add_child(parent_scene.make_label(order_text, 10, parent_scene.C_SUCCESS if pos == 0 else parent_scene.C_DIM))
+	var bullet_name: Label = parent_scene.make_label("??? [정보 은폐]" if hidden else bullet.display_name, 12, Color.WHITE)
+	bullet_name.clip_text = true
+	copy.add_child(bullet_name)
+	return slot
 
 func _create_inventory_card(
 	bullet: BulletData,
@@ -760,4 +903,4 @@ func _on_use_consumable_in_combat(idx: int) -> void:
 	
 	# 3. 드로어 상태 갱신 및 닫기
 	_refresh_consumables_drawer()
-	toggle_drawer(false)
+	overlay._toggle_drawer(false)

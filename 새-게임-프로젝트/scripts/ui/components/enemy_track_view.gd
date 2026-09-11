@@ -137,6 +137,13 @@ const _HP_BAR_W := 76.0
 const _FOCUS_LABEL_Y := -42.0
 
 func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
+	var distance_tag: Label = parent_scene.make_label("%dm" % enemy.current_distance, 12, parent_scene.C_WARNING)
+	distance_tag.name = "EnemyDistance"
+	distance_tag.position = Vector2(0, -62)
+	distance_tag.size = Vector2(80, 18)
+	distance_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	distance_tag.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	es.add_child(distance_tag)
 	# ── HP 바 (머리 위) ──
 	# PanelContainer는 자식 크기를 자동 재배치해 피격 시 수동 폭 갱신과 충돌한다.
 	# 일반 Panel이 배경만 그리고 HpFill의 폭은 _refresh_hp_bar가 단독으로 관리한다.
@@ -195,7 +202,7 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	var badge_panel := PanelContainer.new()
 	badge_panel.name = "BadgePanel"
 	badge_panel.custom_minimum_size = Vector2(24, 24)
-	badge_panel.position = Vector2(8, _BADGE_ROW_Y)
+	badge_panel.position = Vector2(-12, _BADGE_ROW_Y)
 	es.add_child(badge_panel)
 	
 	var badge_style := StyleBoxFlat.new()
@@ -240,7 +247,7 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	var def_panel := PanelContainer.new()
 	def_panel.name = "DefPanel"
 	def_panel.custom_minimum_size = Vector2(36, 24)
-	def_panel.position = Vector2(36, _BADGE_ROW_Y) # 8 + 24 + 4 = 36
+	def_panel.position = Vector2(16, _BADGE_ROW_Y)
 	es.add_child(def_panel)
 	
 	var def_style := StyleBoxFlat.new()
@@ -269,7 +276,7 @@ func _build_enemy_badge(es: TextureRect, enemy: EnemyInstance) -> void:
 	var eva_panel := PanelContainer.new()
 	eva_panel.name = "EvaPanel"
 	eva_panel.custom_minimum_size = Vector2(36, 24)
-	eva_panel.position = Vector2(76, _BADGE_ROW_Y) # 36 + 36 + 4 = 76
+	eva_panel.position = Vector2(56, _BADGE_ROW_Y)
 	eva_panel.visible = enemy.data.evasion > 0
 	es.add_child(eva_panel)
 
@@ -409,6 +416,9 @@ func update_enemy_position_and_scale() -> void:
 			
 		es.visible = true
 		var dist: int = e.current_distance
+		var distance_tag := es.get_node_or_null("EnemyDistance") as Label
+		if distance_tag:
+			distance_tag.text = "%dm" % dist
 		var ratio: float = float(dist) / global_max_dist if global_max_dist > 0.0 else 0.0
 		
 		# [절대 규칙] anchor_left = 거리 / 최대거리로 수평 자유 배치
@@ -450,30 +460,36 @@ func update_enemy_position_and_scale() -> void:
 		if ring:
 			ring.visible = (e == nearest)
 
-## 동거리 적은 수평 슬롯으로 구분한다. 그룹 전체를 화면 안에 보존한다.
+## 인접 거리까지 선택 영역을 분리한다. 순서는 논리 거리, 수치는 개별 라벨에 보존한다.
 func _same_distance_formation_offset(enemy: EnemyInstance) -> Vector2:
 	if combat_manager == null:
 		return Vector2.ZERO
 
 	var peers: Array[EnemyInstance] = []
 	for other in enemy_sprites.keys():
-		if other is EnemyInstance and not other.is_dead() and other.current_distance == enemy.current_distance:
+		if other is EnemyInstance and not other.is_dead():
 			peers.append(other)
 	if peers.size() <= 1:
 		return Vector2.ZERO
 
 	peers.sort_custom(func(a: EnemyInstance, b: EnemyInstance) -> bool:
+		if a.current_distance != b.current_distance:
+			return a.current_distance < b.current_distance
 		return combat_manager.enemies.find(a) < combat_manager.enemies.find(b)
 	)
 	var slot := peers.find(enemy)
 	if slot < 0:
 		return Vector2.ZERO
-	var centered_slot := float(slot) - float(peers.size() - 1) * 0.5
-	var step := minf(80.0 / maxf(size.x, 320.0), 0.8 / float(peers.size()))
-	var half_span := float(peers.size() - 1) * step * 0.5
+	var step := minf(108.0 / maxf(size.x, 320.0), 0.8 / float(peers.size()))
+	var positions: Array[float] = []
+	for peer in peers:
+		var desired := clampf(0.16 + float(peer.current_distance) / global_max_dist * 0.72, 0.12, 0.92)
+		if not positions.is_empty():
+			desired = maxf(desired, positions.back() + step)
+		positions.append(desired)
+	var overflow := maxf(positions.back() - 0.92, 0.0)
 	var base := 0.16 + float(enemy.current_distance) / global_max_dist * 0.72
-	var center := clampf(base, 0.12 + half_span, 0.92 - half_span)
-	return Vector2(center - base + centered_slot * step, 0.0)
+	return Vector2(positions[slot] - overflow - base, 0.0)
 
 
 func update_distance_display(enemy: EnemyInstance) -> void:

@@ -26,6 +26,8 @@
 
 ## 검수 화면
 
+2026-09-11 전술 작업대 후속: 장전 화면은 뷰포트 내부12px 여백에 적 정보·발사 순서·후보 탄·고정 하단 버튼을 함께 배치한다. 기본5발은42px 행으로 모두 보이며 긴 탄창은 스크롤한다. 전장 적은 인접 거리도 선택 영역 간격을 확보하고 개별 거리 라벨을 표시한다. [최신 기능·검증 보고](walkthrough_tactical_workbench_2026-09-11.md)를 함께 확인한다.
+
 개발자 메뉴의 관리/정점 편성 QA, 탄환 카드 가독성 QA, 패 보충 연출 QA, 장전 안내 QA, 수집 기록 QA를 사용한다. 실제 렌더러 캡처는 `tools/run_preart_checks.ps1 -Mode visual`로 생성한다.
 
 Windows 검토용 실행 파일은 `tools/export_windows_preart.ps1`로 다시 만든다. 기존 Android/Web/iOS 내보내기 설정은 임시 Windows preset 추가 후 원상 복원한다. APK 실기 검증 및 배포 서명은 별도이며 Windows 빌드 통과로 대체하지 않는다.

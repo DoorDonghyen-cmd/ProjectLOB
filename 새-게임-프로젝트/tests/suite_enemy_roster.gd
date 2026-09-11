@@ -175,6 +175,22 @@ static func run(t) -> void:
 	t.eq(resource_ids.size(), 13, "적 리소스 총 13종")
 	t.eq(campaign_ids, resource_ids, "⭐ 캠페인 일반전·관문 합집합 = 적 리소스 13종")
 
+	# 실제 UI는 CSV를 반영한 복제본에 층/통로 거리를 적용해야 한다.
+	for resource_id in resource_ids:
+		var source := load("res://resources/enemies/%s.tres" % resource_id) as EnemyData
+		var original_hp := source.max_hp
+		var original_distance := source.start_distance
+		var prepared := source.for_encounter(-2)
+		var csv := DataLoader.get_enemy(resource_id)
+		t.eq(prepared.max_hp, int(csv.max_hp), "%s 조우 체력은 CSV 정본" % resource_id)
+		t.eq(prepared.start_distance, maxi(int(csv.start_distance) - 2, 4), "%s CSV 이후 거리 비용 적용" % resource_id)
+		t.check(source.max_hp == original_hp and source.start_distance == original_distance, "%s 공유 원본 불변" % resource_id)
+	var synthetic := EnemyData.new()
+	synthetic.max_hp = 37
+	synthetic.start_distance = 19
+	var synthetic_prepared := synthetic.for_encounter(-2)
+	t.check(synthetic_prepared.max_hp == 37 and synthetic_prepared.start_distance == 17, "합성 QA 적의 명시적 스탯 보존")
+
 	# ── CSV와 실제 리소스가 같은 현행 세계관 이름을 쓰는가 ──
 	var csv_names := _csv_display_names()
 	t.eq(csv_names.size(), 13, "enemy_stats.csv 적 13종")

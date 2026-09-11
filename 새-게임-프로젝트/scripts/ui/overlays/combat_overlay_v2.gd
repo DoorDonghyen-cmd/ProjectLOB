@@ -236,14 +236,7 @@ func _ready() -> void:
 
 func _on_resized() -> void:
 	if is_instance_valid(_drawer_panel):
-		var overlay_w = size.x if size.x > 100 else get_viewport_rect().size.x
-		var overlay_h = size.y if size.y > 100 else get_viewport_rect().size.y
-		var target_x = (overlay_w - 700) / 2.0 if overlay_w > 700 else 24.0
-		
-		if _is_bag_expanded:
-			_drawer_panel.position = Vector2(target_x, overlay_h - 390 - 48)
-		else:
-			_drawer_panel.position = Vector2(target_x, overlay_h)
+		_drawer_panel.layout_workbench()
 
 func _build_ui() -> void:
 	for child in get_children():
@@ -649,7 +642,7 @@ func _build_ui() -> void:
 	# HitAnalysis (PanelContainer) — 명중분석 (전투 트랙 좌상단에 반투명 플로팅 오버레이 팝업으로 배치)
 	_hit_info_panel = PanelContainer.new()
 	_hit_info_panel.name = "HitAnalysis"
-	_hit_info_panel.custom_minimum_size = Vector2(180, 95) # 콤팩트 가로 180, 세로 95
+	_hit_info_panel.custom_minimum_size = Vector2(180, 150)
 	_hit_info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE # 마우스 통과 설정
 	
 	var hud_style := StyleBoxFlat.new()
@@ -660,11 +653,9 @@ func _build_ui() -> void:
 	hud_style.corner_radius_top_left = 6; hud_style.corner_radius_top_right = 6
 	hud_style.corner_radius_bottom_left = 6; hud_style.corner_radius_bottom_right = 6
 	_hit_info_panel.add_theme_stylebox_override("panel", hud_style)
-	_track_control.add_child(_hit_info_panel)
+	left_col.add_child(_hit_info_panel)
 	
-	_hit_info_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_hit_info_panel.offset_left = 12
-	_hit_info_panel.offset_top = 12
+	_hit_info_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
 	var hit_margin := MarginContainer.new()
 	hit_margin.add_theme_constant_override("margin_left", 8)
@@ -676,14 +667,15 @@ func _build_ui() -> void:
 	var hit_vbox := VBoxContainer.new()
 	hit_margin.add_child(hit_vbox)
 	
-	var hit_title: Label = parent_scene.make_label("◎ 격발 분석", 10.5, parent_scene.C_SUCCESS)
+	var hit_title: Label = parent_scene.make_label("다음 발 · 기본 탄도", 12, parent_scene.C_SUCCESS)
+	hit_title.tooltip_text = "탄·총기·현재 버프 기준. 조건부 파츠는 실제 격발 때 적용됩니다."
 	hit_vbox.add_child(hit_title)
 	
 	_hit_info_label = RichTextLabel.new()
 	_hit_info_label.bbcode_enabled = true
 	_hit_info_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hit_info_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_hit_info_label.add_theme_font_size_override("normal_font_size", 11) # 가독성을 위해 폰트 11pt
+	_hit_info_label.add_theme_font_size_override("normal_font_size", 12)
 	_hit_info_label.text = "대기 중..."
 	hit_vbox.add_child(_hit_info_label)
 	
@@ -730,7 +722,7 @@ func _build_ui() -> void:
 	_shot_log_label = RichTextLabel.new()
 	_shot_log_label.bbcode_enabled = true
 	_shot_log_label.scroll_active = true
-	_shot_log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_shot_log_label.mouse_filter = Control.MOUSE_FILTER_PASS
 	_shot_log_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_shot_log_label.add_theme_font_size_override("normal_font_size", 12)
 	_shot_log_label.text = "[color=#888888]전투 기록 대기 중...[/color]"
@@ -944,7 +936,7 @@ func _create_inventory_card(
 	header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.add_child(header)
 
-	var role_lbl: Label = parent_scene.make_label(BulletRoleUI.visual_role_text(bullet), 11.0, role_color)
+	var role_lbl: Label = parent_scene.make_label(BulletRoleUI.visual_role_text(bullet), 12.0, role_color)
 	role_lbl.name = "BulletVisualRole"
 	role_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	role_lbl.add_theme_color_override("font_outline_color", Color(0.02, 0.03, 0.05))
@@ -958,7 +950,7 @@ func _create_inventory_card(
 		count_lbl.name = "BulletCount"
 		header.add_child(count_lbl)
 
-	var title_lbl: Label = parent_scene.make_label(bullet.display_name, 12.0, Color.WHITE)
+	var title_lbl: Label = parent_scene.make_label(bullet.display_name, 14.0, Color.WHITE)
 	title_lbl.name = "BulletDisplayName"
 	title_lbl.clip_text = true
 	title_lbl.add_theme_color_override("font_outline_color", Color(0.02, 0.03, 0.05))
@@ -976,7 +968,7 @@ func _create_inventory_card(
 	text_box.add_theme_constant_override("separation", 1)
 	body.add_child(text_box)
 
-	var outcome_lbl: Label = parent_scene.make_label(BulletRoleUI.primary_outcome_text(bullet), 10.5, Color.WHITE)
+	var outcome_lbl: Label = parent_scene.make_label(BulletRoleUI.primary_outcome_text(bullet), 12.0, Color.WHITE)
 	outcome_lbl.name = "BulletPrimaryOutcome"
 	outcome_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text_box.add_child(outcome_lbl)
@@ -985,14 +977,14 @@ func _create_inventory_card(
 	if effect_text.is_empty() and supply_capacity > 0:
 		effect_text = "리로드 시 정량 복구"
 	if not effect_text.is_empty():
-		var effect_lbl: Label = parent_scene.make_label(effect_text, 9.5, role_color)
+		var effect_lbl: Label = parent_scene.make_label(effect_text, 11.0, role_color)
 		effect_lbl.name = "BulletEffectOutcome"
 		effect_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		text_box.add_child(effect_lbl)
 
 	var gate_result := _candidate_gate_result(bullet)
 	if not gate_result.is_empty():
-		var gate_lbl: Label = parent_scene.make_label(str(gate_result.text), 9.5, gate_result.color)
+		var gate_lbl: Label = parent_scene.make_label(str(gate_result.text), 11.0, gate_result.color)
 		gate_lbl.name = "BulletGateResult"
 		gate_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		text_box.add_child(gate_lbl)
@@ -1326,8 +1318,7 @@ func start_combat(gun: GunData, enemy_list: Array, cm: CombatManager) -> void:
 
 	var enemy_data_list: Array[EnemyData] = []
 	for ed in enemy_list:
-		var temp_ed: EnemyData = ed.duplicate() as EnemyData
-		temp_ed.start_distance = maxi(ed.start_distance + dist_modifier, 4)
+		var temp_ed: EnemyData = ed.for_encounter(dist_modifier)
 		enemy_data_list.append(temp_ed)
 		
 	var initial_deck: Array[BulletData] = []
@@ -1450,6 +1441,9 @@ func _update_action_buttons() -> void:
 	_eject_btn.visible = is_trickster and not is_full_auto
 	
 	if combat_manager.state == CombatManager.State.LOADING:
+		_fire_btn.text = "%d발 장전 확정" % _loaded_bullets.size()
+		_unload_btn.text = "장전 취소 · 무료"
+		_reload_btn.text = "리로드"
 		_loading_confirm_btn.disabled = _loaded_bullets.is_empty()
 		_loading_undo_btn.disabled = _loaded_bullets.is_empty()
 		
@@ -1461,8 +1455,15 @@ func _update_action_buttons() -> void:
 		return
 		
 	# 연발은 무엇이 일어나는지 버튼에 명시한다 — 되돌릴 수 없는 선택이기 때문이다.
-	_fire_btn.text = ("💥 연발 (%d발 전탄)" % combat_manager.magazine.get_remaining()) if is_full_auto else "🔫 발사"
-	_unload_btn.text = "🗑 빼내기"
+	_fire_btn.text = ("연발 · %d발 전탄\n1턴" % combat_manager.magazine.get_remaining()) if is_full_auto else "발사\n1발 · 1턴"
+	_unload_btn.text = "빼내기\n탄 소멸 · 0턴"
+	if combat_manager._has_part(Enums.PartID.QUICK_LOAD):
+		_unload_btn.text = "빼내기\n바닥탄 소멸 · 0턴" if combat_manager.magazine.get_remaining() > 1 else "빼내기\n탄 환수 · 0턴"
+	_reload_btn.text = "리로드\n%d턴 · 잔탄 반환" % combat_manager.gun.reload_turns
+	_reload_btn.tooltip_text = "잔탄 반환 · 기본탄 복구 · 집중/셋업 초기화\n리로드 %d턴 동안 적이 행동합니다." % combat_manager.gun.reload_turns
+	_unload_btn.tooltip_text = "탄을 잃는 대신 다음 발로 넘어갑니다."
+	if RunManager.infiltration_risk_level >= 5:
+		_unload_btn.text = _unload_btn.text.replace("0턴", "적 1회 전진")
 	
 	if combat_manager.state != CombatManager.State.PLAYER_TURN:
 		_fire_btn.disabled = true
@@ -2981,6 +2982,19 @@ func _on_loading_phase_started() -> void:
 	_is_bag_expanded = false
 	_update_phase_state()
 	_update_hit_info(combat_manager.enemy)
+	_update_action_buttons()
+	_open_loading_workbench.call_deferred(combat_manager)
+
+
+func _open_loading_workbench(encounter: CombatManager) -> void:
+	# 공개 패 연출을 가리지 않고 끝난 뒤 같은 교전의 계획 화면만 연다.
+	await get_tree().process_frame
+	if not is_inside_tree() or combat_manager != encounter:
+		return
+	if is_instance_valid(_ammo_reveal_tween) and _ammo_reveal_tween.is_running():
+		await _ammo_reveal_tween.finished
+	if is_inside_tree() and combat_manager == encounter and encounter.state == CombatManager.State.LOADING:
+		_toggle_drawer(true)
 
 func _on_combat_log(msg: String) -> void:
 	add_combat_log(msg)
