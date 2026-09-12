@@ -68,6 +68,7 @@
 | 2026-07-18 | **통로 분기 목적지 가격 구조 구현** | `codex0718` | 목적지 클릭 한 번으로 통로 확정, 연결 노드 제한, 환기구 `-2m` 다음 전투 이월·비중첩, 무기고 통로 가변 배치, 층 스킵·통로 보상 제거 및 GDD/목업 동기화 완료 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_route_branching_2026-07-18.md) |
 | 2026-09-12 | **Godot 텍스트 밀도 정리** | `codex0912-quiet-ui` | 탄환 공용 수치·정보 창, 반복 설명 정리. 화면49·연출39·전체UI493 통과. main 미병합 | [문서](../../../../docs/walkthrough_quiet_ui_2026-09-12.md) |
 | 2026-09-12 | **다수 적 표적 예고** | `codex0912-multi-target` | 탄별 A/B/C 예고·개별 정보·같은 거리 표시. 집중129·독립2627·전체UI493. main 미병합 | [문서](../../../../docs/walkthrough_multi_target_2026-09-12.md) |
+| 2026-09-12 | **갤럭시 테스트 APK** | `codex0912-android-test` | ARM64/ARMv7 APK·서명/정렬/패키지·PC 터치34 통과, 실기 미검증 | [문서](../../../../docs/walkthrough_android_test_2026-09-12.md) |
 
 ---
 
@@ -127,3 +128,6 @@
 
 
 2026-09-12 참조: [다수 적 표적 예고](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_multi_target_2026-09-12.md)
+
+
+2026-09-12 참조: [갤럭시 테스트 APK](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_android_test_2026-09-12.md)
