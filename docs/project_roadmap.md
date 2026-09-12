@@ -1,3 +1,5 @@
+> **2026-09-12 최신:** 사용자가 현재 그래픽 방향을 긍정적으로 평가했다. 텍스트 반복을 줄이고 탄환 수치를 공용 정보줄/정보 창으로 정리했다. [실행과 검증](walkthrough_quiet_ui_2026-09-12.md), `builds/quiet-windows/Play-Quiet.cmd`. 수치 발견성과 실제 비교 편의는 다음 사람 플레이에서 확인한다.
+
 > **최신 시각 전투 개선 (2026-09-11):** Godot 네이티브 개발을 유지한다. 거리 전장·탄창·장전 이동·순차 사격/피격/전진을 구현했다. [실행과 검증](walkthrough_visual_combat_2026-09-11.md), `builds/visual-windows/Play-Visual.cmd`. 사람의 조합 체감과 연출 호흡 확인이 다음 단계다.
 
 > **재설계 브랜치 최신 상태 (2026-09-11):** 이 worktree는 `prototype/core-redesign`의 7교전 독립 후보입니다. main은 보존. [새 실행/규칙/검증](walkthrough_core_redesign_2026-09-11.md)을 우선 참조하세요. 아래 내용은 원래 35층 게임의 로드맵이며 새 후보 채택/사람 체감은 별도입니다.

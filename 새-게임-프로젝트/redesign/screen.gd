@@ -24,6 +24,8 @@ var battle_view: Control
 var magazine_view: Control
 var preview_label: Label
 var last_presentation: Dictionary = {}
+var ammo_inspector: Label
+var inspected_ammo := "basic"
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(BG)
@@ -110,14 +112,17 @@ func redraw() -> void:
 		return
 	var top := _row(body)
 	_label(top, "LAST ON BOARD   /   %02d · 07" % (int(model.s.floor) + 1), 26, ACCENT)
-	for item in [["규칙", "rules", _rules], ["메뉴", "menu", _to_menu]]:
+	for item in [["정보", "details", _details], ["규칙", "rules", _rules], ["메뉴", "menu", _to_menu]]:
 		var button := _button(top, item[0], item[1], item[2])
 		button.size_flags_horizontal = Control.SIZE_SHRINK_END
 		button.custom_minimum_size.x = 84
 	var skip := _button(top, "연출 생략", "skip_animation", _skip_animation, true)
 	skip.custom_minimum_size.x = 135
 	skip.size_flags_horizontal = Control.SIZE_SHRINK_END
-	_label(body, "%s   |   시드 %s   |   %s   |   %d턴" % [Content.GUNS[model.s.gun].name, str(model.s.seed), Content.PARTS[model.s.part].name, model.s.turns], 18, MUTED)
+	skip.visible = busy
+	var equipment := str(Content.GUNS[model.s.gun].name)
+	if model.s.part != "none": equipment += " · " + str(Content.PARTS[model.s.part].name)
+	_label(body, "%s   ·   %d턴" % [equipment, model.s.turns], 18, MUTED)
 	if debug_session:
 		_label(body, "개발자 연습 · 진행 저장 안 함", 18, DANGER)
 	if not save_error.is_empty():
@@ -130,10 +135,7 @@ func redraw() -> void:
 func _menu() -> void:
 	_label(body, "LAST\nON BOARD", 76, ACCENT)
 	_label(body, "인간에게 남은 것은, 빌린 총의 순서를 정하는 일뿐이다.", 24)
-	_label(body, "7개 교전 · 공개 정보 전투 · 마지막에 넣은 탄이 먼저 발사됩니다.", 20, MUTED)
-	var intro := _panel(body)
-	_label(intro, "순서를 설계하고, 그 결과를 감당한다.", 26)
-	_label(intro, "적의 거리·장갑·회피를 보고 탄환을 고르세요. 장전 계획은 무료로 취소할 수 있습니다. 확정한 뒤에는 발사하거나 시간을 써서 다시 장전합니다.")
+	_label(body, "7개 교전 · 마지막에 넣은 탄이 먼저 발사됩니다.", 20, MUTED)
 	var row := _row(body)
 	for id in ["single", "burst"]:
 		var column := _panel(row)
@@ -179,8 +181,6 @@ func _to_menu() -> void:
 	redraw()
 
 func _combat() -> void:
-	var encounter: Dictionary = Content.ENCOUNTERS[int(model.s.floor)]
-	_label(body, str(encounter.name) + "   ·   " + str(encounter.text), 19, MUTED)
 	battle_view = BattleView.new()
 	battle_view.name = "BattleView"
 	body.add_child(battle_view)
@@ -189,7 +189,7 @@ func _combat() -> void:
 	var workbench := _row(body)
 	var candidates := _panel(workbench)
 	candidates.get_parent().size_flags_stretch_ratio = 1.45
-	_label(candidates, "탄환을 눌러 장전", 22, ACCENT)
+	_label(candidates, "보유 탄환", 22, ACCENT)
 	var grid := GridContainer.new()
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 8)
@@ -203,11 +203,13 @@ func _combat() -> void:
 		var spec: Dictionary = Content.AMMO[id]
 		var count: int = model.available(id)
 		var hint: String = AmmoVisual.HINT[id] if id != "basic" else "재장전 시 %d발" % model.supply_capacity()
-		var text := "%s ×%d\n피해%d 관통%d 명중%d\n%s" % [spec.name, count, int(spec.dmg) + int(Content.GUNS[model.s.gun].bonus), spec.pen, int(spec.acc) + (2 if model.s.part == "lens" else 0), hint]
+		var text := "%s ×%d\n%s" % [spec.name, count, hint]
 		var button := _button(grid, text, "load_" + id, _load.bind(id), model.s.phase != "plan" or count <= 0 or model.s.plan.size() >= model.capacity())
-		button.add_theme_font_size_override("font_size", 16)
-		button.tooltip_text = str(spec.text) if id != "basic" else hint
-		button.custom_minimum_size.y = 100
+		button.add_theme_font_size_override("font_size", 18)
+		button.tooltip_text = _ammo_stats(id) + "\n" + (str(spec.text) if id != "basic" else hint)
+		button.custom_minimum_size.y = 84
+		button.mouse_entered.connect(_inspect_ammo.bind(id))
+		button.focus_entered.connect(_inspect_ammo.bind(id))
 		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
 			var style: StyleBoxFlat = button.get_theme_stylebox(state).duplicate()
 			style.content_margin_left = 36
@@ -215,12 +217,16 @@ func _combat() -> void:
 			button.add_theme_stylebox_override(state, style)
 		var icon := AmmoVisual.new()
 		icon.ammo_id = id
-		icon.position = Vector2(2, 18)
+		icon.position = Vector2(2, 10)
 		icon.size = Vector2(32, 50)
 		button.add_child(icon)
-	_label(candidates, "다음 보충: %s\n남은 덱 %d · 사용탄 %d · 전체 %d장" % [_ammo_names(model.s.draw.slice(0, 2)) if not model.s.draw.is_empty() else "사용탄 셔플", model.s.draw.size(), model.s.discard.size(), model.s.deck.size()], 16, MUTED)
+	ammo_inspector = _label(candidates, "", 17, INK)
+	ammo_inspector.name = "AmmoInspector"
+	ammo_inspector.custom_minimum_size.y = 28
+	_inspect_ammo(inspected_ammo if ids.has(inspected_ammo) else "basic")
+	_label(candidates, "다음  ·  %s" % [_ammo_names(model.s.draw.slice(0, 2)) if not model.s.draw.is_empty() else "사용탄 셔플"], 16, MUTED)
 	var queue := _panel(workbench)
-	_label(queue, "← 먼저 발사   /   탄창 4칸", 22, ACCENT)
+	_label(queue, "← 발사 순서", 22, ACCENT)
 	var stack: Array = model.s.plan if model.s.phase == "plan" else model.s.magazine
 	magazine_view = MagazineView.new()
 	magazine_view.name = "MagazineView"
@@ -228,37 +234,52 @@ func _combat() -> void:
 	magazine_view.confirmed = model.s.phase == "ready"
 	queue.add_child(magazine_view)
 	if model.s.phase == "plan":
-		_button(queue, "최근 장전 취소 · 무료", "undo", _undo, stack.is_empty())
+		_button(queue, "되돌리기", "undo", _undo, stack.is_empty()).tooltip_text = "마지막에 넣은 탄을 돌려받습니다. 시간 소모 없음."
 	var preview: Dictionary = model.preview()
-	preview_label = _label(queue, str(preview.get("text", "마지막에 넣은 탄이 1번으로 들어옵니다.\n준비탄 → 다음 탄으로 효과가 이어집니다.")), 17, ACCENT if int(preview.get("damage", 0)) > 0 else MUTED)
+	preview_label = _label(queue, _preview_text(preview), 18, ACCENT if int(preview.get("damage", 0)) > 0 else MUTED)
+	preview_label.tooltip_text = str(preview.get("text", "마지막에 넣은 탄이 먼저 발사됩니다. 준비탄의 효과는 다음 한 발로 이어집니다."))
 	var actions := VBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
 	queue.add_child(actions)
 	if model.s.phase == "plan":
-		_button(actions, "장전 확정 · 시간 0", "confirm", _confirm, stack.is_empty())
+		_button(actions, "장전 확정", "confirm", _confirm, stack.is_empty()).tooltip_text = "시간 소모 없음. 확정 후 순서를 바꾸려면 재장전해야 합니다."
 	else:
-		_button(actions, "발사 · %s · 1턴" % ("전탄" if model.s.gun == "burst" else "한 발"), "fire", _fire, stack.is_empty())
+		_button(actions, "%s · 1턴" % ("전탄 발사" if model.s.gun == "burst" else "발사"), "fire", _fire, stack.is_empty())
 		var projected: Array = model.movement_preview(model.reload_cost())
 		var lethal := false
 		for i in range(projected.size()):
 			if model.s.enemies[i].hp > 0 and projected[i] <= 0:
 				lethal = true
-		_button(actions, "다시 장전 · %d턴%s" % [model.reload_cost(), " · 0m 도달 위험" if lethal else ""], "reload", _reload)
-	# The battlefield carries immediate feedback; the full result remains accessible.
-	var feedback := _label(body, str(model.s.message), 16, MUTED)
-	feedback.max_lines_visible = 1
-	feedback.tooltip_text = str(model.s.message)
+		_button(actions, "재장전 · %d턴%s" % [model.reload_cost(), " · 접촉 위험" if lethal else ""], "reload", _reload)
+
+func _ammo_stats(id: String) -> String:
+	var spec: Dictionary = Content.AMMO[id]
+	return "%s   피해 %d  관통 %d  명중 %d" % [spec.name, int(spec.dmg) + int(Content.GUNS[model.s.gun].bonus), spec.pen, int(spec.acc) + (2 if model.s.part == "lens" else 0)]
+
+func _inspect_ammo(id: String) -> void:
+	inspected_ammo = id
+	if is_instance_valid(ammo_inspector):
+		ammo_inspector.text = _ammo_stats(id)
+		ammo_inspector.add_theme_color_override("font_color", AmmoVisual.COLORS[id])
+
+func _preview_text(preview: Dictionary) -> String:
+	if preview.is_empty():
+		return "탄환을 눌러 장전하세요" if model.s.phase == "plan" else "탄창이 비었습니다"
+	var result := "빗나감" if not preview.hit else ("도탄" if int(preview.damage) == 0 else "피해 %d" % preview.damage)
+	if int(preview.hp) <= 0: result += " · 처치"
+	var spec: Dictionary = Content.AMMO[preview.id]
+	if str(spec.effect) in ["dmg", "pen", "acc"]:
+		result += "\n" + str(AmmoVisual.HINT[preview.id])
+	return "첫 발  ·  " + result
 
 func _reward() -> void:
 	_label(body, "통과했습니다. 무엇을 가져갈까요?", 34, ACCENT)
-	_label(body, str(model.s.message), 18, MUTED)
 	var next: Dictionary = Content.ENCOUNTERS[int(model.s.floor) + 1]
 	var peek := _panel(body)
 	_label(peek, "다음 교전  /  " + str(next.name), 24)
 	for e in Content.enemies_for(int(model.s.floor) + 1):
 		_label(peek, "%s · HP %d / 장갑 %d / 회피 %d / 속도 %d / 거리 %dm" % [e.name, e.hp, e.def, e.eva, e.speed, e.distance], 18, MUTED)
-	_label(body, "현재 덱: " + _ammo_names(model.s.deck), 19)
-	_label(body, "현재 파츠: %s · %s" % [Content.PARTS[model.s.part].name, Content.PARTS[model.s.part].text], 18, MUTED)
+	_label(body, "덱 %d장 · %s" % [model.s.deck.size(), Content.PARTS[model.s.part].name], 18, MUTED)
 	var row := _row(body)
 	for id in model.reward_options():
 		var is_ammo: bool = Content.AMMO.has(id)
@@ -267,8 +288,7 @@ func _reward() -> void:
 		_label(card, spec.name, 25, ACCENT)
 		_label(card, spec.text, 19)
 		if is_ammo:
-			_label(card, "기본 피해 %d / 관통 %d / 명중 %d" % [spec.dmg, spec.pen, spec.acc], 18, MUTED)
-			_label(card, "현재 총기: 피해 %d / 관통 %d / 명중 %d" % [int(spec.dmg) + int(Content.GUNS[model.s.gun].bonus), spec.pen, int(spec.acc) + (2 if model.s.part == "lens" else 0)], 18, ACCENT)
+			_label(card, "피해 %d · 관통 %d · 명중 %d" % [int(spec.dmg) + int(Content.GUNS[model.s.gun].bonus), spec.pen, int(spec.acc) + (2 if model.s.part == "lens" else 0)], 18, ACCENT).tooltip_text = "현재 총기와 파츠가 반영된 수치"
 		_button(card, "덱에 1장 추가" if is_ammo else "파츠 장착 · 기존 파츠 교체", "reward_" + id, _choose.bind(id, ""), is_ammo and model.s.deck.size() >= 10)
 	var refine := _panel(body)
 	_label(refine, "덱을 늘리지 않는 선택", 23)
@@ -347,6 +367,7 @@ func _choose(id: String, remove_id: String) -> void:
 func _present(before: Dictionary, results: Array, reloading: bool) -> void:
 	busy = true
 	_persist()
+	find_child("skip_animation", true, false).show()
 	for button in find_children("*", "Button", true, false):
 		button.disabled = button.name != "skip_animation"
 	battle_view.speed_scale = presentation_speed
@@ -357,7 +378,8 @@ func _present(before: Dictionary, results: Array, reloading: bool) -> void:
 
 func _visual_shot(result: Dictionary) -> void:
 	magazine_view.consume()
-	preview_label.text = str(result.text)
+	preview_label.text = ""
+	preview_label.tooltip_text = str(result.text)
 
 func _skip_animation() -> void:
 	if busy and is_instance_valid(battle_view): battle_view.fast_forward = true
@@ -391,6 +413,27 @@ func _rules() -> void:
 	_label(column, "4. 적은 행동 비용만큼 전진합니다. 0m면 즉시 패배합니다. 충격탄은 명중하면 장갑에 막혀도 밀며, 탄창당 총 2m가 한계입니다. 점착은 다음 전진 한 번만 늦춥니다.")
 	_label(column, "5. 재장전 시 남은 탄창은 사용탄 더미로, 남은 패는 유지됩니다. 기본탄 3발이 복구되고 전술 패를 5장까지 채웁니다. 뽑을 탄이 없으면 사용탄을 섞습니다.")
 	_label(column, "6. 단발은 피해 +1 / 사격 1턴 / 재장전 1턴. 일제는 전탄 사격 1턴 / 재장전 3턴. 각 교전은 전체 덱과 기본 공급으로 새로 시작합니다.")
+
+func _details() -> void:
+	if busy: return
+	var column := _dialog("전투 정보")
+	column.name = "CombatDetails"
+	var encounter: Dictionary = Content.ENCOUNTERS[int(model.s.floor)]
+	_label(column, encounter.name, 26, ACCENT)
+	_label(column, encounter.text, 18, MUTED)
+	_label(column, "시드 %s · %s\n%s · %s" % [str(model.s.seed), Content.GUNS[model.s.gun].text, Content.PARTS[model.s.part].name, Content.PARTS[model.s.part].text], 18)
+	_label(column, "적 정보", 22, ACCENT)
+	for e in model.s.enemies:
+		_label(column, "%s · HP %d/%d · 장갑 %d · 회피 %d\n거리 %dm · 속도 %d · 다음 전진 %dm" % [e.name, e.hp, e.max_hp, e.def, e.eva, e.distance, e.speed, maxi(0, int(e.speed) - int(e.slow))], 18)
+	_label(column, "탄환 · 현재 총기/파츠 반영", 22, ACCENT)
+	var ids: Array = ["basic"]
+	for id in model.s.deck:
+		if not ids.has(id): ids.append(id)
+	for id in ids:
+		_label(column, _ammo_stats(id), 19, AmmoVisual.COLORS[id])
+		_label(column, "재장전 시 %d발 공급" % model.supply_capacity() if id == "basic" else str(Content.AMMO[id].text), 17, MUTED)
+	_label(column, "덱 %d장 · 남은 덱 %d · 사용탄 %d\n%s" % [model.s.deck.size(), model.s.draw.size(), model.s.discard.size(), _ammo_names(model.s.deck)], 18)
+	_label(column, "최근 결과\n" + str(model.s.message), 18, MUTED)
 
 func _developer() -> void:
 	var column := _dialog("개발자 테스트 · 기존 저장 보존")

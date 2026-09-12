@@ -26,7 +26,7 @@ func _ready() -> void:
 func sync(state: Dictionary) -> void:
 	enemies = state.enemies.duplicate(true)
 	target = _nearest()
-	caption = "가까운 적을 자동 조준 · 사격 후 생존한 적이 전진"
+	caption = ""
 	queue_redraw()
 
 func _nearest() -> int:
@@ -79,9 +79,8 @@ func _draw() -> void:
 			draw_line(pos + Vector2(-12, -12), pos + Vector2(12, 12), Color("52716b"), 3)
 			draw_line(pos + Vector2(-12, 12), pos + Vector2(12, -12), Color("52716b"), 3)
 		var x := size.x - 239
-		draw_string(FONT, Vector2(x, pos.y - 16), ("▶ " if i == target else "") + str(e.name), HORIZONTAL_ALIGNMENT_LEFT, 230, 19, Color("a9dfbf") if i == target else Color("dce0d8"))
-		draw_string(FONT, Vector2(x, pos.y + 3), "HP %d/%d   장갑 %d   회피 %d" % [e.hp, e.max_hp, e.def, e.eva], HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("c2cdd1"))
-		draw_string(FONT, Vector2(x, pos.y + 20), "속도 %d · 다음 전진 %dm" % [e.speed, maxi(0, int(e.speed) - int(e.slow))], HORIZONTAL_ALIGNMENT_LEFT, 233, 15, Color("8ca8b4"))
+		draw_string(FONT, Vector2(x, pos.y - 9), ("▶ " if i == target else "") + str(e.name) + "  HP %d" % e.hp, HORIZONTAL_ALIGNMENT_LEFT, 233, 18, Color("a9dfbf") if i == target else Color("dce0d8"))
+		draw_string(FONT, Vector2(x, pos.y + 14), "장갑 %d · 회피 %d · 접근 %dm" % [e.def, e.eva, maxi(0, int(e.speed) - int(e.slow))], HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("8ca8b4"))
 	if not bullet.is_empty() and projectile_target >= 0:
 		var from := Vector2(102, 131)
 		var to := enemy_position(projectile_target)
@@ -148,7 +147,7 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, reloadin
 		float_text = "빗나감" if not result.hit else ("도탄" if result.damage == 0 else "−%d" % result.damage)
 		if result.hp == 0: float_text += " 처치"
 		float_color = Color("f0b495") if result.damage == 0 else Color("d7eeae")
-		caption = str(result.text)
+		caption = "%s · %s" % [Ammo.SHORT[result.id], float_text]
 		var distance := float(enemy.distance)
 		visual_events.append({"kind": "impact", "target": target, "hp": result.hp, "push": result.push})
 		await _animate(0.32, func(t: float): pulse = t; enemy.distance = lerpf(distance, distance + float(result.push), t))

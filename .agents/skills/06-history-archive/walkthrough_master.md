@@ -66,6 +66,7 @@
 | 2026-07-12 | **맵 · 레벨 구조 및 경제 개정 기획 인게임 연동 구현** | `16ba329e` | 15노드 맵 제너레이터 개편, 맵 UI 15층 확장, 보상 드래프트 3탄환 교체(Swap) 기능, 스타팅 보증금/금고 크레딧 이월, 히든 노드 안전 완충망 구현 완료 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/16ba329e-a924-4c77-947c-907545fa1730/walkthrough.md) |
 | 2026-07-12 | **작전 침투 구역 순차 해금 및 노드 완결 구조 구현** | `afaad6f3` | 5개 작전 침투 구역(섹션 A~E)의 순차 해금 조건 및 10~15층 완결 노드 구조를 인게임 진행과 로비 UI에 완전히 연동 완료, 타이틀 ➡️ 구역 선택 ➡️ 요원 준비실 UI/UX 전환 흐름 개편 적용 | [walkthrough.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/walkthrough.md) |
 | 2026-07-18 | **통로 분기 목적지 가격 구조 구현** | `codex0718` | 목적지 클릭 한 번으로 통로 확정, 연결 노드 제한, 환기구 `-2m` 다음 전투 이월·비중첩, 무기고 통로 가변 배치, 층 스킵·통로 보상 제거 및 GDD/목업 동기화 완료 | [walkthrough.md](file:///D:/ProjectLoB/docs/walkthrough_route_branching_2026-07-18.md) |
+| 2026-09-12 | **Godot 텍스트 밀도 정리** | `codex0912-quiet-ui` | 탄환 공용 수치·정보 창, 반복 설명 정리. 화면49·연출39·전체UI493 통과. main 미병합 | [문서](../../../../docs/walkthrough_quiet_ui_2026-09-12.md) |
 
 ---
 
@@ -119,3 +120,6 @@
 * [Session 46ca166d-2f0e-4374-9d61-863e0f35dfaf Walkthrough](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/46ca166d-2f0e-4374-9d61-863e0f35dfaf/walkthrough.md)
 
 
+
+
+2026-09-12 참조: [텍스트 밀도 정리](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_quiet_ui_2026-09-12.md)
