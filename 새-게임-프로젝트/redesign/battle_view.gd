@@ -2,6 +2,8 @@ extends Control
 ## Presentation consumes copies only. Combat is already resolved and saved before
 ## any tween starts; this control never invokes game commands or random streams.
 signal shot_started(result: Dictionary)
+signal enemy_inspected(index: int)
+const Forecast = preload("res://redesign/forecast.gd")
 const Ammo = preload("res://redesign/ammo_visual.gd")
 const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 var enemies: Array = []
@@ -18,16 +20,76 @@ var pulse := 0.0
 var fast_forward := false
 var speed_scale := 1.0
 var visual_events: Array = []
+var first_shot: Dictionary = {}
+var hovered := -1
+var inspection_enabled := true
+var info_buttons: Array[Button] = []
 
 func _ready() -> void:
 	custom_minimum_size.y = 260
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	resized.connect(_place_info_buttons)
+	mouse_exited.connect(func(): hovered = -1; queue_redraw())
 
 func sync(state: Dictionary) -> void:
 	enemies = state.enemies.duplicate(true)
 	target = _nearest()
 	caption = ""
+	_rebuild_info_buttons()
 	queue_redraw()
+
+func _rebuild_info_buttons() -> void:
+	for button in info_buttons:
+		remove_child(button)
+		button.queue_free()
+	info_buttons.clear()
+	for i in range(enemies.size()):
+		var button := Button.new()
+		button.name = "enemy_info_%d" % i
+		button.flat = true
+		for state in ["normal", "hover", "pressed", "disabled"]:
+			button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+		button.tooltip_text = _enemy_text(i)
+		button.disabled = not inspection_enabled
+		button.pressed.connect(func():
+			if inspection_enabled: enemy_inspected.emit(i)
+		)
+		button.mouse_entered.connect(func(): hovered = i; queue_redraw())
+		button.mouse_exited.connect(func(): hovered = -1; queue_redraw())
+		button.focus_entered.connect(func(): hovered = i; queue_redraw())
+		button.focus_exited.connect(func(): hovered = -1; queue_redraw())
+		add_child(button)
+		info_buttons.append(button)
+	_place_info_buttons()
+
+func _place_info_buttons() -> void:
+	for i in range(info_buttons.size()):
+		info_buttons[i].position = Vector2(size.x - 247, enemy_position(i).y - 30)
+		info_buttons[i].size = Vector2(241, 50)
+
+func _enemy_at(point: Vector2) -> int:
+	for i in range(enemies.size()):
+		if Rect2(enemy_position(i) - Vector2(30, 27), Vector2(60, 53)).has_point(point): return i
+	return -1
+
+func _enemy_text(index: int) -> String:
+	var e: Dictionary = enemies[index]
+	return "%s · %s\nHP %d/%d · 장갑 %d · 회피 %d\n거리 %dm · 속도 %d · 다음 접근 %dm\n클릭: 상세 정보 (자동 조준 유지)" % [Forecast.tag(index), e.name, e.hp, e.max_hp, e.def, e.eva, roundi(e.distance), e.speed, maxi(0, int(e.speed) - int(e.slow))]
+
+func _get_tooltip(at_position: Vector2) -> String:
+	var index := _enemy_at(at_position)
+	return _enemy_text(index) if index >= 0 and inspection_enabled else ""
+
+func _gui_input(event: InputEvent) -> void:
+	if not inspection_enabled: return
+	if event is InputEventMouseMotion:
+		hovered = _enemy_at(event.position)
+		queue_redraw()
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var index := _enemy_at(event.position)
+		if index >= 0:
+			enemy_inspected.emit(index)
+			accept_event()
 
 func _nearest() -> int:
 	var index := -1
@@ -64,6 +126,8 @@ func _draw() -> void:
 	for i in range(enemies.size()):
 		var e: Dictionary = enemies[i]
 		var pos := enemy_position(i)
+		if i == hovered and inspection_enabled:
+			draw_rect(Rect2(pos - Vector2(30, 28), Vector2(60, 54)), Color("d1d8d7"), false, 1)
 		draw_line(Vector2(130, pos.y + 23), Vector2(end + 30, pos.y + 23), Color("39515b"), 2)
 		if e.hp > 0:
 			if i == target:
@@ -72,15 +136,20 @@ func _draw() -> void:
 			_draw_enemy(pos, str(e.kind), Color("efb088") if i == target else Color("91adba"))
 			draw_rect(Rect2(pos.x - 23, pos.y - 33, 46, 4), Color("3c515b"))
 			draw_rect(Rect2(pos.x - 23, pos.y - 33, 46 * float(e.hp) / float(e.max_hp), 4), Color("b3db9d"))
-			draw_string(FONT, pos + Vector2(-18, 42), "%dm" % roundi(e.distance), HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("e6e6d9"))
+			var distance_x := pos.x + 34 if pos.x + 155 < end else pos.x - 130
+			draw_string(FONT, Vector2(distance_x, pos.y + 24), "%s · %dm" % [Forecast.tag(i), roundi(e.distance)], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("e6e6d9"))
 			if e.slow > 0:
 				draw_arc(pos, 22, 0, TAU, 20, Ammo.COLORS.slow, 3)
 		else:
 			draw_line(pos + Vector2(-12, -12), pos + Vector2(12, 12), Color("52716b"), 3)
 			draw_line(pos + Vector2(-12, 12), pos + Vector2(12, -12), Color("52716b"), 3)
 		var x := size.x - 239
-		draw_string(FONT, Vector2(x, pos.y - 9), ("▶ " if i == target else "") + str(e.name) + "  HP %d" % e.hp, HORIZONTAL_ALIGNMENT_LEFT, 233, 18, Color("a9dfbf") if i == target else Color("dce0d8"))
+		draw_string(FONT, Vector2(x, pos.y - 9), Forecast.tag(i) + " · " + str(e.name) + "  HP %d" % e.hp, HORIZONTAL_ALIGNMENT_LEFT, 233, 17, Color("a9dfbf") if i == target else Color("dce0d8"))
 		draw_string(FONT, Vector2(x, pos.y + 14), "장갑 %d · 회피 %d · 접근 %dm" % [e.def, e.eva, maxi(0, int(e.speed) - int(e.slow))], HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("8ca8b4"))
+	if not first_shot.is_empty() and first_shot.target >= 0:
+		var p := enemy_position(first_shot.target)
+		var label_x := p.x + 34 if p.x + 155 < end else p.x - 130
+		draw_string(FONT, Vector2(label_x, p.y + 4), "예상 " + Forecast.outcome(first_shot), HORIZONTAL_ALIGNMENT_LEFT, 128, 18, Color("a9dfbf") if first_shot.damage > 0 else Color("f2a38d"))
 	if not bullet.is_empty() and projectile_target >= 0:
 		var from := Vector2(102, 131)
 		var to := enemy_position(projectile_target)
@@ -127,6 +196,8 @@ func _animate(duration: float, callback: Callable) -> void:
 		queue_redraw()
 
 func play_action(before: Dictionary, after: Dictionary, results: Array, reloading: bool) -> void:
+	inspection_enabled = false
+	first_shot = {}
 	sync(before)
 	visual_events.clear()
 	for result in results:

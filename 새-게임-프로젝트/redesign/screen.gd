@@ -4,6 +4,7 @@ const Content = preload("res://redesign/content.gd")
 const BattleView = preload("res://redesign/battle_view.gd")
 const MagazineView = preload("res://redesign/magazine_view.gd")
 const AmmoVisual = preload("res://redesign/ammo_visual.gd")
+const Forecast = preload("res://redesign/forecast.gd")
 const SAVE := "user://core_redesign_run.json"
 const BG := Color("101920")
 const PANEL := Color("1b2a34")
@@ -26,6 +27,7 @@ var preview_label: Label
 var last_presentation: Dictionary = {}
 var ammo_inspector: Label
 var inspected_ammo := "basic"
+var combat_forecast: Dictionary = {}
 
 func _ready() -> void:
 	RenderingServer.set_default_clear_color(BG)
@@ -181,11 +183,15 @@ func _to_menu() -> void:
 	redraw()
 
 func _combat() -> void:
+	combat_forecast = Forecast.analyze(model.s)
 	battle_view = BattleView.new()
 	battle_view.name = "BattleView"
+	battle_view.inspection_enabled = not busy
 	body.add_child(battle_view)
 	battle_view.sync(model.s)
+	if not combat_forecast.shots.is_empty(): battle_view.first_shot = combat_forecast.shots[0]
 	battle_view.shot_started.connect(_visual_shot)
+	battle_view.enemy_inspected.connect(_enemy_details)
 	var workbench := _row(body)
 	var candidates := _panel(workbench)
 	candidates.get_parent().size_flags_stretch_ratio = 1.45
@@ -226,18 +232,24 @@ func _combat() -> void:
 	_inspect_ammo(inspected_ammo if ids.has(inspected_ammo) else "basic")
 	_label(candidates, "다음  ·  %s" % [_ammo_names(model.s.draw.slice(0, 2)) if not model.s.draw.is_empty() else "사용탄 셔플"], 16, MUTED)
 	var queue := _panel(workbench)
-	_label(queue, "← 발사 순서", 22, ACCENT)
+	var multi: bool = model.s.enemies.size() > 1
+	_label(queue, "← 발사 순서" + (" · 예상 표적" if multi else ""), 22, ACCENT)
 	var stack: Array = model.s.plan if model.s.phase == "plan" else model.s.magazine
 	magazine_view = MagazineView.new()
 	magazine_view.name = "MagazineView"
 	magazine_view.stack = stack.duplicate()
 	magazine_view.confirmed = model.s.phase == "ready"
+	if multi and not stack.is_empty(): magazine_view.forecast = combat_forecast
 	queue.add_child(magazine_view)
 	if model.s.phase == "plan":
 		_button(queue, "되돌리기", "undo", _undo, stack.is_empty()).tooltip_text = "마지막에 넣은 탄을 돌려받습니다. 시간 소모 없음."
 	var preview: Dictionary = model.preview()
 	preview_label = _label(queue, _preview_text(preview), 18, ACCENT if int(preview.get("damage", 0)) > 0 else MUTED)
 	preview_label.tooltip_text = str(preview.get("text", "마지막에 넣은 탄이 먼저 발사됩니다. 준비탄의 효과는 다음 한 발로 이어집니다."))
+	if multi and not stack.is_empty():
+		preview_label.text = "연속 사격 · " + ("전탄 후 적 접근" if model.s.gun == "burst" else "매 발 후 적 접근")
+		if combat_forecast.phase == "lost": preview_label.text = "연속 사격: %d발 뒤 접촉 위험" % combat_forecast.shots.size()
+		preview_label.tooltip_text = "현재 탄창을 중간 재장전 없이 계속 발사할 때의 예상입니다. 보존은 전투 종료로 미발사, 중단은 접촉 패배로 미발사입니다.\n같은 거리는 A → B → C 순서로 조준합니다."
 	var actions := VBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
 	queue.add_child(actions)
@@ -368,6 +380,8 @@ func _present(before: Dictionary, results: Array, reloading: bool) -> void:
 	busy = true
 	_persist()
 	find_child("skip_animation", true, false).show()
+	magazine_view.forecast = {}
+	magazine_view.queue_redraw()
 	for button in find_children("*", "Button", true, false):
 		button.disabled = button.name != "skip_animation"
 	battle_view.speed_scale = presentation_speed
@@ -384,30 +398,30 @@ func _visual_shot(result: Dictionary) -> void:
 func _skip_animation() -> void:
 	if busy and is_instance_valid(battle_view): battle_view.fast_forward = true
 
-func _dialog(title: String) -> VBoxContainer:
+func _dialog(title: String, compact: bool = false) -> VBoxContainer:
 	var dialog := AcceptDialog.new()
 	dialog.title = title
-	dialog.min_size = Vector2i(720, 480)
+	dialog.min_size = Vector2i(520, 240) if compact else Vector2i(720, 480)
 	dialog.dialog_hide_on_ok = true
 	dialog.confirmed.connect(dialog.queue_free)
 	dialog.canceled.connect(dialog.queue_free)
 	add_child(dialog)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(780, 500)
+	scroll.custom_minimum_size = Vector2(530, 190) if compact else Vector2(780, 500)
 	dialog.add_child(scroll)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 16)
 	column.set_meta("dialog", dialog)
 	scroll.add_child(column)
-	dialog.popup_centered.call_deferred(Vector2i(820, 640))
+	dialog.popup_centered.call_deferred(Vector2i(580, 330) if compact else Vector2i(820, 640))
 	return column
 
 func _rules() -> void:
 	if busy: return
 	var column := _dialog("구형 화기 사용법")
 	_label(column, "마지막 장전 → 첫 발사", 30, ACCENT)
-	_label(column, "1. 가까운 적을 자동 조준합니다. 동률이면 왼쪽 적이 먼저입니다. 명중 ≥ 회피, 관통 ≥ 장갑이어야 표시된 피해가 전부 들어갑니다. 확률 판정은 없습니다.")
+	_label(column, "1. 가까운 적을 자동 조준합니다. 같은 거리는 A → B → C 순서입니다. 적 클릭은 정보 확인이며 조준은 바뀌지 않습니다. 명중 ≥ 회피, 관통 ≥ 장갑이어야 표시된 피해가 전부 들어갑니다. 확률 판정은 없습니다.")
 	_label(column, "2. 계획 중에는 무료로 취소합니다. 확정 이후 순서를 바꾸려면 유료 재장전이 필요합니다. 탄환을 다 넣을 필요는 없습니다.")
 	_label(column, "3. 준비탄은 발사하면 다음 한 발을 강화합니다. 빗나가도 준비 효과는 생기며, 다음 탄이 빗나가도 소모됩니다. 재장전하면 준비 효과가 사라집니다.")
 	_label(column, "4. 적은 행동 비용만큼 전진합니다. 0m면 즉시 패배합니다. 충격탄은 명중하면 장갑에 막혀도 밀며, 탄창당 총 2m가 한계입니다. 점착은 다음 전진 한 번만 늦춥니다.")
@@ -435,9 +449,42 @@ func _details() -> void:
 	_label(column, "덱 %d장 · 남은 덱 %d · 사용탄 %d\n%s" % [model.s.deck.size(), model.s.draw.size(), model.s.discard.size(), _ammo_names(model.s.deck)], 18)
 	_label(column, "최근 결과\n" + str(model.s.message), 18, MUTED)
 
+func _enemy_details(index: int) -> void:
+	if busy or index < 0 or index >= model.s.enemies.size(): return
+	var e: Dictionary = model.s.enemies[index]
+	var column := _dialog("적 정보 · 자동 조준 유지", true)
+	column.name = "EnemyDetails"
+	column.set_meta("enemy_index", index)
+	_label(column, "%s · %s" % [Forecast.tag(index), e.name], 26, ACCENT)
+	_label(column, "HP %d/%d   장갑 %d   회피 %d" % [e.hp, e.max_hp, e.def, e.eva], 21)
+	_label(column, "거리 %dm · 속도 %d · 다음 접근 %dm" % [e.distance, e.speed, maxi(0, int(e.speed) - int(e.slow))], 19, MUTED)
+	var hits: PackedStringArray = []
+	for i in range(combat_forecast.get("shots", []).size()):
+		var shot: Dictionary = combat_forecast.shots[i]
+		if shot.target == index: hits.append("%d발 %s" % [i + 1, Forecast.outcome(shot)])
+	_label(column, "연속 사격 예상: " + (" · ".join(hits) if not hits.is_empty() else "피격 없음"), 18, ACCENT)
+
 func _developer() -> void:
 	var column := _dialog("개발자 테스트 · 기존 저장 보존")
 	_label(column, "화면과 규칙을 즉시 확인하는 연습", 26)
+	_button(column, "다수전 표적 전환 연습", "debug_multi_target", func():
+		model.start("burst", 731042)
+		model.s.floor = 3
+		model.begin_encounter()
+		model.s.enemies[0].distance = 16
+		model.s.enemies[0].hp = 20
+		model.s.enemies[0].max_hp = 20
+		model.s.enemies[1].distance = 17
+		model.s.enemies[1].hp = 4
+		model.s.enemies[1].max_hp = 4
+		model.s.enemies[1].def = 0
+		model.s.hand = ["push", "charge", "precise", "bore", "mark"]
+		for id in ["basic", "basic", "charge", "push"]: model.load_round(id)
+		debug_session = true
+		page = "run"
+		column.get_meta("dialog").queue_free()
+		redraw()
+	)
 	for entry in [["통합 장전 화면", 0, "plan"], ["보상 선택 화면", 0, "reward"], ["최종 복합 교전", 6, "plan"]]:
 		_button(column, entry[0], "debug_" + str(entry[1]) + entry[2], func():
 			model.start("single", 731042)

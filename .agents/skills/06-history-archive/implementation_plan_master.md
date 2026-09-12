@@ -55,6 +55,7 @@
 | 2026-07-12 | **작전 침투 구역 순차 해금 및 노드 완결 구조 구현** | `afaad6f3` | 5개 침투 구역 순차 해금, current_section 및 10~15층 동적 맵 생성, 구역별 적 스폰 및 숏컷 연동, 타이틀 ➡️ 구역 선택 ➡️ 요원 준비실 UI/UX 전환 흐름 개편 | [implementation_plan.md](file:///C:/Users/mdyt7/.gemini/antigravity-ide/brain/afaad6f3-77c6-4268-acfb-c7f4a2acdd2c/implementation_plan.md) |
 | 2026-07-18 | **통로 분기 목적지 가격 구조 구현** | `codex0718` | 계단·환기구 2종화, 목적지 1회 선택, 실제 연결 노드 제한, 환기 압박 다음 전투 이월·비중첩, 무기고 통로 가변 배치 및 층 스킵 통로 제거 | [implementation_plan.md](file:///D:/ProjectLoB/docs/implementation_plan_route_branching_2026-07-18.md) |
 | 2026-09-12 | **Godot 텍스트 밀도 정리** | `codex0912-quiet-ui` | 탄환 공용 수치·정보 창, 반복 설명 정리. 화면49·연출39·전체UI493 통과. main 미병합 | [문서](../../../../docs/implementation_plan_quiet_ui_2026-09-12.md) |
+| 2026-09-12 | **다수 적 표적 예고** | `codex0912-multi-target` | 탄별 A/B/C 예고·개별 정보·같은 거리 표시. 집중129·독립2627·전체UI493. main 미병합 | [문서](../../../../docs/implementation_plan_multi_target_2026-09-12.md) |
 
 ---
 
@@ -105,3 +106,6 @@
 
 
 2026-09-12 참조: [텍스트 밀도 정리](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_quiet_ui_2026-09-12.md)
+
+
+2026-09-12 참조: [다수 적 표적 예고](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_multi_target_2026-09-12.md)

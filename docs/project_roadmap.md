@@ -1,3 +1,5 @@
+> **2026-09-12 다수전 후속:** A/B/C 표적 식별과 탄환별 예상 표적/결과, 개별 적 상세, 동일 거리 표시를 구현했다. [실행과 검증](walkthrough_multi_target_2026-09-12.md), `builds/multi-windows/Play-Multi.cmd`. 예고는 현재 탄창 연속 사격 조건이며 기존 규칙은 유지한다.
+
 > **2026-09-12 최신:** 사용자가 현재 그래픽 방향을 긍정적으로 평가했다. 텍스트 반복을 줄이고 탄환 수치를 공용 정보줄/정보 창으로 정리했다. [실행과 검증](walkthrough_quiet_ui_2026-09-12.md), `builds/quiet-windows/Play-Quiet.cmd`. 수치 발견성과 실제 비교 편의는 다음 사람 플레이에서 확인한다.
 
 > **최신 시각 전투 개선 (2026-09-11):** Godot 네이티브 개발을 유지한다. 거리 전장·탄창·장전 이동·순차 사격/피격/전진을 구현했다. [실행과 검증](walkthrough_visual_combat_2026-09-11.md), `builds/visual-windows/Play-Visual.cmd`. 사람의 조합 체감과 연출 호흡 확인이 다음 단계다.

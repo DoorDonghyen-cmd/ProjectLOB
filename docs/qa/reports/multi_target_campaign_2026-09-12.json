@@ -1,0 +1,10735 @@
+{
+	"actions": [
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": -1,
+				"magazine": [],
+				"page": "menu",
+				"phase": "",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "start_single",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 1,
+				"turns": 1
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 2,
+				"turns": 2
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 1,
+				"turns": 1
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 2,
+				"turns": 2
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 2,
+				"turns": 2
+			},
+			"button": "reward_slow",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 2,
+				"turns": 2
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"button": "load_bore",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore",
+					"charge"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"button": "load_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 2,
+				"turns": 2
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore",
+					"charge"
+				],
+				"shots": 2,
+				"turns": 2
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 3,
+				"turns": 3
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 2,
+				"turns": 2
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 4,
+				"turns": 4
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 3,
+				"turns": 3
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 5,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 4,
+				"turns": 4
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 5,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 5,
+				"turns": 5
+			},
+			"button": "reward_lens",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 5,
+				"turns": 5
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 5,
+				"turns": 5
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 5,
+				"turns": 5
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 5,
+				"turns": 5
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 5,
+				"turns": 5
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 5,
+				"turns": 5
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 6,
+				"turns": 6
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 5,
+				"turns": 5
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 6,
+				"turns": 6
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 7,
+				"turns": 7
+			},
+			"button": "reward_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 7,
+				"turns": 7
+			},
+			"button": "load_precise",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"push"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"button": "load_push",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"push",
+					"slow"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"push"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"button": "load_slow",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"push",
+					"slow",
+					"charge"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"push",
+					"slow"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"button": "load_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [
+					"precise",
+					"push",
+					"slow",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"push",
+					"slow",
+					"charge"
+				],
+				"shots": 7,
+				"turns": 7
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [
+					"precise",
+					"push",
+					"slow",
+					"charge"
+				],
+				"page": "menu",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [
+					"precise",
+					"push",
+					"slow",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7,
+				"turns": 7
+			},
+			"button": "menu",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"precise",
+					"push",
+					"slow",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7.0,
+				"turns": 7.0
+			},
+			"before": {
+				"floor": -1,
+				"magazine": [],
+				"page": "menu",
+				"phase": "",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "resume",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"precise",
+					"push",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 8.0,
+				"turns": 8.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"precise",
+					"push",
+					"slow",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7.0,
+				"turns": 7.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"precise",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 9.0,
+				"turns": 9.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"precise",
+					"push",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 8.0,
+				"turns": 8.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 10.0,
+				"turns": 10.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"precise",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 9.0,
+				"turns": 9.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 10.0,
+				"turns": 10.0
+			},
+			"button": "reload",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"button": "load_bore",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"button": "load_pierce",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 11.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 10.0,
+				"turns": 11.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 12.0,
+				"turns": 13.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 11.0,
+				"turns": 12.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 12.0,
+				"turns": 13.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"button": "reward_precise",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"button": "load_pierce",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic",
+					"mark"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"button": "load_mark",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"basic",
+					"mark"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic",
+					"mark"
+				],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 14.0,
+				"turns": 15.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"basic",
+					"mark"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 13.0,
+				"turns": 14.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 16.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 14.0,
+				"turns": 15.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 16.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 16.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 17.0,
+				"turns": 18.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 16.0,
+				"turns": 17.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 17.0,
+				"turns": 19.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 17.0,
+				"turns": 18.0
+			},
+			"button": "reload",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 17.0,
+				"turns": 19.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 17.0,
+				"turns": 19.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 17.0,
+				"turns": 19.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 17.0,
+				"turns": 19.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 17.0,
+				"turns": 19.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"button": "reward_lens",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"button": "load_precise",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"charge"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"button": "load_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"charge",
+					"push"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"charge"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"button": "load_push",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"charge",
+					"push",
+					"slow"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"charge",
+					"push"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"button": "load_slow",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"precise",
+					"charge",
+					"push",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"charge",
+					"push",
+					"slow"
+				],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"precise",
+					"charge",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 21.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"precise",
+					"charge",
+					"push",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 18.0,
+				"turns": 20.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"precise",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 20.0,
+				"turns": 22.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"precise",
+					"charge",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 21.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 21.0,
+				"turns": 23.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"precise",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 20.0,
+				"turns": 22.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 22.0,
+				"turns": 24.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 21.0,
+				"turns": 23.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 22.0,
+				"turns": 24.0
+			},
+			"button": "reload",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"pierce"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"button": "load_pierce",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"pierce",
+					"charge"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"pierce"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"button": "load_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"pierce",
+					"charge",
+					"bore"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"pierce",
+					"charge"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"button": "load_bore",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"pierce",
+					"charge",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"pierce",
+					"charge",
+					"bore"
+				],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"pierce",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"pierce",
+					"charge",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 22.0,
+				"turns": 25.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 24.0,
+				"turns": 27.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"pierce",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 26.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 24.0,
+				"turns": 27.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"button": "reward_mark",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"button": "load_mark",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"charge"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"button": "load_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"charge",
+					"precise"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"charge"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"button": "load_precise",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"charge",
+					"precise",
+					"charge"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"charge",
+					"precise"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"button": "load_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"mark",
+					"charge",
+					"precise",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"charge",
+					"precise",
+					"charge"
+				],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"mark",
+					"charge",
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 26.0,
+				"turns": 29.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"mark",
+					"charge",
+					"precise",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 25.0,
+				"turns": 28.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"mark",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 30.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"mark",
+					"charge",
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 26.0,
+				"turns": 29.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"mark",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 30.0
+			},
+			"button": "reload",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"button": "load_pierce",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic"
+				],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"bore"
+				],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic"
+				],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"button": "load_bore",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"bore"
+				],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 28.0,
+				"turns": 32.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 31.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 29.0,
+				"turns": 33.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 28.0,
+				"turns": 32.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 30.0,
+				"turns": 34.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 29.0,
+				"turns": 33.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 30.0,
+				"turns": 34.0
+			},
+			"button": "reload",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"button": "load_charge",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"slow"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"button": "load_slow",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"slow",
+					"push"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"slow"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"button": "load_push",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge",
+					"slow",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"slow",
+					"push"
+				],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 36.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge",
+					"slow",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 30.0,
+				"turns": 35.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 32.0,
+				"turns": 37.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 36.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 33.0,
+				"turns": 38.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 32.0,
+				"turns": 37.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 34.0,
+				"turns": 39.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 33.0,
+				"turns": 38.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 34.0,
+				"turns": 39.0
+			},
+			"button": "reload",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"button": "load_basic",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"button": "load_pierce",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce",
+					"bore"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"button": "load_bore",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"pierce",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce",
+					"bore"
+				],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"button": "confirm",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 41.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"pierce",
+					"bore"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 34.0,
+				"turns": 40.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "won",
+				"plan": [],
+				"shots": 36.0,
+				"turns": 42.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 41.0
+			},
+			"button": "fire",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "won",
+				"plan": [],
+				"shots": 36.0,
+				"turns": 42.0
+			},
+			"button": "retry",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "menu",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "menu",
+			"gun": "single"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": -1,
+				"magazine": [],
+				"page": "menu",
+				"phase": "",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "start_burst",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 3,
+				"turns": 1
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 3,
+				"turns": 1
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 3,
+				"turns": 1
+			},
+			"button": "reward_slow",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 3,
+				"turns": 1
+			},
+			"button": "load_precise",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"bore"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"button": "load_bore",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"bore",
+					"charge"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"bore"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"bore",
+					"charge",
+					"push"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"bore",
+					"charge"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"button": "load_push",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [
+					"precise",
+					"bore",
+					"charge",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 3,
+				"turns": 1
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"bore",
+					"charge",
+					"push"
+				],
+				"shots": 3,
+				"turns": 1
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7,
+				"turns": 2
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [
+					"precise",
+					"bore",
+					"charge",
+					"push"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 3,
+				"turns": 1
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 7,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7,
+				"turns": 2
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 7,
+				"turns": 5
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"button": "load_pierce",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7,
+				"turns": 5
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"shots": 7,
+				"turns": 5
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 8,
+				"turns": 6
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 7,
+				"turns": 5
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 8,
+				"turns": 6
+			},
+			"before": {
+				"floor": 1,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 8,
+				"turns": 6
+			},
+			"button": "reward_lens",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 8,
+				"turns": 6
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 8,
+				"turns": 6
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 8,
+				"turns": 6
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 8,
+				"turns": 6
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 8,
+				"turns": 6
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 8,
+				"turns": 6
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 8,
+				"turns": 6
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 8,
+				"turns": 6
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 8,
+				"turns": 6
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 2,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 11,
+				"turns": 7
+			},
+			"button": "reward_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 11,
+				"turns": 7
+			},
+			"button": "load_push",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push",
+					"basic"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push",
+					"basic",
+					"basic"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push",
+					"basic"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push",
+					"basic",
+					"basic"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [
+					"push",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"push",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"shots": 11,
+				"turns": 7
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3,
+				"magazine": [
+					"push",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"page": "menu",
+				"phase": "ready",
+				"plan": [],
+				"shots": 11,
+				"turns": 7
+			},
+			"before": {
+				"floor": 3,
+				"magazine": [
+					"push",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 11,
+				"turns": 7
+			},
+			"button": "menu",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"push",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 11.0,
+				"turns": 7.0
+			},
+			"before": {
+				"floor": -1,
+				"magazine": [],
+				"page": "menu",
+				"phase": "",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "resume",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 8.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"push",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 11.0,
+				"turns": 7.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 8.0
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"bore"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"button": "load_bore",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"bore",
+					"charge"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"bore"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"bore",
+					"charge",
+					"pierce"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"bore",
+					"charge"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"button": "load_pierce",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"bore",
+					"charge",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"bore",
+					"charge",
+					"pierce"
+				],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [
+					"basic",
+					"bore",
+					"charge",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 15.0,
+				"turns": 11.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 3.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"button": "reward_precise",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"button": "load_pierce",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce",
+					"mark"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"button": "load_mark",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"pierce",
+					"mark"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"pierce",
+					"mark"
+				],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 13.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"pierce",
+					"mark"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 19.0,
+				"turns": 12.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 13.0
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic",
+					"precise"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"button": "load_precise",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic",
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"basic",
+					"precise"
+				],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"basic",
+					"precise"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 23.0,
+				"turns": 16.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 4.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"button": "reward_lens",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"button": "load_mark",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"precise"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"button": "load_precise",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"precise",
+					"push"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"precise"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"button": "load_push",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"precise",
+					"push",
+					"slow"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"precise",
+					"push"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"button": "load_slow",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"mark",
+					"precise",
+					"push",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"mark",
+					"precise",
+					"push",
+					"slow"
+				],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 18.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"mark",
+					"precise",
+					"push",
+					"slow"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 27.0,
+				"turns": 17.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 18.0
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"button": "load_pierce",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 22.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"pierce",
+					"basic",
+					"basic",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 31.0,
+				"turns": 21.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 22.0
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"button": "load_bore",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"button": "load_pierce",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 5.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"basic",
+					"basic",
+					"bore",
+					"pierce"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 35.0,
+				"turns": 25.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 5.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "reward",
+				"plan": [],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"button": "reward_mark",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"button": "load_precise",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"slow"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"button": "load_slow",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"slow",
+					"charge"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"slow"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"slow",
+					"charge",
+					"mark"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"slow",
+					"charge"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"button": "load_mark",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"precise",
+					"slow",
+					"charge",
+					"mark"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"precise",
+					"slow",
+					"charge",
+					"mark"
+				],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 42.0,
+				"turns": 27.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"precise",
+					"slow",
+					"charge",
+					"mark"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 38.0,
+				"turns": 26.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 42.0,
+				"turns": 27.0
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"button": "load_pierce",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"precise"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"button": "load_precise",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"precise",
+					"bore"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"precise"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"button": "load_bore",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"precise",
+					"bore",
+					"charge"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"precise",
+					"bore"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce",
+					"precise",
+					"bore",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"pierce",
+					"precise",
+					"bore",
+					"charge"
+				],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 46.0,
+				"turns": 31.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"pierce",
+					"precise",
+					"bore",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 42.0,
+				"turns": 30.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 46.0,
+				"turns": 31.0
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"pierce"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"button": "load_pierce",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"pierce",
+					"charge"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"pierce"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"button": "load_charge",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge",
+					"pierce",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic",
+					"charge",
+					"pierce",
+					"charge"
+				],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 50.0,
+				"turns": 35.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic",
+					"charge",
+					"pierce",
+					"charge"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 46.0,
+				"turns": 34.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 50.0,
+				"turns": 38.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 50.0,
+				"turns": 35.0
+			},
+			"button": "reload",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 50.0,
+				"turns": 38.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 50.0,
+				"turns": 38.0
+			},
+			"button": "load_basic",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 50.0,
+				"turns": 38.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [
+					"basic"
+				],
+				"shots": 50.0,
+				"turns": 38.0
+			},
+			"button": "confirm",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "won",
+				"plan": [],
+				"shots": 51.0,
+				"turns": 39.0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [
+					"basic"
+				],
+				"page": "run",
+				"phase": "ready",
+				"plan": [],
+				"shots": 50.0,
+				"turns": 38.0
+			},
+			"button": "fire",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 6.0,
+				"magazine": [],
+				"page": "run",
+				"phase": "won",
+				"plan": [],
+				"shots": 51.0,
+				"turns": 39.0
+			},
+			"button": "retry",
+			"gun": "burst"
+		},
+		{
+			"after": {
+				"floor": 0,
+				"magazine": [],
+				"page": "menu",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"before": {
+				"floor": 0,
+				"magazine": [],
+				"page": "run",
+				"phase": "plan",
+				"plan": [],
+				"shots": 0,
+				"turns": 0
+			},
+			"button": "menu",
+			"gun": "burst"
+		}
+	],
+	"captures": [
+		"D:/ProjectLoB/worktrees/core-redesign/qa_runtime/redesign/campaign_ui/final_retry/Roaming/Godot/app_userdata/Last on Board - Core Redesign/single_04_ready_actual.png",
+		"D:/ProjectLoB/worktrees/core-redesign/qa_runtime/redesign/campaign_ui/final_retry/Roaming/Godot/app_userdata/Last on Board - Core Redesign/single_07_won_actual.png",
+		"D:/ProjectLoB/worktrees/core-redesign/qa_runtime/redesign/campaign_ui/final_retry/Roaming/Godot/app_userdata/Last on Board - Core Redesign/burst_04_ready_actual.png",
+		"D:/ProjectLoB/worktrees/core-redesign/qa_runtime/redesign/campaign_ui/final_retry/Roaming/Godot/app_userdata/Last on Board - Core Redesign/burst_07_won_actual.png"
+	],
+	"checks": [
+		{
+			"check": "explicit campaign source",
+			"gun": "",
+			"passed": true
+		},
+		{
+			"check": "isolated campaign_ui profile: D:/ProjectLoB/worktrees/core-redesign/qa_runtime/redesign/campaign_ui/final_retry/Roaming/Godot/app_userdata/Last on Board - Core Redesign/",
+			"gun": "",
+			"passed": true
+		},
+		{
+			"check": "source report loaded",
+			"gun": "",
+			"passed": true
+		},
+		{
+			"check": "recorded source for gun",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: start_single",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after start_single",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "floor 1 entry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 1",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "floor 2 entry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 2",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_lens",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_lens",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "floor 3 entry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 3",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "floor 4 entry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_push",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_push",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "rendered capture single_04_ready_actual",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "capture saved single_04_ready_actual",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "no horizontal overflow single_04_ready_actual",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: menu",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after menu",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: resume",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after resume",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "disk resume restores complete mid-run state",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 4",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "floor 5 entry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_mark",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_mark",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 5",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_lens",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_lens",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "floor 6 entry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_push",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_push",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 6",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_mark",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_mark",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "floor 7 entry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_mark",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_mark",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_slow",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_push",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_push",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "actual final victory",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "turn count matches source",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "shot count matches source",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "complete UI action history matches source",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "final enemy defeated: 운반 사족체",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "final enemy defeated: 융합 장갑벽",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "final enemy defeated: 굴절 선체",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "rendered capture single_07_won_actual",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "capture saved single_07_won_actual",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "no horizontal overflow single_07_won_actual",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: retry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after retry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "retry resets run",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "retry retains gun and seed",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: menu",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "autosave after menu",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "menu after retry",
+			"gun": "single",
+			"passed": true
+		},
+		{
+			"check": "recorded source for gun",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: start_burst",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after start_burst",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "floor 1 entry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 1",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_slow",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_slow",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "floor 2 entry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_push",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_push",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 2",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_lens",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_lens",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "floor 3 entry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 3",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "floor 4 entry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_push",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_push",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "rendered capture burst_04_ready_actual",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "capture saved burst_04_ready_actual",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "no horizontal overflow burst_04_ready_actual",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: menu",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after menu",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: resume",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after resume",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "disk resume restores complete mid-run state",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 4",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "floor 5 entry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 5",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_lens",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_lens",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "floor 6 entry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_push",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_push",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_slow",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_slow",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "actual reward after floor 6",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reward_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reward_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "floor 7 entry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_slow",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_slow",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_mark",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_precise",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_bore",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_pierce",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_charge",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after reload",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after load_basic",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after confirm",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after fire",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "actual final victory",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "turn count matches source",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "shot count matches source",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "complete UI action history matches source",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "final enemy defeated: 운반 사족체",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "final enemy defeated: 융합 장갑벽",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "final enemy defeated: 굴절 선체",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "rendered capture burst_07_won_actual",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "capture saved burst_07_won_actual",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "no horizontal overflow burst_07_won_actual",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: retry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after retry",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "retry resets run",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "retry retains gun and seed",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "enabled visible button: menu",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "autosave after menu",
+			"gun": "burst",
+			"passed": true
+		},
+		{
+			"check": "menu after retry",
+			"gun": "burst",
+			"passed": true
+		}
+	],
+	"failures": 0,
+	"method": "recorded real-command path replay through rendered Button.pressed; no forced wins or state edits; not human win rate",
+	"reports": [
+		{
+			"gun": "single",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0.0
+					},
+					"floor": 0.0,
+					"turn": 0.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"mark",
+							"pierce",
+							"charge",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0.0,
+					"turn": 0.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6.0,
+								"damage": 4.0,
+								"hit": true,
+								"hp": 3.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 운반 사족체: 4 피해"
+							}
+						]
+					},
+					"floor": 0.0,
+					"turn": 1.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6.0,
+								"damage": 4.0,
+								"hit": true,
+								"hp": 0.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0.0,
+					"turn": 2.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0.0,
+					"turn": 2.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1.0
+					},
+					"floor": 1.0,
+					"turn": 2.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"push",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 1.0,
+					"turn": 2.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8.0,
+								"damage": 0.0,
+								"hit": true,
+								"hp": 10.0,
+								"id": "charge",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 1.0,
+					"turn": 3.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8.0,
+								"damage": 6.0,
+								"hit": true,
+								"hp": 4.0,
+								"id": "bore",
+								"pen": 4.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "천공 준비탄 → 융합 장갑벽: 6 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 1.0,
+					"turn": 4.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6.0,
+								"damage": 4.0,
+								"hit": true,
+								"hp": 0.0,
+								"id": "basic",
+								"pen": 4.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 융합 장갑벽: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1.0,
+					"turn": 5.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1.0,
+					"turn": 5.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2.0
+					},
+					"floor": 2.0,
+					"turn": 5.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"charge",
+							"precise",
+							"pierce"
+						],
+						"load_order": [
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2.0,
+					"turn": 5.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8.0,
+								"damage": 4.0,
+								"hit": true,
+								"hp": 4.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 2.0,
+					"turn": 6.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8.0,
+								"damage": 4.0,
+								"hit": true,
+								"hp": 0.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2.0,
+					"turn": 7.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2.0,
+					"turn": 7.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3.0
+					},
+					"floor": 3.0,
+					"turn": 7.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge"
+						],
+						"load_order": [
+							"precise",
+							"push",
+							"slow",
+							"charge"
+						]
+					},
+					"floor": 3.0,
+					"turn": 7.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 8.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 7,
+								"hit": true,
+								"hp": 0,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "점착탄 → 운반 사족체: 7 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 9.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 12,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 10.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 3.0,
+					"turn": 11.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge",
+							"mark",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 3.0,
+					"turn": 11.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 6,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 12.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 4,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 13.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 14.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3.0,
+					"turn": 14.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4.0
+					},
+					"floor": 4.0,
+					"turn": 14.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"precise"
+						],
+						"load_order": [
+							"pierce",
+							"basic",
+							"basic",
+							"mark"
+						]
+					},
+					"floor": 4.0,
+					"turn": 14.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 명중 +4"
+							}
+						]
+					},
+					"floor": 4.0,
+					"turn": 15.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 4,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해"
+							}
+						]
+					},
+					"floor": 4.0,
+					"turn": 16.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4.0,
+					"turn": 17.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 운반 사족체: 6 피해"
+							}
+						]
+					},
+					"floor": 4.0,
+					"turn": 18.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 4.0,
+					"turn": 19.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"precise",
+							"charge",
+							"charge"
+						],
+						"load_order": [
+							"basic"
+						]
+					},
+					"floor": 4.0,
+					"turn": 19.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 4 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4.0,
+					"turn": 20.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4.0,
+					"turn": 20.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5.0
+					},
+					"floor": 5.0,
+					"turn": 20.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"precise",
+							"charge",
+							"push",
+							"slow"
+						]
+					},
+					"floor": 5.0,
+					"turn": 20.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 21.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 22.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 23.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 굴절 선체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 24.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 5.0,
+					"turn": 25.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"pierce",
+							"charge",
+							"bore"
+						]
+					},
+					"floor": 5.0,
+					"turn": 25.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 12,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 26.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 10,
+								"id": "charge",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 27.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 10,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 10 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 28.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5.0,
+					"turn": 28.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6.0
+					},
+					"floor": 6.0,
+					"turn": 28.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow"
+						],
+						"load_order": [
+							"mark",
+							"charge",
+							"precise",
+							"charge"
+						]
+					},
+					"floor": 6.0,
+					"turn": 28.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 29.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 30.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6.0,
+					"turn": 31.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow",
+							"precise",
+							"mark"
+						],
+						"load_order": [
+							"pierce",
+							"basic",
+							"bore"
+						]
+					},
+					"floor": 6.0,
+					"turn": 31.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 18,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 32.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 4,
+								"hit": true,
+								"hp": 14,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4 피해"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 33.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 8,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 34.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6.0,
+					"turn": 35.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"charge",
+							"slow",
+							"push"
+						]
+					},
+					"floor": 6.0,
+					"turn": 35.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 8,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 36.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 8,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 37.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "장약 준비탄 → 굴절 선체: 2 피해 · 발사하면 다음 1발 피해 +4"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 38.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 8,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 8 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 39.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6.0,
+					"turn": 40.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"mark",
+							"mark"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"pierce",
+							"bore"
+						]
+					},
+					"floor": 6.0,
+					"turn": 40.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 2,
+								"hit": true,
+								"hp": 6,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 2 피해 · 발사하면 다음 1발 관통 +3"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 41.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 6,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 7,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 6 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 42.0
+				}
+			],
+			"reloads": 6.0,
+			"seed": "731042",
+			"shots": 36.0,
+			"turns": 42.0,
+			"won": true
+		},
+		{
+			"gun": "burst",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0.0
+					},
+					"floor": 0.0,
+					"turn": 0.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"mark",
+							"pierce",
+							"charge",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0.0,
+					"turn": 0.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6.0,
+								"damage": 3.0,
+								"hit": true,
+								"hp": 4.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6.0,
+								"damage": 3.0,
+								"hit": true,
+								"hp": 1.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 6.0,
+								"damage": 3.0,
+								"hit": true,
+								"hp": 0.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 0.0,
+					"turn": 1.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "slow",
+						"removed": ""
+					},
+					"floor": 0.0,
+					"turn": 1.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1.0
+					},
+					"floor": 1.0,
+					"turn": 1.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"precise",
+							"bore",
+							"charge",
+							"push"
+						]
+					},
+					"floor": 1.0,
+					"turn": 1.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 7.0,
+								"damage": 0.0,
+								"hit": true,
+								"hp": 10.0,
+								"id": "push",
+								"pen": 1.0,
+								"push": 2.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							},
+							{
+								"acc": 8.0,
+								"damage": 0.0,
+								"hit": true,
+								"hp": 10.0,
+								"id": "charge",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8.0,
+								"damage": 5.0,
+								"hit": true,
+								"hp": 5.0,
+								"id": "bore",
+								"pen": 4.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 10.0,
+								"damage": 3.0,
+								"hit": true,
+								"hp": 2.0,
+								"id": "precise",
+								"pen": 4.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "정밀탄 → 융합 장갑벽: 3 피해"
+							}
+						]
+					},
+					"floor": 1.0,
+					"turn": 2.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3.0,
+						"phase": "plan"
+					},
+					"floor": 1.0,
+					"turn": 5.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"slow",
+							"bore",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"pierce"
+						]
+					},
+					"floor": 1.0,
+					"turn": 5.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 4.0,
+								"damage": 5.0,
+								"hit": true,
+								"hp": 0.0,
+								"id": "pierce",
+								"pen": 4.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해 · 처치"
+							}
+						]
+					},
+					"floor": 1.0,
+					"turn": 6.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 1.0,
+					"turn": 6.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2.0
+					},
+					"floor": 2.0,
+					"turn": 6.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"bore",
+							"charge",
+							"precise",
+							"pierce"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 2.0,
+					"turn": 6.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8.0,
+								"damage": 3.0,
+								"hit": true,
+								"hp": 5.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8.0,
+								"damage": 3.0,
+								"hit": true,
+								"hp": 2.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8.0,
+								"damage": 3.0,
+								"hit": true,
+								"hp": 0.0,
+								"id": "basic",
+								"pen": 1.0,
+								"push": 0.0,
+								"slow": 0.0,
+								"target": 0.0,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 2.0,
+					"turn": 7.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 2.0,
+					"turn": 7.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3.0
+					},
+					"floor": 3.0,
+					"turn": 7.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"charge"
+						],
+						"load_order": [
+							"push",
+							"basic",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 3.0,
+					"turn": 7.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 7 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							},
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 12,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 1,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 8.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 3.0,
+					"turn": 11.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"bore",
+							"charge",
+							"pierce"
+						]
+					},
+					"floor": 3.0,
+					"turn": 11.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 7,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 2,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 3.0,
+					"turn": 12.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3.0,
+					"turn": 12.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4.0
+					},
+					"floor": 4.0,
+					"turn": 12.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"slow",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"pierce",
+							"mark"
+						]
+					},
+					"floor": 4.0,
+					"turn": 12.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 굴절 선체: 5 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4.0,
+					"turn": 13.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 4.0,
+					"turn": 16.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow",
+							"precise",
+							"charge",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"precise"
+						]
+					},
+					"floor": 4.0,
+					"turn": 16.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 7,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 4,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 1,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 4.0,
+					"turn": 17.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4.0,
+					"turn": 17.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5.0
+					},
+					"floor": 5.0,
+					"turn": 17.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge"
+						],
+						"load_order": [
+							"mark",
+							"precise",
+							"push",
+							"slow"
+						]
+					},
+					"floor": 5.0,
+					"turn": 17.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 11,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 융합 장갑벽: 장갑에 막힘 · 다음 전진 −2"
+							},
+							{
+								"acc": 9,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "push",
+								"pen": 1,
+								"push": 2,
+								"slow": 0,
+								"target": 0,
+								"text": "충격탄 → 융합 장갑벽: 장갑에 막힘 · 2m 밀기"
+							},
+							{
+								"acc": 12,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 융합 장갑벽: 장갑에 막힘"
+							},
+							{
+								"acc": 12,
+								"damage": 0,
+								"hit": true,
+								"hp": 14,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 명중 +4"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 18.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5.0,
+					"turn": 21.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"charge",
+							"bore"
+						],
+						"load_order": [
+							"pierce",
+							"basic",
+							"basic",
+							"charge"
+						]
+					},
+					"floor": 5.0,
+					"turn": 21.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 7 피해"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							},
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 9,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 22.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5.0,
+					"turn": 25.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"charge",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 5.0,
+					"turn": 25.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 4,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 3,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "천공 준비탄 → 융합 장갑벽: 1 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 5.0,
+					"turn": 26.0
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "mark",
+						"removed": ""
+					},
+					"floor": 5.0,
+					"turn": 26.0
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6.0
+					},
+					"floor": 6.0,
+					"turn": 26.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"charge"
+						],
+						"load_order": [
+							"precise",
+							"slow",
+							"charge",
+							"mark"
+						]
+					},
+					"floor": 6.0,
+					"turn": 26.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 12,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "mark",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "조준 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 명중 +4"
+							},
+							{
+								"acc": 14,
+								"damage": 1,
+								"hit": true,
+								"hp": 8,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "장약 준비탄 → 운반 사족체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 11,
+								"damage": 6,
+								"hit": true,
+								"hp": 2,
+								"id": "slow",
+								"pen": 2,
+								"push": 0,
+								"slow": 2,
+								"target": 0,
+								"text": "점착탄 → 운반 사족체: 6 피해 · 다음 전진 −2"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "precise",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 0,
+								"text": "정밀탄 → 운반 사족체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 27.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6.0,
+					"turn": 30.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark"
+						],
+						"load_order": [
+							"pierce",
+							"precise",
+							"bore",
+							"charge"
+						]
+					},
+					"floor": 6.0,
+					"turn": 30.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 20,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 10,
+								"damage": 5,
+								"hit": true,
+								"hp": 15,
+								"id": "bore",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "천공 준비탄 → 융합 장갑벽: 5 피해 · 발사하면 다음 1발 관통 +3"
+							},
+							{
+								"acc": 12,
+								"damage": 3,
+								"hit": true,
+								"hp": 12,
+								"id": "precise",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "정밀탄 → 융합 장갑벽: 3 피해"
+							},
+							{
+								"acc": 6,
+								"damage": 5,
+								"hit": true,
+								"hp": 7,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 5 피해"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 31.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6.0,
+					"turn": 34.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"push"
+						],
+						"load_order": [
+							"basic",
+							"charge",
+							"pierce",
+							"charge"
+						]
+					},
+					"floor": 6.0,
+					"turn": 34.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"damage": 0,
+								"hit": true,
+								"hp": 7,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "장약 준비탄 → 융합 장갑벽: 장갑에 막힘 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 6,
+								"damage": 9,
+								"hit": true,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 4,
+								"push": 0,
+								"slow": 0,
+								"target": 1,
+								"text": "철갑탄 → 융합 장갑벽: 9 피해 · 처치"
+							},
+							{
+								"acc": 10,
+								"damage": 1,
+								"hit": true,
+								"hp": 9,
+								"id": "charge",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "장약 준비탄 → 굴절 선체: 1 피해 · 발사하면 다음 1발 피해 +4"
+							},
+							{
+								"acc": 8,
+								"damage": 7,
+								"hit": true,
+								"hp": 2,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 7 피해"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 35.0
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6.0,
+					"turn": 38.0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"push",
+							"precise",
+							"slow",
+							"mark"
+						],
+						"load_order": [
+							"basic"
+						]
+					},
+					"floor": 6.0,
+					"turn": 38.0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 8,
+								"damage": 3,
+								"hit": true,
+								"hp": 0,
+								"id": "basic",
+								"pen": 1,
+								"push": 0,
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 굴절 선체: 3 피해 · 처치"
+							}
+						]
+					},
+					"floor": 6.0,
+					"turn": 39.0
+				}
+			],
+			"reloads": 8.0,
+			"seed": "731042",
+			"shots": 51.0,
+			"turns": 39.0,
+			"won": true
+		}
+	],
+	"source": "D:\\ProjectLoB\\worktrees\\core-redesign\\qa_runtime\\redesign\\campaign\\Roaming\\Godot\\app_userdata\\Last on Board - Core Redesign\\redesign_campaign_report.json"
+}
