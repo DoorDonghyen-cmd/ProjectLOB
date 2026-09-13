@@ -90,7 +90,7 @@ func _run() -> void:
 					for i in range(step.fires): assert(m.fire())
 				paths.append(path)
 				if m.s.phase == "reward":
-					var options: Array = Content.REWARDS[int(m.s.floor)]
+					var options: Array = m.reward_options()
 					var reward: String = options[0]
 					if options.has("lens"): reward = "lens"
 					assert(m.choose_reward(reward))

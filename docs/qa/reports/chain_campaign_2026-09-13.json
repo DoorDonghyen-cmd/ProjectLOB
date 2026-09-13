@@ -1,0 +1,441 @@
+{
+  "scenarios": 50,
+  "completed": 50,
+  "unique_seed_gun_pairs": 18,
+  "commands": 5351,
+  "sets": [
+    {
+      "source_set": "primary",
+      "scenarios": 2,
+      "completed": 2,
+      "command_rejections": 0,
+      "single_turns": [
+        51
+      ],
+      "burst_turns": [
+        31
+      ],
+      "exchange_count": 7
+    },
+    {
+      "source_set": "seeds",
+      "scenarios": 16,
+      "completed": 16,
+      "command_rejections": 0,
+      "single_turns": [
+        45,
+        50,
+        54,
+        48,
+        47,
+        56,
+        58,
+        50
+      ],
+      "burst_turns": [
+        27,
+        27,
+        31,
+        31,
+        31,
+        27,
+        31,
+        27
+      ],
+      "exchange_count": 53
+    },
+    {
+      "source_set": "exchange_coil",
+      "scenarios": 10,
+      "completed": 10,
+      "command_rejections": 0,
+      "single_turns": [
+        48,
+        43,
+        42,
+        45,
+        43
+      ],
+      "burst_turns": [
+        35,
+        27,
+        27,
+        35,
+        31
+      ],
+      "exchange_count": 120
+    },
+    {
+      "source_set": "no_exchange_lens",
+      "scenarios": 10,
+      "completed": 10,
+      "command_rejections": 0,
+      "single_turns": [
+        50,
+        48,
+        50,
+        55,
+        50
+      ],
+      "burst_turns": [
+        39,
+        31,
+        43,
+        39,
+        31
+      ],
+      "exchange_count": 0
+    },
+    {
+      "source_set": "paired_off",
+      "scenarios": 6,
+      "completed": 6,
+      "command_rejections": 0,
+      "single_turns": [
+        56,
+        50,
+        53
+      ],
+      "burst_turns": [
+        31,
+        31,
+        35
+      ],
+      "exchange_count": 0
+    },
+    {
+      "source_set": "paired_force",
+      "scenarios": 6,
+      "completed": 6,
+      "command_rejections": 0,
+      "single_turns": [
+        54,
+        45,
+        50
+      ],
+      "burst_turns": [
+        35,
+        27,
+        27
+      ],
+      "exchange_count": 70
+    }
+  ],
+  "ammo_counts": {
+    "arc": 137,
+    "basic": 1070,
+    "bore": 335,
+    "charge": 175,
+    "finish": 201,
+    "pierce": 251,
+    "precise": 170,
+    "slow": 97,
+    "mark": 21,
+    "push": 14
+  },
+  "ammo_share": {
+    "arc": 0.0554,
+    "basic": 0.433,
+    "bore": 0.1356,
+    "charge": 0.0708,
+    "finish": 0.0813,
+    "pierce": 0.1016,
+    "precise": 0.0688,
+    "slow": 0.0393,
+    "mark": 0.0085,
+    "push": 0.0057
+  },
+  "combos": {
+    "균열 2": 247,
+    "다음 2발 축전": 175,
+    "도약 +1": 26,
+    "도약 +3": 86,
+    "수확": 183,
+    "축전": 336,
+    "파쇄 ×2": 107,
+    "균열 3": 84,
+    "파쇄 ×3": 49,
+    "다음 2발 유도": 21,
+    "유도": 28,
+    "파쇄 ×1": 26
+  },
+  "exchanges": 250,
+  "capacity_5_scenarios": 29,
+  "paired_exchange": [
+    {
+      "seed": "731042",
+      "gun": "single",
+      "turns": {
+        "optional": 51,
+        "off": 56,
+        "force": 54
+      },
+      "exchanges": {
+        "optional": 3,
+        "off": 0,
+        "force": 12
+      },
+      "reward_paths_equal": true
+    },
+    {
+      "seed": "731042",
+      "gun": "burst",
+      "turns": {
+        "optional": 31,
+        "off": 31,
+        "force": 35
+      },
+      "exchanges": {
+        "optional": 4,
+        "off": 0,
+        "force": 14
+      },
+      "reward_paths_equal": true
+    },
+    {
+      "seed": "0",
+      "gun": "single",
+      "turns": {
+        "optional": 45,
+        "off": 50,
+        "force": 45
+      },
+      "exchanges": {
+        "optional": 4,
+        "off": 0,
+        "force": 10
+      },
+      "reward_paths_equal": true
+    },
+    {
+      "seed": "0",
+      "gun": "burst",
+      "turns": {
+        "optional": 27,
+        "off": 31,
+        "force": 27
+      },
+      "exchanges": {
+        "optional": 4,
+        "off": 0,
+        "force": 12
+      },
+      "reward_paths_equal": true
+    },
+    {
+      "seed": "1",
+      "gun": "single",
+      "turns": {
+        "optional": 50,
+        "off": 53,
+        "force": 50
+      },
+      "exchanges": {
+        "optional": 3,
+        "off": 0,
+        "force": 10
+      },
+      "reward_paths_equal": true
+    },
+    {
+      "seed": "1",
+      "gun": "burst",
+      "turns": {
+        "optional": 27,
+        "off": 35,
+        "force": 27
+      },
+      "exchanges": {
+        "optional": 6,
+        "off": 0,
+        "force": 12
+      },
+      "reward_paths_equal": true
+    }
+  ],
+  "variation": {
+    "single": {
+      "distinct_7_encounter_sequences": 9,
+      "distinct_reward_option_sequences": 9,
+      "first_encounter_variants": 4,
+      "turns_min": 45,
+      "turns_max": 58,
+      "turns_mean": 51
+    },
+    "burst": {
+      "distinct_7_encounter_sequences": 9,
+      "distinct_reward_option_sequences": 9,
+      "first_encounter_variants": 4,
+      "turns_min": 27,
+      "turns_max": 31,
+      "turns_mean": 29.22222222222222
+    }
+  },
+  "scope": "real model command replay; bounded search; no human win-rate inference",
+  "basic_only_baselines_before_reward_filter": {
+    "basic_skip": {
+      "scenarios": 16,
+      "completed": 0,
+      "command_rejections": 0,
+      "stopping_encounter_1_based": {
+        "single": [
+          5,
+          6,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "burst": [
+          4,
+          6,
+          3,
+          3,
+          5,
+          2,
+          2,
+          3
+        ]
+      },
+      "all_shots_basic": true,
+      "all_actual_defeats": true
+    },
+    "basic_supply": {
+      "scenarios": 16,
+      "completed": 0,
+      "command_rejections": 0,
+      "stopping_encounter_1_based": {
+        "single": [
+          5,
+          6,
+          5,
+          5,
+          5,
+          5,
+          5,
+          5
+        ],
+        "burst": [
+          5,
+          6,
+          4,
+          3,
+          6,
+          2,
+          2,
+          6
+        ]
+      },
+      "all_shots_basic": true,
+      "all_actual_defeats": true
+    }
+  },
+  "snapshot": "before equipped-part reward filter; final_snapshot below supersedes current-build campaign results",
+  "final_snapshot": {
+    "scenarios": 18,
+    "completed": 18,
+    "commands": 1840,
+    "exchange_count": 58,
+    "ammo_counts": {
+      "arc": 48,
+      "basic": 360,
+      "bore": 111,
+      "charge": 69,
+      "finish": 72,
+      "pierce": 88,
+      "precise": 77,
+      "slow": 28,
+      "mark": 11
+    },
+    "ammo_share": {
+      "arc": 0.0556,
+      "basic": 0.4167,
+      "bore": 0.1285,
+      "charge": 0.0799,
+      "finish": 0.0833,
+      "pierce": 0.1019,
+      "precise": 0.0891,
+      "slow": 0.0324,
+      "mark": 0.0127
+    },
+    "combos": {
+      "균열 2": 69,
+      "균열 3": 38,
+      "다음 2발 축전": 69,
+      "도약 +1": 4,
+      "도약 +3": 36,
+      "수확": 68,
+      "축전": 131,
+      "파쇄 ×1": 14,
+      "파쇄 ×2": 27,
+      "파쇄 ×3": 22,
+      "다음 2발 유도": 11,
+      "유도": 15
+    },
+    "capacity_5_scenarios": 17,
+    "final_parts": {
+      "coil": 13,
+      "lens": 3,
+      "supply": 2
+    },
+    "gun_stats": {
+      "single": {
+        "seed_turns": {
+          "731042": 50,
+          "0": 43,
+          "1": 46,
+          "2": 49,
+          "3": 44,
+          "4": 43,
+          "5": 50,
+          "6": 56,
+          "7": 49
+        },
+        "seed_shots": {
+          "731042": 45,
+          "0": 40,
+          "1": 43,
+          "2": 45,
+          "3": 41,
+          "4": 40,
+          "5": 46,
+          "6": 50,
+          "7": 45
+        },
+        "distinct_encounters": 9,
+        "distinct_rewards": 9
+      },
+      "burst": {
+        "seed_turns": {
+          "731042": 31,
+          "0": 27,
+          "1": 35,
+          "2": 31,
+          "3": 31,
+          "4": 31,
+          "5": 27,
+          "6": 31,
+          "7": 27
+        },
+        "seed_shots": {
+          "731042": 48,
+          "0": 53,
+          "1": 51,
+          "2": 56,
+          "3": 51,
+          "4": 52,
+          "5": 53,
+          "6": 54,
+          "7": 51
+        },
+        "distinct_encounters": 9,
+        "distinct_rewards": 9
+      }
+    },
+    "basic_supply_completed": 0,
+    "basic_supply_scenarios": 16,
+    "basic_supply_command_rejections": 0
+  }
+}

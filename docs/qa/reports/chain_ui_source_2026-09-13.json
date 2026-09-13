@@ -1,0 +1,5692 @@
+{
+	"beam_width": 5,
+	"command_rejections": 0,
+	"method": "bounded beam search then actual command replay; no forced wins; search failure does not prove impossibility; not human win rate",
+	"reports": [
+		{
+			"basic_only": false,
+			"combos": {
+				"균열 2": 5,
+				"균열 3": 2,
+				"다음 2발 축전": 1,
+				"도약 +1": 1,
+				"도약 +3": 2,
+				"수확": 1,
+				"축전": 2,
+				"파쇄 ×1": 1,
+				"파쇄 ×2": 3,
+				"파쇄 ×3": 1
+			},
+			"commands": [
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 0,
+					"phase_after": "ready",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 0,
+					"phase_after": "ready",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 0,
+					"phase_after": "ready",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 0,
+					"phase_after": "ready",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 0,
+					"phase_after": "reward",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 1,
+					"id": "bore",
+					"options": [
+						"bore",
+						"slow",
+						"arc"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 1,
+					"phase_after": "ready",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 1,
+					"phase_after": "ready",
+					"turn_after": 5
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 1,
+					"phase_after": "ready",
+					"turn_after": 6
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 1,
+					"phase_after": "ready",
+					"turn_after": 7
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 1,
+					"phase_after": "reward",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 2,
+					"id": "supply",
+					"options": [
+						"supply",
+						"coil",
+						"lens"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 2,
+					"phase_after": "ready",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 2,
+					"phase_after": "ready",
+					"turn_after": 9
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 2,
+					"phase_after": "ready",
+					"turn_after": 10
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 2,
+					"phase_after": "ready",
+					"turn_after": 11
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 2,
+					"phase_after": "ready",
+					"turn_after": 12
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 2,
+					"phase_after": "reward",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 3,
+					"id": "bore",
+					"options": [
+						"bore",
+						"finish",
+						"pierce"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "arc",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "slow",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 14
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 15
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 16
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 18
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 3,
+					"phase_after": "plan",
+					"turn_after": 19
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 19
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 19
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "reward",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 4,
+					"id": "precise",
+					"options": [
+						"precise",
+						"bore",
+						"pierce"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 4,
+					"id": "push",
+					"phase_after": "plan",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "arc",
+					"phase_after": "plan",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "charge",
+					"phase_after": "plan",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "slow",
+					"phase_after": "plan",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 20
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 21
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 23
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 24
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 25
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 4,
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 27
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 28
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "reward",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 5,
+					"id": "coil",
+					"options": [
+						"lens",
+						"coil"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 5,
+					"id": "mark",
+					"phase_after": "plan",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 29
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 30
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 31
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 32
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 33
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 5,
+					"phase_after": "plan",
+					"turn_after": 34
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 34
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 34
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 34
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 34
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 35
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 36
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "reward",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 6,
+					"id": "charge",
+					"options": [
+						"precise",
+						"charge",
+						"finish"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 6,
+					"id": "push",
+					"phase_after": "plan",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "finish",
+					"phase_after": "plan",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "arc",
+					"phase_after": "plan",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 37
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 38
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 39
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 40
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 41
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 6,
+					"phase_after": "plan",
+					"turn_after": 42
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 6,
+					"id": "slow",
+					"phase_after": "plan",
+					"turn_after": 42
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 42
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 42
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 42
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 42
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 42
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 43
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 44
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 45
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 46
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 6,
+					"phase_after": "plan",
+					"turn_after": 47
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 47
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 47
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 47
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 47
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 48
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 49
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "won",
+					"turn_after": 50
+				}
+			],
+			"deck": [
+				"bore",
+				"pierce",
+				"mark",
+				"precise",
+				"push",
+				"charge",
+				"slow",
+				"arc",
+				"finish",
+				"bore",
+				"bore",
+				"bore",
+				"precise",
+				"charge"
+			],
+			"elapsed_ms": 2812,
+			"encountered": [
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 2,
+							"distance": 19,
+							"eva": 4,
+							"hp": 12,
+							"kind": "wall",
+							"max_hp": 12,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 1
+						}
+					],
+					"floor": 0,
+					"part": "none"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 3,
+							"distance": 21,
+							"eva": 4,
+							"hp": 17,
+							"kind": "wall",
+							"max_hp": 17,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 1
+						}
+					],
+					"floor": 1,
+					"part": "none"
+				},
+				{
+					"capacity": 5,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 1,
+							"distance": 24,
+							"eva": 8,
+							"hp": 15,
+							"kind": "evader",
+							"max_hp": 15,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 2,
+					"part": "supply"
+				},
+				{
+					"capacity": 5,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 3,
+							"distance": 23,
+							"eva": 4,
+							"hp": 14,
+							"kind": "wall",
+							"max_hp": 14,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 1
+						},
+						{
+							"crack": 0,
+							"def": 1,
+							"distance": 25,
+							"eva": 8,
+							"hp": 11,
+							"kind": "evader",
+							"max_hp": 11,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 3,
+					"part": "supply"
+				},
+				{
+					"capacity": 5,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 1,
+							"distance": 26,
+							"eva": 8,
+							"hp": 13,
+							"kind": "evader",
+							"max_hp": 13,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						},
+						{
+							"crack": 0,
+							"def": 3,
+							"distance": 28,
+							"eva": 5,
+							"hp": 17,
+							"kind": "wall",
+							"max_hp": 17,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 4,
+					"part": "supply"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 1,
+							"def": 1,
+							"distance": 28,
+							"eva": 6,
+							"hp": 14,
+							"kind": "runner",
+							"max_hp": 14,
+							"name": "운반 사족체",
+							"slow": 0,
+							"speed": 3
+						},
+						{
+							"crack": 1,
+							"def": 3,
+							"distance": 30,
+							"eva": 4,
+							"hp": 22,
+							"kind": "wall",
+							"max_hp": 22,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 5,
+					"part": "coil"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 1,
+							"def": 1,
+							"distance": 27,
+							"eva": 9,
+							"hp": 14,
+							"kind": "evader",
+							"max_hp": 14,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						},
+						{
+							"crack": 1,
+							"def": 3,
+							"distance": 30,
+							"eva": 4,
+							"hp": 22,
+							"kind": "wall",
+							"max_hp": 22,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 2
+						},
+						{
+							"crack": 1,
+							"def": 1,
+							"distance": 32,
+							"eva": 5,
+							"hp": 14,
+							"kind": "runner",
+							"max_hp": 14,
+							"name": "운반 사족체",
+							"slow": 0,
+							"speed": 3
+						}
+					],
+					"floor": 6,
+					"part": "coil"
+				}
+			],
+			"exchange_count": 4,
+			"exchange_mode": "optional",
+			"explored_stacks": 10002,
+			"final_enemies": [
+				{
+					"crack": 1,
+					"def": 1,
+					"distance": 23,
+					"eva": 9,
+					"hp": 0,
+					"kind": "evader",
+					"max_hp": 14,
+					"name": "굴절 선체",
+					"slow": 0,
+					"speed": 2
+				},
+				{
+					"crack": 0,
+					"def": 3,
+					"distance": 6,
+					"eva": 4,
+					"hp": 0,
+					"kind": "wall",
+					"max_hp": 22,
+					"name": "융합 장갑벽",
+					"slow": 0,
+					"speed": 2
+				},
+				{
+					"crack": 1,
+					"def": 1,
+					"distance": 14,
+					"eva": 5,
+					"hp": 0,
+					"kind": "runner",
+					"max_hp": 14,
+					"name": "운반 사족체",
+					"slow": 0,
+					"speed": 3
+				}
+			],
+			"final_part": "coil",
+			"floor": 6,
+			"gun": "single",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"push",
+							"pierce",
+							"bore",
+							"arc"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3피해"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 6,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3피해"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 2
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 3,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3피해"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 3
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3피해 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 4
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "bore",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 4
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 4
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"arc",
+							"charge",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"bore",
+							"basic",
+							"pierce"
+						]
+					},
+					"floor": 1,
+					"turn": 4
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 15,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 2피해"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 5
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 14,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 융합 장갑벽: 1피해 · 균열 2"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 6
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 2,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 10,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 4피해"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×2"
+								],
+								"crack": 0,
+								"damage": 10,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 융합 장갑벽: 10피해 · 파쇄 ×2 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 8
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "supply",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 8
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 8
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"arc",
+							"push",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 2,
+					"turn": 8
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 13,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 9
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 11,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 10
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 11
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 6,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 굴절 선체: 3피해 · 균열 2"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×2"
+								],
+								"crack": 0,
+								"damage": 6,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 굴절 선체: 6피해 · 파쇄 ×2 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 13
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "bore",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 13
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 13
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [],
+						"load_order": [
+							"bore",
+							"arc",
+							"pierce",
+							"bore",
+							"slow"
+						]
+					},
+					"floor": 3,
+					"turn": 13
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 13,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 융합 장갑벽: 1피해 · 균열 2"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 14
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"도약 +3"
+								],
+								"crack": 2,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "arc",
+								"pen": 1,
+								"push": 0,
+								"secondary": [
+									{
+										"damage": 3,
+										"hp": 8,
+										"target": 1
+									}
+								],
+								"slow": 0,
+								"target": 0,
+								"text": "도약탄 → 융합 장갑벽: 4피해 · 도약 +3"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 15
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×2"
+								],
+								"crack": 0,
+								"damage": 9,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 융합 장갑벽: 9피해 · 파쇄 ×2 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 16
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 5,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 굴절 선체: 3피해 · 균열 2"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 2,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 1,
+								"id": "slow",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 굴절 선체: 4피해"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 18
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 19
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"finish",
+							"mark",
+							"precise",
+							"push"
+						],
+						"load_order": [
+							"basic"
+						]
+					},
+					"floor": 3,
+					"turn": 19
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 2,
+								"damage": 1,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 1피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 20
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 20
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 20
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "push"
+					},
+					"floor": 4,
+					"turn": 20
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [],
+						"load_order": [
+							"arc",
+							"charge",
+							"precise",
+							"bore",
+							"slow"
+						]
+					},
+					"floor": 4,
+					"turn": 20
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"도약 +1"
+								],
+								"crack": 0,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "arc",
+								"pen": 1,
+								"push": 0,
+								"secondary": [
+									{
+										"damage": 1,
+										"hp": 16,
+										"target": 1
+									}
+								],
+								"slow": 0,
+								"target": 0,
+								"text": "도약탄 → 굴절 선체: 4피해 · 도약 +1"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"다음 2발 축전"
+								],
+								"crack": 0,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 8,
+								"id": "charge",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "축전탄 → 굴절 선체: 1피해 · 다음 2발 축전"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 22
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"combo": [
+									"축전"
+								],
+								"crack": 0,
+								"damage": 8,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 0,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "연속탄 → 굴절 선체: 8피해 · 축전 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 23
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"축전",
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 13,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 융합 장갑벽: 3피해 · 축전 / 균열 2"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 24
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 2,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "slow",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 융합 장갑벽: 4피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 25
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 4,
+					"turn": 26
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"bore",
+							"mark",
+							"precise",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 4,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 2,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 5,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 27
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 2,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 1,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 28
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 1피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 29
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "coil",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 29
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 29
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "mark"
+					},
+					"floor": 5,
+					"turn": 29
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore"
+						],
+						"load_order": [
+							"precise",
+							"pierce",
+							"bore",
+							"precise"
+						]
+					},
+					"floor": 5,
+					"turn": 29
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 1,
+								"damage": 6,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 8,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "연속탄 → 운반 사족체: 6피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 30
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×1"
+								],
+								"crack": 0,
+								"damage": 8,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 운반 사족체: 8피해 · 파쇄 ×1 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 31
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 3"
+								],
+								"crack": 3,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 20,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 융합 장갑벽: 2피해 · 균열 3"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 32
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 3,
+								"damage": 6,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 14,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "연속탄 → 융합 장갑벽: 6피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 33
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 34
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"finish",
+							"arc",
+							"push",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 5,
+					"turn": 34
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 3,
+								"damage": 5,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 5피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 35
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 3,
+								"damage": 5,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 4,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 5피해"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 36
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 3,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 37
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 37
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 37
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "push"
+					},
+					"floor": 6,
+					"turn": 37
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"precise",
+							"finish",
+							"arc"
+						]
+					},
+					"floor": 6,
+					"turn": 37
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 1,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 12,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 38
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 1,
+								"damage": 6,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 6,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "연속탄 → 굴절 선체: 6피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 39
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 7,
+								"combo": [
+									"수확"
+								],
+								"crack": 1,
+								"damage": 6,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "finish",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "수확탄 → 굴절 선체: 6피해 · 수확 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 40
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"도약 +3"
+								],
+								"crack": 1,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 10,
+								"id": "arc",
+								"pen": 1,
+								"push": 0,
+								"secondary": [
+									{
+										"damage": 3,
+										"hp": 19,
+										"target": 1
+									}
+								],
+								"slow": 0,
+								"target": 2,
+								"text": "도약탄 → 운반 사족체: 4피해 · 도약 +3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 41
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 42
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "slow"
+					},
+					"floor": 6,
+					"turn": 42
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"bore"
+						],
+						"load_order": [
+							"basic",
+							"precise",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 6,
+					"turn": 42
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 1,
+								"damage": 5,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 5,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 2,
+								"text": "회수탄 → 운반 사족체: 5피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 43
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 1,
+								"damage": 5,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 0,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 2,
+								"text": "연속탄 → 운반 사족체: 5피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 44
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 3"
+								],
+								"crack": 3,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 17,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 융합 장갑벽: 2피해 · 균열 3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 45
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×3"
+								],
+								"crack": 0,
+								"damage": 12,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 5,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "파쇄탄 → 융합 장갑벽: 12피해 · 파쇄 ×3"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 46
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 1,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 47
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"bore",
+							"charge",
+							"bore",
+							"charge"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 6,
+					"turn": 47
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 3,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 2피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 48
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 1,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 2피해"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 49
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 1피해 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 50
+				}
+			],
+			"paths": [
+				[
+					{
+						"exchange": "",
+						"fires": 4,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"exchange": "",
+						"fires": 4,
+						"load": [
+							"basic",
+							"bore",
+							"basic",
+							"pierce"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"exchange": "",
+						"fires": 5,
+						"load": [
+							"basic",
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"exchange": "",
+						"fires": 5,
+						"load": [
+							"bore",
+							"arc",
+							"pierce",
+							"bore",
+							"slow"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"exchange": "push",
+						"fires": 5,
+						"load": [
+							"arc",
+							"charge",
+							"precise",
+							"bore",
+							"slow"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "",
+						"fires": 3,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"exchange": "mark",
+						"fires": 4,
+						"load": [
+							"precise",
+							"pierce",
+							"bore",
+							"precise"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "",
+						"fires": 3,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"exchange": "push",
+						"fires": 4,
+						"load": [
+							"basic",
+							"precise",
+							"finish",
+							"arc"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "slow",
+						"fires": 4,
+						"load": [
+							"basic",
+							"precise",
+							"bore",
+							"pierce"
+						],
+						"reload": true
+					},
+					{
+						"exchange": "",
+						"fires": 3,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				]
+			],
+			"policy": "supply",
+			"reloads": 5,
+			"rewards": [
+				{
+					"choice": "bore",
+					"removed": ""
+				},
+				{
+					"choice": "supply",
+					"removed": ""
+				},
+				{
+					"choice": "bore",
+					"removed": ""
+				},
+				{
+					"choice": "precise",
+					"removed": ""
+				},
+				{
+					"choice": "coil",
+					"removed": ""
+				},
+				{
+					"choice": "charge",
+					"removed": ""
+				}
+			],
+			"seed": "731042",
+			"shots": 45,
+			"shots_by_ammo": {
+				"arc": 3,
+				"basic": 21,
+				"bore": 7,
+				"charge": 1,
+				"finish": 1,
+				"pierce": 5,
+				"precise": 5,
+				"slow": 2
+			},
+			"status": "completed",
+			"turns": 50,
+			"won": true
+		},
+		{
+			"basic_only": false,
+			"combos": {
+				"균열 2": 7,
+				"균열 3": 5,
+				"다음 2발 축전": 4,
+				"도약 +3": 3,
+				"수확": 2,
+				"축전": 8,
+				"파쇄 ×2": 3,
+				"파쇄 ×3": 3
+			},
+			"commands": [
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 0,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 0,
+					"phase_after": "ready",
+					"turn_after": 0
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 0,
+					"phase_after": "reward",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 1,
+					"id": "bore",
+					"options": [
+						"bore",
+						"slow",
+						"arc"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 1,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 1,
+					"phase_after": "ready",
+					"turn_after": 1
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 1,
+					"phase_after": "reward",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 2,
+					"id": "coil",
+					"options": [
+						"coil",
+						"lens",
+						"loader"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 2,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 2,
+					"phase_after": "ready",
+					"turn_after": 2
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 2,
+					"phase_after": "reward",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 3,
+					"id": "bore",
+					"options": [
+						"bore",
+						"finish",
+						"pierce"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "arc",
+					"phase_after": "plan",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "slow",
+					"phase_after": "plan",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 3
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 4
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 3,
+					"phase_after": "plan",
+					"turn_after": 7
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 7
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 7
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 3,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 7
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 3,
+					"phase_after": "ready",
+					"turn_after": 7
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 3,
+					"phase_after": "reward",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 4,
+					"id": "precise",
+					"options": [
+						"precise",
+						"bore",
+						"pierce"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "charge",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "arc",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "slow",
+					"phase_after": "plan",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 8
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 9
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 4,
+					"phase_after": "plan",
+					"turn_after": 12
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 12
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 12
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 12
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 4,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 12
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 4,
+					"phase_after": "ready",
+					"turn_after": 12
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 4,
+					"phase_after": "reward",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 5,
+					"id": "lens",
+					"options": [
+						"loader",
+						"lens"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 5,
+					"id": "mark",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 13
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 14
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 5,
+					"phase_after": "plan",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 5,
+					"id": "push",
+					"phase_after": "plan",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "charge",
+					"phase_after": "plan",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "finish",
+					"phase_after": "plan",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 17
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 18
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 5,
+					"phase_after": "plan",
+					"turn_after": 21
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 5,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 21
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 5,
+					"phase_after": "ready",
+					"turn_after": 21
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 5,
+					"phase_after": "reward",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "reward",
+					"floor_after": 6,
+					"id": "charge",
+					"options": [
+						"precise",
+						"charge",
+						"finish"
+					],
+					"phase_after": "plan",
+					"remove_id": "",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 6,
+					"id": "push",
+					"phase_after": "plan",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "arc",
+					"phase_after": "plan",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "finish",
+					"phase_after": "plan",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 22
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 23
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 6,
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "exchange",
+					"floor_after": 6,
+					"id": "slow",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "charge",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "pierce",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 26
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 27
+				},
+				{
+					"accepted": true,
+					"action": "reload",
+					"floor_after": 6,
+					"phase_after": "plan",
+					"turn_after": 30
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "bore",
+					"phase_after": "plan",
+					"turn_after": 30
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "charge",
+					"phase_after": "plan",
+					"turn_after": 30
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "basic",
+					"phase_after": "plan",
+					"turn_after": 30
+				},
+				{
+					"accepted": true,
+					"action": "load",
+					"floor_after": 6,
+					"id": "precise",
+					"phase_after": "plan",
+					"turn_after": 30
+				},
+				{
+					"accepted": true,
+					"action": "confirm",
+					"floor_after": 6,
+					"phase_after": "ready",
+					"turn_after": 30
+				},
+				{
+					"accepted": true,
+					"action": "fire",
+					"floor_after": 6,
+					"phase_after": "won",
+					"turn_after": 31
+				}
+			],
+			"deck": [
+				"bore",
+				"pierce",
+				"mark",
+				"precise",
+				"push",
+				"charge",
+				"slow",
+				"arc",
+				"finish",
+				"bore",
+				"bore",
+				"bore",
+				"precise",
+				"charge"
+			],
+			"elapsed_ms": 1928,
+			"encountered": [
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 2,
+							"distance": 19,
+							"eva": 4,
+							"hp": 12,
+							"kind": "wall",
+							"max_hp": 12,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 1
+						}
+					],
+					"floor": 0,
+					"part": "none"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 3,
+							"distance": 21,
+							"eva": 4,
+							"hp": 17,
+							"kind": "wall",
+							"max_hp": 17,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 1
+						}
+					],
+					"floor": 1,
+					"part": "none"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 1,
+							"def": 1,
+							"distance": 24,
+							"eva": 8,
+							"hp": 15,
+							"kind": "evader",
+							"max_hp": 15,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 2,
+					"part": "coil"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 1,
+							"def": 3,
+							"distance": 23,
+							"eva": 4,
+							"hp": 14,
+							"kind": "wall",
+							"max_hp": 14,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 1
+						},
+						{
+							"crack": 1,
+							"def": 1,
+							"distance": 25,
+							"eva": 8,
+							"hp": 11,
+							"kind": "evader",
+							"max_hp": 11,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 3,
+					"part": "coil"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 1,
+							"def": 1,
+							"distance": 26,
+							"eva": 8,
+							"hp": 13,
+							"kind": "evader",
+							"max_hp": 13,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						},
+						{
+							"crack": 1,
+							"def": 3,
+							"distance": 28,
+							"eva": 5,
+							"hp": 17,
+							"kind": "wall",
+							"max_hp": 17,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 4,
+					"part": "coil"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 1,
+							"distance": 28,
+							"eva": 6,
+							"hp": 14,
+							"kind": "runner",
+							"max_hp": 14,
+							"name": "운반 사족체",
+							"slow": 0,
+							"speed": 3
+						},
+						{
+							"crack": 0,
+							"def": 3,
+							"distance": 30,
+							"eva": 4,
+							"hp": 22,
+							"kind": "wall",
+							"max_hp": 22,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 2
+						}
+					],
+					"floor": 5,
+					"part": "lens"
+				},
+				{
+					"capacity": 4,
+					"enemies": [
+						{
+							"crack": 0,
+							"def": 1,
+							"distance": 27,
+							"eva": 9,
+							"hp": 14,
+							"kind": "evader",
+							"max_hp": 14,
+							"name": "굴절 선체",
+							"slow": 0,
+							"speed": 2
+						},
+						{
+							"crack": 0,
+							"def": 3,
+							"distance": 30,
+							"eva": 4,
+							"hp": 22,
+							"kind": "wall",
+							"max_hp": 22,
+							"name": "융합 장갑벽",
+							"slow": 0,
+							"speed": 2
+						},
+						{
+							"crack": 0,
+							"def": 1,
+							"distance": 32,
+							"eva": 5,
+							"hp": 14,
+							"kind": "runner",
+							"max_hp": 14,
+							"name": "운반 사족체",
+							"slow": 0,
+							"speed": 3
+						}
+					],
+					"floor": 6,
+					"part": "lens"
+				}
+			],
+			"exchange_count": 4,
+			"exchange_mode": "optional",
+			"explored_stacks": 14703,
+			"final_enemies": [
+				{
+					"crack": 2,
+					"def": 1,
+					"distance": 27,
+					"eva": 9,
+					"hp": 0,
+					"kind": "evader",
+					"max_hp": 14,
+					"name": "굴절 선체",
+					"slow": 0,
+					"speed": 2
+				},
+				{
+					"crack": 3,
+					"def": 3,
+					"distance": 14,
+					"eva": 4,
+					"hp": 0,
+					"kind": "wall",
+					"max_hp": 22,
+					"name": "융합 장갑벽",
+					"slow": 0,
+					"speed": 2
+				},
+				{
+					"crack": 0,
+					"def": 1,
+					"distance": 20,
+					"eva": 5,
+					"hp": 0,
+					"kind": "runner",
+					"max_hp": 14,
+					"name": "운반 사족체",
+					"slow": 0,
+					"speed": 3
+				}
+			],
+			"final_part": "lens",
+			"floor": 6,
+			"gun": "burst",
+			"history": [
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 0
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"push",
+							"bore",
+							"arc"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 0,
+					"turn": 0
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 10,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 2피해"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 0,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 8,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 2피해"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 7,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 융합 장갑벽: 1피해 · 균열 2"
+							},
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×2"
+								],
+								"crack": 0,
+								"damage": 7,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 융합 장갑벽: 7피해 · 파쇄 ×2 · 처치"
+							}
+						]
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "bore",
+						"removed": ""
+					},
+					"floor": 0,
+					"turn": 1
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 1
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"arc",
+							"charge"
+						],
+						"load_order": [
+							"bore",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 1,
+					"turn": 1
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 16,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 융합 장갑벽: 1피해 · 균열 2"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 2,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 13,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 융합 장갑벽: 3피해"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"균열 3"
+								],
+								"crack": 3,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 11,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 융합 장갑벽: 2피해 · 균열 3"
+							},
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×3"
+								],
+								"crack": 0,
+								"damage": 11,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 융합 장갑벽: 11피해 · 파쇄 ×3 · 처치"
+							}
+						]
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "coil",
+						"removed": ""
+					},
+					"floor": 1,
+					"turn": 2
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 2
+					},
+					"floor": 2,
+					"turn": 2
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"arc",
+							"push",
+							"slow"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						]
+					},
+					"floor": 2,
+					"turn": 2
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 1,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 13,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 1,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 11,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"균열 3"
+								],
+								"crack": 3,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 굴절 선체: 2피해 · 균열 3"
+							},
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×3"
+								],
+								"crack": 0,
+								"damage": 9,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 굴절 선체: 9피해 · 파쇄 ×3 · 처치"
+							}
+						]
+					},
+					"floor": 2,
+					"turn": 3
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "bore",
+						"removed": ""
+					},
+					"floor": 2,
+					"turn": 3
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 3
+					},
+					"floor": 3,
+					"turn": 3
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore"
+						],
+						"load_order": [
+							"bore",
+							"arc",
+							"pierce",
+							"slow"
+						]
+					},
+					"floor": 3,
+					"turn": 3
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 3"
+								],
+								"crack": 3,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 13,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 융합 장갑벽: 1피해 · 균열 3"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"도약 +3"
+								],
+								"crack": 3,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 10,
+								"id": "arc",
+								"pen": 1,
+								"push": 0,
+								"secondary": [
+									{
+										"damage": 3,
+										"hp": 8,
+										"target": 1
+									}
+								],
+								"slow": 0,
+								"target": 0,
+								"text": "도약탄 → 융합 장갑벽: 3피해 · 도약 +3"
+							},
+							{
+								"acc": 6,
+								"combo": [
+									"파쇄 ×3"
+								],
+								"crack": 0,
+								"damage": 10,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 융합 장갑벽: 10피해 · 파쇄 ×3 · 처치"
+							},
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 1,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 5,
+								"id": "slow",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 굴절 선체: 3피해"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 4
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"bore",
+							"bore",
+							"finish",
+							"mark",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 3,
+					"turn": 7
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 1,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 3,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 1,
+								"damage": 2,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 1,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 2피해"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 1,
+								"damage": 1,
+								"graze": true,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 굴절 선체: 1피해 · 처치"
+							}
+						]
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "precise",
+						"removed": ""
+					},
+					"floor": 3,
+					"turn": 8
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 4
+					},
+					"floor": 4,
+					"turn": 8
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"push"
+						],
+						"load_order": [
+							"charge",
+							"precise",
+							"arc",
+							"slow"
+						]
+					},
+					"floor": 4,
+					"turn": 8
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"다음 2발 축전"
+								],
+								"crack": 1,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 12,
+								"id": "charge",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "축전탄 → 굴절 선체: 1피해 · 다음 2발 축전"
+							},
+							{
+								"acc": 9,
+								"combo": [
+									"축전"
+								],
+								"crack": 1,
+								"damage": 8,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 4,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "연속탄 → 굴절 선체: 8피해 · 축전"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"축전",
+									"도약 +3"
+								],
+								"crack": 1,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "arc",
+								"pen": 1,
+								"push": 0,
+								"secondary": [
+									{
+										"damage": 3,
+										"hp": 14,
+										"target": 1
+									}
+								],
+								"slow": 0,
+								"target": 0,
+								"text": "도약탄 → 굴절 선체: 4피해 · 축전 / 도약 +3 · 처치"
+							},
+							{
+								"acc": 9,
+								"combo": [],
+								"crack": 1,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 12,
+								"id": "slow",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 2,
+								"target": 1,
+								"text": "점착탄 → 융합 장갑벽: 2피해"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 9
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"push",
+							"bore",
+							"bore",
+							"mark"
+						],
+						"load_order": [
+							"bore",
+							"basic",
+							"basic",
+							"basic"
+						]
+					},
+					"floor": 4,
+					"turn": 12
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [
+									"균열 3"
+								],
+								"crack": 3,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 11,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 융합 장갑벽: 1피해 · 균열 3"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 3,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 7,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4피해"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 3,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 3,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 4피해"
+							},
+							{
+								"acc": 6,
+								"combo": [],
+								"crack": 3,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 3피해 · 처치"
+							}
+						]
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "lens",
+						"removed": ""
+					},
+					"floor": 4,
+					"turn": 13
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 5
+					},
+					"floor": 5,
+					"turn": 13
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "mark"
+					},
+					"floor": 5,
+					"turn": 13
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise",
+							"precise"
+						],
+						"load_order": [
+							"basic",
+							"bore",
+							"pierce",
+							"bore"
+						]
+					},
+					"floor": 5,
+					"turn": 13
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [],
+								"crack": 0,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 11,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "회수탄 → 운반 사족체: 3피해"
+							},
+							{
+								"acc": 10,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 운반 사족체: 2피해 · 균열 2"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"파쇄 ×2"
+								],
+								"crack": 0,
+								"damage": 9,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "파쇄탄 → 운반 사족체: 9피해 · 파쇄 ×2 · 처치"
+							},
+							{
+								"acc": 10,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 21,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 융합 장갑벽: 1피해 · 균열 2"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 14
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "push"
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"arc"
+						],
+						"load_order": [
+							"charge",
+							"precise",
+							"precise",
+							"finish"
+						]
+					},
+					"floor": 5,
+					"turn": 17
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"combo": [
+									"다음 2발 축전"
+								],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 20,
+								"id": "charge",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "축전탄 → 융합 장갑벽: 1피해 · 다음 2발 축전"
+							},
+							{
+								"acc": 11,
+								"combo": [
+									"축전"
+								],
+								"crack": 2,
+								"damage": 6,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 14,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "연속탄 → 융합 장갑벽: 6피해 · 축전"
+							},
+							{
+								"acc": 11,
+								"combo": [
+									"축전"
+								],
+								"crack": 2,
+								"damage": 6,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 8,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "연속탄 → 융합 장갑벽: 6피해 · 축전"
+							},
+							{
+								"acc": 9,
+								"combo": [
+									"수확"
+								],
+								"crack": 2,
+								"damage": 7,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 1,
+								"id": "finish",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "수확탄 → 융합 장갑벽: 7피해 · 수확"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 18
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"arc",
+							"slow",
+							"bore",
+							"bore",
+							"precise"
+						],
+						"load_order": [
+							"basic"
+						]
+					},
+					"floor": 5,
+					"turn": 21
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "reward",
+						"results": [
+							{
+								"acc": 8,
+								"combo": [],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 1피해 · 처치"
+							}
+						]
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "reward",
+					"detail": {
+						"choice": "charge",
+						"removed": ""
+					},
+					"floor": 5,
+					"turn": 22
+				},
+				{
+					"action": "encounter",
+					"detail": {
+						"index": 6
+					},
+					"floor": 6,
+					"turn": 22
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "push"
+					},
+					"floor": 6,
+					"turn": 22
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"slow"
+						],
+						"load_order": [
+							"bore",
+							"arc",
+							"precise",
+							"finish"
+						]
+					},
+					"floor": 6,
+					"turn": 22
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 12,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "균열탄 → 굴절 선체: 2피해 · 균열 2"
+							},
+							{
+								"acc": 10,
+								"combo": [
+									"도약 +3"
+								],
+								"crack": 2,
+								"damage": 3,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 9,
+								"id": "arc",
+								"pen": 1,
+								"push": 0,
+								"secondary": [
+									{
+										"damage": 3,
+										"hp": 19,
+										"target": 1
+									}
+								],
+								"slow": 0,
+								"target": 0,
+								"text": "도약탄 → 굴절 선체: 3피해 · 도약 +3"
+							},
+							{
+								"acc": 11,
+								"combo": [],
+								"crack": 2,
+								"damage": 4,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 5,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "연속탄 → 굴절 선체: 4피해"
+							},
+							{
+								"acc": 9,
+								"combo": [
+									"수확"
+								],
+								"crack": 2,
+								"damage": 5,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "finish",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 0,
+								"text": "수확탄 → 굴절 선체: 5피해 · 수확 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 23
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "exchange",
+					"detail": {
+						"id": "slow"
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"precise"
+						],
+						"load_order": [
+							"bore",
+							"charge",
+							"pierce",
+							"bore"
+						]
+					},
+					"floor": 6,
+					"turn": 26
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "ready",
+						"results": [
+							{
+								"acc": 10,
+								"combo": [
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 12,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 2,
+								"text": "균열탄 → 운반 사족체: 2피해 · 균열 2"
+							},
+							{
+								"acc": 10,
+								"combo": [
+									"다음 2발 축전"
+								],
+								"crack": 2,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 11,
+								"id": "charge",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 2,
+								"text": "축전탄 → 운반 사족체: 1피해 · 다음 2발 축전"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"축전",
+									"파쇄 ×2"
+								],
+								"crack": 0,
+								"damage": 11,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 0,
+								"id": "pierce",
+								"pen": 2,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 2,
+								"text": "파쇄탄 → 운반 사족체: 11피해 · 축전 / 파쇄 ×2 · 처치"
+							},
+							{
+								"acc": 10,
+								"combo": [
+									"축전",
+									"균열 2"
+								],
+								"crack": 2,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 17,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 융합 장갑벽: 2피해 · 축전 / 균열 2"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 27
+				},
+				{
+					"action": "reload",
+					"detail": {
+						"cost": 3,
+						"phase": "plan"
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "load",
+					"detail": {
+						"hand_left": [
+							"mark",
+							"precise"
+						],
+						"load_order": [
+							"bore",
+							"charge",
+							"basic",
+							"precise"
+						]
+					},
+					"floor": 6,
+					"turn": 30
+				},
+				{
+					"action": "fire",
+					"detail": {
+						"phase": "won",
+						"results": [
+							{
+								"acc": 10,
+								"combo": [
+									"균열 3"
+								],
+								"crack": 3,
+								"damage": 2,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 15,
+								"id": "bore",
+								"pen": 1,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "균열탄 → 융합 장갑벽: 2피해 · 균열 3"
+							},
+							{
+								"acc": 10,
+								"combo": [
+									"다음 2발 축전"
+								],
+								"crack": 3,
+								"damage": 1,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 14,
+								"id": "charge",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "축전탄 → 융합 장갑벽: 1피해 · 다음 2발 축전"
+							},
+							{
+								"acc": 8,
+								"combo": [
+									"축전"
+								],
+								"crack": 3,
+								"damage": 6,
+								"graze": false,
+								"hit": true,
+								"hits": 1,
+								"hp": 8,
+								"id": "basic",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "회수탄 → 융합 장갑벽: 6피해 · 축전"
+							},
+							{
+								"acc": 11,
+								"combo": [
+									"축전"
+								],
+								"crack": 3,
+								"damage": 8,
+								"graze": false,
+								"hit": true,
+								"hits": 2,
+								"hp": 0,
+								"id": "precise",
+								"pen": 0,
+								"push": 0,
+								"secondary": [],
+								"slow": 0,
+								"target": 1,
+								"text": "연속탄 → 융합 장갑벽: 8피해 · 축전 · 처치"
+							}
+						]
+					},
+					"floor": 6,
+					"turn": 31
+				}
+			],
+			"paths": [
+				[
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"bore",
+							"basic",
+							"bore",
+							"pierce"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"bore",
+							"pierce"
+						],
+						"reload": false
+					}
+				],
+				[
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"bore",
+							"arc",
+							"pierce",
+							"slow"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"charge",
+							"precise",
+							"arc",
+							"slow"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"bore",
+							"basic",
+							"basic",
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"exchange": "mark",
+						"fires": 1,
+						"load": [
+							"basic",
+							"bore",
+							"pierce",
+							"bore"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "push",
+						"fires": 1,
+						"load": [
+							"charge",
+							"precise",
+							"precise",
+							"finish"
+						],
+						"reload": true
+					},
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"basic"
+						],
+						"reload": true
+					}
+				],
+				[
+					{
+						"exchange": "push",
+						"fires": 1,
+						"load": [
+							"bore",
+							"arc",
+							"precise",
+							"finish"
+						],
+						"reload": false
+					},
+					{
+						"exchange": "slow",
+						"fires": 1,
+						"load": [
+							"bore",
+							"charge",
+							"pierce",
+							"bore"
+						],
+						"reload": true
+					},
+					{
+						"exchange": "",
+						"fires": 1,
+						"load": [
+							"bore",
+							"charge",
+							"basic",
+							"precise"
+						],
+						"reload": true
+					}
+				]
+			],
+			"policy": "supply",
+			"reloads": 6,
+			"rewards": [
+				{
+					"choice": "bore",
+					"removed": ""
+				},
+				{
+					"choice": "coil",
+					"removed": ""
+				},
+				{
+					"choice": "bore",
+					"removed": ""
+				},
+				{
+					"choice": "precise",
+					"removed": ""
+				},
+				{
+					"choice": "lens",
+					"removed": ""
+				},
+				{
+					"choice": "charge",
+					"removed": ""
+				}
+			],
+			"seed": "731042",
+			"shots": 48,
+			"shots_by_ammo": {
+				"arc": 3,
+				"basic": 14,
+				"bore": 12,
+				"charge": 4,
+				"finish": 2,
+				"pierce": 6,
+				"precise": 5,
+				"slow": 2
+			},
+			"status": "completed",
+			"turns": 31,
+			"won": true
+		}
+	],
+	"scenario_limit_ms": 150000,
+	"search_depth": 6
+}

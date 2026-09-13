@@ -24,6 +24,7 @@ var first_shot: Dictionary = {}
 var hovered := -1
 var inspection_enabled := true
 var info_buttons: Array[Button] = []
+var chain_targets: Array = []
 
 func _ready() -> void:
 	custom_minimum_size.y = 260
@@ -140,12 +141,19 @@ func _draw() -> void:
 			draw_string(FONT, Vector2(distance_x, pos.y + 24), "%s · %dm" % [Forecast.tag(i), roundi(e.distance)], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("e6e6d9"))
 			if e.slow > 0:
 				draw_arc(pos, 22, 0, TAU, 20, Ammo.COLORS.slow, 3)
+			for mark_index in range(int(e.get("crack", 0))):
+				var mark_pos := pos + Vector2(29, -18 + mark_index * 10)
+				draw_line(mark_pos, mark_pos + Vector2(5, 5), Ammo.COLORS.bore, 3)
+				draw_line(mark_pos + Vector2(5, 5), mark_pos + Vector2(0, 9), Ammo.COLORS.bore, 3)
 		else:
 			draw_line(pos + Vector2(-12, -12), pos + Vector2(12, 12), Color("52716b"), 3)
 			draw_line(pos + Vector2(-12, 12), pos + Vector2(12, -12), Color("52716b"), 3)
 		var x := size.x - 239
 		draw_string(FONT, Vector2(x, pos.y - 9), Forecast.tag(i) + " · " + str(e.name) + "  HP %d" % e.hp, HORIZONTAL_ALIGNMENT_LEFT, 233, 17, Color("a9dfbf") if i == target else Color("dce0d8"))
-		draw_string(FONT, Vector2(x, pos.y + 14), "장갑 %d · 회피 %d · 접근 %dm" % [e.def, e.eva, maxi(0, int(e.speed) - int(e.slow))], HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("8ca8b4"))
+		draw_string(FONT, Vector2(x, pos.y + 14), "장갑%d 회피%d 접근%dm" % [maxi(0, int(e.def) - int(e.get("crack", 0))), e.eva, maxi(0, int(e.speed) - int(e.slow))], HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("8ca8b4"))
+		if int(e.get("crack", 0)) > 0:
+			var status_x := 34 if pos.x + 115 < end else -110
+			draw_string(FONT, pos + Vector2(status_x, -17), "균열%d" % e.crack, HORIZONTAL_ALIGNMENT_LEFT, 80, 15, Ammo.COLORS.bore)
 	if not first_shot.is_empty() and first_shot.target >= 0:
 		var p := enemy_position(first_shot.target)
 		var label_x := p.x + 34 if p.x + 155 < end else p.x - 130
@@ -158,6 +166,10 @@ func _draw() -> void:
 		draw_circle(point, 4, Color.WHITE)
 	if float_target >= 0:
 		var point := enemy_position(float_target)
+		for secondary in chain_targets:
+			var other_point := enemy_position(int(secondary.target))
+			draw_line(point, other_point, Color(Ammo.COLORS.arc, 1.0 - pulse), 3)
+			draw_string(FONT, other_point + Vector2(30, 0), "도약 −%d" % secondary.damage, HORIZONTAL_ALIGNMENT_LEFT, 130, 18, Ammo.COLORS.arc)
 		draw_arc(point, 12 + pulse * 20, 0, TAU, 24, Color(float_color, 1.0 - pulse), 3)
 		var text_x := point.x + 34 if point.x + 204 < end else point.x - 170
 		draw_string(FONT, Vector2(text_x, point.y + 3 - pulse * 7), float_text, HORIZONTAL_ALIGNMENT_LEFT, 170, 22, float_color)
@@ -213,16 +225,24 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, reloadin
 		bullet = ""
 		var enemy: Dictionary = enemies[target]
 		enemy.hp = result.hp
+		enemy.crack = result.get("crack", 0)
 		enemy.slow = maxi(int(enemy.slow), int(result.slow))
+		chain_targets = result.get("secondary", []).duplicate(true)
+		for secondary in chain_targets:
+			enemies[secondary.target].hp = secondary.hp
+			visual_events.append({"kind": "secondary", "target": secondary.target, "damage": secondary.damage, "hp": secondary.hp})
 		float_target = target
 		float_text = "빗나감" if not result.hit else ("도탄" if result.damage == 0 else "−%d" % result.damage)
 		if result.hp == 0: float_text += " 처치"
+		elif result.get("hits", 1) == 2: float_text += " 2타"
 		float_color = Color("f0b495") if result.damage == 0 else Color("d7eeae")
 		caption = "%s · %s" % [Ammo.SHORT[result.id], float_text]
+		if not result.get("combo", []).is_empty(): caption += " · " + " / ".join(result.combo)
 		var distance := float(enemy.distance)
 		visual_events.append({"kind": "impact", "target": target, "hp": result.hp, "push": result.push})
 		await _animate(0.32, func(t: float): pulse = t; enemy.distance = lerpf(distance, distance + float(result.push), t))
 		float_target = -1
+		chain_targets.clear()
 		pulse = 0.0
 	# Only after the complete burst do survivors advance, exactly as the model did.
 	var starts: Array = enemies.duplicate(true)

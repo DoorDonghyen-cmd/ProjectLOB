@@ -1,0 +1,41 @@
+{
+  "edition": "chain v2, 2026-09-13",
+  "combat": {
+    "passed": 1687,
+    "failed": 0
+  },
+  "reward_followup": {
+    "passed": 440,
+    "failed": 0
+  },
+  "ui_campaign": {
+    "checks": 714,
+    "failed": 0,
+    "campaigns": 2,
+    "buttons": 223
+  },
+  "touch": {
+    "passed": 65,
+    "failed": 0,
+    "scope": "PC synthetic touch, 1920x864"
+  },
+  "campaign": {
+    "won_paths": 18,
+    "scenarios": 18,
+    "command_rejections": 0,
+    "not_human_win_rate": true
+  },
+  "basic_only_policy": {
+    "won": 0,
+    "scenarios": 16,
+    "scope": "same seeds and reward priority, not all possible basic-only strategies"
+  },
+  "legacy_regression": {
+    "passed": 3730,
+    "failed": 0,
+    "preexisting_warnings": 3,
+    "initial_test_api_failure_fixed": true
+  },
+  "android": "signed, aligned, CRC verified; physical execution pending",
+  "human_fun": "pending"
+}

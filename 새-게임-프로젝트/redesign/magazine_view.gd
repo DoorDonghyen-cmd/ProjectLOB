@@ -1,4 +1,5 @@
 extends Control
+signal slot_pressed(index: int)
 const Ammo = preload("res://redesign/ammo_visual.gd")
 const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 const Forecast = preload("res://redesign/forecast.gd")
@@ -8,21 +9,29 @@ var origin := Vector2.ZERO
 var travel := 1.0
 var confirmed := false
 var forecast: Dictionary = {}
+var capacity := 4
+var interactive := false
 
 func _ready() -> void:
-	custom_minimum_size.y = 142 if not forecast.is_empty() else 112
-	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	custom_minimum_size.y = 154
+	mouse_filter = Control.MOUSE_FILTER_STOP if interactive else Control.MOUSE_FILTER_IGNORE
+
+func _gui_input(event: InputEvent) -> void:
+	if interactive and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		var index := int(event.position.x / (size.x / capacity))
+		if index >= 0 and index < stack.size(): slot_pressed.emit(index)
+		accept_event()
 
 func _draw() -> void:
-	var width := size.x / 4.0
-	for i in range(4):
+	var width := size.x / float(capacity)
+	for i in range(capacity):
 		var x := width * i
-		var rect := Rect2(x + 3, 4, width - 7, 121 if not forecast.is_empty() else 91)
+		var rect := Rect2(x + 3, 4, width - 7, 140)
 		draw_style_box(_box(Color("263f48") if i == 0 else Color("101c24")), rect)
 		draw_string(FONT, Vector2(x + 9, 25), str(i + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("94acae"))
 		if i < stack.size():
-			var id: String = stack[stack.size() - 1 - i]
-			if i != 0 or incoming.is_empty():
+			var id: String = stack[i]
+			if i != stack.size() - 1 or incoming.is_empty():
 				Ammo.round_icon(self, Vector2(x + width * 0.5, 44), id, 0.8)
 			draw_string(FONT, Vector2(x + 4, 82), Ammo.SHORT[id], HORIZONTAL_ALIGNMENT_CENTER, width - 8, 19, Ammo.COLORS[id])
 			if not forecast.is_empty():
@@ -33,16 +42,17 @@ func _draw() -> void:
 					value = "%s %s" % [Forecast.tag(shot.target), Forecast.outcome(shot)]
 					color = Color("a9dfbf") if shot.damage > 0 else Color("f2a38d")
 				draw_string(FONT, Vector2(x + 4, 111), value, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 17, color)
-			if id in ["bore", "mark", "charge"] and i + 1 < stack.size():
-				var from := Vector2(x + width * 0.5, 136 if not forecast.is_empty() else 106)
-				var to := from + Vector2(width, 0)
-				draw_line(from, to, Ammo.COLORS[id], 3)
-				draw_line(to, to + Vector2(-7, -5), Ammo.COLORS[id], 3)
-				draw_line(to, to + Vector2(-7, 5), Ammo.COLORS[id], 3)
+			if not forecast.is_empty() and i < forecast.shots.size():
+				var combos: Array = forecast.shots[i].get("combo", [])
+				var note := str(combos.back()) if not combos.is_empty() else ("2회 타격" if id == "precise" else "")
+				var secondary: Array = forecast.shots[i].get("secondary", [])
+				if not secondary.is_empty(): note = "%s 도약 −%d" % [Forecast.tag(secondary[0].target), secondary[0].damage]
+				elif id == "precise" and combos.has("축전"): note = "축전 · 2타"
+				draw_string(FONT, Vector2(x + 4, 133), note, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, Ammo.COLORS[id])
 		else:
 			draw_string(FONT, Vector2(x + 4, 65), "·", HORIZONTAL_ALIGNMENT_CENTER, width - 8, 32, Color("506570"))
 	if not incoming.is_empty():
-		Ammo.round_icon(self, origin.lerp(Vector2(width * 0.5, 44), travel), incoming, 0.9)
+		Ammo.round_icon(self, origin.lerp(Vector2(width * (stack.size() - 0.5), 44), travel), incoming, 0.9)
 
 func _box(color: Color) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()
@@ -63,6 +73,6 @@ func arrive(id: String, global_origin: Vector2, duration: float) -> void:
 	queue_redraw()
 
 func consume() -> void:
-	if not stack.is_empty(): stack.pop_back()
+	if not stack.is_empty(): stack.pop_front()
 	forecast = {}
 	queue_redraw()
