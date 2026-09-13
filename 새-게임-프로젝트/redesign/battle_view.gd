@@ -5,6 +5,8 @@ signal shot_started(result: Dictionary)
 signal enemy_inspected(index: int)
 const Forecast = preload("res://redesign/forecast.gd")
 const Ammo = preload("res://redesign/ammo_visual.gd")
+const Readability = preload("res://redesign/readability.gd")
+var display_state: Dictionary = {}
 const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 var enemies: Array = []
 var target := -1
@@ -27,12 +29,13 @@ var info_buttons: Array[Button] = []
 var chain_targets: Array = []
 
 func _ready() -> void:
-	custom_minimum_size.y = 260
+	custom_minimum_size.y = 240
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	resized.connect(_place_info_buttons)
 	mouse_exited.connect(func(): hovered = -1; queue_redraw())
 
 func sync(state: Dictionary) -> void:
+	display_state = {"course": state.get("course", false), "floor": state.floor}
 	enemies = state.enemies.duplicate(true)
 	target = _nearest()
 	caption = ""
@@ -150,7 +153,7 @@ func _draw() -> void:
 			draw_line(pos + Vector2(-12, 12), pos + Vector2(12, -12), Color("52716b"), 3)
 		var x := size.x - 239
 		draw_string(FONT, Vector2(x, pos.y - 9), Forecast.tag(i) + " · " + str(e.name) + "  HP %d" % e.hp, HORIZONTAL_ALIGNMENT_LEFT, 233, 17, Color("a9dfbf") if i == target else Color("dce0d8"))
-		draw_string(FONT, Vector2(x, pos.y + 14), "장갑%d 회피%d 접근%dm" % [maxi(0, int(e.def) - int(e.get("crack", 0))), e.eva, maxi(0, int(e.speed) - int(e.slow))], HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("8ca8b4"))
+		draw_string(FONT, Vector2(x, pos.y + 14), Readability.enemy_stats(e, display_state), HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("8ca8b4"))
 		if int(e.get("crack", 0)) > 0:
 			var status_x := 34 if pos.x + 115 < end else -110
 			draw_string(FONT, pos + Vector2(status_x, -17), "균열%d" % e.crack, HORIZONTAL_ALIGNMENT_LEFT, 80, 15, Ammo.COLORS.bore)

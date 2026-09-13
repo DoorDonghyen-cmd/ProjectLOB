@@ -5,14 +5,14 @@ const Content = preload("res://redesign/content.gd")
 const VERSION := 2
 var s: Dictionary = {}
 
-func start(gun_id: String, run_seed: int) -> void:
+func start(gun_id: String, run_seed: int, course: bool = false) -> void:
 	assert(Content.GUNS.has(gun_id))
-	s = {"version": VERSION, "seed": str(run_seed), "gun": gun_id, "part": "none", "floor": 0, "deck": Content.START_DECK.duplicate(), "turns": 0, "shots": 0, "reloads": 0, "history": [], "reward_taken": false}
+	s = {"version": VERSION, "course": course, "seed": str(run_seed), "gun": gun_id, "part": "none", "floor": 0, "deck": Content.COURSE_GRANTS[0].duplicate() if course else Content.START_DECK.duplicate(), "turns": 0, "shots": 0, "reloads": 0, "history": [], "reward_taken": false}
 	begin_encounter()
 
 func begin_encounter() -> void:
 	s.phase = "plan"
-	s.enemies = Content.enemies_for(int(s.floor), int(s.seed))
+	s.enemies = Content.enemies_for(int(s.floor), int(s.seed), s.get("course", false), str(s.gun))
 	if s.part == "coil":
 		for enemy in s.enemies: enemy.crack = 1
 	s.hand = []
@@ -29,6 +29,18 @@ func begin_encounter() -> void:
 	s.rng_state = str(rng.state)
 	_shuffle(s.draw)
 	_refill()
+	if s.get("course", false):
+		# Each newly taught round is in the first hand. Keep ownership and RNG intact.
+		for id in Content.COURSE_GRANTS[int(s.floor)]:
+			if not s.hand.has(id) and s.draw.has(id):
+				var replace_index: int = s.hand.size() - 1
+				while Content.COURSE_GRANTS[int(s.floor)].has(s.hand[replace_index]) and s.hand.count(s.hand[replace_index]) == 1:
+					replace_index -= 1
+				var outgoing = s.hand[replace_index]
+				s.hand.remove_at(replace_index)
+				s.draw.erase(id)
+				s.draw.append(outgoing)
+				s.hand.push_front(id)
 	s.message = "탄환을 누른 순서대로 발사 · 칸을 눌러 회수 · 확정 전 자유롭게 설계"
 	_record("encounter", {"index": s.floor})
 
@@ -163,19 +175,21 @@ func _shot(id: String) -> Dictionary:
 	var pen := int(spec.pen)
 	var raw := int(spec.dmg) + int(Content.GUNS[s.gun].bonus) + dmg_buff
 	var combo: Array = []
-	if dmg_buff > 0: combo.append("축전")
-	if int(s.buff.get("acc", 0)) > 0: combo.append("유도")
+	if dmg_buff > 0: combo.append("강화")
+	if int(s.buff.get("acc", 0)) > 0: combo.append("조준")
 	if spec.effect == "shatter" and crack > 0:
 		raw += crack * int(spec.value)
 		combo.append("파쇄 ×%d" % crack)
 	if spec.effect == "finish" and int(e.hp) * 2 <= int(e.max_hp):
 		raw += int(spec.value)
-		combo.append("수확")
+		combo.append("마무리")
 	var armor := maxi(0, int(e.def) - crack - pen)
 	var evasion := maxi(0, int(e.eva) - acc)
 	var per_hit := maxi(1, raw - armor - evasion)
 	var hits := 2 if spec.effect == "double" else 1
-	var damage := mini(int(e.hp), per_hit * hits)
+	var hp_before := int(e.hp)
+	var math := {"base": int(spec.dmg) + int(Content.GUNS[s.gun].bonus), "boost": dmg_buff, "special": raw - int(spec.dmg) - int(Content.GUNS[s.gun].bonus) - dmg_buff, "raw": raw, "armor": armor, "evasion": evasion, "per_hit": per_hit, "hits": hits, "hp_before": hp_before, "armor_before": int(e.def), "crack_before": crack, "evasion_before": int(e.eva)}
+	var damage := mini(hp_before, per_hit * hits)
 	e.hp -= damage
 	for kind in ["dmg", "acc"]:
 		if s.buff.has(kind):
@@ -186,7 +200,7 @@ func _shot(id: String) -> Dictionary:
 	if spec.effect in ["dmg", "acc"]:
 		s.buff[spec.effect] = spec.value
 		s.buff[str(spec.effect) + "_left"] = 2
-		combo.append("다음 2발 " + ("축전" if spec.effect == "dmg" else "유도"))
+		combo.append("다음 2발 " + ("강화" if spec.effect == "dmg" else "조준"))
 	if spec.effect == "shatter": e.crack = 0
 	if spec.effect == "crack" and int(e.hp) > 0:
 		e.crack = mini(3, crack + int(spec.value))
@@ -214,7 +228,7 @@ func _shot(id: String) -> Dictionary:
 	var description := "%s → %s: %d피해" % [spec.name, e.name, damage]
 	if not combo.is_empty(): description += " · " + " / ".join(combo)
 	if e.hp == 0: description += " · 처치"
-	return {"id": id, "target": index, "hit": true, "graze": evasion > 0, "damage": damage, "hits": hits, "acc": acc, "pen": pen, "hp": e.hp, "crack": int(e.get("crack", 0)), "push": pushed, "slow": slowed, "secondary": secondary, "combo": combo, "text": description}
+	return {"id": id, "target": index, "hit": true, "graze": evasion > 0, "damage": damage, "hits": hits, "acc": acc, "pen": pen, "hp": e.hp, "crack": int(e.get("crack", 0)), "push": pushed, "slow": slowed, "secondary": secondary, "math": math, "combo": combo, "text": description}
 
 func preview() -> Dictionary:
 	var stack: Array = s.plan if s.phase == "plan" else s.magazine
@@ -238,11 +252,11 @@ func choose_reward(id: String, remove_id: String = "") -> bool:
 	if id == "skip":
 		pass
 	elif id == "remove":
-		if s.deck.size() <= 6 or not s.deck.has(remove_id):
+		if s.deck.size() <= minimum_deck() or not s.deck.has(remove_id):
 			return false
 		s.deck.erase(remove_id)
 	elif options.has(id) and Content.AMMO.has(id):
-		if s.deck.size() >= 14:
+		if s.deck.size() >= deck_limit():
 			return false
 		s.deck.append(id)
 	elif options.has(id) and Content.PARTS.has(id):
@@ -252,11 +266,21 @@ func choose_reward(id: String, remove_id: String = "") -> bool:
 	s.reward_taken = true
 	_record("reward", {"choice": id, "removed": remove_id})
 	s.floor += 1
+	if s.get("course", false): s.deck.append_array(Content.COURSE_GRANTS[int(s.floor)])
 	begin_encounter()
 	return true
 
+func minimum_deck() -> int:
+	return 2 if s.get("course", false) else 6
+
+func deck_limit() -> int:
+	var reserved := 0
+	if s.get("course", false):
+		for stage in range(int(s.floor) + 1, 7): reserved += Content.COURSE_GRANTS[stage].size()
+	return 14 - reserved
+
 func reward_options() -> Array:
-	var options := Content.rewards_for(int(s.floor), int(s.seed), str(s.gun))
+	var options := Content.rewards_for(int(s.floor), int(s.seed), str(s.gun), s.get("course", false))
 	options.erase(str(s.part))
 	return options
 
@@ -317,6 +341,8 @@ func restore_run(path: String) -> bool:
 	var parsed = parser.data
 	if not parsed is Dictionary or parsed.get("version", -1) != VERSION:
 		return false
+	if not parsed.has("course"): parsed.course = false
+	if not parsed.course is bool: return false
 	for key in ["seed", "gun", "part", "floor", "deck", "turns", "shots", "reloads", "history", "reward_taken", "phase", "enemies", "hand", "draw", "discard", "magazine", "plan", "buff", "push_left", "supply", "rng_state", "message", "exchange_left"]:
 		if not parsed.has(key):
 			return false
@@ -351,7 +377,7 @@ func restore_run(path: String) -> bool:
 		for id in parsed[key]:
 			if not Content.AMMO.has(id) or (key in ["deck", "hand", "draw", "discard"] and id == "basic"):
 				return false
-	if parsed.deck.size() < 6 or parsed.deck.size() > 14 or parsed.hand.size() > 5 or parsed.magazine.size() > limit or parsed.plan.size() > limit:
+	if parsed.deck.size() < (2 if parsed.course else 6) or parsed.deck.size() > 14 or parsed.hand.size() > 5 or parsed.magazine.size() > limit or parsed.plan.size() > limit:
 		return false
 	if (parsed.phase == "plan" and not parsed.magazine.is_empty()) or (parsed.phase != "plan" and not parsed.plan.is_empty()): return false
 	for id in parsed.plan:

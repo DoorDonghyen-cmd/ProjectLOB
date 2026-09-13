@@ -1,5 +1,6 @@
 extends Control
 signal slot_pressed(index: int)
+signal slot_hovered(index: int)
 const Ammo = preload("res://redesign/ammo_visual.gd")
 const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 const Forecast = preload("res://redesign/forecast.gd")
@@ -11,12 +12,20 @@ var confirmed := false
 var forecast: Dictionary = {}
 var capacity := 4
 var interactive := false
+var selected_index := 0
+var changed_slots: Array = []
+var highlight := 1.0
 
 func _ready() -> void:
 	custom_minimum_size.y = 154
 	mouse_filter = Control.MOUSE_FILTER_STOP if interactive else Control.MOUSE_FILTER_IGNORE
+	if not changed_slots.is_empty():
+		create_tween().tween_method(func(value: float): highlight = value; queue_redraw(), 1.0, 0.0, 0.6)
 
 func _gui_input(event: InputEvent) -> void:
+	if interactive and event is InputEventMouseMotion:
+		var index := int(event.position.x / (size.x / capacity))
+		if index >= 0 and index < stack.size(): slot_hovered.emit(index)
 	if interactive and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var index := int(event.position.x / (size.x / capacity))
 		if index >= 0 and index < stack.size(): slot_pressed.emit(index)
@@ -28,6 +37,8 @@ func _draw() -> void:
 		var x := width * i
 		var rect := Rect2(x + 3, 4, width - 7, 140)
 		draw_style_box(_box(Color("263f48") if i == 0 else Color("101c24")), rect)
+		if i == selected_index and i < stack.size(): draw_rect(rect, Color("a9dfbf"), false, 2)
+		if changed_slots.has(i) and highlight > 0: draw_rect(rect, Color(0.66, 0.87, 0.75, highlight * 0.2))
 		draw_string(FONT, Vector2(x + 9, 25), str(i + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("94acae"))
 		if i < stack.size():
 			var id: String = stack[i]
@@ -47,7 +58,7 @@ func _draw() -> void:
 				var note := str(combos.back()) if not combos.is_empty() else ("2회 타격" if id == "precise" else "")
 				var secondary: Array = forecast.shots[i].get("secondary", [])
 				if not secondary.is_empty(): note = "%s 도약 −%d" % [Forecast.tag(secondary[0].target), secondary[0].damage]
-				elif id == "precise" and combos.has("축전"): note = "축전 · 2타"
+				elif id == "precise" and combos.has("강화"): note = "강화 · 2타"
 				draw_string(FONT, Vector2(x + 4, 133), note, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, Ammo.COLORS[id])
 		else:
 			draw_string(FONT, Vector2(x + 4, 65), "·", HORIZONTAL_ALIGNMENT_CENTER, width - 8, 32, Color("506570"))

@@ -71,6 +71,7 @@
 | 2026-09-12 | **갤럭시 테스트 APK** | `codex0912-android-test` | ARM64/ARMv7 APK·서명/정렬/패키지·PC 터치34 통과, 실기 미검증 | [문서](../../../../docs/walkthrough_android_test_2026-09-12.md) |
 | 2026-09-13 | **現7교전 순서 조합·랜덤성 검토** | `codex0913-order-review` | 60조건·30,000배열, 초기 패6종, 독립 구조 검토. 규칙 변경 없이 상호작용/변동성/입력 대안 논의 | [설계 검토](../../../../docs/design_order_randomness_2026-09-13.md) |
 | 2026-09-13 | **연계 개편판·Android/Windows** | `codex0913-chain` | 독립1687/0·보상440/0·UI714/0·터치65/0·18실제캠페인. 인간 체감 별도 | [문서](../../../../docs/walkthrough_chain_edition_2026-09-13.md) |
+| 2026-09-13 | **탄환 정보·단계 학습 구현** | `codex0913-ammo-readability` | 카드 수치·피해 근거·학습/일반·단계 지급, 24캠페인/4UI 완주, Windows 검토판. APK 미작업·인간 판단 별도 | [문서](../../../../docs/walkthrough_ammo_readability_2026-09-13.md) |
 
 ---
 
@@ -137,3 +138,5 @@
 2026-09-13 참조: [순서 조합·랜덤성 설계 검토](D:/ProjectLoB/worktrees/core-redesign/docs/design_order_randomness_2026-09-13.md)
 
 2026-09-13 참조: [연계 개편판·Android/Windows](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_chain_edition_2026-09-13.md)
+
+2026-09-13 참조: [탄환 정보·단계 학습 구현](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_ammo_readability_2026-09-13.md)

@@ -9,6 +9,8 @@
 
 | 번호 | 제목 | 중요도 | 상태 | 담당 세션 | 생성일 | 해결일 | 리포트 링크 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| READ-01 | 학습 최소덱과 실제 제거 허용 조건 불일치 | 보통 | 🔍 Verified | `codex0913-ammo-readability` | 2026-09-13 | 2026-09-13 | [리포트](bug_readability_course_remove_and_layout.md) |
+| READ-02 | 긴 피해 계산이 장전 확정 버튼을 화면 밖으로 밀어냄 | 보통 | 🔍 Verified | `codex0913-ammo-readability` | 2026-09-13 | 2026-09-13 | [리포트](bug_readability_course_remove_and_layout.md) |
 | AND-01 | 모바일 렌더러 불일치와 APK 메타데이터 검사 실패 | 보통 | 🔍 Verified (패키지) | `codex0912-android-test` | 2026-09-12 | 2026-09-12 | [리포트](bug_android_renderer_override.md) |
 | VIS-02 | 가까운 적의 거리 글자가 아래 적 몸체와 중첩 | 보통 | 🔍 Verified | `codex0912-multi-target` | 2026-09-12 | 2026-09-12 | [리포트](bug_multi_target_distance_overlap.md) |
 | VIS-01 | 다중 적 정보와 피격 문구의 글자 중첩 | 보통 | 🔍 Verified | `codex0911-visual-combat` | 2026-09-11 | 2026-09-11 | [리포트](bug_visual_combat_label_overlap.md) |

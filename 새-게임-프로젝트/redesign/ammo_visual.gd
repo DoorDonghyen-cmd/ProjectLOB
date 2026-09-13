@@ -1,6 +1,6 @@
 extends Control
 const COLORS := {"basic": Color("d2d6d5"), "pierce": Color("dcbc73"), "precise": Color("b1df98"), "bore": Color("79b6f2"), "mark": Color("e6a178"), "charge": Color("e48bc6"), "push": Color("69deeb"), "slow": Color("838bf5"), "arc": Color("c5aff5"), "finish": Color("f28c89")}
-const SHORT := {"basic": "회수", "pierce": "파쇄", "precise": "연속", "bore": "균열", "mark": "유도", "charge": "축전", "push": "충격", "slow": "점착", "arc": "도약", "finish": "수확"}
+const SHORT := {"basic": "회수", "pierce": "파쇄", "precise": "연속", "bore": "균열", "mark": "조준", "charge": "강화", "push": "충격", "slow": "점착", "arc": "도약", "finish": "마무리"}
 const HINT := {"basic": "재장전 시 공급", "pierce": "균열 소비 → 폭딜", "precise": "같은 적 2회 타격", "bore": "균열 +2 → 장갑↓", "mark": "다음 2발 명중↑", "charge": "다음 2발 피해↑", "push": "2m 밀어 표적 전환", "slow": "다음 접근 −2m", "arc": "균열 → 후열 피해↑", "finish": "반피 이하 → 피해↑"}
 var ammo_id := "basic"
 
