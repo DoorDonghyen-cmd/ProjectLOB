@@ -69,6 +69,7 @@
 | 2026-09-12 | **Godot 텍스트 밀도 정리** | `codex0912-quiet-ui` | 탄환 공용 수치·정보 창, 반복 설명 정리. 화면49·연출39·전체UI493 통과. main 미병합 | [문서](../../../../docs/walkthrough_quiet_ui_2026-09-12.md) |
 | 2026-09-12 | **다수 적 표적 예고** | `codex0912-multi-target` | 탄별 A/B/C 예고·개별 정보·같은 거리 표시. 집중129·독립2627·전체UI493. main 미병합 | [문서](../../../../docs/walkthrough_multi_target_2026-09-12.md) |
 | 2026-09-12 | **갤럭시 테스트 APK** | `codex0912-android-test` | ARM64/ARMv7 APK·서명/정렬/패키지·PC 터치34 통과, 실기 미검증 | [문서](../../../../docs/walkthrough_android_test_2026-09-12.md) |
+| 2026-09-13 | **現7교전 순서 조합·랜덤성 검토** | `codex0913-order-review` | 60조건·30,000배열, 초기 패6종, 독립 구조 검토. 규칙 변경 없이 상호작용/변동성/입력 대안 논의 | [설계 검토](../../../../docs/design_order_randomness_2026-09-13.md) |
 
 ---
 
@@ -131,3 +132,5 @@
 
 
 2026-09-12 참조: [갤럭시 테스트 APK](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_android_test_2026-09-12.md)
+
+2026-09-13 참조: [순서 조합·랜덤성 설계 검토](D:/ProjectLoB/worktrees/core-redesign/docs/design_order_randomness_2026-09-13.md)

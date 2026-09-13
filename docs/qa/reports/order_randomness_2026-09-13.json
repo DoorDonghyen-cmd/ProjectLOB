@@ -1,0 +1,812 @@
+{
+	"examples": [
+		{
+			"firing_order": [
+				"basic",
+				"basic",
+				"basic"
+			],
+			"floor": 1,
+			"gun": "single",
+			"result": {
+				"distance": [
+					14
+				],
+				"hp": [
+					0
+				],
+				"phase": "reward",
+				"shots": 2,
+				"turns": 2
+			}
+		},
+		{
+			"firing_order": [
+				"bore",
+				"basic"
+			],
+			"floor": 2,
+			"gun": "single",
+			"result": {
+				"distance": [
+					14
+				],
+				"hp": [
+					4
+				],
+				"phase": "ready",
+				"shots": 2,
+				"turns": 2
+			}
+		},
+		{
+			"firing_order": [
+				"basic",
+				"bore"
+			],
+			"floor": 2,
+			"gun": "single",
+			"result": {
+				"distance": [
+					14
+				],
+				"hp": [
+					8
+				],
+				"phase": "ready",
+				"shots": 2,
+				"turns": 2
+			}
+		},
+		{
+			"firing_order": [
+				"charge",
+				"bore",
+				"basic"
+			],
+			"floor": 2,
+			"gun": "single",
+			"result": {
+				"distance": [
+					14
+				],
+				"hp": [
+					0
+				],
+				"phase": "reward",
+				"shots": 3,
+				"turns": 3
+			}
+		},
+		{
+			"firing_order": [
+				"bore",
+				"charge",
+				"basic"
+			],
+			"floor": 2,
+			"gun": "single",
+			"result": {
+				"distance": [
+					13
+				],
+				"hp": [
+					6
+				],
+				"phase": "ready",
+				"shots": 3,
+				"turns": 3
+			}
+		},
+		{
+			"firing_order": [
+				"basic",
+				"basic",
+				"basic"
+			],
+			"floor": 1,
+			"gun": "burst",
+			"result": {
+				"distance": [
+					16
+				],
+				"hp": [
+					0
+				],
+				"phase": "reward",
+				"shots": 3,
+				"turns": 1
+			}
+		},
+		{
+			"firing_order": [
+				"bore",
+				"basic"
+			],
+			"floor": 2,
+			"gun": "burst",
+			"result": {
+				"distance": [
+					15
+				],
+				"hp": [
+					6
+				],
+				"phase": "ready",
+				"shots": 2,
+				"turns": 1
+			}
+		},
+		{
+			"firing_order": [
+				"basic",
+				"bore"
+			],
+			"floor": 2,
+			"gun": "burst",
+			"result": {
+				"distance": [
+					15
+				],
+				"hp": [
+					9
+				],
+				"phase": "ready",
+				"shots": 2,
+				"turns": 1
+			}
+		},
+		{
+			"firing_order": [
+				"charge",
+				"bore",
+				"basic"
+			],
+			"floor": 2,
+			"gun": "burst",
+			"result": {
+				"distance": [
+					15
+				],
+				"hp": [
+					2
+				],
+				"phase": "ready",
+				"shots": 3,
+				"turns": 1
+			}
+		},
+		{
+			"firing_order": [
+				"bore",
+				"charge",
+				"basic"
+			],
+			"floor": 2,
+			"gun": "burst",
+			"result": {
+				"distance": [
+					15
+				],
+				"hp": [
+					8
+				],
+				"phase": "ready",
+				"shots": 3,
+				"turns": 1
+			}
+		}
+	],
+	"fixtures": [
+		{
+			"end_sensitive": 27,
+			"floor": 1,
+			"gun": "single",
+			"hp_sensitive": 0,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 29,
+			"floor": 1,
+			"gun": "single",
+			"hp_sensitive": 0,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 1,
+			"gun": "single",
+			"hp_sensitive": 0,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 29,
+			"floor": 1,
+			"gun": "single",
+			"hp_sensitive": 0,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 1,
+			"gun": "single",
+			"hp_sensitive": 0,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 1,
+			"gun": "single",
+			"hp_sensitive": 0,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 7,
+			"floor": 2,
+			"gun": "single",
+			"hp_sensitive": 7,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 39
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 2,
+			"gun": "single",
+			"hp_sensitive": 15,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 14
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 2,
+			"gun": "single",
+			"hp_sensitive": 19,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 127
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 2,
+			"gun": "single",
+			"hp_sensitive": 19,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 123
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 2,
+			"gun": "single",
+			"hp_sensitive": 19,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 127
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 2,
+			"gun": "single",
+			"hp_sensitive": 15,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 78
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 3,
+			"gun": "single",
+			"hp_sensitive": 16,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 185
+		},
+		{
+			"end_sensitive": 21,
+			"floor": 3,
+			"gun": "single",
+			"hp_sensitive": 14,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 261
+		},
+		{
+			"end_sensitive": 11,
+			"floor": 3,
+			"gun": "single",
+			"hp_sensitive": 8,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 114
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 3,
+			"gun": "single",
+			"hp_sensitive": 19,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 143
+		},
+		{
+			"end_sensitive": 21,
+			"floor": 3,
+			"gun": "single",
+			"hp_sensitive": 14,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 274
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 3,
+			"gun": "single",
+			"hp_sensitive": 12,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 153
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 4,
+			"gun": "single",
+			"hp_sensitive": 15,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 4,
+			"gun": "single",
+			"hp_sensitive": 15,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 29,
+			"floor": 4,
+			"gun": "single",
+			"hp_sensitive": 23,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 29,
+			"floor": 4,
+			"gun": "single",
+			"hp_sensitive": 23,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 4,
+			"gun": "single",
+			"hp_sensitive": 23,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 4,
+			"gun": "single",
+			"hp_sensitive": 23,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 7,
+			"gun": "single",
+			"hp_sensitive": 9,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 7,
+			"gun": "single",
+			"hp_sensitive": 13,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 7,
+			"gun": "single",
+			"hp_sensitive": 13,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 28,
+			"floor": 7,
+			"gun": "single",
+			"hp_sensitive": 17,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 7,
+			"gun": "single",
+			"hp_sensitive": 17,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 25,
+			"floor": 7,
+			"gun": "single",
+			"hp_sensitive": 13,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 1,
+			"gun": "burst",
+			"hp_sensitive": 0,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 25,
+			"floor": 1,
+			"gun": "burst",
+			"hp_sensitive": 3,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 482
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 1,
+			"gun": "burst",
+			"hp_sensitive": 0,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 28,
+			"floor": 1,
+			"gun": "burst",
+			"hp_sensitive": 2,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 488
+		},
+		{
+			"end_sensitive": 25,
+			"floor": 1,
+			"gun": "burst",
+			"hp_sensitive": 2,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 488
+		},
+		{
+			"end_sensitive": 25,
+			"floor": 1,
+			"gun": "burst",
+			"hp_sensitive": 0,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 500
+		},
+		{
+			"end_sensitive": 7,
+			"floor": 2,
+			"gun": "burst",
+			"hp_sensitive": 7,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 2,
+			"gun": "burst",
+			"hp_sensitive": 15,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 2,
+			"gun": "burst",
+			"hp_sensitive": 19,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 36
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 2,
+			"gun": "burst",
+			"hp_sensitive": 19,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 36
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 2,
+			"gun": "burst",
+			"hp_sensitive": 19,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 36
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 2,
+			"gun": "burst",
+			"hp_sensitive": 15,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 3,
+			"gun": "burst",
+			"hp_sensitive": 19,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 87
+		},
+		{
+			"end_sensitive": 21,
+			"floor": 3,
+			"gun": "burst",
+			"hp_sensitive": 21,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 97
+		},
+		{
+			"end_sensitive": 11,
+			"floor": 3,
+			"gun": "burst",
+			"hp_sensitive": 11,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 57
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 3,
+			"gun": "burst",
+			"hp_sensitive": 19,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 28
+		},
+		{
+			"end_sensitive": 21,
+			"floor": 3,
+			"gun": "burst",
+			"hp_sensitive": 21,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 113
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 3,
+			"gun": "burst",
+			"hp_sensitive": 15,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 24
+		},
+		{
+			"end_sensitive": 23,
+			"floor": 4,
+			"gun": "burst",
+			"hp_sensitive": 12,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 21,
+			"floor": 4,
+			"gun": "burst",
+			"hp_sensitive": 13,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 27,
+			"floor": 4,
+			"gun": "burst",
+			"hp_sensitive": 19,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 25,
+			"floor": 4,
+			"gun": "burst",
+			"hp_sensitive": 17,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 21,
+			"floor": 4,
+			"gun": "burst",
+			"hp_sensitive": 21,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 21,
+			"floor": 4,
+			"gun": "burst",
+			"hp_sensitive": 10,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 7,
+			"gun": "burst",
+			"hp_sensitive": 17,
+			"missing": "bore",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 7,
+			"gun": "burst",
+			"hp_sensitive": 13,
+			"missing": "pierce",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 15,
+			"floor": 7,
+			"gun": "burst",
+			"hp_sensitive": 13,
+			"missing": "mark",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 19,
+			"floor": 7,
+			"gun": "burst",
+			"hp_sensitive": 18,
+			"missing": "precise",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 17,
+			"floor": 7,
+			"gun": "burst",
+			"hp_sensitive": 17,
+			"missing": "push",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		},
+		{
+			"end_sensitive": 9,
+			"floor": 7,
+			"gun": "burst",
+			"hp_sensitive": 7,
+			"missing": "charge",
+			"multisets": 30,
+			"plans": 500,
+			"winning_plans": 0
+		}
+	],
+	"hands": {
+		"[\"bore\", \"charge\", \"mark\", \"pierce\", \"precise\"]": 46,
+		"[\"bore\", \"charge\", \"mark\", \"pierce\", \"push\"]": 47,
+		"[\"bore\", \"charge\", \"mark\", \"precise\", \"push\"]": 44,
+		"[\"bore\", \"charge\", \"pierce\", \"precise\", \"push\"]": 32,
+		"[\"bore\", \"mark\", \"pierce\", \"precise\", \"push\"]": 48,
+		"[\"charge\", \"mark\", \"pierce\", \"precise\", \"push\"]": 39
+	},
+	"scope": "Actual model, first magazine only; later floors use starting-deck fixtures, not campaign progression. Order sensitivity is not a fun score.",
+	"seeds": 256
+}
