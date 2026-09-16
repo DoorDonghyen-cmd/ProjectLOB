@@ -99,7 +99,7 @@ static func encounter(node: Dictionary, seed_value: int, gun: String, difficulty
 	var enemies: Array = []
 	for i in range(rows.size()):
 		var row: Array = rows[i]
-		var distance := int(row[4]) + (2 if gun == "burst" else 0) - pressure - mini(4, difficulty / 2)
+		var distance := int(row[4]) - pressure - mini(4, difficulty / 2)
 		enemies.append({"kind": row[0], "name": str(node.name) if boss and i == 0 else str(Ammo.ENEMY_NAMES[row[0]]), "hp": row[1], "max_hp": row[1], "def": row[2], "speed": row[3], "distance": maxi(6, distance), "burn": 0})
 	return enemies
 

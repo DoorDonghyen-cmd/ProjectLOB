@@ -224,7 +224,9 @@ func six_slot_layout(expected: Dictionary) -> void:
 	for i in range(magazine.forecast.shots.size()):
 		var lines: PackedStringArray = magazine.compact_lines(magazine.forecast, i)
 		var shot: Dictionary = magazine.forecast.shots[i]
-		check(lines[1] == ("처치" if int(shot.hp) == 0 else "HP%d" % int(shot.hp)), "compact line retains exact remaining HP")
+		if shot.get("random", false):
+			check(lines[0] == "무작위" and lines[1] == "%d~%d" % [shot.damage_min, shot.damage_max], "compact random slot retains public damage range")
+		else: check(lines[1] == ("처치" if int(shot.hp) == 0 else "HP%d" % int(shot.hp)), "compact line retains exact remaining HP")
 		for line in range(3): check(font.get_string_size(lines[line], HORIZONTAL_ALIGNMENT_LEFT, -1, 15 if line == 0 else 14).x <= width, "compact result stays inside its slot")
 	for key_name in ["fire", "reload"]:
 		var control := screen.find_child(key_name, true, false) as Control

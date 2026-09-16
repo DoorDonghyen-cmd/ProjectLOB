@@ -8,8 +8,9 @@ var explored := 0
 
 func clone(model):
 	var result = Model.new()
-	result.s = model.s.duplicate(true)
+	result.s = model.s.duplicate()
 	result.s.history = []
+	result.s = result.s.duplicate(true)
 	return result
 
 func enumerate(model, stack: Array = []) -> void:
@@ -63,7 +64,7 @@ func solve(model, width: int = 3, max_depth: int = 7) -> Array:
 					path.append({"action": "fire"})
 					if simulation.s.phase in ["reward", "won"]: return path
 					if simulation.s.phase == "lost": break
-					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state])
+					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state, simulation.s.target_rng_state, simulation.s.buff, simulation.s.push_left])
 					if seen.has(key): continue
 					seen[key] = true
 					next.append({"model": clone(simulation), "path": path.duplicate(true), "score": score(simulation)})

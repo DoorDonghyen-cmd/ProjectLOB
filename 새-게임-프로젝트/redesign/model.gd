@@ -2,7 +2,7 @@ extends RefCounted
 ## One serializable state; commands validate before mutation. Preview executes the
 ## same shot resolver on a copy and never changes live state or RNG.
 const Content = preload("res://redesign/content.gd")
-const VERSION := 3
+const VERSION := 4
 var s: Dictionary = {}
 
 func start(gun_id: String, run_seed: int, course: bool = false) -> void:
@@ -19,12 +19,13 @@ func begin_encounter() -> void:
 	s.magazine = []
 	s.plan = []
 	s.buff = {}
-	s.push_left = 2
+	s.push_left = Content.push_budget(s)
 	s.exchange_left = 1
 	s.supply = supply_capacity()
 	var rng := RandomNumberGenerator.new()
 	rng.seed = int(s.seed) + int(s.floor) * 104729
 	s.rng_state = str(rng.state)
+	s.target_rng_state = _target_state(s)
 	_shuffle(s.draw)
 	_refill()
 	if s.get("course", false):
@@ -89,7 +90,7 @@ func fire() -> bool:
 	if s.phase != "ready" or s.magazine.is_empty():
 		return false
 	var results: Array = []
-	var count: int = s.magazine.size() if s.gun == "burst" else 1
+	var count: int = s.magazine.size() if Content.chains(s) else 1
 	for i in range(count):
 		if target_index() < 0:
 			break
@@ -132,7 +133,7 @@ func reload_magazine() -> bool:
 	elif s.phase != "lost":
 		s.phase = "plan"
 		s.supply = supply_capacity()
-		s.push_left = 2
+		s.push_left = Content.push_budget(s)
 		s.exchange_left = 1
 		_refill()
 		s.message = "재장전 완료 · %d턴 경과 · 남은 패 유지, 빈 자리 보충" % cost
@@ -153,7 +154,7 @@ func _advance(turn_count: int, count_turns: bool = false) -> Array:
 				continue
 			if int(e.get("burn", 0)) > 0:
 				var hp_before := int(e.hp)
-				e.hp = maxi(0, hp_before - 1)
+				e.hp = maxi(0, hp_before - Content.burn_damage(s))
 				e.burn = maxi(0, int(e.burn) - 1)
 				events.append({"turn": i, "target": enemy_index, "kind": "burn", "damage": hp_before - int(e.hp), "hp": e.hp, "burn": e.burn})
 		if target_index() < 0:
@@ -182,80 +183,93 @@ func target_index() -> int:
 			distance = int(e.distance)
 	return selected
 
-func _shot(id: String) -> Dictionary:
-	var index := target_index()
-	if index < 0: return {}
+func _random_target() -> int:
+	var alive: Array = []
+	for i in range(s.enemies.size()):
+		if int(s.enemies[i].hp) > 0: alive.append(i)
+	if alive.is_empty(): return -1
+	var rng := RandomNumberGenerator.new()
+	rng.state = int(s.target_rng_state)
+	var index: int = alive[rng.randi_range(0, alive.size() - 1)]
+	s.target_rng_state = str(rng.state)
+	return index
+
+func _target_state(state: Dictionary) -> String:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = int(state.get("seed", 0)) ^ (int(state.get("floor", 0)) * 7919 + 15485863)
+	return str(rng.state)
+
+func _shot(id: String, forced_target: int = -1) -> Dictionary:
+	var index := forced_target if forced_target >= 0 else (_random_target() if s.gun == "scatter" else target_index())
+	if index < 0 or index >= s.enemies.size(): return {}
 	var e: Dictionary = s.enemies[index]
+	if int(e.hp) <= 0: return {}
 	var spec: Dictionary = Content.AMMO[id]
 	var dmg_buff := int(s.buff.get("dmg", 0))
 	var pen := Content.penetration(id, s)
-	var raw := int(spec.dmg) + int(Content.GUNS[s.gun].bonus) + dmg_buff
-	var combo: Array = []
-	if dmg_buff > 0: combo.append("증폭")
+	var raw := Content.damage(id, s) + dmg_buff
 	var armor := maxi(0, int(e.def) - pen)
 	var per_hit := maxi(1, raw - armor)
-	var hits := 2 if spec.effect == "double" else 1
+	var requested_hits := 2 if spec.effect == "double" else 1
 	var hp_before := int(e.hp)
-	var math := {"base": int(spec.dmg) + int(Content.GUNS[s.gun].bonus), "boost": dmg_buff, "raw": raw, "armor": armor, "per_hit": per_hit, "hits": hits, "hp_before": hp_before, "armor_before": int(e.def)}
-	if s.gun == "heavy":
-		var overflow := mini(1, maxi(0, pen - int(e.def)))
-		per_hit += overflow
-		math.overflow = overflow
-		math.per_hit = per_hit
-		if overflow > 0: combo.append("초과 관통 +%d" % overflow)
-	# Keep the impact position before push; spread belongs to this projectile.
-	var impact_distance := int(e.distance)
-	var damage := mini(hp_before, per_hit * hits)
-	e.hp -= damage
+	var focus_before := int(e.get("focus_hits", 0))
+	var focus_damage := 0
+	var focus_triggers := 0
+	var hits := 0
+	var combo: Array = []
+	if dmg_buff > 0: combo.append("증폭")
+	for hit_index in range(requested_hits):
+		if int(e.hp) <= 0: break
+		hits += 1
+		e.hp = maxi(0, int(e.hp) - per_hit)
+		if s.gun == "burst":
+			e.focus_hits = int(e.get("focus_hits", 0)) + 1
+			if int(e.focus_hits) == 3:
+				e.focus_hits = 0
+				focus_triggers += 1
+				var extra := mini(4, int(e.hp))
+				e.hp -= extra
+				focus_damage += extra
+	var damage := hp_before - int(e.hp)
+	var math := {"base": Content.damage(id, s), "boost": dmg_buff, "raw": raw, "armor": armor, "per_hit": per_hit, "hits": hits, "hp_before": hp_before, "armor_before": int(e.def), "focus": focus_damage}
+	if focus_triggers > 0: combo.append("집중 추가 피해 %d" % focus_damage)
 	if s.buff.has("dmg"):
 		s.buff.dmg_left -= 1
 		if s.buff.dmg_left <= 0:
 			s.buff.erase("dmg")
 			s.buff.erase("dmg_left")
 	if spec.effect == "boost":
-		s.buff.dmg = spec.value
+		s.buff.dmg = Content.effect_value(id, s)
 		s.buff.dmg_left = 2
-		combo.append("다음 2발 증폭")
+		combo.append("다음 2발 +%d" % s.buff.dmg)
 	var burn_added := 0
 	if spec.effect == "burn" and int(e.hp) > 0:
 		burn_added = Content.burn_amount(id, s)
 		e.burn = mini(6, int(e.get("burn", 0)) + burn_added)
-		combo.append("화상 %d" % e.burn)
+		combo.append("화상 %d · 턴당 %d" % [e.burn, Content.burn_damage(s)])
 	var pushed := 0
-	if int(e.hp) > 0:
-		if spec.effect == "push":
-			pushed = mini(int(spec.value), int(s.push_left))
-			e.distance += pushed
-			s.push_left -= pushed
+	if int(e.hp) > 0 and spec.effect == "push":
+		pushed = mini(Content.effect_value(id, s), int(s.push_left))
+		e.distance += pushed
+		s.push_left -= pushed
 	var secondary: Array = []
-	if s.gun == "scatter":
-		var spread_raw := raw / 2
-		for other_index in range(s.enemies.size()):
-			var other: Dictionary = s.enemies[other_index]
-			if other_index == index or int(other.hp) <= 0 or absi(int(other.distance) - impact_distance) > 3: continue
-			var spread_armor := maxi(0, int(other.def) - pen)
-			var spread_hit := maxi(1, spread_raw - spread_armor)
-			var amount := mini(int(other.hp), spread_hit * hits)
-			other.hp -= amount
-			secondary.append({"kind": "spread", "target": other_index, "damage": amount, "hp": other.hp, "raw": spread_raw, "armor": spread_armor, "per_hit": spread_hit, "hits": hits})
-		if not secondary.is_empty(): combo.append("확산 %d명" % secondary.size())
 	if spec.effect == "arc":
 		var other := -1
 		for i in range(s.enemies.size()):
 			if i != index and s.enemies[i].hp > 0 and (other < 0 or s.enemies[i].distance < s.enemies[other].distance): other = i
 		if other >= 0:
-			var amount := mini(int(s.enemies[other].hp), int(spec.value))
+			var amount := mini(int(s.enemies[other].hp), Content.effect_value(id, s))
 			s.enemies[other].hp -= amount
-			secondary.append({"target": other, "damage": amount, "hp": s.enemies[other].hp})
+			secondary.append({"kind": "arc", "target": other, "damage": amount, "hp": s.enemies[other].hp})
 			combo.append("전이 %d" % amount)
 	var description := "%s → %s: %d피해" % [spec.name, e.name, damage]
 	if not combo.is_empty(): description += " · " + " / ".join(combo)
 	if e.hp == 0: description += " · 처치"
-	return {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description}
+	return {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "burn_tick": Content.burn_damage(s), "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description, "focus_before": focus_before, "focus_after": int(e.get("focus_hits", 0)), "focus_damage": focus_damage, "focus_triggers": focus_triggers, "boost_granted": Content.effect_value(id, s) if id == "charge" else 0}
 
 func preview() -> Dictionary:
 	var stack: Array = s.plan if s.phase == "plan" else s.magazine
-	if stack.is_empty() or target_index() < 0:
+	if stack.is_empty() or target_index() < 0 or s.gun == "scatter":
 		return {}
 	var copy = get_script().new()
 	copy.s = s.duplicate(true)
@@ -270,7 +284,7 @@ func movement_preview(turn_count: int) -> Array:
 		for i in range(turn_count):
 			if hp <= 0: break
 			if burn > 0:
-				hp -= 1
+				hp -= Content.burn_damage(s)
 				burn -= 1
 			if hp > 0: distance = maxi(0, distance - int(e.speed))
 		result.append(distance)
@@ -378,12 +392,14 @@ func restore_run(path: String) -> bool:
 func restore_state(source: Dictionary) -> bool:
 	var parsed: Dictionary = source.duplicate(true)
 	if int(parsed.get("version", -1)) == 2:
-		parsed = _migrate_v2(parsed)
+		parsed = _migrate_v3(_migrate_v2(parsed))
+	elif int(parsed.get("version", -1)) == 3:
+		parsed = _migrate_v3(parsed)
 	elif int(parsed.get("version", -1)) != VERSION:
 		return false
 	if not parsed.has("course"): parsed.course = false
 	if not parsed.course is bool: return false
-	for key in ["seed", "gun", "part", "floor", "deck", "turns", "shots", "reloads", "history", "reward_taken", "phase", "enemies", "hand", "draw", "discard", "magazine", "plan", "buff", "push_left", "supply", "rng_state", "message", "exchange_left"]:
+	for key in ["seed", "gun", "part", "floor", "deck", "turns", "shots", "reloads", "history", "reward_taken", "phase", "enemies", "hand", "draw", "discard", "magazine", "plan", "buff", "push_left", "supply", "rng_state", "target_rng_state", "message", "exchange_left"]:
 		if not parsed.has(key):
 			return false
 	if not Content.GUNS.has(parsed.gun) or not Content.PARTS.has(parsed.part) or not _whole(parsed.floor, 0, 6) or not parsed.phase in ["plan", "ready", "reward", "won", "lost"]:
@@ -396,7 +412,7 @@ func restore_state(source: Dictionary) -> bool:
 	elif not _whole(parsed.seed, -9007199254740991, 9007199254740991):
 		return false
 	parsed.seed = str(int(parsed.seed))
-	if not parsed.rng_state is String or not parsed.rng_state.is_valid_int():
+	if not parsed.rng_state is String or not parsed.rng_state.is_valid_int() or not parsed.target_rng_state is String or not parsed.target_rng_state.is_valid_int():
 		return false
 	for key in ["turns", "shots", "reloads"]:
 		if not _whole(parsed[key], 0, 1000000): return false
@@ -410,7 +426,7 @@ func restore_state(source: Dictionary) -> bool:
 	if not _whole(parsed.exchange_left, 0, 1): return false
 	if parsed.buff.has("dmg") != parsed.buff.has("dmg_left"): return false
 	if parsed.buff.has("dmg") and not _whole(parsed.buff.dmg_left, 1, 2): return false
-	if not _whole(parsed.supply, 0, supply_limit) or not _whole(parsed.push_left, 0, 2): return false
+	if not _whole(parsed.supply, 0, supply_limit) or not _whole(parsed.push_left, 0, Content.push_budget(parsed)): return false
 	for key in ["deck", "hand", "draw", "discard", "magazine", "plan"]:
 		if not parsed[key] is Array:
 			return false
@@ -438,9 +454,20 @@ func restore_state(source: Dictionary) -> bool:
 		if not Content.ENEMY_NAMES.has(enemy.kind) or not enemy.name is String: return false
 		for key in ["hp", "max_hp", "def", "speed", "distance", "burn"]:
 			if not _whole(enemy[key], 0, 1000000): return false
-		if enemy.hp > enemy.max_hp or not _whole(enemy.burn, 0, 6): return false
+		if enemy.hp > enemy.max_hp or not _whole(enemy.burn, 0, 6) or not _whole(enemy.get("focus_hits", 0), 0, 2): return false
 	s = parsed
 	return true
+
+func _migrate_v3(old_state: Dictionary) -> Dictionary:
+	var old_seed: Variant = old_state.get("seed")
+	if old_seed is String:
+		if not old_seed.is_valid_int() or str(int(old_seed)) != old_seed: return {}
+	elif not _whole(old_seed, -9007199254740991, 9007199254740991): return {}
+	if not _whole(old_state.get("floor"), 0, 6): return {}
+	var migrated: Dictionary = old_state.duplicate(true)
+	migrated.target_rng_state = _target_state(migrated)
+	migrated.version = VERSION
+	return migrated
 
 func _migrate_v2(old_state: Dictionary) -> Dictionary:
 	var migrated: Dictionary = old_state.duplicate(true)

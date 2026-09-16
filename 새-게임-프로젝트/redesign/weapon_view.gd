@@ -1,6 +1,6 @@
 extends Control
 ## Temporary vector silhouettes: readable weapon identities before final art.
-const COLORS := {"single": Color("a9dfbf"), "burst": Color("f3ba75"), "scatter": Color("87c9df"), "heavy": Color("c4ace5")}
+const COLORS := {"single": Color("a9dfbf"), "burst": Color("f3ba75"), "scatter": Color("87c9df"), "heavy": Color("c4ace5"), "amplifier": Color("e6c176")}
 var gun_id := "single"
 
 func _ready() -> void:
@@ -27,3 +27,8 @@ func _draw() -> void:
 			draw_rect(Rect2(29, 7, 28, 20), color)
 			draw_rect(Rect2(40, 12, 24, 10), color)
 			draw_line(Vector2(46, 17), Vector2(68, 17), Color("e7e4d9"), 2)
+			for x in [36, 46]: draw_circle(Vector2(x, 17), 3, Color("1b2a34"))
+		"amplifier":
+			draw_rect(Rect2(35, 9, 25, 13), color)
+			draw_rect(Rect2(49, 5, 8, 22), color)
+			draw_string(ThemeDB.fallback_font, Vector2(29, 21), "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("1b2a34"))

@@ -1,5 +1,5 @@
 extends RefCounted
-## Public situations vary; shot resolution never rolls dice.
+## Damage is transparent; scatter alone chooses a random primary target.
 ## Every round exposes two numbers, one attribute, and at most one effect.
 const AMMO := {
 	"basic": {"name": "회수탄", "dmg": 4, "pen": 0, "attribute": "physical", "effect": "", "value": 0, "text": "항상 보급되는 물리 기본탄. 재장전할 때 공급 상한까지 복구됩니다."},
@@ -12,10 +12,11 @@ const AMMO := {
 }
 
 const GUNS := {
-	"single": {"name": "보행자", "role": "타이밍 조절", "capacity": 4, "reload": 1, "bonus": 1, "identity": "한 발씩 · 타격당 피해 +1", "recommendation": "화상 먼저 · 충격으로 표적 변경", "text": "단발 · 타격당 피해 +1 · 사격 1턴 / 재장전 1턴"},
-	"burst": {"name": "쇄도", "role": "한 턴 몰아치기", "capacity": 4, "reload": 3, "bonus": 0, "identity": "탄창 전체를 한 턴에 발사", "recommendation": "증폭 → 연발 · 긴 재장전 대비", "text": "일제 · 한 탄창을 1턴에 발사 / 재장전 3턴"},
-	"scatter": {"name": "산개", "role": "군집 소탕", "capacity": 4, "reload": 2, "bonus": 0, "identity": "표적과 거리 차 3m 안의 적에 확산", "recommendation": "증폭 → 연발 · 모인 적 함께 공격", "text": "단발 · 표적과 거리 차 3m 이내 다른 적에 절반 피해 확산 (각 적 장갑 적용) · 사격 1턴 / 재장전 2턴"},
-	"heavy": {"name": "압쇄", "role": "관통을 피해로", "capacity": 3, "reload": 2, "bonus": 0, "identity": "관통 +2 · 남는 관통은 피해 +1", "recommendation": "철갑 · 가속 총열 · 짧은 증폭 조합", "text": "단발 · 관통 +2 · 관통이 장갑을 넘으면 타격당 피해 +1 · 탄창 3칸 / 재장전 2턴"},
+	"single": {"name": "보행자", "role": "기본 직접 화력", "capacity": 4, "reload": 1, "bonus": 1, "mode": "chain", "identity": "모든 탄환 기본 피해 +1", "recommendation": "증폭 → 연발 · 다양한 탄환 조합", "text": "전탄 연쇄 · 기본 피해 +1 · 사격 1턴 / 재장전 1턴"},
+	"burst": {"name": "쇄도", "role": "집중 적중", "capacity": 4, "reload": 2, "bonus": 0, "mode": "chain", "identity": "같은 적 3회 적중마다 추가 피해 4", "recommendation": "증폭 → 연발 · 3번째 타격 계산", "text": "전탄 연쇄 · 주 타격 3회마다 고정 추가 피해 4 · 재장전 2턴"},
+	"scatter": {"name": "산개", "role": "무작위 분산", "capacity": 5, "reload": 2, "bonus": 0, "mode": "chain", "identity": "탄환마다 무작위 표적 · 넉넉한 탄창", "recommendation": "표적별 확률 · 분산 피해와 전격", "text": "전탄 연쇄 · 생존 적 중 균등 무작위 표적 · 탄창 5칸 / 재장전 2턴"},
+	"heavy": {"name": "압쇄", "role": "속성 특화", "capacity": 4, "reload": 1, "bonus": 0, "mode": "chain", "identity": "화상 턴당 피해 2 · 전이 피해 3", "recommendation": "소이 지속 피해 · 전격 전이", "text": "전탄 연쇄 · 소이 화상 피해 2 / 전격 전이 피해 3 · 재장전 1턴"},
+	"amplifier": {"name": "증강", "role": "한 발 효과 강화", "capacity": 3, "reload": 1, "bonus": 0, "mode": "single", "identity": "단발 · 탄환 성능 2배", "recommendation": "증폭 +4 · 연발 4×2 · 충격 4m", "text": "단발 · 기본 피해/관통과 효과 강도 2배 · 연발 2타/지속 기간 유지 · 재장전 1턴"},
 }
 
 const PARTS := {
@@ -28,9 +29,11 @@ const PARTS := {
 
 const START_DECK := ["bore", "pierce", "precise", "charge", "push", "arc", "bore", "charge", "pierce", "precise"]
 const GUN_DECKS := {
-	"scatter": ["charge", "precise", "arc", "precise", "push", "pierce", "bore", "charge", "precise", "arc"],
-	"heavy": ["pierce", "charge", "precise", "pierce", "push", "arc", "bore", "charge", "pierce", "precise"],
+	"scatter": ["charge", "precise", "arc", "bore", "push", "pierce", "bore", "charge", "precise", "arc"],
+	"heavy": ["bore", "arc", "charge", "bore", "push", "pierce", "bore", "charge", "precise", "arc"],
+	"amplifier": ["charge", "precise", "push", "pierce", "bore", "arc", "charge", "precise", "push", "pierce"],
 }
+
 const ENEMY_NAMES := {"runner": "운반 사족체", "wall": "융합 장갑벽", "evader": "전도 선체"}
 const ENCOUNTERS := [
 	{"name": "01 / 폐기물 승강장", "text": "증폭탄을 먼저 넣어 뒤의 두 발을 증폭할까?"},
@@ -64,6 +67,13 @@ const LESSONS := [
 	"마지막 교전 · 피해·거리·속성을 한 순서로 설계하세요",
 ]
 
+static func lesson(state: Dictionary) -> String:
+	match int(state.floor):
+		2: return "화상은 전진 직전에 턴당 %d피해를 줍니다" % burn_damage(state)
+		4: return "충격탄은 %dm 밀어 거리를 벌립니다" % effect_value("push", state)
+		5: return "전격탄은 다른 생존 적에게 %d피해를 전이합니다" % effect_value("arc", state)
+	return LESSONS[int(state.floor)]
+
 static func course_pool(index: int) -> Array:
 	var result: Array = []
 	for stage in range(index + 1):
@@ -74,8 +84,27 @@ static func course_pool(index: int) -> Array:
 static func axes(state: Dictionary) -> Dictionary:
 	return {"armor": not state.get("course", false) or int(state.floor) >= 1}
 
+static func multiplier(state: Dictionary) -> int:
+	return 2 if state.get("gun", "single") == "amplifier" else 1
+
+static func damage(id: String, state: Dictionary) -> int:
+	return int(AMMO[id].dmg) * multiplier(state) + int(GUNS[state.gun].bonus)
+
 static func penetration(id: String, state: Dictionary) -> int:
-	return int(AMMO[id].pen) + (1 if state.get("part", "none") == "lens" else 0) + (2 if state.get("gun", "single") == "heavy" else 0)
+	return int(AMMO[id].pen) * multiplier(state) + (1 if state.get("part", "none") == "lens" else 0)
+
+static func effect_value(id: String, state: Dictionary) -> int:
+	if id == "arc" and state.get("gun", "") == "heavy": return 3
+	return int(AMMO[id].value) * multiplier(state)
+
+static func burn_damage(state: Dictionary) -> int:
+	return 2 if state.get("gun", "") in ["heavy", "amplifier"] else 1
+
+static func push_budget(state: Dictionary) -> int:
+	return 2 * multiplier(state)
+
+static func chains(state: Dictionary) -> bool:
+	return str(GUNS[state.gun].mode) == "chain"
 
 static func capacity(state: Dictionary) -> int:
 	return int(GUNS[state.gun].capacity) + int(state.get("capacity_bonus", 0)) + (1 if state.get("part", "none") == "supply" else 0)

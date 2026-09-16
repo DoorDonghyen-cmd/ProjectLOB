@@ -1,4 +1,4 @@
-param([ValidateSet('campaign','ui')][string]$Mode = 'campaign', [string]$Seed = '', [switch]$Hard, [ValidatePattern('^[a-z0-9_]*$')][string]$RunName = '', [string]$ReplaySource = '', [switch]$Refine, [switch]$LayoutOnly, [string]$UISource = '', [ValidatePattern('^(single|burst|scatter|heavy)(,(single|burst|scatter|heavy))*$')][string]$Weapons = 'single,burst')
+param([ValidateSet('campaign','ui')][string]$Mode = 'campaign', [string]$Seed = '', [switch]$Hard, [ValidatePattern('^[a-z0-9_]*$')][string]$RunName = '', [string]$ReplaySource = '', [switch]$Refine, [switch]$LayoutOnly, [string]$UISource = '', [ValidatePattern('^(single|burst|scatter|heavy|amplifier)(,(single|burst|scatter|heavy|amplifier))*$')][string]$Weapons = 'single,burst')
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 $project = (Get-ChildItem -LiteralPath $repo -Directory | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot') } | Select-Object -First 1).FullName

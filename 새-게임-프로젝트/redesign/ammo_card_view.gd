@@ -30,7 +30,7 @@ func setup(id: String, available: int, current_state: Dictionary, disabled: bool
 func stat_items() -> Array:
 	if state.is_empty() or not Content.AMMO.has(ammo_id): return []
 	var spec: Dictionary = Content.AMMO[ammo_id]
-	var damage := str(int(spec.dmg) + int(Content.GUNS[state.gun].bonus))
+	var damage := str(Content.damage(ammo_id, state))
 	if str(spec.effect) == "double": damage += "×2"
 	var result: Array = [{"kind": "damage", "value": damage}]
 	var axes: Dictionary = Content.axes(state)
@@ -47,11 +47,11 @@ func effect_data() -> Dictionary:
 	match ammo_id:
 		"basic": return {"kind": "reload", "value": "%d발" % Content.capacity(state)}
 		"pierce": return {"kind": "physical", "value": "장갑 대응"}
-		"bore": return {"kind": "fire", "value": "화상 +%d" % Content.burn_amount(ammo_id, state)}
+		"bore": return {"kind": "fire", "value": "%d피해 · %d턴" % [Content.burn_damage(state), Content.burn_amount(ammo_id, state)]}
 		"precise": return {"kind": "double", "value": "2회 타격"}
-		"charge": return {"kind": "boost", "value": "+2 · 다음 2발"}
-		"push": return {"kind": "push", "value": "2m"}
-		"arc": return {"kind": "electric", "value": "전이 2"}
+		"charge": return {"kind": "boost", "value": "+%d · 다음 2발" % Content.effect_value(ammo_id, state)}
+		"push": return {"kind": "push", "value": "%dm" % Content.effect_value(ammo_id, state)}
+		"arc": return {"kind": "electric", "value": "전이 %d" % Content.effect_value(ammo_id, state)}
 	return {}
 
 func _draw() -> void:

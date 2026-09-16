@@ -4,7 +4,7 @@ extends RefCounted
 const Content = preload("res://redesign/content.gd")
 
 static func combat_report(state: Dictionary, floor_filter: int = -1) -> Dictionary:
-	var report := {"shots": 0, "direct": 0, "burn": 0, "arc": 0, "spread": 0, "boost_hits": 0, "push": 0, "kills": 0}
+	var report := {"shots": 0, "direct": 0, "burn": 0, "arc": 0, "spread": 0, "focus": 0, "boost_hits": 0, "push": 0, "kills": 0}
 	for entry_value in state.get("history", []):
 		var entry: Dictionary = entry_value
 		if floor_filter >= 0 and int(entry.get("floor", -1)) != floor_filter:
@@ -15,6 +15,7 @@ static func combat_report(state: Dictionary, floor_filter: int = -1) -> Dictiona
 				var shot: Dictionary = shot_value
 				report.shots += 1
 				report.direct += int(shot.get("damage", 0))
+				report.focus += int(shot.get("focus_damage", 0))
 				report.push += int(shot.get("push", 0))
 				if int(shot.get("math", {}).get("boost", 0)) > 0:
 					report.boost_hits += int(shot.get("hits", 1))
@@ -39,6 +40,7 @@ static func combat_report_line(state: Dictionary, floor_filter: int = -1) -> Str
 	var items: PackedStringArray = ["직접 %d" % int(report.direct)]
 	if int(report.boost_hits) > 0: items.append("증폭 타격 %d" % int(report.boost_hits))
 	if int(report.burn) > 0: items.append("화상 %d" % int(report.burn))
+	if int(report.focus) > 0: items.append("집중 추가 %d" % int(report.focus))
 	if int(report.arc) > 0: items.append("전이 %d" % int(report.arc))
 	if int(report.spread) > 0: items.append("확산 %d" % int(report.spread))
 	if int(report.push) > 0: items.append("밀기 %dm" % int(report.push))
@@ -66,17 +68,17 @@ static func reward_impact(id: String, state: Dictionary, next_enemies: Array) ->
 	if Content.AMMO.has(id):
 		match id:
 			"bore":
-				return "덱 %d장 · 화상 %d" % [state.get("deck", []).count(id) + 1, Content.burn_amount(id, state)]
+				return "화상 %d피해 × %d턴 · 덱 %d장" % [Content.burn_damage(state), Content.burn_amount(id, state), state.get("deck", []).count(id) + 1]
 			"pierce":
 				return "관통 %d · 다음 장갑 최대 %d" % [Content.penetration(id, state), int(threat.max_armor)]
 			"push":
-				return "가장 가까운 적 +2m · 탄창당 1회"
+				return "주 표적 +%dm · 탄창당 총 %dm" % [Content.effect_value(id, state), Content.push_budget(state)]
 			"charge":
-				return "뒤 2발의 타격당 피해 +2"
+				return "뒤 2발의 타격당 피해 +%d" % Content.effect_value(id, state)
 			"precise":
-				return "2타격 · 증폭 시 추가 피해 +4" if state.get("deck", []).has("charge") else "같은 적을 2회 타격"
+				return "2타격 · 증폭 시 추가 피해 +%d" % (Content.effect_value("charge", state) * 2) if state.get("deck", []).has("charge") else "같은 적을 2회 타격"
 			"arc":
-				return "최대 2개체 · 전이 피해 2" if int(threat.count) > 1 else "다수전에서 다른 적에게 피해 2"
+				return "전이 피해 %d · 다른 생존 적이 필요" % Content.effect_value(id, state)
 	elif Content.PARTS.has(id):
 		match id:
 			"lens":

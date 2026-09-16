@@ -36,7 +36,7 @@ func armed(gun: String, rounds: Array, enemies: Array, part: String = "none"):
 	m.s.magazine = []
 	m.s.plan = []
 	m.s.buff = {}
-	m.s.push_left = 2
+	m.s.push_left = Content.push_budget(m.s)
 	m.s.supply = m.supply_capacity()
 	m.s.phase = "plan"
 	for id in rounds: check(m.load_round(id), "fixture loads " + id)
@@ -85,10 +85,9 @@ func _run() -> void:
 					var m = armed(gun, [id], [enemy(999, armor)], part)
 					check(m.fire(), "formula shot fires")
 					var shot: Dictionary = m.s.history.back().detail.results[0]
-					var expected_pen := int(Content.AMMO[id].pen) + (1 if part == "lens" else 0) + (2 if gun == "heavy" else 0)
-					var expected_raw := int(Content.AMMO[id].dmg) + int(Content.GUNS[gun].bonus)
+					var expected_pen := int(Content.AMMO[id].pen) * (2 if gun == "amplifier" else 1) + (1 if part == "lens" else 0)
+					var expected_raw := int(Content.AMMO[id].dmg) * (2 if gun == "amplifier" else 1) + int(Content.GUNS[gun].bonus)
 					var expected_per_hit := maxi(1, expected_raw - maxi(0, armor - expected_pen))
-					if gun == "heavy": expected_per_hit += mini(1, maxi(0, expected_pen - armor))
 					var expected_hits := 2 if id == "precise" else 1
 					check(shot.pen == expected_pen and shot.math.raw == expected_raw and shot.math.armor == maxi(0, armor - expected_pen), "formula penetration " + gun + part + id + str(armor), shot)
 					check(shot.math.per_hit == expected_per_hit and shot.hits == expected_hits and shot.damage == expected_per_hit * expected_hits, "formula damage " + gun + part + id + str(armor), shot)
@@ -101,11 +100,11 @@ func _run() -> void:
 		var combo_forecast: Dictionary = Forecast.analyze(m.s)
 		var actual := collect_actual(m)
 		var shots: Array = actual.shots
-		check(shots.size() == 3 and shots[1].hits == 2 and shots[1].math.boost == 2 and shots[2].math.boost == 2, gun + " amplify covers next two rounds", shots)
+		check(shots.size() == 3 and shots[1].hits == 2 and shots[1].math.boost == (4 if gun == "amplifier" else 2) and shots[2].math.boost == (4 if gun == "amplifier" else 2), gun + " amplify covers next two rounds", shots)
 		check(not m.s.buff.has("dmg"), gun + " amplify expires after two rounds")
 		check(Forecast.is_combo_link(combo_forecast, 1) and Forecast.is_combo_link(combo_forecast, 2), gun + " forecast links both amplified rounds")
-		if gun == "heavy":
-			check(Forecast.note(combo_forecast, 1).contains("증폭 · 2타") and Forecast.note(combo_forecast, 2).contains("증폭") and Forecast.note(combo_forecast, 2).contains("초과 관통 +1"), gun + " forecast names amplified and overflow results")
+		if gun == "scatter": check(Forecast.note(combo_forecast, 1) == "무작위 표적", "random combo displays uncertainty")
+		elif gun == "burst": check(Forecast.note(combo_forecast, 1).contains("집중") and Forecast.note(combo_forecast, 2).contains("증폭"), "focus combo displays payoff")
 		else: check(Forecast.note(combo_forecast, 1) == "증폭 · 2타" and Forecast.note(combo_forecast, 2) == "증폭 적용", gun + " forecast names amplified results")
 	var burst_combo = armed("single", ["charge", "precise"], [enemy(10)])
 	collect_actual(burst_combo)
@@ -131,17 +130,17 @@ func _run() -> void:
 	var reload_burn = armed("burst", ["basic"], [enemy(4, 0, 1, 9, 3)])
 	reload_burn.s.magazine = ["basic"]
 	check(reload_burn.reload_magazine(), "burn reload advances")
-	check(reload_burn.s.enemies[0].hp == 1 and reload_burn.s.enemies[0].burn == 0 and reload_burn.s.enemies[0].distance == 6, "three-turn reload resolves three burn ticks before moves", reload_burn.s)
+	check(reload_burn.s.enemies[0].hp == 2 and reload_burn.s.enemies[0].burn == 1 and reload_burn.s.enemies[0].distance == 7, "two-turn reload resolves two burn ticks before moves", reload_burn.s)
 	var burn_forecast_model = armed("single", ["bore", "push", "basic"], [enemy(40, 0, 2, 20)])
 	var burn_forecast: Dictionary = Forecast.analyze(burn_forecast_model.s)
-	check(Forecast.burn_ticks_for_shot(burn_forecast, 0) == 3 and Forecast.note(burn_forecast, 0) == "화상 3회 예상", "forecast counts actual future burn events", burn_forecast)
+	check(Forecast.burn_ticks_for_shot(burn_forecast, 0) == 1 and Forecast.note(burn_forecast, 0) == "화상 1회 예상", "forecast counts actual future burn events", burn_forecast)
 	check(Forecast.note(burn_forecast, 1) == "거리 +2m", "forecast names push distance", burn_forecast)
 	check(Forecast.summary(burn_forecast).contains("A HP") and Forecast.summary(burn_forecast).contains("안전"), "forecast summarizes final hp and distance", Forecast.summary(burn_forecast))
-	var fire_push = armed("single", ["bore", "push", "basic"], [enemy(8, 2, 3, 6)])
+	var fire_push = armed("amplifier", ["bore", "push", "basic"], [enemy(18, 2, 3, 6)])
 	collect_actual(fire_push)
-	var fire_wrong = armed("single", ["bore", "basic", "basic"], [enemy(8, 2, 3, 6)])
+	var fire_wrong = armed("amplifier", ["bore", "basic", "basic"], [enemy(18, 2, 3, 6)])
 	collect_actual(fire_wrong)
-	check(fire_push.s.phase == "reward" and fire_wrong.s.phase == "lost" and fire_wrong.s.enemies[0].hp == 1, "incendiary then impact buys the burn turn needed to finish")
+	check(fire_push.s.phase == "reward" and fire_wrong.s.phase == "lost" and fire_wrong.s.enemies[0].hp == 4, "incendiary then impact buys the burn turn needed to finish")
 
 	# Electricity hits only the nearest other living enemy for fixed two damage.
 	var electric = armed("burst", ["arc"], [enemy(20, 0, 1, 10), enemy(2, 0, 1, 11, 0, "runner"), enemy(20, 0, 1, 12, 0, "evader")])
@@ -191,8 +190,14 @@ func _run() -> void:
 				clone.s = before.duplicate(true)
 				clone.confirm()
 				var actual := collect_actual(clone)
-				check(norm(predicted.shots) == norm(actual.shots) and norm(predicted.advance_events) == norm(actual.advance_events), "forecast events agree %d %s %d" % [seed_value, gun, floor_index])
-				check(predicted.phase == actual.phase and predicted.remaining == actual.remaining and norm(predicted.enemies) == norm(actual.enemies), "forecast state agrees %d %s %d" % [seed_value, gun, floor_index])
+				if gun == "scatter":
+					for i in range(actual.enemies.size()):
+						check(actual.enemies[i].hp >= predicted.enemies[i].hp_min and actual.enemies[i].hp <= predicted.enemies[i].hp_max, "random forecast HP bounds %d %d" % [seed_value, floor_index])
+						check(actual.enemies[i].distance >= predicted.enemies[i].distance_min and actual.enemies[i].distance <= predicted.enemies[i].distance_max, "random forecast distance bounds")
+					check((actual.phase != "lost" or predicted.lost_probability > 0) and (not actual.phase in ["reward", "won"] or predicted.win_probability > 0), "random forecast contains actual terminal outcome")
+				else:
+					check(norm(predicted.shots) == norm(actual.shots) and norm(predicted.advance_events) == norm(actual.advance_events), "forecast events agree %d %s %d" % [seed_value, gun, floor_index])
+					check(predicted.phase == actual.phase and predicted.remaining == actual.remaining and norm(predicted.enemies) == norm(actual.enemies), "forecast state agrees %d %s %d" % [seed_value, gun, floor_index])
 
 	# Staged course reveals armor only when taught and grants each new round exactly once.
 	for gun in Content.GUNS:
@@ -248,7 +253,7 @@ func _run() -> void:
 	var migrated = Model.new()
 	migrated.start("burst", 1)
 	check(migrated.restore_run(migration_path), "v2 save migrates")
-	check(migrated.s.version == 3 and migrated.s.buff.is_empty(), "v2 buffs collapse to v3")
+	check(migrated.s.version == 4 and migrated.s.buff.is_empty(), "v2 buffs collapse to current version")
 	for key in ["deck", "hand", "draw", "discard", "magazine", "plan"]:
 		for id in migrated.s[key]: check(Content.AMMO.has(id), "migrated inventory uses live ammo " + key)
 	for migrated_enemy in migrated.s.enemies:

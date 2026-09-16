@@ -61,6 +61,13 @@ func viewport_controls(keys: Array) -> void:
 	for key in keys:
 		var control := screen.find_child(key, true, false) as Control
 		if not check(control != null, "control exists " + key): continue
+		var ancestor: Node = control.get_parent()
+		while ancestor != null:
+			if ancestor is ScrollContainer:
+				ancestor.ensure_control_visible(control)
+				await settle()
+				break
+			ancestor = ancestor.get_parent()
 		var logical: Rect2 = control.get_global_rect()
 		var transform: Transform2D = root.get_final_transform()
 		var pixels := Rect2(transform * logical.position, transform.basis_xform(logical.size))
@@ -83,9 +90,9 @@ func _run() -> void:
 	screen.redraw()
 	await settle()
 	await capture("weapon_selection")
-	var buttons: Array = ["start_single", "start_burst", "start_scatter", "start_heavy", "dev"]
+	var buttons: Array = ["start_single", "start_burst", "start_scatter", "start_heavy", "start_amplifier", "dev"]
 	# Invalid-save notices add height; all starts should still be reachable.
-	viewport_controls(buttons)
+	await viewport_controls(buttons)
 	for gun in Content.GUNS:
 		if not await click("weapon_info_" + gun): break
 		check(screen.find_child("WeaponDetails", true, false) != null, "weapon rules and starting deck dialog")
@@ -93,7 +100,7 @@ func _run() -> void:
 		await close_dialogs()
 	root.size = Vector2i(1008, 630)
 	await capture("weapon_selection_phone")
-	viewport_controls(buttons)
+	await viewport_controls(buttons)
 	root.size = Vector2i(1280, 800)
 	await settle()
 	for gun in Content.GUNS:
@@ -113,19 +120,42 @@ func _run() -> void:
 		check(screen.last_presentation.shown_enemies == screen.last_presentation.after.enemies, "weapon animation ends at actual enemy state")
 		check(screen.find_child("WeaponIdentity", true, false) != null, "combat shows gun identity")
 		if gun == "scatter":
-			var impacts: Array = screen.last_presentation.events.filter(func(event): return event.kind == "secondary")
-			check(not impacts.is_empty() and prediction.shots[0].secondary.size() == impacts.size(), "spread visible impacts match actual forecast")
+			check(prediction.random and prediction.shots[0].target == -1 and screen.battle_view.first_shot.is_empty(), "random preview never draws a predetermined primary target")
+			check(screen.last_presentation.events.filter(func(event): return event.kind == "secondary" and event.get("effect", "") == "spread").is_empty(), "random weapon produces no distance spread")
 		await capture("weapon_fired_" + gun)
 		root.size = Vector2i(1008, 630)
 		await capture("weapon_combat_phone_" + gun)
-		viewport_controls(["menu", "fire", "reload"] if screen.model.s.phase == "ready" else ["menu"])
+		await viewport_controls(["menu", "fire", "reload"] if screen.model.s.phase == "ready" else ["menu"])
 		root.size = Vector2i(1280, 800)
 		await settle()
 		for path in [Campaign.SAVE, screen.SAVE]: check(FileAccess.get_file_as_string(path) == "weapon QA sentinel", "developer save sentinel intact")
 	await click("menu")
 	await click("dev")
 	await click("debug_weapon_selection")
-	check(screen.page == "menu" and screen.find_child("start_heavy", true, false) != null, "weapon selection debug shortcut")
+	check(screen.page == "menu" and screen.find_child("start_amplifier", true, false) != null, "weapon selection debug shortcut")
+	# Narrow maximum magazines use the real owned developer fixture.
+	await click("dev")
+	await click("debug_weapon_scatter")
+	screen.model.s.capacity_bonus = 2
+	screen.model.s.supply = 7
+	for i in range(4): check(screen.model.load_round("basic"), "seven slot UI fixture loads")
+	for slots in [7, 8]:
+		if slots == 8:
+			screen.model.s.part = "supply"
+			screen.model.s.supply = 8
+			check(screen.model.load_round("basic"), "legacy eighth slot UI fixture loads")
+		check(Model.new().restore_state(screen.model.s), "maximum UI fixture ownership valid")
+		screen.redraw()
+		root.size = Vector2i(1008, 630)
+		await capture("weapon_scatter_" + str(slots) + "_slots_phone")
+		var font: Font = load("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+		var slot_width: float = screen.magazine_view.size.x / float(slots) - 8
+		for i in range(screen.magazine_view.forecast.shots.size()):
+			var lines: PackedStringArray = screen.magazine_view.compact_lines(screen.magazine_view.forecast, i)
+			for line in range(3): check(font.get_string_size(lines[line], HORIZONTAL_ALIGNMENT_LEFT, -1, 15 if line == 0 else 14).x <= slot_width, "random compact text inside maximum slot")
+		await viewport_controls(["menu", "confirm"])
+	root.size = Vector2i(1280, 800)
+	await click("menu")
 	# Normal starts preserve selection, deck ownership and resume.
 	for gun in Content.GUNS:
 		screen.seed_input.text = "731042"

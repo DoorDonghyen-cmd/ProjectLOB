@@ -57,6 +57,7 @@ func _draw() -> void:
 				if i < forecast.shots.size():
 					var shot: Dictionary = forecast.shots[i]
 					value = "%s %s" % [Forecast.tag(shot.target), Forecast.outcome(shot)]
+					if shot.get("random", false): value = "무작위 " + Forecast.outcome(shot)
 					color = Color("a9dfbf") if shot.damage > 0 else Color("f2a38d")
 				if width < 115 and i < forecast.shots.size():
 					var lines := compact_lines(forecast, i)
@@ -75,6 +76,7 @@ func _draw() -> void:
 
 static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArray:
 	var shot: Dictionary = prediction.shots[index]
+	if shot.get("random", false): return PackedStringArray(["무작위", "%d~%d" % [shot.damage_min, shot.damage_max], "증폭" if shot.get("boosted", false) else "분산"])
 	var result := PackedStringArray(["%s −%d" % [Forecast.tag(shot.target), shot.damage], "처치" if int(shot.hp) == 0 else "HP%d" % int(shot.hp), ""])
 	var boosted: bool = int(shot.get("math", {}).get("boost", 0)) > 0
 	var secondary: Array = shot.get("secondary", [])
@@ -89,9 +91,10 @@ static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArr
 		var ticks := Forecast.burn_ticks_for_shot(prediction, index)
 		result[2] = "화상%d회" % ticks if ticks > 0 else "화상+%d" % int(shot.burn_added)
 	elif int(shot.get("push", 0)) > 0: result[2] = "+%dm" % int(shot.push)
-	elif boosted: result[2] = "증폭×2" if int(shot.get("hits", 1)) > 1 else "증폭+2"
+	elif int(shot.get("focus_damage", 0)) > 0: result[2] = "집중+%d" % shot.focus_damage
+	elif boosted: result[2] = "증폭+%d" % int(shot.math.boost)
 	elif int(shot.get("hits", 1)) > 1: result[2] = "×2"
-	elif str(shot.id) == "charge": result[2] = "→2발+2"
+	elif str(shot.id) == "charge": result[2] = "→2발+%d" % int(shot.get("boost_granted", 2))
 	return result
 
 func _box(color: Color) -> StyleBoxFlat:

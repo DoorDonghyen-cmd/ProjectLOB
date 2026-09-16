@@ -7,12 +7,16 @@ const AmmoVisual = preload("res://redesign/ammo_visual.gd")
 static func description(id: String, state: Dictionary) -> String:
 	if state.get("course", false) and int(state.floor) == 0:
 		if id == "basic": return "재장전할 때 다시 채워지는 물리 기본탄입니다."
-		if id == "charge": return "다음 2발의 피해 +2. 증폭탄을 앞에 놓으세요."
+		if id == "charge": return "다음 2발의 피해 +%d. 증폭탄을 앞에 놓으세요." % Content.effect_value(id, state)
+	if id == "charge": return "다음 2발의 타격당 피해 +%d. 연발의 두 타격에 각각 적용됩니다." % Content.effect_value(id, state)
+	if id == "push": return "적을 %dm 밀칩니다. 탄창당 총 %dm까지 적용됩니다." % [Content.effect_value(id, state), Content.push_budget(state)]
+	if id == "bore": return "화상 %d턴 · 전진 직전에 턴당 %d피해. 화상으로 처치한 적은 전진하지 않습니다." % [Content.burn_amount(id, state), Content.burn_damage(state)]
+	if id == "arc": return "주 표적 공격 후 가장 가까운 다른 생존 적에게 전이 %d피해." % Content.effect_value(id, state)
 	return Content.AMMO[id].text
 
 static func stats(id: String, state: Dictionary, full: bool = false) -> String:
 	var spec: Dictionary = Content.AMMO[id]
-	var damage := str(int(spec.dmg) + int(Content.GUNS[state.gun].bonus))
+	var damage := str(Content.damage(id, state))
 	if spec.effect == "double": damage += "×2"
 	var result := "피해 " + damage
 	var visible := Content.axes(state)
@@ -22,6 +26,11 @@ static func stats(id: String, state: Dictionary, full: bool = false) -> String:
 
 static func explain(shot: Dictionary) -> String:
 	if shot.is_empty(): return "탄환을 넣으면 실제 피해와 계산 근거를 보여 줍니다."
+	if shot.get("random", false):
+		var targets: PackedStringArray = []
+		for candidate in shot.targets:
+			targets.append("%s %d%%" % [Forecast.tag(candidate.target), floori(minf(1.0, float(candidate.probability) + 0.0000001) * 100)])
+		return "무작위 · 주 피해 %d~%d\n%s\n전이·화상은 최종 HP 범위에 포함됩니다." % [shot.damage_min, shot.damage_max, " / ".join(targets)]
 	if not shot.has("math"): return str(shot.get("text", ""))
 	var m: Dictionary = shot.math
 	var line := "%s · %d피해  HP %d → %d" % [Forecast.tag(shot.target), shot.damage, m.hp_before, shot.hp]
@@ -32,6 +41,7 @@ static func explain(shot: Dictionary) -> String:
 	equation += " = %d" % m.per_hit
 	if int(m.raw) - int(m.armor) < 1: equation += " (최소 1)"
 	if m.hits > 1: equation += " · %d회" % m.hits
+	if int(m.get("focus", 0)) > 0: equation += " + 집중 %d" % m.focus
 	line += "\n" + equation
 	var reasons: PackedStringArray = []
 	if m.armor_before > 0:
@@ -52,4 +62,5 @@ static func enemy_stats(enemy: Dictionary, state: Dictionary, full: bool = false
 	if full or visible.armor: parts.append("장갑%d" % enemy.def)
 	parts.append("접근%dm" % enemy.speed)
 	if int(enemy.get("burn", 0)) > 0: parts.append("화상%d" % enemy.burn)
+	if state.get("gun", "") == "burst": parts.append("적중%d/3" % int(enemy.get("focus_hits", 0)))
 	return "  ".join(parts)

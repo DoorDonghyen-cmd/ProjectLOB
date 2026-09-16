@@ -213,7 +213,7 @@ func _menu() -> void:
 		heading.add_child(icon)
 		_label(heading, "%s / %s" % [spec.name, spec.role], 24, WeaponView.COLORS[id])
 		_label(column, spec.identity, 18)
-		_label(column, "%d칸 · 재장전 %d턴   /   %s" % [spec.capacity, spec.reload, spec.recommendation], 16, MUTED)
+		_label(column, "%s · %d칸 · 재장전 %d턴   /   %s" % ["전탄 연쇄" if spec.mode == "chain" else "단발 · 매 발 적 접근", spec.capacity, spec.reload, spec.recommendation], 16, MUTED)
 		var actions := _row(column)
 		_button(actions, "이 총으로 시작", "start_" + id, _start.bind(id, false))
 		var info := _button(actions, "특징·보급", "weapon_info_" + id, _weapon_details.bind(id))
@@ -301,8 +301,8 @@ func _combat() -> void:
 	body.add_child(battle_view)
 	battle_view.sync(model.s)
 	if campaign != null: battle_view.caption = str(campaign.node().name)
-	if model.s.get("course", false): battle_view.caption = Content.LESSONS[int(model.s.floor)]
-	if not combat_forecast.shots.is_empty(): battle_view.first_shot = combat_forecast.shots[0]
+	if model.s.get("course", false): battle_view.caption = Content.lesson(model.s)
+	if not combat_forecast.get("random", false) and not combat_forecast.shots.is_empty(): battle_view.first_shot = combat_forecast.shots[0]
 	battle_view.shot_started.connect(_visual_shot)
 	battle_view.enemy_inspected.connect(_enemy_details)
 	var workbench := _row(body)
@@ -378,7 +378,7 @@ func _combat() -> void:
 	preview_label.tooltip_text = str(preview.get("text", "누른 순서대로 발사합니다. 피해·거리·속성 효과를 함께 설계하세요."))
 	if not stack.is_empty():
 		preview_label.text = Forecast.summary(combat_forecast)
-		preview_label.tooltip_text = "현재 탄창을 중간 재장전 없이 계속 발사할 때의 예상입니다. 보존은 전투 종료로 미발사, 중단은 접촉 패배로 미발사입니다.\n같은 거리는 A → B → C 순서로 조준합니다."
+		preview_label.tooltip_text = "매 탄환은 살아 있는 적 중 무작위 표적을 고릅니다. HP 범위와 처치·접촉 확률은 가능한 모든 표적 순서를 계산한 값입니다." if combat_forecast.get("random", false) else "현재 탄창을 중간 재장전 없이 계속 발사할 때의 예상입니다. 보존은 전투 종료로 미발사, 중단은 접촉 패배로 미발사입니다.\n같은 거리는 A → B → C 순서로 조준합니다."
 	if not stack.is_empty(): _inspect_slot(clampi(selected_slot, 0, stack.size() - 1))
 	var actions := VBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
@@ -386,7 +386,7 @@ func _combat() -> void:
 	if model.s.phase == "plan":
 		_button(actions, "장전 확정", "confirm", _confirm, stack.is_empty()).tooltip_text = "시간 소모 없음. 확정 후 순서를 바꾸려면 재장전해야 합니다."
 	else:
-		_button(actions, "%s · 1턴" % ("전탄 발사" if model.s.gun == "burst" else "발사"), "fire", _fire, stack.is_empty())
+		_button(actions, "%s · 1턴" % ("전탄 발사" if Content.chains(model.s) else "단발"), "fire", _fire, stack.is_empty())
 		var projected: Array = model.movement_preview(model.reload_cost())
 		var lethal := false
 		for i in range(projected.size()):
@@ -587,16 +587,14 @@ func _rules() -> void:
 	if busy: return
 	var column := _dialog("순서를 설계하는 법")
 	_label(column, "누른 순서대로 · 피해와 관통", 30, ACCENT)
-	_label(column, "1. 피해는 타격당 HP 감소, 관통은 무시하는 장갑 수치입니다. 가까운 적을 자동 조준하며 같은 거리는 A → B → C 순서입니다. 확률 판정은 없습니다.")
-	_label(column, "2. 확정 전에는 탄창의 칸을 눌러 자유롭게 회수할 수 있습니다. 계산 보기를 켜면 칸을 눌러 해당 탄의 피해 근거를 봅니다. 확정 이후 바꾸려면 재장전 시간이 듭니다. 빈 칸을 모두 채울 필요는 없습니다.")
-	_label(column, "3. 물리는 즉시 피해와 장갑·거리 대응, 화염은 전진 직전 화상 피해, 전기는 가장 가까운 다른 적에게 고정 피해 전이를 담당합니다. 속성 저항과 약점은 없습니다.")
-	_label(column, "4. 증폭탄은 다음 2발의 타격당 피해 +2, 연발탄은 같은 적을 2회 타격합니다. 증폭 뒤 연발탄을 두면 증폭 피해도 두 번 적용됩니다.")
-	_label(column, "5. 타격 피해 = 피해 + 총기 보정 + 증폭 − 남은 장갑 (최소 1). 남은 장갑 = 장갑 − 관통입니다. 전이와 화상은 별도 고정 피해입니다.")
-	_label(column, "6. 화상은 적의 전진 직전에 1피해를 주고 1 감소합니다. 화상으로 죽은 적은 전진하지 않습니다. 충격탄은 탄창당 총 2m까지 밀어 거리를 확보합니다.")
-	_label(column, "7. 재장전마다 탄창 칸수만큼 회수탄을 복구하고 전술 패를 5장까지 보충합니다. 미사용 패 유지, 사용탄은 다시 섞으며 패 교환은 재장전당 1회입니다.")
-	_label(column, "8. 도시 등반은 5계층 35층입니다. 환기구의 거리 −2m 비용은 다음 전투까지 유지합니다. 방을 누르면 편성과 이동 비용을 미리 볼 수 있습니다.")
-	_label(column, "9. 전투 보상은 탄환·크레딧·정제 중 하나. 상점의 파츠 구매와 유료 정제는 방문당 한 번입니다. 파츠는 하나만 장착하며, 관문에서 늘린 탄창 +2칸은 파츠 교체 후에도 유지합니다. 압쇄는 3→4→5칸, 다른 무기는 4→5→6칸입니다.")
-	_label(column, "10. 산개는 표적과 거리 차 3m 이내의 다른 적 모두에 절반 피해를 확산합니다. 각 적의 장갑을 적용하며, 연발은 확산도 두 타격입니다. 속성 효과는 복제하지 않습니다. 압쇄는 관통 +2, 관통이 장갑을 넘으면 타격당 피해 +1입니다.")
+	_label(column, "1. 피해는 타격당 기본 화력, 관통은 무시하는 장갑입니다. 장전한 순서대로 발사하며 확정 전에는 칸을 눌러 회수할 수 있습니다.")
+	_label(column, "2. 보행자·쇄도·산개·압쇄는 한 탄창을 1턴에 연쇄 발사합니다. 증강은 한 발마다 1턴입니다. 살아남은 적은 사격 이후 전진합니다.")
+	_label(column, "3. 보행자는 기본 피해 +1. 쇄도는 같은 적의 주 타격 3회마다 추가 피해 4. 연발의 두 타격은 각각 세며 화상/전이는 세지 않습니다.")
+	_label(column, "4. 산개는 탄환마다 살아 있는 적 중 무작위 표적을 선택합니다. 확률과 HP 범위가 예상이며 확정 결과가 아닙니다. 나머지는 가장 가까운 적부터 조준합니다.")
+	_label(column, "5. 압쇄는 화상 턴당 피해 2와 전이 피해 3. 증강은 탄환 기본 피해/관통과 증폭/넉백/화상 피해/전이 강도 2배입니다. 연발은 2타, 증폭은 뒤 2발, 화상 기간은 유지합니다.")
+	_label(column, "6. 증폭은 다음 2발에 적용하고 연발의 각 타격을 강화합니다. 화상은 전진 직전에 진행합니다. 실제 총기 수치와 효과는 탄환 카드에서 확인하세요.")
+	_label(column, "7. 재장전마다 회수탄과 5장 패를 보충하고 교환 1회를 복구합니다. 넉백은 일반 탄창 총 2m, 증강은 4m까지입니다. 관문 용량 +2는 파츠와 독립적입니다.")
+	_label(column, "8. 도시 등반은 5계층 35층. 환기구 비용은 다음 전투 거리 −2m. 상점 파츠 구매와 유료 정제는 방문당 한 번이며 파츠는 하나 장착합니다.")
 
 func _weapon_details(id: String) -> void:
 	if busy: return
@@ -608,9 +606,13 @@ func _weapon_details(id: String) -> void:
 	_label(column, "%d칸 → 최대 %d칸 · 선택한 무기는 이번 등반 끝까지 유지" % [spec.capacity, int(spec.capacity) + 2], 18, MUTED)
 	_label(column, spec.recommendation, 19, ACCENT)
 	if id == "scatter":
-		_label(column, "확산: 피해와 증폭의 합을 절반으로 내림 → 각 적의 남은 장갑 차감 (최소 1) → 연발이면 2회. 밀치기 전 위치에서 판정하며, 화상·밀치기는 주 표적에게만 적용됩니다. 전격의 전이는 확산 후 별도로 발생합니다.", 18)
+		_label(column, "탄환마다 생존 표적을 다시 무작위 선택합니다. 연발의 두 타격은 같은 표적입니다. 피해가 흩어지는 비용을 큰 탄창으로 보상하며, 예측은 HP 범위와 처치 확률을 보여 줍니다.", 18)
 	elif id == "heavy":
-		_label(column, "관통이 적 장갑보다 높으면 타격당 피해 +1. 가속 총열도 관통과 추가 피해에 반영됩니다. 상대마다 다른 추가 피해는 탄창 예측과 계산 보기에서 확인하세요.", 18)
+		_label(column, "소이의 화상은 기간을 유지하며 턴당 2피해, 전격은 다른 생존 적에게 3피해를 전달합니다. 물리탄에는 별도 관통 보정이 없습니다.", 18)
+	elif id == "burst":
+		_label(column, "적별 주 타격을 셉니다. 3번째 타격 후 추가 피해 4, 다시 0부터 누적합니다. 재장전 후에도 진도 유지, 표적 처치 시 진도 종료. 전이와 화상은 집계하지 않습니다.", 18)
+	elif id == "amplifier":
+		_label(column, "기본 피해/관통 2배 · 증폭 +4 · 충격 4m · 화상 턴당 2 · 전이 4. 연발의 타격 수와 지속 기간은 유지해 중복 4배를 방지합니다. 매 발사 후 생존 적이 전진합니다.", 18)
 	var loadout := "balanced" if loadout_option == null else str(loadout_option.get_selected_metadata())
 	var deck: Array = Content.start_deck(id) if loadout == "balanced" else CampaignContent.LOADOUTS[loadout].deck
 	_label(column, "도시 시작 보급 / " + CampaignContent.LOADOUTS[loadout].name, 20, ACCENT)
@@ -674,7 +676,7 @@ func _details() -> void:
 		if not ids.has(id): ids.append(id)
 	for id in ids:
 		_label(column, _ammo_stats(id), 19, AmmoVisual.COLORS[id])
-		_label(column, "재장전 시 %d발 공급" % model.supply_capacity() if id == "basic" else str(Content.AMMO[id].text), 17, MUTED)
+		_label(column, "재장전 시 %d발 공급" % model.supply_capacity() if id == "basic" else Readability.description(id, model.s), 17, MUTED)
 	_label(column, "덱 %d장 · 남은 덱 %d · 사용탄 %d\n%s" % [model.s.deck.size(), model.s.draw.size(), model.s.discard.size(), _ammo_names(model.s.deck)], 18)
 	_label(column, "최근 결과\n" + str(model.s.message), 18, MUTED)
 
@@ -687,6 +689,11 @@ func _enemy_details(index: int) -> void:
 	_label(column, "%s · %s" % [Forecast.tag(index), e.name], 26, ACCENT)
 	_label(column, "HP %d/%d   장갑 %d   화상 %d" % [e.hp, e.max_hp, e.def, e.burn], 21)
 	_label(column, "거리 %dm · 다음 접근 %dm" % [e.distance, e.speed], 19, MUTED)
+	if combat_forecast.get("random", false):
+		var predicted: Dictionary = combat_forecast.enemies[index]
+		_label(column, "무작위 예상 HP %d~%d · 처치 %d%%" % [predicted.hp_min, predicted.hp_max, floori(minf(1.0, float(predicted.kill_probability) + 0.0000001) * 100)], 18, ACCENT)
+		_label(column, "탄환마다 그 시점에 살아 있는 적 중 같은 확률로 선택합니다.", 18, MUTED)
+		return
 	var hits: PackedStringArray = []
 	for i in range(combat_forecast.get("shots", []).size()):
 		var shot: Dictionary = combat_forecast.shots[i]
@@ -707,7 +714,7 @@ func _developer() -> void:
 			_debug_weapon(id)
 			column.get_meta("dialog").queue_free()
 		)
-	_button(column, "무기 4종 선택 화면", "debug_weapon_selection", func():
+	_button(column, "무기 5종 선택 화면", "debug_weapon_selection", func():
 		column.get_meta("dialog").queue_free()
 		page = "menu"
 		redraw()

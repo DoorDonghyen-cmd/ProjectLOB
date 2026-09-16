@@ -35,9 +35,9 @@ func _ready() -> void:
 	mouse_exited.connect(func(): hovered = -1; queue_redraw())
 
 func sync(state: Dictionary) -> void:
-	display_state = {"course": state.get("course", false), "floor": state.floor}
+	display_state = {"course": state.get("course", false), "floor": state.floor, "gun": state.gun}
 	enemies = state.enemies.duplicate(true)
-	target = _nearest()
+	target = -1 if state.gun == "scatter" else _nearest()
 	caption = ""
 	_rebuild_info_buttons()
 	queue_redraw()
@@ -156,8 +156,10 @@ func _draw() -> void:
 			draw_string(FONT, pos + Vector2(status_x, -17), "화상%d" % e.burn, HORIZONTAL_ALIGNMENT_LEFT, 80, 15, Ammo.ATTRIBUTE_COLORS.fire)
 	if not first_shot.is_empty() and first_shot.target >= 0:
 		var p := enemy_position(first_shot.target)
-		var label_x := p.x + 34 if p.x + 155 < end else p.x - 130
-		draw_string(FONT, Vector2(label_x, p.y + 4), "예상 " + Forecast.outcome(first_shot), HORIZONTAL_ALIGNMENT_LEFT, 128, 18, Color("a9dfbf") if first_shot.damage > 0 else Color("f2a38d"))
+		var preview_text := "예상 " + Forecast.outcome(first_shot)
+		var label_width := FONT.get_string_size(preview_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x + 2
+		var label_x := p.x + 34 if p.x + 34 + label_width < end else p.x - label_width - 34
+		draw_string(FONT, Vector2(label_x, p.y + 4), preview_text, HORIZONTAL_ALIGNMENT_LEFT, label_width, 18, Color("a9dfbf") if first_shot.damage > 0 else Color("f2a38d"))
 	if not bullet.is_empty() and projectile_target >= 0:
 		var from := Vector2(102, 131)
 		var to := enemy_position(projectile_target)
@@ -228,6 +230,7 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 		var enemy: Dictionary = enemies[target]
 		enemy.hp = result.hp
 		enemy.burn = result.get("burn", 0)
+		enemy.focus_hits = result.get("focus_after", 0)
 		chain_targets = result.get("secondary", []).duplicate(true)
 		for secondary in chain_targets:
 			enemies[secondary.target].hp = secondary.hp
@@ -269,6 +272,6 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 			enemies[i].distance = lerpf(float(starts[i].distance), float(after.enemies[i].distance), t)
 	)
 	enemies = after.enemies.duplicate(true)
-	target = _nearest()
+	target = -1 if after.gun == "scatter" else _nearest()
 	caption = "전진 완료" if after.phase not in ["reward", "won", "lost"] else ("통로 확보" if after.phase != "lost" else "0m · 접촉")
 	queue_redraw()
