@@ -1,4 +1,4 @@
-param([string]$GodotPath = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe', [ValidateSet('readability','city')][string]$BuildKind = 'city')
+﻿param([string]$GodotPath = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe', [ValidateSet('readability','city')][string]$BuildKind = 'city')
 $ErrorActionPreference = 'Stop'
 $discoveredGodot = Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1
 if (-not (Test-Path -LiteralPath $GodotPath) -and $discoveredGodot) { $GodotPath = $discoveredGodot.FullName }
