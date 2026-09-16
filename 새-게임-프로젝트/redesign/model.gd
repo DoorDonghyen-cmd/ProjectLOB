@@ -43,7 +43,7 @@ func begin_encounter() -> void:
 	_record("encounter", {"index": s.floor})
 
 func capacity() -> int:
-	return int(Content.GUNS[s.gun].capacity) + (1 if s.part == "supply" else 0)
+	return int(Content.GUNS[s.gun].capacity) + int(s.get("capacity_bonus", 0)) + (1 if s.part == "supply" else 0)
 
 func reload_cost() -> int:
 	return maxi(1, int(Content.GUNS[s.gun].reload) - (1 if s.part == "loader" else 0))
@@ -335,6 +335,7 @@ func _refill() -> void:
 
 func _record(action: String, detail: Dictionary) -> void:
 	s.history.append({"action": action, "floor": s.floor, "turn": s.turns, "detail": detail})
+	if s.has("encounter_id"): s.history.back()["node"] = s.encounter_id
 
 func save_run(path: String) -> Error:
 	var file := FileAccess.open(path + ".tmp", FileAccess.WRITE)
@@ -353,6 +354,10 @@ func restore_run(path: String) -> bool:
 	var parsed = parser.data
 	if not parsed is Dictionary:
 		return false
+	return restore_state(parsed)
+
+func restore_state(source: Dictionary) -> bool:
+	var parsed: Dictionary = source.duplicate(true)
 	if int(parsed.get("version", -1)) == 2:
 		parsed = _migrate_v2(parsed)
 	elif int(parsed.get("version", -1)) != VERSION:
@@ -380,7 +385,8 @@ func restore_run(path: String) -> bool:
 		return false
 	for key in parsed.buff:
 		if not key in ["dmg", "dmg_left"] or not _whole(parsed.buff[key], 0, 10): return false
-	var limit: int = int(Content.GUNS[parsed.gun].capacity) + (1 if parsed.part == "supply" else 0)
+	if not _whole(parsed.get("capacity_bonus", 0), 0, 2): return false
+	var limit: int = int(Content.GUNS[parsed.gun].capacity) + int(parsed.get("capacity_bonus", 0)) + (1 if parsed.part == "supply" else 0)
 	var supply_limit := limit
 	if not _whole(parsed.exchange_left, 0, 1): return false
 	if parsed.buff.has("dmg") != parsed.buff.has("dmg_left"): return false

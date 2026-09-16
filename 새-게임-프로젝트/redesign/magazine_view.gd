@@ -58,14 +58,34 @@ func _draw() -> void:
 					var shot: Dictionary = forecast.shots[i]
 					value = "%s %s" % [Forecast.tag(shot.target), Forecast.outcome(shot)]
 					color = Color("a9dfbf") if shot.damage > 0 else Color("f2a38d")
-				draw_string(FONT, Vector2(x + 4, 111), value, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 17, color)
+				if width < 115 and i < forecast.shots.size():
+					var lines := compact_lines(forecast, i)
+					draw_string(FONT, Vector2(x + 4, 101), lines[0], HORIZONTAL_ALIGNMENT_CENTER, width - 8, 15, color)
+					draw_string(FONT, Vector2(x + 4, 119), lines[1], HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, color)
+				else:
+					draw_string(FONT, Vector2(x + 4, 111), value, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 17, color)
 			if not forecast.is_empty() and i < forecast.shots.size():
-				var note := Forecast.note(forecast, i)
-				draw_string(FONT, Vector2(x + 4, 133), note, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, Ammo.COLORS[id])
+				var note := compact_lines(forecast, i)[2] if width < 115 else Forecast.note(forecast, i)
+				draw_string(FONT, Vector2(x + 4, 136), note, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, Ammo.COLORS[id])
 		else:
 			draw_string(FONT, Vector2(x + 4, 65), "·", HORIZONTAL_ALIGNMENT_CENTER, width - 8, 32, Color("506570"))
 	if not incoming.is_empty():
 		Ammo.round_icon(self, origin.lerp(Vector2(width * (stack.size() - 0.5), 44), travel), incoming, 0.9)
+
+static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArray:
+	var shot: Dictionary = prediction.shots[index]
+	var result := PackedStringArray(["%s −%d" % [Forecast.tag(shot.target), shot.damage], "처치" if int(shot.hp) == 0 else "HP%d" % int(shot.hp), ""])
+	var boosted: bool = int(shot.get("math", {}).get("boost", 0)) > 0
+	var secondary: Array = shot.get("secondary", [])
+	if not secondary.is_empty(): result[2] = "→%s −%d" % [Forecast.tag(int(secondary[0].target)), int(secondary[0].damage)]
+	elif int(shot.get("burn_added", 0)) > 0:
+		var ticks := Forecast.burn_ticks_for_shot(prediction, index)
+		result[2] = "화상%d회" % ticks if ticks > 0 else "화상+%d" % int(shot.burn_added)
+	elif int(shot.get("push", 0)) > 0: result[2] = "+%dm" % int(shot.push)
+	elif boosted: result[2] = "증폭×2" if int(shot.get("hits", 1)) > 1 else "증폭+2"
+	elif int(shot.get("hits", 1)) > 1: result[2] = "×2"
+	elif str(shot.id) == "charge": result[2] = "→2발+2"
+	return result
 
 func _box(color: Color) -> StyleBoxFlat:
 	var box := StyleBoxFlat.new()

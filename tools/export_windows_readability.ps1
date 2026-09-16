@@ -1,4 +1,4 @@
-﻿param([string]$GodotPath = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe')
+param([string]$GodotPath = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe', [ValidateSet('readability','city')][string]$BuildKind = 'city')
 $ErrorActionPreference = 'Stop'
 $discoveredGodot = Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1
 if (-not (Test-Path -LiteralPath $GodotPath) -and $discoveredGodot) { $GodotPath = $discoveredGodot.FullName }
@@ -6,7 +6,8 @@ $repo = Split-Path -Parent $PSScriptRoot
 $project = (Get-ChildItem -LiteralPath $repo -Directory | Where-Object {
     Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')
 } | Select-Object -First 1).FullName
-$build = Join-Path $repo 'builds\readability-windows'
+$build = Join-Path $repo "builds\${BuildKind}-windows"
+$exeName = "LastOnBoard-$BuildKind.exe"
 New-Item -ItemType Directory -Force -Path $build | Out-Null
 $template = Join-Path $env:APPDATA 'Godot\export_templates\4.7.stable\windows_debug_x86_64.exe'
 if (-not (Test-Path -LiteralPath $template)) { throw 'Install the matching Godot 4.7 export templates first.' }
@@ -17,7 +18,7 @@ $existing = if ($hadPreset) { [Text.Encoding]::UTF8.GetString($original) } else 
 $indices = [regex]::Matches($existing, '\[preset\.(\d+)\]') | ForEach-Object { [int]$_.Groups[1].Value }
 $index = if ($indices) { ($indices | Measure-Object -Maximum).Maximum + 1 } else { 0 }
 $templateForGodot = $template.Replace('\', '/')
-$exportPath = (Join-Path $build 'LastOnBoard-readability.exe').Replace('\', '/')
+$exportPath = (Join-Path $build $exeName).Replace('\', '/')
 $preset = @"
 
 [preset.$index]
@@ -74,7 +75,8 @@ try {
     $manifest = @{
         built_at = [DateTime]::UtcNow.ToString('o')
         source_commit = (git -C $repo rev-parse HEAD).Trim()
-        includes_working_tree = $true
+        includes_working_tree = [bool](git -C $repo status --porcelain)
+        game_loop = 'five regions; 35 floors; map/shop/events/progression; separate seven-combat training'
         sha256 = $hash
         smoke = 'headless startup passed'
         readiness = 'functional review; human gameplay acceptance pending'
@@ -87,14 +89,22 @@ set "APPDATA=%~dp0qa-profile\Roaming"
 set "LOCALAPPDATA=%~dp0qa-profile\Local"
 start "" "%~dp0LastOnBoard-readability.exe"
 '@
-    [IO.File]::WriteAllText((Join-Path $build 'Play-Readability.cmd'), $launcher, [Text.Encoding]::ASCII)
+    $launcherName = if ($BuildKind -eq 'city') { 'Play-City.cmd' } else { 'Play-Readability.cmd' }
+    $launcher = $launcher.Replace('LastOnBoard-readability.exe', $exeName)
+    [IO.File]::WriteAllText((Join-Path $build $launcherName), $launcher, [Text.Encoding]::ASCII)
     $readme = @'
-Last on Board - 피해·관통 및 3속성 개편판
+Last on Board - 전체 도시 등반 개편판
 
-Play-Readability.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저장합니다.
-처음에는 '차근차근 배우기'가 선택됩니다. 끄면 일반 런으로 시작합니다.
-학습 순서: 피해/증폭 → 장갑/관통 → 화상 → 연발 → 넉백 → 전기 → 복합 전투.
-새 탄환은 해당 교전에서 자동 지급되며 첫 손패에 들어옵니다.
+Play-City.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저장합니다.
+기본 모드는 5계층 35층 도시 등반입니다. 맵 → 전투/무기고/보급/이벤트 → 계층 관문 → 정점.
+'탄환 기초 훈련'을 켜면 별도의 7교전 학습 모드를 시작합니다.
+맵에서 밝은 노드를 누르면 즉시 이동하고, 다른 방을 누르면 편성과 비용을 미리 봅니다.
+환기구는 다음 전투 시작 거리를 2m 줄입니다. 상점과 이벤트를 지나도 유지하며 중첩하지 않습니다.
+전투 보상: 탄환 2후보 / 효율 크레딧 / 보상 대신 정제 / 유지.
+상점: 탄환 12Cr, 파츠 30Cr, 갱신 3Cr, 덱 정제 12Cr.
+파츠 구매와 유료 정제는 방문당 각각 한 번이며 재접속·갱신 후에도 한도는 유지합니다.
+관문에서 탄창을 4→5→6칸으로 확장합니다. 파츠 교체 후에도 성장은 유지합니다.
+기록실: 도시 기록20개, 전술 데이터, 시작 덱 성향 해금, 완주 후 난도0~10 해금.
 
 카드: 이름 / 피해·관통 / 물리·화염·전기 속성 / 효과 하나. 2×2는 두 번 공격입니다.
 화상은 적이 전진하기 직전에 1피해를 주고 1 감소합니다. 전기는 가장 가까운 다른 적에게 2피해를 전이합니다.
@@ -104,15 +114,16 @@ Play-Readability.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저�
 탄창 칸은 표적의 처치/남은 HP와 증폭·화상 예상·밀기·전이 결과를 표시합니다.
 확정 후에도 칸을 눌러 계산을 볼 수 있습니다. 기본 수치는 총기와 파츠를 반영합니다.
 개발자 테스트의 '조합 결과 연습'에서 대표 조합 세 가지를 한 화면에서 시험할 수 있습니다.
-보상 화면은 방금 교전의 조합 성과, 다음 적의 위협, 각 후보가 바꾸는 정확한 수치를 표시합니다.
-개발자 테스트의 '보상·빌드 판단'에서 다음 편성과 파츠 선택을 바로 확인할 수 있습니다.
+개발자 테스트에는 맵·무기고·이벤트·보급·승강기·보상·정산 바로가기가 있습니다.
+연습에서는 실제 도시 등반 저장을 변경하지 않습니다.
 완주 화면은 런 전체 조합 성과와 탄환별 최종 장수를 요약합니다.
 
-문서: docs/walkthrough_complete_gameplay_prototype_2026-09-16.md
+문서: docs/walkthrough_full_city_campaign_2026-09-16.md
 재생성: tools/export_windows_readability.ps1
 기존 비교판: builds/chain-windows/Play-Chain.cmd
 APK는 사용자 요청 전까지 제작하지 않습니다.
 '@
+    $readme = $readme.Replace('Play-City.cmd', $launcherName)
     [IO.File]::WriteAllText((Join-Path $build 'README.txt'), $readme, $utf8)
 } finally {
     $env:APPDATA = $previousAppData

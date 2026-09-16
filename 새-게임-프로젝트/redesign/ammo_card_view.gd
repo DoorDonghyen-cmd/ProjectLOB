@@ -45,7 +45,7 @@ func attribute_data() -> Dictionary:
 func effect_data() -> Dictionary:
 	if state.is_empty(): return {}
 	match ammo_id:
-		"basic": return {"kind": "reload", "value": "%d발" % (5 if state.get("part", "none") == "supply" else 4)}
+		"basic": return {"kind": "reload", "value": "%d발" % (4 + int(state.get("capacity_bonus", 0)) + (1 if state.get("part", "none") == "supply" else 0))}
 		"pierce": return {"kind": "physical", "value": "장갑 대응"}
 		"bore": return {"kind": "fire", "value": "화상 +%d" % Content.burn_amount(ammo_id, state)}
 		"precise": return {"kind": "double", "value": "2회 타격"}

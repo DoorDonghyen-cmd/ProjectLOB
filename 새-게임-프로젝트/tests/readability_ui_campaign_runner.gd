@@ -64,6 +64,7 @@ func fresh_screen() -> void:
 	if is_instance_valid(screen):
 		screen.free()
 	screen = load("res://redesign/main.tscn").instantiate()
+	screen.full_game_enabled = false
 	screen.presentation_speed = 0.05
 	# This runner requires a QA-only application profile, checked before this call.
 	screen.save_enabled = true

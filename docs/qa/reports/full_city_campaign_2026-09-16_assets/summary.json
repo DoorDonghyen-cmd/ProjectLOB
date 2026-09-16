@@ -1,0 +1,314 @@
+{
+  "campaign_replay_checks": 28743,
+  "campaign_replay_failures": [],
+  "refinement_search_checks": 10643,
+  "refinement_search_failures": [],
+  "refinement_search_candidates": 225529,
+  "ui_gameplay": {
+    "checks": 3219,
+    "failures": 0,
+    "buttons": 1052,
+    "actual_completions": 2,
+    "evidence": "successful process output before the narrow-slot drawing change"
+  },
+  "layout": {
+    "captures": [
+      "D:\\ProjectLoB\\worktrees\\core-redesign\\qa_runtime\\city\\ui\\layout/city_six_slot_final_single.png",
+      "D:\\ProjectLoB\\worktrees\\core-redesign\\qa_runtime\\city\\ui\\layout/city_six_slot_phone_single.png",
+      "D:\\ProjectLoB\\worktrees\\core-redesign\\qa_runtime\\city\\ui\\layout/city_six_slot_final_burst.png",
+      "D:\\ProjectLoB\\worktrees\\core-redesign\\qa_runtime\\city\\ui\\layout/city_six_slot_phone_burst.png"
+    ],
+    "checks": 333,
+    "clicks": 0,
+    "failures": []
+  },
+  "runs": [
+    {
+      "gun": "single",
+      "seed": 731042.0,
+      "route": "safe",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 25,
+      "turns": 221,
+      "shots": 202,
+      "slots": 6,
+      "deck_size": 12,
+      "credits": 189,
+      "parts": [
+        "lens",
+        "coil"
+      ],
+      "actions": 549
+    },
+    {
+      "gun": "single",
+      "seed": 731042.0,
+      "route": "mixed",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 136,
+      "shots": 123,
+      "slots": 6,
+      "deck_size": 10,
+      "credits": 265,
+      "parts": [
+        "lens",
+        "coil"
+      ],
+      "actions": 374
+    },
+    {
+      "gun": "burst",
+      "seed": 731042.0,
+      "route": "safe",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 25,
+      "turns": 125,
+      "shots": 244,
+      "slots": 6,
+      "deck_size": 12,
+      "credits": 161,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ],
+      "actions": 453
+    },
+    {
+      "gun": "burst",
+      "seed": 731042.0,
+      "route": "mixed",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 74,
+      "shots": 146,
+      "slots": 6,
+      "deck_size": 10,
+      "credits": 244,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ],
+      "actions": 310
+    },
+    {
+      "gun": "single",
+      "seed": 17.0,
+      "route": "safe",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 25,
+      "turns": 200,
+      "shots": 186,
+      "slots": 6,
+      "deck_size": 12,
+      "credits": 198,
+      "parts": [
+        "coil",
+        "lens"
+      ],
+      "actions": 507
+    },
+    {
+      "gun": "single",
+      "seed": 17.0,
+      "route": "mixed",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 132,
+      "shots": 122,
+      "slots": 6,
+      "deck_size": 12,
+      "credits": 236,
+      "parts": [
+        "coil",
+        "lens"
+      ],
+      "actions": 366
+    },
+    {
+      "gun": "burst",
+      "seed": 17.0,
+      "route": "safe",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 25,
+      "turns": 126,
+      "shots": 269,
+      "slots": 6,
+      "deck_size": 12,
+      "credits": 161,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ],
+      "actions": 496
+    },
+    {
+      "gun": "burst",
+      "seed": 17.0,
+      "route": "mixed",
+      "difficulty": 0.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 74,
+      "shots": 174,
+      "slots": 6,
+      "deck_size": 12,
+      "credits": 204,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ],
+      "actions": 347
+    },
+    {
+      "gun": "single",
+      "seed": 90210.0,
+      "route": "mixed",
+      "difficulty": 10.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 126,
+      "shots": 116,
+      "slots": 6,
+      "deck_size": 10,
+      "credits": 231,
+      "parts": [
+        "coil",
+        "lens"
+      ],
+      "actions": 354
+    },
+    {
+      "gun": "burst",
+      "seed": 90210.0,
+      "route": "mixed",
+      "difficulty": 10.0,
+      "build": "credit_preference",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 78,
+      "shots": 163,
+      "slots": 6,
+      "deck_size": 10,
+      "credits": 201,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ],
+      "actions": 337
+    },
+    {
+      "gun": "single",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "build": "paid_refinement",
+      "won": true,
+      "rooms": 35,
+      "battles": 25,
+      "turns": 224,
+      "shots": 207,
+      "slots": 6,
+      "deck_size": 11,
+      "credits": 139,
+      "parts": [
+        "lens",
+        "coil"
+      ],
+      "actions": 559
+    },
+    {
+      "gun": "single",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "build": "paid_refinement",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 132,
+      "shots": 121,
+      "slots": 6,
+      "deck_size": 9,
+      "credits": 160,
+      "parts": [
+        "lens",
+        "coil"
+      ],
+      "actions": 375
+    },
+    {
+      "gun": "burst",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "build": "paid_refinement",
+      "won": true,
+      "rooms": 35,
+      "battles": 25,
+      "turns": 125,
+      "shots": 243,
+      "slots": 6,
+      "deck_size": 11,
+      "credits": 102,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ],
+      "actions": 456
+    },
+    {
+      "gun": "burst",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "build": "paid_refinement",
+      "won": true,
+      "rooms": 35,
+      "battles": 16,
+      "turns": 79,
+      "shots": 155,
+      "slots": 6,
+      "deck_size": 10,
+      "credits": 145,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ],
+      "actions": 331
+    }
+  ]
+}

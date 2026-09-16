@@ -46,6 +46,7 @@ func capture(label: String) -> void:
 func _run() -> void:
 	root.size = Vector2i(1280, 800)
 	screen = load("res://redesign/main.tscn").instantiate()
+	screen.full_game_enabled = false
 	screen.presentation_speed = 0.02
 	root.add_child(screen)
 	await settle()

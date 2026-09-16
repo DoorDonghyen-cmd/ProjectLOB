@@ -8,6 +8,9 @@ const AmmoCardView = preload("res://redesign/ammo_card_view.gd")
 const Forecast = preload("res://redesign/forecast.gd")
 const Readability = preload("res://redesign/readability.gd")
 const RunInsight = preload("res://redesign/run_insight.gd")
+const Campaign = preload("res://redesign/campaign.gd")
+const CampaignUI = preload("res://redesign/campaign_ui.gd")
+const CampaignContent = preload("res://redesign/campaign_content.gd")
 const SAVE := "user://chain_run_v2.json"
 const BG := Color("101920")
 const PANEL := Color("1b2a34")
@@ -16,6 +19,11 @@ const MUTED := Color("a4b4ba")
 const ACCENT := Color("a9dfbf")
 const DANGER := Color("f2a38d")
 var model = Model.new()
+var campaign = null
+var city_ui = CampaignUI.new()
+var full_game_enabled := true
+var loadout_option: OptionButton
+var difficulty_option: SpinBox
 var page := "menu"
 var save_enabled := true
 var debug_session := false
@@ -120,8 +128,11 @@ func redraw() -> void:
 	if page == "menu":
 		_menu()
 		return
+	if campaign != null and campaign.s.phase != "combat":
+		city_ui.render(self)
+		return
 	var top := _row(body)
-	_label(top, "LAST ON BOARD   /   %02d · 07" % (int(model.s.floor) + 1), 26, ACCENT)
+	_label(top, "%s / %02d · 35" % [CampaignContent.info(int(campaign.s.region)).name, campaign.absolute_floor()] if campaign != null else "LAST ON BOARD   /   %02d · 07" % (int(model.s.floor) + 1), 26, ACCENT)
 	for item in [["정보", "details", _details], ["규칙", "rules", _rules], ["메뉴", "menu", _to_menu]]:
 		var button := _button(top, item[0], item[1], item[2])
 		button.size_flags_horizontal = Control.SIZE_SHRINK_END
@@ -134,6 +145,8 @@ func redraw() -> void:
 	if model.s.part != "none": equipment += " · " + str(Content.PARTS[model.s.part].name)
 	if model.s.buff.has("dmg"): equipment += " · 증폭 %d발" % model.s.buff.dmg_left
 	_label(body, "%s   ·   %d턴" % [equipment, model.s.turns], 18, MUTED)
+	if campaign != null:
+		_label(body, "%s · %dCr · 난도%d" % [campaign.node().name, campaign.s.credits, campaign.s.difficulty], 18, ACCENT)
 	if debug_session:
 		_label(body, "개발자 연습 · 진행 저장 안 함", 18, DANGER)
 	if not save_error.is_empty():
@@ -149,10 +162,35 @@ func _menu() -> void:
 	_label(body, "3속성 개편판 · 피해와 관통 · 물리·화염·전기", 20, MUTED)
 	course_toggle = CheckButton.new()
 	course_toggle.name = "CourseToggle"
-	course_toggle.text = "차근차근 배우기 · 끄면 일반 런"
-	course_toggle.button_pressed = not FileAccess.file_exists("user://course_completed.flag")
+	course_toggle.text = "탄환 기초 훈련 · 7교전 (끄면 맵·상점이 있는 도시 등반)"
+	course_toggle.button_pressed = false
 	course_toggle.custom_minimum_size.y = 52
 	body.add_child(course_toggle)
+	var city_probe = Campaign.new()
+	var city_saved: bool = city_probe.restore()
+	if FileAccess.file_exists(Campaign.SAVE) and not city_saved:
+		_label(body, "도시 저장을 읽을 수 없습니다. 새 등반 전까지 원본 파일을 보존합니다.", 17, DANGER)
+	var configuration := _row(body)
+	_label(configuration, "시작 보급", 19, MUTED).size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	loadout_option = OptionButton.new()
+	loadout_option.name = "CityLoadout"
+	loadout_option.custom_minimum_size = Vector2(240, 46)
+	for id in city_probe.profile.unlocks:
+		loadout_option.add_item(CampaignContent.LOADOUTS[id].name)
+		loadout_option.set_item_metadata(loadout_option.item_count - 1, id)
+	configuration.add_child(loadout_option)
+	_label(configuration, "난도", 19, MUTED).size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	difficulty_option = SpinBox.new()
+	difficulty_option.name = "CityDifficulty"
+	difficulty_option.max_value = int(city_probe.profile.ascension)
+	difficulty_option.custom_minimum_size = Vector2(115, 46)
+	configuration.add_child(difficulty_option)
+	_button(configuration, "기록실", "city_archive", _city_archive)
+	var difficulty_summary := _label(body, "난도 0 · 시작 거리 보정 없음 · 완주하면 다음 난도 해금", 17, MUTED)
+	difficulty_option.value_changed.connect(func(value: float):
+		difficulty_summary.text = "난도%d · 적 시작 거리 −%dm · 배급 보정 −%dCr (최소 8Cr)" % [int(value), mini(4, int(value) / 2), int(value)]
+	)
+	_label(body, "5계층 · 35층 · 경로 선택 → 전투/상점/보급/이벤트 → 관문 → 정점", 18, ACCENT)
 	var row := _row(body)
 	for id in ["single", "burst"]:
 		var column := _panel(row)
@@ -172,13 +210,30 @@ func _menu() -> void:
 	var can_resume: bool = probe.restore_run(SAVE)
 	if FileAccess.file_exists(SAVE) and not can_resume:
 		_label(body, "자동 저장을 읽을 수 없습니다. 기존 파일은 보존되며, 새 런을 시작하면 교체됩니다.", 17, DANGER)
-	_button(controls, "이어 하기", "resume", _resume, not can_resume)
+	_button(controls, "이어 하기", "resume", _resume, not can_resume and not (city_saved and not city_probe.s.settled))
+	if city_saved and can_resume:
+		_button(controls, "훈련 이어 하기", "resume_training", _resume_training)
 	_button(controls, "규칙 읽기", "rules", _rules)
 	_button(controls, "개발자 테스트", "dev", _developer)
 	_label(body, "새 런을 시작하면 이 실험 버전의 자동 저장이 교체됩니다. 기존 게임의 진행도는 별도로 보관됩니다.", 17, MUTED)
 
 func _start(id: String, same_seed: bool) -> void:
 	if busy: return
+	if full_game_enabled and ((same_seed and campaign != null) or (not same_seed and not course_toggle.button_pressed)):
+		var run_seed: int = int(campaign.s.seed) if same_seed else int(seed_input.text)
+		var difficulty: int = int(campaign.s.difficulty) if same_seed else int(difficulty_option.value)
+		var loadout: String = str(campaign.s.loadout) if same_seed else str(loadout_option.get_selected_metadata())
+		var progress = Campaign.new()
+		progress.restore()
+		if same_seed and debug_session: progress.profile = campaign.profile.duplicate(true)
+		campaign = progress
+		campaign.start(id, run_seed, difficulty, loadout)
+		model = campaign.model
+		debug_session = debug_session and same_seed
+		page = "run"
+		_changed()
+		return
+	campaign = null
 	var run_seed: int = int(model.s.seed) if same_seed else int(seed_input.text)
 	debug_session = debug_session and same_seed
 	var course: bool = model.s.get("course", false) if same_seed else course_toggle.button_pressed
@@ -191,7 +246,20 @@ func _start(id: String, same_seed: bool) -> void:
 
 func _resume() -> void:
 	if busy: return
+	var probe = Campaign.new()
+	if full_game_enabled and probe.restore() and not probe.s.settled:
+		campaign = probe
+		model = campaign.model
+		debug_session = false
+		page = "run"
+		redraw()
+		return
+	_resume_training()
+
+func _resume_training() -> void:
+	if busy: return
 	if model.restore_run(SAVE):
+		campaign = null
 		debug_session = false
 		page = "run"
 		redraw()
@@ -209,6 +277,7 @@ func _combat() -> void:
 	battle_view.inspection_enabled = not busy
 	body.add_child(battle_view)
 	battle_view.sync(model.s)
+	if campaign != null: battle_view.caption = str(campaign.node().name)
 	if model.s.get("course", false): battle_view.caption = Content.LESSONS[int(model.s.floor)]
 	if not combat_forecast.shots.is_empty(): battle_view.first_shot = combat_forecast.shots[0]
 	battle_view.shot_started.connect(_visual_shot)
@@ -401,8 +470,9 @@ func _ammo_names(ids: Array) -> String:
 	return " · ".join(names) if not names.is_empty() else "없음"
 
 func _persist() -> void:
+	if campaign != null: campaign.sync_combat()
 	if save_enabled and not debug_session:
-		var error: Error = model.save_run(SAVE)
+		var error: Error = campaign.save() if campaign != null else model.save_run(SAVE)
 		save_error = "자동 저장 실패 (%d) · 게임을 종료하지 말아 주세요." % error if error != OK else ""
 
 func _changed() -> void:
@@ -500,8 +570,9 @@ func _rules() -> void:
 	_label(column, "4. 증폭탄은 다음 2발의 타격당 피해 +2, 연발탄은 같은 적을 2회 타격합니다. 증폭 뒤 연발탄을 두면 증폭 피해도 두 번 적용됩니다.")
 	_label(column, "5. 타격 피해 = 피해 + 총기 보정 + 증폭 − 남은 장갑 (최소 1). 남은 장갑 = 장갑 − 관통입니다. 전이와 화상은 별도 고정 피해입니다.")
 	_label(column, "6. 화상은 적의 전진 직전에 1피해를 주고 1 감소합니다. 화상으로 죽은 적은 전진하지 않습니다. 충격탄은 탄창당 총 2m까지 밀어 거리를 확보합니다.")
-	_label(column, "7. 재장전마다 회수탄 4발(확장 탄창 5발), 전술 패 5장, 패 교환 1회. 미사용 패 유지, 사용탄은 다시 섞습니다. 교환은 탄창에 넣지 않은 전술탄 1장을 다음 탄으로 바꿉니다.")
-	_label(column, "8. 매 시드 적 편성·거리·보상 후보가 달라집니다. 보상 화면에서 다음 적을 먼저 확인하세요. 파츠는 하나만 장착합니다.")
+	_label(column, "7. 재장전마다 탄창 칸수만큼 회수탄을 복구하고 전술 패를 5장까지 보충합니다. 미사용 패 유지, 사용탄은 다시 섞으며 패 교환은 재장전당 1회입니다.")
+	_label(column, "8. 도시 등반은 5계층 35층입니다. 환기구의 거리 −2m 비용은 다음 전투까지 유지합니다. 방을 누르면 편성과 이동 비용을 미리 볼 수 있습니다.")
+	_label(column, "9. 전투 보상은 탄환·크레딧·정제 중 하나. 상점의 파츠 구매와 유료 정제는 방문당 한 번입니다. 파츠는 하나만 장착하며, 관문에서 늘린 탄창 4→5→6칸은 파츠 교체 후에도 유지합니다.")
 
 func _inspect_slot(index: int) -> void:
 	if busy or not is_instance_valid(calculation_label): return
@@ -547,6 +618,7 @@ func _details() -> void:
 	var column := _dialog("전투 정보")
 	column.name = "CombatDetails"
 	var encounter: Dictionary = Content.ENCOUNTERS[int(model.s.floor)]
+	if campaign != null: encounter = {"name": campaign.node().name, "text": CampaignContent.hint(campaign.node())}
 	_label(column, encounter.name, 26, ACCENT)
 	_label(column, encounter.text, 18, MUTED)
 	_label(column, "시드 %s · %s\n%s · %s" % [str(model.s.seed), Content.GUNS[model.s.gun].text, Content.PARTS[model.s.part].name, Content.PARTS[model.s.part].text], 18)
@@ -579,8 +651,18 @@ func _enemy_details(index: int) -> void:
 	_label(column, "연속 사격 예상: " + (" · ".join(hits) if not hits.is_empty() else "피격 없음"), 18, ACCENT)
 
 func _developer() -> void:
+	campaign = null
 	var column := _dialog("개발자 테스트 · 기존 저장 보존")
 	_label(column, "화면과 규칙을 즉시 확인하는 연습", 26)
+	var city_row := GridContainer.new()
+	city_row.columns = 3
+	column.add_child(city_row)
+	for entry in [["도시 분기 맵", "map"], ["크레딧 무기고", "shop"], ["보급·덱 정제", "supply"], ["선택 이벤트", "event"], ["계층 승강기", "gate"], ["도시 런 정산", "ending"], ["도시 전투 보상", "reward"]]:
+		_button(city_row, entry[0], "debug_city_" + entry[1], func():
+			_debug_city(entry[1])
+			column.get_meta("dialog").queue_free()
+		)
+
 	_button(column, "3속성 탄환 전체", "debug_icon_cards", func():
 		model.start("single", 731042)
 		model.s.floor = 6
@@ -696,3 +778,68 @@ func _developer() -> void:
 			column.get_meta("dialog").queue_free()
 			redraw()
 		)
+
+func _campaign_action(command: String, value: Variant = "", extra: String = "") -> void:
+	if busy or campaign == null: return
+	var accepted := false
+	match command:
+		"enter": accepted = campaign.enter(int(value))
+		"reward": accepted = campaign.reward(str(value), extra)
+		"gate": accepted = campaign.gate(str(value))
+		"buy": accepted = campaign.buy(int(value))
+		"reroll": accepted = campaign.reroll()
+		"shop_refine": accepted = campaign.shop_refine(str(value))
+		"equip": accepted = campaign.equip(str(value))
+		"dismantle": accepted = campaign.dismantle(str(value))
+		"resolve": accepted = campaign.resolve(str(value), extra)
+		"leave": accepted = campaign.leave()
+	if accepted:
+		model = campaign.model
+		selected_slot = 0
+		inspect_slots = false
+		previous_forecast = {}
+		_changed()
+
+func _city_archive() -> void:
+	var progress = Campaign.new()
+	progress.restore()
+	campaign = progress
+	city_ui.ui = self
+	city_ui.campaign = campaign
+	city_ui.archive()
+
+func _debug_city(kind: String) -> void:
+	debug_session = true
+	campaign = Campaign.new()
+	campaign.start("burst", 731042)
+	campaign.s.credits = 75
+	if kind == "shop":
+		campaign.s.floor = 3
+		campaign.s.node = 301
+		campaign.enter(401)
+	elif kind == "supply":
+		campaign.s.floor = 2
+		campaign.s.node = 201
+		campaign.enter(301)
+	elif kind == "event":
+		campaign.s.floor = 1
+		campaign.s.node = 101
+		campaign.enter(202)
+	elif kind == "reward":
+		campaign.enter(101)
+		for enemy in campaign.model.s.enemies: enemy.hp = 0
+		campaign.model.s.phase = "reward"
+		campaign.sync_combat()
+	elif kind in ["gate", "ending"]:
+		if kind == "ending": campaign.s.region = 4
+		var floors := int(CampaignContent.info(int(campaign.s.region)).floors)
+		campaign.s.floor = floors - 1
+		campaign.s.node = int(campaign.s.region) * 10000 + (floors - 1) * 100 + 1
+		campaign.enter(int(campaign.s.region) * 10000 + floors * 100 + 1)
+		for enemy in campaign.model.s.enemies: enemy.hp = 0
+		campaign.model.s.phase = "reward"
+		campaign.sync_combat()
+		campaign.reward("skip")
+	model = campaign.model
+	page = "run"
+	redraw()
