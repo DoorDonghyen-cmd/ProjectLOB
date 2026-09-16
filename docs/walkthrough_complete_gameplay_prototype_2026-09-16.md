@@ -60,8 +60,11 @@
 - 실제 UI 캠페인: **1,610 / 0 실패**, 4개 완주, 485개 버튼 입력
 - 시각·터치: **174 / 0 실패**
 - 기존 프로젝트 전체 회귀: **3,730 / 0 실패 / 기존 경보 3**
-- `git diff --check` 통과 예정
-- Windows 내보내기·기동 및 SHA-256: 최종 커밋 뒤 기록
+- `git diff --check` 통과
+- Windows 내보내기·격리 프로필 헤드리스 기동 통과
+  - 실행: `builds/readability-windows/Play-Readability.cmd`
+  - 소스 커밋: `52d0b8c987c0d1f33e2253d91a3fb39123d55b44`
+  - SHA-256: `FD497DC11E7B926C7FF9E678FB5B3405F818A181CEF52C8028E54BA968BE4CF9`
 
 ## 제한
 
