@@ -1,0 +1,41 @@
+﻿{
+    "version_name":  "0.3.20260916",
+    "signing":  "standard local Android debug certificate; verified",
+    "built_at":  "2026-09-16T13:39:53.7494676Z",
+    "game_loop":  "five regions; 35 floors; map/shop/events/progression; separate seven-combat training",
+    "source_commit":  "524e30365dbc53fff4be1618bbc0eda1becace42",
+    "screen_sha256":  "C8A28A6D0C0CBAB2EDD3ED1A3CBCBC6683730B5EC85A04A8206D9DAACE0AB760",
+    "size_bytes":  81474840,
+    "includes_working_tree":  false,
+    "package":  "com.lastonboard.prototype",
+    "android_runtime":  "not tested on a device or emulator",
+    "model_sha256":  "DCFE774BE54DC3154CDCDAEDAB6EBB4C592761A426B3F9D4DD4121F95E75054A",
+    "architectures":  [
+                          "arm64-v8a",
+                          "armeabi-v7a"
+                      ],
+    "orientation":  "user landscape; Android screenOrientation 11",
+    "alignment":  "zipalign 4-byte and 16KiB shared libraries verified",
+    "sha256":  "692FB0E716F094251AD10ED86480B8380654968400C4D0E46946514D2A52F1F3",
+    "weapons":  [
+                    "single",
+                    "burst",
+                    "scatter",
+                    "heavy",
+                    "amplifier"
+                ],
+    "version_code":  20260916,
+    "previous_apk_certificate_match":  true,
+    "archive_checks":  {
+                           "archive_crc":  "passed",
+                           "redesign_main":  ".godot/exported/133200997/export-fb115bd7bd35012d9e72b74cc11f8f5e-main.scn",
+                           "latest_redesign_scripts":  "present",
+                           "qa_scripts":  "excluded",
+                           "arm64_and_armv7":  "present",
+                           "sha256":  "692FB0E716F094251AD10ED86480B8380654968400C4D0E46946514D2A52F1F3",
+                           "size_bytes":  81474840
+                       },
+    "compiled_resources":  "APK extracted compiled resources loaded on PC Godot: five weapons, model v4, city scene and actual commands passed; not Android runtime testing",
+    "min_sdk":  24,
+    "target_sdk":  36
+}
