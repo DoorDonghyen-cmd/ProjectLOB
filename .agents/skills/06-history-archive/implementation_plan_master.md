@@ -60,6 +60,7 @@
 | 2026-09-13 | **연계 전투 전면 개편** | `codex0913-chain` | 사용자 승인: 클릭순 발사·균열·축전·시드별 상황·교환·5칸·저장 v2 | [문서](../../../../docs/implementation_plan_chain_edition_2026-09-13.md) |
 | 2026-09-13 | **탄환 정보·초반 학습 흐름** | `codex0913-readability-plan` | 카드 수치/역할·피해 원인·적/덱/보상 단계 도입. 회피 축 후속 판단. 계획만, APK 요청 시에만 | [계획](../../../../docs/implementation_plan_ammo_readability_2026-09-13.md) |
 | 2026-09-13 | **탄환 정보 계획 실행** | `codex0913-ammo-readability` | 승인된 1~3단계 구현 검증. 사람 이해도/회피 태세 후속 판단 | [문서](../../../../docs/implementation_plan_ammo_readability_2026-09-13.md) |
+| 2026-09-16 | **탄환 카드 아이콘 정보 체계** | `codex0916-ammo-icons` | 위력·관통·명중 고정 픽셀 아이콘, 부호 효과 행, 단계 공개·보상·개발자 숏컷 적용 | [계획](../../../../docs/ui_request_ammo_icon_cards_2026-09-16.md) |
 
 ---
 
@@ -122,3 +123,5 @@
 2026-09-13 참조: [탄환 정보·초반 학습 계획](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_ammo_readability_2026-09-13.md)
 
 2026-09-13 참조: [탄환 정보 계획 실행](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_ammo_readability_2026-09-13.md)
+
+2026-09-16 참조: [탄환 카드 아이콘 정보 체계](D:/ProjectLoB/worktrees/core-redesign/docs/ui_request_ammo_icon_cards_2026-09-16.md)

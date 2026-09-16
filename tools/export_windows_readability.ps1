@@ -1,5 +1,7 @@
 ﻿param([string]$GodotPath = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe')
 $ErrorActionPreference = 'Stop'
+$discoveredGodot = Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1
+if (-not (Test-Path -LiteralPath $GodotPath) -and $discoveredGodot) { $GodotPath = $discoveredGodot.FullName }
 $repo = Split-Path -Parent $PSScriptRoot
 $project = (Get-ChildItem -LiteralPath $repo -Directory | Where-Object {
     Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')
@@ -47,12 +49,15 @@ try {
     $env:APPDATA = Join-Path $build 'qa-profile\Roaming'
     $env:LOCALAPPDATA = Join-Path $build 'qa-profile\Local'
     New-Item -ItemType Directory -Force -Path $env:APPDATA, $env:LOCALAPPDATA | Out-Null
-    $arguments = @('--headless', '--path', ('"{0}"' -f $project), '--export-debug', '"Windows Redesign QA"', ('"{0}"' -f $exportPath))
-    $process = Start-Process -FilePath $GodotPath -ArgumentList $arguments -WindowStyle Hidden -PassThru `
-        -RedirectStandardOutput (Join-Path $build 'export.stdout.log') -RedirectStandardError (Join-Path $build 'export.stderr.log')
-    if (-not $process.WaitForExit(300000)) { Stop-Process -Id $process.Id -Force; throw 'Export timed out' }
-    $process.WaitForExit()
-    if ($null -ne $process.ExitCode -and $process.ExitCode -ne 0) { throw 'Godot export exited with failure' }
+    $arguments = @('--headless', '--path', $project, '--export-debug', 'Windows Redesign QA', $exportPath)
+    $exportStdout = Join-Path $build 'export.stdout.log'
+    $exportStderr = Join-Path $build 'export.stderr.log'
+    $previousErrorAction = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    & $GodotPath @arguments 1> $exportStdout 2> $exportStderr
+    $exportExitCode = $LASTEXITCODE
+    $ErrorActionPreference = $previousErrorAction
+    if ($exportExitCode -ne 0) { throw 'Godot export exited with failure' }
     $errors = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $build 'export.stderr.log')
     if ($errors -match 'SCRIPT ERROR|Parse Error|Failed to export|Could not find export template') { throw $errors }
     if (-not (Test-Path -LiteralPath $exportPath)) { throw 'Exported executable missing' }
@@ -91,7 +96,8 @@ Play-Readability.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저�
 학습 순서: 강화 → 장갑/관통 → 연속 공격 → 명중/회피 → 다수 표적 → 복합 전투.
 새 탄환은 해당 교전에서 자동 지급되며 첫 손패에 들어옵니다.
 
-카드: 이름 / 위력·관통·명중 / 짧은 효과. 2×2는 두 번 공격입니다.
+카드: 이름 / 충격(위력)·방패화살(관통)·조준점(명중) / 효과 아이콘. 2×2는 두 번 공격입니다.
+기본 수치는 부호 없이, 다음 탄에 주는 변화는 +·− 부호로 표시합니다.
 카드를 누른 순서대로 발사합니다. 확정 전 칸 터치는 회수합니다.
 '계산 보기'를 켜고 칸을 누르면 회수 없이 해당 발의 실제 피해 근거를 봅니다.
 확정 후에도 칸을 눌러 계산을 볼 수 있습니다. 기본 수치는 총기와 파츠를 반영합니다.

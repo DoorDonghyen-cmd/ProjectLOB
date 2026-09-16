@@ -4,6 +4,7 @@ const Content = preload("res://redesign/content.gd")
 const BattleView = preload("res://redesign/battle_view.gd")
 const MagazineView = preload("res://redesign/magazine_view.gd")
 const AmmoVisual = preload("res://redesign/ammo_visual.gd")
+const AmmoCardView = preload("res://redesign/ammo_card_view.gd")
 const Forecast = preload("res://redesign/forecast.gd")
 const Readability = preload("res://redesign/readability.gd")
 const SAVE := "user://chain_run_v2.json"
@@ -233,10 +234,8 @@ func _combat() -> void:
 	for id in ids:
 		var spec: Dictionary = Content.AMMO[id]
 		var count: int = model.available(id)
-		var hint: String = AmmoVisual.HINT[id] if id != "basic" else "재장전 시 %d발" % model.supply_capacity()
-		var text := "%s ×%d\n%s\n%s" % [spec.name, count, Readability.stats(id, model.s), hint]
-		var button := _button(grid, text, "load_" + id, _load.bind(id), model.s.phase != "plan" or count <= 0 or model.s.plan.size() >= model.capacity())
-		button.add_theme_font_size_override("font_size", 17)
+		var disabled: bool = model.s.phase != "plan" or count <= 0 or model.s.plan.size() >= model.capacity()
+		var button := _button(grid, "", "load_" + id, _load.bind(id), disabled)
 		button.tooltip_text = _ammo_stats(id) + "\n" + Readability.description(id, model.s)
 		button.custom_minimum_size.y = 104
 		button.mouse_entered.connect(_inspect_ammo.bind(id))
@@ -246,11 +245,10 @@ func _combat() -> void:
 			style.content_margin_left = 6
 			style.content_margin_right = 6
 			button.add_theme_stylebox_override(state, style)
-		var icon := AmmoVisual.new()
-		icon.ammo_id = id
-		icon.position = Vector2(2, 2)
-		icon.size = Vector2(24, 28)
-		button.add_child(icon)
+		var card_view := AmmoCardView.new()
+		card_view.name = "CardInfo"
+		card_view.setup(id, count, model.s, disabled)
+		button.add_child(card_view)
 	ammo_inspector = _label(candidates, "", 17, INK)
 	ammo_inspector.name = "AmmoInspector"
 	ammo_inspector.custom_minimum_size.y = 48
@@ -346,10 +344,16 @@ func _reward() -> void:
 		var is_ammo: bool = Content.AMMO.has(id)
 		var spec: Dictionary = Content.AMMO[id] if is_ammo else Content.PARTS[id]
 		var card := _panel(row)
-		_label(card, spec.name, 25, ACCENT)
-		_label(card, Readability.description(id, model.s) if is_ammo else str(spec.text), 19)
 		if is_ammo:
-			_label(card, Readability.stats(id, model.s), 18, ACCENT).tooltip_text = "현재 총기와 파츠가 반영된 수치"
+			var card_view := AmmoCardView.new()
+			card_view.name = "RewardCardInfo"
+			card_view.custom_minimum_size = Vector2(280, 104)
+			card_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			card_view.setup(id, 1, model.s)
+			card.add_child(card_view)
+		else:
+			_label(card, spec.name, 25, ACCENT)
+		_label(card, Readability.description(id, model.s) if is_ammo else str(spec.text), 19)
 		_button(card, "덱에 1장 추가" if is_ammo else "파츠 장착 · 기존 파츠 교체", "reward_" + id, _choose.bind(id, ""), is_ammo and model.s.deck.size() >= model.deck_limit())
 	var refine := _panel(body)
 	_label(refine, "덱을 늘리지 않는 선택", 23)
@@ -562,6 +566,21 @@ func _enemy_details(index: int) -> void:
 func _developer() -> void:
 	var column := _dialog("개발자 테스트 · 기존 저장 보존")
 	_label(column, "화면과 규칙을 즉시 확인하는 연습", 26)
+	_button(column, "탄환 아이콘 카드 전체", "debug_icon_cards", func():
+		model.start("single", 731042)
+		model.s.floor = 6
+		model.begin_encounter()
+		model.s.deck = ["bore", "pierce", "precise", "mark", "charge", "push", "slow", "arc", "finish"]
+		model.s.hand = model.s.deck.duplicate()
+		model.s.draw = []
+		model.s.discard = []
+		debug_session = true
+		selected_slot = 0
+		inspect_slots = false
+		page = "run"
+		column.get_meta("dialog").queue_free()
+		redraw()
+	)
 	var lessons := _row(column)
 	for entry in [["첫 강화 연습", 0], ["장갑·관통 연습", 1], ["명중·회피 연습", 3]]:
 		_button(lessons, entry[0], "debug_lesson_" + str(entry[1]), func():

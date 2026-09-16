@@ -52,7 +52,9 @@ func _run() -> void:
 	await tap("start_single")
 	check(screen.model.s.course and screen.model.s.enemies[0].def == 0 and screen.model.s.enemies[0].eva == 0, "course start has no hidden defenses")
 	var card := screen.find_child("load_charge", true, false) as Button
-	check(card.text.contains("위력") and not card.text.contains("관통") and not card.text.contains("명중"), "intro card shows only active axis")
+	var card_info = card.find_child("CardInfo", true, false)
+	check(card_info != null and card_info.stat_items().size() == 1 and card_info.stat_items()[0].kind == "power", "intro card shows only active stat icon")
+	check(card_info.effect_data().kind == "power_plus" and card_info.effect_data().value == "+2 · 2발", "intro boost uses signed effect icon value")
 	check(not screen.ammo_inspector.text.contains("균열") and not screen.ammo_inspector.text.contains("연속"), "intro detail avoids future mechanics")
 	await capture("intro")
 	await tap("load_charge")
@@ -81,6 +83,9 @@ func _run() -> void:
 	await tap("fire")
 	await tap("fire")
 	check(screen.model.s.phase == "reward", "first lesson completed through actual UI")
+	var reward_card = screen.find_child("RewardCardInfo", true, false)
+	check(reward_card != null and not reward_card.stat_items().is_empty(), "reward reuses ammo stat icons")
+	await capture("reward_icons")
 	await tap("reward_skip")
 	check(screen.model.s.floor == 1 and screen.model.s.hand.has("bore") and screen.model.s.hand.has("pierce"), "next lesson provides both new rounds")
 	await capture("armor")
@@ -102,7 +107,9 @@ func _run() -> void:
 	await capture("full_1280")
 	check(screen.calculation_label.text.contains("도약") and screen.calculation_label.text.contains("고정"), "secondary target damage explained separately")
 	card = screen.find_child("load_precise", true, false) as Button
-	check(card.text.contains("2×2") and card.text.contains("관통") and card.text.contains("명중"), "all base stats plus hit count readable without hover")
+	card_info = card.find_child("CardInfo", true, false)
+	var precise_stats: Array = card_info.stat_items() if card_info else []
+	check(precise_stats.size() == 3 and precise_stats[0].value == "2×2" and precise_stats[1].kind == "penetration" and precise_stats[2].kind == "accuracy", "all base stat icons plus hit count visible without hover")
 	root.size = Vector2i(1920, 864)
 	await capture("full_phone")
 	await tap("confirm")
@@ -119,6 +126,16 @@ func _run() -> void:
 	check(screen.debug_session and screen.model.s.course and screen.model.s.floor == 3 and screen.model.s.hand.has("mark"), "accuracy lesson shortcut has usable new round")
 	await capture("accuracy_lesson")
 	check(FileAccess.get_file_as_string(screen.SAVE) == normal_save, "lesson shortcut preserves actual save")
+	await tap("menu")
+	await tap("dev")
+	await tap("debug_icon_cards")
+	var icon_cards := screen.find_children("CardInfo", "Control", true, false)
+	check(icon_cards.size() == 10, "icon gallery shortcut exposes every ammo card")
+	var mark_card := screen.find_child("load_mark", true, false) as Button
+	var mark_info = mark_card.find_child("CardInfo", true, false) if mark_card else null
+	check(mark_info != null and mark_info.effect_data().kind == "accuracy_plus" and mark_info.effect_data().value.begins_with("+4"), "base accuracy and signed accuracy effect remain distinct")
+	await capture("icon_cards")
+	check(FileAccess.get_file_as_string(screen.SAVE) == normal_save, "icon gallery preserves actual save")
 	var file := FileAccess.open("user://readability_visual.json", FileAccess.WRITE)
 	file.store_string(JSON.stringify({"checks": checks, "failed": failed, "scope": "PC rendered synthetic touch, real first two lessons and explicit late-game layout fixture; no APK"}, "\t"))
 	print("READABILITY VISUAL: %d checks / %d failed" % [checks.size(), failed])
