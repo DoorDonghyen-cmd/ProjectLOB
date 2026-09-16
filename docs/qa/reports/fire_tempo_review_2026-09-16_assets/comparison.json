@@ -1,0 +1,585 @@
+{
+	"failures": [],
+	"results": [
+		{
+			"capacity": 4,
+			"case": "same_three_combo_survives",
+			"damage": 19,
+			"enemy_meters": 6,
+			"enemy_moves": 3,
+			"gun": "single",
+			"initial_distance": 24,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 81,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 3
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_clears",
+			"damage": 15,
+			"enemy_meters": 4,
+			"enemy_moves": 2,
+			"gun": "single",
+			"initial_distance": 24,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "reward",
+			"remaining_hp": 0,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 3
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_contact",
+			"damage": 12,
+			"enemy_meters": 4,
+			"enemy_moves": 2,
+			"gun": "single",
+			"initial_distance": 4,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "lost",
+			"remaining_hp": 3,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 2,
+			"turns": 2
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_with_reload",
+			"damage": 19,
+			"enemy_meters": 8,
+			"enemy_moves": 4,
+			"gun": "single",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 81,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 4
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_survives",
+			"damage": 15,
+			"enemy_meters": 2,
+			"enemy_moves": 1,
+			"gun": "burst",
+			"initial_distance": 24,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 85,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 1
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_clears",
+			"damage": 15,
+			"enemy_meters": 0,
+			"enemy_moves": 0,
+			"gun": "burst",
+			"initial_distance": 24,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "reward",
+			"remaining_hp": 0,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 1
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_contact",
+			"damage": 15,
+			"enemy_meters": 0,
+			"enemy_moves": 0,
+			"gun": "burst",
+			"initial_distance": 4,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "reward",
+			"remaining_hp": 0,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 1
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_with_reload",
+			"damage": 15,
+			"enemy_meters": 8,
+			"enemy_moves": 4,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 85,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 4
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_survives",
+			"damage": 15,
+			"enemy_meters": 6,
+			"enemy_moves": 3,
+			"gun": "scatter",
+			"initial_distance": 24,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 85,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 3
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_clears",
+			"damage": 15,
+			"enemy_meters": 4,
+			"enemy_moves": 2,
+			"gun": "scatter",
+			"initial_distance": 24,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "reward",
+			"remaining_hp": 0,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 3
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_contact",
+			"damage": 9,
+			"enemy_meters": 4,
+			"enemy_moves": 2,
+			"gun": "scatter",
+			"initial_distance": 4,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "lost",
+			"remaining_hp": 6,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 2,
+			"turns": 2
+		},
+		{
+			"capacity": 4,
+			"case": "same_three_combo_with_reload",
+			"damage": 15,
+			"enemy_meters": 10,
+			"enemy_moves": 5,
+			"gun": "scatter",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 85,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 5
+		},
+		{
+			"capacity": 3,
+			"case": "same_three_combo_survives",
+			"damage": 19,
+			"enemy_meters": 6,
+			"enemy_moves": 3,
+			"gun": "heavy",
+			"initial_distance": 24,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 81,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 3
+		},
+		{
+			"capacity": 3,
+			"case": "same_three_combo_clears",
+			"damage": 15,
+			"enemy_meters": 4,
+			"enemy_moves": 2,
+			"gun": "heavy",
+			"initial_distance": 24,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "reward",
+			"remaining_hp": 0,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 3
+		},
+		{
+			"capacity": 3,
+			"case": "same_three_combo_contact",
+			"damage": 12,
+			"enemy_meters": 4,
+			"enemy_moves": 2,
+			"gun": "heavy",
+			"initial_distance": 4,
+			"initial_hp": 15,
+			"part": "none",
+			"phase": "lost",
+			"remaining_hp": 3,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 2,
+			"turns": 2
+		},
+		{
+			"capacity": 3,
+			"case": "same_three_combo_with_reload",
+			"damage": 19,
+			"enemy_meters": 10,
+			"enemy_moves": 5,
+			"gun": "heavy",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 81,
+			"rounds": [
+				"charge",
+				"precise",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 5
+		},
+		{
+			"capacity": 4,
+			"case": "full_basic_fire",
+			"damage": 20,
+			"enemy_meters": 8,
+			"enemy_moves": 4,
+			"gun": "single",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 80,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 4,
+			"turns": 4
+		},
+		{
+			"capacity": 4,
+			"case": "full_basic_cycle",
+			"damage": 20,
+			"enemy_meters": 10,
+			"enemy_moves": 5,
+			"gun": "single",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 80,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 4,
+			"turns": 5
+		},
+		{
+			"capacity": 4,
+			"case": "full_basic_fire",
+			"damage": 16,
+			"enemy_meters": 2,
+			"enemy_moves": 1,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 84,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 4,
+			"turns": 1
+		},
+		{
+			"capacity": 4,
+			"case": "full_basic_cycle",
+			"damage": 16,
+			"enemy_meters": 8,
+			"enemy_moves": 4,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 84,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 4,
+			"turns": 4
+		},
+		{
+			"capacity": 4,
+			"case": "full_basic_cycle_loader",
+			"damage": 16,
+			"enemy_meters": 6,
+			"enemy_moves": 3,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "loader",
+			"phase": "plan",
+			"remaining_hp": 84,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 4,
+			"turns": 3
+		},
+		{
+			"capacity": 6,
+			"case": "full_basic_fire",
+			"damage": 30,
+			"enemy_meters": 12,
+			"enemy_moves": 6,
+			"gun": "single",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 70,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 6,
+			"turns": 6
+		},
+		{
+			"capacity": 6,
+			"case": "full_basic_cycle",
+			"damage": 30,
+			"enemy_meters": 14,
+			"enemy_moves": 7,
+			"gun": "single",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 70,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 6,
+			"turns": 7
+		},
+		{
+			"capacity": 6,
+			"case": "full_basic_fire",
+			"damage": 24,
+			"enemy_meters": 2,
+			"enemy_moves": 1,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 76,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 6,
+			"turns": 1
+		},
+		{
+			"capacity": 6,
+			"case": "full_basic_cycle",
+			"damage": 24,
+			"enemy_meters": 8,
+			"enemy_moves": 4,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "plan",
+			"remaining_hp": 76,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 6,
+			"turns": 4
+		},
+		{
+			"capacity": 6,
+			"case": "full_basic_cycle_loader",
+			"damage": 24,
+			"enemy_meters": 6,
+			"enemy_moves": 3,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "loader",
+			"phase": "plan",
+			"remaining_hp": 76,
+			"rounds": [
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic",
+				"basic"
+			],
+			"shots": 6,
+			"turns": 3
+		},
+		{
+			"capacity": 4,
+			"case": "burn_before_two_basic",
+			"damage": 16,
+			"enemy_meters": 6,
+			"enemy_moves": 3,
+			"gun": "single",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 84,
+			"rounds": [
+				"bore",
+				"basic",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 3
+		},
+		{
+			"capacity": 4,
+			"case": "burn_before_two_basic",
+			"damage": 11,
+			"enemy_meters": 2,
+			"enemy_moves": 1,
+			"gun": "burst",
+			"initial_distance": 100,
+			"initial_hp": 100,
+			"part": "none",
+			"phase": "ready",
+			"remaining_hp": 89,
+			"rounds": [
+				"bore",
+				"basic",
+				"basic"
+			],
+			"shots": 3,
+			"turns": 1
+		}
+	]
+}
