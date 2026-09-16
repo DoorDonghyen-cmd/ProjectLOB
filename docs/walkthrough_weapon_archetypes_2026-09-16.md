@@ -30,7 +30,12 @@
 
 ## 플레이와 정본
 
-Windows 최신 실행: `builds/city-windows/Play-City.cmd`. 아래 빌드 검증 기록에 소스 커밋과 해시를 추가한다.
+Windows 최신 실행: `builds/city-windows/Play-City.cmd`. 무기4종과 전체 도시 등반을 포함한다.
+
+- 무기 코드 커밋: `53dad99`. Windows 한글 설명 보존 수정 포함 빌드 소스: `8bd4d7a`.
+- 실행 파일: `LastOnBoard-city.exe`, 126,752,944바이트.
+- SHA-256: `2B632195E2ECDF63C3A81266A1794C75A366EA29F19C4AC3E6DA3EDDD13EC67D`.
+- clean 상태 내보내기·격리 headless 기동·UTF-8 한글 README 확인. [빌드 기록](qa/reports/weapon_archetypes_2026-09-16_assets/build_manifest.json).
 
 - 규칙: [24. 개편판 무기](gdd/24_weapon_archetypes_redesign.md)
 - UI/구현 계획: [무기 개편 계획](implementation_plan_weapon_archetypes_2026-09-16.md)

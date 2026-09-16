@@ -224,5 +224,22 @@
     "passed": 3730,
     "schema_version": 1,
     "warnings": 3
+  },
+  "windows_build": {
+    "readiness": "functional review; human gameplay acceptance pending",
+    "source_commit": "8bd4d7a106d4424d0e5a39d5b6fd05104296a3fc",
+    "smoke": "headless startup passed",
+    "built_at": "2026-09-16T12:23:26.9810065Z",
+    "weapons": [
+      "single",
+      "burst",
+      "scatter",
+      "heavy"
+    ],
+    "includes_working_tree": false,
+    "game_loop": "five regions; 35 floors; map/shop/events/progression; separate seven-combat training",
+    "sha256": "2B632195E2ECDF63C3A81266A1794C75A366EA29F19C4AC3E6DA3EDDD13EC67D",
+    "exe_bytes": 126752944,
+    "korean_readme": "verified UTF-8"
   }
 }

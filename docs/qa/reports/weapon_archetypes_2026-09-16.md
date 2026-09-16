@@ -65,4 +65,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/run_city_checks.ps1 -M
 
 ## 한계
 
+Windows 검토 빌드도 갱신했다. 소스`8bd4d7a`(무기 코드`53dad99`), 미커밋 소스 없음,126,752,944바이트,SHA-256`2B632195E2ECDF63C3A81266A1794C75A366EA29F19C4AC3E6DA3EDDD13EC67D`.격리 headless 기동 통과. Windows PowerShell5가 BOM 없는 UTF-8 스크립트를 ANSI로 읽어 README 한글이 깨지는 문제를 UTF-8 BOM으로 수정하고 네 무기 이름이 실제 설명 파일에 정상 포함되는지 확인했다. [빌드 manifest](weapon_archetypes_2026-09-16_assets/build_manifest.json).
+
 기능상 완주 경로, 결정론과 정보 전달을 확인한 결과다. 최적 전략/승률이나 사람의 재미를 입증하지 않는다. 최종 네 무기의 균형, 전용 파츠 필요성, 맵/보상 선택 차이, 35층 호흡은 실제 비교 플레이로 조정한다. 현재 탄환 7종과 공통 파츠를 사용하는 첫 4종이며 전용 탄환 풀은 없다. 최종 아트/사운드와 실제 Galaxy 성능은 별도 후속 단계다. APK와 원격 푸시는 수행하지 않았다.
