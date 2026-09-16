@@ -168,8 +168,10 @@ func _draw() -> void:
 		var point := enemy_position(float_target)
 		for secondary in chain_targets:
 			var other_point := enemy_position(int(secondary.target))
-			draw_line(point, other_point, Color(Ammo.COLORS.arc, 1.0 - pulse), 3)
-			draw_string(FONT, other_point + Vector2(30, 0), "전이 −%d" % secondary.damage, HORIZONTAL_ALIGNMENT_LEFT, 130, 18, Ammo.COLORS.arc)
+			var spread: bool = str(secondary.get("kind", "arc")) == "spread"
+			var color := Color("87c9df") if spread else Ammo.COLORS.arc
+			draw_line(Vector2(102, 131) if spread else point, other_point, Color(color, 1.0 - pulse), 2 if spread else 3)
+			draw_string(FONT, other_point + Vector2(30, 0), "%s −%d" % ["확산" if spread else "전이", secondary.damage], HORIZONTAL_ALIGNMENT_LEFT, 130, 18, color)
 		draw_arc(point, 12 + pulse * 20, 0, TAU, 24, Color(float_color, 1.0 - pulse), 3)
 		var text_x := point.x + 34 if point.x + 204 < end else point.x - 170
 		draw_string(FONT, Vector2(text_x, point.y + 3 - pulse * 7), float_text, HORIZONTAL_ALIGNMENT_LEFT, 170, 22, float_color)

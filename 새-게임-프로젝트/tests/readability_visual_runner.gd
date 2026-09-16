@@ -31,7 +31,15 @@ func touch(control: Control, local := Vector2(-1, -1)) -> void:
 func tap(key: String) -> void:
 	var button := screen.find_child(key, true, false) as Button
 	check(button != null and not button.disabled, key + " usable")
-	if button and not button.disabled: await touch(button)
+	if button and not button.disabled:
+		var ancestor: Node = button.get_parent()
+		while ancestor != null:
+			if ancestor is ScrollContainer:
+				ancestor.ensure_control_visible(button)
+				await settle()
+				break
+			ancestor = ancestor.get_parent()
+		await touch(button)
 
 func capture(label: String) -> void:
 	await settle()

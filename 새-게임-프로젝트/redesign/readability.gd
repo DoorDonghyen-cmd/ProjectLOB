@@ -27,6 +27,7 @@ static func explain(shot: Dictionary) -> String:
 	var line := "%s · %d피해  HP %d → %d" % [Forecast.tag(shot.target), shot.damage, m.hp_before, shot.hp]
 	var equation := "피해 %d" % m.base
 	if m.boost > 0: equation += " + 증폭 %d" % m.boost
+	if int(m.get("overflow", 0)) > 0: equation += " + 초과관통 %d" % m.overflow
 	if m.armor > 0: equation += " − 장갑 %d" % m.armor
 	equation += " = %d" % m.per_hit
 	if int(m.raw) - int(m.armor) < 1: equation += " (최소 1)"
@@ -38,7 +39,10 @@ static func explain(shot: Dictionary) -> String:
 	if int(m.per_hit) * int(m.hits) > int(m.hp_before): reasons.append("남은 HP까지만 피해")
 	if int(shot.get("burn_added", 0)) > 0: reasons.append("화상 +%d → %d" % [shot.burn_added, shot.burn])
 	if int(shot.get("push", 0)) > 0: reasons.append("거리 +%dm" % shot.push)
-	for other in shot.get("secondary", []): reasons.append("%s 전이 %d피해 (고정)" % [Forecast.tag(other.target), other.damage])
+	for other in shot.get("secondary", []):
+		if str(other.get("kind", "arc")) == "spread":
+			reasons.append("%s 확산 %d피해 (절반%d − 장갑%d, %d회) · HP%d" % [Forecast.tag(other.target), other.damage, other.raw, other.armor, other.hits, other.hp])
+		else: reasons.append("%s 전이 %d피해 (고정) · HP%d" % [Forecast.tag(other.target), other.damage, other.hp])
 	if not reasons.is_empty(): line += "\n" + " · ".join(reasons)
 	return line
 

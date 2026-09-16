@@ -16,7 +16,7 @@ func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = 
 	if not profile.unlocks.has(loadout): loadout = "balanced"
 	s = {"version": 1, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": 18, "pressure": 0, "slots": 0, "parts": [], "visited": [], "clears": 0, "shop_revision": 0, "shop_part_bought": false, "shop_refined": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "정점까지 35층. 다음 목적지를 선택하세요."}
 	model.start(gun, seed_value)
-	model.s.deck = Content.LOADOUTS[loadout].deck.duplicate()
+	model.s.deck = Ammo.start_deck(gun) if loadout == "balanced" else Content.LOADOUTS[loadout].deck.duplicate()
 	model.begin_encounter()
 
 func current_nodes() -> Array:
@@ -315,7 +315,7 @@ func restore_state(data: Dictionary) -> bool:
 	if not state.message is String: return false
 	var unique := []
 	for id in state.parts:
-		if not id in ["lens", "coil", "loader"] or unique.has(id) or (id == "loader" and state.gun != "burst"): return false
+		if not id in ["lens", "coil", "loader"] or unique.has(id) or not Ammo.accepts_part(str(state.gun), str(id)): return false
 		unique.append(id)
 	for offer in state.offers:
 		if not offer is Dictionary: return false
@@ -324,7 +324,7 @@ func restore_state(data: Dictionary) -> bool:
 		if not offer.sold is bool or not _whole(offer.price, 1, 100): return false
 		if offer.type == "ammo":
 			if not Ammo.AMMO.has(offer.id) or offer.id == "basic" or int(offer.price) != 12: return false
-		elif offer.type != "part" or not offer.id in ["lens", "coil", "loader"] or int(offer.price) != 30 or (offer.id == "loader" and state.gun != "burst"): return false
+		elif offer.type != "part" or not offer.id in ["lens", "coil", "loader"] or int(offer.price) != 30 or not Ammo.accepts_part(str(state.gun), str(offer.id)): return false
 	for key in defaults():
 		if not progress.has(key): return false
 	for key in ["cores", "runs", "wins", "ascension", "best_region"]:

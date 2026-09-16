@@ -1,6 +1,7 @@
 extends SceneTree
 ## Replay successful full-city real commands through the visible Godot controls.
 const Campaign = preload("res://redesign/campaign.gd")
+const Ammo = preload("res://redesign/content.gd")
 var screen: Control
 var checks := 0
 var failures: Array = []
@@ -185,6 +186,7 @@ func developer() -> void:
 func six_slot_layout(expected: Dictionary) -> void:
 	var campaign = Campaign.new()
 	campaign.start(str(expected.gun), int(expected.seed))
+	var final_capacity := int(Ammo.GUNS[expected.gun].capacity) + 2
 	var found := false
 	for command in expected.commands:
 		var accepted := false
@@ -203,10 +205,10 @@ func six_slot_layout(expected: Dictionary) -> void:
 		campaign.sync_combat()
 		if not check(accepted, "actual path to six-slot layout"): return
 		campaign.save("user://layout_probe.json")
-		if campaign.s.phase == "combat" and campaign.model.capacity() == 6 and command.action == "confirm":
+		if campaign.s.phase == "combat" and campaign.model.capacity() == final_capacity and command.action == "confirm":
 			found = true
 			break
-	if not check(found, "genuine six-slot state available"): return
+	if not check(found, "genuine final-capacity state available"): return
 	await fresh()
 	screen.save_enabled = false
 	screen.debug_session = true
@@ -218,7 +220,7 @@ func six_slot_layout(expected: Dictionary) -> void:
 	await capture("city_six_slot_final_" + str(expected.gun))
 	var magazine = screen.magazine_view
 	var font: Font = load("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
-	var width: float = magazine.size.x / 6.0 - 8
+	var width: float = magazine.size.x / float(final_capacity) - 8
 	for i in range(magazine.forecast.shots.size()):
 		var lines: PackedStringArray = magazine.compact_lines(magazine.forecast, i)
 		var shot: Dictionary = magazine.forecast.shots[i]
@@ -235,7 +237,7 @@ func _run() -> void:
 	root.size = Vector2i(1280, 800)
 	output = OS.get_environment("QA_OUTPUT_DIR")
 	var user_path := ProjectSettings.globalize_path("user://").replace("\\", "/")
-	if not check(user_path.contains("/qa_runtime/city/ui/"), "isolated UI profile"): quit(1); return
+	if not check(user_path.contains("/qa_runtime/city/ui/") or user_path.contains("/qa_runtime/city/ui_"), "isolated UI profile"): quit(1); return
 	var path := ProjectSettings.globalize_path("res://").path_join("../qa_runtime/city/campaign/city_campaign_report.json")
 	if not OS.get_environment("QA_CITY_SOURCE").is_empty(): path = OS.get_environment("QA_CITY_SOURCE")
 	elif not FileAccess.file_exists(path): path = ProjectSettings.globalize_path("res://").path_join("../docs/qa/reports/full_city_campaign_2026-09-16_assets/city_campaign_report.json")

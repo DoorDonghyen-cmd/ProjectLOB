@@ -1,5 +1,7 @@
 extends RefCounted
-## QA-only bounded search. Reads public state and runs real model commands on copies.
+## QA-only bounded search. Reads model state and executes real commands on copies.
+## Future draw/RNG state is available here: this is functional reachability QA,
+## not a player-only black-box experience test.
 const Model = preload("res://redesign/model.gd")
 var candidates: Array = []
 var explored := 0

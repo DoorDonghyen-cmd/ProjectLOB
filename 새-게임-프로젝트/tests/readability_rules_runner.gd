@@ -85,9 +85,10 @@ func _run() -> void:
 					var m = armed(gun, [id], [enemy(999, armor)], part)
 					check(m.fire(), "formula shot fires")
 					var shot: Dictionary = m.s.history.back().detail.results[0]
-					var expected_pen := int(Content.AMMO[id].pen) + (1 if part == "lens" else 0)
+					var expected_pen := int(Content.AMMO[id].pen) + (1 if part == "lens" else 0) + (2 if gun == "heavy" else 0)
 					var expected_raw := int(Content.AMMO[id].dmg) + int(Content.GUNS[gun].bonus)
 					var expected_per_hit := maxi(1, expected_raw - maxi(0, armor - expected_pen))
+					if gun == "heavy": expected_per_hit += mini(1, maxi(0, expected_pen - armor))
 					var expected_hits := 2 if id == "precise" else 1
 					check(shot.pen == expected_pen and shot.math.raw == expected_raw and shot.math.armor == maxi(0, armor - expected_pen), "formula penetration " + gun + part + id + str(armor), shot)
 					check(shot.math.per_hit == expected_per_hit and shot.hits == expected_hits and shot.damage == expected_per_hit * expected_hits, "formula damage " + gun + part + id + str(armor), shot)
@@ -103,7 +104,9 @@ func _run() -> void:
 		check(shots.size() == 3 and shots[1].hits == 2 and shots[1].math.boost == 2 and shots[2].math.boost == 2, gun + " amplify covers next two rounds", shots)
 		check(not m.s.buff.has("dmg"), gun + " amplify expires after two rounds")
 		check(Forecast.is_combo_link(combo_forecast, 1) and Forecast.is_combo_link(combo_forecast, 2), gun + " forecast links both amplified rounds")
-		check(Forecast.note(combo_forecast, 1) == "증폭 · 2타" and Forecast.note(combo_forecast, 2) == "증폭 적용", gun + " forecast names amplified results")
+		if gun == "heavy":
+			check(Forecast.note(combo_forecast, 1).contains("증폭 · 2타") and Forecast.note(combo_forecast, 2).contains("증폭") and Forecast.note(combo_forecast, 2).contains("초과 관통 +1"), gun + " forecast names amplified and overflow results")
+		else: check(Forecast.note(combo_forecast, 1) == "증폭 · 2타" and Forecast.note(combo_forecast, 2) == "증폭 적용", gun + " forecast names amplified results")
 	var burst_combo = armed("single", ["charge", "precise"], [enemy(10)])
 	collect_actual(burst_combo)
 	var burst_wrong = armed("single", ["precise", "charge"], [enemy(10)])

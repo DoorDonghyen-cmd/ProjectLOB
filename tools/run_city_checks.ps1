@@ -1,4 +1,4 @@
-param([ValidateSet('campaign','ui')][string]$Mode = 'campaign', [string]$Seed = '', [switch]$Hard, [ValidatePattern('^[a-z0-9_]*$')][string]$RunName = '', [string]$ReplaySource = '', [switch]$Refine, [switch]$LayoutOnly, [string]$UISource = '')
+param([ValidateSet('campaign','ui')][string]$Mode = 'campaign', [string]$Seed = '', [switch]$Hard, [ValidatePattern('^[a-z0-9_]*$')][string]$RunName = '', [string]$ReplaySource = '', [switch]$Refine, [switch]$LayoutOnly, [string]$UISource = '', [ValidatePattern('^(single|burst|scatter|heavy)(,(single|burst|scatter|heavy))*$')][string]$Weapons = 'single,burst')
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 $project = (Get-ChildItem -LiteralPath $repo -Directory | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot') } | Select-Object -First 1).FullName
@@ -10,10 +10,11 @@ $env:LOCALAPPDATA = Join-Path $runtime 'Local'
 $env:QA_OUTPUT_DIR = $runtime
 $env:QA_CITY_SEED = $Seed
 $env:QA_CITY_HARD = if ($Hard) { '1' } else { '0' }
-$env:QA_CITY_REPLAY_SOURCE = $ReplaySource
+$env:QA_CITY_REPLAY_SOURCE = if ($ReplaySource) { (Resolve-Path -LiteralPath $ReplaySource).Path } else { '' }
 $env:QA_CITY_REFINE = if ($Refine) { '1' } else { '0' }
 $env:QA_CITY_LAYOUT_ONLY = if ($LayoutOnly) { '1' } else { '0' }
 $env:QA_CITY_SOURCE = if ($UISource) { (Resolve-Path -LiteralPath $UISource).Path } else { '' }
+$env:QA_CITY_GUNS = $Weapons
 New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
 $godot = (Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1).FullName
 if (-not $godot) { throw 'Godot executable not found.' }

@@ -77,6 +77,7 @@ try {
         source_commit = (git -C $repo rev-parse HEAD).Trim()
         includes_working_tree = [bool](git -C $repo status --porcelain)
         game_loop = 'five regions; 35 floors; map/shop/events/progression; separate seven-combat training'
+        weapons = @('single','burst','scatter','heavy')
         sha256 = $hash
         smoke = 'headless startup passed'
         readiness = 'functional review; human gameplay acceptance pending'
@@ -103,7 +104,11 @@ Play-City.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저장합�
 전투 보상: 탄환 2후보 / 효율 크레딧 / 보상 대신 정제 / 유지.
 상점: 탄환 12Cr, 파츠 30Cr, 갱신 3Cr, 덱 정제 12Cr.
 파츠 구매와 유료 정제는 방문당 각각 한 번이며 재접속·갱신 후에도 한도는 유지합니다.
-관문에서 탄창을 4→5→6칸으로 확장합니다. 파츠 교체 후에도 성장은 유지합니다.
+무기는 등반 끝까지 유지하며 보행자/쇄도/산개/압쇄 4종입니다. '특징·보급'에서 선택한 시작 덱을 확인합니다.
+보행자: 한 발씩 피해 +1, 재장전 1턴. 쇄도: 전탄 1턴, 재장전 3턴.
+산개: 표적과 거리 차 3m 안의 다른 적에 절반 피해 확산, 재장전 2턴.
+압쇄: 관통 +2, 관통이 장갑을 넘으면 타격당 피해 +1, 3칸/재장전 2턴.
+관문 탄창 성장: 압쇄 3→4→5칸, 다른 무기 4→5→6칸. 파츠 교체 후에도 성장은 유지합니다.
 기록실: 도시 기록20개, 전술 데이터, 시작 덱 성향 해금, 완주 후 난도0~10 해금.
 
 카드: 이름 / 피해·관통 / 물리·화염·전기 속성 / 효과 하나. 2×2는 두 번 공격입니다.
@@ -115,6 +120,7 @@ Play-City.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저장합�
 확정 후에도 칸을 눌러 계산을 볼 수 있습니다. 기본 수치는 총기와 파츠를 반영합니다.
 개발자 테스트의 '조합 결과 연습'에서 대표 조합 세 가지를 한 화면에서 시험할 수 있습니다.
 개발자 테스트에는 맵·무기고·이벤트·보급·승강기·보상·정산 바로가기가 있습니다.
+무기별 '같은 대열 조합 비교'와 무기 4종 선택 화면 바로가기도 제공합니다.
 연습에서는 실제 도시 등반 저장을 변경하지 않습니다.
 완주 화면은 런 전체 조합 성과와 탄환별 최종 장수를 요약합니다.
 

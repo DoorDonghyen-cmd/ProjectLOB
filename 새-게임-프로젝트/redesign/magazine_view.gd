@@ -65,7 +65,8 @@ func _draw() -> void:
 				else:
 					draw_string(FONT, Vector2(x + 4, 111), value, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 17, color)
 			if not forecast.is_empty() and i < forecast.shots.size():
-				var note := compact_lines(forecast, i)[2] if width < 115 else Forecast.note(forecast, i)
+				var note := Forecast.note(forecast, i)
+				if width < 115 or FONT.get_string_size(note, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x > width - 8: note = compact_lines(forecast, i)[2]
 				draw_string(FONT, Vector2(x + 4, 136), note, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, Ammo.COLORS[id])
 		else:
 			draw_string(FONT, Vector2(x + 4, 65), "·", HORIZONTAL_ALIGNMENT_CENTER, width - 8, 32, Color("506570"))
@@ -77,7 +78,13 @@ static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArr
 	var result := PackedStringArray(["%s −%d" % [Forecast.tag(shot.target), shot.damage], "처치" if int(shot.hp) == 0 else "HP%d" % int(shot.hp), ""])
 	var boosted: bool = int(shot.get("math", {}).get("boost", 0)) > 0
 	var secondary: Array = shot.get("secondary", [])
-	if not secondary.is_empty(): result[2] = "→%s −%d" % [Forecast.tag(int(secondary[0].target)), int(secondary[0].damage)]
+	if not secondary.is_empty():
+		var spread := secondary.filter(func(value): return value.get("kind", "arc") == "spread")
+		if spread.size() > 0 and spread.size() < secondary.size(): result[2] = "확산·전이"
+		elif spread.size() > 1: result[2] = "확산%d명" % spread.size()
+		elif spread.size() == 1: result[2] = "%s 확산−%d" % [Forecast.tag(int(spread[0].target)), int(spread[0].damage)]
+		else: result[2] = "→%s −%d" % [Forecast.tag(int(secondary[0].target)), int(secondary[0].damage)]
+	elif int(shot.get("math", {}).get("overflow", 0)) > 0: result[2] = "관통+%d" % int(shot.math.overflow)
 	elif int(shot.get("burn_added", 0)) > 0:
 		var ticks := Forecast.burn_ticks_for_shot(prediction, index)
 		result[2] = "화상%d회" % ticks if ticks > 0 else "화상+%d" % int(shot.burn_added)

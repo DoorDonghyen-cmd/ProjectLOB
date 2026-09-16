@@ -1,6 +1,7 @@
 extends SceneTree
 const Campaign = preload("res://redesign/campaign.gd")
 const Data = preload("res://redesign/campaign_content.gd")
+const Ammo = preload("res://redesign/content.gd")
 const Solver = preload("res://tests/city_combat_solver.gd")
 var checks := 0
 var failures: Array = []
@@ -221,7 +222,7 @@ func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> v
 	campaign.sync_combat()
 	campaign.settle(won)
 	check(progress == campaign.profile, "debrief cannot pay twice")
-	check(campaign.s.slots == 2 and campaign.model.capacity() == 6, "six-slot endgame with independent part")
+	check(campaign.s.slots == 2 and campaign.model.capacity() == int(Ammo.GUNS[gun].capacity) + 2, "endgame growth retains weapon capacity and independent part")
 	var report := {"gun": gun, "seed": seed_value, "route": route, "difficulty": difficulty, "won": won, "visits": visits, "commands": commands.duplicate(true), "campaign": campaign.s.duplicate(true), "combat": campaign.model.s.duplicate(true), "profile": campaign.profile.duplicate(true)}
 	reports.append(report)
 	print("CITY RUN " + gun + " seed=" + str(seed_value) + " route=" + route + " difficulty=" + str(difficulty) + " won=" + str(won) + " nodes=" + str(campaign.s.visited.size()) + " commands=" + str(commands.size()))
@@ -234,16 +235,21 @@ func _run() -> void:
 	rules()
 	if not OS.get_environment("QA_CITY_REPLAY_SOURCE").is_empty():
 		var source = JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_CITY_REPLAY_SOURCE")))
+		if not check(source is Dictionary and source.get("runs", null) is Array and source.get("failures", ["invalid"]).is_empty(), "replay source is a validated report"):
+			finish()
+			return
 		for expected in source.runs: await replay_previous(expected)
 		finish()
 		return
 	var seeds: Array = [731042, 17]
+	var guns: Array = ["single", "burst"]
+	if not OS.get_environment("QA_CITY_GUNS").is_empty(): guns = Array(OS.get_environment("QA_CITY_GUNS").split(","))
 	if not OS.get_environment("QA_CITY_SEED").is_empty(): seeds = [int(OS.get_environment("QA_CITY_SEED"))]
 	for seed_value in seeds:
-		for gun in ["single", "burst"]:
+		for gun in guns:
 			for route in ["safe", "mixed"]: await play(gun, int(seed_value), route)
 	if OS.get_environment("QA_CITY_HARD") == "1":
-		for gun in ["single", "burst"]: await play(gun, 90210, "mixed", 10)
+		for gun in guns: await play(gun, 90210, "mixed", 10)
 	finish()
 
 func finish() -> void:

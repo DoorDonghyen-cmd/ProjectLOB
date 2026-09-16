@@ -11,6 +11,7 @@ const RunInsight = preload("res://redesign/run_insight.gd")
 const Campaign = preload("res://redesign/campaign.gd")
 const CampaignUI = preload("res://redesign/campaign_ui.gd")
 const CampaignContent = preload("res://redesign/campaign_content.gd")
+const WeaponView = preload("res://redesign/weapon_view.gd")
 const SAVE := "user://chain_run_v2.json"
 const BG := Color("101920")
 const PANEL := Color("1b2a34")
@@ -144,7 +145,8 @@ func redraw() -> void:
 	var equipment := str(Content.GUNS[model.s.gun].name)
 	if model.s.part != "none": equipment += " · " + str(Content.PARTS[model.s.part].name)
 	if model.s.buff.has("dmg"): equipment += " · 증폭 %d발" % model.s.buff.dmg_left
-	_label(body, "%s   ·   %d턴" % [equipment, model.s.turns], 18, MUTED)
+	var identity_label := _label(body, "%s   ·   %d턴   /   %s" % [equipment, model.s.turns, Content.GUNS[model.s.gun].identity], 18, MUTED)
+	identity_label.name = "WeaponIdentity"
 	if campaign != null:
 		_label(body, "%s · %dCr · 난도%d" % [campaign.node().name, campaign.s.credits, campaign.s.difficulty], 18, ACCENT)
 	if debug_session:
@@ -157,9 +159,8 @@ func redraw() -> void:
 		"won", "lost": _ending()
 
 func _menu() -> void:
-	_label(body, "LAST\nON BOARD", 76, ACCENT)
-	_label(body, "인간에게 남은 것은, 빌린 총의 순서를 정하는 일뿐이다.", 24)
-	_label(body, "3속성 개편판 · 피해와 관통 · 물리·화염·전기", 20, MUTED)
+	_label(body, "LAST ON BOARD", 48, ACCENT)
+	_label(body, "빌린 총 하나, 다른 등반 방식. 탄환을 조합해 한 층씩 올라가세요.", 20)
 	course_toggle = CheckButton.new()
 	course_toggle.name = "CourseToggle"
 	course_toggle.text = "탄환 기초 훈련 · 7교전 (끄면 맵·상점이 있는 도시 등반)"
@@ -171,7 +172,9 @@ func _menu() -> void:
 	if FileAccess.file_exists(Campaign.SAVE) and not city_saved:
 		_label(body, "도시 저장을 읽을 수 없습니다. 새 등반 전까지 원본 파일을 보존합니다.", 17, DANGER)
 	var configuration := _row(body)
-	_label(configuration, "시작 보급", 19, MUTED).size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	var loadout_label := _label(configuration, "시작 보급", 19, MUTED)
+	loadout_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	loadout_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	loadout_option = OptionButton.new()
 	loadout_option.name = "CityLoadout"
 	loadout_option.custom_minimum_size = Vector2(240, 46)
@@ -179,7 +182,9 @@ func _menu() -> void:
 		loadout_option.add_item(CampaignContent.LOADOUTS[id].name)
 		loadout_option.set_item_metadata(loadout_option.item_count - 1, id)
 	configuration.add_child(loadout_option)
-	_label(configuration, "난도", 19, MUTED).size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	var difficulty_label := _label(configuration, "난도", 19, MUTED)
+	difficulty_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	difficulty_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	difficulty_option = SpinBox.new()
 	difficulty_option.name = "CityDifficulty"
 	difficulty_option.max_value = int(city_probe.profile.ascension)
@@ -191,14 +196,32 @@ func _menu() -> void:
 		difficulty_summary.text = "난도%d · 적 시작 거리 −%dm · 배급 보정 −%dCr (최소 8Cr)" % [int(value), mini(4, int(value) / 2), int(value)]
 	)
 	_label(body, "5계층 · 35층 · 경로 선택 → 전투/상점/보급/이벤트 → 관문 → 정점", 18, ACCENT)
-	var row := _row(body)
-	for id in ["single", "burst"]:
-		var column := _panel(row)
-		_label(column, Content.GUNS[id].name, 28)
-		_label(column, Content.GUNS[id].text, 20, MUTED)
-		_button(column, "이 총으로 시작", "start_" + id, _start.bind(id, false))
+	var weapons := GridContainer.new()
+	weapons.name = "WeaponSelection"
+	weapons.columns = 2
+	weapons.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	weapons.add_theme_constant_override("h_separation", 14)
+	weapons.add_theme_constant_override("v_separation", 10)
+	body.add_child(weapons)
+	for id in Content.GUNS:
+		var spec: Dictionary = Content.GUNS[id]
+		var column := _panel(weapons)
+		column.add_theme_constant_override("separation", 4)
+		var heading := _row(column)
+		var icon := WeaponView.new()
+		icon.gun_id = id
+		heading.add_child(icon)
+		_label(heading, "%s / %s" % [spec.name, spec.role], 24, WeaponView.COLORS[id])
+		_label(column, spec.identity, 18)
+		_label(column, "%d칸 · 재장전 %d턴   /   %s" % [spec.capacity, spec.reload, spec.recommendation], 16, MUTED)
+		var actions := _row(column)
+		_button(actions, "이 총으로 시작", "start_" + id, _start.bind(id, false))
+		var info := _button(actions, "특징·보급", "weapon_info_" + id, _weapon_details.bind(id))
+		info.size_flags_horizontal = Control.SIZE_SHRINK_END
+		info.custom_minimum_size.x = 128
 	var controls := _row(body)
 	var seed_label := _label(controls, "시드", 20, MUTED)
+	seed_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	seed_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	seed_label.custom_minimum_size.x = 48
 	seed_input = LineEdit.new()
@@ -215,7 +238,7 @@ func _menu() -> void:
 		_button(controls, "훈련 이어 하기", "resume_training", _resume_training)
 	_button(controls, "규칙 읽기", "rules", _rules)
 	_button(controls, "개발자 테스트", "dev", _developer)
-	_label(body, "새 런을 시작하면 이 실험 버전의 자동 저장이 교체됩니다. 기존 게임의 진행도는 별도로 보관됩니다.", 17, MUTED)
+	_label(body, "새 등반을 시작하면 진행 중인 등반을 교체합니다.", 17, MUTED)
 
 func _start(id: String, same_seed: bool) -> void:
 	if busy: return
@@ -572,7 +595,27 @@ func _rules() -> void:
 	_label(column, "6. 화상은 적의 전진 직전에 1피해를 주고 1 감소합니다. 화상으로 죽은 적은 전진하지 않습니다. 충격탄은 탄창당 총 2m까지 밀어 거리를 확보합니다.")
 	_label(column, "7. 재장전마다 탄창 칸수만큼 회수탄을 복구하고 전술 패를 5장까지 보충합니다. 미사용 패 유지, 사용탄은 다시 섞으며 패 교환은 재장전당 1회입니다.")
 	_label(column, "8. 도시 등반은 5계층 35층입니다. 환기구의 거리 −2m 비용은 다음 전투까지 유지합니다. 방을 누르면 편성과 이동 비용을 미리 볼 수 있습니다.")
-	_label(column, "9. 전투 보상은 탄환·크레딧·정제 중 하나. 상점의 파츠 구매와 유료 정제는 방문당 한 번입니다. 파츠는 하나만 장착하며, 관문에서 늘린 탄창 4→5→6칸은 파츠 교체 후에도 유지합니다.")
+	_label(column, "9. 전투 보상은 탄환·크레딧·정제 중 하나. 상점의 파츠 구매와 유료 정제는 방문당 한 번입니다. 파츠는 하나만 장착하며, 관문에서 늘린 탄창 +2칸은 파츠 교체 후에도 유지합니다. 압쇄는 3→4→5칸, 다른 무기는 4→5→6칸입니다.")
+	_label(column, "10. 산개는 표적과 거리 차 3m 이내의 다른 적 모두에 절반 피해를 확산합니다. 각 적의 장갑을 적용하며, 연발은 확산도 두 타격입니다. 속성 효과는 복제하지 않습니다. 압쇄는 관통 +2, 관통이 장갑을 넘으면 타격당 피해 +1입니다.")
+
+func _weapon_details(id: String) -> void:
+	if busy: return
+	var spec: Dictionary = Content.GUNS[id]
+	var column := _dialog(spec.name + " · " + spec.role, true)
+	column.name = "WeaponDetails"
+	_label(column, spec.identity, 24, WeaponView.COLORS[id])
+	_label(column, spec.text, 19)
+	_label(column, "%d칸 → 최대 %d칸 · 선택한 무기는 이번 등반 끝까지 유지" % [spec.capacity, int(spec.capacity) + 2], 18, MUTED)
+	_label(column, spec.recommendation, 19, ACCENT)
+	if id == "scatter":
+		_label(column, "확산: 피해와 증폭의 합을 절반으로 내림 → 각 적의 남은 장갑 차감 (최소 1) → 연발이면 2회. 밀치기 전 위치에서 판정하며, 화상·밀치기는 주 표적에게만 적용됩니다. 전격의 전이는 확산 후 별도로 발생합니다.", 18)
+	elif id == "heavy":
+		_label(column, "관통이 적 장갑보다 높으면 타격당 피해 +1. 가속 총열도 관통과 추가 피해에 반영됩니다. 상대마다 다른 추가 피해는 탄창 예측과 계산 보기에서 확인하세요.", 18)
+	var loadout := "balanced" if loadout_option == null else str(loadout_option.get_selected_metadata())
+	var deck: Array = Content.start_deck(id) if loadout == "balanced" else CampaignContent.LOADOUTS[loadout].deck
+	_label(column, "도시 시작 보급 / " + CampaignContent.LOADOUTS[loadout].name, 20, ACCENT)
+	_label(column, RunInsight.deck_summary(deck), 18)
+	_label(column, "기초 훈련에서는 무기와 관계없이 같은 순서로 탄환을 배웁니다.", 16, MUTED)
 
 func _inspect_slot(index: int) -> void:
 	if busy or not is_instance_valid(calculation_label): return
@@ -648,12 +691,27 @@ func _enemy_details(index: int) -> void:
 	for i in range(combat_forecast.get("shots", []).size()):
 		var shot: Dictionary = combat_forecast.shots[i]
 		if shot.target == index: hits.append("%d발 %s" % [i + 1, Forecast.outcome(shot)])
+		for other in shot.get("secondary", []):
+			if int(other.target) == index: hits.append("%d발 %s −%d" % [i + 1, "확산" if other.get("kind", "arc") == "spread" else "전이", other.damage])
 	_label(column, "연속 사격 예상: " + (" · ".join(hits) if not hits.is_empty() else "피격 없음"), 18, ACCENT)
 
 func _developer() -> void:
 	campaign = null
 	var column := _dialog("개발자 테스트 · 기존 저장 보존")
 	_label(column, "화면과 규칙을 즉시 확인하는 연습", 26)
+	var weapon_row := GridContainer.new()
+	weapon_row.columns = 2
+	column.add_child(weapon_row)
+	for id in Content.GUNS:
+		_button(weapon_row, Content.GUNS[id].name + " · 같은 대열 조합 비교", "debug_weapon_" + id, func():
+			_debug_weapon(id)
+			column.get_meta("dialog").queue_free()
+		)
+	_button(column, "무기 4종 선택 화면", "debug_weapon_selection", func():
+		column.get_meta("dialog").queue_free()
+		page = "menu"
+		redraw()
+	)
 	var city_row := GridContainer.new()
 	city_row.columns = 3
 	column.add_child(city_row)
@@ -807,6 +865,27 @@ func _city_archive() -> void:
 	city_ui.ui = self
 	city_ui.campaign = campaign
 	city_ui.archive()
+
+func _debug_weapon(id: String) -> void:
+	campaign = null
+	model.start(id, 731042)
+	model.s.floor = 6
+	model.s.deck = ["charge", "precise", "pierce", "arc", "push", "bore", "charge", "precise", "pierce", "arc"]
+	model.s.hand = model.s.deck.slice(0, 5)
+	model.s.draw = model.s.deck.slice(5)
+	model.s.discard = []
+	model.s.enemies = [
+		{"kind": "wall", "name": Content.ENEMY_NAMES.wall, "hp": 30, "max_hp": 30, "def": 3, "speed": 1, "distance": 18, "burn": 0},
+		{"kind": "runner", "name": Content.ENEMY_NAMES.runner, "hp": 12, "max_hp": 12, "def": 0, "speed": 2, "distance": 20, "burn": 0},
+		{"kind": "evader", "name": Content.ENEMY_NAMES.evader, "hp": 8, "max_hp": 8, "def": 1, "speed": 2, "distance": 22, "burn": 0},
+	]
+	for round_id in ["charge", "precise", "arc"]: model.load_round(round_id)
+	debug_session = true
+	selected_slot = 0
+	inspect_slots = false
+	previous_forecast = {}
+	page = "run"
+	redraw()
 
 func _debug_city(kind: String) -> void:
 	debug_session = true

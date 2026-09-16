@@ -47,8 +47,12 @@ static func note(forecast: Dictionary, shot_index: int) -> String:
 	var boosted := int(shot.get("math", {}).get("boost", 0)) > 0
 	var secondary: Array = shot.get("secondary", [])
 	if not secondary.is_empty():
-		var other: Dictionary = secondary[0]
-		return "%s%s 전이 −%d" % ["증폭 · " if boosted else "", tag(other.target), other.damage]
+		var impacts: PackedStringArray = []
+		for other in secondary:
+			impacts.append("%s %s −%d" % [tag(other.target), "확산" if other.get("kind", "arc") == "spread" else "전이", other.damage])
+		return ("증폭 · " if boosted else "") + " / ".join(impacts)
+	if int(shot.get("math", {}).get("overflow", 0)) > 0:
+		return ("증폭 · 2타 · " if boosted and int(shot.hits) > 1 else ("증폭 · " if boosted else "")) + "초과 관통 +%d" % shot.math.overflow
 	if int(shot.get("burn_added", 0)) > 0:
 		var ticks := burn_ticks_for_shot(forecast, shot_index)
 		return "화상 %d회 예상" % ticks if ticks > 0 else "화상 +%d" % shot.burn_added

@@ -1,0 +1,228 @@
+{
+  "overflow_cap": 1,
+  "campaign": {
+    "checks": 27082,
+    "failures": [],
+    "complete_runs": 10
+  },
+  "runs": [
+    {
+      "gun": "scatter",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "turns": 238,
+      "shots": 206,
+      "reloads": 19,
+      "credits": 157,
+      "deck": 12,
+      "capacity": 6,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ]
+    },
+    {
+      "gun": "scatter",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "turns": 148,
+      "shots": 125,
+      "reloads": 13,
+      "credits": 243,
+      "deck": 10,
+      "capacity": 6,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ]
+    },
+    {
+      "gun": "heavy",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "turns": 214,
+      "shots": 177,
+      "reloads": 20,
+      "credits": 157,
+      "deck": 12,
+      "capacity": 5,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ]
+    },
+    {
+      "gun": "heavy",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "turns": 122,
+      "shots": 102,
+      "reloads": 11,
+      "credits": 246,
+      "deck": 10,
+      "capacity": 5,
+      "parts": [
+        "loader",
+        "coil",
+        "lens"
+      ]
+    },
+    {
+      "gun": "scatter",
+      "seed": 17,
+      "route": "safe",
+      "difficulty": 0,
+      "turns": 234,
+      "shots": 202,
+      "reloads": 17,
+      "credits": 157,
+      "deck": 12,
+      "capacity": 6,
+      "parts": [
+        "coil",
+        "loader",
+        "lens"
+      ]
+    },
+    {
+      "gun": "scatter",
+      "seed": 17,
+      "route": "mixed",
+      "difficulty": 0,
+      "turns": 173,
+      "shots": 152,
+      "reloads": 17,
+      "credits": 197,
+      "deck": 12,
+      "capacity": 6,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ]
+    },
+    {
+      "gun": "heavy",
+      "seed": 17,
+      "route": "safe",
+      "difficulty": 0,
+      "turns": 207,
+      "shots": 180,
+      "reloads": 21,
+      "credits": 167,
+      "deck": 12,
+      "capacity": 5,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ]
+    },
+    {
+      "gun": "heavy",
+      "seed": 17,
+      "route": "mixed",
+      "difficulty": 0,
+      "turns": 135,
+      "shots": 117,
+      "reloads": 14,
+      "credits": 203,
+      "deck": 12,
+      "capacity": 5,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ]
+    },
+    {
+      "gun": "scatter",
+      "seed": 90210,
+      "route": "mixed",
+      "difficulty": 10,
+      "turns": 161,
+      "shots": 139,
+      "reloads": 16,
+      "credits": 201,
+      "deck": 10,
+      "capacity": 6,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ]
+    },
+    {
+      "gun": "heavy",
+      "seed": 90210,
+      "route": "mixed",
+      "difficulty": 10,
+      "turns": 128,
+      "shots": 108,
+      "reloads": 14,
+      "credits": 201,
+      "deck": 10,
+      "capacity": 5,
+      "parts": [
+        "coil",
+        "lens",
+        "loader"
+      ]
+    }
+  ],
+  "weapon_rules": {
+    "checks": 490,
+    "failures": [],
+    "formation_damage": {
+      "burst": 4,
+      "heavy": 5,
+      "scatter": 8,
+      "single": 5
+    }
+  },
+  "weapon_touch_ui": {
+    "checks": 165,
+    "failures": []
+  },
+  "full_city_ui": {
+    "checks": 3391,
+    "clicks": 1110,
+    "failures": []
+  },
+  "final_capacity_layout": {
+    "checks": 364,
+    "clicks": 0,
+    "failures": []
+  },
+  "old_weapon_replay": {
+    "checks": 28755,
+    "failures": [],
+    "complete_runs": 10,
+    "exact_combat_history": true,
+    "source": "full_city_campaign_2026-09-16_assets/city_campaign_report.json"
+  },
+  "readability_rules": {
+    "checks": 24141,
+    "failures": 0,
+    "log": "qa_runtime/readability/rules/stdout.log"
+  },
+  "readability_visual": {
+    "checks": 174,
+    "failures": 0,
+    "log": "qa_runtime/readability/visual/stdout.log"
+  },
+  "production_regression": {
+    "exit_code": 0,
+    "failed": 0,
+    "passed": 3730,
+    "schema_version": 1,
+    "warnings": 3
+  }
+}

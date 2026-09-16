@@ -4,7 +4,7 @@ extends RefCounted
 const Content = preload("res://redesign/content.gd")
 
 static func combat_report(state: Dictionary, floor_filter: int = -1) -> Dictionary:
-	var report := {"shots": 0, "direct": 0, "burn": 0, "arc": 0, "boost_hits": 0, "push": 0, "kills": 0}
+	var report := {"shots": 0, "direct": 0, "burn": 0, "arc": 0, "spread": 0, "boost_hits": 0, "push": 0, "kills": 0}
 	for entry_value in state.get("history", []):
 		var entry: Dictionary = entry_value
 		if floor_filter >= 0 and int(entry.get("floor", -1)) != floor_filter:
@@ -22,7 +22,8 @@ static func combat_report(state: Dictionary, floor_filter: int = -1) -> Dictiona
 					report.kills += 1
 				for secondary_value in shot.get("secondary", []):
 					var secondary: Dictionary = secondary_value
-					report.arc += int(secondary.get("damage", 0))
+					if str(secondary.get("kind", "arc")) == "spread": report.spread += int(secondary.get("damage", 0))
+					else: report.arc += int(secondary.get("damage", 0))
 					if int(secondary.get("hp", 1)) <= 0:
 						report.kills += 1
 		for event_value in detail.get("advance_events", []):
@@ -39,6 +40,7 @@ static func combat_report_line(state: Dictionary, floor_filter: int = -1) -> Str
 	if int(report.boost_hits) > 0: items.append("증폭 타격 %d" % int(report.boost_hits))
 	if int(report.burn) > 0: items.append("화상 %d" % int(report.burn))
 	if int(report.arc) > 0: items.append("전이 %d" % int(report.arc))
+	if int(report.spread) > 0: items.append("확산 %d" % int(report.spread))
 	if int(report.push) > 0: items.append("밀기 %dm" % int(report.push))
 	if int(report.kills) > 0: items.append("처치 %d" % int(report.kills))
 	return "교전 기록 · " + " · ".join(items)

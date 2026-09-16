@@ -7,7 +7,7 @@ var s: Dictionary = {}
 
 func start(gun_id: String, run_seed: int, course: bool = false) -> void:
 	assert(Content.GUNS.has(gun_id))
-	s = {"version": VERSION, "course": course, "seed": str(run_seed), "gun": gun_id, "part": "none", "floor": 0, "deck": Content.COURSE_GRANTS[0].duplicate() if course else Content.START_DECK.duplicate(), "turns": 0, "shots": 0, "reloads": 0, "history": [], "reward_taken": false}
+	s = {"version": VERSION, "course": course, "seed": str(run_seed), "gun": gun_id, "part": "none", "floor": 0, "deck": Content.COURSE_GRANTS[0].duplicate() if course else Content.start_deck(gun_id), "turns": 0, "shots": 0, "reloads": 0, "history": [], "reward_taken": false}
 	begin_encounter()
 
 func begin_encounter() -> void:
@@ -43,7 +43,7 @@ func begin_encounter() -> void:
 	_record("encounter", {"index": s.floor})
 
 func capacity() -> int:
-	return int(Content.GUNS[s.gun].capacity) + int(s.get("capacity_bonus", 0)) + (1 if s.part == "supply" else 0)
+	return Content.capacity(s)
 
 func reload_cost() -> int:
 	return maxi(1, int(Content.GUNS[s.gun].reload) - (1 if s.part == "loader" else 0))
@@ -197,6 +197,14 @@ func _shot(id: String) -> Dictionary:
 	var hits := 2 if spec.effect == "double" else 1
 	var hp_before := int(e.hp)
 	var math := {"base": int(spec.dmg) + int(Content.GUNS[s.gun].bonus), "boost": dmg_buff, "raw": raw, "armor": armor, "per_hit": per_hit, "hits": hits, "hp_before": hp_before, "armor_before": int(e.def)}
+	if s.gun == "heavy":
+		var overflow := mini(1, maxi(0, pen - int(e.def)))
+		per_hit += overflow
+		math.overflow = overflow
+		math.per_hit = per_hit
+		if overflow > 0: combo.append("초과 관통 +%d" % overflow)
+	# Keep the impact position before push; spread belongs to this projectile.
+	var impact_distance := int(e.distance)
 	var damage := mini(hp_before, per_hit * hits)
 	e.hp -= damage
 	if s.buff.has("dmg"):
@@ -220,6 +228,17 @@ func _shot(id: String) -> Dictionary:
 			e.distance += pushed
 			s.push_left -= pushed
 	var secondary: Array = []
+	if s.gun == "scatter":
+		var spread_raw := raw / 2
+		for other_index in range(s.enemies.size()):
+			var other: Dictionary = s.enemies[other_index]
+			if other_index == index or int(other.hp) <= 0 or absi(int(other.distance) - impact_distance) > 3: continue
+			var spread_armor := maxi(0, int(other.def) - pen)
+			var spread_hit := maxi(1, spread_raw - spread_armor)
+			var amount := mini(int(other.hp), spread_hit * hits)
+			other.hp -= amount
+			secondary.append({"kind": "spread", "target": other_index, "damage": amount, "hp": other.hp, "raw": spread_raw, "armor": spread_armor, "per_hit": spread_hit, "hits": hits})
+		if not secondary.is_empty(): combo.append("확산 %d명" % secondary.size())
 	if spec.effect == "arc":
 		var other := -1
 		for i in range(s.enemies.size()):
@@ -386,7 +405,7 @@ func restore_state(source: Dictionary) -> bool:
 	for key in parsed.buff:
 		if not key in ["dmg", "dmg_left"] or not _whole(parsed.buff[key], 0, 10): return false
 	if not _whole(parsed.get("capacity_bonus", 0), 0, 2): return false
-	var limit: int = int(Content.GUNS[parsed.gun].capacity) + int(parsed.get("capacity_bonus", 0)) + (1 if parsed.part == "supply" else 0)
+	var limit: int = Content.capacity(parsed)
 	var supply_limit := limit
 	if not _whole(parsed.exchange_left, 0, 1): return false
 	if parsed.buff.has("dmg") != parsed.buff.has("dmg_left"): return false

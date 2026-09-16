@@ -18,7 +18,7 @@ func render(screen) -> void:
 		var button = ui._button(top, entry[0], entry[1], entry[2])
 		button.size_flags_horizontal = Control.SIZE_SHRINK_END
 		button.custom_minimum_size.x = 115
-	ui._label(ui.body, "LV.%d   ·   %dCr   ·   %s   ·   %d칸   ·   덱 %d장   ·   난도 %d%s" % [int(Data.info(int(state.region)).base_level) + maxi(1, int(state.floor)) - 1, state.credits, Ammo.GUNS[state.gun].name, 4 + int(state.slots), ui.model.s.deck.size(), state.difficulty, "   /   다음 전투 −2m" if int(state.pressure) > 0 else ""], 18, ui.MUTED)
+	ui._label(ui.body, "LV.%d   ·   %dCr   ·   %s   ·   %d칸   ·   덱 %d장   ·   난도 %d%s" % [int(Data.info(int(state.region)).base_level) + maxi(1, int(state.floor)) - 1, state.credits, Ammo.GUNS[state.gun].name, ui.model.capacity(), ui.model.s.deck.size(), state.difficulty, "   /   다음 전투 −2m" if int(state.pressure) > 0 else ""], 18, ui.MUTED)
 	if ui.debug_session: ui._label(ui.body, "개발자 연습 · 실제 진행 저장 보존", 18, ui.DANGER)
 	if not ui.save_error.is_empty(): ui._label(ui.body, ui.save_error, 18, ui.DANGER)
 	match str(state.phase):
@@ -173,7 +173,7 @@ func gate() -> void:
 	ui._label(ui.body, "승강기가 다음 계층을 허락했다.", 34, ui.ACCENT)
 	ui._label(ui.body, Data.info(int(campaign.s.region) + 1).name + " / " + Data.info(int(campaign.s.region) + 1).brief, 23)
 	var row = ui._row(ui.body)
-	ui._button(row, "탄창 %d → %d칸\n성장은 파츠를 교체해도 유지" % [4 + int(campaign.s.slots), 5 + int(campaign.s.slots)], "city_gate_slot", action.bind("gate", "slot"), int(campaign.s.slots) >= 2)
+	ui._button(row, "탄창 %d → %d칸\n성장은 파츠를 교체해도 유지" % [ui.model.capacity(), ui.model.capacity() + 1], "city_gate_slot", action.bind("gate", "slot"), int(campaign.s.slots) >= 2)
 	ui._button(row, "+24Cr\n다음 무기고를 위한 저축", "city_gate_credits", action.bind("gate", "credits"))
 
 func ending() -> void:
@@ -191,7 +191,7 @@ func ending() -> void:
 
 func deck() -> void:
 	var panel = ui._dialog("덱·장비")
-	ui._label(panel, "덱 %d / 14장 · 탄창 %d칸" % [ui.model.s.deck.size(), 4 + int(campaign.s.slots)], 26, ui.ACCENT)
+	ui._label(panel, "덱 %d / 14장 · 탄창 %d칸" % [ui.model.s.deck.size(), ui.model.capacity()], 26, ui.ACCENT)
 	ui._label(panel, Insight.deck_summary(ui.model.s.deck), 21)
 	ui._label(panel, Ammo.PARTS[ui.model.s.part].name + " / " + Ammo.PARTS[ui.model.s.part].text, 20)
 	for id in campaign.s.parts: ui._label(panel, "보관 / " + Ammo.PARTS[id].name, 19, ui.MUTED)

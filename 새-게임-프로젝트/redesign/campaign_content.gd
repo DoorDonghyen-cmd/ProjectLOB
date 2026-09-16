@@ -4,7 +4,7 @@ const City = preload("res://scripts/core/map_generator.gd")
 const Ammo = preload("res://redesign/content.gd")
 const REGIONS := ["section_a", "section_b", "section_c", "section_d", "section_e"]
 const LOADOUTS := {
-	"balanced": {"name": "혼합 보급", "deck": Ammo.START_DECK},
+	"balanced": {"name": "무기 기본 보급", "deck": Ammo.START_DECK},
 	"amplify": {"name": "증폭·연발", "deck": ["charge", "charge", "charge", "precise", "precise", "precise", "pierce", "pierce", "bore", "push"]},
 	"thermal": {"name": "화상·거리", "deck": ["bore", "bore", "bore", "push", "push", "charge", "precise", "precise", "pierce", "arc"]},
 	"voltage": {"name": "전격·관통", "deck": ["arc", "arc", "arc", "pierce", "pierce", "charge", "charge", "precise", "precise", "push"]},
@@ -110,7 +110,7 @@ static func offers(node: Dictionary, seed_value: int, revision: int, gun: String
 	var random := rng(seed_value, int(node.id) + 1900 + revision * 37)
 	var ammo_id: String = shuffle(["charge", "precise", "pierce", "bore", "push", "arc"], random)[0]
 	var parts: Array = ["lens", "coil"]
-	if gun == "burst": parts.append("loader")
+	if Ammo.accepts_part(gun, "loader"): parts.append("loader")
 	for id in owned: parts.erase(id)
 	parts = shuffle(parts, random)
 	var result: Array = [{"id": ammo_id, "type": "ammo", "price": 12, "sold": false}]
