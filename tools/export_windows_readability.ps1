@@ -104,8 +104,11 @@ Play-Readability.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저�
 탄창 칸은 표적의 처치/남은 HP와 증폭·화상 예상·밀기·전이 결과를 표시합니다.
 확정 후에도 칸을 눌러 계산을 볼 수 있습니다. 기본 수치는 총기와 파츠를 반영합니다.
 개발자 테스트의 '조합 결과 연습'에서 대표 조합 세 가지를 한 화면에서 시험할 수 있습니다.
+보상 화면은 방금 교전의 조합 성과, 다음 적의 위협, 각 후보가 바꾸는 정확한 수치를 표시합니다.
+개발자 테스트의 '보상·빌드 판단'에서 다음 편성과 파츠 선택을 바로 확인할 수 있습니다.
+완주 화면은 런 전체 조합 성과와 탄환별 최종 장수를 요약합니다.
 
-문서: docs/implementation_plan_combo_payoff_2026-09-16.md
+문서: docs/walkthrough_complete_gameplay_prototype_2026-09-16.md
 재생성: tools/export_windows_readability.ps1
 기존 비교판: builds/chain-windows/Play-Chain.cmd
 APK는 사용자 요청 전까지 제작하지 않습니다.

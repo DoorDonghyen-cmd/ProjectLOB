@@ -86,6 +86,11 @@ func _run() -> void:
 	check(screen.model.s.phase == "reward", "first simplified lesson completed through UI")
 	var reward_card = screen.find_child("RewardCardInfo", true, false)
 	check(reward_card != null and reward_card.stat_items().size() == 1, "reward reuses staged ammo icons")
+	var encounter_report := screen.find_child("EncounterReport", true, false) as Label
+	var threat_summary := screen.find_child("ThreatSummary", true, false) as Label
+	check(encounter_report != null and encounter_report.text.contains("직접"), "reward exposes completed encounter result")
+	check(threat_summary != null and threat_summary.text.contains("장갑 최대") and threat_summary.text.contains("접촉 최소"), "reward exposes compact next threat")
+	check(screen.find_child("RewardImpact_charge", true, false) != null, "reward card exposes concrete impact")
 	await capture("elemental_reward")
 	await tap("reward_skip")
 	check(screen.model.s.floor == 1 and screen.model.s.hand.has("pierce"), "armor lesson provides iron-piercing round")
@@ -159,7 +164,22 @@ func _run() -> void:
 	await capture("combo_forecast")
 	check(FileAccess.get_file_as_string(screen.SAVE) == normal_save, "combo shortcut preserves actual save")
 
+	await tap("menu")
+	await tap("dev")
+	await tap("debug_reward_build")
+	check(screen.debug_session and screen.model.s.phase == "reward" and screen.model.s.floor == 4, "reward-build shortcut opens actual completed encounter")
+	encounter_report = screen.find_child("EncounterReport", true, false) as Label
+	threat_summary = screen.find_child("ThreatSummary", true, false) as Label
+	check(encounter_report != null and encounter_report.text.contains("직접 9") and encounter_report.text.contains("증폭 타격 2"), "reward debrief derives exact combo payoff")
+	check(threat_summary != null and threat_summary.text.contains("3개체"), "reward threat derives next formation")
+	check(screen.find_child("RewardImpact_lens", true, false) != null and screen.find_child("RewardImpact_supply", true, false) != null and screen.find_child("RewardImpact_coil", true, false) != null, "part rewards expose build impacts")
+	root.size = Vector2i(1280, 800)
+	await capture("reward_build_1280")
+	root.size = Vector2i(1920, 864)
+	await capture("reward_build_phone")
+	check(FileAccess.get_file_as_string(screen.SAVE) == normal_save, "reward-build shortcut preserves actual save")
+
 	var file := FileAccess.open("user://readability_visual.json", FileAccess.WRITE)
-	file.store_string(JSON.stringify({"checks": checks, "failed": failed, "scope": "PC rendered synthetic touch, simplified first lesson, elemental cards, combo forecast, burn timing and late layout; no APK"}, "\t"))
+	file.store_string(JSON.stringify({"checks": checks, "failed": failed, "scope": "PC rendered synthetic touch, simplified first lesson, elemental cards, combo forecast, reward build guidance, burn timing and late layout; no APK"}, "\t"))
 	print("READABILITY VISUAL: %d checks / %d failed" % [checks.size(), failed])
 	quit(1 if failed else 0)

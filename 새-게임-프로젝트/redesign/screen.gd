@@ -7,6 +7,7 @@ const AmmoVisual = preload("res://redesign/ammo_visual.gd")
 const AmmoCardView = preload("res://redesign/ammo_card_view.gd")
 const Forecast = preload("res://redesign/forecast.gd")
 const Readability = preload("res://redesign/readability.gd")
+const RunInsight = preload("res://redesign/run_insight.gd")
 const SAVE := "user://chain_run_v2.json"
 const BG := Color("101920")
 const PANEL := Color("1b2a34")
@@ -325,13 +326,24 @@ func _preview_text(preview: Dictionary) -> String:
 
 func _reward() -> void:
 	_label(body, "통과했습니다. 무엇을 가져갈까요?", 34, ACCENT)
-	var next: Dictionary = Content.ENCOUNTERS[int(model.s.floor) + 1]
+	var report_label := _label(body, RunInsight.combat_report_line(model.s, int(model.s.floor)), 19, MUTED)
+	report_label.name = "EncounterReport"
+	var next_index := int(model.s.floor) + 1
+	var next: Dictionary = Content.ENCOUNTERS[next_index]
+	var next_enemies := Content.enemies_for(next_index, int(model.s.seed), model.s.get("course", false), str(model.s.gun))
 	var peek := _panel(body)
 	_label(peek, "다음 교전  /  " + str(next.name), 24)
-	for e in Content.enemies_for(int(model.s.floor) + 1, int(model.s.seed), model.s.get("course", false), str(model.s.gun)):
-		_label(peek, "%s · HP %d · %s · 거리 %dm" % [e.name, e.hp, Readability.enemy_stats(e, {"course": model.s.get("course", false), "floor": int(model.s.floor) + 1}), e.distance], 18, MUTED)
+	var threat_label := _label(peek, RunInsight.threat_line(next_enemies), 19, ACCENT)
+	threat_label.name = "ThreatSummary"
+	var enemy_row := _row(peek)
+	for enemy_index in range(next_enemies.size()):
+		var e: Dictionary = next_enemies[enemy_index]
+		var enemy_card := _panel(enemy_row)
+		_label(enemy_card, "%s  %s" % [Forecast.tag(enemy_index), e.name], 18)
+		_label(enemy_card, "HP %d · 장갑 %d" % [e.hp, e.def], 17, MUTED)
+		_label(enemy_card, "%dm  /  턴당 −%dm" % [e.distance, e.speed], 17, MUTED)
 	if model.s.get("course", false):
-		var grants: Array = Content.COURSE_GRANTS[int(model.s.floor) + 1]
+		var grants: Array = Content.COURSE_GRANTS[next_index]
 		if not grants.is_empty(): _label(peek, "다음 교전 보급: " + _ammo_names(grants), 18, ACCENT)
 	_label(body, "덱 %d장 · %s" % [model.s.deck.size(), Content.PARTS[model.s.part].name], 18, MUTED)
 	var row := _row(body)
@@ -349,6 +361,8 @@ func _reward() -> void:
 		else:
 			_label(card, spec.name, 25, ACCENT)
 		_label(card, Readability.description(id, model.s) if is_ammo else str(spec.text), 19)
+		var impact := _label(card, "영향 · " + RunInsight.reward_impact(id, model.s, next_enemies), 17, ACCENT)
+		impact.name = "RewardImpact_" + id
 		_button(card, "덱에 1장 추가" if is_ammo else "파츠 장착 · 기존 파츠 교체", "reward_" + id, _choose.bind(id, ""), is_ammo and model.s.deck.size() >= model.deck_limit())
 	var refine := _panel(body)
 	_label(refine, "덱을 늘리지 않는 선택", 23)
@@ -372,7 +386,10 @@ func _ending() -> void:
 	_label(body, "당신은 아직 인간이다." if won else "계산은 여기서 멈췄다.", 46, ACCENT if won else DANGER)
 	_label(body, "정점은 개조를 권한다. 당신은 거부하고, 그 자리에 선다." if won else str(model.s.message), 24)
 	_label(body, "%d / 7 교전 통과 · %d턴 · %d발 · 재장전 %d회" % [7 if won else int(model.s.floor), model.s.turns, model.s.shots, model.s.reloads], 22, MUTED)
-	_label(body, "최종 덱: " + _ammo_names(model.s.deck), 20)
+	var run_report := _label(body, RunInsight.combat_report_line(model.s), 19, ACCENT)
+	run_report.name = "RunReport"
+	var final_deck := _label(body, "최종 덱: " + RunInsight.deck_summary(model.s.deck), 20)
+	final_deck.name = "FinalDeckSummary"
 	var row := _row(body)
 	_button(row, "같은 시드로 다시 설계", "retry", _start.bind(str(model.s.gun), true))
 	_button(row, "총기 / 새 시드 선택", "new_run", _to_menu)
@@ -627,6 +644,25 @@ func _developer() -> void:
 		debug_session = true
 		selected_slot = 3
 		inspect_slots = true
+		page = "run"
+		column.get_meta("dialog").queue_free()
+		redraw()
+	)
+	_button(column, "보상·빌드 판단", "debug_reward_build", func():
+		model.start("single", 731042)
+		model.s.floor = 4
+		model.begin_encounter()
+		model.s.enemies = [{"kind": "wall", "name": Content.ENEMY_NAMES.wall, "hp": 9, "max_hp": 9, "def": 1, "speed": 1, "distance": 20, "burn": 0}]
+		model.s.deck = ["charge", "precise", "bore", "bore", "pierce", "push", "arc"]
+		model.s.hand = model.s.deck.slice(0, 5)
+		model.s.draw = ["push", "arc"]
+		model.s.discard = []
+		model.load_round("charge")
+		model.load_round("precise")
+		model.confirm()
+		model.fire()
+		model.fire()
+		debug_session = true
 		page = "run"
 		column.get_meta("dialog").queue_free()
 		redraw()

@@ -10,10 +10,12 @@ var exchange_mode := "optional"
 var beam_width := 5
 var search_depth := 6
 var seed_values: Array = [731042]
+var gun_values: Array = ["single", "burst"]
 var scenario_started := 0
 var explored := 0
 var failed_commands := 0
 var basic_only := false
+var require_situational := true
 var course_enabled := false
 var course_values: Array = [true, false]
 var integrity_checks := 0
@@ -163,6 +165,12 @@ func choose_reward(m) -> Dictionary:
 	if policy == "skip": return {"action": "reward", "id": "skip", "remove_id": "", "options": options.duplicate()}
 	if policy == "remove":
 		return {"action": "reward", "id": "remove" if m.s.deck.size() > m.minimum_deck() else "skip", "remove_id": str(m.s.deck[0]), "options": options.duplicate()}
+	# A declared part preference keeps that build once acquired instead of
+	# replacing it with a fallback at the next part-only reward.
+	if Content.PARTS.has(policy) and str(m.s.part) == policy:
+		for option in options:
+			if Content.PARTS.has(option):
+				return {"action": "reward", "id": "skip", "remove_id": "", "options": options.duplicate()}
 	var preferred: Array = [policy, "coil", "supply", "lens", "loader", "charge", "precise", "bore", "pierce", "arc", "push"]
 	for id in preferred:
 		if options.has(id):
@@ -241,21 +249,25 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output_dir))
 	if not OS.get_environment("QA_POLICY").is_empty(): policy = OS.get_environment("QA_POLICY")
 	if not OS.get_environment("QA_EXCHANGE").is_empty(): exchange_mode = OS.get_environment("QA_EXCHANGE")
+	if OS.get_environment("QA_BEAM_WIDTH").is_valid_int(): beam_width = maxi(1, int(OS.get_environment("QA_BEAM_WIDTH")))
+	if OS.get_environment("QA_SEARCH_DEPTH").is_valid_int(): search_depth = maxi(1, int(OS.get_environment("QA_SEARCH_DEPTH")))
 	if OS.get_environment("QA_COURSE") in ["true", "false"]: course_values = [OS.get_environment("QA_COURSE") == "true"]
+	if OS.get_environment("QA_GUN") in ["single", "burst"]: gun_values = [OS.get_environment("QA_GUN")]
 	basic_only = OS.get_environment("QA_BASIC_ONLY") == "1"
+	if OS.get_environment("QA_REQUIRE_SITUATIONAL") == "0": require_situational = false
 	if not OS.get_environment("QA_SEEDS").is_empty():
 		seed_values = []
 		for value in OS.get_environment("QA_SEEDS").split(","): seed_values.append(int(value))
 	for run_seed in seed_values:
 		for mode in course_values:
 			course_enabled = mode
-			for gun in ["single", "burst"]:
+			for gun in gun_values:
 				await run_scenario(gun, int(run_seed))
 	var combined_usage := {}
 	for report in reports:
 		for id in report.shots_by_ammo:
 			combined_usage[id] = int(combined_usage.get(id, 0)) + int(report.shots_by_ammo[id])
-	if not basic_only:
+	if not basic_only and require_situational:
 		for required_id in ["push", "arc"]:
 			integrity_checks += 1
 			if int(combined_usage.get(required_id, 0)) <= 0:

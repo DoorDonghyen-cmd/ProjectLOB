@@ -119,6 +119,10 @@ func replay(expected: Dictionary) -> bool:
 	check(int(screen.model.s.turns) == int(expected.turns), "turn count agrees")
 	check(int(screen.model.s.shots) == int(expected.shots), "shot count agrees")
 	if expected.has("history"): check(normalized(screen.model.s.history) == normalized(expected.history), "complete UI history agrees")
+	var run_report := screen.find_child("RunReport", true, false) as Label
+	var deck_summary := screen.find_child("FinalDeckSummary", true, false) as Label
+	check(run_report != null and run_report.text.contains("직접") and run_report.text.contains("처치"), "ending exposes run combat report")
+	check(deck_summary != null and deck_summary.text.contains("×"), "ending collapses duplicate deck entries")
 	await capture(("course_" if screen.model.s.course else "ordinary_") + active_gun + "_07_won_actual")
 	reports.append({"course": screen.model.s.course, "gun": active_gun, "won": true, "turns": screen.model.s.turns, "shots": screen.model.s.shots, "reloads": screen.model.s.reloads})
 	if not await click("retry"): return false

@@ -3,6 +3,7 @@ const Model = preload("res://redesign/model.gd")
 const Content = preload("res://redesign/content.gd")
 const Forecast = preload("res://redesign/forecast.gd")
 const Readability = preload("res://redesign/readability.gd")
+const RunInsight = preload("res://redesign/run_insight.gd")
 var checks: Array = []
 var failed := 0
 
@@ -204,6 +205,23 @@ func _run() -> void:
 			course.s.reward_taken = false
 			expected.append_array(Content.COURSE_GRANTS[stage + 1])
 			check(course.choose_reward("skip"), gun + " course skip advances stage" + str(stage))
+
+	# Debrief and reward guidance use only public state, stay pure, and state exact impacts.
+	var insight_fixture = armed("single", ["charge", "precise"], [enemy(9, 1)])
+	collect_actual(insight_fixture)
+	var insight_before = norm(insight_fixture.s)
+	var insight_report: Dictionary = RunInsight.combat_report(insight_fixture.s, 0)
+	check(insight_report.direct == 9 and insight_report.boost_hits == 2 and insight_report.kills == 1, "combat report totals actual amplified hits", insight_report)
+	check(RunInsight.combat_report_line(insight_fixture.s, 0).contains("직접 9") and RunInsight.combat_report_line(insight_fixture.s, 0).contains("증폭 타격 2"), "combat report exposes concise combo result")
+	var threats := [enemy(12, 3, 2, 13), enemy(7, 0, 4, 9, 0, "runner")]
+	var threat: Dictionary = RunInsight.threat_data(threats)
+	check(threat.count == 2 and threat.max_armor == 3 and threat.max_speed == 4 and threat.contact_turns == 3, "next encounter threat summary is exact", threat)
+	check(RunInsight.threat_line(threats) == "위협 · 2개체 · 장갑 최대 3 · 접촉 최소 3턴", "threat line stays compact")
+	check(RunInsight.reward_impact("pierce", insight_fixture.s, threats).contains("장갑 최대 3"), "piercing reward names next armor")
+	check(RunInsight.reward_impact("precise", insight_fixture.s, threats).contains("추가 피해 +4"), "double-hit reward names boost synergy")
+	check(RunInsight.reward_impact("supply", insight_fixture.s, threats).contains("4→5칸"), "supply reward names capacity change")
+	check(RunInsight.deck_summary(["bore", "bore", "arc"]) == "소이탄 ×2 · 전격탄 ×1", "deck summary collapses duplicates")
+	check(norm(insight_fixture.s) == insight_before, "insight helpers never mutate run state")
 
 	# Version 2 saves migrate without losing ownership; removed rounds map to new roles.
 	var source = Model.new()
