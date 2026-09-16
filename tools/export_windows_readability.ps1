@@ -101,10 +101,11 @@ Play-Readability.cmd로 실행합니다. 이 폴더의 qa-profile에 자동 저�
 명중·회피·균열·속성 저항은 없습니다.
 카드를 누른 순서대로 발사합니다. 확정 전 칸 터치는 회수합니다.
 '계산 보기'를 켜고 칸을 누르면 회수 없이 해당 발의 실제 피해 근거를 봅니다.
+탄창 칸은 표적의 처치/남은 HP와 증폭·화상 예상·밀기·전이 결과를 표시합니다.
 확정 후에도 칸을 눌러 계산을 볼 수 있습니다. 기본 수치는 총기와 파츠를 반영합니다.
-개발자 테스트에서 전체 3속성 카드와 화상 전진 정산을 바로 시험할 수 있습니다.
+개발자 테스트의 '조합 결과 연습'에서 대표 조합 세 가지를 한 화면에서 시험할 수 있습니다.
 
-문서: docs/implementation_plan_elemental_ammo_2026-09-16.md
+문서: docs/implementation_plan_combo_payoff_2026-09-16.md
 재생성: tools/export_windows_readability.ps1
 기존 비교판: builds/chain-windows/Play-Chain.cmd
 APK는 사용자 요청 전까지 제작하지 않습니다.

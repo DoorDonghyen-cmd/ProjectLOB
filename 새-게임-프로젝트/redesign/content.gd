@@ -4,7 +4,7 @@ extends RefCounted
 const AMMO := {
 	"basic": {"name": "회수탄", "dmg": 4, "pen": 0, "attribute": "physical", "effect": "", "value": 0, "text": "항상 보급되는 물리 기본탄. 재장전할 때 공급 상한까지 복구됩니다."},
 	"pierce": {"name": "철갑탄", "dmg": 3, "pen": 3, "attribute": "physical", "effect": "", "value": 0, "text": "높은 관통으로 장갑을 곧바로 뚫는 물리탄입니다."},
-	"push": {"name": "충격탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "push", "value": 2, "text": "적을 2m 밀어 거리를 벌리고 다음 표적을 바꿉니다. 탄창당 총 2m까지 밀 수 있습니다."},
+	"push": {"name": "충격탄", "dmg": 3, "pen": 0, "attribute": "physical", "effect": "push", "value": 2, "text": "적을 2m 밀어 거리를 벌리고 다음 표적을 바꿉니다. 탄창당 총 2m까지 밀 수 있습니다."},
 	"bore": {"name": "소이탄", "dmg": 2, "pen": 1, "attribute": "fire", "effect": "burn", "value": 3, "text": "생존한 적에게 화상 3을 남깁니다. 화상은 적의 전진 직전에 1피해를 주고 1 감소합니다."},
 	"charge": {"name": "증폭탄", "dmg": 1, "pen": 0, "attribute": "physical", "effect": "boost", "value": 2, "text": "다음 2발의 타격당 피해를 +2 합니다. 연발탄의 두 타격에도 각각 적용됩니다."},
 	"precise": {"name": "연발탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "double", "value": 2, "text": "같은 적을 2회 타격합니다. 증폭 피해도 두 타격에 각각 적용됩니다."},
@@ -42,8 +42,8 @@ const FORMATIONS := [
 	[[["wall", 17, 3, 1, 20]], [["wall", 12, 2, 1, 20], ["runner", 6, 0, 2, 24]], [["wall", 16, 3, 2, 24]]],
 	[[["evader", 15, 1, 2, 24]], [["evader", 10, 1, 2, 22], ["runner", 7, 0, 2, 26]], [["evader", 16, 0, 2, 24]]],
 	[[["runner", 11, 1, 2, 22], ["wall", 16, 3, 1, 23]], [["wall", 14, 3, 1, 22], ["evader", 11, 1, 2, 24]], [["runner", 12, 0, 3, 26], ["runner", 14, 1, 2, 28]]],
-	[[["evader", 13, 1, 2, 26], ["wall", 17, 3, 2, 28]], [["runner", 13, 1, 3, 26], ["evader", 14, 1, 2, 28]], [["wall", 19, 3, 1, 23], ["runner", 12, 0, 3, 28]]],
-	[[["wall", 20, 3, 2, 28], ["evader", 16, 1, 2, 30]], [["runner", 14, 1, 3, 28], ["wall", 22, 3, 2, 30]], [["evader", 17, 1, 2, 27], ["runner", 18, 1, 2, 30]]],
+	[[["runner", 10, 2, 3, 12], ["wall", 17, 3, 2, 23]], [["runner", 13, 1, 4, 16], ["evader", 14, 1, 2, 24]], [["wall", 19, 3, 1, 21], ["runner", 12, 0, 4, 18]]],
+	[[["runner", 8, 0, 3, 16], ["evader", 5, 0, 2, 18], ["wall", 14, 3, 1, 23]], [["runner", 10, 1, 3, 17], ["wall", 15, 3, 2, 21], ["evader", 5, 0, 2, 19]], [["evader", 8, 1, 2, 16], ["runner", 6, 0, 3, 18], ["wall", 16, 3, 1, 23]]],
 	[[["runner", 12, 1, 3, 27], ["wall", 22, 3, 2, 29], ["evader", 14, 1, 2, 31]], [["wall", 20, 3, 2, 26], ["runner", 13, 0, 3, 29], ["evader", 15, 1, 2, 31]], [["evader", 14, 1, 2, 26], ["wall", 22, 3, 2, 29], ["runner", 14, 1, 3, 31]]],
 ]
 
@@ -79,7 +79,7 @@ static func enemies_for(index: int, run_seed: int = 0, course: bool = false, gun
 	var rng := RandomNumberGenerator.new()
 	rng.seed = run_seed + index * 104729 + 700001
 	var variant := rng.randi_range(0, 2)
-	var offset := rng.randi_range(0, 1)
+	var offset := 0 if course else rng.randi_range(0, 1)
 	var result: Array = []
 	var formation: Array = FORMATIONS[index][variant]
 	if course and index < 6:
@@ -88,8 +88,8 @@ static func enemies_for(index: int, run_seed: int = 0, course: bool = false, gun
 			[["wall", 17, 3, 1, 22]],
 			[["wall", 18, 2, 2, 26]],
 			[["runner", 18, 1, 2, 25]],
-			[["runner", 12, 0, 3, 22], ["wall", 12, 2, 1, 25]],
-			[["runner", 12, 0, 2, 24], ["wall", 14, 2, 2, 26]],
+			[["runner", 8, 2, 3, 6], ["wall", 12, 2, 1, 16]],
+			[["runner", 6, 0, 2, 12], ["evader", 2, 0, 2, 14], ["wall", 10, 2, 1, 18]],
 		][index]
 	for e in formation:
 		result.append({"kind": e[0], "name": ENEMY_NAMES[e[0]], "hp": e[1], "max_hp": e[1], "def": e[2], "speed": e[3], "distance": e[4] + offset, "burn": 0})

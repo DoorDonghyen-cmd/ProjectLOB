@@ -96,10 +96,23 @@ func _run() -> void:
 	# Amplify applies to two following rounds and multiplies through the double-hit round.
 	for gun in Content.GUNS:
 		var m = armed(gun, ["charge", "precise", "basic"], [enemy()])
+		var combo_forecast: Dictionary = Forecast.analyze(m.s)
 		var actual := collect_actual(m)
 		var shots: Array = actual.shots
 		check(shots.size() == 3 and shots[1].hits == 2 and shots[1].math.boost == 2 and shots[2].math.boost == 2, gun + " amplify covers next two rounds", shots)
 		check(not m.s.buff.has("dmg"), gun + " amplify expires after two rounds")
+		check(Forecast.is_combo_link(combo_forecast, 1) and Forecast.is_combo_link(combo_forecast, 2), gun + " forecast links both amplified rounds")
+		check(Forecast.note(combo_forecast, 1) == "증폭 · 2타" and Forecast.note(combo_forecast, 2) == "증폭 적용", gun + " forecast names amplified results")
+	var burst_combo = armed("single", ["charge", "precise"], [enemy(10)])
+	collect_actual(burst_combo)
+	var burst_wrong = armed("single", ["precise", "charge"], [enemy(10)])
+	collect_actual(burst_wrong)
+	check(burst_combo.s.phase == "reward" and burst_wrong.s.enemies[0].hp == 2, "amplify then double-hit converts a two-hp miss into a kill")
+	var armor_combo = armed("single", ["charge", "pierce"], [enemy(7, 3)])
+	collect_actual(armor_combo)
+	var armor_wrong = armed("single", ["pierce", "charge"], [enemy(7, 3)])
+	collect_actual(armor_wrong)
+	check(armor_combo.s.phase == "reward" and armor_wrong.s.enemies[0].hp == 2, "amplify then armor-piercing converts a two-hp miss into a kill")
 
 	# Burn applies after the shot, ticks before movement, and a burn kill prevents movement.
 	var burn_kill = armed("burst", ["bore"], [enemy(3, 0, 2, 5)])
@@ -115,6 +128,16 @@ func _run() -> void:
 	reload_burn.s.magazine = ["basic"]
 	check(reload_burn.reload_magazine(), "burn reload advances")
 	check(reload_burn.s.enemies[0].hp == 1 and reload_burn.s.enemies[0].burn == 0 and reload_burn.s.enemies[0].distance == 6, "three-turn reload resolves three burn ticks before moves", reload_burn.s)
+	var burn_forecast_model = armed("single", ["bore", "push", "basic"], [enemy(40, 0, 2, 20)])
+	var burn_forecast: Dictionary = Forecast.analyze(burn_forecast_model.s)
+	check(Forecast.burn_ticks_for_shot(burn_forecast, 0) == 3 and Forecast.note(burn_forecast, 0) == "화상 3회 예상", "forecast counts actual future burn events", burn_forecast)
+	check(Forecast.note(burn_forecast, 1) == "거리 +2m", "forecast names push distance", burn_forecast)
+	check(Forecast.summary(burn_forecast).contains("A HP") and Forecast.summary(burn_forecast).contains("안전"), "forecast summarizes final hp and distance", Forecast.summary(burn_forecast))
+	var fire_push = armed("single", ["bore", "push", "basic"], [enemy(8, 2, 3, 6)])
+	collect_actual(fire_push)
+	var fire_wrong = armed("single", ["bore", "basic", "basic"], [enemy(8, 2, 3, 6)])
+	collect_actual(fire_wrong)
+	check(fire_push.s.phase == "reward" and fire_wrong.s.phase == "lost" and fire_wrong.s.enemies[0].hp == 1, "incendiary then impact buys the burn turn needed to finish")
 
 	# Electricity hits only the nearest other living enemy for fixed two damage.
 	var electric = armed("burst", ["arc"], [enemy(20, 0, 1, 10), enemy(2, 0, 1, 11, 0, "runner"), enemy(20, 0, 1, 12, 0, "evader")])
@@ -125,12 +148,26 @@ func _run() -> void:
 	var electric_solo = armed("burst", ["arc"], [enemy()])
 	electric_solo.fire()
 	check(electric_solo.s.history.back().detail.results[0].secondary.is_empty(), "electric safely has no solo target")
+	var amplified_arc = armed("single", ["charge", "arc"], [enemy(20, 0, 1, 20), enemy(6, 0, 1, 22, 0, "runner")])
+	var arc_forecast: Dictionary = Forecast.analyze(amplified_arc.s)
+	check(Forecast.note(arc_forecast, 1) == "증폭 · B 전이 −2", "forecast exposes boosted electric combination", arc_forecast)
+	check(Forecast.outcome(arc_forecast.shots[1]).contains("HP"), "forecast outcome exposes remaining hp", arc_forecast.shots[1])
+	var electric_combo = armed("single", ["charge", "arc"], [enemy(8), enemy(2, 0, 1, 102, 0, "runner")])
+	collect_actual(electric_combo)
+	var electric_wrong = armed("single", ["arc", "charge"], [enemy(8), enemy(2, 0, 1, 102, 0, "runner")])
+	collect_actual(electric_wrong)
+	check(electric_combo.s.phase == "reward" and electric_wrong.s.enemies[0].hp == 2, "amplify then electric converts a two-hp miss into a two-target clear")
 
 	# Knockback budget remains two meters for the complete magazine.
 	var push = armed("burst", ["push", "push"], [enemy()])
 	push.fire()
 	var push_results: Array = push.s.history.back().detail.results
 	check(push_results[0].push == 2 and push_results[1].push == 0 and push.s.push_left == 0, "knockback magazine cap two")
+	check(Content.AMMO.push.dmg == 3, "impact round trades only one base damage for distance")
+	var push_lesson: Array = Content.enemies_for(4, 731042, true, "single")
+	var arc_lesson: Array = Content.enemies_for(5, 731042, true, "single")
+	check(push_lesson[0].distance == 6 and push_lesson[0].speed == 3 and push_lesson[0].def == 2, "impact lesson starts at one-shot safety margin")
+	check(arc_lesson.size() == 3 and arc_lesson[1].hp == 2, "electric lesson exposes a fixed-two chain target")
 
 	# Forecast and actual execution agree across seeds, guns, floors, and generated hands.
 	for seed_value in range(1, 81):

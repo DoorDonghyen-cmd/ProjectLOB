@@ -1,5 +1,6 @@
 extends SceneTree
 const Content = preload("res://redesign/content.gd")
+const Forecast = preload("res://redesign/forecast.gd")
 var screen: Control
 var checks: Array = []
 var failed := 0
@@ -147,7 +148,18 @@ func _run() -> void:
 	await capture("elemental_burn_after")
 	check(FileAccess.get_file_as_string(screen.SAVE) == normal_save, "burn shortcut preserves actual save")
 
+	await tap("menu")
+	await tap("dev")
+	await tap("debug_combo_forecast")
+	check(screen.debug_session and screen.model.s.plan == ["bore", "push", "charge", "precise", "arc"], "combo shortcut opens all three canonical links")
+	check(screen.magazine_view.forecast.shots.size() == 5 and screen.calculation_label.text.contains("순서 효과"), "combo shortcut exposes sequence evidence")
+	check(Forecast.note(screen.magazine_view.forecast, 0).contains("화상") and Forecast.note(screen.magazine_view.forecast, 1).contains("거리"), "combo view exposes fire and push link")
+	check(screen.magazine_view.forecast.shots[3].math.boost == 2 and Forecast.note(screen.magazine_view.forecast, 4).contains("전이"), "combo view exposes amplified burst and electric links")
+	check(screen.preview_label.text.contains("HP") and screen.preview_label.text.contains("안전"), "combo view exposes final hp and safety margin")
+	await capture("combo_forecast")
+	check(FileAccess.get_file_as_string(screen.SAVE) == normal_save, "combo shortcut preserves actual save")
+
 	var file := FileAccess.open("user://readability_visual.json", FileAccess.WRITE)
-	file.store_string(JSON.stringify({"checks": checks, "failed": failed, "scope": "PC rendered synthetic touch, simplified first lesson, elemental cards, burn timing and late layout; no APK"}, "\t"))
+	file.store_string(JSON.stringify({"checks": checks, "failed": failed, "scope": "PC rendered synthetic touch, simplified first lesson, elemental cards, combo forecast, burn timing and late layout; no APK"}, "\t"))
 	print("READABILITY VISUAL: %d checks / %d failed" % [checks.size(), failed])
 	quit(1 if failed else 0)

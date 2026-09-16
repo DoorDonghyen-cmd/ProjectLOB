@@ -251,6 +251,17 @@ func _run() -> void:
 			course_enabled = mode
 			for gun in ["single", "burst"]:
 				await run_scenario(gun, int(run_seed))
+	var combined_usage := {}
+	for report in reports:
+		for id in report.shots_by_ammo:
+			combined_usage[id] = int(combined_usage.get(id, 0)) + int(report.shots_by_ammo[id])
+	if not basic_only:
+		for required_id in ["push", "arc"]:
+			integrity_checks += 1
+			if int(combined_usage.get(required_id, 0)) <= 0:
+				integrity_failures.append({"label": "campaign uses situational round " + required_id, "usage": combined_usage.duplicate(true)})
+				printerr("INTEGRITY FAIL campaign never uses " + required_id)
+	write_report()
 	print("READABILITY CAMPAIGN COMPLETE reports=%d rejected=%d checks=%d failed=%d output=%s" % [reports.size(), failed_commands, integrity_checks, integrity_failures.size(), output_dir])
 	quit(1 if failed_commands > 0 or not integrity_failures.is_empty() else 0)
 

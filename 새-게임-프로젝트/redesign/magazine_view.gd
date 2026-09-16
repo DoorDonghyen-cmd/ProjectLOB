@@ -37,9 +37,15 @@ func _draw() -> void:
 		var x := width * i
 		var rect := Rect2(x + 3, 4, width - 7, 140)
 		draw_style_box(_box(Color("263f48") if i == 0 else Color("101c24")), rect)
+		if not forecast.is_empty() and Forecast.is_combo_link(forecast, i):
+			draw_rect(rect.grow(-2), Color("a9dfbf"), false, 2)
 		if i == selected_index and i < stack.size(): draw_rect(rect, Color("a9dfbf"), false, 2)
 		if changed_slots.has(i) and highlight > 0: draw_rect(rect, Color(0.66, 0.87, 0.75, highlight * 0.2))
 		draw_string(FONT, Vector2(x + 9, 25), str(i + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 17, Color("94acae"))
+		if i > 0 and i < stack.size():
+			var arrow_color := Color("a9dfbf") if Forecast.is_combo_link(forecast, i) else Color("6f8790")
+			draw_rect(Rect2(x - 6, 13, 15, 19), Color("101920"))
+			draw_string(FONT, Vector2(x - 5, 29), "›", HORIZONTAL_ALIGNMENT_CENTER, 13, 18, arrow_color)
 		if i < stack.size():
 			var id: String = stack[i]
 			if i != stack.size() - 1 or incoming.is_empty():
@@ -54,11 +60,7 @@ func _draw() -> void:
 					color = Color("a9dfbf") if shot.damage > 0 else Color("f2a38d")
 				draw_string(FONT, Vector2(x + 4, 111), value, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 17, color)
 			if not forecast.is_empty() and i < forecast.shots.size():
-				var combos: Array = forecast.shots[i].get("combo", [])
-				var note := str(combos.back()) if not combos.is_empty() else ("2회 타격" if id == "precise" else "")
-				var secondary: Array = forecast.shots[i].get("secondary", [])
-				if not secondary.is_empty(): note = "%s 전이 −%d" % [Forecast.tag(secondary[0].target), secondary[0].damage]
-				elif id == "precise" and combos.has("증폭"): note = "증폭 · 2타"
+				var note := Forecast.note(forecast, i)
 				draw_string(FONT, Vector2(x + 4, 133), note, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, Ammo.COLORS[id])
 		else:
 			draw_string(FONT, Vector2(x + 4, 65), "·", HORIZONTAL_ALIGNMENT_CENTER, width - 8, 32, Color("506570"))

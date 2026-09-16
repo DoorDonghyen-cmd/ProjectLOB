@@ -284,8 +284,7 @@ func _combat() -> void:
 	preview_label = _label(queue, _preview_text(preview), 18, ACCENT if int(preview.get("damage", 0)) > 0 else MUTED)
 	preview_label.tooltip_text = str(preview.get("text", "누른 순서대로 발사합니다. 피해·거리·속성 효과를 함께 설계하세요."))
 	if not stack.is_empty():
-		preview_label.text = "" + ("전탄 후 적 접근" if model.s.gun == "burst" else "매 발 후 적 접근")
-		if combat_forecast.phase == "lost": preview_label.text = "연속 사격: %d발 뒤 접촉 위험" % combat_forecast.shots.size()
+		preview_label.text = Forecast.summary(combat_forecast)
 		preview_label.tooltip_text = "현재 탄창을 중간 재장전 없이 계속 발사할 때의 예상입니다. 보존은 전투 종료로 미발사, 중단은 접촉 패배로 미발사입니다.\n같은 거리는 A → B → C 순서로 조준합니다."
 	if not stack.is_empty(): _inspect_slot(clampi(selected_slot, 0, stack.size() - 1))
 	var actions := VBoxContainer.new()
@@ -500,6 +499,8 @@ func _inspect_slot(index: int) -> void:
 		var shot: Dictionary = combat_forecast.shots[index]
 		calculation_label.add_theme_color_override("font_color", INK)
 		calculation_label.text = "%d번 %s → " % [index + 1, Content.AMMO[shot.id].name] + Readability.explain(shot)
+		var sequence_note := Forecast.note(combat_forecast, index)
+		if not sequence_note.is_empty(): calculation_label.text += "\n순서 효과 · " + sequence_note
 
 func _slot_action(index: int) -> void:
 	if busy: return
@@ -605,6 +606,27 @@ func _developer() -> void:
 		model.load_round("bore")
 		model.confirm()
 		debug_session = true
+		page = "run"
+		column.get_meta("dialog").queue_free()
+		redraw()
+	)
+	_button(column, "조합 결과 연습", "debug_combo_forecast", func():
+		model.start("single", 731042)
+		model.s.floor = 6
+		model.s.part = "supply"
+		model.begin_encounter()
+		model.s.enemies = [
+			{"kind": "runner", "name": Content.ENEMY_NAMES.runner, "hp": 30, "max_hp": 30, "def": 1, "speed": 2, "distance": 18, "burn": 0},
+			{"kind": "evader", "name": Content.ENEMY_NAMES.evader, "hp": 6, "max_hp": 6, "def": 0, "speed": 2, "distance": 21, "burn": 0},
+		]
+		model.s.deck = ["bore", "push", "charge", "precise", "arc"]
+		model.s.hand = model.s.deck.duplicate()
+		model.s.draw = []
+		model.s.discard = []
+		for id in ["bore", "push", "charge", "precise", "arc"]: model.load_round(id)
+		debug_session = true
+		selected_slot = 3
+		inspect_slots = true
 		page = "run"
 		column.get_meta("dialog").queue_free()
 		redraw()
