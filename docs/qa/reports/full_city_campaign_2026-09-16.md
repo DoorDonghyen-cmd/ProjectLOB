@@ -60,3 +60,11 @@ UI 테스트는로컬 실행 결과가 없으면 보관된 실제 명령 파일�
 ![최종6칸 탄창](full_city_campaign_2026-09-16_assets/city_six_slot_final_burst.png)
 
 최종 아트·사운드,사람의 재미/호흡·선택 가치,실제 갤럭시 성능 확인은별도 확인이 필요하다. APK와원격푸시는 진행하지 않았다.
+
+## Windows 플레이 파일
+
+- 실행:`builds/city-windows/Play-City.cmd`
+- 코드 커밋:`f075d3110ba28eddca932d72c4f107e175a435ce`
+- 파일:`LastOnBoard-city.exe`,126,745,464바이트
+- SHA-256:`8D2BF0F2CC4FD244B84B462461DA630FE3DFDA51537CBF1341F02B48B9214977`
+- clean worktree 내보내기와격리 프로필 headless 기동 통과. 문서 갱신 커밋은게임 소스를 변경하지 않는다.
