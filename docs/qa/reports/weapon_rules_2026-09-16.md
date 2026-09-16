@@ -13,6 +13,7 @@
 | 도시 실제 UI 완주 | 6,616 / 실패 0, 5완주 | 실제 버튼2,160입력, 무기별 전체 도시 재생, 산개 저장 RNG 결과와 연출 상태 일치 |
 | 도시 최종 용량 UI | 760 / 실패 0 | 실제 경로에서 만든5/6/7칸, PC·가로폰, 범위 문구 폭과 발사/재장전 접근 |
 | 기존 제작본 회귀 | 3,730 / 실패 0 / 기존 경보 3 | 기존 production 테스트 묶음 |
+| Windows 납품 | 내보내기·headless·OpenGL 기동 통과 | 소스bbde420, 실제 창60프레임 종료코드0, 별도 APPDATA |
 
 도시 실제 버튼 재생은 다섯 무기의 안전 경로를35층까지 완주했다. 무기/최대 용량 UI는 이후 표시 수정을 적용해 재실행했다. 전투 모델·경로의 정산은 동일하다.
 
@@ -65,3 +66,5 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/run_city_checks.ps1 -M
 ```
 
 Godot4.7의 이 환경에서 root certificate store 오류가 발생하지만 스크립트 오류는 없다. 최초 개발 중 잘못된 tooltip 변수의 컴파일 실패와 잘못된 테스트용 소유 탄환 구성은 수정한 뒤 새 검증을 실행했다. 통과 기록은 수정 후 결과만 사용했다. APK/원격 푸시는 수행하지 않았다.
+
+Windows 실행 파일126,761,344바이트, SHA-256 `2A9E19544D15B934FCCF881915F836E36483528254EBE48399A378245C51B403`. [빌드 명세](weapon_rules_2026-09-16_assets/build_manifest.json), [그래픽 창 기동](weapon_rules_2026-09-16_assets/windows_gui_smoke.json). PowerShell GUI 기동 검사에서 처음 null 종료코드를 실패로 해석한 검사식은 프로세스 Handle을 먼저 확보하도록 고친 뒤 실제 종료코드0을 확인했다. 제품 오류는 없었다.

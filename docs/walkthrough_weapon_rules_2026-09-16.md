@@ -18,6 +18,8 @@
 
 [QA 보고서](qa/reports/weapon_rules_2026-09-16.md)에 원본과 독립 검토 범위를 기록했다. 규칙3,120/0, 탄환·예측28,014/0, 실제 무기UI271/0, 도시10완주22,040/0, 실제 도시UI6,616/0·5완주·2,160입력, 최종 용량UI760/0, 기존 회귀3,730/0/경보3을 확인했다. 자동 경로 탐색기는 미래 패/RNG에 접근하므로 사람의 재미·실제 승률·최종 균형은 별도 비교한다.
 
-플레이 파일: `builds/city-windows/Play-City.cmd`. 같은 폴더의 독립qa-profile에 저장한다. 최신5종을 선택하고 맵·상점 포함35층 도시를 시작하거나 탄환 기초 훈련을 선택할 수 있다. 재생성은 `tools/export_windows_readability.ps1 -BuildKind city`다. 빌드의 소스 커밋/해시는 내보내기 후 이 문서에 기록한다. APK/원격 푸시는 수행하지 않았다.
+플레이 파일: [Play-City.cmd](../builds/city-windows/Play-City.cmd). 같은 폴더의 독립qa-profile에 저장한다. 최신5종을 선택하고 맵·상점 포함35층 도시를 시작하거나 탄환 기초 훈련을 선택할 수 있다. 재생성은 `tools/export_windows_readability.ps1 -BuildKind city`다. APK/원격 푸시는 수행하지 않았다.
+
+Windows 납품: 소스 `bbde420cee76004e73a04bac920d8a572e427383`, 작업 트리 깨끗한 상태에서 내보냄. 실행 파일126,761,344바이트, SHA-256 `2A9E19544D15B934FCCF881915F836E36483528254EBE48399A378245C51B403`. Godot4.7 headless 시작과 실제 OpenGL 창60프레임 기동/종료코드0을 격리 APPDATA에서 확인했다. 이후 커밋은 납품 기록 문서만 갱신한다. [빌드 명세](qa/reports/weapon_rules_2026-09-16_assets/build_manifest.json).
 
 다음 사람 확인: 증강 한 발 효율과 추가 접근 비용, 쇄도 보너스와 재장전2턴, 산개 분산 위험과5→7칸 보상, 압쇄 지속·전이 빌드 체감. 공통 패/같은 시드 비교로 출발 수치를 조율한다.
