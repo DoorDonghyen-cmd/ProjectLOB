@@ -2,7 +2,7 @@ extends RefCounted
 ## One serializable state; commands validate before mutation. Preview executes the
 ## same shot resolver on a copy and never changes live state or RNG.
 const Content = preload("res://redesign/content.gd")
-const VERSION := 2
+const VERSION := 3
 var s: Dictionary = {}
 
 func start(gun_id: String, run_seed: int, course: bool = false) -> void:
@@ -13,8 +13,6 @@ func start(gun_id: String, run_seed: int, course: bool = false) -> void:
 func begin_encounter() -> void:
 	s.phase = "plan"
 	s.enemies = Content.enemies_for(int(s.floor), int(s.seed), s.get("course", false), str(s.gun))
-	if s.part == "coil":
-		for enemy in s.enemies: enemy.crack = 1
 	s.hand = []
 	s.draw = s.deck.duplicate()
 	s.discard = []
@@ -102,18 +100,19 @@ func fire() -> bool:
 		if id != "basic":
 			s.discard.append(id)
 	s.turns += 1
+	var advance_events: Array = []
 	if target_index() < 0:
 		s.phase = "won" if int(s.floor) == Content.ENCOUNTERS.size() - 1 else "reward"
 		s.reward_taken = false
 	else:
-		_advance(1)
+		advance_events = _advance(1)
 	var lines: PackedStringArray = []
 	for result in results:
 		lines.append(result.text)
 	s.message = "\n".join(lines)
 	if s.phase == "lost":
 		s.message += "\n적이 0m에 도달했습니다. 같은 시드로 다시 설계할 수 있습니다."
-	_record("fire", {"results": results, "phase": s.phase})
+	_record("fire", {"results": results, "advance_events": advance_events, "phase": s.phase})
 	return true
 
 func reload_magazine() -> bool:
@@ -126,9 +125,11 @@ func reload_magazine() -> bool:
 	s.buff = {}
 	s.reloads += 1
 	var cost := reload_cost()
-	_advance(cost, true)
+	var advance_events := _advance(cost, true)
 	# Count each actual elapsed turn, including a lethal partial reload.
-	if s.phase != "lost":
+	if s.phase in ["reward", "won"]:
+		s.message = "화상이 전진 전에 마지막 적을 처치했습니다."
+	elif s.phase != "lost":
 		s.phase = "plan"
 		s.supply = supply_capacity()
 		s.push_left = 2
@@ -137,22 +138,39 @@ func reload_magazine() -> bool:
 		s.message = "재장전 완료 · %d턴 경과 · 남은 패 유지, 빈 자리 보충" % cost
 	else:
 		s.message = "재장전 도중 적이 0m에 도달했습니다."
-	_record("reload", {"cost": cost, "phase": s.phase})
+	_record("reload", {"cost": cost, "advance_events": advance_events, "phase": s.phase})
 	return true
 
-func _advance(turn_count: int, count_turns: bool = false) -> void:
+func _advance(turn_count: int, count_turns: bool = false) -> Array:
+	var events: Array = []
 	for i in range(turn_count):
 		if count_turns:
 			s.turns += 1
-		for e in s.enemies:
+		# Every burning enemy resolves before any survivor moves this turn.
+		for enemy_index in range(s.enemies.size()):
+			var e: Dictionary = s.enemies[enemy_index]
 			if int(e.hp) <= 0:
 				continue
-			e.distance = maxi(0, int(e.distance) - maxi(0, int(e.speed) - int(e.slow)))
-			e.slow = 0
+			if int(e.get("burn", 0)) > 0:
+				var hp_before := int(e.hp)
+				e.hp = maxi(0, hp_before - 1)
+				e.burn = maxi(0, int(e.burn) - 1)
+				events.append({"turn": i, "target": enemy_index, "kind": "burn", "damage": hp_before - int(e.hp), "hp": e.hp, "burn": e.burn})
+		if target_index() < 0:
+			s.phase = "won" if int(s.floor) == Content.ENCOUNTERS.size() - 1 else "reward"
+			s.reward_taken = false
+			break
+		for enemy_index in range(s.enemies.size()):
+			var e: Dictionary = s.enemies[enemy_index]
+			if int(e.hp) <= 0: continue
+			var distance_before := int(e.distance)
+			e.distance = maxi(0, distance_before - int(e.speed))
+			events.append({"turn": i, "target": enemy_index, "kind": "move", "from": distance_before, "to": e.distance})
 			if int(e.distance) == 0:
 				s.phase = "lost"
 		if s.phase == "lost":
 			break
+	return events
 
 func target_index() -> int:
 	var selected := -1
@@ -169,66 +187,52 @@ func _shot(id: String) -> Dictionary:
 	if index < 0: return {}
 	var e: Dictionary = s.enemies[index]
 	var spec: Dictionary = Content.AMMO[id]
-	var crack := int(e.get("crack", 0))
 	var dmg_buff := int(s.buff.get("dmg", 0))
-	var acc := int(spec.acc) + (2 if s.part == "lens" else 0) + int(s.buff.get("acc", 0))
-	var pen := int(spec.pen)
+	var pen := Content.penetration(id, s)
 	var raw := int(spec.dmg) + int(Content.GUNS[s.gun].bonus) + dmg_buff
 	var combo: Array = []
-	if dmg_buff > 0: combo.append("강화")
-	if int(s.buff.get("acc", 0)) > 0: combo.append("조준")
-	if spec.effect == "shatter" and crack > 0:
-		raw += crack * int(spec.value)
-		combo.append("파쇄 ×%d" % crack)
-	if spec.effect == "finish" and int(e.hp) * 2 <= int(e.max_hp):
-		raw += int(spec.value)
-		combo.append("마무리")
-	var armor := maxi(0, int(e.def) - crack - pen)
-	var evasion := maxi(0, int(e.eva) - acc)
-	var per_hit := maxi(1, raw - armor - evasion)
+	if dmg_buff > 0: combo.append("증폭")
+	var armor := maxi(0, int(e.def) - pen)
+	var per_hit := maxi(1, raw - armor)
 	var hits := 2 if spec.effect == "double" else 1
 	var hp_before := int(e.hp)
-	var math := {"base": int(spec.dmg) + int(Content.GUNS[s.gun].bonus), "boost": dmg_buff, "special": raw - int(spec.dmg) - int(Content.GUNS[s.gun].bonus) - dmg_buff, "raw": raw, "armor": armor, "evasion": evasion, "per_hit": per_hit, "hits": hits, "hp_before": hp_before, "armor_before": int(e.def), "crack_before": crack, "evasion_before": int(e.eva)}
+	var math := {"base": int(spec.dmg) + int(Content.GUNS[s.gun].bonus), "boost": dmg_buff, "raw": raw, "armor": armor, "per_hit": per_hit, "hits": hits, "hp_before": hp_before, "armor_before": int(e.def)}
 	var damage := mini(hp_before, per_hit * hits)
 	e.hp -= damage
-	for kind in ["dmg", "acc"]:
-		if s.buff.has(kind):
-			s.buff[kind + "_left"] -= 1
-			if s.buff[kind + "_left"] <= 0:
-				s.buff.erase(kind)
-				s.buff.erase(kind + "_left")
-	if spec.effect in ["dmg", "acc"]:
-		s.buff[spec.effect] = spec.value
-		s.buff[str(spec.effect) + "_left"] = 2
-		combo.append("다음 2발 " + ("강화" if spec.effect == "dmg" else "조준"))
-	if spec.effect == "shatter": e.crack = 0
-	if spec.effect == "crack" and int(e.hp) > 0:
-		e.crack = mini(3, crack + int(spec.value))
-		combo.append("균열 %d" % e.crack)
+	if s.buff.has("dmg"):
+		s.buff.dmg_left -= 1
+		if s.buff.dmg_left <= 0:
+			s.buff.erase("dmg")
+			s.buff.erase("dmg_left")
+	if spec.effect == "boost":
+		s.buff.dmg = spec.value
+		s.buff.dmg_left = 2
+		combo.append("다음 2발 증폭")
+	var burn_added := 0
+	if spec.effect == "burn" and int(e.hp) > 0:
+		burn_added = Content.burn_amount(id, s)
+		e.burn = mini(6, int(e.get("burn", 0)) + burn_added)
+		combo.append("화상 %d" % e.burn)
 	var pushed := 0
-	var slowed := 0
 	if int(e.hp) > 0:
 		if spec.effect == "push":
 			pushed = mini(int(spec.value), int(s.push_left))
 			e.distance += pushed
 			s.push_left -= pushed
-		elif spec.effect == "slow":
-			slowed = int(spec.value)
-			e.slow = maxi(int(e.slow), slowed)
 	var secondary: Array = []
 	if spec.effect == "arc":
 		var other := -1
 		for i in range(s.enemies.size()):
 			if i != index and s.enemies[i].hp > 0 and (other < 0 or s.enemies[i].distance < s.enemies[other].distance): other = i
 		if other >= 0:
-			var amount := mini(int(s.enemies[other].hp), 3 if crack > 0 else 1)
+			var amount := mini(int(s.enemies[other].hp), int(spec.value))
 			s.enemies[other].hp -= amount
 			secondary.append({"target": other, "damage": amount, "hp": s.enemies[other].hp})
-			combo.append("도약 +%d" % amount)
+			combo.append("전이 %d" % amount)
 	var description := "%s → %s: %d피해" % [spec.name, e.name, damage]
 	if not combo.is_empty(): description += " · " + " / ".join(combo)
 	if e.hp == 0: description += " · 처치"
-	return {"id": id, "target": index, "hit": true, "graze": evasion > 0, "damage": damage, "hits": hits, "acc": acc, "pen": pen, "hp": e.hp, "crack": int(e.get("crack", 0)), "push": pushed, "slow": slowed, "secondary": secondary, "math": math, "combo": combo, "text": description}
+	return {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description}
 
 func preview() -> Dictionary:
 	var stack: Array = s.plan if s.phase == "plan" else s.magazine
@@ -241,8 +245,16 @@ func preview() -> Dictionary:
 func movement_preview(turn_count: int) -> Array:
 	var result: Array = []
 	for e in s.enemies:
-		var first: int = maxi(0, int(e.speed) - int(e.slow))
-		result.append(maxi(0, int(e.distance) - first - int(e.speed) * (turn_count - 1)))
+		var hp := int(e.hp)
+		var burn := int(e.get("burn", 0))
+		var distance := int(e.distance)
+		for i in range(turn_count):
+			if hp <= 0: break
+			if burn > 0:
+				hp -= 1
+				burn -= 1
+			if hp > 0: distance = maxi(0, distance - int(e.speed))
+		result.append(distance)
 	return result
 
 func choose_reward(id: String, remove_id: String = "") -> bool:
@@ -339,7 +351,11 @@ func restore_run(path: String) -> bool:
 	if parser.parse(FileAccess.get_file_as_string(path)) != OK:
 		return false
 	var parsed = parser.data
-	if not parsed is Dictionary or parsed.get("version", -1) != VERSION:
+	if not parsed is Dictionary:
+		return false
+	if int(parsed.get("version", -1)) == 2:
+		parsed = _migrate_v2(parsed)
+	elif int(parsed.get("version", -1)) != VERSION:
 		return false
 	if not parsed.has("course"): parsed.course = false
 	if not parsed.course is bool: return false
@@ -363,13 +379,12 @@ func restore_run(path: String) -> bool:
 	if not parsed.history is Array or not parsed.message is String or not parsed.reward_taken is bool or not parsed.buff is Dictionary:
 		return false
 	for key in parsed.buff:
-		if not key in ["dmg", "acc", "dmg_left", "acc_left"] or not _whole(parsed.buff[key], 0, 10): return false
+		if not key in ["dmg", "dmg_left"] or not _whole(parsed.buff[key], 0, 10): return false
 	var limit: int = int(Content.GUNS[parsed.gun].capacity) + (1 if parsed.part == "supply" else 0)
 	var supply_limit := limit
 	if not _whole(parsed.exchange_left, 0, 1): return false
-	for kind in ["dmg", "acc"]:
-		if parsed.buff.has(kind) != parsed.buff.has(kind + "_left"): return false
-		if parsed.buff.has(kind) and not _whole(parsed.buff[kind + "_left"], 1, 2): return false
+	if parsed.buff.has("dmg") != parsed.buff.has("dmg_left"): return false
+	if parsed.buff.has("dmg") and not _whole(parsed.buff.dmg_left, 1, 2): return false
 	if not _whole(parsed.supply, 0, supply_limit) or not _whole(parsed.push_left, 0, 2): return false
 	for key in ["deck", "hand", "draw", "discard", "magazine", "plan"]:
 		if not parsed[key] is Array:
@@ -393,14 +408,36 @@ func restore_run(path: String) -> bool:
 	if not parsed.enemies is Array or parsed.enemies.is_empty() or parsed.enemies.size() > 3: return false
 	for enemy in parsed.enemies:
 		if not enemy is Dictionary: return false
-		for key in ["kind", "name", "hp", "max_hp", "def", "eva", "speed", "distance", "slow", "crack"]:
+		for key in ["kind", "name", "hp", "max_hp", "def", "speed", "distance", "burn"]:
 			if not enemy.has(key): return false
 		if not Content.ENEMY_NAMES.has(enemy.kind) or not enemy.name is String: return false
-		for key in ["hp", "max_hp", "def", "eva", "speed", "distance", "slow", "crack"]:
+		for key in ["hp", "max_hp", "def", "speed", "distance", "burn"]:
 			if not _whole(enemy[key], 0, 1000000): return false
-		if enemy.hp > enemy.max_hp or not _whole(enemy.crack, 0, 3): return false
+		if enemy.hp > enemy.max_hp or not _whole(enemy.burn, 0, 6): return false
 	s = parsed
 	return true
+
+func _migrate_v2(old_state: Dictionary) -> Dictionary:
+	var migrated: Dictionary = old_state.duplicate(true)
+	var replacements := {"mark": "charge", "slow": "push", "finish": "pierce"}
+	for key in ["deck", "hand", "draw", "discard", "magazine", "plan"]:
+		if migrated.get(key) is Array:
+			for i in range(migrated[key].size()):
+				var old_id := str(migrated[key][i])
+				if replacements.has(old_id): migrated[key][i] = replacements[old_id]
+	if migrated.get("buff") is Dictionary:
+		migrated.buff.erase("acc")
+		migrated.buff.erase("acc_left")
+	if migrated.get("enemies") is Array:
+		for enemy in migrated.enemies:
+			if not enemy is Dictionary: continue
+			enemy.erase("eva")
+			enemy.erase("slow")
+			enemy.erase("crack")
+			enemy.burn = 0
+			if Content.ENEMY_NAMES.has(enemy.get("kind", "")): enemy.name = Content.ENEMY_NAMES[enemy.kind]
+	migrated.version = VERSION
+	return migrated
 
 func _whole(value: Variant, minimum: int, maximum: int) -> bool:
 	if not (value is int or value is float): return false

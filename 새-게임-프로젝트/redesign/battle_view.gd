@@ -78,7 +78,7 @@ func _enemy_at(point: Vector2) -> int:
 
 func _enemy_text(index: int) -> String:
 	var e: Dictionary = enemies[index]
-	return "%s · %s\nHP %d/%d · 장갑 %d · 회피 %d\n거리 %dm · 속도 %d · 다음 접근 %dm\n클릭: 상세 정보 (자동 조준 유지)" % [Forecast.tag(index), e.name, e.hp, e.max_hp, e.def, e.eva, roundi(e.distance), e.speed, maxi(0, int(e.speed) - int(e.slow))]
+	return "%s · %s\nHP %d/%d · 장갑 %d · 화상 %d\n거리 %dm · 접근 %dm\n클릭: 상세 정보 (자동 조준 유지)" % [Forecast.tag(index), e.name, e.hp, e.max_hp, e.def, e.burn, roundi(e.distance), e.speed]
 
 func _get_tooltip(at_position: Vector2) -> String:
 	var index := _enemy_at(at_position)
@@ -142,21 +142,18 @@ func _draw() -> void:
 			draw_rect(Rect2(pos.x - 23, pos.y - 33, 46 * float(e.hp) / float(e.max_hp), 4), Color("b3db9d"))
 			var distance_x := pos.x + 34 if pos.x + 155 < end else pos.x - 130
 			draw_string(FONT, Vector2(distance_x, pos.y + 24), "%s · %dm" % [Forecast.tag(i), roundi(e.distance)], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("e6e6d9"))
-			if e.slow > 0:
-				draw_arc(pos, 22, 0, TAU, 20, Ammo.COLORS.slow, 3)
-			for mark_index in range(int(e.get("crack", 0))):
-				var mark_pos := pos + Vector2(29, -18 + mark_index * 10)
-				draw_line(mark_pos, mark_pos + Vector2(5, 5), Ammo.COLORS.bore, 3)
-				draw_line(mark_pos + Vector2(5, 5), mark_pos + Vector2(0, 9), Ammo.COLORS.bore, 3)
+			if int(e.get("burn", 0)) > 0:
+				var flame := pos + Vector2(30, -13)
+				draw_colored_polygon(PackedVector2Array([flame + Vector2(0, -8), flame + Vector2(6, 0), flame + Vector2(3, 8), flame + Vector2(-4, 6), flame + Vector2(-6, 0)]), Ammo.ATTRIBUTE_COLORS.fire)
 		else:
 			draw_line(pos + Vector2(-12, -12), pos + Vector2(12, 12), Color("52716b"), 3)
 			draw_line(pos + Vector2(-12, 12), pos + Vector2(12, -12), Color("52716b"), 3)
 		var x := size.x - 239
 		draw_string(FONT, Vector2(x, pos.y - 9), Forecast.tag(i) + " · " + str(e.name) + "  HP %d" % e.hp, HORIZONTAL_ALIGNMENT_LEFT, 233, 17, Color("a9dfbf") if i == target else Color("dce0d8"))
 		draw_string(FONT, Vector2(x, pos.y + 14), Readability.enemy_stats(e, display_state), HORIZONTAL_ALIGNMENT_LEFT, 233, 16, Color("8ca8b4"))
-		if int(e.get("crack", 0)) > 0:
+		if int(e.get("burn", 0)) > 0:
 			var status_x := 34 if pos.x + 115 < end else -110
-			draw_string(FONT, pos + Vector2(status_x, -17), "균열%d" % e.crack, HORIZONTAL_ALIGNMENT_LEFT, 80, 15, Ammo.COLORS.bore)
+			draw_string(FONT, pos + Vector2(status_x, -17), "화상%d" % e.burn, HORIZONTAL_ALIGNMENT_LEFT, 80, 15, Ammo.ATTRIBUTE_COLORS.fire)
 	if not first_shot.is_empty() and first_shot.target >= 0:
 		var p := enemy_position(first_shot.target)
 		var label_x := p.x + 34 if p.x + 155 < end else p.x - 130
@@ -172,7 +169,7 @@ func _draw() -> void:
 		for secondary in chain_targets:
 			var other_point := enemy_position(int(secondary.target))
 			draw_line(point, other_point, Color(Ammo.COLORS.arc, 1.0 - pulse), 3)
-			draw_string(FONT, other_point + Vector2(30, 0), "도약 −%d" % secondary.damage, HORIZONTAL_ALIGNMENT_LEFT, 130, 18, Ammo.COLORS.arc)
+			draw_string(FONT, other_point + Vector2(30, 0), "전이 −%d" % secondary.damage, HORIZONTAL_ALIGNMENT_LEFT, 130, 18, Ammo.COLORS.arc)
 		draw_arc(point, 12 + pulse * 20, 0, TAU, 24, Color(float_color, 1.0 - pulse), 3)
 		var text_x := point.x + 34 if point.x + 204 < end else point.x - 170
 		draw_string(FONT, Vector2(text_x, point.y + 3 - pulse * 7), float_text, HORIZONTAL_ALIGNMENT_LEFT, 170, 22, float_color)
@@ -210,7 +207,7 @@ func _animate(duration: float, callback: Callable) -> void:
 		callback.call(minf(1.0, elapsed / duration))
 		queue_redraw()
 
-func play_action(before: Dictionary, after: Dictionary, results: Array, reloading: bool) -> void:
+func play_action(before: Dictionary, after: Dictionary, results: Array, advance_events: Array, reloading: bool) -> void:
 	inspection_enabled = false
 	first_shot = {}
 	sync(before)
@@ -228,8 +225,7 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, reloadin
 		bullet = ""
 		var enemy: Dictionary = enemies[target]
 		enemy.hp = result.hp
-		enemy.crack = result.get("crack", 0)
-		enemy.slow = maxi(int(enemy.slow), int(result.slow))
+		enemy.burn = result.get("burn", 0)
 		chain_targets = result.get("secondary", []).duplicate(true)
 		for secondary in chain_targets:
 			enemies[secondary.target].hp = secondary.hp
@@ -246,6 +242,21 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, reloadin
 		await _animate(0.32, func(t: float): pulse = t; enemy.distance = lerpf(distance, distance + float(result.push), t))
 		float_target = -1
 		chain_targets.clear()
+		pulse = 0.0
+	for event in advance_events:
+		if str(event.kind) != "burn": continue
+		var burn_target := int(event.target)
+		if burn_target < 0 or burn_target >= enemies.size(): continue
+		enemies[burn_target].hp = event.hp
+		enemies[burn_target].burn = event.burn
+		float_target = burn_target
+		float_text = "화상 −%d" % event.damage
+		if int(event.hp) == 0: float_text += " 처치"
+		float_color = Ammo.ATTRIBUTE_COLORS.fire
+		caption = "화상 · 전진 직전 피해"
+		visual_events.append({"kind": "burn", "target": burn_target, "damage": event.damage, "hp": event.hp, "burn": event.burn})
+		await _animate(0.28, func(t: float): pulse = t)
+		float_target = -1
 		pulse = 0.0
 	# Only after the complete burst do survivors advance, exactly as the model did.
 	var starts: Array = enemies.duplicate(true)

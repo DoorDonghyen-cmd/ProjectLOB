@@ -1,7 +1,9 @@
 extends Control
-const COLORS := {"basic": Color("d2d6d5"), "pierce": Color("dcbc73"), "precise": Color("b1df98"), "bore": Color("79b6f2"), "mark": Color("e6a178"), "charge": Color("e48bc6"), "push": Color("69deeb"), "slow": Color("838bf5"), "arc": Color("c5aff5"), "finish": Color("f28c89")}
-const SHORT := {"basic": "회수", "pierce": "파쇄", "precise": "연속", "bore": "균열", "mark": "조준", "charge": "강화", "push": "충격", "slow": "점착", "arc": "도약", "finish": "마무리"}
-const HINT := {"basic": "재장전 시 공급", "pierce": "균열 소비 → 폭딜", "precise": "같은 적 2회 타격", "bore": "균열 +2 → 장갑↓", "mark": "다음 2발 명중↑", "charge": "다음 2발 피해↑", "push": "2m 밀어 표적 전환", "slow": "다음 접근 −2m", "arc": "균열 → 후열 피해↑", "finish": "반피 이하 → 피해↑"}
+const ATTRIBUTE_NAMES := {"physical": "물리", "fire": "화염", "electric": "전기"}
+const ATTRIBUTE_COLORS := {"physical": Color("cbd3d2"), "fire": Color("f29a5b"), "electric": Color("63dce8")}
+const COLORS := {"basic": ATTRIBUTE_COLORS.physical, "pierce": ATTRIBUTE_COLORS.physical, "precise": ATTRIBUTE_COLORS.physical, "bore": ATTRIBUTE_COLORS.fire, "charge": ATTRIBUTE_COLORS.physical, "push": ATTRIBUTE_COLORS.physical, "arc": ATTRIBUTE_COLORS.electric}
+const SHORT := {"basic": "회수", "pierce": "철갑", "precise": "연발", "bore": "소이", "charge": "증폭", "push": "충격", "arc": "전격"}
+const HINT := {"basic": "재장전 시 공급", "pierce": "높은 관통", "precise": "같은 적 2회 타격", "bore": "화상 +3", "charge": "다음 2발 피해 +2", "push": "2m 밀어 거리 확보", "arc": "다른 적에게 2피해 전이"}
 var ammo_id := "basic"
 
 func _ready() -> void:
@@ -18,9 +20,14 @@ static func round_icon(canvas: CanvasItem, position: Vector2, id: String, scale_
 	canvas.draw_colored_polygon(PackedVector2Array([Vector2(-7, -4), Vector2(0, -19), Vector2(7, -4)]), color)
 	canvas.draw_rect(Rect2(-7, 4, 14, 7), color)
 	canvas.draw_rect(Rect2(-10, 23, 20, 4), color)
-	if id in ["bore", "mark", "charge"]:
+	if id in ["bore", "charge"]:
 		canvas.draw_line(Vector2(-4, 16), Vector2(4, 16), Color("111b22"), 2)
 		canvas.draw_line(Vector2(0, 12), Vector2(0, 20), Color("111b22"), 2)
-	elif id in ["push", "slow"]:
+	elif id == "push":
 		canvas.draw_circle(Vector2(0, 16), 3, Color("111b22"))
+	elif id == "precise":
+		canvas.draw_line(Vector2(-4, 13), Vector2(4, 13), Color("111b22"), 2)
+		canvas.draw_line(Vector2(-4, 18), Vector2(4, 18), Color("111b22"), 2)
+	elif id == "pierce":
+		canvas.draw_line(Vector2(-4, 19), Vector2(4, 12), Color("111b22"), 2)
 	canvas.draw_set_transform(Vector2.ZERO)

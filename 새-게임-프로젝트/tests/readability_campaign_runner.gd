@@ -19,7 +19,7 @@ var course_values: Array = [true, false]
 var integrity_checks := 0
 var integrity_failures: Array = []
 var removal_probes: Array = []
-const EXPECTED_GRANTS := [["charge", "charge"], ["bore", "pierce"], ["precise"], ["mark"], ["push", "arc"], ["slow", "finish"], []]
+const EXPECTED_GRANTS := [["charge", "charge"], ["pierce"], ["bore"], ["precise"], ["push"], ["arc"], []]
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -49,13 +49,13 @@ func score(m) -> float:
 		value += (int(e.max_hp) - int(e.hp)) * 10.0
 		if int(e.hp) == 0: value += 75.0
 		else:
-			value += float(e.distance) * 0.7 + int(e.crack) * 2.0
+			value += float(e.distance) * 0.7 + int(e.burn) * 2.0
 	value -= float(m.s.turns) * 0.6
 	return value
 
 func exchange_candidate(m) -> String:
 	# Fixed, declared heuristic: cycle a support round before a damage combo piece.
-	for id in ["mark", "push", "slow", "arc", "finish", "basic", "pierce", "bore", "charge", "precise"]:
+	for id in ["push", "arc", "basic", "pierce", "bore", "charge", "precise"]:
 		if id != "basic" and m.available(id) > 0: return id
 	return ""
 
@@ -163,7 +163,7 @@ func choose_reward(m) -> Dictionary:
 	if policy == "skip": return {"action": "reward", "id": "skip", "remove_id": "", "options": options.duplicate()}
 	if policy == "remove":
 		return {"action": "reward", "id": "remove" if m.s.deck.size() > m.minimum_deck() else "skip", "remove_id": str(m.s.deck[0]), "options": options.duplicate()}
-	var preferred: Array = [policy, "coil", "supply", "lens", "loader", "charge", "precise", "bore", "pierce", "arc", "finish", "slow", "push", "mark"]
+	var preferred: Array = [policy, "coil", "supply", "lens", "loader", "charge", "precise", "bore", "pierce", "arc", "push"]
 	for id in preferred:
 		if options.has(id):
 			if Content.AMMO.has(id) and m.s.deck.size() >= m.deck_limit(): continue
@@ -283,10 +283,9 @@ func validate_entry(m) -> void:
 		for id in EXPECTED_GRANTS[int(m.s.floor)]:
 			verify(m.s.hand.count(id) >= EXPECTED_GRANTS[int(m.s.floor)].count(id), "new lesson ammo in first hand", m)
 		for enemy in m.s.enemies:
-			if int(m.s.floor) == 0: verify(int(enemy.def) == 0 and int(enemy.eva) == 0, "stage 0 no defense axes", m)
-			if int(m.s.floor) in [1, 2]: verify(int(enemy.eva) == 0, "stage 1-2 no evasion", m)
-			if int(m.s.floor) == 3: verify(int(enemy.def) == 0 and int(enemy.eva) == 9, "stage 3 isolated evasion", m)
-		if int(m.s.floor) == 4: verify(m.s.enemies.size() > 1, "stage 4 multiple targets", m)
+			verify(not enemy.has("eva") and not enemy.has("slow") and not enemy.has("crack"), "removed defense and status axes absent", m)
+			if int(m.s.floor) == 0: verify(int(enemy.def) == 0, "stage 0 no armor", m)
+		if int(m.s.floor) in [4, 5]: verify(m.s.enemies.size() > 1, "late lesson multiple targets", m)
 	# Disk round-trip in a QA-owned path; preserve the actual campaign instance.
 	var save_path := output_dir.path_join("roundtrip_%s_%s_%s_%d.json" % [m.s.seed, m.s.gun, str(course_enabled), m.s.floor])
 	verify(m.save_run(save_path) == OK, "save current course state", m)

@@ -73,6 +73,7 @@
 | 2026-09-13 | **연계 개편판·Android/Windows** | `codex0913-chain` | 독립1687/0·보상440/0·UI714/0·터치65/0·18실제캠페인. 인간 체감 별도 | [문서](../../../../docs/walkthrough_chain_edition_2026-09-13.md) |
 | 2026-09-13 | **탄환 정보·단계 학습 구현** | `codex0913-ammo-readability` | 카드 수치·피해 근거·학습/일반·단계 지급, 24캠페인/4UI 완주, Windows 검토판. APK 미작업·인간 판단 별도 | [문서](../../../../docs/walkthrough_ammo_readability_2026-09-13.md) |
 | 2026-09-16 | **탄환 카드 픽셀 아이콘 전환** | `codex0916-ammo-icons` | 전투·보상 카드 고정 아이콘과 부호 효과, 단계 공개, 저장 보존 숏컷. 독립5177/0·UI1457/0·시각121/0·Windows 기동 통과. APK 미작업 | [문서](../../../../docs/walkthrough_ammo_icon_cards_2026-09-16.md) |
+| 2026-09-16 | **피해·관통 및 3속성 전면 개편** | `codex0916-elemental-ammo` | 탄환7종·물리/화염/전기·화상/전이, 제거 축 정리, v2→v3 저장 변환. 규칙11794/0·캠페인4완주·UI1589/0·시각137/0·Windows 기동 통과 | [문서](../../../../docs/walkthrough_elemental_ammo_2026-09-16.md) |
 
 ---
 
@@ -143,3 +144,5 @@
 2026-09-13 참조: [탄환 정보·단계 학습 구현](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_ammo_readability_2026-09-13.md)
 
 2026-09-16 참조: [탄환 카드 픽셀 아이콘 전환](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_ammo_icon_cards_2026-09-16.md)
+
+2026-09-16 참조: [피해·관통 및 3속성 전면 개편](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_elemental_ammo_2026-09-16.md)

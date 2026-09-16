@@ -7,9 +7,8 @@ const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 const INK := Color("e7e4d9")
 const MUTED := Color("94a9ae")
 const CHIP := Color("12212a")
-const POWER := Color("e4bd72")
+const DAMAGE := Color("e4bd72")
 const PENETRATION := Color("79b6f2")
-const ACCURACY := Color("a9dfbf")
 
 var ammo_id := "basic"
 var count := 0
@@ -31,27 +30,28 @@ func setup(id: String, available: int, current_state: Dictionary, disabled: bool
 func stat_items() -> Array:
 	if state.is_empty() or not Content.AMMO.has(ammo_id): return []
 	var spec: Dictionary = Content.AMMO[ammo_id]
-	var power := str(int(spec.dmg) + int(Content.GUNS[state.gun].bonus))
-	if str(spec.effect) == "double": power += "×2"
-	var result: Array = [{"kind": "power", "value": power}]
+	var damage := str(int(spec.dmg) + int(Content.GUNS[state.gun].bonus))
+	if str(spec.effect) == "double": damage += "×2"
+	var result: Array = [{"kind": "damage", "value": damage}]
 	var axes: Dictionary = Content.axes(state)
-	if axes.armor: result.append({"kind": "penetration", "value": str(spec.pen)})
-	if axes.accuracy: result.append({"kind": "accuracy", "value": str(int(spec.acc) + (2 if state.part == "lens" else 0))})
+	if axes.armor: result.append({"kind": "penetration", "value": str(Content.penetration(ammo_id, state))})
 	return result
+
+func attribute_data() -> Dictionary:
+	if not Content.AMMO.has(ammo_id): return {}
+	var attribute := str(Content.AMMO[ammo_id].attribute)
+	return {"kind": attribute, "name": AmmoVisual.ATTRIBUTE_NAMES[attribute], "color": AmmoVisual.ATTRIBUTE_COLORS[attribute]}
 
 func effect_data() -> Dictionary:
 	if state.is_empty(): return {}
 	match ammo_id:
 		"basic": return {"kind": "reload", "value": "%d발" % (5 if state.get("part", "none") == "supply" else 4)}
-		"bore": return {"kind": "crack", "value": "+2"}
-		"pierce": return {"kind": "shatter", "value": "소비 · +2×"}
-		"precise": return {"kind": "double", "value": "×2"}
-		"mark": return {"kind": "accuracy_plus", "value": "+4 · 2발"}
-		"charge": return {"kind": "power_plus", "value": "+2 · 2발"}
+		"pierce": return {"kind": "physical", "value": "장갑 대응"}
+		"bore": return {"kind": "fire", "value": "화상 +%d" % Content.burn_amount(ammo_id, state)}
+		"precise": return {"kind": "double", "value": "2회 타격"}
+		"charge": return {"kind": "boost", "value": "+2 · 다음 2발"}
 		"push": return {"kind": "push", "value": "2m"}
-		"slow": return {"kind": "slow", "value": "−2m · 1회"}
-		"arc": return {"kind": "arc", "value": "1 / 균열 3"}
-		"finish": return {"kind": "finish", "value": "HP≤½ · +4"}
+		"arc": return {"kind": "electric", "value": "전이 2"}
 	return {}
 
 func _draw() -> void:
@@ -62,7 +62,12 @@ func _draw() -> void:
 	var ink := INK
 	ink.a *= alpha
 	AmmoVisual.round_icon(self, Vector2(17, 19), ammo_id, 0.42)
-	draw_string(FONT, Vector2(32, 25), "%s ×%d" % [Content.AMMO[ammo_id].name, count], HORIZONTAL_ALIGNMENT_CENTER, size.x - 38, 18, ammo_color)
+	var attribute := attribute_data()
+	var attribute_color: Color = attribute.color
+	attribute_color.a *= alpha
+	draw_string(FONT, Vector2(32, 25), "%s ×%d" % [Content.AMMO[ammo_id].name, count], HORIZONTAL_ALIGNMENT_CENTER, size.x - 105, 18, ammo_color)
+	_draw_icon(str(attribute.kind), Vector2(size.x - 62, 18), attribute_color)
+	draw_string(FONT, Vector2(size.x - 51, 24), str(attribute.name), HORIZONTAL_ALIGNMENT_CENTER, 48, 13, attribute_color)
 	var stats := stat_items()
 	if not stats.is_empty():
 		var slot_width := size.x / float(stats.size())
@@ -78,20 +83,19 @@ func _draw() -> void:
 		var chip_color := CHIP
 		chip_color.a *= 0.84 if is_disabled else 1.0
 		draw_rect(Rect2(5, 69, size.x - 10, 29), chip_color)
-		_draw_icon(str(effect.kind), Vector2(19, 83), ammo_color)
-		draw_string(FONT, Vector2(34, 90), str(effect.value), HORIZONTAL_ALIGNMENT_CENTER, size.x - 41, 16, ammo_color)
+		_draw_icon(str(effect.kind), Vector2(19, 83), attribute_color)
+		draw_string(FONT, Vector2(34, 90), str(effect.value), HORIZONTAL_ALIGNMENT_CENTER, size.x - 41, 16, attribute_color)
 
 func _stat_color(kind: String) -> Color:
 	match kind:
-		"power": return POWER
+		"damage": return DAMAGE
 		"penetration": return PENETRATION
-		"accuracy": return ACCURACY
 	return MUTED
 
 func _draw_icon(kind: String, center: Vector2, color: Color) -> void:
 	var c := center.round()
 	match kind:
-		"power", "power_plus":
+		"damage", "boost":
 			draw_rect(Rect2(c - Vector2(2, 2), Vector2(5, 5)), color)
 			for direction in [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 1)]:
 				draw_line(c + direction * 4, c + direction * 7, color, 2.0, false)
@@ -100,17 +104,6 @@ func _draw_icon(kind: String, center: Vector2, color: Color) -> void:
 			draw_line(c + Vector2(-5, 0), c + Vector2(7, 0), color, 2.0, false)
 			draw_line(c + Vector2(4, -3), c + Vector2(7, 0), color, 2.0, false)
 			draw_line(c + Vector2(4, 3), c + Vector2(7, 0), color, 2.0, false)
-		"accuracy", "accuracy_plus":
-			draw_arc(c, 5, 0, TAU, 12, color, 2.0, false)
-			draw_line(c + Vector2(-8, 0), c + Vector2(-3, 0), color, 2.0, false)
-			draw_line(c + Vector2(3, 0), c + Vector2(8, 0), color, 2.0, false)
-			draw_line(c + Vector2(0, -8), c + Vector2(0, -3), color, 2.0, false)
-			draw_line(c + Vector2(0, 3), c + Vector2(0, 8), color, 2.0, false)
-		"crack", "shatter":
-			_draw_shield(c, color, true)
-			if kind == "shatter":
-				draw_line(c + Vector2(6, -6), c + Vector2(9, -9), color, 2.0, false)
-				draw_line(c + Vector2(7, 0), c + Vector2(10, 0), color, 2.0, false)
 		"double":
 			_draw_round_mark(c + Vector2(-3, 2), color)
 			_draw_round_mark(c + Vector2(3, -2), color)
@@ -118,27 +111,18 @@ func _draw_icon(kind: String, center: Vector2, color: Color) -> void:
 			draw_line(c + Vector2(-7, 0), c + Vector2(7, 0), color, 2.0, false)
 			draw_line(c + Vector2(3, -4), c + Vector2(7, 0), color, 2.0, false)
 			draw_line(c + Vector2(3, 4), c + Vector2(7, 0), color, 2.0, false)
-		"slow":
-			draw_line(c + Vector2(0, -7), c + Vector2(0, 6), color, 2.0, false)
-			draw_line(c + Vector2(-4, 2), c + Vector2(0, 6), color, 2.0, false)
-			draw_line(c + Vector2(4, 2), c + Vector2(0, 6), color, 2.0, false)
-		"arc":
-			draw_line(c + Vector2(-7, 0), c, color, 2.0, false)
-			draw_line(c, c + Vector2(7, -6), color, 2.0, false)
-			draw_line(c, c + Vector2(7, 6), color, 2.0, false)
-			draw_rect(Rect2(c + Vector2(5, -8), Vector2(3, 3)), color)
-			draw_rect(Rect2(c + Vector2(5, 5), Vector2(3, 3)), color)
-		"finish":
-			draw_arc(c, 7, 0, TAU, 16, color, 2.0, false)
-			draw_rect(Rect2(c + Vector2(-6, -5), Vector2(6, 10)), color)
-			draw_line(c + Vector2(0, -7), c + Vector2(0, 7), color, 2.0, false)
+		"fire":
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -8), c + Vector2(6, 0), c + Vector2(3, 7), c + Vector2(-4, 6), c + Vector2(-6, 0)]), color)
+			draw_colored_polygon(PackedVector2Array([c + Vector2(0, -3), c + Vector2(3, 2), c + Vector2(0, 5), c + Vector2(-2, 2)]), CHIP)
+		"electric":
+			draw_colored_polygon(PackedVector2Array([c + Vector2(1, -9), c + Vector2(-5, 1), c, c + Vector2(-2, 9), c + Vector2(6, -2), c + Vector2(1, -2)]), color)
+		"physical":
+			draw_rect(Rect2(c + Vector2(-6, -3), Vector2(9, 7)), color)
+			draw_colored_polygon(PackedVector2Array([c + Vector2(3, -3), c + Vector2(8, 0), c + Vector2(3, 4)]), color)
 		"reload":
 			draw_arc(c, 6, -PI * 0.25, PI * 1.55, 12, color, 2.0, false)
 			draw_line(c + Vector2(4, -6), c + Vector2(8, -5), color, 2.0, false)
 			draw_line(c + Vector2(4, -6), c + Vector2(6, -2), color, 2.0, false)
-	if kind.ends_with("_plus"):
-		draw_line(c + Vector2(6, -7), c + Vector2(10, -7), color, 2.0, false)
-		draw_line(c + Vector2(8, -9), c + Vector2(8, -5), color, 2.0, false)
 
 func _draw_shield(center: Vector2, color: Color, cracked: bool) -> void:
 	var points := PackedVector2Array([center + Vector2(-6, -6), center + Vector2(6, -6), center + Vector2(5, 2), center + Vector2(0, 7), center + Vector2(-5, 2), center + Vector2(-6, -6)])

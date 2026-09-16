@@ -4,222 +4,211 @@ const Content = preload("res://redesign/content.gd")
 const Forecast = preload("res://redesign/forecast.gd")
 const Readability = preload("res://redesign/readability.gd")
 var checks: Array = []
-var evidence: Array = []
+var failed := 0
 
 func _initialize() -> void:
 	_run()
 
 func check(ok: bool, label: String, detail: Variant = null) -> void:
 	checks.append({"pass": ok, "label": label, "detail": detail})
-	if not ok: printerr("READABILITY_QA_FAIL " + label + " " + JSON.stringify(detail))
+	if not ok:
+		failed += 1
+		printerr("READABILITY_QA_FAIL " + label + " " + JSON.stringify(detail))
 
 func norm(value: Variant) -> Variant:
 	return JSON.parse_string(JSON.stringify(value))
 
-func strip_presentation(value: Variant) -> Variant:
-	if value is Dictionary:
-		var copy: Dictionary = value.duplicate(true)
-		for key in ["course", "math", "combo", "text", "message"]: copy.erase(key)
-		for key in copy: copy[key] = strip_presentation(copy[key])
-		return copy
-	if value is Array:
-		var copy: Array = []
-		for item in value: copy.append(strip_presentation(item))
-		return copy
-	return value
+func enemy(hp: int = 99, armor: int = 0, speed: int = 1, distance: int = 100, burn: int = 0, kind: String = "wall") -> Dictionary:
+	return {"kind": kind, "name": Content.ENEMY_NAMES[kind], "hp": hp, "max_hp": hp, "def": armor, "speed": speed, "distance": distance, "burn": burn}
 
-func inventory(m, label: String) -> void:
-	var owned: Array = m.s.hand + m.s.draw + m.s.discard
-	for id in m.s.magazine:
-		if id != "basic": owned.append(id)
-	var expected: Array = m.s.deck.duplicate()
-	owned.sort()
-	expected.sort()
-	check(owned == expected and m.s.hand.size() <= 5 and m.s.deck.size() <= 14, label + " ownership and bounds")
-	for id in m.s.plan: check(m.available(id) >= 0, label + " reserved owned")
+func armed(gun: String, rounds: Array, enemies: Array, part: String = "none"):
+	var m = Model.new()
+	m.start(gun, 7103)
+	m.s.part = part
+	m.s.enemies = enemies.duplicate(true)
+	m.s.deck = []
+	for id in rounds:
+		if id != "basic": m.s.deck.append(id)
+	m.s.hand = m.s.deck.duplicate()
+	m.s.draw = []
+	m.s.discard = []
+	m.s.magazine = []
+	m.s.plan = []
+	m.s.buff = {}
+	m.s.push_left = 2
+	m.s.supply = m.supply_capacity()
+	m.s.phase = "plan"
+	for id in rounds: check(m.load_round(id), "fixture loads " + id)
+	check(m.confirm(), "fixture confirms")
+	return m
 
-func restore_state(state: Dictionary, label: String, accept: bool = true):
-	var file := FileAccess.open("user://readability_state.json", FileAccess.WRITE)
-	file.store_string(JSON.stringify(state))
-	file.close()
-	var restored = Model.new()
-	restored.start("single", 998)
-	var before: Dictionary = restored.s.duplicate(true)
-	var ok: bool = restored.restore_run("user://readability_state.json")
-	check(ok == accept and (ok or restored.s == before), label + " restore acceptance atomic")
-	if ok:
-		var expected: Dictionary = state.duplicate(true)
-		if not expected.has("course"): expected.course = false
-		check(restored.s == norm(expected), label + " restore full state exact")
-	return restored
-
-func audit_forecast(m, label: String) -> void:
-	var before: Dictionary = m.s.duplicate(true)
-	var predicted: Dictionary = Forecast.analyze(m.s)
-	check(m.s == before and Forecast.analyze(m.s) == predicted, label + " forecast state RNG purity")
-	var actual = Model.new()
-	actual.s = before.duplicate(true)
-	if actual.s.phase == "plan": actual.confirm()
-	var all_shots: Array = []
-	var actions := 0
-	while actual.s.phase == "ready" and not actual.s.magazine.is_empty() and actions < 8:
-		actual.fire()
-		for shot_value in actual.s.history.back().detail.results:
-			var shot: Dictionary = shot_value.duplicate(true)
-			shot.action = actions
-			all_shots.append(shot)
-			var trace: Dictionary = shot.math
-			check(trace.raw == trace.base + trace.boost + trace.special, label + " trace additive raw")
-			check(trace.armor == maxi(0, trace.armor_before - trace.crack_before - shot.pen) and trace.evasion == maxi(0, trace.evasion_before - shot.acc), label + " trace reductions use prehit stats")
-			check(trace.per_hit == maxi(1, trace.raw - trace.armor - trace.evasion) and trace.hits == shot.hits, label + " trace perhit and multiplicity")
-			check(shot.damage == mini(trace.hp_before, trace.per_hit * trace.hits) and shot.hp == trace.hp_before - shot.damage, label + " trace HP cap and result")
-			check(trace.base == Content.AMMO[shot.id].dmg + Content.GUNS[actual.s.gun].bonus, label + " trace base includes gun bonus")
-			var explanation: String = Readability.explain(shot)
-			check(explanation.begins_with("%s · %d피해  HP %d → %d" % [Forecast.tag(shot.target), shot.damage, trace.hp_before, shot.hp]) and explanation.contains("위력 %d" % trace.base) and explanation.contains(" = %d" % trace.per_hit), label + " formatter actual HP and perhit trace")
-			check(explanation.contains("최소 1") == (trace.raw - trace.armor - trace.evasion < 1) and explanation.contains("남은 HP까지만 피해") == (trace.per_hit * trace.hits > trace.hp_before), label + " formatter minimum and overkill reasons")
-			if trace.hits > 1: check(explanation.contains("%d회" % trace.hits), label + " formatter double hit distinct from perhit")
-			if trace.boost > 0: check(explanation.contains("강화 %d" % trace.boost), label + " formatter boost")
-			if trace.special > 0: check(explanation.contains("%s %d" % ["파쇄" if shot.id == "pierce" else "마무리", trace.special]), label + " formatter special")
-			for other in shot.secondary: check(explanation.contains("%s 도약 %d피해 (고정)" % [Forecast.tag(other.target), other.damage]), label + " formatter secondary actual damage")
-		actions += 1
-	check(norm(predicted.shots) == norm(all_shots) and norm(predicted.enemies) == norm(actual.s.enemies) and predicted.remaining == actual.s.magazine and predicted.phase == actual.s.phase and predicted.turns == actual.s.turns - before.turns, label + " trace forecast actual full agreement")
-	if not predicted.shots.is_empty():
-		var first: Dictionary = predicted.shots[0].duplicate(true)
-		first.erase("action")
-		check(m.preview() == first, label + " immediate first shot trace agrees")
-
-func execute(m, rounds: Array) -> void:
-	for id in rounds: check(m.load_round(id), "actual lesson legal load " + id)
-	check(m.confirm(), "actual lesson confirm")
-	while m.s.phase == "ready" and not m.s.magazine.is_empty(): m.fire()
+func collect_actual(m) -> Dictionary:
+	var shots: Array = []
+	var advance_events: Array = []
+	var action := 0
+	while m.s.phase == "ready" and not m.s.magazine.is_empty() and action < 10:
+		check(m.fire(), "forecast fixture fires")
+		var detail: Dictionary = m.s.history.back().detail
+		for value in detail.results:
+			var shot: Dictionary = value.duplicate(true)
+			shot.action = action
+			shots.append(shot)
+		for value in detail.get("advance_events", []):
+			var event: Dictionary = value.duplicate(true)
+			event.action = action
+			advance_events.append(event)
+		action += 1
+	return {"shots": shots, "advance_events": advance_events, "phase": m.s.phase, "remaining": m.s.magazine.duplicate(), "enemies": m.s.enemies.duplicate(true)}
 
 func _run() -> void:
-	# Old independent v2 evidence provides pre-change numerical regression cases.
-	var baseline: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://../docs/qa/reports/chain_combat_2026-09-13.json"))
-	for entry in baseline.evidence:
-		var m = Model.new()
-		m.s = entry.before.duplicate(true)
-		m.s.course = false
-		var current: Dictionary = Forecast.analyze(m.s)
-		check(norm(strip_presentation(current)) == norm(strip_presentation(entry.forecast)), "normal v2 numerical baseline " + entry.id)
-		audit_forecast(m, entry.id)
-		evidence.append({"kind": "trace", "id": entry.id, "forecast": current})
-	# Genuine first two lesson wins: reproduce the minimum-deck removal contract.
-	for seed_value in [1, 2]:
-		for gun in ["single", "burst"]:
-			var m = Model.new()
-			m.start(gun, seed_value, true)
-			execute(m, ["charge", "basic", "basic"] if gun == "single" else ["charge", "basic", "basic", "basic"])
-			check(m.s.phase == "reward" and m.s.deck.size() == 2, "actual first lesson victory")
-			var minimum_before: Dictionary = m.s.duplicate(true)
-			check(not m.choose_reward("remove", "charge") and m.s == minimum_before, "course minimum2 rejects removal atomically")
-			check(m.choose_reward("skip") and m.s.deck == ["charge", "charge", "bore", "pierce"], "actual first automatic grants exactly once")
-			execute(m, ["bore", "charge", "basic", "pierce"])
-			check(m.s.phase == "reward", "actual second lesson victory")
-			var before: Dictionary = m.s.duplicate(true)
-			var removed: bool = m.choose_reward("remove", "charge")
-			check(removed and m.s.floor == 2 and m.s.deck.count("charge") == 1 and m.s.deck.count("precise") == 1, "course minimum2 permits removing from deck4", {"seed": seed_value, "gun": gun, "minimum": m.minimum_deck(), "actual_return": removed, "before_size": before.deck.size(), "after_size": m.s.deck.size()})
-			evidence.append({"kind": "course_remove_repro", "seed": seed_value, "gun": gun, "before": before, "return": removed, "after": m.s.duplicate(true)})
-	# Finite lifecycle fixtures: reward phase is explicitly set to isolate transitions.
-	for seed_value in [1, 2, 3, 42, 731042, 9007199254740993]:
-		for gun in ["single", "burst"]:
-			for policy in ["skip", "take"]:
+	var expected_ids := ["arc", "basic", "bore", "charge", "pierce", "precise", "push"]
+	var actual_ids: Array = Content.AMMO.keys()
+	actual_ids.sort()
+	check(actual_ids == expected_ids, "exact seven-round roster", actual_ids)
+	for id in actual_ids:
+		var spec: Dictionary = Content.AMMO[id]
+		check(spec.keys().has("dmg") and spec.keys().has("pen") and spec.keys().has("attribute") and spec.keys().has("effect"), id + " public schema")
+		check(spec.attribute in ["physical", "fire", "electric"], id + " one known attribute")
+		check(not spec.has("acc") and int(spec.dmg) >= 1 and int(spec.pen) >= 0, id + " only damage and penetration numbers")
+		check(str(spec.effect) in ["", "push", "burn", "boost", "double", "arc"], id + " at most one known effect")
+	for forbidden in ["mark", "slow", "finish"]: check(not Content.AMMO.has(forbidden), "removed round absent " + forbidden)
+	for formation_set in Content.FORMATIONS:
+		for formation in formation_set:
+			for entry in formation: check(entry.size() == 5, "enemy formation has HP armor speed distance only", entry)
+
+	# The same resolver formula is audited across every round, gun, armor, and penetration part.
+	for gun in Content.GUNS:
+		for part in ["none", "lens"]:
+			for id in actual_ids:
+				for armor in range(6):
+					var m = armed(gun, [id], [enemy(999, armor)], part)
+					check(m.fire(), "formula shot fires")
+					var shot: Dictionary = m.s.history.back().detail.results[0]
+					var expected_pen := int(Content.AMMO[id].pen) + (1 if part == "lens" else 0)
+					var expected_raw := int(Content.AMMO[id].dmg) + int(Content.GUNS[gun].bonus)
+					var expected_per_hit := maxi(1, expected_raw - maxi(0, armor - expected_pen))
+					var expected_hits := 2 if id == "precise" else 1
+					check(shot.pen == expected_pen and shot.math.raw == expected_raw and shot.math.armor == maxi(0, armor - expected_pen), "formula penetration " + gun + part + id + str(armor), shot)
+					check(shot.math.per_hit == expected_per_hit and shot.hits == expected_hits and shot.damage == expected_per_hit * expected_hits, "formula damage " + gun + part + id + str(armor), shot)
+					var explanation := Readability.explain(shot)
+					check(explanation.contains("피해") and not explanation.contains("명중") and not explanation.contains("회피"), "explanation uses simplified axes " + id)
+
+	# Amplify applies to two following rounds and multiplies through the double-hit round.
+	for gun in Content.GUNS:
+		var m = armed(gun, ["charge", "precise", "basic"], [enemy()])
+		var actual := collect_actual(m)
+		var shots: Array = actual.shots
+		check(shots.size() == 3 and shots[1].hits == 2 and shots[1].math.boost == 2 and shots[2].math.boost == 2, gun + " amplify covers next two rounds", shots)
+		check(not m.s.buff.has("dmg"), gun + " amplify expires after two rounds")
+
+	# Burn applies after the shot, ticks before movement, and a burn kill prevents movement.
+	var burn_kill = armed("burst", ["bore"], [enemy(3, 0, 2, 5)])
+	check(burn_kill.fire(), "burn kill fires")
+	var burn_detail: Dictionary = burn_kill.s.history.back().detail
+	check(burn_detail.results[0].damage == 2 and burn_detail.results[0].burn == 3, "incendiary applies burn after direct damage", burn_detail)
+	check(burn_detail.advance_events[0].kind == "burn" and burn_detail.advance_events[0].damage == 1, "burn ticks before movement", burn_detail.advance_events)
+	check(burn_kill.s.enemies[0].hp == 0 and burn_kill.s.enemies[0].distance == 5 and burn_kill.s.phase == "reward", "burn kill blocks movement and wins", burn_kill.s)
+	var stacked = armed("burst", ["bore"], [enemy(99, 0, 1, 20, 5)], "coil")
+	stacked.fire()
+	check(stacked.s.history.back().detail.results[0].burn == 6 and stacked.s.enemies[0].burn == 5, "burn caps six then consumes one with thermal coil")
+	var reload_burn = armed("burst", ["basic"], [enemy(4, 0, 1, 9, 3)])
+	reload_burn.s.magazine = ["basic"]
+	check(reload_burn.reload_magazine(), "burn reload advances")
+	check(reload_burn.s.enemies[0].hp == 1 and reload_burn.s.enemies[0].burn == 0 and reload_burn.s.enemies[0].distance == 6, "three-turn reload resolves three burn ticks before moves", reload_burn.s)
+
+	# Electricity hits only the nearest other living enemy for fixed two damage.
+	var electric = armed("burst", ["arc"], [enemy(20, 0, 1, 10), enemy(2, 0, 1, 11, 0, "runner"), enemy(20, 0, 1, 12, 0, "evader")])
+	electric.fire()
+	var electric_shot: Dictionary = electric.s.history.back().detail.results[0]
+	check(electric_shot.secondary.size() == 1 and electric_shot.secondary[0].target == 1 and electric_shot.secondary[0].damage == 2, "electric chains fixed damage to nearest other enemy", electric_shot)
+	check(electric.s.enemies[2].hp == 20, "electric never chains twice")
+	var electric_solo = armed("burst", ["arc"], [enemy()])
+	electric_solo.fire()
+	check(electric_solo.s.history.back().detail.results[0].secondary.is_empty(), "electric safely has no solo target")
+
+	# Knockback budget remains two meters for the complete magazine.
+	var push = armed("burst", ["push", "push"], [enemy()])
+	push.fire()
+	var push_results: Array = push.s.history.back().detail.results
+	check(push_results[0].push == 2 and push_results[1].push == 0 and push.s.push_left == 0, "knockback magazine cap two")
+
+	# Forecast and actual execution agree across seeds, guns, floors, and generated hands.
+	for seed_value in range(1, 81):
+		for gun in Content.GUNS:
+			for floor_index in range(7):
 				var m = Model.new()
-				m.start(gun, seed_value, true)
-				var expected_deck: Array = ["charge", "charge"]
-				for stage in range(7):
-					var label := "course %d %s %s stage%d" % [seed_value, gun, policy, stage]
-					check(m.s.floor == stage and m.s.course and m.s.deck == expected_deck, label + " stage grants exact no duplicates")
-					check(m.minimum_deck() == 2 and m.s.deck.size() <= m.deck_limit(), label + " minimum and future grant reservation")
-					for id in Content.COURSE_GRANTS[stage]: check(m.s.hand.has(id), label + " novel round in first hand " + id)
-					var axes: Dictionary = Content.axes(m.s)
-					check(axes.armor == (stage >= 1) and axes.accuracy == (stage >= 3), label + " stage axis visibility contract")
-					for enemy in m.s.enemies:
-						check((axes.armor or enemy.def == 0) and (axes.accuracy or enemy.eva == 0), label + " unintroduced axes truly zero")
-						var shown_enemy: String = Readability.enemy_stats(enemy, m.s)
-						check(shown_enemy.contains("장갑") == axes.armor and shown_enemy.contains("회피") == axes.accuracy and shown_enemy.contains("접근"), label + " enemy formatter stage axes")
-					for id in m.s.hand:
-						var shown_stats: String = Readability.stats(id, m.s)
-						check(shown_stats.contains("관통") == axes.armor and shown_stats.contains("명중") == axes.accuracy, label + " ammo formatter stage axes")
-						check(Readability.stats(id, m.s, true).contains("관통") and Readability.stats(id, m.s, true).contains("명중"), label + " full detail reveals complete stats")
-					inventory(m, label)
-					var restored = restore_state(m.s, label)
-					check(norm(Forecast.analyze(restored.s)) == norm(Forecast.analyze(m.s)), label + " resumed forecast stable")
-					var repeat = Model.new()
-					repeat.s = m.s.duplicate(true)
-					repeat.begin_encounter()
-					check(repeat.s.deck == m.s.deck and repeat.s.hand == m.s.hand and repeat.s.draw == m.s.draw and repeat.s.rng_state == m.s.rng_state, label + " reinitialize preserves deck and seeded hand")
-					var pool: Array = Content.course_pool(stage)
-					if stage != 4:
-						for id in m.reward_options(): check(pool.has(id), label + " reward cannot reveal future ammo")
-					# Exchange both live and restored state and compare full continuation.
-					var pre_exchange: Dictionary = m.s.duplicate(true)
-					var exchanged: bool = m.exchange(m.s.hand[0])
-					var resumed_exchange: bool = restored.exchange(restored.s.hand[0])
-					check(exchanged == resumed_exchange and norm(m.s) == norm(restored.s), label + " exchange after resume same RNG and ownership")
-					if not exchanged: check(m.s == pre_exchange, label + " unavailable exchange is atomic")
-					inventory(m, label + " after exchange")
-					if stage == 6: break
-					m.s.phase = "reward"
-					m.s.reward_taken = false
-					var choice := "skip"
-					if policy == "take" and not m.reward_options().is_empty():
-						var candidate: String = m.reward_options()[0]
-						if Content.PARTS.has(candidate) or m.s.deck.size() < m.deck_limit(): choice = candidate
-					if Content.AMMO.has(choice): expected_deck.append(choice)
-					expected_deck.append_array(Content.COURSE_GRANTS[stage + 1])
-					check(m.choose_reward(choice), label + " accepted reward advances")
-					var after_reward: Dictionary = m.s.duplicate(true)
-					check(not m.choose_reward(choice) and m.s == after_reward, label + " repeat reward cannot duplicate grants")
-	# Exact cap reserve: max accepted deck size now still permits all future grants.
-	for stage in range(6):
-		var m = Model.new()
-		m.start("burst", 42, true)
-		m.s.floor = stage
-		m.s.deck = []
-		for i in range(m.deck_limit()): m.s.deck.append("charge")
-		m.begin_encounter()
-		m.s.phase = "reward"
-		var cap_before: Dictionary = m.s.duplicate(true)
-		for id in m.reward_options():
-			if Content.AMMO.has(id): check(not m.choose_reward(id) and m.s == cap_before, "at reserved cap reject optional ammo stage%d" % stage)
-		check(m.choose_reward("skip") and m.s.deck.size() <= m.deck_limit() and m.s.deck.size() <= 14, "at reserved cap mandatory grants fit stage%d" % stage)
-	# Legacy normal v2 save lacks course. Course type and new min save contracts.
-	var normal = Model.new()
-	normal.start("burst", 4242)
-	check(not normal.s.course and normal.minimum_deck() == 6 and normal.deck_limit() == 14 and normal.s.deck == Content.START_DECK, "default start remains normal v2")
-	var old: Dictionary = normal.s.duplicate(true)
-	old.erase("course")
-	var compat = restore_state(old, "legacy v2 missing course")
-	check(not compat.s.course, "legacy v2 becomes normal")
-	for bad_value in ["true", 1, 0, null, [], {}]:
-		var bad: Dictionary = normal.s.duplicate(true)
-		bad.course = bad_value
-		restore_state(bad, "invalid course type " + str(bad_value), false)
-	var course = Model.new()
-	course.start("single", 4242, true)
-	restore_state(course.s, "course2 deck valid")
-	var bad_course: Dictionary = course.s.duplicate(true)
-	bad_course.course = false
-	restore_state(bad_course, "normal2 deck invalid", false)
-	# Existing normal formations/rewards are untouched by default parameter.
-	for stage in range(7):
-		for seed_value in [1, 731042]:
-			check(Content.enemies_for(stage, seed_value) == Content.enemies_for(stage, seed_value, false, "burst"), "normal formation explicit/default identical")
-			for gun in ["single", "burst"]:
-				check(Content.rewards_for(stage, seed_value, gun) == Content.rewards_for(stage, seed_value, gun, false), "normal rewards explicit/default identical")
-	check(Content.AMMO.charge.name == "강화탄" and Content.AMMO.mark.name == "조준탄" and Content.AMMO.finish.name == "마무리탄", "three renamed ammo labels")
-	check(Readability.explain({}) == "탄환을 넣으면 실제 피해와 계산 근거를 보여 줍니다." and Readability.explain({"text": "legacy shot"}) == "legacy shot", "formatter handles empty and legacy trace")
-	normal.s.part = "lens"
-	check(Readability.stats("precise", normal.s) == "위력 2×2  관통 0  명중 11", "formatter burst double and permanent lens")
-	normal.s.gun = "single"
-	check(Readability.stats("precise", normal.s) == "위력 3×2  관통 0  명중 11", "formatter single bonus applies per hit")
-	check(Readability.enemy_stats({"def": 2, "crack": 3, "eva": 9, "speed": 1, "slow": 2}, normal.s) == "장갑0  회피9  접근0m", "enemy formatter clamped effective armor and approach")
-	var failed := 0
-	for row in checks:
-		if not row.pass: failed += 1
-	var file := FileAccess.open("user://readability_combat_independent.json", FileAccess.WRITE)
-	file.store_string(JSON.stringify({"passed": checks.size() - failed, "failed": failed, "checks": checks, "evidence": evidence}, "\t"))
+				m.start(gun, seed_value)
+				m.s.floor = floor_index
+				m.begin_encounter()
+				var rounds: Array = m.s.hand.slice(0, mini(m.capacity() - 1, m.s.hand.size()))
+				rounds.append("basic")
+				for id in rounds: check(m.load_round(id), "generated forecast load")
+				var before: Dictionary = m.s.duplicate(true)
+				var predicted: Dictionary = Forecast.analyze(m.s)
+				check(m.s == before and Forecast.analyze(m.s) == predicted, "forecast pure %d %s %d" % [seed_value, gun, floor_index])
+				var clone = Model.new()
+				clone.s = before.duplicate(true)
+				clone.confirm()
+				var actual := collect_actual(clone)
+				check(norm(predicted.shots) == norm(actual.shots) and norm(predicted.advance_events) == norm(actual.advance_events), "forecast events agree %d %s %d" % [seed_value, gun, floor_index])
+				check(predicted.phase == actual.phase and predicted.remaining == actual.remaining and norm(predicted.enemies) == norm(actual.enemies), "forecast state agrees %d %s %d" % [seed_value, gun, floor_index])
+
+	# Staged course reveals armor only when taught and grants each new round exactly once.
+	for gun in Content.GUNS:
+		var course = Model.new()
+		course.start(gun, 42, true)
+		var expected: Array = ["charge", "charge"]
+		for stage in range(7):
+			check(course.s.floor == stage and course.s.deck == expected, gun + " course exact grants stage" + str(stage), course.s.deck)
+			check(Content.axes(course.s).armor == (stage >= 1), gun + " course armor visibility stage" + str(stage))
+			for id in Content.COURSE_GRANTS[stage]: check(course.s.hand.has(id), gun + " taught round in first hand " + id)
+			if stage == 6: break
+			course.s.phase = "reward"
+			course.s.reward_taken = false
+			expected.append_array(Content.COURSE_GRANTS[stage + 1])
+			check(course.choose_reward("skip"), gun + " course skip advances stage" + str(stage))
+
+	# Version 2 saves migrate without losing ownership; removed rounds map to new roles.
+	var source = Model.new()
+	source.start("single", 9898)
+	var old: Dictionary = source.s.duplicate(true)
+	old.version = 2
+	var reverse := {"charge": "mark", "push": "slow", "pierce": "finish"}
+	for key in ["deck", "hand", "draw", "discard", "magazine", "plan"]:
+		for i in range(old[key].size()):
+			if reverse.has(str(old[key][i])): old[key][i] = reverse[str(old[key][i])]
+	old.buff = {"acc": 4, "acc_left": 2}
+	for old_enemy in old.enemies:
+		old_enemy.eva = 7
+		old_enemy.slow = 1
+		old_enemy.crack = 2
+		old_enemy.erase("burn")
+	var migration_path := "user://elemental_v2_save.json"
+	var migration_file := FileAccess.open(migration_path, FileAccess.WRITE)
+	migration_file.store_string(JSON.stringify(old))
+	migration_file.close()
+	var migrated = Model.new()
+	migrated.start("burst", 1)
+	check(migrated.restore_run(migration_path), "v2 save migrates")
+	check(migrated.s.version == 3 and migrated.s.buff.is_empty(), "v2 buffs collapse to v3")
+	for key in ["deck", "hand", "draw", "discard", "magazine", "plan"]:
+		for id in migrated.s[key]: check(Content.AMMO.has(id), "migrated inventory uses live ammo " + key)
+	for migrated_enemy in migrated.s.enemies:
+		check(migrated_enemy.has("burn") and not migrated_enemy.has("eva") and not migrated_enemy.has("slow") and not migrated_enemy.has("crack"), "migrated enemy uses simplified state")
+
+	var invalid: Dictionary = migrated.s.duplicate(true)
+	invalid.enemies[0].burn = 7
+	var invalid_file := FileAccess.open("user://elemental_invalid.json", FileAccess.WRITE)
+	invalid_file.store_string(JSON.stringify(invalid))
+	invalid_file.close()
+	var atomic = Model.new()
+	atomic.start("single", 5)
+	var atomic_before: Dictionary = atomic.s.duplicate(true)
+	check(not atomic.restore_run("user://elemental_invalid.json") and atomic.s == atomic_before, "invalid v3 save rejected atomically")
+
+	var report := {"checks": checks.size(), "failed": failed, "attributes": ["physical", "fire", "electric"], "ammo": actual_ids}
+	var file := FileAccess.open("user://readability_rules.json", FileAccess.WRITE)
+	file.store_string(JSON.stringify(report, "\t"))
 	file.close()
-	print("READABILITY_COMBAT_INDEPENDENT %d passed / %d failed" % [checks.size() - failed, failed])
-	quit(1 if failed else 0)
+	print("READABILITY_RULES: %d checks / %d failed" % [checks.size(), failed])
+	quit(1 if failed > 0 else 0)

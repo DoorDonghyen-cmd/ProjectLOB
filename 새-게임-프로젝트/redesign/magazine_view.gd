@@ -57,8 +57,8 @@ func _draw() -> void:
 				var combos: Array = forecast.shots[i].get("combo", [])
 				var note := str(combos.back()) if not combos.is_empty() else ("2회 타격" if id == "precise" else "")
 				var secondary: Array = forecast.shots[i].get("secondary", [])
-				if not secondary.is_empty(): note = "%s 도약 −%d" % [Forecast.tag(secondary[0].target), secondary[0].damage]
-				elif id == "precise" and combos.has("강화"): note = "강화 · 2타"
+				if not secondary.is_empty(): note = "%s 전이 −%d" % [Forecast.tag(secondary[0].target), secondary[0].damage]
+				elif id == "precise" and combos.has("증폭"): note = "증폭 · 2타"
 				draw_string(FONT, Vector2(x + 4, 133), note, HORIZONTAL_ALIGNMENT_CENTER, width - 8, 14, Ammo.COLORS[id])
 		else:
 			draw_string(FONT, Vector2(x + 4, 65), "·", HORIZONTAL_ALIGNMENT_CENTER, width - 8, 32, Color("506570"))

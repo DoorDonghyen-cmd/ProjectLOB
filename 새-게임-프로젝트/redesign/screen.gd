@@ -131,8 +131,7 @@ func redraw() -> void:
 	skip.visible = busy
 	var equipment := str(Content.GUNS[model.s.gun].name)
 	if model.s.part != "none": equipment += " · " + str(Content.PARTS[model.s.part].name)
-	if model.s.buff.has("dmg"): equipment += " · 강화 %d발" % model.s.buff.dmg_left
-	if model.s.buff.has("acc"): equipment += " · 조준 %d발" % model.s.buff.acc_left
+	if model.s.buff.has("dmg"): equipment += " · 증폭 %d발" % model.s.buff.dmg_left
 	_label(body, "%s   ·   %d턴" % [equipment, model.s.turns], 18, MUTED)
 	if debug_session:
 		_label(body, "개발자 연습 · 진행 저장 안 함", 18, DANGER)
@@ -146,7 +145,7 @@ func redraw() -> void:
 func _menu() -> void:
 	_label(body, "LAST\nON BOARD", 76, ACCENT)
 	_label(body, "인간에게 남은 것은, 빌린 총의 순서를 정하는 일뿐이다.", 24)
-	_label(body, "연계 개편판 · 누른 순서대로 발사 · 매번 달라지는 7개 교전", 20, MUTED)
+	_label(body, "3속성 개편판 · 피해와 관통 · 물리·화염·전기", 20, MUTED)
 	course_toggle = CheckButton.new()
 	course_toggle.name = "CourseToggle"
 	course_toggle.text = "차근차근 배우기 · 끄면 일반 런"
@@ -211,8 +210,6 @@ func _combat() -> void:
 	battle_view.sync(model.s)
 	if model.s.get("course", false): battle_view.caption = Content.LESSONS[int(model.s.floor)]
 	if not combat_forecast.shots.is_empty(): battle_view.first_shot = combat_forecast.shots[0]
-	if not model.s.get("course", false) and combat_forecast.shots.any(func(shot): return shot.get("graze", false)):
-		battle_view.caption = "스침: 명중이 모자란 만큼 피해 감소 · 최소 1피해"
 	battle_view.shot_started.connect(_visual_shot)
 	battle_view.enemy_inspected.connect(_enemy_details)
 	var workbench := _row(body)
@@ -285,7 +282,7 @@ func _combat() -> void:
 		_button(edits, "끝 탄 회수", "undo", _undo, stack.is_empty()).tooltip_text = "마지막 칸을 돌려받습니다. 시간 소모 없음."
 	var preview: Dictionary = model.preview()
 	preview_label = _label(queue, _preview_text(preview), 18, ACCENT if int(preview.get("damage", 0)) > 0 else MUTED)
-	preview_label.tooltip_text = str(preview.get("text", "누른 순서대로 발사합니다. 균열을 남기고 활용하거나 파쇄하세요."))
+	preview_label.tooltip_text = str(preview.get("text", "누른 순서대로 발사합니다. 피해·거리·속성 효과를 함께 설계하세요."))
 	if not stack.is_empty():
 		preview_label.text = "" + ("전탄 후 적 접근" if model.s.gun == "burst" else "매 발 후 적 접근")
 		if combat_forecast.phase == "lost": preview_label.text = "연속 사격: %d발 뒤 접촉 위험" % combat_forecast.shots.size()
@@ -312,9 +309,8 @@ func _inspect_ammo(id: String) -> void:
 	inspected_ammo = id
 	if is_instance_valid(ammo_inspector):
 		var axes := Content.axes(model.s)
-		var legend := "위력 → HP"
+		var legend := "피해 → HP"
 		if axes.armor: legend += "   관통 → 장갑"
-		if axes.accuracy: legend += "   명중 → 회피"
 		ammo_inspector.text = legend + "\n" + Readability.description(id, model.s)
 		ammo_inspector.add_theme_color_override("font_color", AmmoVisual.COLORS[id])
 
@@ -324,7 +320,7 @@ func _preview_text(preview: Dictionary) -> String:
 	var result := "빗나감" if not preview.hit else ("도탄" if int(preview.damage) == 0 else "피해 %d" % preview.damage)
 	if int(preview.hp) <= 0: result += " · 처치"
 	var spec: Dictionary = Content.AMMO[preview.id]
-	if str(spec.effect) in ["dmg", "pen", "acc"]:
+	if str(spec.effect) in ["boost", "burn", "arc"]:
 		result += "\n" + str(AmmoVisual.HINT[preview.id])
 	return "첫 발  ·  " + result
 
@@ -424,19 +420,20 @@ func _fire() -> void:
 	if busy: return
 	var before: Dictionary = model.s.duplicate(true)
 	if model.fire():
-		await _present(before, model.s.history.back().detail.results, false)
+		var detail: Dictionary = model.s.history.back().detail
+		await _present(before, detail.results, detail.get("advance_events", []), false)
 
 func _reload() -> void:
 	if busy: return
 	var before: Dictionary = model.s.duplicate(true)
 	if model.reload_magazine():
-		await _present(before, [], true)
+		await _present(before, [], model.s.history.back().detail.get("advance_events", []), true)
 
 func _choose(id: String, remove_id: String) -> void:
 	if busy: return
 	if model.choose_reward(id, remove_id): _changed()
 
-func _present(before: Dictionary, results: Array, reloading: bool) -> void:
+func _present(before: Dictionary, results: Array, advance_events: Array, reloading: bool) -> void:
 	busy = true
 	_persist()
 	find_child("skip_animation", true, false).show()
@@ -445,7 +442,7 @@ func _present(before: Dictionary, results: Array, reloading: bool) -> void:
 	for button in find_children("*", "Button", true, false):
 		button.disabled = button.name != "skip_animation"
 	battle_view.speed_scale = presentation_speed
-	await battle_view.play_action(before, model.s, results, reloading)
+	await battle_view.play_action(before, model.s, results, advance_events, reloading)
 	last_presentation = {"before": before, "after": model.s.duplicate(true), "shown_enemies": battle_view.enemies.duplicate(true), "events": battle_view.visual_events.duplicate(true)}
 	busy = false
 	redraw()
@@ -480,13 +477,13 @@ func _dialog(title: String, compact: bool = false) -> VBoxContainer:
 func _rules() -> void:
 	if busy: return
 	var column := _dialog("순서를 설계하는 법")
-	_label(column, "누른 순서대로 · 위력 → HP", 30, ACCENT)
-	_label(column, "1. 위력은 타격당 기본 피해, 관통은 장갑을 무시하는 수치, 명중은 회피로 인한 피해 감소를 줄이는 수치입니다. 가까운 적을 자동 조준합니다. 같은 거리는 A → B → C. 균열·처치·밀기에 따라 다음 탄의 결과가 바뀝니다.")
+	_label(column, "누른 순서대로 · 피해와 관통", 30, ACCENT)
+	_label(column, "1. 피해는 타격당 HP 감소, 관통은 무시하는 장갑 수치입니다. 가까운 적을 자동 조준하며 같은 거리는 A → B → C 순서입니다. 확률 판정은 없습니다.")
 	_label(column, "2. 확정 전에는 탄창의 칸을 눌러 자유롭게 회수할 수 있습니다. 계산 보기를 켜면 칸을 눌러 해당 탄의 피해 근거를 봅니다. 확정 이후 바꾸려면 재장전 시간이 듭니다. 빈 칸을 모두 채울 필요는 없습니다.")
-	_label(column, "3. 균열탄은 적의 장갑을 낮추는 균열을 남깁니다. 연속탄으로 두 번 활용하거나, 도약탄으로 후열을 때리거나, 파쇄탄으로 소비해 큰 피해를 만드세요.")
-	_label(column, "4. 강화·조준는 다음 2발을 강화합니다. 서로 함께 유지되지만 같은 효과는 중첩 대신 2발로 갱신합니다. 재장전하면 강화는 사라지고 적의 균열은 남습니다.")
-	_label(column, "5. 피해 = 타격 피해 − 남은 장갑 − 부족한 명중 (최소 1). 남은 장갑은 균열과 관통으로 줄입니다. 연속탄은 같은 적 2타, 강화도 각각 적용. 도약의 후열 피해는 별도 고정값입니다. 확률 판정은 없습니다.")
-	_label(column, "6. 사격·재장전 동안 적이 접근하고 0m면 패배합니다. 충격탄은 탄창당 2m까지 밀고 점착은 다음 접근 한 번만 늦춥니다.")
+	_label(column, "3. 물리는 즉시 피해와 장갑·거리 대응, 화염은 전진 직전 화상 피해, 전기는 가장 가까운 다른 적에게 고정 피해 전이를 담당합니다. 속성 저항과 약점은 없습니다.")
+	_label(column, "4. 증폭탄은 다음 2발의 타격당 피해 +2, 연발탄은 같은 적을 2회 타격합니다. 증폭 뒤 연발탄을 두면 증폭 피해도 두 번 적용됩니다.")
+	_label(column, "5. 타격 피해 = 피해 + 총기 보정 + 증폭 − 남은 장갑 (최소 1). 남은 장갑 = 장갑 − 관통입니다. 전이와 화상은 별도 고정 피해입니다.")
+	_label(column, "6. 화상은 적의 전진 직전에 1피해를 주고 1 감소합니다. 화상으로 죽은 적은 전진하지 않습니다. 충격탄은 탄창당 총 2m까지 밀어 거리를 확보합니다.")
 	_label(column, "7. 재장전마다 회수탄 4발(확장 탄창 5발), 전술 패 5장, 패 교환 1회. 미사용 패 유지, 사용탄은 다시 섞습니다. 교환은 탄창에 넣지 않은 전술탄 1장을 다음 탄으로 바꿉니다.")
 	_label(column, "8. 매 시드 적 편성·거리·보상 후보가 달라집니다. 보상 화면에서 다음 적을 먼저 확인하세요. 파츠는 하나만 장착합니다.")
 
@@ -537,7 +534,7 @@ func _details() -> void:
 	_label(column, "시드 %s · %s\n%s · %s" % [str(model.s.seed), Content.GUNS[model.s.gun].text, Content.PARTS[model.s.part].name, Content.PARTS[model.s.part].text], 18)
 	_label(column, "적 정보", 22, ACCENT)
 	for e in model.s.enemies:
-		_label(column, "%s · HP %d/%d · 장갑 %d · 회피 %d\n거리 %dm · 속도 %d · 다음 전진 %dm" % [e.name, e.hp, e.max_hp, e.def, e.eva, e.distance, e.speed, maxi(0, int(e.speed) - int(e.slow))], 18)
+		_label(column, "%s · HP %d/%d · 장갑 %d · 화상 %d\n거리 %dm · 접근 %dm" % [e.name, e.hp, e.max_hp, e.def, e.burn, e.distance, e.speed], 18)
 	_label(column, "탄환 · 현재 총기/파츠 반영", 22, ACCENT)
 	var ids: Array = ["basic"]
 	for id in model.s.deck:
@@ -555,8 +552,8 @@ func _enemy_details(index: int) -> void:
 	column.name = "EnemyDetails"
 	column.set_meta("enemy_index", index)
 	_label(column, "%s · %s" % [Forecast.tag(index), e.name], 26, ACCENT)
-	_label(column, "HP %d/%d   장갑 %d   회피 %d   균열 %d" % [e.hp, e.max_hp, e.def, e.eva, e.crack], 21)
-	_label(column, "거리 %dm · 속도 %d · 다음 접근 %dm" % [e.distance, e.speed, maxi(0, int(e.speed) - int(e.slow))], 19, MUTED)
+	_label(column, "HP %d/%d   장갑 %d   화상 %d" % [e.hp, e.max_hp, e.def, e.burn], 21)
+	_label(column, "거리 %dm · 다음 접근 %dm" % [e.distance, e.speed], 19, MUTED)
 	var hits: PackedStringArray = []
 	for i in range(combat_forecast.get("shots", []).size()):
 		var shot: Dictionary = combat_forecast.shots[i]
@@ -566,11 +563,11 @@ func _enemy_details(index: int) -> void:
 func _developer() -> void:
 	var column := _dialog("개발자 테스트 · 기존 저장 보존")
 	_label(column, "화면과 규칙을 즉시 확인하는 연습", 26)
-	_button(column, "탄환 아이콘 카드 전체", "debug_icon_cards", func():
+	_button(column, "3속성 탄환 전체", "debug_icon_cards", func():
 		model.start("single", 731042)
 		model.s.floor = 6
 		model.begin_encounter()
-		model.s.deck = ["bore", "pierce", "precise", "mark", "charge", "push", "slow", "arc", "finish"]
+		model.s.deck = ["bore", "pierce", "precise", "charge", "push", "arc"]
 		model.s.hand = model.s.deck.duplicate()
 		model.s.draw = []
 		model.s.discard = []
@@ -582,7 +579,7 @@ func _developer() -> void:
 		redraw()
 	)
 	var lessons := _row(column)
-	for entry in [["첫 강화 연습", 0], ["장갑·관통 연습", 1], ["명중·회피 연습", 3]]:
+	for entry in [["피해·증폭 연습", 0], ["장갑·관통 연습", 1], ["화상 연습", 2]]:
 		_button(lessons, entry[0], "debug_lesson_" + str(entry[1]), func():
 			model.start("single", 731042, true)
 			for floor_index in range(1, int(entry[1]) + 1):
@@ -596,6 +593,22 @@ func _developer() -> void:
 			column.get_meta("dialog").queue_free()
 			redraw()
 		)
+	_button(column, "화상 전진 정산", "debug_burn_tick", func():
+		model.start("single", 731042)
+		model.s.floor = 2
+		model.begin_encounter()
+		model.s.enemies = [{"kind": "wall", "name": Content.ENEMY_NAMES.wall, "hp": 8, "max_hp": 8, "def": 1, "speed": 2, "distance": 6, "burn": 0}]
+		model.s.deck = ["bore", "charge", "precise", "pierce", "push", "arc"]
+		model.s.hand = model.s.deck.slice(0, 5)
+		model.s.draw = ["arc"]
+		model.s.discard = []
+		model.load_round("bore")
+		model.confirm()
+		debug_session = true
+		page = "run"
+		column.get_meta("dialog").queue_free()
+		redraw()
+	)
 	_button(column, "다수전 표적 전환 연습", "debug_multi_target", func():
 		model.start("burst", 731042)
 		model.s.floor = 3
@@ -607,7 +620,7 @@ func _developer() -> void:
 		model.s.enemies[1].hp = 4
 		model.s.enemies[1].max_hp = 4
 		model.s.enemies[1].def = 0
-		model.s.hand = ["push", "charge", "precise", "bore", "mark"]
+		model.s.hand = ["push", "charge", "precise", "bore", "arc"]
 		for id in ["bore", "push", "precise", "charge"]: model.load_round(id)
 		debug_session = true
 		page = "run"
