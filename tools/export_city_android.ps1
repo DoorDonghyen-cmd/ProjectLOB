@@ -2,7 +2,9 @@ param(
     [string]$GodotPath = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe',
     [string]$AndroidSdk = "$env:LOCALAPPDATA\Android\Sdk",
     [string]$JavaSdk = 'C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot',
-    [string]$BuildToolsVersion = '36.1.0'
+    [string]$BuildToolsVersion = '36.1.0',
+    [int]$VersionCode = 20260920,
+    [string]$VersionName = '0.4.20260920'
 )
 $ErrorActionPreference = 'Stop'
 if (-not (Test-Path -LiteralPath $GodotPath)) {
@@ -49,8 +51,8 @@ architectures/armeabi-v7a=true
 architectures/arm64-v8a=true
 architectures/x86=false
 architectures/x86_64=false
-version/code=20260916
-version/name="0.3.20260916"
+version/code=$VersionCode
+version/name="$VersionName"
 package/unique_name="com.lastonboard.prototype"
 package/name="Last on Board Test"
 package/signed=true
@@ -107,7 +109,7 @@ export/android/debug_keystore_pass="android"
     if ($LASTEXITCODE -ne 0) { throw 'APK metadata inspection failed' }
     $badging | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $build 'package.log')
     $badgingText = $badging -join "`n"
-    if (-not $badgingText.Contains("versionCode='20260916'") -or -not $badgingText.Contains("versionName='0.3.20260916'")) { throw 'Unexpected APK version' }
+    if (-not $badgingText.Contains("versionCode='$VersionCode'") -or -not $badgingText.Contains("versionName='$VersionName'")) { throw 'Unexpected APK version' }
     if (-not $badgingText.Contains("name='com.lastonboard.prototype'") -or -not $badgingText.Contains("arm64-v8a") -or -not $badgingText.Contains("armeabi-v7a")) { throw 'Unexpected APK package or ABI' }
     $manifest = @{
         built_at = [DateTime]::UtcNow.ToString('o')
@@ -118,9 +120,10 @@ export/android/debug_keystore_pass="android"
         sha256 = (Get-FileHash -LiteralPath $apk -Algorithm SHA256).Hash
         size_bytes = (Get-Item -LiteralPath $apk).Length
         package = 'com.lastonboard.prototype'
-        version_code = 20260916
-        version_name = '0.3.20260916'
+        version_code = $VersionCode
+        version_name = $VersionName
         game_loop = 'five regions; 35 floors; map/shop/events/progression; separate seven-combat training'
+        field_compression = 'once per combat; cyan pair affordance; tap loads; matching-card drag compresses'
         weapons = @('single','burst','scatter','heavy','amplifier')
         orientation = 'user landscape; Android screenOrientation 11'
         architectures = @('arm64-v8a','armeabi-v7a')
@@ -129,7 +132,7 @@ export/android/debug_keystore_pass="android"
         android_runtime = 'not tested on a device or emulator'
     }
     $manifest | ConvertTo-Json | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $build 'build_manifest.json')
-    Copy-Item -LiteralPath (Join-Path $repo 'docs/android_install_city_2026-09-16.md') -Destination (Join-Path $build 'INSTALL.md') -Force
+    Copy-Item -LiteralPath (Join-Path $repo 'docs/android_install_city_2026-09-20.md') -Destination (Join-Path $build 'INSTALL.md') -Force
     Get-Item -LiteralPath $apk | Select-Object FullName, Length
     Write-Output "SHA256: $($manifest.sha256)"
 } finally {

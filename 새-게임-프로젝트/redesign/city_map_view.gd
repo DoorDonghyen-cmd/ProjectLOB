@@ -17,7 +17,7 @@ func setup(campaign) -> void:
 	visited = campaign.s.visited.duplicate()
 	current = int(campaign.s.node)
 	floors = int(Data.info(int(campaign.s.region)).floors)
-	custom_minimum_size.y = 410
+	custom_minimum_size.y = maxi(410, floors * 64 + 24)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	clip_contents = true
 	resized.connect(_layout)
@@ -65,8 +65,8 @@ func _layout() -> void:
 		var y := 12 + (floors - int(item.floor) + 0.5) * spacing
 		positions[int(item.id)] = Vector2(x, y)
 		var button := get_child(i) as Button
-		button.position = Vector2(x - width / 2, y - 22)
-		button.size = Vector2(width, 44)
+		button.position = Vector2(x - width / 2, y - 26)
+		button.size = Vector2(width, 52)
 	queue_redraw()
 
 func _draw() -> void:
@@ -85,7 +85,7 @@ func _draw() -> void:
 			if int(item.lane) == 1 and int(target.lane) == 0 and target_count > 1: continue
 			if not positions.has(int(item.id)) or not positions.has(int(target.id)): continue
 			var active: bool = int(item.id) == current and available.has(int(target.id))
-			draw_line(positions[int(item.id)] - Vector2(0, 22), positions[int(target.id)] + Vector2(0, 22), Color("a9dfbf") if active else Color("354653"), 3 if active else 1, true)
+			draw_line(positions[int(item.id)] - Vector2(0, 26), positions[int(target.id)] + Vector2(0, 26), Color("a9dfbf") if active else Color("354653"), 3 if active else 1, true)
 
 class Badge extends Control:
 	var kind := "combat"

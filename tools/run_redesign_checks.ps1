@@ -11,7 +11,7 @@ $env:APPDATA = Join-Path $runtime 'Roaming'
 $env:LOCALAPPDATA = Join-Path $runtime 'Local'
 $env:QA_TEST_SUMMARY_PATH = Join-Path $runtime 'summary.json'
 New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
-$godot = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe'
+$godot = if ($env:GODOT_EXE -and (Test-Path -LiteralPath $env:GODOT_EXE)) { $env:GODOT_EXE } else { 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe' }
 $script = if ($Mode -eq 'regression') { 'res://tests/run_all.gd' } else { "res://tests/redesign_${Mode}_runner.gd" }
 $argsForGodot = @('--path', ('"{0}"' -f $project), '--script', $script)
 if ($Mode -in @('visual','ui_campaign','motion','multi','touch')) { $argsForGodot += @('--rendering-method','gl_compatibility','--position','-2000,-2000') }

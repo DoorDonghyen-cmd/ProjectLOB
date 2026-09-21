@@ -7,7 +7,7 @@ $env:APPDATA = Join-Path $runtime 'Roaming'
 $env:LOCALAPPDATA = Join-Path $runtime 'Local'
 $env:QA_OUTPUT_DIR = $runtime
 New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
-$godot = (Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1).FullName
+$godot = if ($env:GODOT_EXE -and (Test-Path -LiteralPath $env:GODOT_EXE)) { $env:GODOT_EXE } else { (Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1).FullName }
 if (-not $godot) { throw 'Godot 4.7 executable not found.' }
 $arguments = @('--path',$project,'--script',"res://tests/weapon_${Mode}_runner.gd")
 if ($Mode -eq 'rules') { $arguments += '--headless' }

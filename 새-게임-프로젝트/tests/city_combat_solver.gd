@@ -3,6 +3,7 @@ extends RefCounted
 ## Future draw/RNG state is available here: this is functional reachability QA,
 ## not a player-only black-box experience test.
 const Model = preload("res://redesign/model.gd")
+const Content = preload("res://redesign/content.gd")
 var candidates: Array = []
 var explored := 0
 
@@ -13,15 +14,24 @@ func clone(model):
 	result.s = result.s.duplicate(true)
 	return result
 
+func arranged(commands: Array) -> Array:
+	var plan: Array = []
+	for id in commands: plan.insert(Content.insertion_index(plan, str(id)), id)
+	return plan
+
 func enumerate(model, stack: Array = []) -> void:
 	if not stack.is_empty(): candidates.append(stack.duplicate())
-	if stack.size() >= model.capacity(): return
+	var current_plan := arranged(stack)
+	if Content.slots_used(current_plan) >= model.capacity(): return
 	var ids: Array = []
 	# Try combo pieces early; all permutations and partial magazines remain legal.
-	for id in ["charge", "precise", "pierce", "bore", "arc", "push", "basic"]:
+	for id in ["charge_c", "precise_c", "pierce_c", "bore_c", "arc_c", "push_c", "charge", "precise", "pierce", "bore", "arc", "push", "basic"]:
 		if model.available(id) > 0: ids.append(id)
+	for id in model.s.hand:
+		if not ids.has(id) and model.available(id) > 0: ids.append(id)
 	for id in ids:
 		if stack.count(id) >= model.available(id): continue
+		if not Content.can_insert(current_plan, str(id), model.capacity()): continue
 		stack.append(id)
 		enumerate(model, stack)
 		stack.pop_back()
@@ -30,8 +40,11 @@ func score(model) -> float:
 	var total := 0.0
 	for enemy in model.s.enemies:
 		total += (int(enemy.max_hp) - int(enemy.hp)) * 10.0
+		total += (int(enemy.get("barrier_max", 0)) - int(enemy.get("barrier", 0))) * 24.0
 		if int(enemy.hp) == 0: total += 75
-		else: total += float(enemy.distance) / maxi(1, int(enemy.speed)) * 1.5 + int(enemy.burn) * 2.0
+		else:
+			total += float(enemy.distance) / maxi(1, int(enemy.speed)) * 1.5 + int(enemy.burn) * 2.0
+			if int(enemy.get("charge_max", 0)) > 0: total -= int(enemy.get("charge", 0)) * 2.0
 	total -= int(model.s.turns) * 0.4
 	return total
 

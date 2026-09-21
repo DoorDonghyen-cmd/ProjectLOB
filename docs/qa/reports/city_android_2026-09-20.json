@@ -1,0 +1,46 @@
+﻿{
+    "version_code":  20260920,
+    "field_compression":  "once per combat; cyan pair affordance; tap loads; matching-card drag compresses",
+    "android_runtime":  "not tested on a device or emulator",
+    "built_at":  "2026-09-20T05:06:37.6866221Z",
+    "orientation":  "user landscape; Android screenOrientation 11",
+    "sha256":  "B94BC5496878280155B71DB5C75CE277C06515AD05BE3333D704EF557E6A4A8D",
+    "package":  "com.lastonboard.prototype",
+    "version_name":  "0.4.20260920",
+    "weapons":  [
+                    "single",
+                    "burst",
+                    "scatter",
+                    "heavy",
+                    "amplifier"
+                ],
+    "size_bytes":  81499947,
+    "source_commit":  "7e2e6aa98ed4fb70486602dab8f13e5528544050",
+    "architectures":  [
+                          "arm64-v8a",
+                          "armeabi-v7a"
+                      ],
+    "alignment":  "zipalign 4-byte and 16KiB shared libraries verified",
+    "screen_sha256":  "B7529638AF2F3BD2336916D3388A532E608DB8441A623E7083AD50D6B353F6B5",
+    "game_loop":  "five regions; 35 floors; map/shop/events/progression; separate seven-combat training",
+    "includes_working_tree":  true,
+    "model_sha256":  "14C04FEF7C97AEC2CDF40BC0B5D8B9EDAC84C095EB38F7D057FC664D725F6E7B",
+    "signing":  "standard local Android debug certificate; verified",
+    "previous_apk_certificate_match":  true,
+    "min_sdk":  24,
+    "target_sdk":  36,
+    "permissions":  [
+
+                    ],
+    "ammo_hand_button_sha256":  "E8253532951BED95D15183C92105811D147855E1990DD59EE449F9E531DF2E51",
+    "archive_checks":  {
+                           "archive_crc":  "passed",
+                           "entries":  638,
+                           "exported_assets":  538,
+                           "redesign_main":  "assets/.godot/exported/133200997/export-fb115bd7bd35012d9e72b74cc11f8f5e-main.scn",
+                           "ammo_hand_button_gdc":  "present",
+                           "qa_test_files":  0,
+                           "arm64_and_armv7":  "present"
+                       },
+    "compiled_resources":  "APK extracted compiled resources loaded on PC Godot: model v6, drag card, field compression/undo, city scene passed; not Android runtime testing"
+}

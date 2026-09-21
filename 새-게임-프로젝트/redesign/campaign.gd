@@ -5,6 +5,10 @@ const Ammo = preload("res://redesign/content.gd")
 const Model = preload("res://redesign/model.gd")
 const Lore = preload("res://scripts/core/lore_catalog.gd")
 const SAVE := "user://city_campaign_v1.json"
+const MIN_DECK := 8
+const MAX_COMPRESSOR_CHARGES := 2
+const COMPRESSOR_PRICE := 18
+const MAX_EQUIPPED_PARTS := 5
 var model = Model.new()
 var s: Dictionary = {}
 var profile: Dictionary = defaults()
@@ -14,10 +18,11 @@ static func defaults() -> Dictionary:
 
 func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = "balanced") -> void:
 	if not profile.unlocks.has(loadout): loadout = "balanced"
-	s = {"version": 1, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": 18, "pressure": 0, "slots": 0, "parts": [], "visited": [], "clears": 0, "shop_revision": 0, "shop_part_bought": false, "shop_refined": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "정점까지 35층. 다음 목적지를 선택하세요."}
+	s = {"version": 4, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": 18, "pressure": 0, "slots": 0, "parts": [], "equipped_parts": [], "shop_seen_parts": [], "visited": [], "clears": 0, "compressor_charges": 1, "shop_revision": 0, "shop_part_bought": false, "shop_compressor_bought": false, "shop_refined": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "정점까지 35층. 다음 목적지를 선택하세요."}
 	model.start(gun, seed_value)
+	model.s.equipped_parts = []
 	model.s.deck = Ammo.start_deck(gun) if loadout == "balanced" else Content.LOADOUTS[loadout].deck.duplicate()
-	model.begin_encounter()
+	model.begin_encounter(int(s.compressor_charges))
 
 func current_nodes() -> Array:
 	return Content.nodes(int(s.region), int(s.seed))
@@ -55,13 +60,20 @@ func enter(id: int) -> bool:
 	_log("enter", {"id": id, "route": selected.route})
 	match str(selected.kind):
 		"combat", "boss":
+			_sync_equipped_parts()
 			model.s.floor = mini(5, int(s.region) + (1 if int(s.floor) >= 5 else 0))
 			model.s.capacity_bonus = s.slots
 			model.s.encounter_id = id
 			# Each node has its own draw stream without resetting run statistics/history.
 			model.s.seed = str(int(s.seed) + id * 101)
-			model.begin_encounter()
-			model.s.enemies = Content.encounter(selected, int(s.seed), str(s.gun), int(s.difficulty), int(s.pressure))
+			model.begin_encounter(int(s.compressor_charges))
+			var formation := Content.encounter_pack(selected, int(s.seed), str(s.gun), int(s.difficulty), int(s.pressure))
+			model.s.enemies = formation.active
+			model.s.reinforcements = formation.reserve
+			model.assign_opening_lanes()
+			model.s.encounter_total = int(formation.total)
+			model.s.deployed = model.s.enemies.size()
+			model.s.wave = 1
 			model.s.encounter_name = selected.name
 			s.pressure = 0
 			s.phase = "combat"
@@ -69,8 +81,9 @@ func enter(id: int) -> bool:
 			s.phase = "shop"
 			s.shop_revision = 0
 			s.shop_part_bought = false
+			s.shop_compressor_bought = false
 			s.shop_refined = false
-			s.offers = Content.offers(selected, int(s.seed), 0, str(s.gun), s.parts)
+			_stock_shop(selected)
 		"supply":
 			s.phase = "supply"
 			collect_lore(3 + int(s.region) * 4)
@@ -84,6 +97,9 @@ func enter(id: int) -> bool:
 
 func sync_combat() -> void:
 	if s.is_empty() or s.phase != "combat": return
+	# The field press contributes a free encounter charge. Consume that temporary
+	# charge before reducing the run-owned shop stock.
+	s.compressor_charges = mini(int(s.compressor_charges), int(model.s.field_compression_left))
 	if model.s.phase == "lost":
 		s.phase = "lost"
 		s.message = model.s.message
@@ -118,7 +134,6 @@ func reward(choice: String, remove_id: String = "") -> bool:
 	if s.phase != "reward" or s.resolved: return false
 	if choice == "credits": s.credits += credit_reward()
 	elif choice == "skip": pass
-	elif choice == "remove" and model.s.deck.size() > 6 and model.s.deck.has(remove_id): model.s.deck.erase(remove_id)
 	elif Content.rewards(node(), int(s.seed)).has(choice) and model.s.deck.size() < 14:
 		model.s.deck.append(choice)
 	else: return false
@@ -134,12 +149,23 @@ func reward(choice: String, remove_id: String = "") -> bool:
 	else: s.phase = "map"
 	return true
 
-func gate(choice: String) -> bool:
+func compressible_ids() -> Array:
+	var result: Array = []
+	if model.s.deck.size() <= MIN_DECK: return result
+	for source in Ammo.COMPRESSIONS:
+		if model.s.deck.count(source) >= 2: result.append(source)
+	return result
+
+func gate(choice: String, ammo_id: String = "") -> bool:
 	if s.phase != "gate" or s.resolved: return false
 	if choice == "slot" and int(s.slots) < 2: s.slots += 1
 	elif choice == "credits": s.credits += 24
+	elif choice == "compress" and compressible_ids().has(ammo_id):
+		model.s.deck.erase(ammo_id)
+		model.s.deck.erase(ammo_id)
+		model.s.deck.append(Ammo.compressed_id(ammo_id))
 	else: return false
-	_log("gate", {"choice": choice})
+	_log("gate", {"choice": choice, "ammo": ammo_id})
 	s.region += 1
 	s.floor = 0
 	s.node = 0
@@ -153,44 +179,87 @@ func buy(index: int) -> bool:
 	var offer: Dictionary = s.offers[index]
 	if offer.sold or int(s.credits) < int(offer.price): return false
 	if offer.type == "part":
-		if s.shop_part_bought or s.parts.has(offer.id): return false
-		if not Ammo.PARTS.has(offer.id) or offer.id in ["none", "supply"]: return false
+		if s.parts.has(offer.id): return false
+		if not Ammo.PARTS.has(offer.id) or offer.id == "none": return false
 	elif offer.type != "ammo" or not Ammo.AMMO.has(offer.id) or offer.id == "basic" or model.s.deck.size() >= 14: return false
 	s.credits -= int(offer.price)
 	offer.sold = true
 	if offer.type == "part":
 		s.parts.append(offer.id)
-		model.s.part = offer.id
-		s.shop_part_bought = true
+		if can_equip(str(offer.id)):
+			s.equipped_parts.append(str(offer.id))
+			_sync_equipped_parts()
+			s.message = "%s 구매 · 빈 슬롯에 장착했습니다." % Ammo.PARTS[offer.id].name
+		else:
+			s.message = "%s 구매 · 장착 조건이 맞지 않아 보관함으로 이동했습니다." % Ammo.PARTS[offer.id].name
 	else: model.s.deck.append(offer.id)
 	_log("purchase", {"id": offer.id, "price": offer.price})
+	return true
+
+func buy_compressor_charge() -> bool:
+	if s.phase != "shop" or bool(s.shop_compressor_bought) or int(s.compressor_charges) >= MAX_COMPRESSOR_CHARGES or int(s.credits) < COMPRESSOR_PRICE: return false
+	s.credits -= COMPRESSOR_PRICE
+	s.compressor_charges += 1
+	s.shop_compressor_bought = true
+	s.message = "압축 코어를 충전했습니다. 다음 전투에서도 남은 수량이 유지됩니다."
+	_log("purchase_compressor", {"price": COMPRESSOR_PRICE, "charges": s.compressor_charges})
 	return true
 
 func reroll() -> bool:
 	if s.phase != "shop" or int(s.credits) < 3: return false
 	s.credits -= 3
 	s.shop_revision += 1
-	s.offers = Content.offers(node(), int(s.seed), int(s.shop_revision), str(s.gun), s.parts)
+	_stock_shop(node())
 	# Persistent visit-level lock deliberately survives offer replacement.
 	_log("reroll", {"revision": s.shop_revision})
 	return true
 
+func _stock_shop(shop_node: Dictionary) -> void:
+	s.offers = Content.offers(shop_node, int(s.seed), int(s.shop_revision), str(s.gun), s.parts, s.get("shop_seen_parts", []))
+	for offer in s.offers:
+		if offer.type == "part" and not s.shop_seen_parts.has(offer.id): s.shop_seen_parts.append(offer.id)
+
 func shop_refine(id: String) -> bool:
-	if s.phase != "shop" or s.get("shop_refined", false) or int(s.credits) < 12 or model.s.deck.size() <= 6 or not model.s.deck.has(id): return false
-	model.s.deck.erase(id)
-	s.credits -= 12
-	s.shop_refined = true
-	_log("shop_refine", {"id": id, "price": 12})
-	return true
+	# Kept as a rejected legacy command so old automation cannot silently mutate
+	# the new deck. Compression is a visible gate decision instead.
+	return false
+
+func equipped_parts() -> Array:
+	return s.get("equipped_parts", []).duplicate()
+
+func is_equipped(id: String) -> bool:
+	return s.get("equipped_parts", []).has(id)
+
+func can_equip(id: String) -> bool:
+	if not s.parts.has(id) or is_equipped(id): return false
+	var proposed: Array = equipped_parts()
+	proposed.append(id)
+	return Ammo.valid_part_set(str(s.gun), proposed)
+
+func can_manage_parts() -> bool:
+	return not str(s.get("phase", "")) in ["combat", "won", "lost"]
 
 func equip(id: String) -> bool:
-	if not s.phase in ["shop", "supply", "bypass"] or (id != "none" and not s.parts.has(id)): return false
-	model.s.part = id
-	_log("equip", {"id": id})
+	if not can_manage_parts(): return false
+	if id == "none":
+		if s.equipped_parts.is_empty(): return false
+		s.equipped_parts = []
+	elif not s.parts.has(id): return false
+	elif is_equipped(id): s.equipped_parts.erase(id)
+	elif can_equip(id): s.equipped_parts.append(id)
+	else: return false
+	_sync_equipped_parts()
+	_log("equip", {"id": id, "equipped": s.equipped_parts.duplicate()})
 	return true
 
+func _sync_equipped_parts() -> void:
+	model.s.equipped_parts = s.get("equipped_parts", []).duplicate()
+	model.s.part = "none"
+	model.s.push_left = Ammo.push_budget(model.s)
+	model.s.supply = model.supply_capacity()
+
 func dismantle(id: String) -> bool:
-	if not s.phase in ["shop", "supply"] or not s.parts.has(id) or model.s.part == id: return false
+	if not s.phase in ["shop", "supply"] or not s.parts.has(id) or is_equipped(id): return false
 	s.parts.erase(id)
 	s.credits += 10
 	_log("dismantle", {"id": id})
@@ -204,9 +273,6 @@ func resolve(choice: String, ammo_id: String = "") -> bool:
 		if choice == "ammo" and Content.rewards(current, int(s.seed)).has(ammo_id) and model.s.deck.size() < 14:
 			model.s.deck.append(ammo_id)
 			s.message = Ammo.AMMO[ammo_id].name + " 1장을 보급받았습니다."
-		elif choice == "remove" and model.s.deck.size() > 6 and model.s.deck.has(ammo_id):
-			model.s.deck.erase(ammo_id)
-			s.message = Ammo.AMMO[ammo_id].name + " 1장을 정제했습니다."
 		else: return false
 	else:
 		match str(current.event):
@@ -225,7 +291,7 @@ func resolve(choice: String, ammo_id: String = "") -> bool:
 					s.message = Ammo.AMMO[id].name + " 1장을 회수했습니다."
 				else: return false
 			"salvage":
-				if choice != "sell" or model.s.deck.size() <= 6 or not model.s.deck.has(ammo_id): return false
+				if choice != "sell" or model.s.deck.size() <= MIN_DECK or not model.s.deck.has(ammo_id): return false
 				model.s.deck.erase(ammo_id)
 				s.credits += 16
 				s.message = Ammo.AMMO[ammo_id].name + " 1장 분해 · +16Cr."
@@ -274,14 +340,21 @@ func save(path: String = SAVE) -> Error:
 	# Outside combat, the next room owns the deck anew. Reconcile its zones after
 	# rewards/services so every serialized nested combat state conserves ownership.
 	if s.phase != "combat":
+		_sync_equipped_parts()
 		model.s.capacity_bonus = s.slots
 		model.s.hand = model.s.deck.slice(0, 5)
 		model.s.draw = model.s.deck.slice(5)
 		model.s.discard = []
 		model.s.magazine = []
 		model.s.plan = []
+		model.s.plan_load_order = []
+		model.s.field_compression = {}
+		model.s.field_compression_left = 0
 		model.s.buff = {}
-		model.s.supply = model.capacity()
+		# A newly equipped distance-control part changes this per-magazine limit.
+		# Rebuild all encounter-scoped budgets together before serializing.
+		model.s.push_left = Ammo.push_budget(model.s)
+		model.s.supply = model.supply_capacity()
 	var file := FileAccess.open(path + ".tmp", FileAccess.WRITE)
 	if file == null: return FileAccess.get_open_error()
 	file.store_string(JSON.stringify({"campaign": s, "combat": model.s, "profile": profile}))
@@ -298,24 +371,42 @@ func restore_state(data: Dictionary) -> bool:
 	if not data.get("campaign") is Dictionary or not data.get("combat") is Dictionary or not data.get("profile") is Dictionary: return false
 	var state: Dictionary = data.campaign
 	state = state.duplicate(true)
+	var legacy_v1: bool = int(state.get("version", -1)) == 1
+	if legacy_v1:
+		state.compressor_charges = 1
+		state.shop_compressor_bought = false
+	if int(state.get("version", -1)) in [1, 2]:
+		state.shop_seen_parts = []
+	if int(state.get("version", -1)) in [1, 2, 3]:
+		var legacy_part := str(data.combat.get("part", "none"))
+		state.equipped_parts = [legacy_part] if state.get("parts", []).has(legacy_part) else []
+		state.version = 4
 	if not state.has("shop_refined"): state.shop_refined = false
 	var progress: Dictionary = data.profile
-	for key in ["version", "seed", "gun", "difficulty", "loadout", "region", "floor", "node", "phase", "credits", "pressure", "slots", "parts", "visited", "clears", "shop_revision", "shop_part_bought", "offers", "resolved", "settled", "log", "message"]:
+	for key in ["version", "seed", "gun", "difficulty", "loadout", "region", "floor", "node", "phase", "credits", "pressure", "slots", "parts", "equipped_parts", "shop_seen_parts", "visited", "clears", "compressor_charges", "shop_revision", "shop_part_bought", "shop_compressor_bought", "offers", "resolved", "settled", "log", "message"]:
 		if not state.has(key): return false
-	if not _whole(state.version, 1, 1) or not state.seed is String or not state.seed.is_valid_int() or str(int(state.seed)) != state.seed: return false
+	if not _whole(state.version, 4, 4) or not state.seed is String or not state.seed.is_valid_int() or str(int(state.seed)) != state.seed: return false
 	if not Ammo.GUNS.has(state.gun) or not Content.LOADOUTS.has(state.loadout): return false
 	for key in ["region", "floor", "node", "difficulty", "credits", "pressure", "slots", "clears", "shop_revision"]:
 		if not _whole(state[key], 0, 1000000): return false
 	if state.region > 4 or state.floor > int(Content.info(int(state.region)).floors) or state.difficulty > 10 or not int(state.pressure) in [0, 2] or state.slots > 2: return false
+	if not _whole(state.compressor_charges, 0, MAX_COMPRESSOR_CHARGES): return false
 	if not state.phase in ["map", "combat", "reward", "gate", "shop", "supply", "event", "bypass", "won", "lost"]: return false
-	for key in ["resolved", "settled", "shop_part_bought", "shop_refined"]:
+	for key in ["resolved", "settled", "shop_part_bought", "shop_compressor_bought", "shop_refined"]:
 		if not state[key] is bool: return false
-	for key in ["parts", "visited", "offers", "log"]:
+	for key in ["parts", "equipped_parts", "shop_seen_parts", "visited", "offers", "log"]:
 		if not state[key] is Array: return false
 	if not state.message is String: return false
 	var unique := []
 	for id in state.parts:
-		if not id in ["lens", "coil", "loader"] or unique.has(id) or not Ammo.accepts_part(str(state.gun), str(id)): return false
+		if id == "none" or not Ammo.PARTS.has(id) or unique.has(id) or not Ammo.accepts_part(str(state.gun), str(id)): return false
+		unique.append(id)
+	if not Ammo.valid_part_set(str(state.gun), state.equipped_parts): return false
+	for id in state.equipped_parts:
+		if not state.parts.has(id): return false
+	unique = []
+	for id in state.shop_seen_parts:
+		if id == "none" or not Ammo.PARTS.has(id) or unique.has(id) or not Ammo.accepts_part(str(state.gun), str(id)): return false
 		unique.append(id)
 	for offer in state.offers:
 		if not offer is Dictionary: return false
@@ -324,7 +415,7 @@ func restore_state(data: Dictionary) -> bool:
 		if not offer.sold is bool or not _whole(offer.price, 1, 100): return false
 		if offer.type == "ammo":
 			if not Ammo.AMMO.has(offer.id) or offer.id == "basic" or int(offer.price) != 12: return false
-		elif offer.type != "part" or not offer.id in ["lens", "coil", "loader"] or int(offer.price) != 30 or not Ammo.accepts_part(str(state.gun), str(offer.id)): return false
+		elif offer.type != "part" or offer.id == "none" or not Ammo.PARTS.has(offer.id) or int(offer.price) != 30 or not Ammo.accepts_part(str(state.gun), str(offer.id)): return false
 	for key in defaults():
 		if not progress.has(key): return false
 	for key in ["cores", "runs", "wins", "ascension", "best_region"]:
@@ -341,8 +432,13 @@ func restore_state(data: Dictionary) -> bool:
 	if not progress.unlocks.has("balanced") or not progress.unlocks.has(state.loadout) or state.difficulty > progress.ascension: return false
 	var combat = Model.new()
 	if not combat.restore_state(data.combat): return false
+	if legacy_v1 and state.phase == "combat": state.compressor_charges = int(combat.s.field_compression_left)
 	if combat.s.gun != state.gun or combat.s.get("capacity_bonus", 0) > state.slots: return false
-	if combat.s.part != "none" and not state.parts.has(combat.s.part): return false
+	var combat_parts: Array = Ammo.equipped_parts(combat.s)
+	var campaign_parts: Array = state.equipped_parts.duplicate()
+	combat_parts.sort()
+	campaign_parts.sort()
+	if combat_parts != campaign_parts: return false
 	var candidate = get_script().new()
 	candidate.s = state
 	var current: Dictionary = candidate.node()
@@ -375,6 +471,9 @@ func restore_state(data: Dictionary) -> bool:
 	if state.phase == "gate" and (current.kind != "boss" or int(state.region) == 4): return false
 	if state.phase == "won" and (int(state.region) != 4 or int(state.floor) != 8): return false
 	if state.phase == "combat" and not combat.s.phase in ["plan", "ready"]: return false
+	if state.phase == "combat":
+		var compression_bonus := Ammo.field_compression_bonus(combat.s)
+		if int(combat.s.field_compression_left) < int(state.compressor_charges) or int(combat.s.field_compression_left) > int(state.compressor_charges) + compression_bonus: return false
 	if state.phase in ["reward", "gate", "won"] and not combat.s.phase in ["reward", "won"]: return false
 	if state.phase == "lost" and combat.s.phase != "lost": return false
 	if (state.phase in ["won", "lost"]) != state.settled: return false

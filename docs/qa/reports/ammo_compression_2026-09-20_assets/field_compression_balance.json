@@ -1,0 +1,588 @@
+{
+	"amplifier_combo": {
+		"field": {
+			"actions": 2,
+			"damage": 20,
+			"distance": 98
+		},
+		"ordinary": {
+			"actions": 3,
+			"damage": 34,
+			"distance": 97
+		}
+	},
+	"checks": 264,
+	"comparisons": [
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.75,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"gun": "single",
+			"ordinary": {
+				"actions": 1,
+				"damage": 8,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "pierce"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.75,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 102
+			},
+			"gun": "single",
+			"ordinary": {
+				"actions": 1,
+				"damage": 8,
+				"distance": 101
+			},
+			"slot_cost": 1,
+			"source": "push"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.666666666666667,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"gun": "single",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "bore"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.333333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 2,
+				"distance": 99
+			},
+			"gun": "single",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "charge"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 1.0,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 12,
+				"distance": 99
+			},
+			"gun": "single",
+			"ordinary": {
+				"actions": 1,
+				"damage": 12,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "precise"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 0.625,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 5,
+				"distance": 99
+			},
+			"gun": "single",
+			"ordinary": {
+				"actions": 1,
+				"damage": 8,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "arc"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 5,
+				"distance": 99
+			},
+			"gun": "burst",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "pierce"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 5,
+				"distance": 102
+			},
+			"gun": "burst",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 101
+			},
+			"slot_cost": 1,
+			"source": "push"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.75,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 3,
+				"distance": 99
+			},
+			"gun": "burst",
+			"ordinary": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "bore"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.25,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 1,
+				"distance": 99
+			},
+			"gun": "burst",
+			"ordinary": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "charge"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 1.08333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 13,
+				"distance": 99
+			},
+			"gun": "burst",
+			"ordinary": {
+				"actions": 1,
+				"damage": 12,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "precise"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 0.666666666666667,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"gun": "burst",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "arc"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 5,
+				"distance": 99
+			},
+			"gun": "scatter",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "pierce"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 5,
+				"distance": 102
+			},
+			"gun": "scatter",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 101
+			},
+			"slot_cost": 1,
+			"source": "push"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.75,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 3,
+				"distance": 99
+			},
+			"gun": "scatter",
+			"ordinary": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "bore"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.25,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 1,
+				"distance": 99
+			},
+			"gun": "scatter",
+			"ordinary": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "charge"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 1.125,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 9,
+				"distance": 99
+			},
+			"gun": "scatter",
+			"ordinary": {
+				"actions": 1,
+				"damage": 8,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "precise"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 0.666666666666667,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"gun": "scatter",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "arc"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 5,
+				"distance": 99
+			},
+			"gun": "heavy",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "pierce"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 5,
+				"distance": 102
+			},
+			"gun": "heavy",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 101
+			},
+			"slot_cost": 1,
+			"source": "push"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.75,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 3,
+				"distance": 99
+			},
+			"gun": "heavy",
+			"ordinary": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"slot_cost": 2,
+			"source": "bore"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.25,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 1,
+				"distance": 99
+			},
+			"gun": "heavy",
+			"ordinary": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "charge"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 1.125,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 9,
+				"distance": 99
+			},
+			"gun": "heavy",
+			"ordinary": {
+				"actions": 1,
+				"damage": 8,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "precise"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 0.666666666666667,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 4,
+				"distance": 99
+			},
+			"gun": "heavy",
+			"ordinary": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"slot_cost": 1,
+			"source": "arc"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 10,
+				"distance": 99
+			},
+			"gun": "amplifier",
+			"ordinary": {
+				"actions": 2,
+				"damage": 12,
+				"distance": 98
+			},
+			"slot_cost": 2,
+			"source": "pierce"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.833333333333333,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 10,
+				"distance": 105
+			},
+			"gun": "amplifier",
+			"ordinary": {
+				"actions": 2,
+				"damage": 12,
+				"distance": 102
+			},
+			"slot_cost": 1,
+			"source": "push"
+		},
+		{
+			"anchor": "",
+			"core_cost": 1,
+			"direct_ratio": 0.75,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 6,
+				"distance": 99
+			},
+			"gun": "amplifier",
+			"ordinary": {
+				"actions": 2,
+				"damage": 8,
+				"distance": 98
+			},
+			"slot_cost": 2,
+			"source": "bore"
+		},
+		{
+			"anchor": "last",
+			"core_cost": 1,
+			"direct_ratio": 0.25,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 2,
+				"distance": 99
+			},
+			"gun": "amplifier",
+			"ordinary": {
+				"actions": 2,
+				"damage": 8,
+				"distance": 98
+			},
+			"slot_cost": 1,
+			"source": "charge"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 1.125,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 18,
+				"distance": 99
+			},
+			"gun": "amplifier",
+			"ordinary": {
+				"actions": 2,
+				"damage": 16,
+				"distance": 98
+			},
+			"slot_cost": 1,
+			"source": "precise"
+		},
+		{
+			"anchor": "first",
+			"core_cost": 1,
+			"direct_ratio": 0.666666666666667,
+			"exchange_cost": 0,
+			"field": {
+				"actions": 1,
+				"damage": 8,
+				"distance": 99
+			},
+			"gun": "amplifier",
+			"ordinary": {
+				"actions": 2,
+				"damage": 12,
+				"distance": 98
+			},
+			"slot_cost": 1,
+			"source": "arc"
+		}
+	],
+	"failures": []
+}

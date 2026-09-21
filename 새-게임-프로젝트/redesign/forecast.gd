@@ -12,6 +12,7 @@ static func analyze(state: Dictionary) -> Dictionary:
 	copy.s = state.duplicate(true)
 	var shots: Array = []
 	var advance_events: Array = []
+	var deployments: Array = []
 	var initial_turns: int = copy.s.turns
 	if copy.s.phase == "plan": copy.confirm()
 	for action in range(copy.capacity()):
@@ -24,11 +25,15 @@ static func analyze(state: Dictionary) -> Dictionary:
 			var event: Dictionary = event_value.duplicate(true)
 			event.action = action
 			advance_events.append(event)
-	return {"shots": shots, "advance_events": advance_events, "phase": copy.s.phase, "remaining": copy.s.magazine.duplicate(), "turns": int(copy.s.turns) - initial_turns, "enemies": copy.s.enemies.duplicate(true)}
+		for deployment_value in copy.s.history.back().detail.get("deployments", []):
+			var deployment: Dictionary = deployment_value.duplicate(true)
+			deployment.action = action
+			deployments.append(deployment)
+	return {"shots": shots, "advance_events": advance_events, "deployments": deployments, "phase": copy.s.phase, "remaining": copy.s.magazine.duplicate(), "turns": int(copy.s.turns) - initial_turns, "enemies": copy.s.enemies.duplicate(true), "reserve": copy.s.get("reinforcements", []).duplicate(true), "wave": int(copy.s.get("wave", 1))}
 
 static func random_analyze(state: Dictionary) -> Dictionary:
 	var stack: Array = state.plan if state.phase == "plan" else state.magazine
-	var key := JSON.stringify([state.gun, state.part, state.floor, state.phase, state.enemies, state.buff, state.push_left, stack])
+	var key := JSON.stringify([state.gun, state.part, state.floor, state.phase, state.enemies, state.get("reinforcements", []), state.buff, state.push_left, stack])
 	if key == cached_key: return cached_result.duplicate(true)
 	var initial: Dictionary = state.duplicate()
 	initial.history = []
@@ -38,14 +43,15 @@ static func random_analyze(state: Dictionary) -> Dictionary:
 	var shots: Array = []
 	for id in stack:
 		var merged: Dictionary = {}
-		var shot := {"id": id, "random": true, "target": -1, "damage": 0, "damage_min": 1000000, "damage_max": 0, "expected_damage": 0.0, "hp": -1, "hits": 2 if id == "precise" else 1, "targets": [], "secondary": [], "used_probability": 0.0}
+		var spec: Dictionary = Content.AMMO[id]
+		var shot := {"id": id, "random": true, "target": -1, "damage": 0, "damage_min": 1000000, "damage_max": 0, "expected_damage": 0.0, "hp": -1, "hits": int(spec.get("hits", 2 if spec.effect == "double" else 1)), "targets": [], "secondary": [], "used_probability": 0.0}
 		var target_stats: Dictionary = {}
 		for branch in branches:
 			var alive: Array = []
 			for i in range(branch.state.enemies.size()):
 				if int(branch.state.enemies[i].hp) > 0: alive.append(i)
 			if alive.is_empty():
-				var stopped_key := JSON.stringify([branch.state.enemies, branch.state.buff, branch.state.push_left, branch.state.magazine])
+				var stopped_key := JSON.stringify([branch.state.enemies, branch.state.get("reinforcements", []), branch.state.buff, branch.state.push_left, branch.state.magazine])
 				if merged.has(stopped_key): merged[stopped_key].p += branch.p
 				else: merged[stopped_key] = branch
 				continue
@@ -55,6 +61,7 @@ static func random_analyze(state: Dictionary) -> Dictionary:
 				copy.s.magazine.pop_front()
 				if int(copy.s.buff.get("dmg", 0)) > 0: shot.boosted = true
 				var actual: Dictionary = copy._shot(str(id), int(target))
+				copy._discard_fired_round(str(id))
 				var probability: float = float(branch.p) / alive.size()
 				shot.damage_min = mini(int(shot.damage_min), int(actual.damage))
 				shot.damage_max = maxi(int(shot.damage_max), int(actual.damage))
@@ -64,7 +71,7 @@ static func random_analyze(state: Dictionary) -> Dictionary:
 				target_stats[target].probability += probability
 				target_stats[target].damage_min = mini(int(target_stats[target].damage_min), int(actual.damage))
 				target_stats[target].damage_max = maxi(int(target_stats[target].damage_max), int(actual.damage))
-				var branch_key := JSON.stringify([copy.s.enemies, copy.s.buff, copy.s.push_left, copy.s.magazine])
+				var branch_key := JSON.stringify([copy.s.enemies, copy.s.get("reinforcements", []), copy.s.buff, copy.s.push_left, copy.s.magazine])
 				if merged.has(branch_key): merged[branch_key].p += probability
 				else: merged[branch_key] = {"state": copy.s, "p": probability}
 		if float(shot.used_probability) < 0.999999: shot.damage_min = 0
@@ -82,11 +89,20 @@ static func random_analyze(state: Dictionary) -> Dictionary:
 		e.kill_probability = 0.0
 	var win_probability := 0.0
 	var lost_probability := 0.0
+	var deployment_min := 99999
+	var deployment_max := 0
+	var expected_deployments := 0.0
 	for branch in branches:
 		var copy = Model.new()
 		copy.s = branch.state
 		if not stack.is_empty() and copy.target_index() >= 0: copy._advance(1)
-		if copy.target_index() < 0: win_probability += float(branch.p)
+		var deployed := 0
+		if copy.s.phase != "lost" and copy.reserve_count() > 0:
+			deployed = copy._deploy_reinforcements(copy.target_index() < 0).size()
+		deployment_min = mini(deployment_min, deployed)
+		deployment_max = maxi(deployment_max, deployed)
+		expected_deployments += deployed * float(branch.p)
+		if not copy.has_remaining_enemies() and copy.s.phase != "lost": win_probability += float(branch.p)
 		if copy.s.phase == "lost": lost_probability += float(branch.p)
 		for i in range(enemies.size()):
 			var e: Dictionary = copy.s.enemies[i]
@@ -95,7 +111,8 @@ static func random_analyze(state: Dictionary) -> Dictionary:
 			enemies[i].distance_min = mini(int(enemies[i].distance_min), int(e.distance))
 			enemies[i].distance_max = maxi(int(enemies[i].distance_max), int(e.distance))
 			if int(e.hp) <= 0: enemies[i].kill_probability += float(branch.p)
-	var result := {"random": true, "shots": shots, "advance_events": [], "phase": "uncertain", "remaining": [], "turns": 1 if not stack.is_empty() else 0, "enemies": enemies, "win_probability": win_probability, "lost_probability": lost_probability, "branches": branches.size()}
+	if deployment_min == 99999: deployment_min = 0
+	var result := {"random": true, "shots": shots, "advance_events": [], "deployments": [], "deployment_min": deployment_min, "deployment_max": deployment_max, "expected_deployments": expected_deployments, "phase": "uncertain", "remaining": [], "turns": 1 if not stack.is_empty() else 0, "enemies": enemies, "reserve": state.get("reinforcements", []).duplicate(true), "win_probability": win_probability, "lost_probability": lost_probability, "branches": branches.size()}
 	cached_key = key
 	cached_result = result.duplicate(true)
 	return result
@@ -106,6 +123,7 @@ static func tag(index: int) -> String:
 static func outcome(shot: Dictionary) -> String:
 	if shot.get("random", false): return "%d~%d" % [shot.damage_min, shot.damage_max]
 	if not shot.hit: return "빗나감"
+	if int(shot.get("blocked_hits", 0)) > 0 and int(shot.damage) == 0: return "배리어 −%d" % int(shot.blocked_hits)
 	if int(shot.damage) == 0: return "도탄"
 	if int(shot.hp) == 0: return "처치"
 	return "−%d · HP %d" % [shot.damage, shot.hp]
@@ -124,6 +142,8 @@ static func note(forecast: Dictionary, shot_index: int) -> String:
 	if shot_index < 0 or shot_index >= forecast.get("shots", []).size(): return ""
 	var shot: Dictionary = forecast.shots[shot_index]
 	if shot.get("random", false): return "무작위 표적"
+	if int(shot.get("blocked_hits", 0)) > 0:
+		return "배리어 −%d%s" % [int(shot.blocked_hits), " · HP −%d" % int(shot.damage) if int(shot.damage) > 0 else ""]
 	if int(shot.get("focus_damage", 0)) > 0: return "집중 +%d" % shot.focus_damage
 	var boosted := int(shot.get("math", {}).get("boost", 0)) > 0
 	var secondary: Array = shot.get("secondary", [])
@@ -140,12 +160,12 @@ static func note(forecast: Dictionary, shot_index: int) -> String:
 	if int(shot.get("push", 0)) > 0:
 		return "거리 +%dm" % shot.push
 	if boosted and int(shot.get("hits", 1)) > 1:
-		return "증폭 · 2타"
+		return "증폭 · %d타" % int(shot.hits)
 	if boosted:
 		return "증폭 적용"
 	if int(shot.get("hits", 1)) > 1:
-		return "2회 타격"
-	if str(shot.get("id", "")) == "charge":
+		return "%d회 타격" % int(shot.hits)
+	if Content.AMMO.has(str(shot.get("id", ""))) and str(Content.AMMO[str(shot.id)].effect) == "boost":
 		return "다음 2발 +%d" % int(shot.get("boost_granted", 2))
 	return ""
 
@@ -171,7 +191,7 @@ static func summary(forecast: Dictionary) -> String:
 		if int(enemy.hp) <= 0:
 			parts.append("%s 처치" % tag(i))
 		else:
-			parts.append("%s HP %d" % [tag(i), enemy.hp])
+			parts.append("%s %sHP %d" % [tag(i), "◆%d · " % int(enemy.get("barrier", 0)) if int(enemy.get("barrier", 0)) > 0 else "", enemy.hp])
 			nearest = mini(nearest, int(enemy.distance))
 	if str(forecast.get("phase", "")) == "lost":
 		parts.append("접촉 위험")
@@ -180,3 +200,32 @@ static func summary(forecast: Dictionary) -> String:
 	else:
 		parts.append("전투 종료")
 	return " · ".join(parts)
+
+static func compact_summary(forecast: Dictionary) -> String:
+	if forecast.is_empty(): return "탄환을 넣으면 결과가 표시됩니다"
+	if forecast.get("random", false):
+		var random_text := "전멸 %d%%" % floori(minf(1.0, float(forecast.get("win_probability", 0.0)) + 0.0000001) * 100)
+		if int(forecast.get("deployment_max", 0)) > 0:
+			random_text += " · 증원 +%d~%d" % [int(forecast.get("deployment_min", 0)), int(forecast.get("deployment_max", 0))]
+		if float(forecast.get("lost_probability", 0.0)) > 0.0:
+			random_text += " · 충돌 %d%%" % ceili(float(forecast.lost_probability) * 100.0 - 0.0000001)
+		return random_text
+	var kills := 0
+	var survivors := 0
+	var nearest := 99999
+	for enemy in forecast.get("enemies", []):
+		if int(enemy.get("hp", 0)) <= 0:
+			kills += 1
+		else:
+			survivors += 1
+			nearest = mini(nearest, int(enemy.get("distance", 0)))
+	var result_text := "처치 %d · 전열 %d" % [kills, survivors]
+	if not forecast.get("deployments", []).is_empty():
+		result_text += " · 증원 +%d" % forecast.deployments.size()
+	if str(forecast.get("phase", "")) == "lost":
+		result_text += " · 충돌"
+	elif nearest < 99999:
+		result_text += " · 최근접 %dm" % nearest
+	else:
+		result_text += " · 전투 종료"
+	return result_text

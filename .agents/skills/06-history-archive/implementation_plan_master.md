@@ -8,6 +8,8 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-21 | **5칸 파츠 빌드·코어 패널티** | `codex0921-joker-parts` | 파츠를 5개 조합하는 런 빌드로 전환하고 일반14·코어6, 코어1개 제한, 장점/대가, 다중 구매·보관·교체와 저장 호환을 정의 | [문서](../../../../docs/implementation_plan_joker_parts_2026-09-21.md) |
+| 2026-09-21 | **저체력 다수전·공개 증원·전투 UI** | `codex0921-horde-reinforcement` | 최대 4기 전열, 공개 대기열, 처치 후 보충, 직접 정보 전장과 휴대폰 화면 밀도 개편 | [문서](../../../../docs/implementation_plan_horde_reinforcement_ui_2026-09-21.md) |
 | 2026-09-11 | **Godot 시각 전투 개선** | `codex0911-visual-combat` | 거리 전장·탄창·순차 연출, 화면43·연출39·전체UI493·독립100 통과. 브랜치 검증, main 미병합 | [문서](../../../../docs/implementation_plan_visual_combat_2026-09-11.md) |
 | 2026-09-11 | **별도 브랜치 핵심 재설계 계획** | `codex0911-core-redesign` | 2총기/8탄종/7교전, 규칙48·독립37·UI43·전체UI493 통과. 인간 재미 판단 별도 | [문서](../../../../docs/implementation_plan_core_redesign_2026-09-11.md) |
 | 2026-09-11 | **전술 장전 작업대 개선 계획** | `codex0911-tactical-workbench` | UI 변경 위임, 공개 적/순서/후보 통합과 비용·실제 입력 검증 | [implementation_plan.md](../../../../docs/implementation_plan_tactical_workbench_2026-09-11.md) |
@@ -62,11 +64,13 @@
 | 2026-09-13 | **탄환 정보 계획 실행** | `codex0913-ammo-readability` | 승인된 1~3단계 구현 검증. 사람 이해도/회피 태세 후속 판단 | [문서](../../../../docs/implementation_plan_ammo_readability_2026-09-13.md) |
 | 2026-09-16 | **탄환 카드 아이콘 정보 체계** | `codex0916-ammo-icons` | 위력·관통·명중 고정 픽셀 아이콘, 부호 효과 행, 단계 공개·보상·개발자 숏컷 적용 | [계획](../../../../docs/ui_request_ammo_icon_cards_2026-09-16.md) |
 | 2026-09-16 | **피해·관통 및 3속성 개편** | `codex0916-elemental-ammo` | 명중/회피 제거, 탄환7종·물리/화염/전기·화상/전이·저장 변환·두 수치 UI | [계획](../../../../docs/implementation_plan_elemental_ammo_2026-09-16.md) |
+| 2026-09-21 | **고정 전열·탄 순서·파츠 빌드·상점 UX** | `codex0921-order-parts` | 고정 레인, 회수탄 약화와 전술탄 역할, 적 약점 공개, 8종 파츠와 미확인 우선 순환, 상점·보관함 비교 UX | [계획](../../../../docs/implementation_plan_core_order_parts_ux_2026-09-21.md) |
 
 ---
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0921-order-parts Plan](file:///D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_core_order_parts_ux_2026-09-21.md)
 * [Session codex0830-core-fun-qa Plan](file:///D:/ProjectLoB/docs/implementation_plan_lifo_core_fun_qa_2026-08-30.md)
 * [Session codex0830-qa-exe Plan](file:///D:/ProjectLoB/docs/implementation_plan_qa_windows_launcher_2026-08-30.md)
 * [Session codex0823-qa-controller Plan](file:///D:/ProjectLoB/docs/implementation_plan_qa_playtest_controller_2026-08-23.md)

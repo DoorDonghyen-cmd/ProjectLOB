@@ -16,7 +16,7 @@ $env:QA_CITY_LAYOUT_ONLY = if ($LayoutOnly) { '1' } else { '0' }
 $env:QA_CITY_SOURCE = if ($UISource) { (Resolve-Path -LiteralPath $UISource).Path } else { '' }
 $env:QA_CITY_GUNS = $Weapons
 New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
-$godot = (Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1).FullName
+$godot = if ($env:GODOT_EXE -and (Test-Path -LiteralPath $env:GODOT_EXE)) { $env:GODOT_EXE } else { (Get-ChildItem -LiteralPath (Join-Path $env:USERPROFILE 'OneDrive\Desktop') -Filter 'Godot_v4.7-stable_win64_console.exe' -File -Recurse | Select-Object -First 1).FullName }
 if (-not $godot) { throw 'Godot executable not found.' }
 $arguments = @('--path',$project,'--script',"res://tests/city_${Mode}_runner.gd")
 if ($Mode -eq 'campaign') { $arguments += '--headless' }

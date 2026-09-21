@@ -62,10 +62,16 @@ func collect_actual(m) -> Dictionary:
 	return {"shots": shots, "advance_events": advance_events, "phase": m.s.phase, "remaining": m.s.magazine.duplicate(), "enemies": m.s.enemies.duplicate(true)}
 
 func _run() -> void:
-	var expected_ids := ["arc", "basic", "bore", "charge", "pierce", "precise", "push"]
-	var actual_ids: Array = Content.AMMO.keys()
+	var expected_ids := ["arc", "arc_c", "basic", "bore", "bore_c", "charge", "charge_c", "pierce", "pierce_c", "precise", "precise_c", "push", "push_c"]
+	var actual_ids: Array = Content.AMMO.keys().filter(func(id): return not Content.is_temporary(str(id)))
 	actual_ids.sort()
-	check(actual_ids == expected_ids, "exact seven-round roster", actual_ids)
+	check(actual_ids == expected_ids, "seven ordinary and six compressed round roster", actual_ids)
+	check(Content.FIELD_COMPRESSIONS.size() == 6, "six encounter-only compressed mirrors")
+	for source in Content.FIELD_COMPRESSIONS:
+		var field_id := Content.field_id(source)
+		check(Content.is_temporary(field_id) and Content.source_id(field_id) == source, "field round keeps source identity " + source)
+		for key in ["dmg", "pen", "attribute", "effect", "value", "slot_cost", "anchor"]:
+			check(Content.AMMO[field_id].get(key) == Content.AMMO[Content.compressed_id(source)].get(key), "field round mirrors permanent profile " + source + "/" + key)
 	for id in actual_ids:
 		var spec: Dictionary = Content.AMMO[id]
 		check(spec.keys().has("dmg") and spec.keys().has("pen") and spec.keys().has("attribute") and spec.keys().has("effect"), id + " public schema")
@@ -85,12 +91,14 @@ func _run() -> void:
 					var m = armed(gun, [id], [enemy(999, armor)], part)
 					check(m.fire(), "formula shot fires")
 					var shot: Dictionary = m.s.history.back().detail.results[0]
-					var expected_pen := int(Content.AMMO[id].pen) * (2 if gun == "amplifier" else 1) + (1 if part == "lens" else 0)
-					var expected_raw := int(Content.AMMO[id].dmg) * (2 if gun == "amplifier" else 1) + int(Content.GUNS[gun].bonus)
+					var expected_pen := int(Content.AMMO[id].pen) * (2 if gun == "amplifier" else 1) + (2 if part == "lens" else 0)
+					var gun_bonus := (1 if id == "basic" else 2) if gun == "single" else int(Content.GUNS[gun].bonus)
+					var expected_raw := int(Content.AMMO[id].dmg) * (2 if gun == "amplifier" else 1) + gun_bonus
 					var expected_per_hit := maxi(1, expected_raw - maxi(0, armor - expected_pen))
-					var expected_hits := 2 if id == "precise" else 1
+					var expected_hits := int(Content.AMMO[id].get("hits", 2 if Content.AMMO[id].effect == "double" else 1))
 					check(shot.pen == expected_pen and shot.math.raw == expected_raw and shot.math.armor == maxi(0, armor - expected_pen), "formula penetration " + gun + part + id + str(armor), shot)
-					check(shot.math.per_hit == expected_per_hit and shot.hits == expected_hits and shot.damage == expected_per_hit * expected_hits, "formula damage " + gun + part + id + str(armor), shot)
+					var expected_damage := expected_per_hit * expected_hits + int(shot.focus_damage)
+					check(shot.math.per_hit == expected_per_hit and shot.hits == expected_hits and shot.damage == expected_damage, "formula damage " + gun + part + id + str(armor), shot)
 					var explanation := Readability.explain(shot)
 					check(explanation.contains("피해") and not explanation.contains("명중") and not explanation.contains("회피"), "explanation uses simplified axes " + id)
 
@@ -106,16 +114,16 @@ func _run() -> void:
 		if gun == "scatter": check(Forecast.note(combo_forecast, 1) == "무작위 표적", "random combo displays uncertainty")
 		elif gun == "burst": check(Forecast.note(combo_forecast, 1).contains("집중") and Forecast.note(combo_forecast, 2).contains("증폭"), "focus combo displays payoff")
 		else: check(Forecast.note(combo_forecast, 1) == "증폭 · 2타" and Forecast.note(combo_forecast, 2) == "증폭 적용", gun + " forecast names amplified results")
-	var burst_combo = armed("single", ["charge", "precise"], [enemy(10)])
+	var burst_combo = armed("single", ["charge", "precise"], [enemy(12)])
 	collect_actual(burst_combo)
-	var burst_wrong = armed("single", ["precise", "charge"], [enemy(10)])
+	var burst_wrong = armed("single", ["precise", "charge"], [enemy(12)])
 	collect_actual(burst_wrong)
-	check(burst_combo.s.phase == "reward" and burst_wrong.s.enemies[0].hp == 2, "amplify then double-hit converts a two-hp miss into a kill")
+	check(burst_combo.s.phase == "reward" and burst_wrong.s.enemies[0].hp == 1, "amplify then double-hit converts a one-hp miss into a kill")
 	var armor_combo = armed("single", ["charge", "pierce"], [enemy(7, 3)])
 	collect_actual(armor_combo)
 	var armor_wrong = armed("single", ["pierce", "charge"], [enemy(7, 3)])
 	collect_actual(armor_wrong)
-	check(armor_combo.s.phase == "reward" and armor_wrong.s.enemies[0].hp == 2, "amplify then armor-piercing converts a two-hp miss into a kill")
+	check(armor_combo.s.phase == "reward" and armor_wrong.s.enemies[0].hp == 1, "amplify then armor-piercing converts a one-hp miss into a kill")
 
 	# Burn applies after the shot, ticks before movement, and a burn kill prevents movement.
 	var burn_kill = armed("burst", ["bore"], [enemy(3, 0, 2, 5)])
@@ -136,11 +144,11 @@ func _run() -> void:
 	check(Forecast.burn_ticks_for_shot(burn_forecast, 0) == 1 and Forecast.note(burn_forecast, 0) == "화상 1회 예상", "forecast counts actual future burn events", burn_forecast)
 	check(Forecast.note(burn_forecast, 1) == "거리 +2m", "forecast names push distance", burn_forecast)
 	check(Forecast.summary(burn_forecast).contains("A HP") and Forecast.summary(burn_forecast).contains("안전"), "forecast summarizes final hp and distance", Forecast.summary(burn_forecast))
-	var fire_push = armed("amplifier", ["bore", "push", "basic"], [enemy(18, 2, 3, 6)])
+	var fire_push = armed("amplifier", ["bore", "push", "basic"], [enemy(16, 2, 3, 6)])
 	collect_actual(fire_push)
-	var fire_wrong = armed("amplifier", ["bore", "basic", "basic"], [enemy(18, 2, 3, 6)])
+	var fire_wrong = armed("amplifier", ["bore", "basic", "basic"], [enemy(16, 2, 3, 6)])
 	collect_actual(fire_wrong)
-	check(fire_push.s.phase == "reward" and fire_wrong.s.phase == "lost" and fire_wrong.s.enemies[0].hp == 4, "incendiary then impact buys the burn turn needed to finish")
+	check(fire_push.s.phase == "reward" and fire_wrong.s.phase == "lost" and fire_wrong.s.enemies[0].hp == 6, "incendiary then impact buys the burn turn needed to finish")
 
 	# Electricity hits only the nearest other living enemy for fixed two damage.
 	var electric = armed("burst", ["arc"], [enemy(20, 0, 1, 10), enemy(2, 0, 1, 11, 0, "runner"), enemy(20, 0, 1, 12, 0, "evader")])
@@ -155,11 +163,11 @@ func _run() -> void:
 	var arc_forecast: Dictionary = Forecast.analyze(amplified_arc.s)
 	check(Forecast.note(arc_forecast, 1) == "증폭 · B 전이 −2", "forecast exposes boosted electric combination", arc_forecast)
 	check(Forecast.outcome(arc_forecast.shots[1]).contains("HP"), "forecast outcome exposes remaining hp", arc_forecast.shots[1])
-	var electric_combo = armed("single", ["charge", "arc"], [enemy(8), enemy(2, 0, 1, 102, 0, "runner")])
+	var electric_combo = armed("single", ["charge", "arc"], [enemy(9), enemy(2, 0, 1, 102, 0, "runner")])
 	collect_actual(electric_combo)
-	var electric_wrong = armed("single", ["arc", "charge"], [enemy(8), enemy(2, 0, 1, 102, 0, "runner")])
+	var electric_wrong = armed("single", ["arc", "charge"], [enemy(9), enemy(2, 0, 1, 102, 0, "runner")])
 	collect_actual(electric_wrong)
-	check(electric_combo.s.phase == "reward" and electric_wrong.s.enemies[0].hp == 2, "amplify then electric converts a two-hp miss into a two-target clear")
+	check(electric_combo.s.phase == "reward" and electric_wrong.s.enemies[0].hp == 1, "amplify then electric converts a one-hp miss into a two-target clear")
 
 	# Knockback budget remains two meters for the complete magazine.
 	var push = armed("burst", ["push", "push"], [enemy()])
@@ -253,7 +261,7 @@ func _run() -> void:
 	var migrated = Model.new()
 	migrated.start("burst", 1)
 	check(migrated.restore_run(migration_path), "v2 save migrates")
-	check(migrated.s.version == 4 and migrated.s.buff.is_empty(), "v2 buffs collapse to current version")
+	check(migrated.s.version == Model.VERSION and migrated.s.buff.is_empty() and migrated.s.field_compression.is_empty(), "v2 buffs collapse to current version")
 	for key in ["deck", "hand", "draw", "discard", "magazine", "plan"]:
 		for id in migrated.s[key]: check(Content.AMMO.has(id), "migrated inventory uses live ammo " + key)
 	for migrated_enemy in migrated.s.enemies:

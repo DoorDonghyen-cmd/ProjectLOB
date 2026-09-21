@@ -8,6 +8,8 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-21 | **5칸 파츠 빌드·코어 패널티** | `codex0921-joker-parts` | 일반14·코어6, 최대5개 조합, 코어1개와 대가, 다중 구매·보관·교체 UI, 저장 v8/v4. 캠페인22631/0·UI3426/0 | [문서](../../../../docs/walkthrough_joker_parts_2026-09-21.md) |
+| 2026-09-21 | **저체력 다수전·공개 증원·전투 UI** | `codex0921-horde-reinforcement` | 최대 4기 전열, 총 2~8기, 2기 이하 증원, 증강 처형 연쇄, 모바일 전장 UI. 전체 3,730/0·전용 UI 20/0 | [문서](../../../../docs/walkthrough_horde_reinforcement_ui_2026-09-21.md) |
 | 2026-09-11 | **Godot 시각 전투 개선** | `codex0911-visual-combat` | 거리 전장·탄창·순차 연출, 화면43·연출39·전체UI493·독립100 통과. 브랜치 검증, main 미병합 | [문서](../../../../docs/walkthrough_visual_combat_2026-09-11.md) |
 | 2026-09-11 | **독립 핵심 재설계 7교전** | `codex0911-core-redesign` | 2총기/8탄종/7교전, 규칙48·독립37·UI43·전체UI493 통과. 인간 재미 판단 별도 | [문서](../../../../docs/walkthrough_core_redesign_2026-09-11.md) |
 | 2026-09-11 | **전술 장전 작업대·CSV 전투 정합** | `codex0911-tactical-workbench` | 3730/0, UI54/0, 후반10조건 해법과 Windows 빌드. 인간 체감 별도 | [walkthrough.md](../../../../docs/walkthrough_tactical_workbench_2026-09-11.md) |
@@ -74,11 +76,13 @@
 | 2026-09-13 | **탄환 정보·단계 학습 구현** | `codex0913-ammo-readability` | 카드 수치·피해 근거·학습/일반·단계 지급, 24캠페인/4UI 완주, Windows 검토판. APK 미작업·인간 판단 별도 | [문서](../../../../docs/walkthrough_ammo_readability_2026-09-13.md) |
 | 2026-09-16 | **탄환 카드 픽셀 아이콘 전환** | `codex0916-ammo-icons` | 전투·보상 카드 고정 아이콘과 부호 효과, 단계 공개, 저장 보존 숏컷. 독립5177/0·UI1457/0·시각121/0·Windows 기동 통과. APK 미작업 | [문서](../../../../docs/walkthrough_ammo_icon_cards_2026-09-16.md) |
 | 2026-09-16 | **피해·관통 및 3속성 전면 개편** | `codex0916-elemental-ammo` | 탄환7종·물리/화염/전기·화상/전이, 제거 축 정리, v2→v3 저장 변환. 규칙11794/0·캠페인4완주·UI1589/0·시각137/0·Windows 기동 통과 | [문서](../../../../docs/walkthrough_elemental_ammo_2026-09-16.md) |
+| 2026-09-21 | **고정 전열·탄 순서·파츠 빌드·상점 UX** | `codex0921-order-parts` | 고정 레인, 기본탄 약화·전술탄 우위, 전기 약점, 8종 파츠·미확인 우선 순환, 아이콘 중심 상점·보관함. 캠페인22016/0·UI3477/0 | [문서](../../../../docs/walkthrough_core_order_parts_ux_2026-09-21.md) |
 
 ---
 
 ## 🔗 세션별 원본 링크 (References)
 
+* [Session codex0921-order-parts Walkthrough](file:///D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_core_order_parts_ux_2026-09-21.md)
 * [Session codex0830-core-fun-qa Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_lifo_core_fun_qa_2026-08-30.md)
 * [Session codex0830-qa-exe Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_qa_windows_launcher_2026-08-30.md)
 * [Session codex0823-qa-controller Walkthrough](file:///D:/ProjectLoB/docs/walkthrough_qa_playtest_controller_2026-08-23.md)

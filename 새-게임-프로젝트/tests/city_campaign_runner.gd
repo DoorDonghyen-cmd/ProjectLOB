@@ -9,7 +9,7 @@ var reports: Array = []
 var commands: Array = []
 var solver = Solver.new()
 var output := ""
-var refine_build := false
+var compression_build := false
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -36,8 +36,9 @@ func command(campaign, item: Dictionary) -> bool:
 	match str(item.action):
 		"enter": accepted = campaign.enter(int(item.id))
 		"reward": accepted = campaign.reward(str(item.id))
-		"gate": accepted = campaign.gate(str(item.id))
+		"gate": accepted = campaign.gate(str(item.id), str(item.get("ammo", "")))
 		"buy": accepted = campaign.buy(int(item.id))
+		"buy_compressor": accepted = campaign.buy_compressor_charge()
 		"reroll": accepted = campaign.reroll()
 		"shop_refine": accepted = campaign.shop_refine(str(item.id))
 		"equip": accepted = campaign.equip(str(item.id))
@@ -81,19 +82,50 @@ func rules() -> void:
 	var before: Dictionary = campaign.s.duplicate(true)
 	check(not campaign.buy(-1) and campaign.s == before, "invalid shop transaction is inert")
 	check(campaign.buy(1), "first part purchase")
-	check(campaign.s.credits == 70 and campaign.s.parts.size() == 1, "part costs exactly 30")
-	before = campaign.s.duplicate(true)
-	check(not campaign.buy(1) and not campaign.buy(2) and campaign.s == before, "both duplicate and second part blocked")
+	check(campaign.s.credits == 70 and campaign.s.parts.size() == 1 and campaign.equipped_parts().size() == 1, "part costs exactly 30 and fills one slot")
+	check(not campaign.buy(1) and campaign.buy(2), "sold duplicate blocked while second offered part remains purchasable")
+	check(campaign.s.credits == 40 and campaign.s.parts.size() == 2 and campaign.equipped_parts().size() == 2, "one shop may advance a multi-part build")
 	check(campaign.reroll(), "shop reroll")
+	check(campaign.s.credits == 37, "reroll exactly 3Cr")
 	before = campaign.s.duplicate(true)
-	check(not campaign.buy(1) and campaign.s == before, "part limit survives reroll")
-	check(campaign.s.credits == 67, "reroll exactly 3Cr")
-	check(campaign.shop_refine("push") and campaign.model.s.deck.size() == 9 and campaign.s.credits == 55, "paid refinement removes one round and costs 12")
-	before = campaign.s.duplicate(true)
-	check(not campaign.shop_refine("push") and campaign.s == before, "paid refinement once per visit")
-	var id: String = campaign.model.s.part
+	check(not campaign.shop_refine("push") and campaign.s == before, "retired shop refinement cannot mutate the new deck")
+	var id: String = str(campaign.equipped_parts()[0])
 	check(not campaign.dismantle(id), "equipped item cannot be dismantled")
-	check(campaign.equip("none") and campaign.dismantle(id) and campaign.s.credits == 65, "unequip then dismantle gives exactly 10")
+	check(campaign.equip(id) and campaign.dismantle(id) and campaign.s.credits == 47, "unequip then dismantle gives exactly 10")
+	var core_shop = fixture_shop()
+	check(core_shop.s.compressor_charges == 1 and core_shop.buy_compressor_charge(), "shop sells a persistent compression core")
+	check(core_shop.s.compressor_charges == 2 and core_shop.s.credits == 82 and core_shop.s.shop_compressor_bought, "compression core costs 18Cr and respects the two-core cap")
+	before = core_shop.s.duplicate(true)
+	check(not core_shop.buy_compressor_charge() and core_shop.reroll() and not core_shop.buy_compressor_charge() and core_shop.s.compressor_charges == 2, "reroll never resets compression core visit lock")
+	var part_build = Campaign.new()
+	part_build.start("burst", 731042)
+	part_build.s.parts = ["lens", "coil", "capacitor", "rammer", "field_press", "reserve", "overbore"]
+	for part_id in ["lens", "coil", "capacitor", "rammer", "field_press"]:
+		check(part_build.equip(part_id), "five-part build equips " + part_id)
+	check(part_build.equipped_parts().size() == 5 and Ammo.valid_part_set("burst", part_build.equipped_parts()), "five distinct parts operate together")
+	check(not part_build.equip("reserve") and not part_build.equip("overbore"), "sixth slot and second core are both rejected")
+	check(part_build.equip("lens") and part_build.equip("reserve"), "one module can be swapped without disturbing four other parts")
+	check(part_build.equip("field_press") and part_build.equip("overbore"), "the single core slot can be exchanged")
+	check(part_build.equipped_parts() == ["coil", "capacitor", "rammer", "reserve", "overbore"], "part order and the remaining build survive swaps")
+	check(roundtrip(part_build), "five-part campaign build restores exactly")
+	var two_core_data := {"campaign": part_build.s.duplicate(true), "combat": part_build.model.s.duplicate(true), "profile": part_build.profile.duplicate(true)}
+	two_core_data.campaign.equipped_parts = ["field_press", "overbore"]
+	two_core_data.combat.equipped_parts = ["field_press", "overbore"]
+	check(not Campaign.new().restore_state(two_core_data), "tampered save cannot equip two core parts")
+	var field_build = Campaign.new()
+	field_build.start("burst", 731042)
+	field_build.s.parts = ["field_press"]
+	check(field_build.equip("field_press") and field_build.enter(101), "field press build enters combat")
+	check(not field_build.equip("field_press") and field_build.is_equipped("field_press"), "parts cannot change during combat")
+	check(field_build.s.compressor_charges == 1 and field_build.model.s.field_compression_left == 2, "field press grants one temporary compression above run stock")
+	field_build.model.s.deck = ["bore", "bore", "charge", "precise", "pierce", "push", "arc", "charge"]
+	field_build.model.s.hand = ["bore", "bore", "charge", "precise", "pierce"]
+	field_build.model.s.draw = ["push", "arc", "charge"]
+	field_build.model.s.discard = []
+	check(field_build.model.field_compress("bore"), "field press temporary compression can be used in combat")
+	field_build.sync_combat()
+	check(field_build.model.s.field_compression_left == 1 and field_build.s.compressor_charges == 1, "temporary compression is spent before persistent shop stock")
+	check(roundtrip(field_build), "field press pending compression restores exactly")
 	campaign = fixture_shop()
 	campaign.s.credits = 0
 	before = campaign.s.duplicate(true)
@@ -103,7 +135,9 @@ func rules() -> void:
 	before = campaign.s.duplicate(true)
 	check(not campaign.enter(401) and before == campaign.s, "cannot skip map floors")
 	campaign.s.pressure = 2
-	check(campaign.enter(101) and campaign.s.pressure == 0 and campaign.model.s.enemies[0].distance == 20, "carried distance cost consumed once")
+	var opening_node: Dictionary = campaign.current_nodes().filter(func(node): return int(node.id) == 101)[0]
+	var expected_opening_distance := int(Data.encounter_pack(opening_node, 17, "single", 0, 2).active[0].distance)
+	check(campaign.enter(101) and campaign.s.pressure == 0 and campaign.model.s.enemies[0].distance == expected_opening_distance, "carried distance cost consumed once")
 	check(roundtrip(campaign), "combat fixture restores")
 	var bad: Dictionary = {"campaign": campaign.s.duplicate(true), "combat": campaign.model.s.duplicate(true), "profile": campaign.profile.duplicate(true)}
 	bad.campaign.phase = "shop"
@@ -114,6 +148,25 @@ func rules() -> void:
 	bad.campaign = campaign.s.duplicate(true)
 	bad.combat.capacity_bonus = -1
 	check(not Campaign.new().restore_state(bad), "invalid expansion rejected")
+	bad = {"campaign": campaign.s.duplicate(true), "combat": campaign.model.s.duplicate(true), "profile": campaign.profile.duplicate(true)}
+	bad.campaign.compressor_charges = 3
+	check(not Campaign.new().restore_state(bad), "compression core inventory cannot exceed two")
+	var legacy_data := {"campaign": campaign.s.duplicate(true), "combat": campaign.model.s.duplicate(true), "profile": campaign.profile.duplicate(true)}
+	legacy_data.campaign.version = 1
+	legacy_data.campaign.erase("compressor_charges")
+	legacy_data.campaign.erase("shop_compressor_bought")
+	var migrated_campaign = Campaign.new()
+	legacy_data.campaign.erase("shop_seen_parts")
+	legacy_data.campaign.erase("equipped_parts")
+	check(migrated_campaign.restore_state(legacy_data) and migrated_campaign.s.version == 4 and migrated_campaign.s.compressor_charges == 1 and migrated_campaign.s.shop_seen_parts.is_empty() and not migrated_campaign.s.shop_compressor_bought, "campaign v1 migrates through current multi-part shop format")
+	var seen_parts: Array = []
+	var shop_node: Dictionary = Data.nodes(0, 731042).filter(func(item): return item.kind == "shop")[0]
+	for revision in range(10):
+		var rotating_offers: Array = Data.offers(shop_node, 731042, revision, "burst", [], seen_parts)
+		for offer in rotating_offers:
+			if offer.type == "part" and not seen_parts.has(offer.id): seen_parts.append(offer.id)
+	check(seen_parts.size() == Data.eligible_parts("burst").size() and seen_parts.has("supply") and seen_parts.has("duplex") and seen_parts.has("field_press") and seen_parts.has("triad"), "ten shop views expose every eligible part before repeating")
+	check(Data.eligible_parts("single").size() == 19 and not Data.eligible_parts("single").has("loader"), "only ineffective loader is excluded from walker twenty-part pool")
 	for value in [1, 2]:
 		campaign.model.s.capacity_bonus = value
 		check(campaign.model.capacity() == 4 + value, "capacity growth separate from part")
@@ -129,8 +182,34 @@ func rules() -> void:
 	for enemy in campaign.model.s.enemies: enemy.hp = 0
 	campaign.model.s.phase = "reward"
 	campaign.sync_combat()
-	check(campaign.reward("remove", "push") and campaign.model.s.deck.size() == 9 and campaign.s.credits == 18, "reward refinement replaces credit/ammo")
+	var deck_before: Array = campaign.model.s.deck.duplicate()
+	check(not campaign.reward("remove", "push") and campaign.model.s.deck == deck_before, "retired reward refinement is rejected")
+	check(campaign.reward("credits"), "valid reward still advances after rejected refinement")
 	check(not campaign.reward("credits"), "reward cannot be claimed twice")
+	campaign = Campaign.new()
+	campaign.start("single", 17)
+	campaign.s.phase = "gate"
+	check(campaign.compressible_ids().has("bore") and campaign.compressible_ids().has("pierce"), "gate exposes only duplicate ordinary families")
+	check(campaign.gate("compress", "bore") and campaign.model.s.deck.size() == 9 and campaign.model.s.deck.count("bore") == 0 and campaign.model.s.deck.count("bore_c") == 1, "gate compression consumes two and creates one")
+	campaign = Campaign.new()
+	campaign.start("single", 17)
+	campaign.model.s.deck.resize(8)
+	campaign.s.phase = "gate"
+	deck_before = campaign.model.s.deck.duplicate()
+	check(campaign.compressible_ids().is_empty() and not campaign.gate("compress", "pierce") and campaign.model.s.deck == deck_before, "compression preserves eight-card floor")
+	campaign = Campaign.new()
+	campaign.start("single", 17)
+	check(campaign.enter(101), "persistent core combat fixture enters")
+	campaign.model.s.deck = ["bore", "bore", "charge", "precise", "pierce", "push", "arc", "charge"]
+	campaign.model.s.hand = ["bore", "bore", "charge", "precise", "pierce"]
+	campaign.model.s.draw = ["push", "arc", "charge"]
+	campaign.model.s.discard = []
+	campaign.model.s.enemies = [{"kind": "wall", "name": Ammo.ENEMY_NAMES.wall, "hp": 1, "max_hp": 1, "def": 0, "speed": 1, "distance": 20, "burn": 0}]
+	check(campaign.model.field_compress("bore") and campaign.model.confirm() and campaign.model.fire(), "field compression resolves with one run core")
+	campaign.sync_combat()
+	check(campaign.s.phase == "reward" and campaign.s.compressor_charges == 0, "spent compression core persists after combat")
+	check(campaign.reward("skip") and campaign.enter(int(campaign.choices()[0].id)), "next combat starts from the same run resource")
+	check(campaign.model.s.field_compression_left == 0 and campaign.model.field_compressible_ids().is_empty(), "new encounter cannot restore a spent compression core for free")
 	for loadout in Data.LOADOUTS:
 		campaign.profile.unlocks = Data.LOADOUTS.keys()
 		campaign.start("single", 731042, 0, str(loadout))
@@ -193,24 +272,24 @@ func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> v
 					reward = str(ammo_options[0])
 				if not command(campaign, {"action": "reward", "id": reward}): break
 			"gate":
-				if not command(campaign, {"action": "gate", "id": "slot" if int(campaign.s.slots) < 2 else "credits"}): break
+				var compressible: Array = campaign.compressible_ids()
+				if compression_build and not compressible.is_empty():
+					if not command(campaign, {"action": "gate", "id": "compress", "ammo": str(compressible[0])}): break
+				elif not command(campaign, {"action": "gate", "id": "slot" if int(campaign.s.slots) < 2 else "credits"}): break
 			"shop":
 				for i in range(campaign.s.offers.size()):
 					var offer: Dictionary = campaign.s.offers[i]
-					if offer.type == "part" and not campaign.s.shop_part_bought and int(campaign.s.credits) >= int(offer.price): command(campaign, {"action": "buy", "id": i})
+					if offer.type == "part" and int(campaign.s.credits) >= int(offer.price): command(campaign, {"action": "buy", "id": i})
 				if int(campaign.s.region) == 0 and int(campaign.s.credits) >= 3: command(campaign, {"action": "reroll"})
-				if refine_build and int(campaign.s.credits) >= 12 and campaign.model.s.deck.size() > 7:
-					var remove_id: String = "push" if campaign.model.s.deck.has("push") else str(campaign.model.s.deck[0])
-					command(campaign, {"action": "shop_refine", "id": remove_id})
-				if refine_build and campaign.model.s.deck.size() < 10 and not campaign.s.offers[0].sold and int(campaign.s.credits) >= 12:
+				if compression_build and campaign.model.s.deck.size() < 10 and not campaign.s.offers[0].sold and int(campaign.s.credits) >= 12:
 					command(campaign, {"action": "buy", "id": 0})
 				command(campaign, {"action": "leave"})
 			"supply":
-				command(campaign, {"action": "resolve", "id": "remove" if campaign.model.s.deck.size() > 6 else "skip", "ammo": "push" if campaign.model.s.deck.has("push") else str(campaign.model.s.deck[0])})
+				command(campaign, {"action": "resolve", "id": "skip"})
 				command(campaign, {"action": "leave"})
 			"event":
 				var choice: String = {"siphon": "power", "archive": "lore", "salvage": "sell"}[campaign.node().event]
-				if choice == "sell" and campaign.model.s.deck.size() <= 6: choice = "skip"
+				if choice == "sell" and campaign.model.s.deck.size() <= Campaign.MIN_DECK: choice = "skip"
 				command(campaign, {"action": "resolve", "id": choice, "ammo": str(campaign.model.s.deck[0])})
 				command(campaign, {"action": "leave"})
 			"bypass": command(campaign, {"action": "leave"})
@@ -222,14 +301,18 @@ func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> v
 	campaign.sync_combat()
 	campaign.settle(won)
 	check(progress == campaign.profile, "debrief cannot pay twice")
-	check(campaign.s.slots == 2 and campaign.model.capacity() == int(Ammo.GUNS[gun].capacity) + 2, "endgame growth retains weapon capacity and independent part")
+	if compression_build:
+		check(campaign.model.s.deck.any(func(id): return Ammo.is_compressed(str(id))), "compression route retains at least one compressed round")
+	else:
+		var part_capacity := (1 if Ammo.has_part(campaign.model.s, "supply") else 0) - (2 if Ammo.has_part(campaign.model.s, "field_press") else 0) - (1 if Ammo.has_part(campaign.model.s, "overbore") else 0)
+		check(campaign.s.slots == 2 and campaign.model.capacity() == maxi(1, int(Ammo.GUNS[gun].capacity) + 2 + part_capacity), "endgame growth retains expansion and active part capacity costs")
 	var report := {"gun": gun, "seed": seed_value, "route": route, "difficulty": difficulty, "won": won, "visits": visits, "commands": commands.duplicate(true), "campaign": campaign.s.duplicate(true), "combat": campaign.model.s.duplicate(true), "profile": campaign.profile.duplicate(true)}
 	reports.append(report)
 	print("CITY RUN " + gun + " seed=" + str(seed_value) + " route=" + route + " difficulty=" + str(difficulty) + " won=" + str(won) + " nodes=" + str(campaign.s.visited.size()) + " commands=" + str(commands.size()))
 
 func _run() -> void:
 	output = OS.get_environment("QA_OUTPUT_DIR")
-	refine_build = OS.get_environment("QA_CITY_REFINE") == "1"
+	compression_build = OS.get_environment("QA_CITY_COMPRESSION") == "1"
 	if output.is_empty(): output = "user://city_qa"
 	DirAccess.make_dir_recursive_absolute(output)
 	rules()
@@ -245,11 +328,17 @@ func _run() -> void:
 	var guns: Array = ["single", "burst"]
 	if not OS.get_environment("QA_CITY_GUNS").is_empty(): guns = Array(OS.get_environment("QA_CITY_GUNS").split(","))
 	if not OS.get_environment("QA_CITY_SEED").is_empty(): seeds = [int(OS.get_environment("QA_CITY_SEED"))]
-	for seed_value in seeds:
-		for gun in guns:
-			for route in ["safe", "mixed"]: await play(gun, int(seed_value), route)
+	if OS.get_environment("QA_CITY_HARD_ONLY") != "1":
+		for seed_value in seeds:
+			for gun in guns:
+				for route in ["safe", "mixed"]: await play(gun, int(seed_value), route)
 	if OS.get_environment("QA_CITY_HARD") == "1":
-		for gun in guns: await play(gun, 90210, "mixed", 10)
+		var difficulties: Array = [10]
+		if not OS.get_environment("QA_CITY_DIFFICULTIES").is_empty():
+			difficulties.clear()
+			for value in OS.get_environment("QA_CITY_DIFFICULTIES").split(","): difficulties.append(int(value))
+		for difficulty in difficulties:
+			for gun in guns: await play(gun, 90210 + int(difficulty), "mixed", int(difficulty))
 	finish()
 
 func finish() -> void:

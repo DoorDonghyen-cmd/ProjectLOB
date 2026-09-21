@@ -14,24 +14,26 @@ var ammo_id := "basic"
 var count := 0
 var state: Dictionary = {}
 var is_disabled := false
+var compression_ready := false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	queue_redraw()
 
-func setup(id: String, available: int, current_state: Dictionary, disabled: bool = false) -> void:
+func setup(id: String, available: int, current_state: Dictionary, disabled: bool = false, can_compress: bool = false) -> void:
 	ammo_id = id
 	count = available
 	state = current_state
 	is_disabled = disabled
+	compression_ready = can_compress
 	queue_redraw()
 
 func stat_items() -> Array:
 	if state.is_empty() or not Content.AMMO.has(ammo_id): return []
 	var spec: Dictionary = Content.AMMO[ammo_id]
 	var damage := str(Content.damage(ammo_id, state))
-	if str(spec.effect) == "double": damage += "×2"
+	if str(spec.effect) == "double": damage += "×%d" % Content.hit_count(ammo_id, state)
 	var result: Array = [{"kind": "damage", "value": damage}]
 	var axes: Dictionary = Content.axes(state)
 	if axes.armor: result.append({"kind": "penetration", "value": str(Content.penetration(ammo_id, state))})
@@ -44,14 +46,14 @@ func attribute_data() -> Dictionary:
 
 func effect_data() -> Dictionary:
 	if state.is_empty(): return {}
-	match ammo_id:
-		"basic": return {"kind": "reload", "value": "%d발" % Content.capacity(state)}
-		"pierce": return {"kind": "physical", "value": "장갑 대응"}
-		"bore": return {"kind": "fire", "value": "%d피해 · %d턴" % [Content.burn_damage(state), Content.burn_amount(ammo_id, state)]}
-		"precise": return {"kind": "double", "value": "2회 타격"}
-		"charge": return {"kind": "boost", "value": "+%d · 다음 2발" % Content.effect_value(ammo_id, state)}
-		"push": return {"kind": "push", "value": "%dm" % Content.effect_value(ammo_id, state)}
-		"arc": return {"kind": "electric", "value": "전이 %d" % Content.effect_value(ammo_id, state)}
+	if ammo_id == "basic": return {"kind": "reload", "value": str(Content.capacity(state))}
+	var spec: Dictionary = Content.AMMO[ammo_id]
+	match str(spec.effect):
+		"burn": return {"kind": "fire", "value": "%d×%d" % [Content.burn_damage(state), Content.burn_amount(ammo_id, state)]}
+		"double": return {"kind": "double", "value": "×%d" % Content.hit_count(ammo_id, state)}
+		"boost": return {"kind": "boost", "value": "+%d×2" % Content.effect_value(ammo_id, state)}
+		"push": return {"kind": "push", "value": "+%dm" % Content.effect_value(ammo_id, state)}
+		"arc": return {"kind": "electric", "value": "%d%s" % [Content.effect_value(ammo_id, state), "↗↗" if int(spec.get("arc_targets", 1)) > 1 else "↗"]}
 	return {}
 
 func _draw() -> void:
@@ -62,12 +64,15 @@ func _draw() -> void:
 	var ink := INK
 	ink.a *= alpha
 	AmmoVisual.round_icon(self, Vector2(17, 19), ammo_id, 0.42)
+	if Content.is_compressed(ammo_id): _draw_fit(ammo_color)
+	if compression_ready: _draw_compression_link()
 	var attribute := attribute_data()
 	var attribute_color: Color = attribute.color
 	attribute_color.a *= alpha
-	draw_string(FONT, Vector2(32, 25), "%s ×%d" % [Content.AMMO[ammo_id].name, count], HORIZONTAL_ALIGNMENT_CENTER, size.x - 105, 18, ammo_color)
+	var title := str(Content.AMMO[ammo_id].name)
+	if count > 1: title += " ×%d" % count
+	draw_string(FONT, Vector2(32, 25), title, HORIZONTAL_ALIGNMENT_CENTER, size.x - 105, 18, ammo_color)
 	_draw_icon(str(attribute.kind), Vector2(size.x - 62, 18), attribute_color)
-	draw_string(FONT, Vector2(size.x - 51, 24), str(attribute.name), HORIZONTAL_ALIGNMENT_CENTER, 48, 13, attribute_color)
 	var stats := stat_items()
 	if not stats.is_empty():
 		var slot_width := size.x / float(stats.size())
@@ -85,6 +90,50 @@ func _draw() -> void:
 		draw_rect(Rect2(5, 69, size.x - 10, 29), chip_color)
 		_draw_icon(str(effect.kind), Vector2(19, 83), attribute_color)
 		draw_string(FONT, Vector2(34, 90), str(effect.value), HORIZONTAL_ALIGNMENT_CENTER, size.x - 41, 16, attribute_color)
+
+func _draw_compression_link() -> void:
+	var cyan := Color("63dce8")
+	var faint := cyan
+	faint.a = 0.32
+	# Cyan corner rails make the whole card read as draggable without adding a
+	# badge word. Two linked diamonds are the pair/combine instruction.
+	for corner in [
+		[Vector2(3, 17), Vector2(3, 4), Vector2(16, 4)],
+		[Vector2(size.x - 17, 4), Vector2(size.x - 4, 4), Vector2(size.x - 4, 17)],
+		[Vector2(3, size.y - 17), Vector2(3, size.y - 4), Vector2(16, size.y - 4)],
+		[Vector2(size.x - 17, size.y - 4), Vector2(size.x - 4, size.y - 4), Vector2(size.x - 4, size.y - 17)],
+	]:
+		draw_polyline(PackedVector2Array(corner), faint, 2.0, false)
+	var left := Vector2(size.x - 20, 18)
+	var right := Vector2(size.x - 12, 24)
+	_draw_diamond(left, cyan)
+	_draw_diamond(right, cyan)
+	draw_line(left + Vector2(3, 3), right - Vector2(3, 3), cyan, 2.0, false)
+
+func _draw_diamond(center: Vector2, color: Color) -> void:
+	var points := PackedVector2Array([
+		center + Vector2(0, -4), center + Vector2(4, 0),
+		center + Vector2(0, 4), center + Vector2(-4, 0),
+		center + Vector2(0, -4),
+	])
+	draw_polyline(points, color, 1.5, false)
+
+func _draw_fit(color: Color) -> void:
+	var rule := Content.anchor(ammo_id)
+	var cost := Content.slot_cost(ammo_id)
+	var origin := Vector2(size.x - 48, 32)
+	var fill := color
+	fill.a = 0.18
+	for i in range(2): draw_rect(Rect2(origin + Vector2(i * 18, 0), Vector2(16, 10)), MUTED, false, 1.0)
+	if cost == 2:
+		draw_rect(Rect2(origin, Vector2(34, 10)), fill, true)
+		draw_rect(Rect2(origin, Vector2(34, 10)), color, false, 2.0)
+	elif rule == "first":
+		draw_rect(Rect2(origin, Vector2(16, 10)), fill, true)
+		draw_colored_polygon(PackedVector2Array([origin + Vector2(-5, 5), origin + Vector2(0, 1), origin + Vector2(0, 9)]), color)
+	elif rule == "last":
+		draw_rect(Rect2(origin + Vector2(18, 0), Vector2(16, 10)), fill, true)
+		draw_line(origin + Vector2(35, 0), origin + Vector2(35, 10), color, 3.0)
 
 func _stat_color(kind: String) -> Color:
 	match kind:
