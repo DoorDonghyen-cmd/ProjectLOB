@@ -7,6 +7,8 @@ const AMMO := {
 	"push": {"name": "충격탄", "dmg": 3, "pen": 0, "attribute": "physical", "effect": "push", "value": 2, "text": "적을 2m 밀어 거리를 벌리고 다음 표적을 바꿉니다. 탄창당 총 2m까지 밀 수 있습니다."},
 	"bore": {"name": "소이탄", "dmg": 2, "pen": 1, "attribute": "fire", "effect": "burn", "value": 3, "text": "생존한 적에게 화상 3을 남깁니다. 화상은 적의 전진 직전에 1피해를 주고 1 감소합니다."},
 	"charge": {"name": "증폭탄", "dmg": 1, "pen": 0, "attribute": "physical", "effect": "boost", "value": 2, "text": "다음 2발의 타격당 피해를 +2 합니다. 연발탄의 두 타격에도 각각 적용됩니다."},
+	# Issued only by the isolated risk sample; not in campaign rewards or shops.
+	"charge_hot": {"name": "증폭탄", "dmg": 1, "pen": 0, "attribute": "physical", "effect": "boost", "value": 4, "source": "charge", "reload_heat": 1, "experimental": true, "text": "고출력 · 다음 2발의 타격당 피해 +4. 발사하면 다음 재장전 +1턴. 재장전을 마치면 과열이 해소됩니다."},
 	"precise": {"name": "연발탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "double", "value": 2, "text": "같은 적을 2회 타격합니다. 증폭 피해도 두 타격에 각각 적용됩니다."},
 	"arc": {"name": "전격탄", "dmg": 3, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "text": "주 표적을 공격한 뒤 가장 가까운 다른 생존 적에게 고정 2피해를 전이합니다."},
 	# Compressed rounds keep the family name. Their silhouette and magazine fit
@@ -51,7 +53,7 @@ const GUNS := {
 	"burst": {"name": "쇄도", "role": "집중 적중", "capacity": 4, "reload": 2, "bonus": 0, "mode": "chain", "identity": "같은 적 3회 적중마다 추가 피해 4", "recommendation": "증폭 → 연발 · 3번째 타격 계산", "text": "전탄 연쇄 · 주 타격 3회마다 고정 추가 피해 4 · 재장전 2턴"},
 	"scatter": {"name": "산개", "role": "무작위 분산", "capacity": 5, "reload": 2, "bonus": 0, "mode": "chain", "identity": "탄환마다 무작위 표적 · 넉넉한 탄창", "recommendation": "표적별 확률 · 분산 피해와 전격", "text": "전탄 연쇄 · 생존 적 중 균등 무작위 표적 · 탄창 5칸 / 재장전 2턴"},
 	"heavy": {"name": "압쇄", "role": "속성 특화", "capacity": 4, "reload": 1, "bonus": 0, "mode": "chain", "identity": "화상 턴당 피해 2 · 전이 피해 3", "recommendation": "소이 지속 피해 · 전격 전이", "text": "전탄 연쇄 · 소이 화상 피해 2 / 전격 전이 피해 3 · 재장전 1턴"},
-	"amplifier": {"name": "증강", "role": "한 발 효과 강화", "capacity": 3, "reload": 1, "bonus": 0, "mode": "single", "identity": "단발 · 탄환 성능 2배", "recommendation": "증폭 +4 · 연발 4×2 · 충격 4m", "text": "단발 · 기본 피해/관통과 효과 강도 2배 · 연발 2타/지속 기간 유지 · 재장전 1턴"},
+	"amplifier": {"name": "증강", "role": "한 발 효과 강화", "capacity": 3, "reload": 1, "bonus": 0, "mode": "single", "identity": "단발 2배 · 처치 시 연속", "recommendation": "증폭 +4 · 연발 4×2 · 충격 4m", "text": "1발 발사 · 주 표적 처치 시 계속 · 기본 피해/관통과 효과 강도 2배 · 타격 수/지속 기간 유지 · 재장전 1턴"},
 }
 
 const PARTS := {
@@ -67,7 +69,7 @@ const PARTS := {
 	"igniter": {"name": "점화 약실", "kind": "module", "effect": "점화 추격", "value": "+2 피해", "role": "소이 후속", "upside": "화상 중인 적 피해 +2", "downside": "", "text": "화상 중인 적을 직접 타격할 때 피해 +2."},
 	"breaker": {"name": "배리어 파쇄기", "kind": "module", "effect": "배리어", "value": "+1 파쇄", "role": "다중 타격", "upside": "타격당 배리어 1칸 추가 제거", "downside": "", "text": "각 타격이 배리어를 한 칸 더 제거합니다. 연발탄과 결합하면 빠르게 보호막을 걷어 냅니다."},
 	"executioner": {"name": "처형 조준기", "kind": "module", "effect": "마무리", "value": "+2 피해", "role": "처치선 보정", "upside": "HP 5 이하 적 피해 +2", "downside": "", "text": "발사 직전 HP가 5 이하인 적에게 직접 피해 +2."},
-	"reserve": {"name": "예비 급탄기", "kind": "module", "effect": "회수탄", "value": "+2 보급", "role": "기본탄 완충", "upside": "회수탄 보급 +2", "downside": "", "text": "탄창 크기는 유지하고 교전 시작과 재장전 때 회수탄을 2발 더 보급합니다."},
+	"reserve": {"name": "예비 급탄기", "kind": "module", "effect": "패 교환", "value": "+1회", "role": "조합 탐색", "upside": "패 교환 +1회 · 회수탄 보급 +2", "downside": "", "text": "교전 시작과 재장전마다 패 교환 +1회. 필요한 조합을 찾도록 탄환 두 장을 따로 교환할 수 있습니다. 회수탄 보급도 2발 추가합니다."},
 	"opening": {"name": "선두 격발기", "kind": "module", "effect": "첫 발", "value": "+2 피해", "role": "선두 설계", "upside": "탄창 첫 발 피해 +2", "downside": "", "text": "장전한 탄창의 첫 발 직접 피해 +2. 어떤 탄을 선두에 놓을지 결정합니다."},
 	"afterburner": {"name": "후미 점화기", "kind": "module", "effect": "마지막 발", "value": "+3 피해", "role": "후미 결산", "upside": "탄창 마지막 발 피해 +3", "downside": "재장전 +1턴", "text": "탄창 마지막 발 직접 피해 +3. 재장전 비용이 1턴 증가합니다."},
 	"field_press": {"name": "야전 압축기", "kind": "core", "effect": "현장 압축", "value": "+1회", "role": "압축 빌드", "upside": "교전마다 현장 압축 +1회", "downside": "탄창 −2칸", "text": "교전 시작마다 현장 압축 기회 +1. 대신 탄창 슬롯을 2칸 잃습니다."},
@@ -88,6 +90,7 @@ const GUN_DECKS := {
 }
 
 const ENEMY_NAMES := {
+	"spitter": "압력두꺼비",
 	"runner": "운반 사족체",
 	"wall": "융합 장갑벽",
 	"evader": "전도 선체",
@@ -144,6 +147,7 @@ static func lesson(state: Dictionary) -> String:
 
 static func enemy_rule(enemy: Dictionary) -> String:
 	var kind := str(enemy.get("kind", ""))
+	if kind == "spitter": return "제자리에서 2턴 준비 후 압력탄 발사 · 압력탄은 HP 1, 매 턴 6m 접근. 생성한 턴에는 이동하지 않으며 가장 가까우면 다음 탄으로 요격합니다. 탄 소멸 후 1턴 회복."
 	var parts: PackedStringArray = []
 	if int(enemy.get("barrier_max", 0)) > 0:
 		parts.append("배리어 %d/%d" % [int(enemy.get("barrier", 0)), int(enemy.barrier_max)])
@@ -245,11 +249,17 @@ static func capacity(state: Dictionary) -> int:
 static func supply_capacity(state: Dictionary) -> int:
 	return capacity(state) + (2 if has_part(state, "reserve") else 0)
 
+static func exchange_capacity(state: Dictionary) -> int:
+	return 2 if has_part(state, "reserve") else 1
+
 static func reload_modifier(state: Dictionary) -> int:
 	var value := -1 if has_part(state, "loader") else 0
 	if has_part(state, "afterburner"): value += 1
 	if has_part(state, "inferno"): value += 1
 	return value
+
+static func heat_cost(id: String) -> int:
+	return int(AMMO.get(id, {}).get("reload_heat", 0))
 
 static func field_compression_bonus(state: Dictionary) -> int:
 	return 1 if has_part(state, "field_press") else 0

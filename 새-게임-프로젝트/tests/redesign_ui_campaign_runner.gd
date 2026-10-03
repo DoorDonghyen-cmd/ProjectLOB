@@ -90,7 +90,11 @@ func _run() -> void:
 		if not check(not expected.is_empty(), "recorded source for gun"):
 			break
 		await fresh_screen()
+		if not await click("new_run_setup"):
+			break
 		screen.seed_input.text = "731042"
+		if gun != "single":
+			if not await click("weapon_select_" + gun): break
 		if not await click("start_" + gun):
 			break
 		if not await replay(expected):

@@ -1,0 +1,106 @@
+﻿{
+    "date":  "2026-10-03",
+    "engine":  "Godot 4.7 stable OpenGL",
+    "branch":  "prototype/core-redesign",
+    "head":  "538054dcfc65149d6f13a3dd2f02268d0b139f7a",
+    "working_tree":  "dirty; source hashes identify tested implementation",
+    "seed":  731042,
+    "resolutions":  [
+                        "1008x630",
+                        "1280x800",
+                        "1440x630"
+                    ],
+    "text_scales":  [
+                        1,
+                        1.1
+                    ],
+    "method":  "isolated qa_runtime; actual Godot rendering and touch events; controlled fixtures; not blind human testing",
+    "sources":  [
+                    {
+                        "path":  "새-게임-프로젝트/redesign/part_feedback.gd",
+                        "sha256":  "3B4A8E6121CE65AC1B2C3633EDA9408E1412BAFD31102111EAED753EFDC4EE3F"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/redesign/combat_part_view.gd",
+                        "sha256":  "C28BD3337DDAA4AA3BC7D33AC56958CDC783924C8ECE7535DCF3FED086C51553"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/redesign/model.gd",
+                        "sha256":  "C52024324CB5CA5F7FE3CC89AD80014D8599A101062C5FDD9E4147688F5FEC0E"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/redesign/forecast.gd",
+                        "sha256":  "1809CFE3C5BF4921EBEAFF22C0898FD833A92840A097D3DC2D646FDE69C16E8C"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/redesign/screen.gd",
+                        "sha256":  "13270F23FCBCE66020614FFBAD49F62CA9CC7675563342EB2D440EDECF6E3254"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/redesign/battle_view.gd",
+                        "sha256":  "3493E97C9DBD02BD3EB8D466B0D1945A9AB890B274D4BCEAD2B3C73624880218"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/redesign/magazine_view.gd",
+                        "sha256":  "AD3D6943E31B9D7CD97A6F951A7A599253B610C1C20DAC86000115C3CBA23FAC"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/redesign/campaign_ui.gd",
+                        "sha256":  "97527C6404E96A030C4F80090A7467F433341E11976747462DCF46BDBDEBAAA1"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/tests/build_feedback_runner.gd",
+                        "sha256":  "DB37666CCB0C36335C9BE6D0B0748D2B54A5224D485FCF53E3B760C70BED5127"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/tests/combat_rules_snapshot.gd",
+                        "sha256":  "E3666635B2D1A9C00D22B44474C2EF64CF56A376C0984739F081B546344205F8"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/tests/city_ui_runner.gd",
+                        "sha256":  "A7F18EE55721B98AEFA8F9F181642D4107C527571EFDB35EAC4F0B7CA3429CC7"
+                    },
+                    {
+                        "path":  "새-게임-프로젝트/tests/chain_ui_campaign_runner.gd",
+                        "sha256":  "7AED1C61447B34A968B212C04D233BE3AA08BD7A31373A01011FF1FF0ADBD569"
+                    },
+                    {
+                        "path":  "tools/run_director_ui_checks.ps1",
+                        "sha256":  "B7FA49B76279FC874ADAC6FECD63D6F3A6484922766D158EE7CA77C0102077D7"
+                    }
+                ],
+    "artifacts":  [
+                      {
+                          "path":  "parts_ready_phone.png",
+                          "sha256":  "5DAAD2533FF90F22D7A83CFEDA061480AB6ACC3FB131294C8B5F7A4B9455AA72"
+                      },
+                      {
+                          "path":  "part_condition_phone.png",
+                          "sha256":  "599129EC7D34D0AAA7D3C49AB30F806434AD876DAF7B9562B8CEA1BDD11B26C2"
+                      },
+                      {
+                          "path":  "impact_phone.png",
+                          "sha256":  "BA63C65F7823ADD0B82A1926F45865829A2F193A5DE5217A07D023D6B33F9329"
+                      },
+                      {
+                          "path":  "focus_after_phone.png",
+                          "sha256":  "F57970C9E2868DABC8E1B5D6CCB00D0D2821760E99686919350CFD6822B307E9"
+                      },
+                      {
+                          "path":  "debrief_phone.png",
+                          "sha256":  "F2D19DA372139DB8CC60766C01750738138330667965573F73EA512313547AD3"
+                      },
+                      {
+                          "path":  "campaign_parts_phone.png",
+                          "sha256":  "E8251CE9D922CC9A3AE6E8E4CD69FE91EBBC943D76F6A545022496659C566C46"
+                      },
+                      {
+                          "path":  "campaign_debrief_phone.png",
+                          "sha256":  "C5A0EEFBFBD0EB7553665DD7F9DFDEA18E9BD963A6C8E55D4A675881E4E6A22F"
+                      },
+                      {
+                          "path":  "build_feedback_report.json",
+                          "sha256":  "9A52E1BA6FAB2FA91A6F961BA8F8665C7557DC137DB38A82F5FD5B3AF88D7CD2"
+                      }
+                  ]
+}

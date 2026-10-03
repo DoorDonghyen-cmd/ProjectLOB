@@ -1,0 +1,54 @@
+[
+	{
+		"case": "telegraph",
+		"explored": 285,
+		"path": [
+			{
+				"action": "load",
+				"id": "arc"
+			},
+			{
+				"action": "load",
+				"id": "charge_hot"
+			},
+			{
+				"action": "load",
+				"id": "precise"
+			},
+			{
+				"action": "load",
+				"id": "bore"
+			},
+			{
+				"action": "confirm"
+			},
+			{
+				"action": "fire"
+			}
+		]
+	},
+	{
+		"case": "incoming",
+		"explored": 3,
+		"path": [
+			{
+				"action": "load",
+				"id": "charge"
+			},
+			{
+				"action": "load",
+				"id": "precise"
+			},
+			{
+				"action": "load",
+				"id": "precise"
+			},
+			{
+				"action": "confirm"
+			},
+			{
+				"action": "fire"
+			}
+		]
+	}
+]

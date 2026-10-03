@@ -2,6 +2,9 @@ extends RefCounted
 ## The production city's names/altitudes remain the single source of truth.
 const City = preload("res://scripts/core/map_generator.gd")
 const Ammo = preload("res://redesign/content.gd")
+const BuildGuide = preload("res://redesign/build_guide.gd")
+const START_CREDITS := 30
+const ROUTE_REWARD_BONUS := 6
 const REGIONS := ["section_a", "section_b", "section_c", "section_d", "section_e"]
 const LOADOUTS := {
 	"balanced": {"name": "무기 기본 보급", "deck": Ammo.START_DECK},
@@ -11,7 +14,9 @@ const LOADOUTS := {
 }
 
 static func info(region: int) -> Dictionary:
-	return City.section_info(REGIONS[region])
+	var data: Dictionary = City.section_info(REGIONS[region]).duplicate(true)
+	data.brief = ["멈춘 선로를 건너 첫 승강기로 향하세요.", "주조장의 불길 사이에서 쓸 만한 부품을 회수하세요.", "도시를 움직이는 기계들이 아직 길을 지키고 있습니다.", "닫힌 통행로를 뚫고 상층부로 올라가세요.", "마지막 승강기까지, 완성한 빌드를 시험하세요."][region]
+	return data
 
 static func rng(seed_value: int, salt: int) -> RandomNumberGenerator:
 	var random := RandomNumberGenerator.new()
@@ -108,9 +113,12 @@ static func encounter_pack(node: Dictionary, seed_value: int, gun: String, diffi
 	var boss: bool = node.kind == "boss"
 	var rows: Array = []
 	if region == 0 and local_floor == 1:
-		# The first city fight teaches targeting with two fragile bodies. The
-		# seven-encounter training course remains the one-enemy tutorial.
-		rows = [["runner", 4, 0, 2, 20], ["evader", 4, 0, 2, 24]]
+		# One new idea: combine rounds before introducing armor or weakness.
+		rows = [["runner", 6, 0, 2, 22], ["runner", 8, 0, 2, 26]]
+	elif region == 0 and local_floor == 2:
+		rows = [["wall", 10, 3, 1, 22], ["runner", 6, 0, 2, 26]]
+	elif region == 0 and local_floor == 3:
+		rows = [["runner", 6, 0, 2, 21], ["evader", 6, 0, 2, 24], ["wall", 9, 2, 1, 27]]
 	elif boss:
 		# Every gate is an anchor surrounded by a disposable formation. The boss
 		# is always in the opening four; later escorts wait in the public queue.
@@ -161,7 +169,37 @@ static func encounter(node: Dictionary, seed_value: int, gun: String, difficulty
 	return encounter_pack(node, seed_value, gun, difficulty, pressure).active
 
 static func rewards(node: Dictionary, seed_value: int) -> Array:
-	return shuffle(["charge", "precise", "pierce", "bore", "push", "arc"], rng(seed_value, int(node.id) + 700)).slice(0, 2)
+	var options := shuffle(["charge", "precise", "pierce", "bore", "push", "arc"], rng(seed_value, int(node.id) + 700))
+	# Preserve one random alternative while supplying a tool for the next lesson.
+	if int(node.get("region", -1)) == 0 and int(node.get("floor", 0)) == 1:
+		options.erase("pierce")
+		options.push_front("pierce")
+	return options.slice(0, 2)
+
+static func opening_pair(state: Dictionary) -> Array:
+	if state.gun == "heavy" and state.deck.has("bore") and state.deck.has("push"): return ["bore", "push"]
+	return ["charge", "precise"]
+
+static func prepare_opening_hand(model) -> void:
+	var wanted := opening_pair(model.s)
+	for id in wanted:
+		if model.s.hand.has(id) or not model.s.draw.has(id): continue
+		for index in range(model.s.hand.size() - 1, -1, -1):
+			if wanted.has(model.s.hand[index]): continue
+			var draw_index: int = model.s.draw.find(id)
+			model.s.draw[draw_index] = model.s.hand[index]
+			model.s.hand[index] = id
+			break
+
+static func lesson(node: Dictionary, state: Dictionary) -> String:
+	if int(node.get("region", -1)) != 0: return ""
+	match int(node.get("floor", 0)):
+		1: return "소이 → 충격 · 화상 동안 거리를 벌려보세요" if opening_pair(state) == ["bore", "push"] else "증폭 → 연발 · 순서를 바꿔 예상 피해를 비교해 보세요"
+		2: return "장갑 등장 · 철갑탄의 관통과 예상 HP를 확인하세요"
+		3: return "전격은 다른 적에게 전이 · 여러 적의 HP를 함께 확인하세요"
+		5: return "파츠 아이콘을 누르면 조건 · 빛나는 칸은 발동 예상 순서"
+		6: return "전열 뒤에도 증원 · 다음 탄창과 압축 자원을 남겨두세요"
+	return ""
 
 static func eligible_parts(gun: String) -> Array:
 	var result: Array = []
@@ -182,10 +220,23 @@ static func offers(node: Dictionary, seed_value: int, revision: int, gun: String
 		else: unseen.append(id)
 	unseen = shuffle(unseen, random)
 	repeated = shuffle(repeated, random)
-	var selected: Array = unseen.slice(0, 2)
-	for id in repeated:
-		if selected.size() >= 2: break
-		selected.append(id)
+	var selected: Array = []
+	var pool: Array = unseen + repeated
+	while not pool.is_empty() and selected.size() < 2:
+		# Never repeat a seen part while an unseen candidate remains.
+		var candidates: Array = pool.filter(func(id): return not seen.has(id))
+		if candidates.is_empty(): candidates = pool.duplicate()
+		var preferred: Array = candidates.filter(func(id):
+			if revision == 0 and int(node.get("region", 0)) == 0: return not Ammo.is_core_part(id)
+			return Ammo.is_core_part(id) == (selected.size() == 1)
+		)
+		if not preferred.is_empty(): candidates = preferred
+		if not selected.is_empty():
+			var different := candidates.filter(func(id): return BuildGuide.family(id) != BuildGuide.family(str(selected[0])))
+			if not different.is_empty(): candidates = different
+		var picked: String = candidates[0]
+		selected.append(picked)
+		pool.erase(picked)
 	var result: Array = [{"id": ammo_id, "type": "ammo", "price": 12, "sold": false}]
 	for id in selected: result.append({"id": id, "type": "part", "price": 30, "sold": false, "new": not seen.has(id)})
 	return result

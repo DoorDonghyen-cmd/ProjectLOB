@@ -32,6 +32,8 @@ func click(key: String) -> bool:
 		if ancestor is ScrollContainer:
 			ancestor.ensure_control_visible(button)
 			await settle()
+			button = screen.find_child(key, true, false) as Button
+			if not check(button != null and button.is_visible_in_tree(), "control survives responsive redraw " + key): return false
 			break
 		ancestor = ancestor.get_parent()
 	var point: Vector2 = root.get_final_transform() * (button.get_screen_transform() * (button.size * 0.5) - Vector2(DisplayServer.window_get_position()))
@@ -51,6 +53,11 @@ func capture(label: String) -> void:
 	check(root.get_texture().get_image().save_png(path) == OK, "capture " + label)
 	captures.append(path)
 	check(screen.body.size.x <= screen.size.x, "no horizontal overflow " + label)
+	if screen.page == "run" and root.size.y <= 700:
+		check(not screen.main_scroll.get_v_scroll_bar().visible, "combat fits phone height without vertical scrolling " + label)
+		for key in ["CombatStatusBar", "BattleView", "CombatWorkbench"]:
+			var control := screen.find_child(key, true, false) as Control
+			check(control != null and Rect2(Vector2.ZERO, screen.size).encloses(control.get_global_rect()), "combat region inside viewport " + key + " " + label)
 
 func close_dialogs() -> void:
 	for child in screen.get_children():
@@ -89,20 +96,26 @@ func _run() -> void:
 		file.close()
 	screen.redraw()
 	await settle()
+	await capture("weapon_title")
+	await click("new_run_setup")
 	await capture("weapon_selection")
-	var buttons: Array = ["start_single", "start_burst", "start_scatter", "start_heavy", "start_amplifier", "dev"]
+	var buttons: Array = ["weapon_select_burst", "weapon_select_scatter", "weapon_select_heavy", "weapon_select_amplifier", "start_single", "loadout_back"]
 	# Invalid-save notices add height; all starts should still be reachable.
 	await viewport_controls(buttons)
 	for gun in Content.GUNS:
+		if gun != screen.selected_weapon_id:
+			if not await click("weapon_select_" + gun): break
 		if not await click("weapon_info_" + gun): break
 		check(screen.find_child("WeaponDetails", true, false) != null, "weapon rules and starting deck dialog")
 		await capture("weapon_details_" + gun)
 		await close_dialogs()
 	root.size = Vector2i(1008, 630)
 	await capture("weapon_selection_phone")
+	buttons = ["weapon_select_single", "weapon_select_burst", "weapon_select_scatter", "weapon_select_heavy", "start_amplifier", "loadout_back"]
 	await viewport_controls(buttons)
 	root.size = Vector2i(1280, 800)
 	await settle()
+	if screen.page == "loadout": await click("loadout_back")
 	for gun in Content.GUNS:
 		if screen.page != "menu": await click("menu")
 		if not await click("dev"): break
@@ -132,8 +145,9 @@ func _run() -> void:
 	await click("menu")
 	await click("dev")
 	await click("debug_weapon_selection")
-	check(screen.page == "menu" and screen.find_child("start_amplifier", true, false) != null, "weapon selection debug shortcut")
+	check(screen.page == "loadout" and screen.find_child("WeaponSelection", true, false) != null, "weapon selection debug shortcut")
 	# Narrow maximum magazines use the real owned developer fixture.
+	await click("loadout_back")
 	await click("dev")
 	await click("debug_weapon_scatter")
 	screen.model.s.capacity_bonus = 2
@@ -148,7 +162,7 @@ func _run() -> void:
 		screen.redraw()
 		root.size = Vector2i(1008, 630)
 		await capture("weapon_scatter_" + str(slots) + "_slots_phone")
-		var font: Font = load("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+		var font: Font = load("res://redesign/ui_font.tres")
 		var slot_width: float = screen.magazine_view.size.x / float(slots) - 8
 		for i in range(screen.magazine_view.forecast.shots.size()):
 			var lines: PackedStringArray = screen.magazine_view.compact_lines(screen.magazine_view.forecast, i)
@@ -158,8 +172,15 @@ func _run() -> void:
 	await click("menu")
 	# Normal starts preserve selection, deck ownership and resume.
 	for gun in Content.GUNS:
+		if not await click("new_run_setup"): break
 		screen.seed_input.text = "731042"
+		if gun != screen.selected_weapon_id:
+			if not await click("weapon_select_" + gun): break
 		if not await click("start_" + gun): break
+		var replacement := screen.find_child("NewRunConfirmation", true, false) as ConfirmationDialog
+		if replacement != null:
+			replacement.confirmed.emit()
+			await settle()
 		check(screen.campaign.s.phase == "map" and screen.campaign.s.gun == gun and screen.model.s.deck == Content.start_deck(gun), "normal weapon starts full city with own deck")
 		await click("menu")
 		await click("resume")

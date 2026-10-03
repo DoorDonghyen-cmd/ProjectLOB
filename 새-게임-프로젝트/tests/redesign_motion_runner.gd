@@ -34,6 +34,7 @@ func _run() -> void:
 	screen.save_enabled = false
 	root.add_child(screen)
 	await settle()
+	await click("new_run_setup")
 	screen.seed_input.text = "731042"
 	await click("start_single")
 	# Real loading animation and lock; no model fixture yet.

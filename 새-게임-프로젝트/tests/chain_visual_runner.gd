@@ -49,6 +49,7 @@ func _run() -> void:
 	screen.presentation_speed = 0.03
 	root.add_child(screen)
 	await settle()
+	await tap("new_run_setup")
 	screen.seed_input.text = "731042"
 	await tap("start_single")
 	check(screen.page == "run", "touch starts chain edition")

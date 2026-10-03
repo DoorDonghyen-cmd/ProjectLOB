@@ -44,6 +44,7 @@ func _run() -> void:
 	screen.save_enabled = false
 	root.add_child(screen)
 	await capture("01_menu")
+	await click("new_run_setup")
 	screen.seed_input.text = "731042"
 	await click("start_single")
 	await capture("02_plan")

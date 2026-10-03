@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LoB — 사용자 도트 레퍼런스</title>
+  <style>
+    :root { color-scheme: dark; font-family: "Malgun Gothic", sans-serif; background:#111820; color:#ebe8df; }
+    * { box-sizing:border-box; }
+    body { margin:0 auto; max-width:1440px; padding:32px 24px 64px; }
+    header { max-width:920px; margin-bottom:36px; }
+    h1 { font-size:clamp(24px,4vw,36px); line-height:1.35; margin:12px 0; }
+    h2 { font-size:24px; margin:40px 0 18px; }
+    p { line-height:1.8; margin:8px 0; }
+    .eyebrow { color:#d3b377; font-size:13px; letter-spacing:.12em; }
+    .muted { color:#b1bcc8; }
+    nav { display:flex; flex-wrap:wrap; gap:18px; margin:22px 0; }
+    a { color:#e5c58b; text-underline-offset:4px; }
+    a:focus-visible { outline:3px solid #e5c58b; outline-offset:5px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:22px; align-items:start; }
+    figure { margin:0; }
+    figure > a { display:flex; align-items:center; justify-content:center; min-height:280px; background:#1b242c; }
+    img { display:block; max-width:100%; height:280px; object-fit:contain; }
+    #backgrounds img { height:440px; }
+    #backgrounds figure > a { min-height:440px; }
+    figcaption { padding:14px 0 20px; border-bottom:1px solid #34434b; }
+    figcaption strong { display:block; margin-bottom:6px; }
+    figcaption p { font-size:14px; color:#b1bcc8; }
+    .role { font-size:12px; color:#e5c58b; }
+    footer { margin-top:40px; border-top:1px solid #34434b; padding-top:20px; font-size:14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">LAST ON BOARD · REFERENCE REVIEW · 2026-10-03</div>
+    <h1>산나비에 가까운 인물,<br>사람을 압도하는 도시</h1>
+    <p>사용자가 제공한 캐릭터 5장과 배경 5장. 이미지에서 관찰한 특징과 우리 게임에 적용할 판단을 함께 정리했습니다.</p>
+    <p class="muted">원본 이미지를 그대로 표시합니다. 이미지를 누르면 큰 원본을 볼 수 있습니다. 이 보드는 레퍼런스 검토 자료이며 새 게임 아트 시안은 아닙니다.</p>
+    <nav aria-label="레퍼런스 이동"><a href="#characters">캐릭터 5장</a><a href="#backgrounds">배경 5장</a><a href="../../../direction/pixel-style.md">제작 방향 문서</a><a href="README.md">원본 보관 정보</a></nav>
+  </header>
+  <section id="characters" aria-labelledby="characters-heading">
+    <h2 id="characters-heading">캐릭터 · 비율과 큰 형태</h2>
+    <div class="grid">
+      <figure><a href="character01.png"><img src="character01.png" alt="비대칭 장비를 가진 큰 성인과 작은 인물의 도트 이미지"></a><figcaption><span class="role">주 기준 · 체중감과 비대칭</span><strong>character01.png</strong><p>큰 성인의 몸과 어깨 장비가 먼저 읽힙니다. 장비·외투를 큰 형태로 묶는 방식을 참고합니다.</p></figcaption></figure>
+      <figure><a href="character02.jpg"><img src="character02.jpg" alt="긴 팔다리와 단순한 색면으로 그린 검을 든 인물"></a><figcaption><span class="role">보조 · 비율과 색면</span><strong>character02.jpg</strong><p>얼굴·몸통·다리를 적은 면으로 구분합니다. 작은 크기에서도 팔다리와 장비를 먼저 읽게 합니다.</p></figcaption></figure>
+      <figure><a href="character03.jpg"><img src="character03.jpg" alt="큰 청록색 무기와 휘날리는 외투를 가진 동적인 인물"></a><figcaption><span class="role">보조 · 무기와 자세</span><strong>character03.jpg</strong><p>큰 무기와 옷자락이 동작 방향을 만듭니다. 발광 대비는 전투 상태 표시와 균형을 맞춥니다.</p></figcaption></figure>
+      <figure><a href="character04.jpg"><img src="character04.jpg" alt="바닥을 넓게 딛고 붉은 천과 무기로 방향을 드러낸 인물"></a><figcaption><span class="role">보조 · 접지와 무게 중심</span><strong>character04.jpg</strong><p>발의 지지와 관절의 굽힘이 선명합니다. 조준·반동을 설계할 때 바닥과 몸의 관계를 참고합니다.</p></figcaption></figure>
+      <figure><a href="character05.jpg"><img src="character05.jpg" alt="어두운 몸과 국소적인 밝은 색, 큰 어깨 무기를 가진 인물"></a><figcaption><span class="role">보조 · 장비 실루엣</span><strong>character05.jpg</strong><p>큰 장비와 작은 강조색이 시선을 모읍니다. 총과 탄약팩의 비대칭을 설계할 때 참고합니다.</p></figcaption></figure>
+    </div>
+  </section>
+  <section id="backgrounds" aria-labelledby="backgrounds-heading">
+    <h2 id="backgrounds-heading">배경 · 규모, 깊이, 디스토피아</h2>
+    <div class="grid">
+      <figure><a href="background01.jpg"><img src="background01.jpg" alt="분홍 하늘을 배경으로 통로와 배관이 겹겹이 쌓인 수직 건축"></a><figcaption><span class="role">공간과 생활 설비 참고</span><strong>background01.jpg</strong><p>배관·계단·통로가 실제 쓰이던 도시를 만듭니다. 밝은 분홍색은 주 분위기와 구분합니다.</p></figcaption></figure>
+      <figure><a href="background02.jpg"><img src="background02.jpg" alt="차가운 청록과 회녹색으로 반복되는 거대 도시와 작은 불빛"></a><figcaption><span class="role">주 기준 · 색감과 도트 명암층</span><strong>background02.jpg</strong><p>차가운 주색, 반복되는 규모, 제한된 불빛이 중요합니다. 전투 대상 뒤의 세부 밀도는 줄입니다.</p></figcaption></figure>
+      <figure><a href="background03.jpg"><img src="background03.jpg" alt="녹색 안개와 탐조등, 어두운 거대 건축 실루엣"></a><figcaption><span class="role">주 기준 · 압박과 감시의 분위기</span><strong>background03.jpg</strong><p>탐조등과 수직 실루엣의 압박감을 참고합니다. 회화 질감은 도트 규격으로 그대로 옮기지 않습니다.</p></figcaption></figure>
+      <figure><a href="background04.jpg"><img src="background04.jpg" alt="거대한 건축 틈과 가교 위에 아주 작은 두 사람이 선 공간"></a><figcaption><span class="role">주 기준 · 크기 차와 구도</span><strong>background04.jpg</strong><p>작은 사람과 거대한 틈이 규모를 만듭니다. 전투에서는 배우의 판독 크기를 유지하며 원경에 적용합니다.</p></figcaption></figure>
+      <figure><a href="background05.jpg"><img src="background05.jpg" alt="어두운 보라색 전경과 옅은 원경, 케이블과 식생이 겹친 수직 폐허"></a><figcaption><span class="role">주 기준 · 깊이와 황폐함</span><strong>background05.jpg</strong><p>전경·원경 명암 분리와 방치된 식생을 참고합니다. 가로 전투에 맞는 발판과 구도로 다시 구성합니다.</p></figcaption></figure>
+    </div>
+  </section>
+  <footer><p>캐릭터는 큰 형태와 성인 비율, 배경은 차가운 규모와 층별 깊이를 중심으로 설계합니다. 생활의 온기는 작은 조명과 사람의 물건에 남깁니다.</p><p class="muted">이미지 원본은 변경하지 않았습니다. JPEG/확대본에서 원작의 정확한 논리 해상도·팔레트·애니메이션을 확정하지 않습니다.</p></footer>
+</body>
+</html>

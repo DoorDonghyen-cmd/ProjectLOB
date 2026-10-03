@@ -2,6 +2,7 @@ extends RefCounted
 ## One serializable state; commands validate before mutation. Preview executes the
 ## same shot resolver on a copy and never changes live state or RNG.
 const Content = preload("res://redesign/content.gd")
+const Ranged = preload("res://redesign/ranged.gd")
 const VERSION := 8
 var s: Dictionary = {}
 
@@ -14,6 +15,9 @@ func begin_encounter(field_charges: int = 1) -> void:
 	s.phase = "plan"
 	s.enemies = Content.enemies_for(int(s.floor), int(s.seed), s.get("course", false), str(s.gun))
 	s.reinforcements = []
+	s.projectiles = []
+	s.projectile_serial = 0
+	s.loss_reason = ""
 	assign_opening_lanes()
 	s.encounter_total = s.enemies.size()
 	s.deployed = s.enemies.size()
@@ -25,8 +29,9 @@ func begin_encounter(field_charges: int = 1) -> void:
 	s.plan = []
 	s.plan_load_order = []
 	s.buff = {}
+	s.reload_heat = 0
 	s.push_left = Content.push_budget(s)
-	s.exchange_left = 1
+	s.exchange_left = Content.exchange_capacity(s)
 	s.field_compression_left = 0 if s.get("course", false) else clampi(field_charges, 0, 2) + Content.field_compression_bonus(s)
 	s.field_compression = {}
 	s.supply = supply_capacity()
@@ -55,6 +60,9 @@ func capacity() -> int:
 	return Content.capacity(s)
 
 func reload_cost() -> int:
+	return base_reload_cost() + int(s.get("reload_heat", 0))
+
+func base_reload_cost() -> int:
 	return maxi(1, int(Content.GUNS[s.gun].reload) + Content.reload_modifier(s))
 
 func assign_opening_lanes() -> void:
@@ -149,11 +157,12 @@ func fire() -> bool:
 		advance_events = _advance(1)
 	var deployments: Array = []
 	if s.phase != "lost" and reserve_count() > 0:
-		deployments = _deploy_reinforcements(target_index() < 0)
+		deployments = _deploy_reinforcements(alive_count() == 0)
 	if s.phase != "lost" and target_index() < 0 and reserve_count() == 0:
 		s.phase = "won" if int(s.floor) == Content.ENCOUNTERS.size() - 1 else "reward"
 		s.reward_taken = false
 	if s.phase in ["reward", "won", "lost"]:
+		s.reload_heat = 0
 		_release_unfired_field_round()
 	var lines: PackedStringArray = []
 	for result in results:
@@ -189,9 +198,11 @@ func reload_magazine() -> bool:
 		s.buff = {}
 	s.reloads += 1
 	var cost := reload_cost()
+	var heat_paid := int(s.get("reload_heat", 0))
 	var advance_events := _advance(cost, true)
+	s.reload_heat = 0
 	var deployments: Array = []
-	if s.phase != "lost" and reserve_count() > 0 and target_index() < 0:
+	if s.phase != "lost" and reserve_count() > 0 and alive_count() == 0:
 		deployments = _deploy_reinforcements(true)
 	# Count each actual elapsed turn, including a lethal partial reload.
 	if s.phase in ["reward", "won"]:
@@ -200,12 +211,12 @@ func reload_magazine() -> bool:
 		s.phase = "plan"
 		s.supply = supply_capacity()
 		s.push_left = Content.push_budget(s)
-		s.exchange_left = 1
+		s.exchange_left = Content.exchange_capacity(s)
 		_refill()
 		s.message = "재장전 완료 · %d턴 경과 · 남은 패 유지, 빈 자리 보충" % cost
 	else:
 		s.message = "재장전 도중 적이 0m에 도달했습니다."
-	_record("reload", {"cost": cost, "advance_events": advance_events, "deployments": deployments, "phase": s.phase})
+	_record("reload", {"cost": cost, "heat_paid": heat_paid, "advance_events": advance_events, "deployments": deployments, "phase": s.phase})
 	return true
 
 func _advance(turn_count: int, count_turns: bool = false) -> Array:
@@ -268,17 +279,38 @@ func _advance(turn_count: int, count_turns: bool = false) -> Array:
 			events.append({"turn": i, "target": enemy_index, "kind": "stance", "def": e.def, "closed": e.stance_closed})
 		if s.phase == "lost":
 			break
+		events.append_array(Ranged.advance(s, i))
+		if s.phase == "lost": break
 	return events
 
 func target_index() -> int:
 	var selected := -1
-	var distance := 99999
+	var distance := 2147483647
 	for i in range(s.enemies.size()):
 		var e: Dictionary = s.enemies[i]
 		if int(e.hp) > 0 and int(e.distance) < distance:
 			selected = i
 			distance = int(e.distance)
+	for projectile in Ranged.active(s):
+		if int(projectile.distance) <= distance:
+			selected = Ranged.target_id(projectile)
+			distance = int(projectile.distance)
 	return selected
+
+func target_entity(index: int) -> Dictionary:
+	return Ranged.entity(s, index)
+
+func active_targets() -> Array:
+	var result: Array = []
+	for i in range(s.enemies.size()):
+		if int(s.enemies[i].hp) > 0: result.append(i)
+	for projectile in Ranged.active(s): result.append(Ranged.target_id(projectile))
+	return result
+
+func scatter_targets() -> Array:
+	var nearest := target_index()
+	if Ranged.is_projectile(nearest): return [nearest]
+	return active_targets().filter(func(index): return not Ranged.is_projectile(int(index)))
 
 func alive_count() -> int:
 	var count := 0
@@ -290,7 +322,7 @@ func reserve_count() -> int:
 	return s.get("reinforcements", []).size()
 
 func has_remaining_enemies() -> bool:
-	return alive_count() > 0 or reserve_count() > 0
+	return alive_count() > 0 or reserve_count() > 0 or not Ranged.active(s).is_empty()
 
 func _deploy_reinforcements(force: bool = false) -> Array:
 	var deployments: Array = []
@@ -315,10 +347,9 @@ func _deploy_reinforcements(force: bool = false) -> Array:
 	return deployments
 
 func _random_target() -> int:
-	var alive: Array = []
-	for i in range(s.enemies.size()):
-		if int(s.enemies[i].hp) > 0: alive.append(i)
+	var alive := scatter_targets()
 	if alive.is_empty(): return -1
+	if Ranged.is_projectile(int(alive[0])): return int(alive[0])
 	var rng := RandomNumberGenerator.new()
 	rng.state = int(s.target_rng_state)
 	var index: int = alive[rng.randi_range(0, alive.size() - 1)]
@@ -332,30 +363,39 @@ func _target_state(state: Dictionary) -> String:
 
 func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -> Dictionary:
 	var index := forced_target if forced_target >= 0 else (_random_target() if s.gun == "scatter" else target_index())
-	if index < 0 or index >= s.enemies.size(): return {}
-	var e: Dictionary = s.enemies[index]
+	var e := target_entity(index)
+	if e.is_empty(): return {}
 	if int(e.hp) <= 0: return {}
 	var spec: Dictionary = Content.AMMO[id]
+	var heat_added := Content.heat_cost(id)
+	if heat_added > 0: s.reload_heat = int(s.get("reload_heat", 0)) + heat_added
 	var dmg_buff := int(s.buff.get("dmg", 0))
 	var pen := Content.penetration(id, s)
 	var weakness_bonus := Content.weakness_bonus(id, e)
 	var part_bonus := 0
 	var part_combo: PackedStringArray = []
+	var part_effects: Array = []
+	var burn_before := int(e.get("burn", 0))
 	if Content.has_part(s, "igniter") and int(e.get("burn", 0)) > 0:
 		part_bonus += 2
 		part_combo.append("점화 +2")
+		part_effects.append({"id": "igniter", "label": "피해 +2"})
 	if Content.has_part(s, "executioner") and int(e.hp) <= 5:
 		part_bonus += 2
 		part_combo.append("처형 +2")
+		part_effects.append({"id": "executioner", "label": "피해 +2"})
 	if Content.has_part(s, "opening") and bool(part_context.get("first", false)):
 		part_bonus += 2
 		part_combo.append("선두 +2")
+		part_effects.append({"id": "opening", "label": "피해 +2"})
 	if Content.has_part(s, "afterburner") and bool(part_context.get("last", false)):
 		part_bonus += 3
 		part_combo.append("후미 +3")
+		part_effects.append({"id": "afterburner", "label": "피해 +3"})
 	if Content.has_part(s, "triad") and bool(part_context.get("triad", false)):
 		part_bonus += 5
 		part_combo.append("삼중 +5")
+		part_effects.append({"id": "triad", "label": "피해 +5"})
 	var raw := Content.damage(id, s) + dmg_buff + weakness_bonus + part_bonus
 	var armor := maxi(0, int(e.def) - pen)
 	var per_hit := maxi(1, raw - armor)
@@ -396,6 +436,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	var math := {"base": Content.damage(id, s), "boost": dmg_buff, "weakness": weakness_bonus, "part_bonus": part_bonus, "raw": raw, "armor": armor, "per_hit": per_hit, "hits": hits, "hp_before": hp_before, "armor_before": int(e.def), "focus": focus_damage, "barrier_before": barrier_before, "blocked_hits": blocked_hits, "barrier_removed": barrier_removed}
 	if blocked_hits > 0: combo.append("배리어 −%d" % barrier_removed)
 	if focus_triggers > 0: combo.append("집중 추가 피해 %d" % focus_damage)
+	if heat_added > 0: combo.append("다음 재장전 +%d턴" % heat_added)
 	if s.buff.has("dmg"):
 		s.buff.dmg_left -= 1
 		if s.buff.dmg_left <= 0:
@@ -421,23 +462,32 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	var secondary: Array = []
 	if spec.effect == "arc":
 		var others: Array = []
-		for i in range(s.enemies.size()):
-			if i != index and s.enemies[i].hp > 0: others.append(i)
+		for i in active_targets():
+			if i != index: others.append(i)
 		others.sort_custom(func(a: int, b: int):
-			if int(s.enemies[a].distance) == int(s.enemies[b].distance): return a < b
-			return int(s.enemies[a].distance) < int(s.enemies[b].distance)
+			if int(target_entity(a).distance) == int(target_entity(b).distance):
+				if Ranged.is_projectile(a) != Ranged.is_projectile(b): return Ranged.is_projectile(a)
+				return a < b
+			return int(target_entity(a).distance) < int(target_entity(b).distance)
 		)
 		var target_count := mini(others.size(), int(spec.get("arc_targets", 1)) + Content.arc_target_bonus(s))
 		for other_index in range(target_count):
 			var other: int = int(others[other_index])
-			var amount := mini(int(s.enemies[other].hp), Content.effect_value(id, s))
-			s.enemies[other].hp -= amount
-			secondary.append({"kind": "arc", "target": other, "damage": amount, "hp": s.enemies[other].hp})
+			var other_entity := target_entity(other)
+			var amount := mini(int(other_entity.hp), Content.effect_value(id, s))
+			other_entity.hp -= amount
+			var impact := {"kind": "arc", "target": other, "damage": amount, "hp": other_entity.hp}
+			if Ranged.is_projectile(other): impact.intercept = true
+			secondary.append(impact)
 		if not secondary.is_empty(): combo.append("전이 %d명" % secondary.size())
 	var description := "%s → %s: %d피해" % [spec.name, e.name, damage]
 	if not combo.is_empty(): description += " · " + " / ".join(combo)
-	if e.hp == 0: description += " · 처치"
-	return {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "burn_tick": Content.burn_damage(s), "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description, "focus_before": focus_before, "focus_after": int(e.get("focus_hits", 0)), "focus_damage": focus_damage, "focus_triggers": focus_triggers, "barrier_before": barrier_before, "barrier": int(e.get("barrier", 0)), "blocked_hits": blocked_hits, "barrier_removed": barrier_removed, "boost_granted": Content.effect_value(id, s) if spec.effect == "boost" else 0}
+	if e.hp == 0: description += " · 요격" if Ranged.is_projectile(index) else " · 처치"
+	var result := {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "burn_tick": Content.burn_damage(s), "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description, "focus_before": focus_before, "focus_after": int(e.get("focus_hits", 0)), "focus_damage": focus_damage, "focus_triggers": focus_triggers, "barrier_before": barrier_before, "barrier": int(e.get("barrier", 0)), "blocked_hits": blocked_hits, "barrier_removed": barrier_removed, "boost_granted": Content.effect_value(id, s) if spec.effect == "boost" else 0}
+	result.part_effects = preload("res://redesign/part_feedback.gd").shot_effects(s, result, part_effects, burn_before)
+	result.heat_added = heat_added
+	if Ranged.is_projectile(index): result.intercept = true
+	return result
 
 func preview() -> Dictionary:
 	var stack: Array = s.plan if s.phase == "plan" else s.magazine
@@ -511,6 +561,19 @@ func remove_planned(index: int) -> bool:
 	if history_index >= 0: s.plan_load_order.remove_at(history_index)
 	return true
 
+func can_move_planned(from: int, to: int) -> bool:
+	if s.phase != "plan" or from == to or from < 0 or to < 0 or from >= s.plan.size() or to >= s.plan.size(): return false
+	var proposed: Array = s.plan.duplicate()
+	var id: String = str(proposed.pop_at(from))
+	proposed.insert(to, id)
+	return Content.valid_stack(proposed, capacity())
+
+func move_planned(from: int, to: int) -> bool:
+	if not can_move_planned(from, to): return false
+	var id: String = str(s.plan.pop_at(from))
+	s.plan.insert(to, id)
+	return true
+
 func field_compressible_ids() -> Array:
 	var result: Array = []
 	if s.phase != "plan" or s.get("course", false) or int(s.get("field_compression_left", 0)) <= 0 or not s.get("field_compression", {}).is_empty():
@@ -577,7 +640,7 @@ func exchange(id: String) -> bool:
 	_refill()
 	s.discard.append(id)
 	s.exchange_left -= 1
-	s.message = "%s 교환 · 다음 재장전 때 교환 1회 복구" % Content.AMMO[id].name
+	s.message = "%s 교환 · 다음 재장전 때 교환 %d회 복구" % [Content.AMMO[id].name, Content.exchange_capacity(s)]
 	_record("exchange", {"id": id})
 	return true
 
@@ -642,6 +705,11 @@ func restore_state(source: Dictionary) -> bool:
 		return false
 	if not parsed.has("course"): parsed.course = false
 	if not parsed.course is bool: return false
+	# Optional v8 field: old saves mean no outstanding heat. Failed validation
+	# must never replace the live state. Heat only exists after an actual shot.
+	if not _whole(parsed.get("reload_heat", 0), 0, 1000000): return false
+	parsed.reload_heat = int(parsed.get("reload_heat", 0))
+	if parsed.reload_heat > 0 and parsed.get("phase", "") != "ready": return false
 	for key in ["seed", "gun", "part", "equipped_parts", "floor", "deck", "turns", "shots", "reloads", "history", "reward_taken", "phase", "enemies", "reinforcements", "encounter_total", "deployed", "wave", "hand", "draw", "discard", "magazine", "plan", "plan_load_order", "buff", "push_left", "supply", "rng_state", "target_rng_state", "message", "exchange_left", "field_compression_left", "field_compression"]:
 		if not parsed.has(key):
 			return false
@@ -673,7 +741,7 @@ func restore_state(source: Dictionary) -> bool:
 	if not _whole(parsed.get("capacity_bonus", 0), 0, 2): return false
 	var limit: int = Content.capacity(parsed)
 	var supply_limit := Content.supply_capacity(parsed)
-	if not _whole(parsed.exchange_left, 0, 1): return false
+	if not _whole(parsed.exchange_left, 0, Content.exchange_capacity(parsed)): return false
 	var compression_limit := 2 + Content.field_compression_bonus(parsed)
 	if not _whole(parsed.field_compression_left, 0, compression_limit) or not parsed.field_compression is Dictionary: return false
 	if parsed.buff.has("dmg") != parsed.buff.has("dmg_left"): return false
@@ -738,6 +806,10 @@ func restore_state(source: Dictionary) -> bool:
 	if not _whole(parsed.encounter_total, 1, 8) or not _whole(parsed.deployed, 1, 8) or not _whole(parsed.wave, 1, 8): return false
 	for enemy in parsed.enemies + parsed.reinforcements:
 		if not _valid_enemy(enemy): return false
+	if not Ranged.valid_state(parsed): return false
+	parsed.projectiles = parsed.get("projectiles", [])
+	parsed.projectile_serial = int(parsed.get("projectile_serial", 0))
+	parsed.loss_reason = str(parsed.get("loss_reason", ""))
 	s = parsed
 	return true
 

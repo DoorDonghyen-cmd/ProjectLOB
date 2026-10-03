@@ -94,3 +94,4 @@
 - 2026-09-20 기준 위 6개 조건을 모두 충족했다.
 - 실제 OpenGL UI 입력 검사는 1,639개 항목·526회 입력·35층 완주를 실패 없이 통과했다.
 - 기능 정본은 `docs/walkthrough_preart_uiux_2026-09-20.md`, 검증 원본은 `docs/qa/reports/preart_uiux_2026-09-20.md`, 아트 교체 계약은 `docs/preart_ui_art_handoff_2026-09-20.md`를 따른다.
+- 2026-09-21 후속 패스에서 무기고·파츠를 `shop_workbench.tscn` 기반 화면으로 분리했다. 상품 효과 중복 문장을 줄이고 1280px 3열/2열, 1120px 미만 2열/1열 반응형 배치를 적용했다. 실제 UI 3,430/0·1,103입력을 통과했으며 정본은 `docs/walkthrough_shop_workbench_ui_2026-09-21.md`다.

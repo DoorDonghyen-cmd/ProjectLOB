@@ -1,0 +1,168 @@
+{
+  "created": "2026-10-03",
+  "generator": "PixelLab MCP / create_image_pixen",
+  "terms": "https://pixellab.ai/termsofservice",
+  "style_references": "Original prompts only; no images from SANABI or Arcane Trigger were uploaded or copied.",
+  "cost": {
+    "generations": 8,
+    "remaining_after": 32,
+    "credits_after_usd": 20
+  },
+  "normalization": "Transparent-margin crop only, no scaling/recoloring. Foot anchors from bottom four opaque rows. Nearest filtering with 2x actor scale; each family retains generated palette. Original source preserved, not imported.",
+  "technical_report": "asset_report.json",
+  "runtime_anchors": "sprite_anchors.tres",
+  "status": "Integrated battle art; six enemy roles, one hero, shared prototype foundry backdrop. Other menu/region art conversion pending.",
+  "assets": [
+    {
+      "id": "reclaimer",
+      "source": "source/reclaimer.png",
+      "runtime": "reclaimer.png",
+      "job_id": "b2c41c4d-309f-481a-a8af-948d528c1b92",
+      "download": "https://api.pixellab.ai/mcp/images/b2c41c4d-309f-481a-a8af-948d528c1b92/download",
+      "request": {
+        "description": "Production pixel-art sprite for a side-view tactical industrial city game. One full body scrap-reclaimer gunslinger facing RIGHT, standing in a stable firing stance, both boots visible on same baseline. Dark navy long split work coat, ivory steel shoulder plate, burnt orange short scarf, compact chunky brass rifle held horizontally at waist aimed right. Closed dark helmet with one pale teal visor slit. Realistic compact proportions, approximately 5 heads tall, 16-bit hand-pixelled aesthetic, strong readable silhouette, crisp dark outline, 3-value clusters, no antialiasing or gradients, restrained navy teal steel ivory copper palette, light from upper left. Large coat and rifle shapes rather than tiny detail. Transparent background. No text, no frame, no floor, no glow, no extra characters. Entire sprite inside canvas with small margin.",
+        "width": 80,
+        "height": 80,
+        "no_background": true,
+        "view": "side",
+        "direction": "east",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 100301
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    },
+    {
+      "id": "foundry",
+      "source": "source/foundry.png",
+      "runtime": "foundry.png",
+      "job_id": "87a94b2c-2c37-49a2-8d51-c3f6f8621c20",
+      "download": "https://api.pixellab.ai/mcp/images/87a94b2c-2c37-49a2-8d51-c3f6f8621c20/download",
+      "request": {
+        "description": "Wide pixel art BACKDROP for a side-view tactical battle on an industrial foundry catwalk in a vertical city at night. Environment only, NO characters, NO UI, no foreground objects. Layered immense steel factories, distant pipes, suspended walkways, one large circular furnace arch on far right, a few small muted amber windows, dark teal atmospheric haze between buildings. Lower quarter is mostly dark empty shadow so a separate foreground floor and characters can be overlaid clearly. Upper half has quiet broad silhouettes with limited detail, no busy high contrast clutter. Sophisticated hand-crafted 16-bit pixel art, hard aligned pixel clusters, no smooth gradients, no antialiasing, no dithering noise. Restrained palette deep ink navy #101820, slate #1a2833, desaturated teal #304a53, very sparse warm copper #a87547, light from upper left. Level side-on camera, flat horizon, no diagonal perspective, no text or signs.",
+        "width": 512,
+        "height": 192,
+        "no_background": false,
+        "view": "side",
+        "outline": "lineless",
+        "detail": "medium detail",
+        "seed": 100302
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    },
+    {
+      "id": "runner",
+      "source": "source/runner.png",
+      "runtime": "runner.png",
+      "job_id": "a2892da2-242f-4009-bcfb-24e3974a555f",
+      "download": "https://api.pixellab.ai/mcp/images/a2892da2-242f-4009-bcfb-24e3974a555f/download",
+      "request": {
+        "description": "Production enemy sprite for the same side-view industrial city pixel-art game: compact realistic mechanical proportions, crisp one-pixel dark navy outline, clean large 3-value steel clusters, restrained slate blue and teal steel with ivory upper-left highlights and tiny burnt-orange sensor, no gradients, no antialiasing, no noisy texture. One whole creature, facing LEFT, visible feet, no floor, no shadow, no text or UI, centered on transparent background with safe margin. A low four-legged scrap cargo hunter robot. Long armored dog-like torso, four clearly articulated bent steel legs with broad claw feet, forward orange eye slit, a small cargo battery on its back. Threatening agile silhouette, horizontal body, no human rider.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "direction": "west",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 100303
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    },
+    {
+      "id": "wall",
+      "source": "source/wall.png",
+      "runtime": "wall.png",
+      "job_id": "01ec1de4-ca5b-4ae6-8778-f3d69a41e2cc",
+      "download": "https://api.pixellab.ai/mcp/images/01ec1de4-ca5b-4ae6-8778-f3d69a41e2cc/download",
+      "request": {
+        "description": "Production enemy sprite for the same side-view industrial city pixel-art game: compact realistic mechanical proportions, crisp one-pixel dark navy outline, clean large 3-value steel clusters, restrained slate blue and teal steel with ivory upper-left highlights and tiny burnt-orange sensor, no gradients, no antialiasing, no noisy texture. One whole creature, facing LEFT, visible feet, no floor, no shadow, no text or UI, centered on transparent background with safe margin. A heavy biped walking barricade security robot, thick broad rectangular armored torso and enormous shield-like chest with layered steel plates, tiny recessed orange visor, two squat piston legs and wide feet. Top-heavy silhouette, navy armor and aged ivory rim edges, solid front hull turned left, no weapon protruding, no humans.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "direction": "west",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 100304
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    },
+    {
+      "id": "evader",
+      "source": "source/evader.png",
+      "runtime": "evader.png",
+      "job_id": "4471600e-d833-428a-81f4-baf41154d3d4",
+      "download": "https://api.pixellab.ai/mcp/images/4471600e-d833-428a-81f4-baf41154d3d4/download",
+      "request": {
+        "description": "Production enemy sprite for the same side-view industrial city pixel-art game: compact realistic mechanical proportions, crisp one-pixel dark navy outline, clean large 3-value steel clusters, restrained slate blue and teal steel with ivory upper-left highlights and tiny burnt-orange sensor, no gradients, no antialiasing, no noisy texture. One whole creature, facing LEFT, visible feet, no floor, no shadow, no text or UI, centered on transparent background with safe margin. A narrow upright electrical scout automaton, two thin reverse-jointed legs, angular copper conducting rails wrapped around a navy torso, a bright cyan capacitor visible in the open ribcage and two small electrode prongs above its head. Lightly armored tall quick silhouette, visibly electrical, facing left. No aura.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "direction": "west",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 100305
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    },
+    {
+      "id": "caster",
+      "source": "source/caster.png",
+      "runtime": "caster.png",
+      "job_id": "ed9be1df-1143-4f8d-a33e-558c1917b156",
+      "download": "https://api.pixellab.ai/mcp/images/ed9be1df-1143-4f8d-a33e-558c1917b156/download",
+      "request": {
+        "description": "Production enemy sprite for the same side-view industrial city pixel-art game: compact realistic mechanical proportions, crisp one-pixel dark navy outline, clean large 3-value steel clusters, restrained slate blue and teal steel with ivory upper-left highlights and tiny burnt-orange sensor, no gradients, no antialiasing, no noisy texture. One whole creature, facing LEFT, visible feet, no floor, no shadow, no text or UI, centered on transparent background with safe margin. A hovering industrial signal witch drone. Compact vertical diamond-shaped steel hull, a large single circular amber lens in center, two short hooked antenna arms, three dangling insulated cables below body. No legs: intentionally levitating machinery, no human, strong diamond silhouette, outer navy shell and pale steel rim. No aura.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "direction": "west",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 100306
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    },
+    {
+      "id": "absorber",
+      "source": "source/absorber.png",
+      "runtime": "absorber.png",
+      "job_id": "10f4183c-6f5f-4ccf-8925-b97e2820338c",
+      "download": "https://api.pixellab.ai/mcp/images/10f4183c-6f5f-4ccf-8925-b97e2820338c/download",
+      "request": {
+        "description": "Production enemy sprite for the same side-view industrial city pixel-art game: compact realistic mechanical proportions, crisp one-pixel dark navy outline, clean large 3-value steel clusters, restrained slate blue and teal steel with ivory upper-left highlights and tiny burnt-orange sensor, no gradients, no antialiasing, no noisy texture. One whole creature, facing LEFT, visible feet, no floor, no shadow, no text or UI, centered on transparent background with safe margin. A hovering spherical barrier guardian robot. Broad round dark steel orb encircled by three thick segmented armor rings, large central turquoise circular energy cell, four ivory locking clamps, small brass rivets. Clearly spherical silhouette, protective containment shell, no legs, no humanoid body, no aura. The orb itself is solid metal.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "direction": "west",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 100307
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    },
+    {
+      "id": "stance",
+      "source": "source/stance.png",
+      "runtime": "stance.png",
+      "job_id": "bbfdd49b-d127-4cf4-a4d2-333fed179d87",
+      "download": "https://api.pixellab.ai/mcp/images/bbfdd49b-d127-4cf4-a4d2-333fed179d87/download",
+      "request": {
+        "description": "Production enemy sprite for the same side-view industrial city pixel-art game: compact realistic mechanical proportions, crisp one-pixel dark navy outline, clean large 3-value steel clusters, restrained slate blue and teal steel with ivory upper-left highlights and tiny burnt-orange sensor, no gradients, no antialiasing, no noisy texture. One whole creature, facing LEFT, visible feet, no floor, no shadow, no text or UI, centered on transparent background with safe margin. A hovering transforming armored sentry drone. Wide angular triangular silhouette with two large hinged steel wing-shields swept downward forming a sharp inverted V, dark navy inner machinery, one amber central optic, visible copper hinge joints. Symmetric shield wings, no feathers, no aircraft cockpit, no human, no legs, no aura. Whole machine in a slightly left-facing side view.",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "view": "side",
+        "direction": "west",
+        "outline": "selective outline",
+        "detail": "medium detail",
+        "seed": 100308
+      },
+      "review": "Generation inspected; integrated into Godot battle, RGBA and exact dimensions recorded."
+    }
+  ]
+}

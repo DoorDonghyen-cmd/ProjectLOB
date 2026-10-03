@@ -1,0 +1,134 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://redesign/deck_loadout.gd" id="1"]
+
+[node name="DeckLoadout" type="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+script = ExtResource("1")
+
+[node name="SummaryPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="DeckSummary" type="Label" parent="SummaryPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+autowrap_mode = 2
+
+[node name="TabActions" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PartsTab" type="Button" parent="TabActions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(180, 48)
+toggle_mode = true
+text = "파츠 구성"
+
+[node name="AmmoTab" type="Button" parent="TabActions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(180, 48)
+toggle_mode = true
+text = "탄환 덱"
+
+[node name="BuildFeedback" type="Label" parent="TabActions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 2
+vertical_alignment = 1
+
+[node name="PartsWorkspace" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PartsCollection" type="VBoxContainer" parent="PartsWorkspace"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.3
+theme_override_constants/separation = 10
+
+[node name="EquipmentPanel" type="PanelContainer" parent="PartsWorkspace/PartsCollection"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="EquipmentColumn" type="VBoxContainer" parent="PartsWorkspace/PartsCollection/EquipmentPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LoadoutStatus" type="Label" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="EquippedPartGrid" type="GridContainer" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 5
+theme_override_constants/h_separation = 6
+
+[node name="InventoryPanel" type="PanelContainer" parent="PartsWorkspace/PartsCollection"]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="InventoryColumn" type="VBoxContainer" parent="PartsWorkspace/PartsCollection/InventoryPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="InventoryHint" type="Label" parent="PartsWorkspace/PartsCollection/InventoryPanel/InventoryColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="InventoryScroll" type="ScrollContainer" parent="PartsWorkspace/PartsCollection/InventoryPanel/InventoryColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 180)
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="InventoryGrid" type="GridContainer" parent="PartsWorkspace/PartsCollection/InventoryPanel/InventoryColumn/InventoryScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 3
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 8
+
+[node name="PartInspector" type="PanelContainer" parent="PartsWorkspace"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(350, 0)
+size_flags_horizontal = 3
+
+[node name="PartDetails" type="VBoxContainer" parent="PartsWorkspace/PartInspector"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DeckPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+
+[node name="DeckGrid" type="GridContainer" parent="DeckPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10

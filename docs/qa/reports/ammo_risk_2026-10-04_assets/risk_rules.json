@@ -1,0 +1,198 @@
+{
+	"checks": 296,
+	"failures": 0,
+	"scenarios": [
+		{
+			"after_fire_hp": [
+				0,
+				11,
+				18
+			],
+			"after_fire_phase": "lost",
+			"case": 0,
+			"hot": false,
+			"reload": {
+				"base": 1,
+				"cost": 0,
+				"enemies": [
+					{
+						"burn": 0,
+						"def": 0,
+						"distance": 2,
+						"hp": 0,
+						"kind": "runner",
+						"lane": 0,
+						"max_hp": 16,
+						"name": "운반 사족체",
+						"speed": 2
+					},
+					{
+						"burn": 0,
+						"def": 0,
+						"distance": 0,
+						"hp": 11,
+						"kind": "runner",
+						"lane": 1,
+						"max_hp": 16,
+						"name": "운반 사족체",
+						"speed": 2
+					},
+					{
+						"burn": 0,
+						"def": 3,
+						"distance": 17,
+						"hp": 18,
+						"kind": "wall",
+						"lane": 2,
+						"max_hp": 18,
+						"name": "융합 장갑벽",
+						"speed": 1
+					}
+				],
+				"heat": 0,
+				"phase": "lost",
+				"required": false,
+				"turns": 0
+			}
+		},
+		{
+			"after_fire_hp": [
+				0,
+				0,
+				13
+			],
+			"after_fire_phase": "ready",
+			"case": 0,
+			"hot": true,
+			"reload": {
+				"base": 1,
+				"cost": 2,
+				"enemies": [
+					{
+						"burn": 0,
+						"def": 0,
+						"distance": 2,
+						"hp": 0,
+						"kind": "runner",
+						"lane": 0,
+						"max_hp": 16,
+						"name": "운반 사족체",
+						"speed": 2
+					},
+					{
+						"burn": 0,
+						"def": 0,
+						"distance": 2,
+						"hp": 0,
+						"kind": "runner",
+						"lane": 1,
+						"max_hp": 16,
+						"name": "운반 사족체",
+						"speed": 2
+					},
+					{
+						"burn": 0,
+						"def": 3,
+						"distance": 15,
+						"hp": 13,
+						"kind": "wall",
+						"lane": 2,
+						"max_hp": 18,
+						"name": "융합 장갑벽",
+						"speed": 1
+					}
+				],
+				"heat": 1,
+				"phase": "plan",
+				"required": true,
+				"turns": 2
+			}
+		},
+		{
+			"after_fire_hp": [
+				5,
+				12
+			],
+			"after_fire_phase": "ready",
+			"case": 1,
+			"hot": false,
+			"reload": {
+				"base": 1,
+				"cost": 1,
+				"enemies": [
+					{
+						"barrier": 0,
+						"barrier_max": 4,
+						"burn": 0,
+						"def": 0,
+						"distance": 2,
+						"hp": 5,
+						"kind": "absorber",
+						"lane": 0,
+						"max_hp": 16,
+						"name": "흡수 장갑 구체",
+						"speed": 2
+					},
+					{
+						"burn": 0,
+						"def": 2,
+						"distance": 16,
+						"hp": 12,
+						"kind": "wall",
+						"lane": 1,
+						"max_hp": 12,
+						"name": "융합 장갑벽",
+						"speed": 1
+					}
+				],
+				"heat": 0,
+				"phase": "plan",
+				"required": true,
+				"turns": 1
+			}
+		},
+		{
+			"after_fire_hp": [
+				3,
+				12
+			],
+			"after_fire_phase": "ready",
+			"case": 1,
+			"hot": true,
+			"reload": {
+				"base": 1,
+				"cost": 2,
+				"enemies": [
+					{
+						"barrier": 0,
+						"barrier_max": 4,
+						"burn": 0,
+						"def": 0,
+						"distance": 0,
+						"hp": 3,
+						"kind": "absorber",
+						"lane": 0,
+						"max_hp": 16,
+						"name": "흡수 장갑 구체",
+						"speed": 2
+					},
+					{
+						"burn": 0,
+						"def": 2,
+						"distance": 15,
+						"hp": 12,
+						"kind": "wall",
+						"lane": 1,
+						"max_hp": 12,
+						"name": "융합 장갑벽",
+						"speed": 1
+					}
+				],
+				"heat": 1,
+				"phase": "lost",
+				"required": true,
+				"turns": 2
+			}
+		}
+	]
+}

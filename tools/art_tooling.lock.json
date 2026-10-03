@@ -1,0 +1,85 @@
+{
+  "installed_on": "2026-10-02",
+  "skill_source": "D:\\ProjectLoB\\worktrees\\core-redesign\\.agents\\skills",
+  "discovery_mirror": "D:\\ProjectLoB\\.agents\\skills",
+  "skill_sha256": {
+    "godot-ui-integration": "0b588ba46dd8fbb244152d74b09ac47037b0966c1fd3ecc36575ec6faf14220c",
+    "godot-ui-control": "9ac89920e74bbf8d939b4d565e350d53b07c9afbe0970345c97d4122f590cfd5",
+    "godot-animation": "9d32ef721eaa227494180b6ffb0208624a76e93217a2e39c2286eb0b5701e8e5",
+    "game-ui-ux": "8a094c84a377503aa8f4c40df676d1c6b6fc07d36ff95554ce06467f1614397e",
+    "game-feel": "68fc818ad939151be2db9e358e4295a71830c19d61f3aff849f1599307f39f9d",
+    "create-game-assets": "c178cde20316f7d326f2a853a76522b375b325346b5b8797ef52aa98740aff18",
+    "godot-nodes-scenes": "27beea0d3994e6bc502f9dc3fb6089afcdc083e41790a4cf6a7d32314e079e3d",
+    "godot-tilemap": "2b29349a728e0b708b5090d99372892597bfe37df6d071211ca8fb1cd15c46d5",
+    "godot-shaders": "15bf46f7b0af586f026c1bb58beaeba2579009b70398f43859b7ab286a45e63e",
+    "impeccable": "a18a12b0fe210e1aae781df177eb9fda914767bd9e18f2575abd757905f42c76"
+  },
+  "sources": {
+    "new_gamedev_skills": {
+      "repo": "https://github.com/gamedev-skills/awesome-gamedev-agent-skills",
+      "commit": "d4b0e35550c55ae70bdfcab4ef5a0e94610438a9",
+      "skills": [
+        "create-game-assets",
+        "godot-nodes-scenes",
+        "godot-tilemap",
+        "godot-shaders"
+      ]
+    },
+    "preserved_skills": {
+      "skills": [
+        "godot-ui-integration",
+        "godot-ui-control",
+        "godot-animation",
+        "game-ui-ux",
+        "game-feel"
+      ],
+      "note": "Existing 2026-09-21 vendor files preserved; hashes identify this local snapshot."
+    },
+    "impeccable": {
+      "repo": "https://github.com/pbakaus/impeccable",
+      "commit": "508d7e8955de3b3caf2d8676e85206723d41a887",
+      "skill_version": "4.5.0",
+      "engine_version": "0.1.11"
+    },
+    "godot_mcp": {
+      "repo": "https://github.com/Coding-Solo/godot-mcp",
+      "commit": "1209744fad78f3998f98c7394fd0f6ef50da5281",
+      "local_dependency_update": "@modelcontextprotocol/sdk 1.31.0; npm audit fix; rebuilt and protocol tested",
+      "package_lock_sha256": "392bb02e2603ba4b3a48d82e883971120403638a344fd4abe873123ae59714c8"
+    },
+    "libresprite": {
+      "release": "https://github.com/LibreSprite/LibreSprite/releases/tag/v1.3",
+      "version": "1.3",
+      "archive_sha256": "8408d2f962121948e9fbee053756b5e1e7e88d6d645120574d13fca66d475874"
+    }
+  },
+  "commands": {
+    "pixel_editor": "PIXEL_EDITOR.cmd",
+    "pixel_tool_check": "python tools/check_art_tooling.py",
+    "godot_mcp_check": "node tools/check_godot_mcp.mjs",
+    "impeccable_probe": "D:/ProjectLoB/.tools/impeccable/bin/0.1.11/impeccable.exe engine-probe",
+    "pixellab_connect_after_signup": "CONNECT_PIXELLAB.cmd",
+    "pixellab_auth_check": "node tools/check_pixellab_mcp.mjs"
+  },
+  "pixellab": {
+    "status": "connected_in_current_session",
+    "token_env_var": "LOB_PIXELLAB_API_KEY",
+    "secret_stored": true,
+    "auth_source": "Windows user environment via http_headers_helper",
+    "tool_count": 97,
+    "checked_on": "2026-10-03"
+  },
+  "config": "D:\\ProjectLoB\\.codex\\config.toml",
+  "config_paths": [
+    "D:/ProjectLoB/.codex/config.toml",
+    "D:\\ProjectLoB\\worktrees\\core-redesign\\.codex\\config.toml"
+  ],
+  "verification": {
+    "art_pipeline": "qa_runtime/art_tooling/art_tools.json",
+    "godot_mcp": "qa_runtime/art_tooling/godot_mcp.json",
+    "impeccable": "engine-probe passed: 0.1.11",
+    "libresprite_execution": "Verified in approved Windows execution; restricted shell exits without export",
+    "runtime_generation": "2026-10-03 PixelLab Pixen: 8 generations integrated into Godot battle; 32 trial generations remaining, USD 20 credits. Provenance: assets/art/pixel_20261003/provenance.json. RGBA + rendered UI verified.",
+    "pixellab": "qa_runtime/art_tooling/pixellab_mcp.json"
+  }
+}

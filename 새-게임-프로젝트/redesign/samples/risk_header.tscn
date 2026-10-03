@@ -1,0 +1,67 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansKR.ttf" id="1"]
+
+[node name="RiskHeader" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1")
+theme_override_font_sizes/font_size = 17
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9, 0.74, 0.45, 1)
+theme_override_font_sizes/font_size = 22
+text = "출력 비교"
+
+[node name="risk_case_0" type="Button" parent="."]
+custom_minimum_size = Vector2(135, 44)
+layout_mode = 2
+text = "01 긴급 제압"
+toggle_mode = true
+
+[node name="risk_case_1" type="Button" parent="."]
+custom_minimum_size = Vector2(145, 44)
+layout_mode = 2
+text = "02 보호막 전열"
+toggle_mode = true
+
+[node name="risk_normal" type="Button" parent="."]
+custom_minimum_size = Vector2(86, 44)
+layout_mode = 2
+tooltip_text = "일반 증폭탄을 앞에 넣고 같은 전투를 처음부터 비교합니다."
+text = "일반 +2"
+toggle_mode = true
+
+[node name="risk_hot" type="Button" parent="."]
+custom_minimum_size = Vector2(100, 44)
+layout_mode = 2
+tooltip_text = "고출력 증폭탄을 앞에 넣고 같은 전투를 처음부터 비교합니다. 발사하면 다음 재장전 +1턴."
+text = "고출력 +4"
+toggle_mode = true
+button_pressed = true
+
+[node name="risk_reset" type="Button" parent="."]
+custom_minimum_size = Vector2(90, 44)
+layout_mode = 2
+text = "다시 · R"
+
+[node name="skip_animation" type="Button" parent="."]
+visible = false
+custom_minimum_size = Vector2(65, 44)
+layout_mode = 2
+text = "건너뜀"
+
+[node name="menu" type="Button" parent="."]
+custom_minimum_size = Vector2(64, 44)
+layout_mode = 2
+text = "종료"
+
+[node name="risk_motion" type="Button" parent="."]
+custom_minimum_size = Vector2(94, 44)
+layout_mode = 2
+text = "연출 줄임"
+toggle_mode = true
+tooltip_text = "반동·충격 정지·증기를 줄입니다. 과열 상태와 실제 턴 구분은 유지합니다."

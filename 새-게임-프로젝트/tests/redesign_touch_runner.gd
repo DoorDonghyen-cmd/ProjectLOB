@@ -46,6 +46,7 @@ func _run() -> void:
 	check(Input.emulate_mouse_from_touch, "touch-to-mouse input enabled by project default")
 	check(ProjectSettings.get_setting("rendering/renderer/rendering_method.mobile") == "gl_compatibility", "Android explicitly uses compatibility rendering")
 	check(ProjectSettings.get_setting("display/window/handheld/orientation") == 4, "sensor landscape configured")
+	await tap("new_run_setup")
 	screen.seed_input.text = "731042"
 	await tap("start_single")
 	check(screen.page == "run", "touch starts a game")

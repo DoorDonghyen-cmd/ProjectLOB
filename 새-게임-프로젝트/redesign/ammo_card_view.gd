@@ -2,7 +2,7 @@ extends Control
 ## Compact public ammo language: fixed stat glyphs, signed effect glyph, and numbers.
 const Content = preload("res://redesign/content.gd")
 const AmmoVisual = preload("res://redesign/ammo_visual.gd")
-const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+const FONT = preload("res://redesign/ui_font.tres")
 
 const INK := Color("e7e4d9")
 const MUTED := Color("94a9ae")
@@ -15,18 +15,24 @@ var count := 0
 var state: Dictionary = {}
 var is_disabled := false
 var compression_ready := false
+var context_text := ""
+var context_positive := false
+var compact_ui := false
 
 func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	queue_redraw()
 
-func setup(id: String, available: int, current_state: Dictionary, disabled: bool = false, can_compress: bool = false) -> void:
+func setup(id: String, available: int, current_state: Dictionary, disabled: bool = false, can_compress: bool = false, current_context: String = "", positive_context: bool = false) -> void:
 	ammo_id = id
 	count = available
 	state = current_state
 	is_disabled = disabled
 	compression_ready = can_compress
+	context_text = current_context
+	context_positive = positive_context
 	queue_redraw()
 
 func stat_items() -> Array:
@@ -56,40 +62,62 @@ func effect_data() -> Dictionary:
 		"arc": return {"kind": "electric", "value": "%d%s" % [Content.effect_value(ammo_id, state), "↗↗" if int(spec.get("arc_targets", 1)) > 1 else "↗"]}
 	return {}
 
+func effect_text() -> String:
+	var spec: Dictionary = Content.AMMO[ammo_id]
+	match str(spec.effect):
+		"burn": return "매 턴 %d · %d턴" % [Content.burn_damage(state), Content.burn_amount(ammo_id, state)]
+		"boost": return "다음 2발 +%d" % Content.effect_value(ammo_id, state)
+		"push": return "%dm 밀치기" % Content.effect_value(ammo_id, state)
+		"arc":
+			var targets := int(spec.get("arc_targets", 1)) + Content.arc_target_bonus(state)
+			return "%s 전이 %d" % ["전체" if targets >= 99 else ("옆 적" if targets == 1 else "%d명" % targets), Content.effect_value(ammo_id, state)]
+		"double": return "같은 적 연타"
+	if ammo_id == "basic": return "재장전 시 보급"
+	return "장갑을 뚫는 탄"
+
 func _draw() -> void:
 	if state.is_empty() or not Content.AMMO.has(ammo_id): return
-	var alpha := 0.72 if is_disabled else 1.0
+	var alpha := 0.62 if is_disabled else 1.0
+	var ink := Color(INK, alpha)
 	var ammo_color: Color = AmmoVisual.COLORS[ammo_id]
-	ammo_color.a *= alpha
-	var ink := INK
-	ink.a *= alpha
-	AmmoVisual.round_icon(self, Vector2(17, 19), ammo_id, 0.42)
+	var base := Content.source_id(ammo_id)
+	if base == "charge" and Content.heat_cost(ammo_id) == 0: ammo_color = Color("edc47a")
+	ammo_color.a = alpha
+	# One family silhouette and one effect strip. Forecasts belong on the rail.
+	draw_rect(Rect2(4, 4, size.x - 8, 3), ammo_color.darkened(0.3))
+	var title_width := size.x - 24 - (36 if count > 1 else 0)
+	draw_string(FONT, Vector2(12, 29), str(Content.AMMO[ammo_id].name), HORIZONTAL_ALIGNMENT_LEFT, title_width, 20, ink)
+	if count > 1: draw_string(FONT, Vector2(size.x - 43, 29), "×%d" % count, HORIZONTAL_ALIGNMENT_RIGHT, 30, 17, MUTED)
+	if Content.heat_cost(ammo_id) > 0:
+		AmmoVisual.heat_icon(self, Vector2(size.x - 45, 42), 0.7)
+		draw_string(FONT, Vector2(size.x - 32, 48), "+%d" % Content.heat_cost(ammo_id), HORIZONTAL_ALIGNMENT_LEFT, 30, 15, Color("ed9167"))
+	if size.y < 144:
+		AmmoVisual.round_icon(self, Vector2(30, 52), ammo_id, 0.5)
+		var short_damage := str(Content.damage(ammo_id, state))
+		if str(Content.AMMO[ammo_id].effect) == "double": short_damage += "×%d" % Content.hit_count(ammo_id, state)
+		draw_string(FONT, Vector2(57, 60), "피해 " + short_damage, HORIZONTAL_ALIGNMENT_LEFT, 120, 21, Color(DAMAGE, alpha))
+		if Content.axes(state).armor and Content.penetration(ammo_id, state) > 0:
+			draw_string(FONT, Vector2(174, 60), "관통 %d" % Content.penetration(ammo_id, state), HORIZONTAL_ALIGNMENT_LEFT, size.x - 180, 17, Color(PENETRATION, alpha))
+		if Content.is_compressed(ammo_id): _draw_fit(ammo_color)
+		draw_rect(Rect2(4, size.y - 30, size.x - 8, 26), CHIP)
+		draw_string(FONT, Vector2(10, size.y - 10), effect_text(), HORIZONTAL_ALIGNMENT_CENTER, size.x - 20, 17, ammo_color)
+		return
+	var art_center := Vector2(40, 78)
+	AmmoVisual.round_icon(self, art_center, ammo_id, 1.0)
+	if is_disabled: draw_rect(Rect2(14, 36, 56, 78), Color(0.06, 0.09, 0.12, 0.38))
+	var damage := str(Content.damage(ammo_id, state))
+	if str(Content.AMMO[ammo_id].effect) == "double": damage += "×%d" % Content.hit_count(ammo_id, state)
+	draw_string(FONT, Vector2(77, 52), "피해", HORIZONTAL_ALIGNMENT_LEFT, size.x - 86, 14, MUTED)
+	draw_string(FONT, Vector2(76, 80), damage, HORIZONTAL_ALIGNMENT_LEFT, size.x - 86, 29, Color(DAMAGE, alpha))
+	var penetration := Content.penetration(ammo_id, state)
+	if Content.axes(state).armor and penetration > 0:
+		draw_string(FONT, Vector2(77, 104), "관통 %d" % penetration, HORIZONTAL_ALIGNMENT_LEFT, size.x - 86, 17, Color(PENETRATION, alpha))
 	if Content.is_compressed(ammo_id): _draw_fit(ammo_color)
 	if compression_ready: _draw_compression_link()
-	var attribute := attribute_data()
-	var attribute_color: Color = attribute.color
-	attribute_color.a *= alpha
-	var title := str(Content.AMMO[ammo_id].name)
-	if count > 1: title += " ×%d" % count
-	draw_string(FONT, Vector2(32, 25), title, HORIZONTAL_ALIGNMENT_CENTER, size.x - 105, 18, ammo_color)
-	_draw_icon(str(attribute.kind), Vector2(size.x - 62, 18), attribute_color)
-	var stats := stat_items()
-	if not stats.is_empty():
-		var slot_width := size.x / float(stats.size())
-		for i in range(stats.size()):
-			var item: Dictionary = stats[i]
-			var center := Vector2(slot_width * (i + 0.5), 51)
-			var color := _stat_color(str(item.kind))
-			color.a *= alpha
-			_draw_icon(str(item.kind), center - Vector2(13, 0), color)
-			draw_string(FONT, center + Vector2(-3, 6), str(item.value), HORIZONTAL_ALIGNMENT_LEFT, slot_width * 0.48, 17, color)
-	var effect := effect_data()
-	if not effect.is_empty():
-		var chip_color := CHIP
-		chip_color.a *= 0.84 if is_disabled else 1.0
-		draw_rect(Rect2(5, 69, size.x - 10, 29), chip_color)
-		_draw_icon(str(effect.kind), Vector2(19, 83), attribute_color)
-		draw_string(FONT, Vector2(34, 90), str(effect.value), HORIZONTAL_ALIGNMENT_CENTER, size.x - 41, 16, attribute_color)
+	var y := size.y - 33
+	draw_rect(Rect2(4, y, size.x - 8, 29), CHIP)
+	var show_context := not context_text.is_empty() and Content.heat_cost(ammo_id) == 0
+	draw_string(FONT, Vector2(10, y + 21), context_text if show_context else effect_text(), HORIZONTAL_ALIGNMENT_CENTER, size.x - 20, 17, MUTED if show_context else ammo_color)
 
 func _draw_compression_link() -> void:
 	var cyan := Color("63dce8")
@@ -119,21 +147,10 @@ func _draw_diamond(center: Vector2, color: Color) -> void:
 	draw_polyline(points, color, 1.5, false)
 
 func _draw_fit(color: Color) -> void:
-	var rule := Content.anchor(ammo_id)
-	var cost := Content.slot_cost(ammo_id)
-	var origin := Vector2(size.x - 48, 32)
-	var fill := color
-	fill.a = 0.18
-	for i in range(2): draw_rect(Rect2(origin + Vector2(i * 18, 0), Vector2(16, 10)), MUTED, false, 1.0)
-	if cost == 2:
-		draw_rect(Rect2(origin, Vector2(34, 10)), fill, true)
-		draw_rect(Rect2(origin, Vector2(34, 10)), color, false, 2.0)
-	elif rule == "first":
-		draw_rect(Rect2(origin, Vector2(16, 10)), fill, true)
-		draw_colored_polygon(PackedVector2Array([origin + Vector2(-5, 5), origin + Vector2(0, 1), origin + Vector2(0, 9)]), color)
-	elif rule == "last":
-		draw_rect(Rect2(origin + Vector2(18, 0), Vector2(16, 10)), fill, true)
-		draw_line(origin + Vector2(35, 0), origin + Vector2(35, 10), color, 3.0)
+	var origin := Vector2(size.x - 44, 35)
+	for i in range(2):
+		var filled := Content.slot_cost(ammo_id) == 2 or (i == 0 and Content.anchor(ammo_id) == "first") or (i == 1 and Content.anchor(ammo_id) == "last")
+		draw_rect(Rect2(origin + Vector2(i * 16, 0), Vector2(12, 6)), color if filled else MUTED.darkened(0.65))
 
 func _stat_color(kind: String) -> Color:
 	match kind:

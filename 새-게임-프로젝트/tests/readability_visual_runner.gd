@@ -58,7 +58,7 @@ func _run() -> void:
 	screen.presentation_speed = 0.02
 	root.add_child(screen)
 	await settle()
-	screen.course_toggle.button_pressed = true
+	await tap("training_setup")
 	screen.seed_input.text = "731042"
 	await tap("start_single")
 	var first_enemy: Dictionary = screen.model.s.enemies[0]
@@ -137,7 +137,7 @@ func _run() -> void:
 
 	# Developer shortcuts expose all rounds and burn timing while preserving the actual save.
 	await tap("menu")
-	screen.course_toggle.button_pressed = false
+	await tap("new_run_setup")
 	await tap("start_single")
 	check(not screen.model.s.course and screen.model.s.deck.size() == 10, "ordinary run selected explicitly")
 	var normal_save := FileAccess.get_file_as_string(screen.SAVE)

@@ -3,7 +3,7 @@ extends Control
 ## compressed core, while the miniature magazine shows its physical fit.
 const Content = preload("res://redesign/content.gd")
 const Ammo = preload("res://redesign/ammo_visual.gd")
-const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+const FONT = preload("res://redesign/ui_font.tres")
 const INK := Color("e7e4d9")
 const MUTED := Color("6f8790")
 const ACCENT := Color("a9dfbf")

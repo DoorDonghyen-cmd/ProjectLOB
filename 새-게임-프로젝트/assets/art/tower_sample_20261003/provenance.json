@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-03",
+  "usage": "Separate Godot battle sample, not default campaign art",
+  "tool": "Original image_gen concepts copied unchanged; Godot 4.7 runtime composition",
+  "assets": [
+    {
+      "file": "reclaimer.png",
+      "source": "docs/art/concepts/2026-10-03-character-variants/character-c-expedition-cap-v2.png",
+      "source_prompt": "docs/art/concepts/2026-10-03-character-variants/provenance-c-expedition-cap-v2.json",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "E311D2FF722716B87C37D41135DF44F72FBD00FAA8DD6082B58A6CD7CBC92AAD"
+    },
+    {
+      "file": "residential_tower.png",
+      "source": "docs/art/concepts/2026-10-03-pixel-reference/background-reference-v1.png",
+      "source_prompt": "docs/art/concepts/2026-10-03-pixel-reference/provenance.json",
+      "width": 1672,
+      "height": 941,
+      "sha256": "FC7CD0B2764AD02CD7245B6A5131A20BF09E2B2A7136F912356A59D972ED6F6B"
+    }
+  ],
+  "normalization": "No pixel edits. Godot nearest filtering, aspect-preserving camera crop, foot and muzzle anchors.",
+  "limitations": "Single lowered-gun character pose, existing temporary enemies; not a layered animation set."
+}

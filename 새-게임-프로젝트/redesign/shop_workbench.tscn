@@ -1,0 +1,136 @@
+[gd_scene format=3]
+
+[node name="ShopWorkbench" type="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="TopActions" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CurrentBuildPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CurrentBuildStrip" type="VBoxContainer" parent="CurrentBuildPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BuildHeadingRow" type="HFlowContainer" parent="CurrentBuildPanel/CurrentBuildStrip"]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 4
+
+[node name="BuildHeading" type="Label" parent="CurrentBuildPanel/CurrentBuildStrip/BuildHeadingRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
+theme_override_font_sizes/font_size = 20
+text = "현재 빌드"
+
+[node name="BuildStatus" type="Label" parent="CurrentBuildPanel/CurrentBuildStrip/BuildHeadingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "0 / 5 장착"
+
+[node name="WeaponStatus" type="Label" parent="CurrentBuildPanel/CurrentBuildStrip/BuildHeadingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
+theme_override_font_sizes/font_size = 16
+text = "무기 · 탄창 · 재장전"
+
+[node name="DeckStatus" type="Label" parent="CurrentBuildPanel/CurrentBuildStrip/BuildHeadingRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
+theme_override_font_sizes/font_size = 16
+text = "덱 요약"
+horizontal_alignment = 2
+
+[node name="EquippedStripHost" type="VBoxContainer" parent="CurrentBuildPanel/CurrentBuildStrip"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OffersHeader" type="HFlowContainer" parent="."]
+layout_mode = 2
+theme_override_constants/h_separation = 14
+
+[node name="OffersHeading" type="Label" parent="OffersHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
+theme_override_font_sizes/font_size = 24
+text = "진열"
+
+[node name="OffersHint" type="Label" parent="OffersHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
+theme_override_font_sizes/font_size = 16
+text = "상품을 눌러 현재 빌드와 비교합니다"
+vertical_alignment = 1
+
+[node name="WalletStatus" type="Label" parent="OffersHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
+theme_override_font_sizes/font_size = 20
+text = "0 Cr"
+horizontal_alignment = 2
+
+[node name="OfferWorkspace" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ShopOfferGrid" type="GridContainer" parent="OfferWorkspace"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+columns = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+
+[node name="OfferComparePanel" type="PanelContainer" parent="OfferWorkspace"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(340, 284)
+size_flags_horizontal = 3
+
+[node name="OfferCompareColumn" type="VBoxContainer" parent="OfferWorkspace/OfferComparePanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="OfferCompareTitle" type="Label" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
+theme_override_font_sizes/font_size = 21
+text = "상품을 선택해 비교"
+autowrap_mode = 2
+
+[node name="OfferCompareBody" type="Label" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.84, 0.85, 1)
+theme_override_font_sizes/font_size = 17
+text = "카드를 누르면 현재 구성과 구매 후 변화를 이곳에서 확인할 수 있습니다."
+autowrap_mode = 2
+
+[node name="OfferCompareActions" type="VBoxContainer" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+
+[node name="ShopHint" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
+theme_override_font_sizes/font_size = 16
+text = "빈 슬롯이 없거나 코어가 중복되면 구매한 파츠는 보관함으로 이동합니다."
+autowrap_mode = 2

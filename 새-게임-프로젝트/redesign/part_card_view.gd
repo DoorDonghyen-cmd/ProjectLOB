@@ -1,7 +1,7 @@
 extends Control
 ## Icon-first part card shared by shops, rewards, and equipment summaries.
 const Content = preload("res://redesign/content.gd")
-const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+const FONT = preload("res://redesign/ui_font.tres")
 
 const INK := Color("e7e4d9")
 const MUTED := Color("94a9ae")
@@ -35,6 +35,8 @@ var state: Dictionary = {}
 var equipped := false
 var compact := false
 var mini := false
+var portrait := false
+var slot_number := 1
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -62,6 +64,9 @@ func role_text() -> String:
 func _draw() -> void:
 	if not Content.PARTS.has(part_id): return
 	var accent: Color = COLORS.get(part_id, Color("94a9ae"))
+	if portrait:
+		_draw_portrait(accent)
+		return
 	if mini:
 		_draw_mini(accent)
 		return
@@ -74,6 +79,7 @@ func _draw() -> void:
 		draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), accent, false, 2.0)
 	if Content.is_core_part(part_id):
 		draw_rect(Rect2(Vector2(5, 5), size - Vector2(10, 10)), Color("ffd86b"), false, 2.0)
+	draw_rect(Rect2(icon_center - Vector2(34, 30), Vector2(68, 60)), Color("14232b"))
 	_draw_part_icon(icon_center, accent, icon_scale)
 	var text_x := 88.0 if compact else 102.0
 	var title_y := 28.0 if compact else 31.0
@@ -96,7 +102,31 @@ func _draw() -> void:
 		draw_rect(Rect2(size.x - 55, 5, 50, 22), CHIP, true)
 		draw_string(FONT, Vector2(size.x - 49, 21), "CORE", HORIZONTAL_ALIGNMENT_LEFT, 42, 13, Color("ffd86b"))
 
+func _draw_portrait(accent: Color) -> void:
+	draw_style_box(_device_frame(accent), Rect2(Vector2(2, 2), size - Vector2(4, 4)))
+	draw_string(FONT, Vector2(12, 23), "%02d" % slot_number, HORIZONTAL_ALIGNMENT_LEFT, 30, 13, MUTED)
+	if Content.is_core_part(part_id):
+		draw_string(FONT, Vector2(size.x - 52, 23), "CORE", HORIZONTAL_ALIGNMENT_LEFT, 45, 12, accent)
+	_draw_part_icon(Vector2(size.x * 0.5, 59), accent, 0.9)
+	draw_string(FONT, Vector2(8, 104), str(Content.PARTS[part_id].name) if part_id != "none" else "빈 슬롯", HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 16, INK)
+	if part_id == "none": return
+	draw_string(FONT, Vector2(8, 129), effect_title(), HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 14, MUTED)
+	draw_string(FONT, Vector2(8, 153), effect_value(), HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 18, accent)
+
+func _device_frame(accent: Color) -> StyleBoxFlat:
+	var frame := StyleBoxFlat.new()
+	frame.bg_color = Color("1b2c34")
+	frame.border_color = Color(accent, 0.65)
+	frame.set_border_width_all(1)
+	frame.border_width_top = 3
+	frame.set_corner_radius_all(0)
+	return frame
+
 func _draw_mini(accent: Color) -> void:
+	if part_id == "none":
+		draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), Color("293d46"), false, 1)
+		draw_string(FONT, Vector2(0, size.y * 0.62), "＋", HORIZONTAL_ALIGNMENT_CENTER, size.x, 20, Color("60747b"))
+		return
 	var fill := accent
 	fill.a = 0.08 if part_id == "none" else 0.16
 	draw_rect(Rect2(Vector2(1, 1), size - Vector2(2, 2)), fill, true)
@@ -111,124 +141,43 @@ func _draw_mini(accent: Color) -> void:
 		draw_rect(Rect2(size.x - 39, 4, 34, 17), CHIP, true)
 		draw_string(FONT, Vector2(size.x - 35, 17), "CORE", HORIZONTAL_ALIGNMENT_LEFT, 29, 10, Color("ffd86b"))
 
-func _draw_part_icon(center: Vector2, color: Color, scale_factor: float) -> void:
-	draw_set_transform(center, 0.0, Vector2.ONE * scale_factor)
-	var dark := Color("13212a")
-	match part_id:
-		"lens":
-			draw_rect(Rect2(-29, -7, 39, 14), Color(color, 0.22), true)
-			draw_rect(Rect2(-29, -7, 39, 14), color, false, 3.0)
-			draw_line(Vector2(-35, 0), Vector2(-29, 0), color, 5.0)
-			draw_circle(Vector2(15, 0), 14, dark)
-			draw_arc(Vector2(15, 0), 14, 0, TAU, 24, color, 3.0)
-			draw_arc(Vector2(15, 0), 6, 0, TAU, 16, color, 2.0)
-			draw_line(Vector2(18, -18), Vector2(18, 18), Color(color, 0.5), 2.0)
-		"loader":
-			draw_circle(Vector2.ZERO, 15, dark)
-			draw_arc(Vector2.ZERO, 25, -PI * 0.15, PI * 0.72, 20, color, 4.0)
-			draw_arc(Vector2.ZERO, 25, PI * 0.85, PI * 1.72, 20, color, 4.0)
-			draw_colored_polygon(PackedVector2Array([Vector2(20, -18), Vector2(31, -18), Vector2(25, -8)]), color)
-			draw_colored_polygon(PackedVector2Array([Vector2(-20, 18), Vector2(-31, 18), Vector2(-25, 8)]), color)
-			for angle in [0.0, PI * 0.5, PI, PI * 1.5]:
-				draw_circle(Vector2(cos(angle), sin(angle)) * 9, 3, color)
-		"supply":
-			draw_colored_polygon(PackedVector2Array([Vector2(-22, -25), Vector2(15, -25), Vector2(22, 24), Vector2(-16, 24)]), Color(color, 0.16))
-			draw_polyline(PackedVector2Array([Vector2(-22, -25), Vector2(15, -25), Vector2(22, 24), Vector2(-16, 24), Vector2(-22, -25)]), color, 3.0)
-			for y in [-14.0, -2.0, 10.0]:
-				draw_rect(Rect2(-11, y - 3, 21, 6), color, true)
-			draw_line(Vector2(30, 3), Vector2(30, 21), color, 4.0)
-			draw_line(Vector2(21, 12), Vector2(39, 12), color, 4.0)
-		"coil":
-			draw_rect(Rect2(-21, -25, 30, 50), Color(color, 0.12), true)
-			draw_rect(Rect2(-21, -25, 30, 50), color, false, 3.0)
-			for y in [-16.0, -6.0, 4.0, 14.0]:
-				draw_line(Vector2(-26, y), Vector2(14, y + 7), color, 3.0)
-			draw_colored_polygon(PackedVector2Array([Vector2(25, -25), Vector2(36, -7), Vector2(31, 7), Vector2(23, 17), Vector2(16, 5), Vector2(18, -8)]), color)
-			draw_colored_polygon(PackedVector2Array([Vector2(25, -12), Vector2(30, -3), Vector2(25, 8), Vector2(21, 1)]), dark)
-		"capacitor":
-			for x in [-13.0, 13.0]:
-				draw_rect(Rect2(x - 8, -22, 16, 44), Color(color, 0.14), true)
-				draw_rect(Rect2(x - 8, -22, 16, 44), color, false, 3.0)
-			draw_line(Vector2(-5, 0), Vector2(5, 0), color, 5.0)
-			draw_colored_polygon(PackedVector2Array([Vector2(2, -19), Vector2(13, -4), Vector2(6, -3), Vector2(13, 16), Vector2(-3, 1), Vector2(5, 0)]), color)
-		"rammer":
-			draw_rect(Rect2(-31, -12, 45, 24), Color(color, 0.16), true)
-			draw_rect(Rect2(-31, -12, 45, 24), color, false, 3.0)
-			draw_colored_polygon(PackedVector2Array([Vector2(14, -22), Vector2(34, 0), Vector2(14, 22)]), color)
-			draw_line(Vector2(-37, 0), Vector2(-25, 0), color, 5.0)
-		"sequencer":
-			for x in [-22.0, 0.0, 22.0]:
-				draw_circle(Vector2(x, 0), 9, Color(color, 0.18))
-				draw_arc(Vector2(x, 0), 9, 0, TAU, 16, color, 3.0)
-			draw_line(Vector2(-13, 0), Vector2(-9, 0), color, 3.0)
-			draw_line(Vector2(9, 0), Vector2(13, 0), color, 3.0)
-		"duplex":
-			for y in [-10.0, 10.0]:
-				draw_rect(Rect2(-29, y - 6, 48, 12), Color(color, 0.17), true)
-				draw_rect(Rect2(-29, y - 6, 48, 12), color, false, 3.0)
-			draw_line(Vector2(19, -10), Vector2(33, -10), color, 5.0)
-			draw_line(Vector2(19, 10), Vector2(33, 10), color, 5.0)
-		"igniter":
-			draw_circle(Vector2(-11, 5), 17, Color(color, 0.16))
-			draw_arc(Vector2(-11, 5), 17, 0, TAU, 24, color, 3.0)
-			draw_colored_polygon(PackedVector2Array([Vector2(15, 24), Vector2(8, 5), Vector2(22, -22), Vector2(34, 5)]), color)
-		"breaker":
-			var shield := PackedVector2Array([Vector2(-24, -24), Vector2(24, -24), Vector2(20, 9), Vector2(0, 28), Vector2(-20, 9), Vector2(-24, -24)])
-			draw_polyline(shield, color, 3.0)
-			draw_line(Vector2(-16, 17), Vector2(18, -17), color, 5.0)
-			draw_line(Vector2(-2, 4), Vector2(14, 20), color, 4.0)
-		"executioner":
-			for radius in [26.0, 15.0, 5.0]: draw_arc(Vector2.ZERO, radius, 0, TAU, 24, color, 3.0)
-			draw_line(Vector2(-34, 0), Vector2(34, 0), color, 2.0)
-			draw_line(Vector2(0, -34), Vector2(0, 34), color, 2.0)
-		"reserve":
-			for x in [-18.0, 0.0, 18.0]:
-				draw_rect(Rect2(x - 6, -21, 12, 42), Color(color, 0.16), true)
-				draw_rect(Rect2(x - 6, -21, 12, 42), color, false, 2.0)
-			draw_line(Vector2(27, 7), Vector2(27, 25), color, 4.0)
-			draw_line(Vector2(18, 16), Vector2(36, 16), color, 4.0)
-		"opening":
-			draw_colored_polygon(PackedVector2Array([Vector2(-31, -21), Vector2(18, 0), Vector2(-31, 21)]), Color(color, 0.18))
-			draw_polyline(PackedVector2Array([Vector2(-31, -21), Vector2(18, 0), Vector2(-31, 21), Vector2(-31, -21)]), color, 3.0)
-			draw_line(Vector2(18, 0), Vector2(34, 0), color, 5.0)
-		"afterburner":
-			draw_line(Vector2(-32, 0), Vector2(14, 0), color, 7.0)
-			draw_colored_polygon(PackedVector2Array([Vector2(14, -12), Vector2(34, 0), Vector2(14, 12)]), color)
-			draw_colored_polygon(PackedVector2Array([Vector2(-32, -13), Vector2(-18, 0), Vector2(-32, 13)]), Color("ef7777"))
-		"field_press":
-			draw_rect(Rect2(-27, -25, 54, 50), Color(color, 0.12), true)
-			draw_rect(Rect2(-27, -25, 54, 50), color, false, 3.0)
-			draw_line(Vector2(-18, -13), Vector2(18, -13), color, 5.0)
-			draw_line(Vector2(-18, 13), Vector2(18, 13), color, 5.0)
-			draw_line(Vector2(0, -13), Vector2(0, 13), color, 3.0)
-		"overbore":
-			draw_rect(Rect2(-33, -13, 54, 26), Color(color, 0.16), true)
-			draw_rect(Rect2(-33, -13, 54, 26), color, false, 4.0)
-			draw_circle(Vector2(23, 0), 15, dark)
-			draw_arc(Vector2(23, 0), 15, 0, TAU, 20, color, 4.0)
-		"inferno":
-			draw_colored_polygon(PackedVector2Array([Vector2(0, -31), Vector2(20, -6), Vector2(14, 25), Vector2(0, 32), Vector2(-17, 21), Vector2(-21, -4)]), color)
-			draw_colored_polygon(PackedVector2Array([Vector2(0, -12), Vector2(9, 2), Vector2(5, 18), Vector2(-7, 14), Vector2(-10, 1)]), dark)
-		"arc_splitter":
-			draw_colored_polygon(PackedVector2Array([Vector2(-7, -31), Vector2(8, -8), Vector2(-1, -5), Vector2(11, 9), Vector2(2, 11), Vector2(11, 31), Vector2(-18, 5), Vector2(-8, 2)]), color)
-			draw_line(Vector2(8, -8), Vector2(31, -22), color, 4.0)
-			draw_line(Vector2(11, 9), Vector2(32, 23), color, 4.0)
-		"momentum":
-			for x in [-24.0, -10.0, 4.0]: draw_line(Vector2(x, -15), Vector2(x + 18, 0), color, 4.0)
-			draw_colored_polygon(PackedVector2Array([Vector2(8, -24), Vector2(35, 0), Vector2(8, 24)]), color)
-		"triad":
-			for i in range(3):
-				var pip_center := Vector2(-24 + i * 24, 0)
-				draw_circle(pip_center, 10, Color(color, 0.16))
-				draw_arc(pip_center, 10, 0, TAU, 18, color, 3.0)
-				draw_string(FONT, pip_center + Vector2(-4, 5), str(i + 1), HORIZONTAL_ALIGNMENT_LEFT, 10, 12, color)
-		_:
-			for offset in [-22.0, 0.0, 22.0]:
-				draw_line(Vector2(offset - 8, -20), Vector2(offset + 8, -20), color, 2.0)
-				draw_line(Vector2(offset - 8, 20), Vector2(offset + 8, 20), color, 2.0)
-			draw_line(Vector2(-30, -20), Vector2(-30, 20), color, 2.0)
-			draw_line(Vector2(30, -20), Vector2(30, 20), color, 2.0)
-	draw_set_transform(Vector2.ZERO)
+func _draw_part_icon(p: Vector2, accent: Color, scale_factor: float) -> void:
+	# Small mechanical silhouettes share the ammunition's square pixel language.
+	var patterns := {
+		"none": ["............", ".....ss.....", ".....ss.....", "..ssssssss..", "..ssssssss..", ".....ss.....", ".....ss.....", "............"],
+		"lens": ["..........ss", ".sssssssssss", "ssHHaaaaHHss", "ssHHaaaaHHss", ".sssssssssss", "..ss....ss..", "..ss....ss..", "............"],
+		"loader": ["..ss....ss..", ".sHHssssHHs.", ".sHHaaaaHHs.", ".ssHHHHHHss.", "...ssssss...", "....HHHH....", "...ssssss...", "...aaaaaa..."],
+		"supply": ["..ssssssss..", "..sHHHHHHs..", "..saaaaaas..", "..sHHHHHHs..", "..saaaaaas..", "..sHHHHHHs..", "...sHHHHs...", "...ssssss..."],
+		"coil": ["..ssssssss..", "..sHHHHHHs..", ".aaHHHHHHaa.", ".ssaaaaaass.", ".aaHHHHHHaa.", ".ssaaaaaass.", "..sHHHHHHs..", "..ssssssss.."],
+		"capacitor": ["..ss..ss....", ".sHHssHHs...", ".sHHaaHHs...", ".sHHssHHs...", ".sHHaaHHs...", ".sHHssHHs...", "..ssssss....", "...s..s....."],
+		"rammer": ["....ssss....", "..sssHHs....", "ssHHsHHs....", "saaHsHHsssss", "saaHsHHsHHHs", "ssHHsHHsssss", "..sssHHs....", "....ssss...."],
+		"sequencer": [".ssssssssss.", ".sHHHHHHHHs.", ".saaHaaHaas.", ".saaHaaHaas.", ".sHHHHHHHHs.", ".ssssssssss.", "..s..s..s...", "............"],
+		"duplex": ["...ss..ss...", "..sHHssHHs..", "..sHHaaHHs..", "..sHHssHHs..", "..sHHssHHs..", "..sHHaaHHs..", "..ssssssss..", "...ss..ss..."],
+		"igniter": [".....aa.....", "....aaaa....", "..sssHHsss..", "..sHHaaHHs..", "..sHHaaHHs..", "..ssssssss..", "...sHHHHs...", "....ssss...."],
+		"breaker": ["....ssss....", "..ssHHHHss..", ".sHHsHHsHHs.", ".sHHaHHaHHs.", ".sHHaaaaHHs.", "..ssHHHHss..", "....ssss....", ".....ss....."],
+		"executioner": ["....ssss....", "..ssHHHHss..", ".sHHHaaHHHs.", ".sHaaaaaaHs.", ".sHHHaaHHHs.", "..ssHHHHss..", "...ss..ss...", "...ss..ss..."],
+		"reserve": ["..sss..sss..", "..sHs..sHs..", "..sas..sas..", "..sHs..sHs..", ".ssssssssss.", ".sHHHHHHHHs.", ".saaaaaaaa s".replace(" ", ""), ".ssssssssss."],
+		"opening": [".aa.........", ".aaaa.......", ".ssHHssssss.", ".saaaHHHHHs.", ".ssHHssssss.", ".ssss.......", ".ss.........", "............"],
+		"afterburner": [".........aa.", ".......aaaa.", ".ssssssHHss.", ".sHHHHHaaas.", ".ssssssHHss.", ".......ssss.", ".........ss.", "............"],
+		"field_press": [".ssssssssss.", ".sHHHHHHHHs.", ".saaaaaaaa s".replace(" ", ""), ".ss..aa..ss.", ".ss..aa..ss.", ".saaaaaaaa s".replace(" ", ""), ".sHHHHHHHHs.", ".ssssssssss."],
+		"overbore": ["....ssss....", "...sHHHHs...", ".sssaaaa sss".replace(" ", ""), ".sHHaaaaHHs.", ".sHHaaaaHHs.", ".sssaaaa sss".replace(" ", ""), "...sHHHHs...", "....ssss...."],
+		"inferno": ["..aa....aa..", "..aaaaaa aa.".replace(" ", ""), "...aaaaaa...", "..ssaaaa ss.".replace(" ", ""), ".sHHaaaaHHs.", ".sHHHHHHHHs.", "..ssHHHHss..", "....ssss...."],
+		"arc_splitter": [".ss......ss.", ".sHs....sHs.", "..sHa..aHs..", "...sHaaHs...", "...sHaaHs...", "..sHa..aHs..", ".sHs....sHs.", ".ss......ss."],
+		"momentum": ["....ssss....", "..ssHHHHss..", ".sHHHaaHHHs.", ".sHHaaaHHHs.", ".sHaaaaaaHs.", "..ssHHHHss..", "....ssss....", ".....ss....."],
+		"triad": ["..ss.ss.ss..", "..sH.sH.sH..", "..sa.sa.sa..", "..sH.sH.sH..", ".ssssssssss.", ".sHHHHHHHHs.", ".saaaaaaaa s".replace(" ", ""), ".ssssssssss."],
+	}
+	var pixels: Array = patterns.get(part_id, patterns.none)
+	var unit := maxf(1, floorf(5 * scale_factor))
+	var origin := (p - Vector2(12, 8) * unit * 0.5).floor()
+	for y in range(pixels.size()):
+		var line := str(pixels[y])
+		for x in range(line.length()):
+			var token := line.substr(x, 1)
+			if token == ".": continue
+			var color := Color("516b74")
+			if token == "H": color = Color("b9c5bc")
+			elif token == "a": color = accent
+			draw_rect(Rect2(origin + Vector2(x, y) * unit, Vector2.ONE * unit), color)
 
 func _draw_effect_icon(center: Vector2, color: Color, scale_factor: float) -> void:
 	draw_set_transform(center, 0.0, Vector2.ONE * scale_factor)

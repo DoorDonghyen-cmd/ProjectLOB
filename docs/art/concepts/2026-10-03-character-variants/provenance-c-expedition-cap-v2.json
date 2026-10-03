@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-03",
+  "tool": "built-in image_gen.imagegen",
+  "purpose": "User-requested combination of C outfit and B cap, recolored to match C",
+  "inputs": [
+    {
+      "file": "character-c-longcoat.png",
+      "role": "edit target; preserve outfit and pose"
+    },
+    {
+      "file": "character-b-expedition.png",
+      "role": "headwear donor only"
+    }
+  ],
+  "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-27fcb860-206e-4459-8422-85301c926d61.png",
+  "output": "character-c-expedition-cap-v2.png",
+  "prompt": "Use case: precise-object-edit / compositing.\nTwo reference images supplied in this exact order:\nIMAGE 1 = character C, the long dark blue-grey coat with a muted brick-red asymmetrical shoulder cape and angular helmet. This is the EDIT TARGET and its entire body/outfit must be preserved.\nIMAGE 2 = character B, the sage coat explorer. This is ONLY the HEADWEAR donor: use its soft leather ear-flap aviator/work cap, including the lowered ear flaps, short brim, dark forehead strap and simple pale inspection-lens/goggle shape above the forehead.\nREQUEST: Replace C's angular steel helmet with B's ear-flap cap, recolored to fit C's outfit. The cap's main leather panels and ear flaps become dark desaturated slate/navy-blue, with charcoal edges/shadow and a small muted brick-red/russet band detail matching C's shoulder cape. The small pale ivory lens remains clear but restrained with NO glow. Retain the soft rounded crown and dangling ear-covering flaps of B, NOT C's pointed helmet silhouette. Remove C's helmet completely and its large cream painted marking. The new cap must be visibly B's distinctive cap shape in C's palette.\nSTRICT INVARIANTS: Keep C's long coat, red shoulder cape, gloves, shirt, backpack, gun, cartridges, belt, tools, trousers, boots, face identity, direction, adult proportions and exact stance. Do not bring B's fur/pale collar, scarf, parka, boots or any other body/outfit feature into C. One hand still on chest strap, one hand holding the gun lowered at the hip. Preserve the entire composition and ground shadow.\nSTYLE LOCK: Preserve the approved VERY COARSE square-pixel art, matching the input's apparent pixel size and large connected flat pixel clusters. At most 2-3 clear color steps for the new cap. No added small details, noisy leather texture, smooth realistic shading, fine lines or antialiasing. The cap should have the same pixel density as C's coat and face.\nOUTPUT: exactly one full-body combined character on a genuinely transparent background, same square framing and margins as C. No labels, text, panels, extra figures, logos or watermark.",
+  "metadata": {
+    "width": 1254,
+    "height": 1254,
+    "pixel_format": "Format32bppArgb",
+    "corner_alpha": 0,
+    "sha256": "E311D2FF722716B87C37D41135DF44F72FBD00FAA8DD6082B58A6CD7CBC92AAD"
+  },
+  "verification": "Viewed both local inputs and generated output. C long coat/red shoulder retained; B ear-flap cap in dark slate-blue with muted russet band. Source/copy SHA256 verified; no postprocessing; no runtime integration."
+}

@@ -19,13 +19,13 @@ static func combat_report(state: Dictionary, floor_filter: int = -1) -> Dictiona
 				report.push += int(shot.get("push", 0))
 				if int(shot.get("math", {}).get("boost", 0)) > 0:
 					report.boost_hits += int(shot.get("hits", 1))
-				if int(shot.get("hp", 1)) <= 0:
+				if int(shot.get("hp", 1)) <= 0 and not bool(shot.get("intercept", false)):
 					report.kills += 1
 				for secondary_value in shot.get("secondary", []):
 					var secondary: Dictionary = secondary_value
 					if str(secondary.get("kind", "arc")) == "spread": report.spread += int(secondary.get("damage", 0))
 					else: report.arc += int(secondary.get("damage", 0))
-					if int(secondary.get("hp", 1)) <= 0:
+					if int(secondary.get("hp", 1)) <= 0 and not bool(secondary.get("intercept", false)):
 						report.kills += 1
 		for event_value in detail.get("advance_events", []):
 			var event: Dictionary = event_value
@@ -131,7 +131,7 @@ static func reward_impact(id: String, state: Dictionary, next_enemies: Array) ->
 			"executioner":
 				return "HP 5 이하 적 직접 피해 +2"
 			"reserve":
-				return "회수탄 보급 +2 · 탄창 크기는 유지"
+				return "탄창마다 패 교환 +1회 · 회수탄 보급 +2"
 			"opening":
 				return "탄창 첫 발 직접 피해 +2"
 			"afterburner":

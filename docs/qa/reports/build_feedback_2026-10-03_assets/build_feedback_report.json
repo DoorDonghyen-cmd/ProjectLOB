@@ -1,0 +1,113 @@
+{
+	"checks": 444,
+	"comparisons": [
+		{
+			"case": "boost_first",
+			"parts": [],
+			"report": {
+				"arc": 0,
+				"boost_hits": 3,
+				"burn": 0,
+				"direct": 16,
+				"focus": 4,
+				"kills": 0,
+				"push": 0,
+				"shots": 3,
+				"spread": 0
+			},
+			"rounds": [
+				"charge",
+				"precise",
+				"pierce"
+			]
+		},
+		{
+			"case": "boost_late",
+			"parts": [],
+			"report": {
+				"arc": 0,
+				"boost_hits": 0,
+				"burn": 0,
+				"direct": 10,
+				"focus": 4,
+				"kills": 0,
+				"push": 0,
+				"shots": 3,
+				"spread": 0
+			},
+			"rounds": [
+				"precise",
+				"pierce",
+				"charge"
+			]
+		},
+		{
+			"case": "burn_first",
+			"parts": [
+				"igniter"
+			],
+			"report": {
+				"arc": 0,
+				"boost_hits": 0,
+				"burn": 1,
+				"direct": 17,
+				"focus": 4,
+				"kills": 0,
+				"push": 0,
+				"shots": 3,
+				"spread": 0
+			},
+			"rounds": [
+				"bore",
+				"precise",
+				"pierce"
+			]
+		},
+		{
+			"case": "burn_late",
+			"parts": [
+				"igniter"
+			],
+			"report": {
+				"arc": 0,
+				"boost_hits": 0,
+				"burn": 1,
+				"direct": 11,
+				"focus": 4,
+				"kills": 0,
+				"push": 0,
+				"shots": 3,
+				"spread": 0
+			},
+			"rounds": [
+				"precise",
+				"pierce",
+				"bore"
+			]
+		},
+		{
+			"case": "with_duplex",
+			"parts": [
+				"duplex"
+			],
+			"report": {
+				"arc": 0,
+				"boost_hits": 4,
+				"burn": 0,
+				"direct": 19,
+				"focus": 4,
+				"kills": 0,
+				"push": 0,
+				"shots": 3,
+				"spread": 0
+			},
+			"rounds": [
+				"charge",
+				"precise",
+				"pierce"
+			]
+		}
+	],
+	"failures": 0,
+	"seed": 731042
+}

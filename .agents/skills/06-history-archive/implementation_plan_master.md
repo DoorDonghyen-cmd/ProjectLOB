@@ -1,5 +1,10 @@
 # 🗺️ Implementation Plan Master (구현 계획서 설계 아카이브)
 
+* [Session codex0925-frontend-ui Plan](file:///D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_frontend_ui_2026-09-25.md)
+* [Session codex0925-first-run-ux Plan](file:///D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_first_run_ux_2026-09-25.md)
+* [Session codex0924-macro-uiux Plan](file:///D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_macro_uiux_2026-09-24.md)
+* [Session codex0924-uiux-decision-flow Plan](file:///D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_uiux_decision_flow_2026-09-24.md)
+
 이 파일은 각 기능 단위 개발이 착수되기 전, 기술적 분석과 기획 정합성을 맞춘 구현 계획서(`implementation_plan.md`)를 총망라하는 인덱스입니다.
 
 ---
@@ -8,6 +13,11 @@
 
 | 생성일 | 주제 | 세션 ID | 주요 설계 방향 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-25 | **타이틀·출격 준비 프런트엔드** | `codex0925-frontend-ui` | 메인 설정 폼을 타이틀 홈과 준비실로 분리하고 총기 선택→보급·난도→단일 출격 확정의 게임 흐름으로 재구성 | [implementation_plan.md](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_frontend_ui_2026-09-25.md) |
+| 2026-09-25 | **첫 등반 UX 후속 개선** | `codex0925-first-run-ux` | 공개 화면 프로필 검토 뒤 상점 행동 결과와 빌드 작업실 탭 연속성을 직접 피드백으로 보강 | [implementation_plan.md](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_first_run_ux_2026-09-25.md) |
+| 2026-09-24 | **거시 UI/UX 구조 개편** | `codex0924-macro-uiux` | 지도·전투·보상·상점·빌드 작업실의 역할 분리, 압축 공통 헤더, 전체 화면 빌드 편집, 모바일 주 행동 고정 | [implementation_plan.md](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_macro_uiux_2026-09-24.md) |
+| 2026-09-24 | **덱·장비 통합과 전투 작업대 UI** | `codex0924-loadout-combat-ui` | 상점·덱 파츠 UI를 하나로 통합하고 전장·단계·탄환 후보·발사 순서를 장면화. 1008px 동시 비교와 900px 미만 접힘, 기존 입력·전투 규칙 보존 | [implementation_plan.md](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_loadout_combat_ui_2026-09-24.md) |
+| 2026-09-21 | **무기고·파츠 작업대 UI** | `codex0921-shop-workbench` | 고정 구조는 `.tscn`, 동적 상품·상태만 코드 바인딩. 현재 빌드→진열→압축→장착 계층, 중복 설명 축약, 1280/1008 반응형·실제 입력 QA | [implementation_plan.md](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_shop_workbench_ui_2026-09-21.md) |
 | 2026-09-21 | **5칸 파츠 빌드·코어 패널티** | `codex0921-joker-parts` | 파츠를 5개 조합하는 런 빌드로 전환하고 일반14·코어6, 코어1개 제한, 장점/대가, 다중 구매·보관·교체와 저장 호환을 정의 | [문서](../../../../docs/implementation_plan_joker_parts_2026-09-21.md) |
 | 2026-09-21 | **저체력 다수전·공개 증원·전투 UI** | `codex0921-horde-reinforcement` | 최대 4기 전열, 공개 대기열, 처치 후 보충, 직접 정보 전장과 휴대폰 화면 밀도 개편 | [문서](../../../../docs/implementation_plan_horde_reinforcement_ui_2026-09-21.md) |
 | 2026-09-11 | **Godot 시각 전투 개선** | `codex0911-visual-combat` | 거리 전장·탄창·순차 연출, 화면43·연출39·전체UI493·독립100 통과. 브랜치 검증, main 미병합 | [문서](../../../../docs/implementation_plan_visual_combat_2026-09-11.md) |
@@ -132,3 +142,5 @@
 2026-09-16 참조: [탄환 카드 아이콘 정보 체계](D:/ProjectLoB/worktrees/core-redesign/docs/ui_request_ammo_icon_cards_2026-09-16.md)
 
 2026-09-16 참조: [피해·관통 및 3속성 개편](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_elemental_ammo_2026-09-16.md)
+
+2026-09-26 참조: [전투 전체 화면 UI 개편](D:/ProjectLoB/worktrees/core-redesign/docs/implementation_plan_combat_fullscreen_ui_2026-09-26.md)

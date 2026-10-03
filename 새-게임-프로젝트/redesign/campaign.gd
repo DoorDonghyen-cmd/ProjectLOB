@@ -18,7 +18,7 @@ static func defaults() -> Dictionary:
 
 func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = "balanced") -> void:
 	if not profile.unlocks.has(loadout): loadout = "balanced"
-	s = {"version": 4, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": 18, "pressure": 0, "slots": 0, "parts": [], "equipped_parts": [], "shop_seen_parts": [], "visited": [], "clears": 0, "compressor_charges": 1, "shop_revision": 0, "shop_part_bought": false, "shop_compressor_bought": false, "shop_refined": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "정점까지 35층. 다음 목적지를 선택하세요."}
+	s = {"version": 4, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": Content.START_CREDITS, "pressure": 0, "slots": 0, "parts": [], "equipped_parts": [], "shop_seen_parts": [], "visited": [], "clears": 0, "compressor_charges": 1, "shop_revision": 0, "shop_part_bought": false, "shop_compressor_bought": false, "shop_refined": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "정점까지 35층. 다음 목적지를 선택하세요."}
 	model.start(gun, seed_value)
 	model.s.equipped_parts = []
 	model.s.deck = Ammo.start_deck(gun) if loadout == "balanced" else Content.LOADOUTS[loadout].deck.duplicate()
@@ -67,6 +67,7 @@ func enter(id: int) -> bool:
 			# Each node has its own draw stream without resetting run statistics/history.
 			model.s.seed = str(int(s.seed) + id * 101)
 			model.begin_encounter(int(s.compressor_charges))
+			if int(s.region) == 0 and int(s.floor) == 1: Content.prepare_opening_hand(model)
 			var formation := Content.encounter_pack(selected, int(s.seed), str(s.gun), int(s.difficulty), int(s.pressure))
 			model.s.enemies = formation.active
 			model.s.reinforcements = formation.reserve
@@ -120,7 +121,7 @@ func credit_reward() -> int:
 			used += event.detail.results.size()
 			elapsed += 1
 		if event.action == "reload": elapsed += int(event.detail.cost)
-	return maxi(8, 12 + int(s.region) - maxi(0, used - 6) - maxi(0, elapsed - 6) - int(s.difficulty))
+	return maxi(8, 12 + int(s.region) - maxi(0, used - 6) - maxi(0, elapsed - 6) - int(s.difficulty)) + (Content.ROUTE_REWARD_BONUS if str(node().get("route", "stairs")) == "duct" else 0)
 
 func encounter_report_state() -> Dictionary:
 	var state: Dictionary = model.s.duplicate(true)
@@ -205,13 +206,17 @@ func buy_compressor_charge() -> bool:
 	_log("purchase_compressor", {"price": COMPRESSOR_PRICE, "charges": s.compressor_charges})
 	return true
 
+func reroll_cost() -> int:
+	return mini(9, 3 + int(s.get("shop_revision", 0)) * 2)
+
 func reroll() -> bool:
-	if s.phase != "shop" or int(s.credits) < 3: return false
-	s.credits -= 3
+	var cost := reroll_cost()
+	if s.phase != "shop" or int(s.credits) < cost: return false
+	s.credits -= cost
 	s.shop_revision += 1
 	_stock_shop(node())
 	# Persistent visit-level lock deliberately survives offer replacement.
-	_log("reroll", {"revision": s.shop_revision})
+	_log("reroll", {"revision": s.shop_revision, "cost": cost})
 	return true
 
 func _stock_shop(shop_node: Dictionary) -> void:
@@ -252,11 +257,24 @@ func equip(id: String) -> bool:
 	_log("equip", {"id": id, "equipped": s.equipped_parts.duplicate()})
 	return true
 
+func replace_part(outgoing: String, incoming: String) -> bool:
+	if not can_manage_parts() or not s.parts.has(incoming) or is_equipped(incoming): return false
+	var index: int = s.equipped_parts.find(outgoing)
+	if index < 0: return false
+	var proposed: Array = s.equipped_parts.duplicate()
+	proposed[index] = incoming
+	if not Ammo.valid_part_set(str(s.gun), proposed): return false
+	s.equipped_parts = proposed
+	_sync_equipped_parts()
+	_log("replace_part", {"outgoing": outgoing, "incoming": incoming, "equipped": proposed.duplicate()})
+	return true
+
 func _sync_equipped_parts() -> void:
 	model.s.equipped_parts = s.get("equipped_parts", []).duplicate()
 	model.s.part = "none"
 	model.s.push_left = Ammo.push_budget(model.s)
 	model.s.supply = model.supply_capacity()
+	model.s.exchange_left = mini(int(model.s.exchange_left), Ammo.exchange_capacity(model.s))
 
 func dismantle(id: String) -> bool:
 	if not s.phase in ["shop", "supply"] or not s.parts.has(id) or is_equipped(id): return false

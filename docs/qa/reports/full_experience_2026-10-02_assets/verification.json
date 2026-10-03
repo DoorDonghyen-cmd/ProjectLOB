@@ -1,0 +1,146 @@
+{
+  "date": "2026-10-02",
+  "branch": "prototype/core-redesign",
+  "engine": "Godot 4.7 stable OpenGL compatibility",
+  "checks": {
+    "weapon_rules": {
+      "checks": 3245,
+      "failures": 0
+    },
+    "weapon_ui": {
+      "checks": 390,
+      "failures": 0
+    },
+    "city_ui": {
+      "checks": 3698,
+      "failures": 0,
+      "inputs": 1186
+    },
+    "frontend_ui": {
+      "checks": 33,
+      "failures": 0
+    },
+    "production_ui": {
+      "checks": 64,
+      "failures": 0
+    },
+    "layout": {
+      "failures": 0
+    },
+    "elemental_campaign": {
+      "checks": 10668,
+      "failures": 0
+    }
+  },
+  "fresh_completed_campaign_runs": [
+    {
+      "gun": "single",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 430,
+      "evidence": "campaign_fresh_partial.txt"
+    },
+    {
+      "gun": "single",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 320,
+      "evidence": "campaign_fresh_partial.txt"
+    },
+    {
+      "gun": "burst",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 591,
+      "evidence": "campaign_fresh_partial.txt"
+    },
+    {
+      "gun": "burst",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 409,
+      "evidence": "campaign_fresh_partial.txt"
+    },
+    {
+      "gun": "scatter",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 668,
+      "evidence": "campaign_fresh_partial.txt"
+    },
+    {
+      "gun": "scatter",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 460,
+      "evidence": "campaign_fresh_partial.txt"
+    },
+    {
+      "gun": "heavy",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 586,
+      "evidence": "campaign_elemental.txt"
+    },
+    {
+      "gun": "heavy",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 344,
+      "evidence": "campaign_elemental.txt"
+    },
+    {
+      "gun": "amplifier",
+      "seed": 731042,
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 449,
+      "evidence": "campaign_elemental.txt"
+    },
+    {
+      "gun": "amplifier",
+      "seed": 731042,
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "nodes": 35,
+      "commands": 339,
+      "evidence": "campaign_elemental.txt"
+    }
+  ],
+  "extended_search_suite_completed": false,
+  "extended_search_note": "Stopped the expanded 20-case search after all five guns had current-rule completion evidence across this run and the independent four-case elemental run. Unfinished cases are not counted.",
+  "stale_replay": {
+    "source": "campaign_preart_hard10",
+    "failures": 5,
+    "accepted_as_evidence": false
+  },
+  "human_usability_test": false,
+  "android_device_test": false
+}

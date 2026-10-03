@@ -1,8 +1,10 @@
 extends Control
+const Art = preload("res://redesign/world_art.gd")
 signal entered(id: int)
+signal selected(id: int)
 signal inspected(id: int)
 const Data = preload("res://redesign/campaign_content.gd")
-const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+const FONT = preload("res://redesign/ui_font.tres")
 const COLORS := {"combat": Color("a4b4ba"), "boss": Color("f2a38d"), "shop": Color("e4cc84"), "supply": Color("a9dfbf"), "event": Color("baace4"), "bypass": Color("8dbfc9")}
 var nodes: Array = []
 var available: Array = []
@@ -26,7 +28,8 @@ func setup(campaign) -> void:
 		button.name = "map_node_" + str(item.id)
 		button.text = ("● " if int(item.id) == current else ("✓ " if visited.has(int(item.id)) else "")) + str(item.name)
 		button.text += "\n" + Data.kind_name(str(item.kind))
-		if available.has(int(item.id)): button.text += " · " + ("계단" if item.route == "stairs" else "환기 −2m")
+		if available.has(int(item.id)):
+			button.text += " · " + ("계단" if item.route == "stairs" else ("위험 +%dCr" % Data.ROUTE_REWARD_BONUS if item.kind in ["combat", "boss"] else "환기 −2m"))
 		button.add_theme_font_size_override("font_size", 16)
 		button.add_theme_color_override("font_color", Color("e7e4d9") if available.has(int(item.id)) else (Color("a9dfbf") if visited.has(int(item.id)) else Color("81939c")))
 		for state in ["normal", "hover", "pressed", "focus"]:
@@ -39,7 +42,7 @@ func setup(campaign) -> void:
 			button.add_theme_stylebox_override(state, box)
 		button.tooltip_text = Data.hint(item)
 		button.pressed.connect(func():
-			if available.has(int(item.id)): entered.emit(int(item.id))
+			if available.has(int(item.id)): selected.emit(int(item.id))
 			else: inspected.emit(int(item.id))
 		)
 		add_child(button)
@@ -70,7 +73,8 @@ func _layout() -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), Color("14232c"))
+	Art.cover(self, Art.texture("city_overview"), Rect2(Vector2.ZERO, size))
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.04, 0.07, 0.10, 0.7))
 	var spacing := (size.y - 24) / float(floors)
 	for f in range(1, floors + 1):
 		var y := 12 + (floors - f + 0.5) * spacing

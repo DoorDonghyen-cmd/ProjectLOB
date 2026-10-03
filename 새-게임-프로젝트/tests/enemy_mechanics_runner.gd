@@ -39,10 +39,11 @@ func _run() -> void:
 	barrier.s.discard.erase("precise_c")
 	check(barrier.load_round("precise_c") and barrier.confirm(), "three-hit round loads against barrier")
 	var barrier_preview := Forecast.analyze(barrier.s)
-	check(barrier_preview.shots[0].blocked_hits == 2 and barrier_preview.shots[0].damage == 4 and barrier_preview.enemies[0].barrier == 0, "forecast spends two barrier cells before HP")
+	# Compressed triple shot: two shielded hits, then base 3 + current walker 2.
+	check(barrier_preview.shots[0].blocked_hits == 2 and barrier_preview.shots[0].damage == 5 and barrier_preview.enemies[0].barrier == 0, "forecast spends two barrier cells before HP")
 	check(barrier.fire(), "barrier shot fires")
 	var barrier_result: Dictionary = barrier.s.history.back().detail.results[0]
-	check(barrier_result.blocked_hits == 2 and barrier_result.damage == 4 and barrier.s.enemies[0].hp == 6 and barrier.s.enemies[0].barrier == 0, "actual barrier settlement matches forecast")
+	check(barrier_result.blocked_hits == 2 and barrier_result.damage == 5 and barrier.s.enemies[0].hp == 5 and barrier.s.enemies[0].barrier == 0, "actual barrier settlement matches forecast")
 	check(Forecast.outcome({"random": false, "hit": true, "damage": 0, "blocked_hits": 1, "hp": 10}) == "배리어 −1", "barrier forecast uses its own label")
 
 	var caster = Model.new()

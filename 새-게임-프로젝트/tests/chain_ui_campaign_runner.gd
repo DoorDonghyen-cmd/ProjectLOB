@@ -90,7 +90,11 @@ func _run() -> void:
 		if not check(not expected.is_empty(), "recorded source for gun"):
 			break
 		await fresh_screen()
+		if not await click("new_run_setup"):
+			break
 		screen.seed_input.text = "731042"
+		if gun != "single":
+			if not await click("weapon_select_" + gun): break
 		if not await click("start_" + gun):
 			break
 		if not await replay(expected):
@@ -102,7 +106,12 @@ func replay(expected: Dictionary) -> bool:
 	for command in expected.commands:
 		var key: String = command.action
 		match command.action:
-			"load": key = "load_" + str(command.id)
+			"load":
+				key = "load_" + str(command.id)
+				for candidate in screen.find_children("load_*", "Button", true, false):
+					if not candidate.disabled and candidate.get("ammo_id") == str(command.id):
+						key = str(candidate.name)
+						break
 			"reward": key = ("remove_" + str(command.remove_id)) if command.id == "remove" else "reward_" + str(command.id)
 			"exchange":
 				if not await click("exchange"): return false
@@ -121,7 +130,9 @@ func replay(expected: Dictionary) -> bool:
 	if not check(screen.model.s.phase == "won", "actual final victory"): return false
 	check(int(screen.model.s.turns) == int(expected.turns), "turn count agrees")
 	check(int(screen.model.s.shots) == int(expected.shots), "shot count agrees")
-	if expected.has("history"): check(normalized(screen.model.s.history) == normalized(expected.history), "complete UI history agrees")
+	if expected.has("history"):
+		var rules_snapshot = preload("res://tests/combat_rules_snapshot.gd")
+		check(normalized(rules_snapshot.history(screen.model.s.history)) == normalized(rules_snapshot.history(expected.history)), "complete UI history agrees (optional presentation observations excluded)")
 	await capture(active_gun + "_07_won_actual")
 	reports.append({"gun": active_gun, "won": true, "turns": screen.model.s.turns, "shots": screen.model.s.shots, "reloads": screen.model.s.reloads})
 	if not await click("retry"): return false

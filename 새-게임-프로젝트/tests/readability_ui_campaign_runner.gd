@@ -88,8 +88,10 @@ func _run() -> void:
 	for expected in source.reports:
 		active_gun = str(expected.gun)
 		await fresh_screen()
+		if not await click("training_setup" if bool(expected.course) else "new_run_setup"): break
 		screen.seed_input.text = str(expected.seed)
-		screen.course_toggle.button_pressed = bool(expected.course)
+		if active_gun != "single":
+			if not await click("weapon_select_" + active_gun): break
 		if not await click("start_" + active_gun): break
 		check(screen.model.s.course == expected.course, "selected course mode retained")
 		if not await replay(expected): break

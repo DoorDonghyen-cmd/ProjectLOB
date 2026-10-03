@@ -6,6 +6,7 @@ const Model = preload("res://redesign/model.gd")
 const Content = preload("res://redesign/content.gd")
 var candidates: Array = []
 var explored := 0
+var candidate_limit := 0
 
 func clone(model):
 	var result = Model.new()
@@ -20,6 +21,7 @@ func arranged(commands: Array) -> Array:
 	return plan
 
 func enumerate(model, stack: Array = []) -> void:
+	if candidate_limit > 0 and candidates.size() >= candidate_limit: return
 	if not stack.is_empty(): candidates.append(stack.duplicate())
 	var current_plan := arranged(stack)
 	if Content.slots_used(current_plan) >= model.capacity(): return
@@ -30,6 +32,7 @@ func enumerate(model, stack: Array = []) -> void:
 	for id in model.s.hand:
 		if not ids.has(id) and model.available(id) > 0: ids.append(id)
 	for id in ids:
+		if candidate_limit > 0 and candidates.size() >= candidate_limit: break
 		if stack.count(id) >= model.available(id): continue
 		if not Content.can_insert(current_plan, str(id), model.capacity()): continue
 		stack.append(id)
@@ -77,7 +80,7 @@ func solve(model, width: int = 3, max_depth: int = 7) -> Array:
 					path.append({"action": "fire"})
 					if simulation.s.phase in ["reward", "won"]: return path
 					if simulation.s.phase == "lost": break
-					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state, simulation.s.target_rng_state, simulation.s.buff, simulation.s.push_left])
+					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state, simulation.s.target_rng_state, simulation.s.buff, simulation.s.push_left, simulation.s.get("reinforcements", []), simulation.s.get("reload_heat", 0), simulation.s.get("projectiles", []), simulation.s.get("projectile_serial", 0)])
 					if seen.has(key): continue
 					seen[key] = true
 					next.append({"model": clone(simulation), "path": path.duplicate(true), "score": score(simulation)})

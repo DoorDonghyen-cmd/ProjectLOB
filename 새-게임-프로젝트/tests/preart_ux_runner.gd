@@ -58,7 +58,7 @@ func _run() -> void:
 	check(restored.data.text_scale == 1.1 and restored.motion_scale() == 0.05 and not restored.data.hints, "preferences round trip")
 
 	await fresh()
-	for key in ["first_guide", "guide", "settings", "start_single", "resume"]:
+	for key in ["first_guide", "guide", "settings", "new_run_setup", "training_setup"]:
 		check(screen.find_child(key, true, false) != null, "menu exposes " + key)
 	await press("guide")
 	check(screen.find_child("FirstGuide", true, false) != null, "first guide opens")
@@ -87,13 +87,15 @@ func _run() -> void:
 	active.start("single", 731042)
 	check(active.save() == OK, "active city fixture saved")
 	await fresh()
+	await press("new_run_setup")
+	await press("weapon_select_burst")
 	await press("start_burst")
 	var confirm := screen.find_child("NewRunConfirmation", true, false) as ConfirmationDialog
-	check(confirm != null and screen.page == "menu", "new run replacement requires confirmation")
+	check(confirm != null and screen.page == "loadout", "new run replacement requires confirmation")
 	if confirm != null:
 		confirm.canceled.emit()
 		await settle()
-	check(screen.page == "menu", "cancel keeps current run")
+	check(screen.page == "loadout", "cancel keeps current run and preparation")
 	await press("start_burst")
 	confirm = screen.find_child("NewRunConfirmation", true, false) as ConfirmationDialog
 	if confirm != null:

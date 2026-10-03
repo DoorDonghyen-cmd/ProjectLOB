@@ -6,6 +6,8 @@ const AmmoVisual = preload("res://redesign/ammo_visual.gd")
 
 static func description(id: String, state: Dictionary) -> String:
 	var spec: Dictionary = Content.AMMO[id]
+	if Content.heat_cost(id) > 0:
+		return "고출력 · 다음 2발의 타격당 피해 +%d. 발사하면 다음 재장전 +%d턴. 재장전 완료 시 해소." % [Content.effect_value(id, state), Content.heat_cost(id)]
 	if Content.is_compressed(id):
 		match id:
 			"pierce_c": return "탄창 2칸 · 피해 %d · 관통 %d를 한 발에 집중합니다." % [Content.damage(id, state), Content.penetration(id, state)]

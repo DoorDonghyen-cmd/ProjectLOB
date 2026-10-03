@@ -1,7 +1,7 @@
 extends Control
 ## Procedural icons for simple non-combat choices: capacity, compression, and credits.
 const AmmoVisual = preload("res://redesign/ammo_visual.gd")
-const FONT = preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+const FONT = preload("res://redesign/ui_font.tres")
 const INK := Color("e7e4d9")
 const MUTED := Color("94a9ae")
 const ACCENT := Color("a9dfbf")

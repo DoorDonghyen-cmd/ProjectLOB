@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansKR.ttf" id="1"]
+
+[node name="RiskResult" type="VBoxContainer"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("1")
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "교전 돌파"
+horizontal_alignment = 1
+
+[node name="Summary" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "같은 전투에서 증폭탄의 출력을 바꿔 비교해 보세요."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Details" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "사격과 재장전 시간은 실제 전투 결과입니다."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="risk_retry" type="Button" parent="Actions"]
+custom_minimum_size = Vector2(190, 56)
+layout_mode = 2
+text = "같은 구성 다시"
+
+[node name="risk_compare" type="Button" parent="Actions"]
+custom_minimum_size = Vector2(230, 56)
+layout_mode = 2
+text = "증폭 바꿔 비교"
+
+[node name="risk_next" type="Button" parent="Actions"]
+custom_minimum_size = Vector2(190, 56)
+layout_mode = 2
+text = "다른 전투"

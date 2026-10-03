@@ -1,5 +1,10 @@
 # 🎓 Walkthrough Master (완료 작업 워크스루 아카이브)
 
+* [Session codex0925-frontend-ui Walkthrough](file:///D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_frontend_ui_2026-09-25.md)
+* [Session codex0925-first-run-ux Walkthrough](file:///D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_first_run_ux_2026-09-25.md)
+* [Session codex0924-macro-uiux Walkthrough](file:///D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_macro_uiux_2026-09-24.md)
+* [Session codex0924-uiux-decision-flow Walkthrough](file:///D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_uiux_decision_flow_2026-09-24.md)
+
 이 파일은 각 세션(Conversation)별로 정상 동작이 검증되고 병합 완료된 기능들의 워크스루(`walkthrough.md`)를 총망라하는 인덱스입니다.
 
 ---
@@ -8,6 +13,11 @@
 
 | 완료일 | 주제 | 세션 ID | 주요 구현 내용 | 문서 링크 |
 | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-25 | **타이틀·출격 준비 프런트엔드** | `codex0925-frontend-ui` | 타이틀 홈, 저장 요약 이어하기, 새 등반·훈련 분리, 총기 5종 선택 쇼케이스, 시작 보급·난도, 단일 출격 확정. 전체3730/0·프런트33/0·도시UI3698/0 | [walkthrough.md](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_frontend_ui_2026-09-25.md) |
+| 2026-09-25 | **첫 등반 UX 후속 개선** | `codex0925-first-run-ux` | 상점 구매·충전·리롤 결과 띠, 빌드 작업실 활성 탭 보존과 장착 결과 띠. 전체3730/0·실제UI3686/0·1181입력 | [walkthrough.md](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_first_run_ux_2026-09-25.md) |
+| 2026-09-24 | **거시 UI/UX 구조 개편** | `codex0924-macro-uiux` | 압축 런·전투 헤더, 지도 목적지 시트, 3열 보상, 구매 중심 상점, 전체 화면 빌드 작업실. 전체3730/0·캠페인22632/0·실제UI3684/0·1181입력 | [walkthrough.md](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_macro_uiux_2026-09-24.md) |
+| 2026-09-24 | **덱·장비 통합과 전투 작업대 UI** | `codex0924-loadout-combat-ui` | 덱·파츠 공용 렌더러, `deck_loadout.tscn`, `combat_workbench.tscn`, 단계·후보/발사순서 구조, 1008/840 반응형. 전체3730/0·실제UI3438/0·1103입력·2개35층 재생 | [walkthrough.md](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_loadout_combat_ui_2026-09-24.md) |
+| 2026-09-21 | **장면 기반 무기고·파츠 작업대 UI** | `codex0921-shop-workbench` | `shop_workbench.tscn`, 현재 빌드/진열/압축/장착 구역, 중복 문장 축약, 3→2열·2→1열 반응형. 실제UI3,430/0·1,103입력·2개35층 재생 | [walkthrough.md](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_shop_workbench_ui_2026-09-21.md) |
 | 2026-09-21 | **5칸 파츠 빌드·코어 패널티** | `codex0921-joker-parts` | 일반14·코어6, 최대5개 조합, 코어1개와 대가, 다중 구매·보관·교체 UI, 저장 v8/v4. 캠페인22631/0·UI3426/0 | [문서](../../../../docs/walkthrough_joker_parts_2026-09-21.md) |
 | 2026-09-21 | **저체력 다수전·공개 증원·전투 UI** | `codex0921-horde-reinforcement` | 최대 4기 전열, 총 2~8기, 2기 이하 증원, 증강 처형 연쇄, 모바일 전장 UI. 전체 3,730/0·전용 UI 20/0 | [문서](../../../../docs/walkthrough_horde_reinforcement_ui_2026-09-21.md) |
 | 2026-09-11 | **Godot 시각 전투 개선** | `codex0911-visual-combat` | 거리 전장·탄창·순차 연출, 화면43·연출39·전체UI493·독립100 통과. 브랜치 검증, main 미병합 | [문서](../../../../docs/walkthrough_visual_combat_2026-09-11.md) |
@@ -150,3 +160,5 @@
 2026-09-16 참조: [탄환 카드 픽셀 아이콘 전환](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_ammo_icon_cards_2026-09-16.md)
 
 2026-09-16 참조: [피해·관통 및 3속성 전면 개편](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_elemental_ammo_2026-09-16.md)
+
+2026-09-26 참조: [전투 전체 화면 UI 개편](D:/ProjectLoB/worktrees/core-redesign/docs/walkthrough_combat_fullscreen_ui_2026-09-26.md)

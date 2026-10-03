@@ -236,7 +236,7 @@ func replay_previous(expected: Dictionary) -> void:
 	commands = []
 	for previous in expected.commands:
 		if not command(campaign, previous.duplicate(true)): return
-		if not check(campaign.s.phase == previous.phase and int(campaign.s.node) == int(previous.node), "previous path retains exact progress"): return
+		if not check(campaign.s.phase == previous.phase and int(campaign.s.node) == int(previous.node), "previous path retains exact progress: %s command %d %s expected=%s/%s actual=%s/%s" % [expected.gun, commands.size(), previous.action, previous.phase, previous.node, campaign.s.phase, campaign.s.node]): return
 		if commands.size() % 50 == 0: await process_frame
 	check(campaign.s.phase == "won" and campaign.s.visited.size() == 35, "unchanged combat paths complete city after economy tuning")
 	check(JSON.stringify(JSON.parse_string(JSON.stringify(campaign.model.s))) == JSON.stringify(expected.combat), "economy tuning preserves exact combat history")

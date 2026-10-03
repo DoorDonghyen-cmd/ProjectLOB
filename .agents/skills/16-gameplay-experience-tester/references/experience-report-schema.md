@@ -17,7 +17,7 @@
   "scenario_id": "campaign_two_sections",
   "gameplay_seed": 424242,
   "profile": "beginner",
-  "start_condition": {"save_fixture": "clean", "gun_id": "revolver"},
+  "start_condition": {"save_fixture": "clean", "gun_id": "single"},
   "actions": [
     {
       "step": 3,
@@ -39,9 +39,17 @@
 }
 ```
 
+## 과거 브리지와 현행 적용
+
+아래 클래스 이름은 과거 브리지 계약의 참고다. 현행 redesign 입력과 상태를 지원하는지 확인한 뒤 사용한다. 일반 리뷰에 JSON 계약이나 네 프로필 실행을 강제하지 않는다.
+
+## 과거 브리지와 현행 적용
+
+아래 클래스 이름은 과거 브리지 계약의 참고다. 현행 redesign 입력과 상태를 지원하는지 확인한 뒤 사용한다. 일반 리뷰에 JSON 계약이나 네 프로필 실행을 강제하지 않는다.
+
 ## 집계 결과
 
-`QAExperienceMetrics`는 선택 집중도, 리로드·무효 행동 비중, 최소 거리,
+과거 QA 브리지의 과거 QA 브리지의 `QAExperienceMetrics`는 선택 집중도, 리로드·무효 행동 비중, 최소 거리,
 과잉 피해, 미사용 전술탄, 파츠·경로 중복률을 따로 내다. 종합 점수는 만들지 않는다.
 `QAProfileComparator`는 같은 시작 조건의 네 보고서만 비교하며 동일 행동열은 성공으로
 인정하지 않는다. 통합 결론은 `strong_signal`, `hypothesis`, `human_confirmation`만 사용한다.

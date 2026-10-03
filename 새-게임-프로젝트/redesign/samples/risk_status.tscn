@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="FontFile" path="res://assets/fonts/NotoSansKR.ttf" id="1"]
+
+[node name="RiskStatus" type="HBoxContainer"]
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("1")
+theme_override_constants/separation = 16
+
+[node name="Shot" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.15
+theme_override_constants/separation = 0
+
+[node name="Caption" type="Label" parent="Shot"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.64, 0.71, 0.73, 1)
+theme_override_font_sizes/font_size = 13
+text = "이번 사격"
+
+[node name="Value" type="Label" parent="Shot"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "40 피해 · 2 처치"
+text_overrun_behavior = 3
+
+[node name="Reload" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Caption" type="Label" parent="Reload"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.64, 0.71, 0.73, 1)
+theme_override_font_sizes/font_size = 13
+text = "이후 재장전"
+
+[node name="Value" type="Label" parent="Reload"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.57, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "1 → 2턴  ·  과열 +1"
+text_overrun_behavior = 3
+
+[node name="Distance" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.25
+theme_override_constants/separation = 0
+
+[node name="Caption" type="Label" parent="Distance"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.64, 0.71, 0.73, 1)
+theme_override_font_sizes/font_size = 13
+text = "재장전 후 적 거리"
+
+[node name="Value" type="Label" parent="Distance"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "C 15m"
+text_overrun_behavior = 3

@@ -127,7 +127,7 @@ func key(command: Dictionary) -> String:
 		"enter": return "city_enter_" + str(int(command.id))
 		"reward": return "city_reward_" + str(command.id)
 		"gate": return "city_gate_" + str(command.id)
-		"buy": return "city_buy_" + str(int(command.id))
+		"buy": return "city_compare_buy_" + str(int(command.id))
 		"reroll": return "city_reroll"
 		"resolve":
 			if screen.campaign.s.phase == "supply" and command.id == "ammo": return "city_supply_" + str(command.ammo)
@@ -135,7 +135,10 @@ func key(command: Dictionary) -> String:
 			if command.id == "sell": return "city_sell_" + str(command.ammo)
 			return "city_event_" + str(command.id)
 		"leave": return "city_leave"
-		"load": return "load_" + str(command.id)
+		"load":
+			for candidate in screen.find_children("load_*", "Button", true, false):
+				if not candidate.disabled and candidate.get("ammo_id") == str(command.id): return str(candidate.name)
+			return "load_" + str(command.id)
 		"confirm": return "confirm"
 		"fire": return "fire"
 		"reload": return "reload"
@@ -147,8 +150,10 @@ func replay(expected: Dictionary) -> void:
 	clean.store_string("{}")
 	clean.close()
 	await fresh()
+	if not await click("new_run_setup"): return
 	screen.seed_input.text = str(int(expected.seed))
-	screen.course_toggle.button_pressed = false
+	if str(expected.gun) != "single":
+		if not await click("weapon_select_" + str(expected.gun)): return
 	if not await click("start_" + str(expected.gun)): return
 	check(screen.campaign != null and screen.campaign.s.phase == "map", "normal start opens city map")
 	await capture("city_start_" + str(expected.gun))
@@ -159,10 +164,18 @@ func replay(expected: Dictionary) -> void:
 		if not captured.has(phase) and phase != "combat":
 			captured.append(phase)
 			await capture("city_" + str(expected.gun) + "_" + phase)
+		if command.action == "enter":
+			if not await click("map_node_" + str(int(command.id))): return
+			check(screen.campaign.s.phase == "map", "map selection waits for explicit movement confirmation")
+		if command.action == "buy":
+			var offer: Dictionary = screen.campaign.s.offers[int(command.id)]
+			if not await click(("city_part_info_" if offer.type == "part" else "city_offer_compare_") + str(int(command.id))): return
 		if not await click(key(command)): return
 		if command.action == "gate" and command.id == "compress":
 			if not await click("city_compress_" + str(command.ammo), true): return
-		if not check(screen.campaign.s.phase == command.phase and int(screen.campaign.s.node) == int(command.node) and int(screen.campaign.s.credits) == int(command.credits) and int(screen.model.s.turns) == int(command.turns), "UI command agrees " + key(command)): return
+		var actual_state := {"phase": screen.campaign.s.phase, "node": int(screen.campaign.s.node), "credits": int(screen.campaign.s.credits), "turns": int(screen.model.s.turns)}
+		var expected_state := {"phase": command.phase, "node": int(command.node), "credits": int(command.credits), "turns": int(command.turns)}
+		if not check(actual_state == expected_state, "UI command agrees %s · expected %s · actual %s" % [key(command), str(expected_state), str(actual_state)]): return
 		if not resumed and int(screen.campaign.s.region) >= 2 and screen.campaign.s.phase == "combat":
 			var before := normalized({"campaign": screen.campaign.s, "combat": screen.model.s, "profile": screen.campaign.profile})
 			await fresh()
@@ -176,7 +189,8 @@ func replay(expected: Dictionary) -> void:
 			await capture("city_summit_map_" + str(expected.gun))
 	check(screen.campaign.s.phase == "won", "actual UI reaches final core")
 	check(normalized(screen.campaign.s) == normalized(expected.campaign), "full city history agrees")
-	check(normalized(screen.model.s) == normalized(expected.combat), "full combat history agrees")
+	var rules_snapshot = preload("res://tests/combat_rules_snapshot.gd")
+	check(normalized(rules_snapshot.state(screen.model.s)) == normalized(rules_snapshot.state(expected.combat)), "full combat history agrees (optional presentation observations excluded)")
 	check(normalized(screen.campaign.profile) == normalized(expected.profile), "full profile awards agree")
 	await capture("city_complete_" + str(expected.gun))
 	if await click("city_archive"):
@@ -184,7 +198,7 @@ func replay(expected: Dictionary) -> void:
 		await click("city_unlock_thermal")
 		check(screen.campaign.profile.unlocks.has("thermal"), "UI unlocks next-run loadout")
 		for child in screen.get_children():
-			if child is AcceptDialog: child.queue_free()
+			if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 		await settle()
 	if await click("retry"):
 		check(screen.campaign.s.phase == "map" and screen.campaign.absolute_floor() == 0 and screen.model.s.turns == 0, "retry resets whole city")
@@ -195,10 +209,13 @@ func replay(expected: Dictionary) -> void:
 func developer() -> void:
 	await fresh()
 	await capture("preart_menu")
+	await click("new_run_setup")
+	await capture("preart_weapon_selection")
+	await click("loadout_back")
 	await click("guide")
 	await capture("preart_first_guide")
 	for child in screen.get_children():
-		if child is AcceptDialog: child.queue_free()
+		if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 	await settle()
 	await click("settings")
 	await capture("preart_settings")
@@ -209,7 +226,7 @@ func developer() -> void:
 		text_scale.item_selected.emit(2)
 		await settle()
 	for child in screen.get_children():
-		if child is AcceptDialog: child.queue_free()
+		if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 	await settle()
 	root.size = Vector2i(1008, 630)
 	await capture("preart_menu_large_text_phone")
@@ -222,13 +239,13 @@ func developer() -> void:
 	await click("debug_first_guide")
 	check(screen.find_child("FirstGuide", true, false) != null, "developer shortcut opens first guide without nested modal conflict")
 	for child in screen.get_children():
-		if child is AcceptDialog: child.queue_free()
+		if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 	await settle()
 	await click("dev")
 	await click("debug_settings")
 	check(screen.find_child("SettingsDialog", true, false) != null, "developer shortcut opens settings without nested modal conflict")
 	for child in screen.get_children():
-		if child is AcceptDialog: child.queue_free()
+		if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 	await settle()
 	await click("dev")
 	await click("debug_part_cards")
@@ -238,7 +255,7 @@ func developer() -> void:
 		check(screen.find_child("PartGallery_" + id, true, false) != null, "part gallery exposes " + id)
 	await capture("part_icon_gallery")
 	for child in screen.get_children():
-		if child is AcceptDialog: child.queue_free()
+		if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 	await settle()
 	var saved: String = FileAccess.get_file_as_string(Campaign.SAVE)
 	for scenario in ["map", "shop", "supply", "event", "gate", "ending", "loss", "reward", "deck", "archive"]:
@@ -248,27 +265,43 @@ func developer() -> void:
 		check(screen.debug_session, "city developer mode protects save")
 		await capture("city_debug_" + scenario)
 		if scenario == "map":
+			check(screen.find_child("CampaignShellHeader", true, false) != null and screen.find_child("MapRouteSheet", true, false) != null, "map uses the compact run shell and one destination sheet")
 			await click("map_node_101", true)
-			check(screen.campaign.s.phase == "combat", "touch map destination enters actual combat")
+			check(screen.campaign.s.phase == "map" and screen.find_child("city_enter_101", true, false) != null, "touch map destination selects without entering")
+			await capture("city_map_selected")
+			await click("city_enter_101", true)
+			check(screen.campaign.s.phase == "combat", "explicit map confirmation enters actual combat")
 		elif scenario == "shop":
-			check(screen.find_child("UpgradeChoice_core", true, false) != null, "shop compression core uses a graphical status card")
+			check(screen.find_child("ShopWorkbench", true, false) != null, "shop uses the authored workbench scene")
+			var shop_equipment := screen.find_child("EquipmentPanel", true, false) as Control
+			check(screen.find_child("CurrentBuildPanel", true, false) != null and screen.find_child("OfferComparePanel", true, false) != null and shop_equipment == null, "shop focuses on build summary, offers, and comparison without duplicating the equipment editor")
+			await click("city_shop_build", true)
+			var shop_workspace := screen.find_child("WorkspaceOverlay", true, false) as Control
+			check(shop_workspace != null and shop_workspace.size.is_equal_approx(screen.size), "shop opens equipment management as a full-screen build workspace")
+			await click("workspace_close", true)
+			check(screen.find_child("ShopCompressorGlyph", true, false) != null, "shop compression core has a compact graphical charge indicator")
 			var part_info := screen.find_children("city_part_info_*", "Button", true, false)
 			check(not part_info.is_empty(), "shop exposes icon-first part detail buttons")
 			if not part_info.is_empty():
 				part_info[0].pressed.emit()
 				await settle()
-				check(screen.find_child("PartDetails", true, false) != null, "part detail keeps the same visual language")
+				var compare_body := screen.find_child("OfferCompareBody", true, false) as Label
+				check(compare_body != null and compare_body.text.contains("▲"), "part selection shows an in-place before and after comparison")
+				await capture("city_part_compare")
+				await click("city_offer_detail_1", true)
+				check(screen.find_child("PartDetails", true, false) != null, "optional part detail keeps the same visual language")
 				await capture("city_part_detail")
 				for child in screen.get_children():
-					if child is AcceptDialog: child.queue_free()
+					if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 				await settle()
-			await click("city_buy_1", true)
+			await click("city_compare_buy_1", true)
 			check(screen.campaign.s.parts.size() == 1, "touch shop buys a part")
+			check(not (screen.find_child("ShopHint", true, false) as Label).text.is_empty(), "shop confirms the result immediately after purchase")
 			var equipped_id := str(screen.campaign.equipped_parts()[0]) if not screen.campaign.equipped_parts().is_empty() else "none"
 			check(equipped_id != "none" and screen.find_child("PartCard_" + equipped_id, true, false) != null, "purchased part fills one of five equipped slots")
 			await capture("city_shop_equipped_part")
 			await click("city_reroll")
-			var candidate := screen.find_child("city_buy_1", true, false) as Button
+			var candidate := screen.find_child("city_compare_buy_1", true, false) as Button
 			check(candidate != null and not candidate.disabled, "UI allows another affordable part after reroll")
 			await click("city_buy_compressor", true)
 			check(screen.campaign.s.compressor_charges == 2 and screen.campaign.s.shop_compressor_bought, "shop UI charges one persistent compression core")
@@ -293,12 +326,24 @@ func developer() -> void:
 			await click("city_compress_bore", true)
 			check(screen.campaign.s.region == 1 and screen.model.s.deck.size() == 9 and screen.model.s.deck.has("bore_c"), "gate visual compression enters next region with transformed round")
 		elif scenario == "deck":
+			check(screen.find_child("DeckLoadout", true, false) != null, "deck uses the authored loadout scene")
+			var deck_workspace := screen.find_child("WorkspaceOverlay", true, false) as Control
+			check(deck_workspace != null and deck_workspace.size.is_equal_approx(screen.size), "deck and equipment use a full-screen workspace instead of a dialog")
+			check(screen.find_child("PartsTab", true, false) != null and screen.find_child("AmmoTab", true, false) != null, "deck separates parts configuration and ammunition library")
+			await click("AmmoTab", true)
+			check((screen.find_child("DeckPanel", true, false) as Control).visible, "ammunition tab focuses the deck library")
+			await capture("city_deck_ammo_tab")
+			await click("PartsTab", true)
+			check((screen.find_child("InventoryPanel", true, false) as Control).visible, "parts workspace keeps the inventory visible")
+			await capture("city_deck_inventory_tab")
+			await click("equipped_part_detail_1", true)
 			check(screen.find_child("PartCard_capacitor", true, false) != null and screen.find_child("city_deck_equip_rammer", true, false) != null, "deck equipment shows equipped and stored part cards")
 			await click("city_deck_equip_rammer", true)
 			check(not screen.campaign.is_equipped("rammer") and screen.campaign.equipped_parts().size() == 4, "deck equipment toggles one part without replacing the rest")
+			check((screen.find_child("InventoryPanel", true, false) as Control).visible and not (screen.find_child("BuildFeedback", true, false) as Label).text.is_empty(), "equipment change preserves the active workspace tab and confirms the result")
 		check(FileAccess.get_file_as_string(Campaign.SAVE) == saved, "developer never writes real city save")
 		for child in screen.get_children():
-			if child is AcceptDialog: child.queue_free()
+			if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 		await settle()
 	await click("menu")
 	await click("dev")
@@ -307,7 +352,7 @@ func developer() -> void:
 	await click("enemy_info_0", true)
 	await capture("upper_enemy_lock_detail")
 	for child in screen.get_children():
-		if child is AcceptDialog: child.queue_free()
+		if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
 	await settle()
 	await click("menu")
 	root.size = Vector2i(1008, 630)
@@ -318,7 +363,11 @@ func developer() -> void:
 		await click("debug_city_" + scenario)
 		await capture("city_phone_" + scenario)
 		check(screen.body.size.x <= screen.size.x, "small landscape fits logical viewport width")
-		for key_name in ["menu", "CityMap", "city_leave", "city_buy_1"]:
+		if scenario == "shop":
+			var shop_grid := screen.find_child("ShopOfferGrid", true, false) as GridContainer
+			check(shop_grid != null and shop_grid.columns == 3, "landscape shop shows all three offers together")
+			check(screen.find_child("city_shop_build", true, false) != null, "small landscape shop keeps build management one tap away")
+		for key_name in ["menu", "CityMap", "city_leave", "city_compare_buy_1"]:
 			var control := screen.find_child(key_name, true, false) as Control
 			if control:
 				var logical: Rect2 = control.get_global_rect()
@@ -330,10 +379,23 @@ func developer() -> void:
 	await settle()
 	await click("dev")
 	await click("debug_compressed_ammo")
+	check(screen.find_child("CombatWorkbench", true, false) != null, "combat uses the authored tactical workbench scene")
+	check(screen.find_child("CandidatesPanel", true, false) != null and screen.find_child("QueuePanel", true, false) != null, "combat separates ammunition candidates from firing order")
 	check(screen.model.s.plan == ["precise_c", "pierce_c", "push_c"] and Ammo.slots_used(screen.model.s.plan) == 4, "compressed debug shortcut exposes first, two-cell, and last placement")
 	await capture("compressed_ammo_loading")
 	root.size = Vector2i(1008, 630)
+	await settle()
+	var tactical_grid := screen.find_child("TacticalGrid", true, false) as GridContainer
+	var compact_ammo_grid := screen.find_child("AmmoGrid", true, false) as GridContainer
+	check(tactical_grid != null and tactical_grid.columns == 1, "phone landscape gives firing order the full width")
+	check(compact_ammo_grid != null and compact_ammo_grid.columns == 6, "phone landscape keeps the full ammunition row visible")
 	await capture("compressed_ammo_loading_phone")
+	root.size = Vector2i(840, 630)
+	await settle()
+	tactical_grid = screen.find_child("TacticalGrid", true, false) as GridContainer
+	compact_ammo_grid = screen.find_child("AmmoGrid", true, false) as GridContainer
+	check(tactical_grid != null and tactical_grid.columns == 1, "extra-narrow combat stacks candidates and firing order")
+	check(compact_ammo_grid != null and compact_ammo_grid.columns == 3, "extra-narrow combat keeps ammunition cards readable")
 	root.size = Vector2i(1280, 800)
 	await settle()
 	await click("menu")
@@ -341,10 +403,15 @@ func developer() -> void:
 	await click("debug_field_compression")
 	check(screen.model.field_compressible_ids().has("precise") and screen.model.field_compressible_ids().has("charge"), "field compression shortcut exposes two eligible pairs")
 	var compressor_status := screen.find_child("field_compressor_status", true, false) as Control
+	var compressor_glyph := screen.find_child("CompressorGlyph", true, false) as Control
 	var reserve_status := screen.find_child("ReserveAmmo", true, false) as Control
 	var precise_first = screen.find_child("load_precise", true, false)
 	var precise_second = screen.find_child("load_precise_2", true, false)
-	check(compressor_status != null and reserve_status != null and precise_first != null and precise_second != null, "compressor reserve and individual duplicate cards are visible")
+	check(compressor_status != null and compressor_glyph != null and reserve_status != null and precise_first != null and precise_second != null, "compressor reserve and individual duplicate cards are visible")
+	check(compressor_status.size.y <= 48.0 and compressor_glyph.size.x <= 58.0, "compression core glyph stays inside the compact tool row")
+	var pair_button := screen.find_child("compress_pair_precise", true, false) as Button
+	check(pair_button != null and pair_button.size.y <= 52.0, "graphical pair action does not stretch the candidate layout")
+	check(screen.find_child("DecisionPrompt", true, false) != null and screen.find_child("CompressionActions", true, false) != null, "combat exposes a staged decision prompt and explicit compression actions")
 	check(screen.find_child("reserve_next_bore", true, false) != null and screen.find_child("reserve_next_push", true, false) != null and screen.find_child("reserve_wait_pierce", true, false) != null, "combat reserve exposes next two and every remaining tactical family")
 	check(bool(precise_first.compression_ready) and bool(precise_second.compression_ready), "both matching cards expose the cyan compression affordance")
 	await capture("field_compression_ready")
@@ -358,6 +425,10 @@ func developer() -> void:
 	check(screen.model.s.plan == ["charge"] and screen.model.s.field_compression_left == 1, "short touch still loads exactly one ordinary round")
 	await click("undo", true)
 	check(screen.model.s.plan.is_empty() and screen.model.s.hand.count("charge") == 2, "undo after short touch restores the individual pair")
+	await click("compress_pair_charge", true)
+	check(screen.model.s.plan == ["charge_f"] and screen.model.s.field_compression_left == 0, "explicit compression button supports touch without drag precision")
+	await click("undo", true)
+	check(screen.model.s.plan.is_empty() and screen.model.s.hand.count("charge") == 2 and screen.model.s.field_compression_left == 1, "undo restores an explicitly compressed pair and core")
 	if not await drag_pair("load_precise", "load_precise_2", true): return
 	check(screen.model.s.plan == ["precise_f"] and screen.model.s.exchange_left == 1 and screen.model.s.field_compression_left == 0, "touch drag between matching cards spends a core but preserves hand exchange")
 	await capture("field_compression_combined")
@@ -401,7 +472,7 @@ func six_slot_layout(expected: Dictionary) -> void:
 	await settle()
 	await capture("city_six_slot_final_" + str(expected.gun))
 	var magazine = screen.magazine_view
-	var font: Font = load("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+	var font: Font = load("res://redesign/ui_font.tres")
 	var width: float = magazine.size.x / float(final_capacity) - 8
 	for i in range(magazine.forecast.shots.size()):
 		var lines: PackedStringArray = magazine.compact_lines(magazine.forecast, i)
@@ -429,6 +500,8 @@ func _run() -> void:
 	if not check(source is Dictionary and source.get("failures", []).is_empty(), "validated external source"): quit(1); return
 	DirAccess.make_dir_recursive_absolute(output)
 	for expected in source.runs:
+		var selected_guns := OS.get_environment("QA_CITY_UI_GUNS")
+		if not selected_guns.is_empty() and not selected_guns.split(",").has(str(expected.gun)): continue
 		if expected.route == "safe" and int(expected.seed) == 731042 and int(expected.difficulty) == 0:
 			if OS.get_environment("QA_CITY_LAYOUT_ONLY") == "1": await six_slot_layout(expected)
 			else: await replay(expected)
