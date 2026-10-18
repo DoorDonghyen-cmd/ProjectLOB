@@ -1,0 +1,36 @@
+{
+  "created": "2026-10-18",
+  "tool": "built-in image_gen",
+  "purpose": "Remaining currently obtainable ammunition families and legacy sequence in the approved matte pixel style",
+  "reference": "새-게임-프로젝트/assets/art/ammo_recast_20261017/cartridges_v4.png",
+  "prompt": "Create one production transparent sprite ATLAS for ORVASK, a dystopian tower ammunition-building game. The attached image is the approved six-cartridge STYLE reference, not a target to modify. Match its extremely simple large flat pixel masses, quiet matte ochre/slate/rust materials, low internal contrast, selective soft-dark edges, and intentionally chunky silhouettes. NO tiny highlights or black contour tracing, no lighting halos, no blur.\nOutput a 1536x1024 RGBA atlas with exactly 12 separate upright ammunition sprites, arranged in 4 equal columns by 3 equal rows. Each cell is 384x341. Keep every sprite wholly within its cell, centered, at most 180 pixels wide and 250 pixels tall, leaving generous fully transparent gaps. All bottoms align within their rows. Front view. These are small cartridges, not weapons or icons on cards. No letters, numbers, words, UI, frames, ground shadows or background. Actual transparent alpha required.\nRow 1 left to right:\n1. PUSH: squat steel ram cartridge with wide flat mushroom impact cap, muted gray and khaki.\n2. INCENDIARY: sealed rusty-orange ceramic fuel vial in two dark steel bands, blunt tapered lid.\n3. ARMOR SHATTER: broad forked chisel tip above short heavy olive steel shell. Recognizable split head.\n4. DETONATOR: short brick-red insulated cartridge, dark square plunger top and one broad brass waist band.\nRow 2 left to right:\n5. CHASE: slim aerodynamic copper dart with two swept fins, subdued reddish steel base.\n6. BYPASS: asymmetrical offset bent steel nose and a dull teal side chamber on a small cartridge base.\n7. THERMAL: dark heat-soaked iron shell with one exposed non-glowing rust-orange core panel and thick hood.\n8. VENT: wide slate radiator cartridge with three large separated side fins and an open ochre vent at the top.\nRow 3 left to right:\n9. EMBER TRANSFER: small split fuel pod, two unequal rusty ceramic lobes joined by one broad dark band.\n10. RESIDUAL HEAT AMPLIFIER: ochre amplifier core in angular dark steel cage, one copper side return pipe.\n11. MULTIPLIER: two stacked dull amber rectangular cores in one charcoal frame, noticeably double-deck silhouette.\n12. LEGACY SEQUENCE: three offset dull khaki cartridge blocks joined by one dark vertical spine.\nMatch the reference's visual simplicity, approximately only 8-14 large connected flat color shapes per sprite. Two values per material. Silhouettes and broad material colors carry identity. This is an atlas intended to display sprites only 31x57 screen pixels tall; suppress surface ornament completely. The reference's surrounding haze must NOT be copied: all non-object pixels fully transparent.",
+  "original": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-7aadd4d6-85c5-4ea1-ba5f-e9ec86b3fdf0.png",
+  "output": "새-게임-프로젝트/assets/art/ammo_recast_20261018/special_rounds_v1.png",
+  "normalization": "Original RGBA copied unchanged. Measured per-sprite alpha bounds; nearest-filtered Godot rendering. No raster edits.",
+  "canvas": [
+    1536,
+    1024
+  ],
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "cell_order": [
+    "push",
+    "bore",
+    "shatter",
+    "detonate",
+    "chase",
+    "bypass",
+    "thermal",
+    "vent",
+    "spread",
+    "charge_heat",
+    "charge_hot",
+    "sequence"
+  ],
+  "scope": "Production shared ammo art; retired prepare and disrupt retain old artwork. Gameplay definitions unchanged.",
+  "status": "Director implementation integrated and visually reviewed in actual Godot combat/reward/shop/bag captures on 2026-10-18. User preference and physical Galaxy validation pending.",
+  "sha256": "a6e3231614402578ce5e82022bf1ad41f1cf3d0e614b01e170b7579c843d1ca9",
+  "validation": "All 17 currently obtainable families covered by existing 6 + new 11 sprites; legacy sequence also updated. 372 targeted UI and 1444 combat UI checks pass. Rules source hashes unchanged."
+}

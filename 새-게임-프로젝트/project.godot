@@ -10,11 +10,13 @@ config_version=5
 
 [application]
 
-config/name="Last on Board - Core Redesign"
-config/description="로그라이크 런 기반 순수 스탯 전술 덱빌더 — 총잡이가 탄창에 총알을 순서대로 장전해, 거리 트랙을 따라 다가오는 적을 닿기 전에 처치한다."
+config/name="ORVASK"
+config/description="ORVASK · 오르바스크 — 탄환을 조합하고 발열을 다스리며, 돌아갈 곳의 불을 켜기 위해 거대한 탑을 오르는 전술 로그라이크."
 run/main_scene="res://redesign/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
+config/icon="res://assets/ui/title/orvask_icon.svg"
+config/use_custom_user_dir.windows=true
+config/custom_user_dir_name.windows="Godot/app_userdata/Last on Board - Core Redesign"
 
 [display]
 
@@ -23,6 +25,10 @@ window/size/viewport_height=800
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=4
+
+[gui]
+
+common/default_scroll_deadzone=12
 
 [rendering]
 

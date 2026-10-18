@@ -1,0 +1,1052 @@
+{
+  "model_version": 10,
+  "baseline": [
+    {
+      "gun": "single",
+      "policy": "random",
+      "cases": 216,
+      "wins": 212
+    },
+    {
+      "gun": "single",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 197
+    },
+    {
+      "gun": "single",
+      "policy": "guided",
+      "cases": 216,
+      "wins": 216
+    },
+    {
+      "gun": "burst",
+      "policy": "random",
+      "cases": 216,
+      "wins": 212
+    },
+    {
+      "gun": "burst",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 173
+    },
+    {
+      "gun": "scatter",
+      "policy": "random",
+      "cases": 216,
+      "wins": 197
+    },
+    {
+      "gun": "scatter",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 48
+    },
+    {
+      "gun": "heavy",
+      "policy": "random",
+      "cases": 216,
+      "wins": 216
+    },
+    {
+      "gun": "heavy",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 168
+    },
+    {
+      "gun": "heavy",
+      "policy": "guided",
+      "cases": 216,
+      "wins": 216
+    },
+    {
+      "gun": "amplifier",
+      "policy": "random",
+      "cases": 216,
+      "wins": 191
+    },
+    {
+      "gun": "amplifier",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 39
+    }
+  ],
+  "campaigns": [
+    {
+      "growth": "starter",
+      "gun": "single",
+      "policy": "random",
+      "cases": 6,
+      "wins": 4
+    },
+    {
+      "growth": "starter",
+      "gun": "single",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "starter",
+      "gun": "single",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "expand",
+      "gun": "single",
+      "policy": "random",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "expand",
+      "gun": "single",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "expand",
+      "gun": "single",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "compress",
+      "gun": "single",
+      "policy": "random",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "compress",
+      "gun": "single",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 2
+    },
+    {
+      "growth": "compress",
+      "gun": "single",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "starter",
+      "gun": "burst",
+      "policy": "random",
+      "cases": 6,
+      "wins": 4
+    },
+    {
+      "growth": "starter",
+      "gun": "burst",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "starter",
+      "gun": "burst",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 4
+    },
+    {
+      "growth": "expand",
+      "gun": "burst",
+      "policy": "random",
+      "cases": 6,
+      "wins": 4
+    },
+    {
+      "growth": "expand",
+      "gun": "burst",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 4
+    },
+    {
+      "growth": "expand",
+      "gun": "burst",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "compress",
+      "gun": "burst",
+      "policy": "random",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "compress",
+      "gun": "burst",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 3
+    },
+    {
+      "growth": "compress",
+      "gun": "burst",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 4
+    },
+    {
+      "growth": "starter",
+      "gun": "scatter",
+      "policy": "random",
+      "cases": 6,
+      "wins": 0
+    },
+    {
+      "growth": "starter",
+      "gun": "scatter",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 0
+    },
+    {
+      "growth": "starter",
+      "gun": "scatter",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 0
+    },
+    {
+      "growth": "expand",
+      "gun": "scatter",
+      "policy": "random",
+      "cases": 6,
+      "wins": 2
+    },
+    {
+      "growth": "expand",
+      "gun": "scatter",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 3
+    },
+    {
+      "growth": "expand",
+      "gun": "scatter",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 3
+    },
+    {
+      "growth": "compress",
+      "gun": "scatter",
+      "policy": "random",
+      "cases": 6,
+      "wins": 1
+    },
+    {
+      "growth": "compress",
+      "gun": "scatter",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 2
+    },
+    {
+      "growth": "compress",
+      "gun": "scatter",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 3
+    },
+    {
+      "growth": "starter",
+      "gun": "heavy",
+      "policy": "random",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "starter",
+      "gun": "heavy",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "starter",
+      "gun": "heavy",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "expand",
+      "gun": "heavy",
+      "policy": "random",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "expand",
+      "gun": "heavy",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "expand",
+      "gun": "heavy",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "compress",
+      "gun": "heavy",
+      "policy": "random",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "compress",
+      "gun": "heavy",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 6
+    },
+    {
+      "growth": "compress",
+      "gun": "heavy",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 5
+    },
+    {
+      "growth": "starter",
+      "gun": "amplifier",
+      "policy": "random",
+      "cases": 6,
+      "wins": 0
+    },
+    {
+      "growth": "starter",
+      "gun": "amplifier",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 0
+    },
+    {
+      "growth": "starter",
+      "gun": "amplifier",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 3
+    },
+    {
+      "growth": "expand",
+      "gun": "amplifier",
+      "policy": "random",
+      "cases": 6,
+      "wins": 1
+    },
+    {
+      "growth": "expand",
+      "gun": "amplifier",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 0
+    },
+    {
+      "growth": "expand",
+      "gun": "amplifier",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 0
+    },
+    {
+      "growth": "compress",
+      "gun": "amplifier",
+      "policy": "random",
+      "cases": 6,
+      "wins": 1
+    },
+    {
+      "growth": "compress",
+      "gun": "amplifier",
+      "policy": "fixed",
+      "cases": 6,
+      "wins": 1
+    },
+    {
+      "growth": "compress",
+      "gun": "amplifier",
+      "policy": "heat_order",
+      "cases": 6,
+      "wins": 1
+    }
+  ],
+  "independent_decks": [
+    {
+      "deck": "combo",
+      "policy": "random",
+      "cases": 400,
+      "wins": 385
+    },
+    {
+      "deck": "combo",
+      "policy": "heat_order",
+      "cases": 400,
+      "wins": 390
+    },
+    {
+      "deck": "thermal",
+      "policy": "random",
+      "cases": 400,
+      "wins": 316
+    },
+    {
+      "deck": "thermal",
+      "policy": "heat_order",
+      "cases": 400,
+      "wins": 391
+    },
+    {
+      "deck": "elemental",
+      "policy": "random",
+      "cases": 400,
+      "wins": 376
+    },
+    {
+      "deck": "elemental",
+      "policy": "heat_order",
+      "cases": 400,
+      "wins": 395
+    }
+  ],
+  "independent_packages": [
+    {
+      "package": "baseline",
+      "policy": "random",
+      "cases": 240,
+      "wins": 210
+    },
+    {
+      "package": "baseline",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 234
+    },
+    {
+      "package": "firepower",
+      "policy": "random",
+      "cases": 240,
+      "wins": 223
+    },
+    {
+      "package": "firepower",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 237
+    },
+    {
+      "package": "cooling",
+      "policy": "random",
+      "cases": 240,
+      "wins": 219
+    },
+    {
+      "package": "cooling",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 234
+    },
+    {
+      "package": "hot",
+      "policy": "random",
+      "cases": 240,
+      "wins": 206
+    },
+    {
+      "package": "hot",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 235
+    },
+    {
+      "package": "buffered_hot",
+      "policy": "random",
+      "cases": 240,
+      "wins": 219
+    },
+    {
+      "package": "buffered_hot",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 236
+    }
+  ],
+  "independent_guns": [
+    {
+      "gun": "single",
+      "policy": "random",
+      "cases": 240,
+      "wins": 234
+    },
+    {
+      "gun": "single",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 240
+    },
+    {
+      "gun": "burst",
+      "policy": "random",
+      "cases": 240,
+      "wins": 226
+    },
+    {
+      "gun": "burst",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 237
+    },
+    {
+      "gun": "scatter",
+      "policy": "random",
+      "cases": 240,
+      "wins": 197
+    },
+    {
+      "gun": "scatter",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 221
+    },
+    {
+      "gun": "heavy",
+      "policy": "random",
+      "cases": 240,
+      "wins": 229
+    },
+    {
+      "gun": "heavy",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 239
+    },
+    {
+      "gun": "amplifier",
+      "policy": "random",
+      "cases": 240,
+      "wins": 191
+    },
+    {
+      "gun": "amplifier",
+      "policy": "heat_order",
+      "cases": 240,
+      "wins": 239
+    }
+  ],
+  "heat": [
+    {
+      "policy": "random",
+      "overheated": 1065,
+      "forced": 991,
+      "terminal_heat_waived": 74,
+      "forced_no_unfired": 823,
+      "unfired_heat": 169,
+      "loads": 5150,
+      "volleys": 6156
+    },
+    {
+      "policy": "heat_order",
+      "overheated": 641,
+      "forced": 585,
+      "terminal_heat_waived": 56,
+      "forced_no_unfired": 585,
+      "unfired_heat": 0,
+      "loads": 4491,
+      "volleys": 5265
+    }
+  ],
+  "opening_choices": [
+    {
+      "gun": "single",
+      "floor": 1,
+      "states": 6,
+      "plans": 1314,
+      "wins": 476,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "2": 476,
+        "1": 838
+      }
+    },
+    {
+      "gun": "single",
+      "floor": 2,
+      "states": 6,
+      "plans": 1562,
+      "wins": 98,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "0": 707,
+        "1": 757,
+        "2": 98
+      }
+    },
+    {
+      "gun": "single",
+      "floor": 3,
+      "states": 6,
+      "plans": 1190,
+      "wins": 2,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "2": 1120,
+        "1": 68,
+        "3": 2
+      }
+    },
+    {
+      "gun": "burst",
+      "floor": 1,
+      "states": 6,
+      "plans": 850,
+      "wins": 90,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "1": 760,
+        "2": 90
+      }
+    },
+    {
+      "gun": "burst",
+      "floor": 2,
+      "states": 6,
+      "plans": 886,
+      "wins": 31,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "2": 31,
+        "1": 649,
+        "0": 206
+      }
+    },
+    {
+      "gun": "burst",
+      "floor": 3,
+      "states": 6,
+      "plans": 758,
+      "wins": 0,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "2": 328,
+        "1": 430
+      }
+    },
+    {
+      "gun": "heavy",
+      "floor": 1,
+      "states": 6,
+      "plans": 1562,
+      "wins": 2,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "1": 1560,
+        "2": 2
+      }
+    },
+    {
+      "gun": "heavy",
+      "floor": 2,
+      "states": 6,
+      "plans": 1562,
+      "wins": 0,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "0": 1406,
+        "1": 156
+      }
+    },
+    {
+      "gun": "heavy",
+      "floor": 3,
+      "states": 6,
+      "plans": 1190,
+      "wins": 0,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "2": 680,
+        "1": 510
+      }
+    },
+    {
+      "gun": "amplifier",
+      "floor": 1,
+      "states": 6,
+      "plans": 428,
+      "wins": 57,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "2": 57,
+        "1": 371
+      }
+    },
+    {
+      "gun": "amplifier",
+      "floor": 2,
+      "states": 6,
+      "plans": 436,
+      "wins": 40,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "0": 178,
+        "1": 218,
+        "2": 40
+      }
+    },
+    {
+      "gun": "amplifier",
+      "floor": 3,
+      "states": 6,
+      "plans": 378,
+      "wins": 0,
+      "unsafe_extra_reload": 0,
+      "kills": {
+        "2": 342,
+        "1": 36
+      }
+    }
+  ],
+  "random_campaign_encounters": [
+    {
+      "gun": "single",
+      "growth": "starter",
+      "encounters": 130,
+      "wins": 128,
+      "credit_offer_8": 108,
+      "mean_credit_offer_won": 8.4609375,
+      "forced": 305,
+      "overheated": 326,
+      "volleys": 521,
+      "loads": 519,
+      "later_loads": 464,
+      "later_all_tactical_fit": 0,
+      "maximum_equipped_parts": 0
+    },
+    {
+      "gun": "single",
+      "growth": "expand",
+      "encounters": 138,
+      "wins": 137,
+      "credit_offer_8": 107,
+      "mean_credit_offer_won": 8.562043795620438,
+      "forced": 229,
+      "overheated": 258,
+      "volleys": 434,
+      "loads": 422,
+      "later_loads": 371,
+      "later_all_tactical_fit": 371,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "single",
+      "growth": "compress",
+      "encounters": 138,
+      "wins": 137,
+      "credit_offer_8": 110,
+      "mean_credit_offer_won": 8.532846715328468,
+      "forced": 149,
+      "overheated": 170,
+      "volleys": 528,
+      "loads": 527,
+      "later_loads": 476,
+      "later_all_tactical_fit": 10,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "burst",
+      "growth": "starter",
+      "encounters": 132,
+      "wins": 130,
+      "credit_offer_8": 118,
+      "mean_credit_offer_won": 8.353846153846154,
+      "forced": 214,
+      "overheated": 227,
+      "volleys": 525,
+      "loads": 525,
+      "later_loads": 465,
+      "later_all_tactical_fit": 0,
+      "maximum_equipped_parts": 0
+    },
+    {
+      "gun": "burst",
+      "growth": "expand",
+      "encounters": 148,
+      "wins": 146,
+      "credit_offer_8": 130,
+      "mean_credit_offer_won": 8.39041095890411,
+      "forced": 288,
+      "overheated": 306,
+      "volleys": 494,
+      "loads": 484,
+      "later_loads": 425,
+      "later_all_tactical_fit": 425,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "burst",
+      "growth": "compress",
+      "encounters": 150,
+      "wins": 150,
+      "credit_offer_8": 135,
+      "mean_credit_offer_won": 8.353333333333333,
+      "forced": 94,
+      "overheated": 100,
+      "volleys": 619,
+      "loads": 619,
+      "later_loads": 560,
+      "later_all_tactical_fit": 6,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "scatter",
+      "growth": "starter",
+      "encounters": 104,
+      "wins": 98,
+      "credit_offer_8": 82,
+      "mean_credit_offer_won": 8.46938775510204,
+      "forced": 217,
+      "overheated": 233,
+      "volleys": 343,
+      "loads": 328,
+      "later_loads": 273,
+      "later_all_tactical_fit": 273,
+      "maximum_equipped_parts": 0
+    },
+    {
+      "gun": "scatter",
+      "growth": "expand",
+      "encounters": 119,
+      "wins": 115,
+      "credit_offer_8": 101,
+      "mean_credit_offer_won": 8.365217391304348,
+      "forced": 184,
+      "overheated": 199,
+      "volleys": 365,
+      "loads": 342,
+      "later_loads": 288,
+      "later_all_tactical_fit": 288,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "scatter",
+      "growth": "compress",
+      "encounters": 122,
+      "wins": 117,
+      "credit_offer_8": 94,
+      "mean_credit_offer_won": 8.521367521367521,
+      "forced": 87,
+      "overheated": 94,
+      "volleys": 432,
+      "loads": 416,
+      "later_loads": 362,
+      "later_all_tactical_fit": 97,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "heavy",
+      "growth": "starter",
+      "encounters": 150,
+      "wins": 150,
+      "credit_offer_8": 135,
+      "mean_credit_offer_won": 8.293333333333333,
+      "forced": 0,
+      "overheated": 0,
+      "volleys": 655,
+      "loads": 650,
+      "later_loads": 587,
+      "later_all_tactical_fit": 0,
+      "maximum_equipped_parts": 0
+    },
+    {
+      "gun": "heavy",
+      "growth": "expand",
+      "encounters": 150,
+      "wins": 150,
+      "credit_offer_8": 127,
+      "mean_credit_offer_won": 8.413333333333334,
+      "forced": 104,
+      "overheated": 113,
+      "volleys": 504,
+      "loads": 480,
+      "later_loads": 419,
+      "later_all_tactical_fit": 376,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "heavy",
+      "growth": "compress",
+      "encounters": 150,
+      "wins": 150,
+      "credit_offer_8": 124,
+      "mean_credit_offer_won": 8.406666666666666,
+      "forced": 7,
+      "overheated": 9,
+      "volleys": 607,
+      "loads": 603,
+      "later_loads": 542,
+      "later_all_tactical_fit": 14,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "amplifier",
+      "growth": "starter",
+      "encounters": 59,
+      "wins": 53,
+      "credit_offer_8": 35,
+      "mean_credit_offer_won": 9.056603773584905,
+      "forced": 42,
+      "overheated": 48,
+      "volleys": 416,
+      "loads": 209,
+      "later_loads": 146,
+      "later_all_tactical_fit": 0,
+      "maximum_equipped_parts": 0
+    },
+    {
+      "gun": "amplifier",
+      "growth": "expand",
+      "encounters": 58,
+      "wins": 53,
+      "credit_offer_8": 38,
+      "mean_credit_offer_won": 9,
+      "forced": 54,
+      "overheated": 61,
+      "volleys": 411,
+      "loads": 187,
+      "later_loads": 127,
+      "later_all_tactical_fit": 40,
+      "maximum_equipped_parts": 5
+    },
+    {
+      "gun": "amplifier",
+      "growth": "compress",
+      "encounters": 74,
+      "wins": 69,
+      "credit_offer_8": 49,
+      "mean_credit_offer_won": 8.927536231884059,
+      "forced": 32,
+      "overheated": 38,
+      "volleys": 526,
+      "loads": 289,
+      "later_loads": 229,
+      "later_all_tactical_fit": 0,
+      "maximum_equipped_parts": 5
+    }
+  ],
+  "conditional_effects": [
+    {
+      "deck": "combo",
+      "policy": "random",
+      "effects": {
+        "detonate": {
+          "active": 16,
+          "fired": 587
+        }
+      }
+    },
+    {
+      "deck": "combo",
+      "policy": "heat_order",
+      "effects": {
+        "detonate": {
+          "active": 90,
+          "fired": 399
+        }
+      }
+    },
+    {
+      "deck": "thermal",
+      "policy": "random",
+      "effects": {
+        "cool": {
+          "active": 570,
+          "fired": 693
+        },
+        "thermal": {
+          "active": 248,
+          "fired": 1415
+        }
+      }
+    },
+    {
+      "deck": "thermal",
+      "policy": "heat_order",
+      "effects": {
+        "cool": {
+          "active": 189,
+          "fired": 189
+        },
+        "thermal": {
+          "active": 564,
+          "fired": 620
+        }
+      }
+    },
+    {
+      "deck": "elemental",
+      "policy": "random",
+      "effects": {
+        "cool": {
+          "active": 482,
+          "fired": 583
+        },
+        "detonate": {
+          "active": 90,
+          "fired": 1295
+        }
+      }
+    },
+    {
+      "deck": "elemental",
+      "policy": "heat_order",
+      "effects": {
+        "detonate": {
+          "active": 281,
+          "fired": 1110
+        },
+        "cool": {
+          "active": 8,
+          "fired": 8
+        }
+      }
+    }
+  ],
+  "matched_turns": [
+    {
+      "gun": "single",
+      "both_won": 212,
+      "random": 9.608490566037736,
+      "guided32": 6.85377358490566
+    },
+    {
+      "gun": "heavy",
+      "both_won": 216,
+      "random": 7.648148148148148,
+      "guided32": 6.393518518518518
+    }
+  ],
+  "baseline_cases": 2592,
+  "campaign_cases": 270,
+  "independent_cases": 2400,
+  "opening_states": 72,
+  "opening_plans": 12116
+}

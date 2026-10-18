@@ -1,0 +1,35 @@
+{
+  "authoring": "Original rect-only pixel-grid construction; no third-party asset pixels reused.",
+  "tool": "tools/build_console_ui.py",
+  "references": [
+    "docs/art/style-reference/detail-ui-study.md",
+    "docs/art/style-reference/shop-card-ui-study.md",
+    "docs/art/style-reference/craftpix-ui-study.md",
+    "docs/art/style-reference/pinterest-ui-study.md"
+  ],
+  "master_size": [
+    32,
+    32
+  ],
+  "protected_margin": 10,
+  "states": [
+    "normal",
+    "hover",
+    "focus",
+    "selected",
+    "pressed",
+    "disabled"
+  ],
+  "families": [
+    "card",
+    "cartridge",
+    "well",
+    "button",
+    "primary",
+    "reload",
+    "danger",
+    "panel",
+    "tray"
+  ],
+  "status": "Integrated director proposal; user visual review pending"
+}

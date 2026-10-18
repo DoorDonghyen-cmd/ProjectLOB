@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-17",
+  "engine": "4.7.stable.official.5b4e0cb0f",
+  "checks": {
+    "card_design": 284,
+    "earned_ammo": 322,
+    "ammo_identity": 398,
+    "modal_touch": 79
+  },
+  "total": 1083,
+  "failures": 0,
+  "resolutions": [
+    [
+      1008,
+      630
+    ],
+    [
+      1280,
+      900
+    ],
+    [
+      1440,
+      630
+    ]
+  ],
+  "input": "Godot InputEventScreenTouch plus focus",
+  "isolated_save": true,
+  "device_tested": false,
+  "apk_built": false,
+  "unchanged_since_earned_ammo": {
+    "redesign/ammo_acquisition.gd": true,
+    "redesign/ammo_discovery.gd": true,
+    "redesign/residential_roster.gd": true,
+    "redesign/campaign.gd": true,
+    "redesign/campaign_content.gd": true,
+    "redesign/equipment_screen.gd": true,
+    "redesign/console_dialog.gd": true
+  },
+  "sha256": {
+    "redesign/ammo_card_face.gd": "494d4311690150428aa8ac706a0d8373e4564c11944f5976fcba7e67e8080d18",
+    "redesign/ammo_card_view.gd": "1b094fa6c26cc81767f7f0e496ac97690018935d173dacd1257328c5881de13a",
+    "redesign/ammo_offer.tscn": "7ce50cbcc0ca77c1200c81193368052afc0ee7ac0c8f1e052814f6a105db7082",
+    "redesign/ammo_acquisition_view.tscn": "96115219e9673bd9f13d1b7a627382b47eab536a18926e994b38f13eb64c6475",
+    "redesign/campaign_ui.gd": "8008e769d08e8ea152c15b3c88315fa7c1537268e06d556f3935b5e8fd8da8b9",
+    "redesign/screen.gd": "dbe419fc1af8afc56b3ab7ecf2b7c03d872c3090a58e2909adb4d81a8ff92c1f",
+    "tests/ammo_card_design_ui_runner.gd": "51f98bf2a789c5fe903a7cdcead108eaf2943ac17fd0cb1234d371f8e3052544"
+  }
+}

@@ -36,7 +36,7 @@ func _seed_sample() -> void:
 	combat_forecast = {}
 	last_presentation = {}
 	_hand_entries()
-	for id in RiskData.initial_plan(hot_opening): model.load_round(id)
+	for id in Content.loading_order(RiskData.initial_plan(hot_opening)): model.load_round(id)
 
 func select_case(index: int) -> void:
 	if busy: return
@@ -76,8 +76,8 @@ func _combat() -> void:
 	# Keep the approved tower composition and the existing editable combat rail.
 	battle_view.custom_minimum_size.y = maxf(172.0, minf(450.0, size.y - 572.0))
 	var prompt := find_child("DecisionPrompt", true, false) as Label
-	prompt.text = RiskData.HINTS[scenario_index] if int(model.s.turns) == 0 else "고출력탄: 발사 시 다음 재장전 +1턴 · 장전 중에는 과열 없음"
-	prompt.tooltip_text = "상단 출력 선택은 같은 전투를 처음부터 비교합니다. 손패의 일반·고출력 증폭탄은 직접 회수하고 바꿔 넣어도 됩니다."
+	prompt.text = RiskData.HINTS[scenario_index] if int(model.s.turns) == 0 else "배율탄 발열5 · 한계 도달 시 사격 중단과 강제 재장전"
+	prompt.tooltip_text = "상단 출력 선택은 같은 전투를 처음부터 비교합니다. 손패의 증폭탄·배율탄은 직접 회수하고 바꿔 넣어도 됩니다."
 	var status := RiskStatus.instantiate()
 	var old_label := preview_label
 	var host := old_label.get_parent()
@@ -88,11 +88,11 @@ func _combat() -> void:
 	preview_label = status.get_node("Shot/Value")
 	_update_risk_status(status)
 	var reload_button := find_child("reload", true, false) as Button
-	if reload_button != null and int(model.s.get("reload_heat", 0)) > 0:
+	if reload_button != null and int(model.s.get("heat", 0)) > 0:
 		var lethal: bool = risk_prediction.get("reload", {}).get("phase", "") == "lost"
 		reload_button.text = ("재장전 %d턴 · 위험" if lethal else "냉각·재장전 %d턴") % model.reload_cost()
 		_primary_button(reload_button, DANGER if lethal else Color("ed9167"))
-		reload_button.tooltip_text = "기본 %d턴 + 과열 %d턴. 추가 시간에도 적이 행동합니다." % [model.base_reload_cost(), int(model.s.reload_heat)]
+		reload_button.tooltip_text = "재장전 %d턴 · 현재 열 %d. 과열 시 기본 재장전에 냉각1턴을 더합니다." % [model.reload_cost(), int(model.s.heat)]
 
 func _visual_shot(result: Dictionary) -> void:
 	super._visual_shot(result)
@@ -101,11 +101,6 @@ func _visual_shot(result: Dictionary) -> void:
 
 func _visual_impact(result: Dictionary) -> void:
 	super._visual_impact(result)
-	var grant := int(result.get("boost_granted", 0))
-	if grant > 0:
-		magazine_view.live_boost_slots = [magazine_view.fired_count, magazine_view.fired_count + 1]
-		magazine_view.live_boost_value = grant
-		magazine_view.queue_redraw()
 
 func _risk_feedback(event: Dictionary) -> void:
 	var status := find_child("RiskStatus", true, false)
@@ -113,8 +108,8 @@ func _risk_feedback(event: Dictionary) -> void:
 	var label := status.get_node("Reload/Value") as Label
 	match str(event.kind):
 		"heat_added":
-			status.get_node("Reload/Caption").text = "과열 발생 · 다음 재장전"
-			label.text = "%d + %d = %d턴" % [event.base, event.heat, int(event.base) + int(event.heat)]
+			status.get_node("Reload/Caption").text = "과열 · 강제 재장전" if int(event.heat) >= Content.heat_limit(model.s) else "발열 누적"
+			label.text = "열 %d/%d · 재장전 %d턴" % [event.heat, Content.heat_limit(model.s), int(event.base) + (1 if int(event.heat) >= Content.heat_limit(model.s) else 0)]
 			label.add_theme_color_override("font_color", Color("ed9167"))
 		"reload_turn", "cooling_turn":
 			var cooling: bool = event.kind == "cooling_turn"
@@ -192,7 +187,7 @@ func _sample_result(won: bool) -> void:
 		if str(event.get("action", "")) == "reload": paid += int(event.detail.get("heat_paid", 0))
 		if str(event.get("action", "")) == "fire":
 			for shot in event.detail.results: hot_shots += int(shot.get("heat_added", 0))
-	result.get_node("Summary").text = "%s · %d턴 · 재장전 %d회\n고출력 %d발 · 재장전에 부과한 과열 +%d턴" % [RiskData.TITLES[scenario_index], model.s.turns, model.s.reloads, hot_shots, paid]
+	result.get_node("Summary").text = "%s · %d턴 · 재장전 %d회\n배율탄 %d발 · 재장전에 부과한 과열 +%d턴" % [RiskData.TITLES[scenario_index], model.s.turns, model.s.reloads, hot_shots, paid]
 	result.get_node("Details").text = "같은 적·같은 패에서 첫 증폭탄을 바꿔 비교할 수 있습니다.\n실험용 전투이며 캠페인 진행은 저장하지 않습니다."
 	result.get_node("Actions/risk_retry").pressed.connect(reset_sample)
 	result.get_node("Actions/risk_compare").pressed.connect(func(): select_output(0 if hot_opening else 1))

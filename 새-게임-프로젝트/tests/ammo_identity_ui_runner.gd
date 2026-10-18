@@ -1,0 +1,68 @@
+extends "res://tests/ammo_cycle_ui_runner.gd"
+
+func _run() -> void:
+	if not ProjectSettings.globalize_path('user://').replace('\\','/').contains('/qa_runtime/ammo_identity/'): quit(1);return
+	screen=load('res://redesign/main.tscn').instantiate()
+	screen.save_enabled=false;screen.presentation_speed=0.02
+	root.add_child(screen)
+	await settle()
+	for resolution in [Vector2i(1008,630),Vector2i(1280,900),Vector2i(1440,630)]:
+		root.size=resolution
+		screen._open_preparation(false)
+		await settle()
+		var equipment = screen.find_child("EquipmentScreen",true,false)
+		var preview: Array = equipment._start_deck()
+		check(preview.has("basic_p2") and preview.has("basic_p1") and not preview.has("basic"),"preparation previews actual profile deck")
+		await tap("starting_deck")
+		check(screen.find_child("StartingRound_basic_p2",true,false)!=null,"starting profile detail opens")
+		await capture("starting_%d" % resolution.x)
+		await tap("DialogClose")
+		await setup_hand(['basic_p1','basic_p5','precise_p2_power','pierce_p3_cool','charge'])
+		cards_fit()
+		for id in screen.model.s.hand: bounds('load_'+id)
+		await capture('profiles_%d' % resolution.x)
+		await tap('load_basic_p5')
+		await tap('load_charge')
+		check(screen.model.s.plan==['charge','basic_p5'],'profile LIFO through real input')
+		cards_fit()
+		await capture('planned_%d' % resolution.x)
+		await tap('confirm');await tap('fire')
+		check(screen.model.s.discard.has('basic_p5'),'profile goes to discard')
+		screen._debug_city('shop')
+		screen.model.s.deck=['basic_p2','basic_p2','pierce_p2','pierce_p2','precise_p2','precise_p2','charge','charge','cool','cool']
+		screen.campaign.s.credits=100
+		screen.redraw()
+		await settle()
+		bounds('city_shop_tune')
+		await tap('city_shop_tune')
+		bounds('city_tune_select_0')
+		await capture('tune_select_%d' % resolution.x)
+		await tap('city_tune_select_0')
+		bounds('city_tune_power');bounds('city_tune_cool')
+		await capture('tune_compare_%d' % resolution.x)
+		await tap('city_tune_power')
+		check(screen.model.s.deck.count('basic_p2_power')==1 and screen.model.s.deck.count('basic_p2')==1,'real button upgrades only one copy')
+		check(screen.campaign.s.credits==88 and screen.find_child('city_shop_tune',true,false).disabled,'price and service lock visible')
+		await capture('tune_done_%d' % resolution.x)
+		await tap('city_shop_press')
+		screen.find_child('WorkspaceScroll',true,false).ensure_control_visible(screen.find_child('city_compress_pierce_p2',true,false))
+		await settle()
+		bounds('city_compress_pierce_p2')
+		await tap('city_compress_pierce_p2')
+		check(screen.model.s.deck.has('pierce_p2_c') and screen.campaign.s.credits==70,'compression remains a separate operation')
+		screen._debug_city('reward')
+		screen.campaign.s.clears=2
+		screen.redraw()
+		await settle()
+		var option: String=screen.campaign.reward_options()[0]
+		check(Ammo.AMMO[option].get('profile',false),'first ammo reward is an individual profile')
+		bounds('city_reward_'+option)
+		await capture('reward_%d' % resolution.x)
+		var count: int=screen.model.s.deck.count(option)
+		await tap('city_reward_'+option)
+		await tap('ammo_acquire_add')
+		check(screen.model.s.deck.count(option)==count+1,'reward adds exact offered profile')
+	check(not screen.save_enabled,'isolated UI save')
+	screen.queue_free();await process_frame
+	print('AMMO IDENTITY UI COMPLETE checks=%d failures=%d' % [checks,failures])
+	quit(0 if failures==0 else 1)

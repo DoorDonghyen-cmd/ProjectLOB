@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="PackedScene" path="res://redesign/ammo_offer.tscn" id="1"]
+[node name="ShopOffer" type="VBoxContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+[node name="Item" parent="." instance=ExtResource("1")]
+custom_minimum_size = Vector2(0,180)
+[node name="CardInfo" parent="Item" index="0"]
+showcase_ui = false
+offer_action = false
+[node name="Price" type="Label" parent="."]
+unique_name_in_owner = true
+text = "12 Cr"
+theme_override_font_sizes/font_size = 21
+horizontal_alignment = 1
+[node name="Status" type="Label" parent="."]
+unique_name_in_owner = true
+text = "선택해서 비교"
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+[editable path="Item"]

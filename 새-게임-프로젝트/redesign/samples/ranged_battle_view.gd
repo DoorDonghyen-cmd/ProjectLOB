@@ -2,6 +2,12 @@
 extends "res://redesign/samples/risk_battle_view.gd"
 signal projectile_inspected(target_id: int)
 const PRESSURE := Color("f2cb77")
+const TOAD_ATLAS = preload("res://assets/art/actor_cohesion_20261005/pressure_toad_atlas_v2.png")
+const TOAD_CELL_WIDTH := 887
+# Align the atlas poses by their planted feet; inflation must not slide the body.
+const TOAD_CHARGED_OFFSET := -40
+const TOAD_SOURCE := Rect2(131, 301, 729, 485)
+const TOAD_SIZE := Vector2(98, 67)
 
 func sync(state: Dictionary, prediction: Dictionary = {}) -> void:
 	super.sync(state, prediction)
@@ -11,45 +17,45 @@ func enemy_position(index: int) -> Vector2:
 	if not Ranged.is_projectile(index): return super.enemy_position(index)
 	var projectile := _visual_entity(index)
 	if projectile.is_empty(): return player_muzzle()
-	var source := int(projectile.source)
-	var distance := float(projectile.distance)
-	var at_distance := 186.0 + clampf(distance / 32.0, 0, 1) * (size.x - 556.0) + _lane(source) * 96.0
-	var x := lerpf(player_muzzle().x, at_distance, clampf(distance / 18.0, 0, 1))
-	return Vector2(x, ground_y() - (68.0 if size.y >= 240 else 30.0)).round()
+	return Vector2(_threat_x(index), ground_y() - (68.0 if size.y >= 240 else 30.0)).round()
 
 func projectile_label_rect(projectile: Dictionary) -> Rect2:
 	var point := enemy_position(Ranged.target_id(projectile))
 	var baseline := point.y - 22 if point.y >= 142 else point.y + 34
-	return Rect2(Vector2(clampf(point.x - 74, 8, size.x - 156), baseline - 21), Vector2(148, 28))
+	var rect := Rect2(Vector2(clampf(point.x - 74, 8, size.x - 156), baseline - 21), Vector2(148, 28))
+	for y in [rect.position.y, 12.0, size.y - 70.0]:
+		rect.position.y = y
+		var clear := true
+		for index in _alive_indices():
+			if rect.intersects(enemy_plaque(index)): clear = false
+		if clear: return rect
+	return rect
+
+func enemy_head_y(index: int) -> float:
+	if str(enemies[index].kind) == "spitter": return enemy_feet(index).y - TOAD_SIZE.y
+	return super.enemy_head_y(index)
 
 func projectile_caption(projectile: Dictionary) -> String:
 	return ("요격 · 도달 %d턴" if _nearest() == Ranged.target_id(projectile) else "압력탄 · %d턴") % Ranged.arrival(projectile)
+
+func toad_frame(enemy: Dictionary) -> int:
+	# The model owns the timer. Interruption freezes the same visual preparation.
+	return 1 if str(enemy.get("ranged_phase", "prepare")) == "prepare" and int(enemy.get("ranged_left", 2)) <= 1 else 0
+
+func toad_rect(index: int) -> Rect2:
+	return actor_rect(index, Rect2((enemy_feet(index) + _actor_offset(index) - Vector2(TOAD_SIZE.x / 2, TOAD_SIZE.y)).round(), TOAD_SIZE))
 
 func _draw_enemy_actor(index: int, foot: Vector2, lift: float, stride: float) -> void:
 	if str(enemies[index].kind) != "spitter":
 		super._draw_enemy_actor(index, foot, lift, stride)
 		return
-	# Readable provisional silhouette: low body, broad feet, inflating throat.
-	# Final species artwork is deliberately a later pass.
-	var e: Dictionary = enemies[index]
-	var p := (foot + _actor_offset(index)).round()
-	var filling := 2 - int(e.get("ranged_left", 2)) if str(e.get("ranged_phase", "prepare")) == "prepare" else 0
-	draw_rect(Rect2(p + Vector2(-39, -22), Vector2(74, 18)), Color("132b30"))
-	draw_rect(Rect2(p + Vector2(-33, -34), Vector2(62, 26)), Color("44696b"))
-	draw_rect(Rect2(p + Vector2(-26, -39), Vector2(39, 6)), Color("769593"))
-	draw_rect(Rect2(p + Vector2(-44, -24), Vector2(26, 19 + filling * 5)), Color("b98c4f"))
-	draw_rect(Rect2(p + Vector2(-40, -20), Vector2(18, 12 + filling * 5)), Color("edc47a"))
-	draw_rect(Rect2(p + Vector2(-39, -34), Vector2(6, 5)), Color("101e27"))
-	draw_rect(Rect2(p + Vector2(-37, -34), Vector2(3, 3)), Color("f3e2b4"))
-	draw_rect(Rect2(p + Vector2(-44, -10), Vector2(38, 10)), Color("274c53"))
-	draw_rect(Rect2(p + Vector2(9, -10), Vector2(34, 10)), Color("274c53"))
-	draw_rect(Rect2(p + Vector2(-46, -3), Vector2(25, 4)), Color("769593"))
-	draw_rect(Rect2(p + Vector2(25, -3), Vector2(22, 4)), Color("769593"))
-	for i in range(2):
-		draw_rect(Rect2(p + Vector2(-6 + i * 11, -33), Vector2(7, 5)), PRESSURE if i < filling else Color("243d44"))
+	var source := TOAD_SOURCE
+	source.position.x += (TOAD_CELL_WIDTH + TOAD_CHARGED_OFFSET) * toad_frame(enemies[index])
+	draw_texture_rect_region(TOAD_ATLAS, toad_rect(index), source, actor_tint(index))
 
 func _draw() -> void:
 	super._draw()
+	draw_set_transform_matrix(finish_camera())
 	for projectile in projectiles:
 		if int(projectile.hp) <= 0: continue
 		var index := Ranged.target_id(projectile)
@@ -67,6 +73,7 @@ func _draw() -> void:
 		var rect := projectile_label_rect(projectile)
 		draw_rect(rect, Color("101e27", 0.9))
 		draw_string(FONT, rect.position + Vector2(4, 21), projectile_caption(projectile), HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 8, 18, PRESSURE)
+	draw_set_transform_matrix(Transform2D.IDENTITY)
 
 func _get_tooltip(at_position: Vector2) -> String:
 	for projectile in projectiles:

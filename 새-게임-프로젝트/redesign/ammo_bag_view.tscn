@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Script" path="res://redesign/ammo_bag_view.gd" id="script"]
+[ext_resource type="PackedScene" path="res://redesign/ammo_offer.tscn" id="card"]
+[ext_resource type="StyleBoxFlat" path="res://redesign/hand_surface_button.tres" id="button"]
+[node name="AmmoBagView" type="VBoxContainer"]
+custom_minimum_size = Vector2(0,580)
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+script = ExtResource("script")
+[node name="Tabs" type="HBoxContainer" parent="."]
+theme_override_constants/separation = 8
+[node name="bag_tab_all" type="Button" parent="Tabs"]
+custom_minimum_size = Vector2(0,48)
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("button")
+text = "전체 보유 10"
+[node name="bag_tab_hand" type="Button" parent="Tabs"]
+custom_minimum_size = Vector2(0,48)
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("button")
+text = "손패 4"
+[node name="bag_tab_loaded" type="Button" parent="Tabs"]
+custom_minimum_size = Vector2(0,48)
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("button")
+text = "장전 1"
+[node name="bag_tab_draw" type="Button" parent="Tabs"]
+custom_minimum_size = Vector2(0,48)
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("button")
+text = "뽑을 탄 5"
+[node name="bag_tab_discard" type="Button" parent="Tabs"]
+custom_minimum_size = Vector2(0,48)
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("button")
+text = "사용한 탄 0"
+[node name="Hint" type="Label" parent="."]
+text = "이번 등반의 보유 탄환 · 같은 성능끼리 수량으로 표시"
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 2
+[node name="NextDraw" type="HBoxContainer" parent="."]
+visible = false
+theme_override_constants/separation = 12
+[node name="StateHint" type="Label" parent="."]
+visible = false
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+[node name="BagScroll" type="ScrollContainer" parent="."]
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+[node name="Content" type="VBoxContainer" parent="BagScroll"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+[node name="bag_empty" type="Label" parent="BagScroll/Content"]
+visible = false
+custom_minimum_size = Vector2(0,100)
+text = "이곳에는 아직 탄환이 없습니다."
+autowrap_mode = 2
+vertical_alignment = 1
+[node name="BagCards" type="GridContainer" parent="BagScroll/Content"]
+size_flags_horizontal = 3
+columns = 6
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+[node name="Preview" parent="BagScroll/Content/BagCards" instance=ExtResource("card")]
+custom_minimum_size = Vector2(180,164)
+[node name="CardInfo" parent="BagScroll/Content/BagCards/Preview" index="0"]
+showcase_ui = false
+offer_action = false
+[node name="Inspection" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0,82)
+theme_override_constants/separation = 16
+[node name="BagCardDetails" type="Label" parent="Inspection"]
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "탄환을 누르면 효과를 확인합니다."
+autowrap_mode = 2
+[node name="bag_details" type="Button" parent="Inspection"]
+custom_minimum_size = Vector2(90,48)
+size_flags_vertical = 4
+text = "상세"
+disabled = true
+theme_override_styles/normal = ExtResource("button")
+[editable path="BagScroll/Content/BagCards/Preview"]

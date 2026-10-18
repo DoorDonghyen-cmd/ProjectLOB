@@ -1,0 +1,19 @@
+{
+  "reviewed_on": "2026-10-11",
+  "engine": "Godot 4.7 / Compatibility",
+  "runtime_integration": "None of these upstream plugins or graphics are enabled in LoB by this acquisition.",
+  "sources": {
+    "pixel-ui": {"priority":"A", "license_review":"CC BY 4.0 confirmed in addons/pixel_ui_fantasy/LICENSE.txt; credit required for reuse", "use":"전체 위젯 상태·테마 구성 참고. 양피지 외형과 라틴 글꼴은 미채택.", "entry":"addons/pixel_ui_fantasy/themes/parchment.tres", "trial":"Godot 4.7 로드 및 주요6위젯 테마 존재 확인 통과"},
+    "card-skeleton": {"priority":"A", "license_review":"MIT root LICENSE recovered at pinned revision; sample card images have separate external credit, not cleared for game reuse", "use":"속성 검색·카드 비교·덱 제작 UI 구조를 현행 Content에 연결하는 제작 도구에 참고.", "entry":"addons/CardGameSkeleton/CardLibrary/CardLibrary.gd", "trial":"독립 설치에 icon.svg/CardImages/CardBack.jpg 등 샘플 경로 의존. 즉시 플러그인 도입 대신 구조 활용"},
+    "slay-robot": {"priority":"A", "license_review":"MIT code plus bundled addon licenses preserved; asset reuse requires per-file check", "use":"액션·조건·콘텐츠 묶음·도감. 포함된 스크롤·사운드 관리 애드온도 확보.", "entry":"scripts/actions/BaseAction.gd", "trial":"주요 구조 읽기 완료; 전체 프레임워크 실행 검증 없음"},
+    "importality": {"priority":"B", "license_review":"MIT LICENSE preserved", "use":"후속 프레임 애니메이션과 태그 기반 가져오기 후보. 현재 LibreSprite 제작 경로 유지.", "entry":"addons/nklbdev.importality/editor_plugin.gd", "trial":"4.7 플러그인 로드 중 파싱 오류 없음; 종료 시19 ObjectDB/8 resource 정리 경고. 실제 다중 프레임 가져오기 미검증"},
+    "vfx-library": {"priority":"A", "license_review":"MIT LICENSE preserved", "use":"장갑·증기·전격 외 추가 효과의 연출 재료. 적절한 도트 크기와 실제 이벤트에 맞춰 선별.", "entry":"addons/vfx_library/effects", "trial":"관련3씬 읽기; LoB 자체 표현에 참고 완료. 전체 플러그인 실행 미검증"},
+    "godot-demos": {"priority":"A", "license_review":"MIT plus embedded font/asset notices preserved", "use":"4.7 릴리스 고정. GUI·2D·오디오 예제 추출; 전체 원본 ZIP도 보관.", "entry":"gui/control_gallery", "trial":"control_gallery·drag_and_drop·accessibility·multiple_resolutions 확보; 각 예제 실행 미검증"},
+    "open-rpg": {"priority":"B", "license_review":"MIT code, CREDITS.md and nested asset notices preserved", "use":"전투/메뉴 전환·대화·인벤토리 구조. 포함된 음원은 별도 출처와 함께 후보로 보관.", "entry":"combat", "trial":"4.6.2 안내 프로젝트; 4.7 전체 실행 미검증"},
+    "pixelorama": {"priority":"B", "license_review":"MIT top level; nested dependency licenses also preserved", "use":"편집기 전체 소스·팔레트·타임라인·내보내기 참고. 현재 LibreSprite와 선택적으로 비교.", "entry":"src", "trial":"1.2.4-dev 소스 확보. 실행 파일 설치·빌드 안 함"},
+    "smooth-pixel": {"priority":"C", "license_review":"MIT addon LICENSE.txt preserved", "use":"실제 카메라 스크롤이 필요해질 때 비교. 현행 전장 전체에 즉시 적용하지 않음.", "entry":"addons/smooth_pixel_subviewport_container", "trial":"소스 확보, 현재 렌더러/캔버스 조합 실행 미검증"},
+    "palette-swap": {"priority":"C", "license_review":"No explicit license file found in pinned snapshot; API unspecified. Do not copy into production.", "use":"팔레트 맵핑 개념만 검토. 원본 복사·게임 배포 대상 제외.", "entry":"addons/colorful-palette-swap/code/palette_swap.shader", "trial":"Godot 3 config_version=4. 4.7 직접 호환 아님"},
+    "awesome-pixel-art": {"priority":"B", "license_review":"CC0 list; linked resources have independent terms", "use":"클러스터·색·동작 제작 자료 색인. 링크된 외부 자료 전체를 확보한 것은 아님.", "entry":"readme.md", "trial":"목록 확보"},
+    "awesome-godot": {"priority":"B", "license_review":"CC BY 4.0 list; linked projects have independent terms", "use":"오픈소스 게임·도구 추가 탐색 색인. 연결 저장소 전체를 일괄 설치하지 않음.", "entry":"README.md", "trial":"목록 확보"}
+  }
+}

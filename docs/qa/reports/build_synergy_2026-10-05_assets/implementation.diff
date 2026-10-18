@@ -1,0 +1,825 @@
+--- before/ammo_card_view.gd
++++ 새-게임-프로젝트\redesign\ammo_card_view.gd
+@@ -55,6 +55,10 @@
+ 	if ammo_id == "basic": return {"kind": "reload", "value": str(Content.capacity(state))}
+ 	var spec: Dictionary = Content.AMMO[ammo_id]
+ 	match str(spec.effect):
++		"prepare": return {"kind": "reload", "value": "%d장" % Content.effect_value(ammo_id, state)}
++		"disrupt": return {"kind": "electric", "value": "%d턴" % Content.effect_value(ammo_id, state)}
++		"spread": return {"kind": "fire", "value": "→%d" % Content.effect_value(ammo_id, state)}
++		"sequence": return {"kind": "boost", "value": "+%d×종" % Content.effect_value(ammo_id, state)}
+ 		"burn": return {"kind": "fire", "value": "%d×%d" % [Content.burn_damage(state), Content.burn_amount(ammo_id, state)]}
+ 		"shatter": return {"kind": "penetration", "value": "−%d" % Content.effect_value(ammo_id, state)}
+ 		"detonate": return {"kind": "fire", "value": "→"}
+@@ -72,6 +76,10 @@
+ func effect_text() -> String:
+ 	var spec: Dictionary = Content.AMMO[ammo_id]
+ 	match str(spec.effect):
++		"prepare": return "뒤 %d장 → 다음 패" % Content.effect_value(ammo_id, state)
++		"disrupt": return "준비 정지 %d턴" % Content.effect_value(ammo_id, state)
++		"spread": return "화상 이동 최대 %d" % Content.effect_value(ammo_id, state)
++		"sequence": return "탄종×%d · 최대3" % Content.effect_value(ammo_id, state)
+ 		"burn": return "매 턴 %d · %d턴" % [Content.burn_damage(state), Content.burn_amount(ammo_id, state)]
+ 		"boost": return "다음 2발 +%d" % Content.effect_value(ammo_id, state)
+ 		"push": return "%dm 밀치기" % Content.effect_value(ammo_id, state)
+--- before/ammo_visual.gd
++++ 새-게임-프로젝트\redesign\ammo_visual.gd
+@@ -2,9 +2,9 @@
+ const Content = preload("res://redesign/content.gd")
+ const ATTRIBUTE_NAMES := {"physical": "물리", "fire": "화염", "electric": "전기"}
+ const ATTRIBUTE_COLORS := {"physical": Color("cbd3d2"), "fire": Color("f29a5b"), "electric": Color("63dce8")}
+-const COLORS := {"vent": Color("9bbfd2"), "thermal": Color("e8a271"), "shatter": ATTRIBUTE_COLORS.physical, "detonate": ATTRIBUTE_COLORS.fire, "chase": ATTRIBUTE_COLORS.physical, "bypass": ATTRIBUTE_COLORS.physical, "cool": Color("96b9d0"), "basic": ATTRIBUTE_COLORS.physical, "pierce": ATTRIBUTE_COLORS.physical, "precise": ATTRIBUTE_COLORS.physical, "bore": ATTRIBUTE_COLORS.fire, "charge": ATTRIBUTE_COLORS.physical, "charge_hot": Color("ed9167"), "push": ATTRIBUTE_COLORS.physical, "arc": ATTRIBUTE_COLORS.electric, "pierce_c": ATTRIBUTE_COLORS.physical, "precise_c": ATTRIBUTE_COLORS.physical, "bore_c": ATTRIBUTE_COLORS.fire, "charge_c": ATTRIBUTE_COLORS.physical, "push_c": ATTRIBUTE_COLORS.physical, "arc_c": ATTRIBUTE_COLORS.electric, "pierce_f": ATTRIBUTE_COLORS.physical, "precise_f": ATTRIBUTE_COLORS.physical, "bore_f": ATTRIBUTE_COLORS.fire, "charge_f": ATTRIBUTE_COLORS.physical, "push_f": ATTRIBUTE_COLORS.physical, "arc_f": ATTRIBUTE_COLORS.electric}
+-const SHORT := {"vent": "방출", "thermal": "과급", "shatter": "파쇄", "detonate": "기폭", "chase": "추격", "bypass": "우회", "cool": "냉각", "basic": "회수", "pierce": "철갑", "precise": "연발", "bore": "소이", "charge": "증폭", "charge_hot": "증폭", "push": "충격", "arc": "전격", "pierce_c": "철갑", "precise_c": "연발", "bore_c": "소이", "charge_c": "증폭", "push_c": "충격", "arc_c": "전격", "pierce_f": "철갑", "precise_f": "연발", "bore_f": "소이", "charge_f": "증폭", "push_f": "충격", "arc_f": "전격"}
+-const HINT := {"vent": "마지막 발 · 열을 피해로 전환", "thermal": "높은 열에서 강해지는 탄", "shatter": "장갑 −3 · 후속 타격 지원", "detonate": "남은 화상을 즉시 피해로", "chase": "직전 탄 처치 시 피해 +4", "bypass": "앞 적을 건너뛰어 공격", "cool": "현재 열 −3 · 과열 전에 배치", "basic": "재장전 시 공급", "pierce": "높은 관통", "precise": "같은 적 2회 타격", "bore": "화상 +3", "charge": "다음 2발 피해 +2", "charge_hot": "고출력 +4 · 발열 5", "push": "2m 밀어 거리 확보", "arc": "다른 적에게 2피해 전이", "pierce_c": "두 칸에 관통 집중", "precise_c": "첫 발 · 같은 적 3회", "bore_c": "두 칸에 화상 집중", "charge_c": "마지막 발 · 다음 탄창 증폭", "push_c": "마지막 발 · 강한 넉백", "arc_c": "첫 발 · 모든 다른 적 전이", "pierce_f": "두 칸에 관통 집중", "precise_f": "첫 발 · 같은 적 3회", "bore_f": "두 칸에 화상 집중", "charge_f": "마지막 발 · 다음 탄창 증폭", "push_f": "마지막 발 · 강한 넉백", "arc_f": "첫 발 · 모든 다른 적 전이"}
++const COLORS := {"prepare": Color("b9cca5"), "disrupt": Color("83bbda"), "spread": Color("f2aa73"), "sequence": Color("dfc883"), "vent": Color("9bbfd2"), "thermal": Color("e8a271"), "shatter": ATTRIBUTE_COLORS.physical, "detonate": ATTRIBUTE_COLORS.fire, "chase": ATTRIBUTE_COLORS.physical, "bypass": ATTRIBUTE_COLORS.physical, "cool": Color("96b9d0"), "basic": ATTRIBUTE_COLORS.physical, "pierce": ATTRIBUTE_COLORS.physical, "precise": ATTRIBUTE_COLORS.physical, "bore": ATTRIBUTE_COLORS.fire, "charge": ATTRIBUTE_COLORS.physical, "charge_hot": Color("ed9167"), "push": ATTRIBUTE_COLORS.physical, "arc": ATTRIBUTE_COLORS.electric, "pierce_c": ATTRIBUTE_COLORS.physical, "precise_c": ATTRIBUTE_COLORS.physical, "bore_c": ATTRIBUTE_COLORS.fire, "charge_c": ATTRIBUTE_COLORS.physical, "push_c": ATTRIBUTE_COLORS.physical, "arc_c": ATTRIBUTE_COLORS.electric, "pierce_f": ATTRIBUTE_COLORS.physical, "precise_f": ATTRIBUTE_COLORS.physical, "bore_f": ATTRIBUTE_COLORS.fire, "charge_f": ATTRIBUTE_COLORS.physical, "push_f": ATTRIBUTE_COLORS.physical, "arc_f": ATTRIBUTE_COLORS.electric}
++const SHORT := {"prepare": "예약", "disrupt": "차단", "spread": "확산", "sequence": "연계", "vent": "방출", "thermal": "과급", "shatter": "파쇄", "detonate": "기폭", "chase": "추격", "bypass": "우회", "cool": "냉각", "basic": "회수", "pierce": "철갑", "precise": "연발", "bore": "소이", "charge": "증폭", "charge_hot": "증폭", "push": "충격", "arc": "전격", "pierce_c": "철갑", "precise_c": "연발", "bore_c": "소이", "charge_c": "증폭", "push_c": "충격", "arc_c": "전격", "pierce_f": "철갑", "precise_f": "연발", "bore_f": "소이", "charge_f": "증폭", "push_f": "충격", "arc_f": "전격"}
++const HINT := {"prepare": "뒤 전술탄을 다음 패로 예약", "disrupt": "준비 정지 · 적마다 한 번", "spread": "화상을 다른 적에게 이동", "sequence": "앞선 다른 탄종마다 강화", "vent": "마지막 발 · 열을 피해로 전환", "thermal": "높은 열에서 강해지는 탄", "shatter": "장갑 −3 · 후속 타격 지원", "detonate": "남은 화상을 즉시 피해로", "chase": "직전 탄 처치 시 피해 +4", "bypass": "앞 적을 건너뛰어 공격", "cool": "현재 열 −3 · 과열 전에 배치", "basic": "재장전 시 공급", "pierce": "높은 관통", "precise": "같은 적 2회 타격", "bore": "화상 +3", "charge": "다음 2발 피해 +2", "charge_hot": "고출력 +4 · 발열 5", "push": "2m 밀어 거리 확보", "arc": "다른 적에게 2피해 전이", "pierce_c": "두 칸에 관통 집중", "precise_c": "첫 발 · 같은 적 3회", "bore_c": "두 칸에 화상 집중", "charge_c": "마지막 발 · 다음 탄창 증폭", "push_c": "마지막 발 · 강한 넉백", "arc_c": "첫 발 · 모든 다른 적 전이", "pierce_f": "두 칸에 관통 집중", "precise_f": "첫 발 · 같은 적 3회", "bore_f": "두 칸에 화상 집중", "charge_f": "마지막 발 · 다음 탄창 증폭", "push_f": "마지막 발 · 강한 넉백", "arc_f": "첫 발 · 모든 다른 적 전이"}
+ var ammo_id := "basic"
+ 
+ func _ready() -> void:
+--- before/battle_view.gd
++++ 새-게임-프로젝트\redesign\battle_view.gd
+@@ -270,7 +270,7 @@
+ 		for secondary in chain_targets:
+ 			if _visual_entity(int(secondary.target)).is_empty(): continue
+ 			var other_point := enemy_position(int(secondary.target))
+-			var spread: bool = str(secondary.get("kind", "arc")) == "spread"
++			var spread: bool = str(secondary.get("kind", "arc")) in ["spread", "burn_transfer"]
+ 			var color := Color("87c9df") if spread else Ammo.COLORS.arc
+ 			draw_line(muzzle if spread else point, other_point, Color(color, 1.0 - pulse), 2, false)
+ 		_draw_impact(point)
+@@ -315,6 +315,7 @@
+ 	if str(e.get("weakness", "")) == "electric": states.append("전기 약점")
+ 	if int(e.get("burn", 0)) > 0: states.append("화상 %d" % int(e.burn))
+ 	if int(e.get("charge_max", 0)) > 0: states.append("충전 %d/%d" % [int(e.get("charge", 0)), int(e.charge_max)])
++	if int(e.get("jammed", 0)) > 0: states.append("차단 %d턴" % int(e.jammed))
+ 	if bool(e.get("stance", false)): states.append("교대")
+ 	if str(e.kind) == "spitter": states.append(Ranged.intent(e))
+ 	if states.is_empty(): states.append("빠른 접근" if str(e.kind) == "runner" else "장갑 없음")
+@@ -407,15 +408,22 @@
+ 		if bool(enemy.get("stance", false)): enemy.stance_def = int(result.get("stance_def", enemy.stance_def))
+ 		enemy.focus_hits = result.get("focus_after", 0)
+ 		enemy.barrier = result.get("barrier", enemy.get("barrier", 0))
++		if int(result.get("interrupted", 0)) > 0:
++			enemy.jammed = int(result.interrupted)
++			enemy.disrupted = true
+ 		chain_targets = result.get("secondary", []).duplicate(true)
+ 		for secondary in chain_targets:
+ 			_visual_entity(int(secondary.target)).hp = secondary.hp
++			if secondary.has("burn"): _visual_entity(int(secondary.target)).burn = secondary.burn
+ 			visual_events.append({"kind": "secondary", "target": secondary.target, "damage": secondary.damage, "hp": secondary.hp})
+ 		float_target = target
+ 		impact_attribute = str(Content.AMMO[str(result.id)].attribute)
+ 		float_text = "막힘" if int(result.get("blocked_hits", 0)) > 0 and result.damage == 0 else ("방어" if result.damage == 0 else "-%d" % result.damage)
+ 		if result.get("intercept", false): float_text = "요격"
+ 		elif result.hp == 0: float_text += "  처치"
++		elif not result.get("prepared_rounds", []).is_empty(): float_text = "다음 패 %d장 예약" % result.prepared_rounds.size()
++		elif int(result.get("interrupted", 0)) > 0: float_text += " · 차단"
++		elif int(result.get("transferred", 0)) > 0: float_text += " · 화상 이동"
+ 		float_color = Color("63dce8") if int(result.get("blocked_hits", 0)) > 0 else (Color("f0b495") if result.damage == 0 else Color("d7eeae"))
+ 		caption = "%s · %s" % [Ammo.SHORT[result.id], float_text]
+ 		if int(result.get("focus_damage", 0)) > 0: focus_flash = target
+--- before/build_guide.gd
++++ 새-게임-프로젝트\redesign\build_guide.gd
+@@ -2,6 +2,7 @@
+ ## Public build relationships; suggestions are not an automatic loadout choice.
+ const Ammo = preload("res://redesign/content.gd")
+ const FAMILIES := {
++	"cooling_breech": "짧은 순환", "chain_sink": "연쇄 냉각", "indexer": "패 예약",
+ 	"radiator": "열 용량", "reclaimer": "처치 냉각", "ember_core": "고열",
+ 	"lens": "장갑", "overbore": "장갑", "breaker": "보호",
+ 	"coil": "화상", "inferno": "화상", "igniter": "화상",
+@@ -11,8 +12,9 @@
+ 	"loader": "순환", "reserve": "순환", "supply": "탄창", "field_press": "압축", "executioner": "처치"
+ }
+ const LINKS := {
++	"cooling_breech": ["prepare", "thermal"], "chain_sink": ["sequence", "charge", "precise"], "indexer": ["prepare"], "supply": ["sequence", "prepare", "charge"],
+ 	"radiator": ["charge_hot", "precise", "thermal"], "reclaimer": ["chase", "precise", "arc"], "ember_core": ["thermal", "vent", "precise"],
+-	"coil": ["bore", "detonate"], "inferno": ["bore", "push", "detonate"], "igniter": ["bore", "precise", "detonate"],
++	"coil": ["bore", "detonate", "spread"], "inferno": ["bore", "push", "detonate", "spread"], "igniter": ["bore", "precise", "detonate", "spread"],
+ 	"capacitor": ["arc"], "arc_splitter": ["arc"], "rammer": ["push"], "momentum": ["push", "bore"],
+ 	"sequencer": ["charge", "precise"], "duplex": ["precise"], "breaker": ["precise"],
+ 	"opening": ["precise"], "afterburner": ["precise"], "executioner": ["precise", "chase"]
+@@ -27,6 +29,10 @@
+ 		var source := Ammo.source_id(str(round_id))
+ 		counts[source] = int(counts.get(source, 0)) + 1
+ 	var uses_heat := counts.has("thermal") or Ammo.has_part(state, "ember_core")
++	if id == "cooling_breech": return "탄창을 줄여 재장전마다 열을 더 낮춤 · 고열 유지와는 상충"
++	if id == "chain_sink": return "탄창 %d칸 · 세 번째 발 전에 과열되지 않도록 순서를 설계" % Ammo.capacity(state)
++	if id == "indexer": return "예약탄 뒤의 전술탄도 다음 패로 · 뒤에 장전할 공간 필요" if counts.has("prepare") else "예약탄을 확보하면 다음 패 조합 강화"
++	if id == "supply": return "탄창 +1 · 패 크기도 탄창에 연동 · 열 한계는 그대로"
+ 	if id == "radiator": return "과열을 늦춤 · 고열 보너스가 시작되는 열도 높아짐" if uses_heat else "과열을 늦춰 고발열탄을 더 조합"
+ 	if id == "reclaimer": return "처치로 연쇄 유지 · 냉각 후 고열 조건을 다시 확인" if uses_heat else "적 처치 → 열 −2 · 탄 하나당 한 번"
+ 	if id == "ember_core":
+--- before/campaign_content.gd
++++ 새-게임-프로젝트\redesign\campaign_content.gd
+@@ -201,7 +201,7 @@
+ 	for id in deck:
+ 		var source := Ammo.source_id(str(id))
+ 		if not families.has(source): families.append(source)
+-	var links := {"bore": ["detonate", "push"], "charge": ["precise", "chase"], "precise": ["shatter", "charge", "chase"], "arc": ["bypass", "chase"], "pierce": ["chase", "bypass"], "cool": ["charge_hot", "thermal"], "thermal": ["cool", "vent"], "vent": ["charge_hot", "thermal"]}
++	var links := {"bore": ["detonate", "push", "spread", "disrupt"], "charge": ["precise", "chase", "prepare"], "precise": ["shatter", "charge", "chase", "prepare"], "arc": ["bypass", "chase", "sequence"], "pierce": ["chase", "bypass", "sequence"], "cool": ["charge_hot", "thermal", "sequence"], "thermal": ["cool", "vent"], "vent": ["charge_hot", "thermal"], "prepare": ["charge", "precise", "sequence"], "disrupt": ["bore", "bypass"], "spread": ["bore", "detonate"], "sequence": ["shatter", "cool", "prepare"]}
+ 	var partners: Array = families.duplicate()
+ 	if deck.has("charge_hot"):
+ 		partners.append_array(["cool", "vent", "thermal"])
+--- before/campaign_ui.gd
++++ 새-게임-프로젝트\redesign\campaign_ui.gd
+@@ -427,7 +427,7 @@
+ 		var detail: Button = ui._button(actions, "탄환 규칙 보기", "city_offer_detail_" + str(offer_index), func():
+ 			var dialog = ui._dialog(str(Ammo.AMMO[id].name), true)
+ 			ammo_card(dialog, id)
+-			ui._label(dialog, str(Ammo.AMMO[id].text), 18)
++			ui._label(dialog, preload("res://redesign/readability.gd").description(id, ui.model.s), 18)
+ 		)
+ 		detail.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+ 		detail.custom_minimum_size = Vector2(180, 44)
+@@ -443,7 +443,8 @@
+ 			proposed.equipped_parts.append(id)
+ 			var old_capacity: int = ui.model.capacity()
+ 			var new_capacity: int = Ammo.capacity(proposed)
+-			if old_capacity != new_capacity: lines.append("탄창 %d → %d칸" % [old_capacity, new_capacity])
++			if old_capacity != new_capacity: lines.append("탄창 %d → %d칸 · 패 %d → %d장" % [old_capacity, new_capacity, Ammo.hand_capacity(ui.model.s), Ammo.hand_capacity(proposed)])
++			if Ammo.reload_cooling(ui.model.s) != Ammo.reload_cooling(proposed): lines.append("재장전 냉각 %d → %d" % [Ammo.reload_cooling(ui.model.s), Ammo.reload_cooling(proposed)])
+ 			if Ammo.heat_limit(ui.model.s) != Ammo.heat_limit(proposed): lines.append("열 한계 %d → %d" % [Ammo.heat_limit(ui.model.s), Ammo.heat_limit(proposed)])
+ 			if Ammo.hot_threshold(ui.model.s) != Ammo.hot_threshold(proposed) and (ui.model.s.deck.has("thermal") or Ammo.has_part(proposed, "ember_core")):
+ 				lines.append("고열 조건 %d → %d" % [Ammo.hot_threshold(ui.model.s), Ammo.hot_threshold(proposed)])
+@@ -746,6 +747,8 @@
+ 	var projection = ui.model.get_script().new()
+ 	projection.s = after
+ 	var changes: PackedStringArray = []
++	if Ammo.reload_cooling(before) != Ammo.reload_cooling(after): changes.append("재장전 냉각  %d → %d" % [Ammo.reload_cooling(before), Ammo.reload_cooling(after)])
++	if Ammo.hand_capacity(before) != Ammo.hand_capacity(after): changes.append("선택 패  %d → %d장" % [Ammo.hand_capacity(before), Ammo.hand_capacity(after)])
+ 	if Ammo.heat_limit(before) != Ammo.heat_limit(after): changes.append("열 한계  %d → %d" % [Ammo.heat_limit(before), Ammo.heat_limit(after)])
+ 	if Ammo.hot_threshold(before) != Ammo.hot_threshold(after) and (before.deck.has("thermal") or Ammo.has_part(before, "ember_core") or Ammo.has_part(after, "ember_core")):
+ 		changes.append("고열 조건  %d → %d" % [Ammo.hot_threshold(before), Ammo.hot_threshold(after)])
+--- before/content.gd
++++ 새-게임-프로젝트\redesign\content.gd
+@@ -2,6 +2,10 @@
+ ## Damage is transparent; scatter alone chooses a random primary target.
+ ## Every round exposes two numbers, one attribute, and at most one effect.
+ const AMMO := {
++	"prepare": {"heat": 2, "name": "예약탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "prepare", "value": 1, "text": "뒤의 전술탄 1발을 다음 재장전 패로 예약합니다. 회수탄·현장 압축탄은 제외하며 예약은 최대 3장. 탄을 복제하지 않습니다."},
++	"disrupt": {"heat": 2, "name": "차단탄", "dmg": 1, "pen": 0, "attribute": "electric", "effect": "disrupt", "value": 1, "text": "생존 표적의 발사 준비·충전을 1턴 멈춥니다. 이동과 이미 발사된 압력탄에는 영향이 없으며, 적마다 한 번만 차단할 수 있습니다."},
++	"spread": {"heat": 2, "name": "확산탄", "dmg": 1, "pen": 0, "attribute": "fire", "effect": "spread", "value": 2, "text": "표적의 화상 최대 2를 가장 가까운 다른 생존 적에게 옮깁니다. 원래 표적의 화상은 옮긴 만큼 줄어듭니다. 압력탄은 제외합니다."},
++	"sequence": {"heat": 3, "name": "연계탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "sequence", "value": 2, "text": "이번 탄창에서 앞서 발사한 다른 탄종 하나마다 피해 +2, 최대 3종. 같은 탄과 그 압축형은 한 종류로 셉니다."},
+ 	"vent": {"heat": 0, "name": "방출탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "vent", "value": 2, "heat_spend": 4, "anchor": "last", "text": "가장 먼저 장전하며 마지막에 발사합니다. 발사 직전 열을 최대 4 소모하고, 소모한 열 1마다 직접 피해 +2. 앞에서 과열되면 발사되지 않습니다."},
+ 	"thermal": {"heat": 4, "name": "과급탄", "dmg": 2, "pen": 1, "attribute": "physical", "effect": "thermal", "value": 4, "text": "발사 직전 열이 무기 한계의 절반 이상이면 직접 피해 +4. 자신의 발열로는 조건을 채우지 못합니다."},
+ 	"basic": {"heat": 1, "name": "회수탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "", "value": 0, "text": "재장전 때 복구되는 보조 화력입니다. 전술탄의 처치선과 순서를 이어 주는 탄환입니다."},
+@@ -63,6 +67,9 @@
+ }
+ 
+ const PARTS := {
++	"cooling_breech": {"name": "냉각 약실", "kind": "core", "effect": "재장전 냉각", "value": "+4", "capacity": -1, "reload_cooling": 4, "role": "짧은 탄창 순환", "upside": "재장전 냉각 +4", "downside": "탄창 −1칸", "text": "탄창 −1칸, 일반 재장전 냉각 +4. 무기의 재장전 턴은 그대로이며 짧은 사격을 자주 순환하는 구성입니다."},
++	"chain_sink": {"name": "연쇄 방열기", "kind": "module", "effect": "세 번째 발 냉각", "value": "열 −3", "heat_limit": -1, "third_cooling": 3, "role": "긴 탄창의 연결점", "upside": "탄창 세 번째 탄 열 −3", "downside": "열 한계 −1", "text": "탄창의 세 번째 탄이 발사되면 과열 판정 전에 열 −3. 대신 열 한계 −1. 세 번째 발에 도달하지 못하면 냉각되지 않습니다."},
++	"indexer": {"name": "예약 급탄기", "kind": "module", "effect": "예약탄", "value": "예약 +1장", "prepare_bonus": 1, "role": "다음 패 조합", "upside": "예약탄이 예약하는 탄 +1장", "downside": "", "text": "예약탄 뒤에서 다음 패로 예약할 전술탄 +1장. 예약탄 뒤에 실제로 장전한 탄만 대상으로 하며 총 예약은 최대 3장입니다."},
+ 	"radiator": {"name": "확장 방열판", "kind": "module", "effect": "열 한계", "value": "+3", "heat_limit": 3, "role": "안정적인 연쇄", "upside": "열 한계 +3", "downside": "", "text": "총기의 열 한계 +3. 더 많은 고발열탄을 한 번의 사격에 조합할 수 있습니다."},
+ 	"reclaimer": {"name": "회수 순환펌프", "kind": "module", "effect": "처치 냉각", "value": "열 −2", "cool_on_kill": 2, "role": "처치로 연쇄 유지", "upside": "처치한 탄 열 −2", "downside": "", "text": "탄환의 직접 타격·기폭·전이로 적을 처치하면 열 −2. 한 탄에 한 번, 과열 판정 전에 적용합니다. 요격과 턴 경과 화상은 제외합니다."},
+ 	"ember_core": {"name": "잔열 노심", "kind": "core", "effect": "고열 화력", "value": "피해 +2", "heat_limit": -2, "hot_damage": 2, "role": "한계 직전의 화력", "upside": "절반 열 이상에서 피해 +2", "downside": "열 한계 −2", "text": "발사 직전 열이 최종 열 한계의 절반 이상이면 타격당 피해 +2. 대신 열 한계 −2. 자신의 발열로 조건을 채우지 못합니다."},
+@@ -70,7 +77,7 @@
+ 	"lens": {"name": "가속 총열", "kind": "module", "effect": "관통", "value": "+2", "role": "장갑 대응", "upside": "관통 +2", "downside": "", "text": "모든 탄환 관통 +2. 장갑 적에게 회수탄과 속성탄도 유효하게 만듭니다."},
+ 	"loader": {"name": "회수 가속기", "kind": "module", "effect": "재장전", "value": "−1턴", "role": "빠른 순환", "upside": "재장전 −1턴", "downside": "", "text": "재장전 비용 −1턴 (최소 1턴)."},
+ 	"supply": {"name": "확장 탄창", "kind": "module", "effect": "탄창 · 회수탄", "value": "+1 · +1", "role": "긴 연쇄", "upside": "탄창·회수탄 +1", "downside": "", "text": "탄창과 회수탄 공급 +1발. 더 긴 순서를 설계합니다."},
+-	"coil": {"name": "열축전 코일", "kind": "module", "effect": "화상", "value": "+1", "role": "지속 피해", "upside": "화상 +1", "downside": "", "text": "소이탄이 남기는 화상 +1."},
++	"coil": {"name": "열축전 코일", "kind": "module", "effect": "화상", "value": "+1", "role": "지속 피해", "upside": "화상 +1", "downside": "", "text": "소이탄이 남기는 화상 +1. 확산탄의 화상 이동 한도 +1."},
+ 	"capacitor": {"name": "전이 축전기", "kind": "module", "effect": "전이", "value": "+1 피해", "role": "다수전 전이", "upside": "전이 피해 +1", "downside": "", "text": "전격탄의 전이 피해 +1. 많은 적을 동시에 정리하는 빌드를 강화합니다."},
+ 	"rammer": {"name": "충격 가이드", "kind": "module", "effect": "밀치기", "value": "+1m", "role": "거리 제어", "upside": "밀치기·한도 +1m", "downside": "", "text": "충격탄 밀치기와 탄창당 밀치기 한도 +1m."},
+ 	"sequencer": {"name": "증폭 시퀀서", "kind": "module", "effect": "증폭", "value": "+1 ×2발", "role": "순서 증폭", "upside": "증폭 피해 +1", "downside": "", "text": "증폭탄이 뒤의 두 발에 주는 피해 +1."},
+@@ -83,7 +90,7 @@
+ 	"afterburner": {"name": "후미 점화기", "kind": "module", "effect": "마지막 발", "value": "+3 피해", "role": "후미 결산", "upside": "탄창 마지막 발 피해 +3", "downside": "재장전 +1턴", "text": "탄창 마지막 발 직접 피해 +3. 재장전 비용이 1턴 증가합니다."},
+ 	"field_press": {"name": "야전 압축기", "kind": "core", "effect": "현장 압축", "value": "+1회", "role": "압축 빌드", "upside": "교전마다 현장 압축 +1회", "downside": "탄창 −2칸", "text": "교전 시작마다 현장 압축 기회 +1. 대신 탄창 슬롯을 2칸 잃습니다."},
+ 	"overbore": {"name": "과구경 총열", "kind": "core", "effect": "피해 · 관통", "value": "+2 · +2", "role": "짧은 고화력", "upside": "피해·관통 +2", "downside": "탄창 −1칸", "text": "모든 직접 피해와 관통 +2. 대신 탄창 슬롯을 1칸 잃습니다."},
+-	"inferno": {"name": "열폭주 노심", "kind": "core", "effect": "화상", "value": "+2", "role": "고열 소이", "upside": "화상 +2", "downside": "재장전 +1턴", "text": "소이탄 화상 +2. 열을 식히느라 재장전 비용이 1턴 증가합니다."},
++	"inferno": {"name": "열폭주 노심", "kind": "core", "effect": "화상", "value": "+2", "role": "고열 소이", "upside": "화상 +2", "downside": "재장전 +1턴", "text": "소이탄 화상과 확산탄의 화상 이동 한도 +2. 재장전 비용 +1턴."},
+ 	"arc_splitter": {"name": "분기 전이기", "kind": "core", "effect": "전이", "value": "+2 · 대상+1", "role": "물량 정리", "upside": "전이 피해 +2 · 대상 +1", "downside": "직접 피해 −1", "text": "전격탄 전이 피해 +2, 전이 대상 +1. 대신 모든 직접 피해 −1."},
+ 	"momentum": {"name": "충격 피스톤", "kind": "core", "effect": "밀치기", "value": "+2m", "role": "극단 거리 제어", "upside": "밀치기·한도 +2m", "downside": "직접 피해 −1", "text": "충격탄 밀치기와 탄창당 한도 +2m. 대신 모든 직접 피해 −1."},
+ 	"triad": {"name": "삼중 시퀀서", "kind": "core", "effect": "서로 다른 3발", "value": "+5 피해", "role": "혼합 순서", "upside": "서로 다른 3번째 탄 피해 +5", "downside": "회수탄 피해 −1", "text": "직전 두 발과 서로 다른 탄종을 세 번째로 발사하면 직접 피해 +5. 회수탄 직접 피해 −1."},
+@@ -91,7 +98,7 @@
+ 
+ const MAX_EQUIPPED_PARTS := 5
+ 
+-const TACTICAL_AMMO := ["charge", "precise", "pierce", "bore", "push", "arc", "shatter", "detonate", "chase", "bypass", "cool", "charge_hot", "vent", "thermal"]
++const TACTICAL_AMMO := ["charge", "precise", "pierce", "bore", "push", "arc", "shatter", "detonate", "chase", "bypass", "cool", "charge_hot", "vent", "thermal", "prepare", "disrupt", "spread", "sequence"]
+ const START_DECK := ["charge", "precise", "pierce", "push", "charge", "precise", "pierce", "push", "charge", "precise"]
+ const GUN_DECKS := {
+ 	"burst": ["charge", "precise", "pierce", "charge", "precise", "pierce", "charge", "precise", "pierce", "precise"],
+@@ -112,7 +119,7 @@
+ const ENEMY_RULES := {
+ 	"runner": "빠른 접근 · 충격탄으로 시간을 벌 수 있습니다.",
+ 	"wall": "높은 장갑 · 관통이 남는 장갑만큼 피해 감소를 줄입니다.",
+-	"evader": "전도 선체 · 전격탄 주 타격에 추가 피해 2를 받습니다.",
++	"evader": "전도 선체 · 전기 속성의 주 타격에 추가 피해 2를 받습니다.",
+ 	"caster": "3턴 충전 · 완료 시 자신을 제외한 모든 적을 2m 끌어당깁니다.",
+ 	"absorber": "배리어 · 직접 타격을 수치와 관계없이 먼저 흡수합니다. 화상과 전이는 통과합니다.",
+ 	"stance": "교대 장갑 · 적 전진 뒤 장갑이 4와 0 사이를 오갑니다.",
+@@ -158,8 +165,12 @@
+ 
+ static func enemy_rule(enemy: Dictionary) -> String:
+ 	var kind := str(enemy.get("kind", ""))
+-	if kind == "spitter": return "제자리에서 2턴 준비 후 압력탄 발사 · 압력탄은 HP 1, 매 턴 6m 접근. 생성한 턴에는 이동하지 않으며 가장 가까우면 다음 탄으로 요격합니다. 탄 소멸 후 1턴 회복."
+ 	var parts: PackedStringArray = []
++	if int(enemy.get("jammed", 0)) > 0: parts.append("특수 행동 차단 %d턴" % int(enemy.jammed))
++	elif bool(enemy.get("disrupted", false)): parts.append("차단 소진")
++	if kind == "spitter":
++		parts.append("제자리에서 2턴 준비 후 압력탄 발사 · 압력탄은 HP 1, 매 턴 6m 접근. 생성한 턴에는 이동하지 않으며 가장 가까우면 다음 탄으로 요격합니다. 탄 소멸 후 1턴 회복.")
++		return " · ".join(parts)
+ 	if int(enemy.get("barrier_max", 0)) > 0:
+ 		parts.append("배리어 %d/%d" % [int(enemy.get("barrier", 0)), int(enemy.barrier_max)])
+ 	if int(enemy.get("charge_max", 0)) > 0:
+@@ -212,7 +223,7 @@
+ static func damage(id: String, state: Dictionary) -> int:
+ 	var gun: Dictionary = GUNS[state.gun]
+ 	var bonus := int(gun.get("basic_bonus", gun.bonus)) if id == "basic" else int(gun.bonus)
+-	if str(AMMO[id].effect) in ["boost", "shatter", "cool"]: bonus = 0
++	if str(AMMO[id].effect) in ["boost", "shatter", "cool", "prepare", "disrupt", "spread"]: bonus = 0
+ 	var result := int(AMMO[id].dmg) * multiplier(state) + bonus
+ 	if has_part(state, "overbore"): result += 2
+ 	if has_part(state, "arc_splitter"): result -= 1
+@@ -232,7 +243,18 @@
+ 	if effect == "push" and has_part(state, "rammer"): value += 1
+ 	if effect == "push" and has_part(state, "momentum"): value += 2
+ 	if effect == "boost" and has_part(state, "sequencer"): value += 1
++	if effect == "prepare": value = mini(3, value + (1 if has_part(state, "indexer") else 0))
++	if effect == "spread":
++		if has_part(state, "coil"): value += 1
++		if has_part(state, "inferno"): value += 2
+ 	return value
++
++static func prior_kind_count(prior: Array, current: String) -> int:
++	var kinds: Array = []
++	for id in prior:
++		var kind := source_id(str(id))
++		if kind != source_id(current) and not kinds.has(kind): kinds.append(kind)
++	return mini(3, kinds.size())
+ 
+ static func burn_damage(state: Dictionary) -> int:
+ 	return 2 if state.get("gun", "") in ["heavy", "amplifier"] else 1
+@@ -256,6 +278,7 @@
+ 	if has_part(state, "supply"): result += 1
+ 	if has_part(state, "field_press"): result -= 2
+ 	if has_part(state, "overbore"): result -= 1
++	for part in equipped_parts(state): result += int(PARTS[part].get("capacity", 0))
+ 	return maxi(1, result)
+ 
+ static func supply_capacity(state: Dictionary) -> int:
+@@ -279,7 +302,9 @@
+ 	return maxi(5, capacity(state) + 2)
+ 
+ static func reload_cooling(state: Dictionary) -> int:
+-	return int(GUNS[state.gun].reload_cooling)
++	var result := int(GUNS[state.gun].reload_cooling)
++	for part in equipped_parts(state): result += int(PARTS[part].get("reload_cooling", 0))
++	return maxi(1, result)
+ 
+ static func heat_after_reload(state: Dictionary) -> int:
+ 	var current := int(state.get("heat", 0))
+--- before/forecast.gd
++++ 새-게임-프로젝트\redesign\forecast.gd
+@@ -50,7 +50,7 @@
+ 	var source_model = Model.new()
+ 	source_model.s = state
+ 	var recent: Array = source_model._recent_part_sources() if state.phase == "ready" else []
+-	var key := JSON.stringify([state.gun, Content.equipped_parts(state), state.floor, state.phase, state.enemies, state.get("reinforcements", []), state.buff, state.push_left, stack, recent, state.get("heat", 0), state.get("legacy_reload_penalty", 0), state.get("projectiles", []), state.get("projectile_serial", 0), state.get("previous_kill", false), include_reload])
++	var key := JSON.stringify([state.gun, Content.equipped_parts(state), state.get("capacity_bonus", 0), state.get("prepared", []), state.floor, state.phase, state.enemies, state.get("reinforcements", []), state.buff, state.push_left, stack, recent, state.get("heat", 0), state.get("legacy_reload_penalty", 0), state.get("projectiles", []), state.get("projectile_serial", 0), state.get("previous_kill", false), include_reload])
+ 	cache_lock.lock()
+ 	if key == cached_key:
+ 		var cached := cached_result.duplicate(true)
+@@ -68,11 +68,15 @@
+ 	for id in stack:
+ 		var source := Content.source_id(str(id))
+ 		var context := {"first": recent.is_empty(), "last": shots.size() == stack.size() - 1, "triad": recent.size() >= 2 and recent[-1] != recent[-2] and source != recent[-1] and source != recent[-2]}
++		context.fired_count = recent.size()
++		context.sequence_count = Content.prior_kind_count(recent, str(id))
+ 		context.profile = Model.shot_profile(str(id), state)
+ 		context.forecast_minimal = true
+ 		var merged: Dictionary = {}
+ 		var shot := {"id": id, "random": true, "target": -1, "damage": 0, "damage_min": 1000000, "damage_max": 0, "expected_damage": 0.0, "hp": -1, "hits": Content.hit_count(str(id), state), "targets": [], "secondary": [], "used_probability": 0.0, "overheat_probability": 0.0, "heat_min": 1000000, "heat_max": 0, "part_probabilities": {"reclaimer": 0.0, "ember_core": 0.0}}
+ 		var target_stats: Dictionary = {}
++		shot.effect_probability = 0.0
++		shot.prepared_rounds = []
+ 		for branch in branches:
+ 			if cancelled.is_valid() and cancelled.call(): return {}
+ 			var targets_model = Model.new()
+@@ -101,6 +105,10 @@
+ 				if actual.overheated: shot.overheat_probability += probability
+ 				if int(actual.get("kill_cooled", 0)) > 0: shot.part_probabilities.reclaimer += probability
+ 				if bool(actual.get("part_hot", false)): shot.part_probabilities.ember_core += probability
++				if int(actual.get("chain_cooled", 0)) > 0: shot.part_probabilities["chain_sink"] = float(shot.part_probabilities.get("chain_sink", 0)) + probability
++				if actual.get("prepared_rounds", []).size() > Content.multiplier(state): shot.part_probabilities["indexer"] = float(shot.part_probabilities.get("indexer", 0)) + probability
++				if int(actual.get("interrupted", 0)) > 0 or int(actual.get("transferred", 0)) > 0 or int(actual.get("sequence_bonus", 0)) > 0 or not actual.get("prepared_rounds", []).is_empty(): shot.effect_probability += probability
++				if not actual.get("prepared_rounds", []).is_empty(): shot.prepared_rounds = actual.prepared_rounds.duplicate()
+ 				if not target_stats.has(target): target_stats[target] = {"target": target, "probability": 0.0, "damage_min": int(actual.damage), "damage_max": int(actual.damage)}
+ 				target_stats[target].probability += probability
+ 				target_stats[target].damage_min = mini(int(target_stats[target].damage_min), int(actual.damage))
+@@ -190,6 +198,7 @@
+ 	copy.magazine = state.magazine.duplicate(false)
+ 	copy.discard = state.discard.duplicate(false)
+ 	copy.field_compression = state.get("field_compression", {}).duplicate(false)
++	copy.prepared = state.get("prepared", []).duplicate(false)
+ 	return copy
+ 
+ # Within one bullet step, gun, parts, target order, reserves, deck and the
+@@ -198,8 +207,9 @@
+ # entire inventories thousands of times; time advancement happens AFTER merging.
+ static func _shot_branch_key(state: Dictionary) -> Array:
+ 	var key: Array = [state.magazine.size(), int(state.push_left), int(state.get("heat", 0)), int(state.get("legacy_reload_penalty", 0)), bool(state.get("previous_kill", false)), int(state.buff.get("dmg", 0)), int(state.buff.get("dmg_left", 0)), bool(state.buff.get("persistent", false))]
++	key.append(state.get("prepared", []).duplicate())
+ 	for enemy in state.enemies:
+-		key.append_array([int(enemy.hp), int(enemy.def), int(enemy.distance), int(enemy.get("burn", 0)), int(enemy.get("focus_hits", 0)), int(enemy.get("barrier", 0)), int(enemy.get("stance_def", 0))])
++		key.append_array([int(enemy.hp), int(enemy.def), int(enemy.distance), int(enemy.get("burn", 0)), int(enemy.get("focus_hits", 0)), int(enemy.get("barrier", 0)), int(enemy.get("stance_def", 0)), int(enemy.get("jammed", 0)), bool(enemy.get("disrupted", false))])
+ 	for projectile in state.get("projectiles", []):
+ 		key.append_array([int(projectile.uid), int(projectile.hp), int(projectile.distance), int(projectile.get("burn", 0))])
+ 	return key
+@@ -310,7 +320,15 @@
+ 	if shot_index < 0 or shot_index >= forecast.get("shots", []).size(): return ""
+ 	var shot: Dictionary = forecast.shots[shot_index]
+ 	if float(shot.get("intercept_probability", 0)) >= 0.999999: return "확정 요격"
+-	if shot.get("random", false): return "후열 무작위" if str(shot.id) == "bypass" else "무작위 표적"
++	if shot.get("random", false):
++		if str(shot.id) in ["prepare", "disrupt", "spread", "sequence"]:
++			return "%s %d%%" % [{"prepare": "예약", "disrupt": "차단", "spread": "화상 이동", "sequence": "탄종 연계"}[str(shot.id)], floori(minf(1.0, float(shot.get("effect_probability", 0)) + 0.0000001) * 100)]
++		return "후열 무작위" if str(shot.id) == "bypass" else "무작위 표적"
++	if not shot.get("prepared_rounds", []).is_empty(): return "다음 패 예약 %d장" % shot.prepared_rounds.size()
++	if int(shot.get("interrupted", 0)) > 0: return "준비 정지 %d턴" % shot.interrupted
++	if int(shot.get("transferred", 0)) > 0: return "화상 %d 이동" % shot.transferred
++	if int(shot.get("sequence_bonus", 0)) > 0: return "탄종 연계 +%d" % shot.sequence_bonus
++	if str(shot.id) in ["prepare", "disrupt", "spread", "sequence"]: return "조건 없음 · 추가 효과 0"
+ 	if int(shot.get("vented", 0)) > 0: return "열 %d → 피해 +%d" % [shot.vented, shot.vent_bonus]
+ 	if int(shot.get("thermal_bonus", 0)) > 0: return "고열 피해 +%d" % shot.thermal_bonus
+ 	if int(shot.get("cooled", 0)) > 0: return "냉각 −%d" % shot.cooled
+--- before/model.gd
++++ 새-게임-프로젝트\redesign\model.gd
+@@ -3,7 +3,7 @@
+ ## same shot resolver on a copy and never changes live state or RNG.
+ const Content = preload("res://redesign/content.gd")
+ const Ranged = preload("res://redesign/ranged.gd")
+-const VERSION := 11
++const VERSION := 12
+ var s: Dictionary = {}
+ # Exact forecast resolves the same rules without presentation snapshots or draws
+ # after the final action. This flag is never serialized or used by live commands.
+@@ -36,6 +36,7 @@
+ 	s.heat = 0
+ 	s.legacy_reload_penalty = 0
+ 	s.previous_kill = false
++	s.prepared = []
+ 	s.push_left = Content.push_budget(s)
+ 	s.exchange_left = Content.exchange_capacity(s)
+ 	s.field_compression_left = 0 if s.get("course", false) else clampi(field_charges, 0, 2) + Content.field_compression_bonus(s)
+@@ -147,7 +148,7 @@
+ 		var id: String = s.magazine.pop_front()
+ 		var source: String = Content.source_id(id)
+ 		var triad_ready: bool = recent_sources.size() >= 2 and recent_sources[-1] != recent_sources[-2] and source != recent_sources[-1] and source != recent_sources[-2]
+-		var result := _shot(id, -1, {"first": recent_sources.is_empty(), "last": s.magazine.is_empty(), "triad": triad_ready})
++		var result := _shot(id, -1, {"first": recent_sources.is_empty(), "last": s.magazine.is_empty(), "triad": triad_ready, "fired_count": recent_sources.size(), "sequence_count": Content.prior_kind_count(recent_sources, id)})
+ 		results.append(result)
+ 		peak_heat = maxi(peak_heat, int(s.get("heat", 0)))
+ 		recent_sources.append(source)
+@@ -185,6 +186,7 @@
+ 		s.reward_taken = false
+ 	if s.phase in ["reward", "won", "lost"]:
+ 		s.heat = 0
++		s.prepared = []
+ 		s.legacy_reload_penalty = 0
+ 		_release_unfired_field_round()
+ 	var firing_enemies: Array = [] if forecast_only else s.enemies.duplicate(true)
+@@ -240,10 +242,14 @@
+ 		# Unused rounds cycle into discard; ownership is conserved, including in previews.
+ 		s.discard.append_array(s.hand)
+ 		s.hand.clear()
+-		if not forecast_only: _refill()
++		if not forecast_only:
++			_draw_prepared()
++			_refill()
++		else: s.prepared = []
+ 		s.message = "재장전 · %d턴 · 열 %d→%d · 새 패 %d장" % [cost, heat_before, s.heat, s.hand.size()]
+ 	else:
+ 		s.message = "재장전 도중 적이 0m에 도달했습니다."
++	if s.phase in ["reward", "won", "lost"]: s.prepared = []
+ 	last_reload_detail = {"cost": cost, "heat_paid": heat_paid, "heat_before": heat_before, "heat_after": int(s.heat), "advance_events": advance_events, "deployments": deployments, "phase": s.phase}
+ 	if not forecast_only: _record("reload", last_reload_detail)
+ 	return true
+@@ -273,7 +279,7 @@
+ 		# survivor before ordinary movement, so the full distance cost is knowable.
+ 		for source_index in range(s.enemies.size()):
+ 			var source: Dictionary = s.enemies[source_index]
+-			if int(source.hp) <= 0 or int(source.get("charge_max", 0)) <= 0:
++			if int(source.hp) <= 0 or int(source.get("charge_max", 0)) <= 0 or int(source.get("jammed", 0)) > 0:
+ 				continue
+ 			source.charge = int(source.get("charge", 0)) + 1
+ 			var released := int(source.charge) >= int(source.charge_max)
+@@ -309,6 +315,8 @@
+ 		if s.phase == "lost":
+ 			break
+ 		events.append_array(Ranged.advance(s, i, not forecast_only))
++		for enemy in s.enemies:
++			if int(enemy.get("jammed", 0)) > 0: enemy.jammed = int(enemy.jammed) - 1
+ 		if s.phase == "lost": break
+ 	return events
+ 
+@@ -430,6 +438,19 @@
+ 	var vent_bonus := vented * int(profile.effect)
+ 	s.heat = heat_before + heat_added - cooled - vented
+ 	var chase_bonus := int(profile.effect) if spec.effect == "chase" and bool(s.get("previous_kill", false)) else 0
++	var sequence_bonus := int(profile.effect) * int(part_context.get("sequence_count", 0)) if spec.effect == "sequence" else 0
++	var prepared_rounds: Array = []
++	if spec.effect == "prepare":
++		if not s.has("prepared"): s.prepared = []
++		var candidates: Array = []
++		for value in s.magazine:
++			var next_id := str(value)
++			if next_id == "basic" or Content.is_temporary(next_id): continue
++			candidates.append(next_id)
++			if s.prepared.count(next_id) >= candidates.count(next_id): continue
++			if s.prepared.size() >= 3 or prepared_rounds.size() >= int(profile.effect): break
++			s.prepared.append(next_id)
++			prepared_rounds.append(next_id)
+ 	var alive_before := alive_count()
+ 	var dmg_buff := int(s.buff.get("dmg", 0))
+ 	var pen := int(profile.pen)
+@@ -463,7 +484,7 @@
+ 		part_bonus += 5
+ 		if not minimal: part_combo.append("삼중 +5")
+ 		if not minimal: part_effects.append({"id": "triad", "label": "피해 +5"})
+-	var raw := int(profile.damage) + dmg_buff + weakness_bonus + part_bonus + chase_bonus + thermal_bonus + vent_bonus
++	var raw := int(profile.damage) + dmg_buff + weakness_bonus + part_bonus + chase_bonus + thermal_bonus + vent_bonus + sequence_bonus
+ 	var armor := maxi(0, int(e.def) - pen)
+ 	var per_hit := maxi(1, raw - armor) if raw > 0 else 0
+ 	var requested_hits := int(profile.hits)
+@@ -544,6 +565,24 @@
+ 		e.distance += pushed
+ 		s.push_left = maxi(0, int(s.push_left) - pushed)
+ 	var secondary: Array = []
++	var interrupted := 0
++	if spec.effect == "disrupt" and int(e.hp) > 0 and not Ranged.is_projectile(index) and not bool(e.get("disrupted", false)):
++		if int(e.get("charge_max", 0)) > 0 or (str(e.get("kind", "")) == "spitter" and str(e.get("ranged_phase", "")) == "prepare"):
++			interrupted = int(profile.effect)
++			e.jammed = interrupted
++			e.disrupted = true
++	var transferred := 0
++	if spec.effect == "spread" and not Ranged.is_projectile(index) and burn_before > 0:
++		var others: Array = []
++		for i in range(s.enemies.size()):
++			if i != index and int(s.enemies[i].hp) > 0: others.append(i)
++		others.sort_custom(func(a: int, b: int): return int(s.enemies[a].distance) < int(s.enemies[b].distance) if int(s.enemies[a].distance) != int(s.enemies[b].distance) else a < b)
++		if not others.is_empty():
++			var other: Dictionary = s.enemies[others[0]]
++			transferred = mini(mini(burn_before, int(profile.effect)), 6 - int(other.get("burn", 0)))
++			e.burn = int(e.burn) - transferred
++			other.burn = int(other.get("burn", 0)) + transferred
++			if transferred > 0: secondary.append({"kind": "burn_transfer", "target": others[0], "damage": 0, "hp": other.hp, "burn": other.burn, "transferred": transferred})
+ 	if spec.effect == "arc":
+ 		var others: Array = []
+ 		for i in active_targets():
+@@ -567,7 +606,17 @@
+ 	s.previous_kill = alive_count() < alive_before
+ 	var kill_cooled := mini(int(s.heat), int(Content.PARTS.reclaimer.cool_on_kill)) if active_parts.has("reclaimer") and s.previous_kill else 0
+ 	s.heat -= kill_cooled
+-	if minimal: return {"damage": damage, "heat_after": int(s.heat), "heat_before": heat_before, "overheated": int(s.heat) >= int(profile.heat_limit), "kill_cooled": kill_cooled, "vented": vented, "thermal_bonus": thermal_bonus, "part_hot": active_parts.has("ember_core") and heat_before >= int(profile.hot_threshold) and hits > blocked_hits}
++	var chain_cooled := mini(int(s.heat), int(Content.PARTS.chain_sink.third_cooling)) if active_parts.has("chain_sink") and int(part_context.get("fired_count", -1)) == 2 else 0
++	s.heat -= chain_cooled
++	if minimal: return {"damage": damage, "heat_after": int(s.heat), "heat_before": heat_before, "overheated": int(s.heat) >= int(profile.heat_limit), "kill_cooled": kill_cooled, "chain_cooled": chain_cooled, "prepared_rounds": prepared_rounds, "interrupted": interrupted, "transferred": transferred, "sequence_bonus": sequence_bonus, "vented": vented, "thermal_bonus": thermal_bonus, "part_hot": active_parts.has("ember_core") and heat_before >= int(profile.hot_threshold) and hits > blocked_hits}
++	if chain_cooled > 0: combo.append("세 번째 발 냉각 −%d" % chain_cooled)
++	if interrupted > 0: combo.append("특수 행동 %d턴 차단" % interrupted)
++	if transferred > 0: combo.append("화상 %d 이동" % transferred)
++	if sequence_bonus > 0: combo.append("탄종 연계 +%d" % sequence_bonus)
++	if not prepared_rounds.is_empty():
++		var labels: PackedStringArray = []
++		for next_id in prepared_rounds: labels.append(Content.AMMO[next_id].name)
++		combo.append("다음 패 예약 · " + "/".join(labels))
+ 	if not minimal and (kill_cooled > 0): combo.append("처치 냉각 −%d" % kill_cooled)
+ 	if not minimal and (vented > 0): combo.append("열 %d 소모 · 피해 +%d" % [vented, vent_bonus])
+ 	if not minimal and (thermal_bonus > 0): combo.append("고열 피해 +%d" % thermal_bonus)
+@@ -577,9 +626,20 @@
+ 	if e.hp == 0: description += " · 요격" if Ranged.is_projectile(index) else " · 처치"
+ 	var result := {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "burn_tick": int(profile.burn_tick), "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description, "focus_before": focus_before, "focus_after": int(e.get("focus_hits", 0)), "focus_damage": focus_damage, "focus_triggers": focus_triggers, "barrier_before": barrier_before, "barrier": int(e.get("barrier", 0)), "blocked_hits": blocked_hits, "barrier_removed": barrier_removed, "boost_granted": int(profile.effect) if spec.effect == "boost" else 0}
+ 	result.part_effects = preload("res://redesign/part_feedback.gd").shot_effects(s, result, part_effects, burn_before)
++	if chain_cooled > 0: result.part_effects.append({"id": "chain_sink", "label": "세 번째 발 냉각 −%d" % chain_cooled})
++	if active_parts.has("indexer") and prepared_rounds.size() > Content.multiplier(s): result.part_effects.append({"id": "indexer", "label": "예약 +1장"})
++	if transferred > int(spec.value) * Content.multiplier(s):
++		if active_parts.has("coil"): result.part_effects.append({"id": "coil", "label": "화상 이동 강화"})
++		if active_parts.has("inferno"): result.part_effects.append({"id": "inferno", "label": "화상 이동 강화"})
+ 	if kill_cooled > 0: result.part_effects.append({"id": "reclaimer", "label": "처치 냉각 −%d" % kill_cooled})
+ 	result.heat_added = heat_added
+-	result.cooled = cooled + vented + kill_cooled
++	result.cooled = cooled + vented + kill_cooled + chain_cooled
++	result.chain_cooled = chain_cooled
++	result.prepared_rounds = prepared_rounds
++	result.interrupted = interrupted
++	result.transferred = transferred
++	result.sequence_bonus = sequence_bonus
++	result.math.sequence = sequence_bonus
+ 	result.kill_cooled = kill_cooled
+ 	result.vented = vented
+ 	result.thermal_bonus = thermal_bonus
+@@ -762,6 +822,17 @@
+ 		items[j] = value
+ 	s.rng_state = str(rng.state)
+ 
++func _draw_prepared() -> void:
++	# Reservations move owned cards, never add cards or consume draw RNG.
++	for id in s.get("prepared", []):
++		if s.hand.size() >= Content.hand_capacity(s): break
++		for zone in [s.discard, s.draw]:
++			if zone.has(id):
++				zone.erase(id)
++				s.hand.append(id)
++				break
++	s.prepared = []
++
+ func _refill(target_size: int = -1) -> void:
+ 	if target_size < 0: target_size = Content.hand_capacity(s)
+ 	while s.hand.size() < target_size:
+@@ -810,7 +881,7 @@
+ 		parsed = _migrate_v7(_migrate_v6(parsed))
+ 	elif int(parsed.get("version", -1)) == 7:
+ 		parsed = _migrate_v7(parsed)
+-	elif int(parsed.get("version", -1)) not in [8, 9, 10, VERSION]:
++	elif int(parsed.get("version", -1)) not in [8, 9, 10, 11, VERSION]:
+ 		return false
+ 	if not parsed.has("course"): parsed.course = false
+ 	if not parsed.course is bool: return false
+@@ -822,10 +893,11 @@
+ 		parsed.heat = 0
+ 		parsed.erase("reload_heat")
+ 		parsed.version = VERSION
+-	if int(parsed.version) in [9, 10]:
++	if int(parsed.version) in [9, 10, 11]:
+ 		# Saved arrays already describe displayed firing order. Keep that order,
+ 		# including a confirmed/partially fired magazine; new input uses LIFO.
+ 		parsed.version = VERSION
++	if not parsed.has("prepared"): parsed.prepared = []
+ 	if not _whole(parsed.get("heat", -1), 0, 1000000): return false
+ 	if not _whole(parsed.get("legacy_reload_penalty", 0), 0, 1000000): return false
+ 	parsed.heat = int(parsed.heat)
+@@ -880,6 +952,10 @@
+ 			if not Content.AMMO.has(id): return false
+ 			if key in ["deck", "hand", "draw", "discard"] and id == "basic": return false
+ 			if key in ["deck", "hand", "draw", "discard"] and Content.is_temporary(str(id)): return false
++	if not parsed.prepared is Array or parsed.prepared.size() > 3: return false
++	for id in parsed.prepared:
++		if not id is String or not Content.AMMO.has(id) or id == "basic" or Content.is_temporary(id): return false
++		if parsed.prepared.count(id) > parsed.deck.count(id): return false
+ 	# Legacy city saves may already contain six or seven cards. They remain
+ 	# readable, while every new removal/compression path enforces the new floor 8.
+ 	if parsed.deck.size() < (2 if parsed.course else 6) or parsed.deck.size() > 14 or parsed.hand.size() > Content.hand_capacity(parsed) or not Content.valid_stack(parsed.magazine, limit) or not Content.valid_stack(parsed.plan, limit):
+@@ -1006,6 +1082,8 @@
+ 
+ func _valid_enemy(enemy: Variant) -> bool:
+ 	if not enemy is Dictionary: return false
++	if not _whole(enemy.get("jammed", 0), 0, 2) or not enemy.get("disrupted", false) is bool: return false
++	if int(enemy.get("jammed", 0)) > 0 and not bool(enemy.get("disrupted", false)): return false
+ 	for key in ["kind", "name", "hp", "max_hp", "def", "speed", "distance", "burn"]:
+ 		if not enemy.has(key): return false
+ 	if not Content.ENEMY_NAMES.has(enemy.kind) or not enemy.name is String: return false
+--- before/part_card_view.gd
++++ 새-게임-프로젝트\redesign\part_card_view.gd
+@@ -7,6 +7,7 @@
+ const MUTED := Color("94a9ae")
+ const CHIP := Color("12212a")
+ const COLORS := {
++	"cooling_breech": Color("a1c6cf"), "chain_sink": Color("b8b1d3"), "indexer": Color("b9cca5"),
+ 	"radiator": Color("96b9d0"),
+ 	"reclaimer": Color("94c4ba"),
+ 	"ember_core": Color("ed9167"),
+@@ -147,6 +148,9 @@
+ func _draw_part_icon(p: Vector2, accent: Color, scale_factor: float) -> void:
+ 	# Small mechanical silhouettes share the ammunition's square pixel language.
+ 	var patterns := {
++		"cooling_breech": ["..ssssssss..", "..sHHHHHHs..", "aaHaaaaaaHaa", "..sHHHHHHs..", "aaHaaaaaaHaa", "..ssssssss..", "....HHHH....", "....ssss...."],
++		"chain_sink": [".ss.ss.ss...", ".sH.sH.sH...", ".sH.sH.aa...", ".ssssssaa...", "..HHHHaaaa..", "..HHHH.aa...", "..HHHH.aa...", "..ssssssss.."],
++		"indexer": ["..sss..sss..", "..sHs..sHs..", "..sas..sas..", "..sHs..sHs..", "..ssssssss..", "..aHHHHHHa..", "..aaaHHaaa..", "....aaaa...."],
+ 		"radiator": [".s.s.ss.s.s.", ".HaHaHHaHaH.", ".HaHaHHaHaH.", ".ssssssssss.", ".HaHaHHaHaH.", ".HaHaHHaHaH.", ".s.s.ss.s.s.", "...ssssss..."],
+ 		"reclaimer": ["....ssss....", "..ssHHHHss..", ".sHHaaHHHHs.", ".sHaaaaaaHs.", ".sHHHHaaHHs.", "..ssHHHHss..", "ss..ssss..ss", "ssssssssssss"],
+ 		"ember_core": ["..ss....ss..", ".sHHssssHHs.", ".ssHaaaaHss.", ".sHaaaaaaHs.", ".sHaaaaaaHs.", ".ssHaaaaHss.", ".sHHssssHHs.", "..ss....ss.."],
+@@ -188,6 +192,15 @@
+ func _draw_effect_icon(center: Vector2, color: Color, scale_factor: float) -> void:
+ 	draw_set_transform(center, 0.0, Vector2.ONE * scale_factor)
+ 	match part_id:
++		"cooling_breech":
++			for y in [-8, 0, 8]: draw_rect(Rect2(-10, y - 1, 20, 2), color)
++		"chain_sink":
++			for x in [-8, 0, 8]:
++				if x == 8: draw_rect(Rect2(x - 2, -6, 4, 12), color)
++				else: draw_rect(Rect2(x - 2, -6, 4, 12), color, false, 2)
++		"indexer":
++			draw_rect(Rect2(-10, -8, 7, 15), color, false, 2)
++			draw_rect(Rect2(3, -8, 7, 15), color, false, 2)
+ 		"radiator":
+ 			for x in [-8.0, 0.0, 8.0]: draw_rect(Rect2(x - 2, -9, 4, 18), color)
+ 		"reclaimer":
+--- before/part_feedback.gd
++++ 새-게임-프로젝트\redesign\part_feedback.gd
+@@ -1,7 +1,7 @@
+ extends RefCounted
+ ## Presentation observations only. No commands, RNG, or counterfactual HP totals.
+ const Content = preload("res://redesign/content.gd")
+-const PASSIVE := ["loader", "supply", "reserve", "field_press", "radiator"]
++const PASSIVE := ["loader", "supply", "reserve", "field_press", "radiator", "cooling_breech"]
+ 
+ static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array, burn_before: int) -> Array:
+ 	var effects: Array = []
+@@ -31,7 +31,7 @@
+ 					label = "화상 +%d" % mini(bonus, int(shot.burn) - without)
+ 			"capacitor", "arc_splitter":
+ 				# Applied enhancement, not additive credit for enemy HP removed.
+-				if not shot.secondary.is_empty(): label = "전이 강화"
++				if spec.effect == "arc" and not shot.secondary.is_empty(): label = "전이 강화"
+ 			"rammer", "momentum":
+ 				if int(shot.push) > 0: label = "밀기 %dm" % int(shot.push)
+ 		if not label.is_empty(): effects.append({"id": part, "label": label})
+@@ -53,7 +53,7 @@
+ 	if PASSIVE.has(part): return "장착 중 · " + str(Content.PARTS[part].upside)
+ 	if prediction.get("pending", false): return "발동 예측 계산 중"
+ 	if prediction.get("random", false):
+-		if part in ["reclaimer", "ember_core"]:
++		if part in ["reclaimer", "ember_core", "chain_sink", "indexer"]:
+ 			var chances: PackedStringArray = []
+ 			for i in range(prediction.get("shots", []).size()):
+ 				var chance := float(prediction.shots[i].get("part_probabilities", {}).get(part, 0))
+--- before/pixel_art.gd
++++ 새-게임-프로젝트\redesign\pixel_art.gd
+@@ -65,6 +65,24 @@
+ 	canvas.draw_rect(Rect2(width - 2, -6, 2, 18), Color("374952"))
+ 	canvas.draw_rect(Rect2(-width - 1, 12, width * 2 + 2, 3), color)
+ 	match kind:
++		"prepare":
++			canvas.draw_rect(Rect2(-7, -14, 14, 7), LIGHT)
++			canvas.draw_rect(Rect2(-4, -13, 8, 4), color)
++			for y in [-4, 3]: canvas.draw_rect(Rect2(-3, y, 6, 4), color)
++			canvas.draw_rect(Rect2(6, 0, 3, 9), LIGHT)
++		"disrupt":
++			for x in [-7, 4]: canvas.draw_rect(Rect2(x, -17, 3, 12), color)
++			canvas.draw_rect(Rect2(-7, -7, 14, 3), LIGHT)
++			canvas.draw_rect(Rect2(-5, 1, 10, 3), INK)
++		"spread":
++			for x in [-7, 2]:
++				canvas.draw_rect(Rect2(x, -12, 5, 7), color)
++				canvas.draw_rect(Rect2(x + 1, -15, 3, 3), LIGHT)
++			canvas.draw_rect(Rect2(-2, -3, 4, 12), Color("b66043"))
++		"sequence":
++			canvas.draw_rect(Rect2(-3, -17, 6, 10), color)
++			for n in range(3):
++				canvas.draw_rect(Rect2(-6, -4 + n * 5, 12, 3), LIGHT if n == 2 else color)
+ 		"vent":
+ 			canvas.draw_rect(Rect2(-8, -11, 16, 5), LIGHT)
+ 			canvas.draw_rect(Rect2(-3, -15, 6, 4), color)
+--- before/ranged.gd
++++ 새-게임-프로젝트\redesign\ranged.gd
+@@ -24,6 +24,7 @@
+ 	return ceili(float(projectile.distance) / PROJECTILE_SPEED)
+ 
+ static func intent(enemy: Dictionary) -> String:
++	if int(enemy.get("jammed", 0)) > 0: return "차단 %d턴 · 준비 정지" % int(enemy.jammed)
+ 	match str(enemy.get("ranged_phase", "prepare")):
+ 		"waiting": return "탄 비행 중"
+ 		"recover": return "회복 1턴"
+@@ -43,6 +44,7 @@
+ 	for i in range(state.enemies.size()):
+ 		var enemy: Dictionary = state.enemies[i]
+ 		if int(enemy.hp) <= 0 or str(enemy.kind) != "spitter": continue
++		if int(enemy.get("jammed", 0)) > 0: continue
+ 		var phase := str(enemy.ranged_phase)
+ 		if phase == "waiting":
+ 			if not active(state).is_empty(): continue
+--- before/readability.gd
++++ 새-게임-프로젝트\redesign\readability.gd
+@@ -30,6 +30,10 @@
+ 	if id == "vent": return "먼저 장전 · 마지막 발사. 현재 열을 최대 %d 소모하고, 열 1마다 피해 +%d. 앞선 탄에서 과열되면 발사되지 않습니다." % [int(spec.heat_spend), Content.effect_value(id, state)]
+ 	if id == "thermal": return "발사 직전 열이 %d 이상이면 직접 피해 +%d. 자신의 발열로 조건을 채우지 않습니다." % [Content.hot_threshold(state), Content.effect_value(id, state)]
+ 	if id == "cool": return "현재 열을 %d 낮춥니다. 과열 한계에 도달하기 전에 배치하세요. 열은 0 아래로 내려가지 않습니다." % Content.effect_value(id, state)
++	if id == "prepare": return "뒤의 전술탄 %d발을 다음 재장전 패로 예약합니다. 회수탄·현장 압축탄 제외, 전체 예약 최대 3장. 먼저 발사되도록 마지막에 장전하세요. 탄환은 복제하지 않습니다." % Content.effect_value(id, state)
++	if id == "disrupt": return "생존 표적의 발사 준비·충전을 %d턴 정지합니다. 적마다 한 번만 적용하며, 이동·이미 발사된 압력탄·교대 장갑은 멈추지 않습니다." % Content.effect_value(id, state)
++	if id == "spread": return "표적의 화상 최대 %d를 가장 가까운 다른 생존 적에게 옮깁니다. 원래 화상은 옮긴 만큼 줄며 도착한 적은 최대 6턴까지 받습니다. 소이 → 확산 순서로 발사하세요." % Content.effect_value(id, state)
++	if id == "sequence": return "이번 탄창에서 앞서 발사한 다른 탄종마다 피해 +%d, 최대 3종. 같은 탄과 압축형은 한 종류이며 연계탄 자신은 제외합니다. 긴 탄창과 다양한 저발열탄에 연결됩니다." % Content.effect_value(id, state)
+ 	if id == "arc": return "주 표적 공격 후 가장 가까운 다른 생존 적에게 전이 %d피해." % Content.effect_value(id, state)
+ 	return Content.AMMO[id].text
+ 
+@@ -57,6 +61,7 @@
+ 	var equation := "피해 %d" % m.base
+ 	if int(m.get("thermal", 0)) > 0: equation += " + 고열 %d" % int(m.thermal)
+ 	if int(m.get("vent", 0)) > 0: equation += " + 열 전환 %d" % int(m.vent)
++	if int(m.get("sequence", 0)) > 0: equation += " + 탄종 연계 %d" % int(m.sequence)
+ 	if m.boost > 0: equation += " + 증폭 %d" % m.boost
+ 	if int(m.get("chase", 0)) > 0: equation += " + 추격 %d" % int(m.chase)
+ 	if int(m.get("part_bonus", 0)) > 0: equation += " + 파츠 %d" % int(m.part_bonus)
+@@ -69,6 +74,11 @@
+ 	if int(m.get("focus", 0)) > 0: equation += " + 집중 %d" % m.focus
+ 	line += "\n" + equation
+ 	var reasons: PackedStringArray = []
++	if not shot.get("prepared_rounds", []).is_empty():
++		var names: PackedStringArray = []
++		for id in shot.prepared_rounds: names.append(Content.AMMO[id].name)
++		reasons.append("다음 패 예약 · " + "/".join(names))
++	if int(shot.get("interrupted", 0)) > 0: reasons.append("특수 행동 %d턴 정지 · 이 적 차단 소진" % shot.interrupted)
+ 	if int(shot.get("detonation", 0)) > 0: reasons.append("남은 화상 기폭 %d피해 · 화상 소모" % int(shot.detonation))
+ 	if int(shot.get("armor_removed", 0)) > 0: reasons.append("후속 장갑 −%d" % int(shot.armor_removed))
+ 	if int(shot.get("cooled", 0)) > 0: reasons.append("열 −%d" % int(shot.cooled))
+@@ -78,7 +88,9 @@
+ 	if int(shot.get("burn_added", 0)) > 0: reasons.append("화상 +%d → %d" % [shot.burn_added, shot.burn])
+ 	if int(shot.get("push", 0)) > 0: reasons.append("거리 +%dm" % shot.push)
+ 	for other in shot.get("secondary", []):
+-		if str(other.get("kind", "arc")) == "spread":
++		if str(other.get("kind", "arc")) == "burn_transfer":
++			reasons.append("%s에게 화상 %d 이동" % [Forecast.tag(other.target), other.transferred])
++		elif str(other.get("kind", "arc")) == "spread":
+ 			reasons.append("%s 확산 %d피해 (절반%d − 장갑%d, %d회) · HP%d" % [Forecast.tag(other.target), other.damage, other.raw, other.armor, other.hits, other.hp])
+ 		else: reasons.append("%s 전이 %d피해 (고정) · HP%d" % [Forecast.tag(other.target), other.damage, other.hp])
+ 	if not reasons.is_empty(): line += "\n" + " · ".join(reasons)
+--- before/run_insight.gd
++++ 새-게임-프로젝트\redesign\run_insight.gd
+@@ -4,7 +4,7 @@
+ const Content = preload("res://redesign/content.gd")
+ 
+ static func combat_report(state: Dictionary, floor_filter: int = -1) -> Dictionary:
+-	var report := {"shots": 0, "direct": 0, "burn": 0, "arc": 0, "spread": 0, "focus": 0, "boost_hits": 0, "push": 0, "kills": 0, "heat_peak": 0, "heat_added": 0, "cooled": 0, "vented": 0, "kill_cooled": 0, "heat_used_shots": 0, "overheats": 0, "forced_reloads": 0}
++	var report := {"shots": 0, "direct": 0, "burn": 0, "arc": 0, "spread": 0, "focus": 0, "boost_hits": 0, "push": 0, "kills": 0, "heat_peak": 0, "heat_added": 0, "cooled": 0, "vented": 0, "kill_cooled": 0, "chain_cooled": 0, "heat_used_shots": 0, "overheats": 0, "forced_reloads": 0}
+ 	for entry_value in state.get("history", []):
+ 		var entry: Dictionary = entry_value
+ 		if floor_filter >= 0 and int(entry.get("floor", -1)) != floor_filter:
+@@ -23,6 +23,7 @@
+ 				report.cooled += int(shot.get("cooled", 0))
+ 				report.vented += int(shot.get("vented", 0))
+ 				report.kill_cooled += int(shot.get("kill_cooled", 0))
++				report.chain_cooled += int(shot.get("chain_cooled", 0))
+ 				var used_heat := int(shot.get("thermal_bonus", 0)) > 0 or int(shot.get("vent_bonus", 0)) > 0
+ 				for effect in shot.get("part_effects", []):
+ 					if str(effect.get("id", "")) == "ember_core": used_heat = true
+@@ -61,7 +62,7 @@
+ 	return "교전 기록 · " + " · ".join(items)
+ 
+ static func heat_report_tip(report: Dictionary) -> String:
+-	return "최고 열은 각 탄의 효과와 처치 냉각 적용 후 기록합니다.\n냉각 %d = 냉각탄 %d + 방출탄 %d + 순환펌프 %d. 재장전 냉각은 제외합니다.\n열 보너스가 적용된 탄 %d발. 추가 HP 피해량과는 다릅니다.\n과열 %d회 중 강제 재장전 %d회. 과열한 발로 전투가 끝나면 강제 재장전은 생략됩니다." % [report.cooled, int(report.cooled) - int(report.vented) - int(report.kill_cooled), report.vented, report.kill_cooled, report.heat_used_shots, report.overheats, report.forced_reloads]
++	return "최고 열은 각 탄의 효과와 처치 냉각 적용 후 기록합니다.\n냉각 %d = 냉각탄 %d + 방출탄 %d + 순환펌프 %d + 연쇄 방열 %d. 재장전 냉각은 제외합니다.\n열 보너스가 적용된 탄 %d발. 추가 HP 피해량과는 다릅니다.\n과열 %d회 중 강제 재장전 %d회. 과열한 발로 전투가 끝나면 강제 재장전은 생략됩니다." % [report.cooled, int(report.cooled) - int(report.vented) - int(report.kill_cooled) - int(report.get("chain_cooled", 0)), report.vented, report.kill_cooled, int(report.get("chain_cooled", 0)), report.heat_used_shots, report.overheats, report.forced_reloads]
+ 
+ # Compare with/without this part, including existing capacity/reload modifiers.
+ # Already equipped parts show their contribution rather than adding them twice.
+@@ -95,7 +96,7 @@
+ 	for turn in range(1, 100):
+ 		for source_index in range(rows.size()):
+ 			var source: Dictionary = rows[source_index]
+-			if int(source.get("hp", 0)) <= 0 or int(source.get("charge_max", 0)) <= 0: continue
++			if int(source.get("hp", 0)) <= 0 or int(source.get("charge_max", 0)) <= 0 or int(source.get("jammed", 0)) > 0: continue
+ 			source.charge = int(source.get("charge", 0)) + 1
+ 			if int(source.charge) >= int(source.charge_max):
+ 				source.charge = 0
+@@ -107,6 +108,7 @@
+ 			if int(enemy.get("hp", 0)) <= 0: continue
+ 			enemy.distance = maxi(0, int(enemy.distance) - int(enemy.speed))
+ 			if int(enemy.distance) == 0: return turn
++			if int(enemy.get("jammed", 0)) > 0: enemy.jammed = int(enemy.jammed) - 1
+ 	return 99
+ 
+ static func threat_line(enemies: Array) -> String:
+@@ -121,6 +123,10 @@
+ 	var threat := threat_data(next_enemies)
+ 	if Content.AMMO.has(id):
+ 		match id:
++			"prepare": return "뒤 %d발을 다음 패로 · 탄창 %d칸에서 준비할 자리 확보" % [Content.effect_value(id, state), Content.capacity(state)]
++			"disrupt": return "특수 행동 %d턴 정지 · 적마다 한 번" % Content.effect_value(id, state)
++			"spread": return "소이 뒤에서 화상을 옆 적으로 이동 · 지속 피해 빌드"
++			"sequence": return "앞선 다른 탄종×%d · 긴 탄창과 저발열 조합" % Content.effect_value(id, state)
+ 			"shatter": return "장갑 −%d · 연발 앞에 배치" % Content.effect_value(id, state)
+ 			"detonate": return "소이 다음에 배치 · 남은 화상을 즉시 피해로"
+ 			"chase": return "처치 다음에 배치 · 피해 +%d" % Content.effect_value(id, state)
+@@ -147,6 +153,9 @@
+ 		var before: Dictionary = states[0]
+ 		var after: Dictionary = states[1]
+ 		match id:
++			"cooling_breech": return "탄창 %d→%d · 재장전 냉각 %d→%d" % [Content.capacity(before), Content.capacity(after), Content.reload_cooling(before), Content.reload_cooling(after)]
++			"chain_sink": return "세 번째 발 냉각 −3 · 열 한계 %d→%d" % [Content.heat_limit(before), Content.heat_limit(after)]
++			"indexer": return "예약탄 뒤 %d→%d장 예약 · 뒤에 탄창 공간 필요" % [Content.effect_value("prepare", before), Content.effect_value("prepare", after)]
+ 			"radiator":
+ 				return "열 한계 %d→%d · 고열 조건 %d→%d" % [Content.heat_limit(before), Content.heat_limit(after), Content.hot_threshold(before), Content.hot_threshold(after)]
+ 			"reclaimer":
+--- before/screen.gd
++++ 새-게임-프로젝트\redesign\screen.gd
+@@ -788,7 +788,18 @@
+ 	var queue_heading := layout.get_node("%QueueHeading") as Label
+ 	queue_heading.add_theme_font_size_override("font_size", _scaled(17 if compact else 20))
+ 	var hand_controls := layout.get_node("%HandControls") as HBoxContainer
+-	if campaign != null and bool(preferences.data.hints):
++	if not model.s.get("prepared", []).is_empty():
++		var prepared_names: PackedStringArray = []
++		for id in model.s.prepared: prepared_names.append(Content.AMMO[id].name)
++		var reservation := _label(hand_heading.get_parent(), "다음 패 예약 · " + " / ".join(prepared_names), 17, Color("c4c392"))
++		reservation.name = "ReservationStatus"
++		reservation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
++		reservation.autowrap_mode = TextServer.AUTOWRAP_OFF
++		reservation.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
++		reservation.tooltip_text = reservation.text + "\n재장전하면 소유 탄환을 다음 패로 가져옵니다. 탄환을 복제하지 않습니다."
++		hand_heading.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
++		hand_heading.get_parent().move_child(reservation, 1)
++	elif campaign != null and bool(preferences.data.hints):
+ 		var lesson := CampaignContent.lesson(campaign.node(), model.s)
+ 		if not lesson.is_empty():
+ 			hand_heading.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+@@ -1482,7 +1493,8 @@
+ 	elif int(result.get("math", {}).get("boost", 0)) > 0:
+ 		preview_label.text += " · 증폭 +%d" % int(result.math.boost)
+ 
+-	for entry in [["armor_removed", "장갑 −%d"], ["detonation", "기폭 %d"], ["chase_bonus", "추격 +%d"], ["cooled", "냉각 −%d"]]:
++	if not result.get("prepared_rounds", []).is_empty(): preview_label.text += " · 다음 패 %d장 예약" % result.prepared_rounds.size()
++	for entry in [["sequence_bonus", "탄종 연계 +%d"], ["interrupted", "차단 %d턴"], ["transferred", "화상 이동 %d"], ["armor_removed", "장갑 −%d"], ["detonation", "기폭 %d"], ["chase_bonus", "추격 +%d"], ["cooled", "냉각 −%d"]]:
+ 		if int(result.get(entry[0], 0)) > 0: preview_label.text += " · " + str(entry[1]) % int(result[entry[0]])
+ 
+ func _heat_feedback(event: Dictionary) -> void:

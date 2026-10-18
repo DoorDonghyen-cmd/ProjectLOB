@@ -82,7 +82,7 @@ func capture(label: String) -> void:
 
 func close_dialogs() -> void:
 	for child in screen.get_children():
-		if child is AcceptDialog: child.hide(); child.queue_free()
+		if child is AcceptDialog or child.has_meta("lob_modal"): child.hide(); child.queue_free()
 	await settle()
 
 func run() -> void:
@@ -157,15 +157,15 @@ func run() -> void:
 	await tap("load_pierce")
 	var turns: int = screen.model.s.turns
 	await slot(0)
-	check(screen.model.s.plan == ["charge", "precise", "pierce"], "slot tap selects without removing")
+	check(screen.model.s.plan == ["pierce", "precise", "charge"], "slot tap selects without removing")
 	await tap("slot_next")
-	check(screen.model.s.plan == ["precise", "charge", "pierce"], "tap order edit")
+	check(screen.model.s.plan == ["precise", "pierce", "charge"], "tap order edit")
 	await drag_slot(0, 2)
-	check(screen.model.s.plan == ["charge", "pierce", "precise"], "touch drag reorders the firing rail")
+	check(screen.model.s.plan == ["pierce", "charge", "precise"], "touch drag reorders the firing rail")
 	check(screen.model.s.turns == turns, "editing spends no turns")
 	await capture("combat_edit")
 	await tap("undo")
-	check(screen.model.s.plan == ["charge", "pierce"], "end recall removes the rightmost round after a reorder")
+	check(screen.model.s.plan == ["charge", "precise"], "recall removes the visible front round after a reorder")
 	await tap("remove_selected")
 	check(screen.model.s.plan.size() == 1, "explicit selected removal")
 	while not screen.model.s.plan.is_empty(): await tap("undo")
@@ -203,7 +203,8 @@ func run() -> void:
 	await settle()
 	await tap("city_part_select_overbore")
 	var effects := screen.find_child("PartEffectChanges", true, false) as Label
-	check(effects != null and effects.text.contains("잃음  교전마다 현장 압축 +1회") and effects.text.contains("해제  탄창 −2칸") and effects.text.contains("얻음  피해·관통 +2"), "comparison exposes gain, lost rule, and released penalty")
+	var costs := screen.find_child("PartCostChanges", true, false) as Label
+	check(effects != null and costs != null and effects.text.contains("잃음  교전마다 현장 압축 +1회") and costs.text.contains("해제  탄창 −2칸") and effects.text.contains("얻음  피해·관통 +2"), "comparison exposes gain, lost rule, and released penalty")
 	await capture("parts_compare")
 	await tap("city_deck_equip_overbore")
 	check(screen.campaign.is_equipped("overbore") and not screen.campaign.is_equipped("field_press") and screen.campaign.s.parts.has("field_press"), "atomic replacement preserves removed part")

@@ -1,0 +1,49 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-11",
+  "purpose": "Combat-only small-scale barrel/muzzle readability; equipment-screen artwork remains original.",
+  "edits": "Unmodified generated PNGs. Nearest filtering and existing alpha-cutout shader at runtime; registered mechanical parts for reload. No bitmap postprocessing.",
+  "assets": [
+    {
+      "gun": "single",
+      "prompt": "Edit attached weapon into a COMBAT-SCALE simplified pixel-art version of the same gun. Transparent PNG1536x1024, same horizontal side-view right-facing orientation, placement and overall silhouette extents. No text, no other objects. It is downscaled to35-50screen pixels wide: broad solid pixel clusters, 3value shading per material, almost no tiny surface detail. Palette slate blue steel, rust brown grip and small muted brass. All barrel portions must read as ONE uninterrupted form joined to receiver, subdued upperedge highlight and dark muzzle. No tiny vents/bolts/teeth, disconnected pale bands, bone-like shapes. Do not enlarge gun. Crisp chunky pixel art as if96x64 nearest-enlarged, no soft glow/blur/antialiasing/outside shadows, true transparent background. Revolver. Preserve grip(290,610), cylinder inside x651..858 y249..475, muzzle tip(1438,302). Retain cylinder silhouette and brown grip; simplify gold braces and cylinder stripes; barrel must be solid broad connected slate blue steel.",
+      "source": "../weapons_20261011/single_v1.png",
+      "output": "single_v1.png",
+      "source_sha256": "c334639fc68ef3aae28b0c7d1762d9f14641462b8f2f586693bc06bdc8b2f3f2",
+      "output_sha256": "ac5ebfd442475c4c3642e1fde3fc3340a1493305f12fd1f2623ce287ee3d5a05"
+    },
+    {
+      "gun": "amplifier",
+      "prompt": "Edit attached weapon into a COMBAT-SCALE simplified pixel-art version of the same gun. Transparent PNG1536x1024, same horizontal side-view right-facing orientation, placement and overall silhouette extents. No text, no other objects. It is downscaled to35-50screen pixels wide: broad solid pixel clusters, 3value shading per material, almost no tiny surface detail. Palette slate blue steel, rust brown grip and small muted brass. All barrel portions must read as ONE uninterrupted form joined to receiver, subdued upperedge highlight and dark muzzle. No tiny vents/bolts/teeth, disconnected pale bands, bone-like shapes. Do not enlarge gun. Crisp chunky pixel art as if96x64 nearest-enlarged, no soft glow/blur/antialiasing/outside shadows, true transparent background. Long-barrel break-action handgun. Preserve grip(240,613), muzzle tip(1496,396), moving barrel entirely within x686..1536 y260..515. Retain long slim silhouette but slightly thicken uninterrupted barrel vertically, eliminate bright white collar, use muted brass breech and dark muzzle aperture. No disconnected rings.",
+      "source": "../weapons_20261011/amplifier_v1.png",
+      "output": "amplifier_v1.png",
+      "source_sha256": "aa4f29ccf31db599fea8177002fe06ba08879d333dec975f2ca04c71667d3014",
+      "output_sha256": "de350a7e937867f4b609fe9337cfcd1a5470dbd12a6edf2f8cd72cbd0fee2382"
+    },
+    {
+      "gun": "burst",
+      "prompt": "Edit the attached weapon asset into a COMBAT-SCALE simplified pixel-art version of exactly the same gun. Output transparent PNG 1536x1024, same horizontal side-view right-facing orientation, same placement and approximate silhouette extents, no text, no other objects. Preserve grip at (495,631), magazine within x702..934 y475..865, support grip around (1150,535), muzzle tip (1495,390). Keep original rust brown stock/grips, slate blue steel, very small muted brass accents. IMPORTANT readability: this is downscaled to only 35-50 screen pixels wide! Use large solid pixel clusters with 3-value shading per material, almost no surface detail. Replace the slotted muzzle and striped rings with ONE CONTINUOUS thick dark-steel barrel/shroud visibly joined to receiver, a single subdued upper edge highlight and one dark open muzzle end. No disconnected pale bands, no vents, no tiny bolts, no teeth or bone-like shapes. Do not enlarge gun. Keep curved detachable magazine separate in silhouette for reload animation. Crisp chunky low-resolution pixel art as if made at 96x64 then nearest-neighbor enlarged. No soft glow/blur/antialiasing/shadows outside weapon, truly transparent background.",
+      "source": "../weapons_20261011/burst_v1.png",
+      "output": "burst_v1.png",
+      "source_sha256": "fd361b5cea3fafdd9ff7ed64eac5389a89700705ca28c6f57ca68c9026e5cc7c",
+      "output_sha256": "40cb610b57913ca03314a13d8d9fcc2cfd17ddab4196dc530513c172be1cf550"
+    },
+    {
+      "gun": "scatter",
+      "prompt": "Edit attached weapon into a COMBAT-SCALE simplified pixel-art version of the same gun. Transparent PNG1536x1024, same horizontal side-view right-facing orientation, placement and overall silhouette extents. No text, no other objects. It is downscaled to35-50screen pixels wide: broad solid pixel clusters, 3value shading per material, almost no tiny surface detail. Palette slate blue steel, rust brown grip and small muted brass. All barrel portions must read as ONE uninterrupted form joined to receiver, subdued upperedge highlight and dark muzzle. No tiny vents/bolts/teeth, disconnected pale bands, bone-like shapes. Do not enlarge gun. Crisp chunky pixel art as if96x64 nearest-enlarged, no soft glow/blur/antialiasing/outside shadows, true transparent background. Blunderbuss drum shotgun. Preserve grip(350,628), support(1060,472), muzzle tip(1497,351), gold drum entirely inside x733..942 y436..686. Retain distinct flared muzzle connected solidly to receiver, simplify gold braces into one restrained accent, brown grip.",
+      "source": "../weapons_20261011/scatter_v1.png",
+      "output": "scatter_v1.png",
+      "source_sha256": "f2e51472f3d345c22d7d17b5009838f15878324d5940ddcc1d85eea8fdcc7add",
+      "output_sha256": "96eeddfc6dc484ed6d88d8b45344c7b64a3a565af66138119aabfc089a77705d"
+    },
+    {
+      "gun": "heavy",
+      "prompt": "Edit attached weapon into a COMBAT-SCALE simplified pixel-art version of the same gun. Transparent PNG1536x1024, same horizontal side-view right-facing orientation, placement and overall silhouette extents. No text, no other objects. It is downscaled to35-50screen pixels wide: broad solid pixel clusters, 3value shading per material, almost no tiny surface detail. Palette slate blue steel, rust brown grip and small muted brass. All barrel portions must read as ONE uninterrupted form joined to receiver, subdued upperedge highlight and dark muzzle. No tiny vents/bolts/teeth, disconnected pale bands, bone-like shapes. Do not enlarge gun. Crisp chunky pixel art as if96x64 nearest-enlarged, no soft glow/blur/antialiasing/outside shadows, true transparent background. Pressure-coil industrial gun. Preserve grip(270,681), support(1040,752), muzzle tip(1470,486), twin tank tops within x299..652 y108..373. Keep two tanks and rusty copper pipe as its recognizable character. CRITICAL replace the white striped ring/coil muzzle with ONE solid thick slate-steel barrel shroud, only ONE muted brass collar at rear. Absolutely no white/bone colored parts or striped barrel bands, no repeated rings. Single dark muzzle mouth at tip.",
+      "source": "../weapons_20261011/heavy_v1.png",
+      "output": "heavy_v1.png",
+      "source_sha256": "6c1fc730a5e9406aec3b1a7a01ba3b5747b166c7f09a82ac9640d1d7b2e47802",
+      "output_sha256": "0b41ce913637ac954545ab7e9f1ab5458e6b3302dd5157f3d2edd120cc2aeed2"
+    }
+  ],
+  "validation": "Five weapons x six poses visually inspected in Godot 4.7. Runtime actor checks 501/0 at 1280x900,1008x630,1440x630; combat feedback 911/0; total1412/0. Human acceptance/Galaxy untested."
+}

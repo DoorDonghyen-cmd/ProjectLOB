@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-18",
+  "tool": "built-in image_gen",
+  "status": "Production first-region roster5; creator review completed, user preference and Galaxy review pending",
+  "references": [
+    {
+      "path": "새-게임-프로젝트/assets/art/monster_concept_20261009/eavesback_v1.png",
+      "role": "Approved creature clusters/materials; elite identity base",
+      "sha256": "2ea86267030096b47a43779ebdb39fe755bb75ba950c7155ad3dc78623602edc"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+      "role": "Actor palette and broad clusters only",
+      "sha256": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png",
+      "role": "Environment palette",
+      "sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b"
+    }
+  ],
+  "assets": [
+    {
+      "path": "새-게임-프로젝트/assets/art/elite_boss_20261018/closure_watch_states.png",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-d17747a0-74ec-4bed-b864-8e12333ec7c9.png",
+      "prompt": "Create a production pixel-art sprite sheet for ORVASK, a dystopian industrial tower game. Reference image 1 is the approved eavesback creature STYLE ONLY, reference 2 the approved hero STYLE ONLY, reference 3 the environment palette. Match their very broad coherent pixel clusters, muted blue-grey/oxidized brown masses, low internal contrast and selective dark edges. Do not copy the hero costume or creature anatomy. NEW SUBJECT: a pure mechanical lift fire-door caretaker called Closure Watch. A tall hunched humanlike work automaton with a small bowed sealed head, a SINGLE large clockwork spool on its upper back, heavy stubby grounded feet, two immense rectangular asymmetrical door-panel forearms. No human flesh. Broad old blue-grey panels, dark desaturated blue inner frame, small tarnished brass joints, ONE muted amber pressure chamber on chest. Not a shiny combat mech, not a skeleton. Memorable silhouette, few large shapes, no tiny gears or rivets or intricate wires. LEFT-FACING three-quarter SIDE VIEW suitable for a side-view battle, faces hero on left. Two frames in ONE horizontal sprite atlas, exact equal left/right half cells, each entire body fits with ample transparent margins. LEFT CELL: CLOSED/guarding, door forearms held together shielding chest, hunched. RIGHT CELL: OPEN/charging, same character same scale same feet baseline, arms pivot out and slightly forward revealing large chest pressure chamber; legs and head identity identical. The open pose should still face left and fit entirely in its half. SOURCE canvas about 1536x1024 landscape, evenly spaced, both feet baselines at 88 percent height, tallest head around 15 percent height. Runtime visible height about 145 screen pixels; keep extremely simple broad clusters like reference, NO dense seams, grain, highlights, continuous black outline, optical blur, text, UI, labels, grids, shadows, ground, background. Genuine transparent background alpha. Only these two sprites, separate with an empty gutter.",
+      "states": [
+        "guard",
+        "open"
+      ],
+      "visible_height": 148,
+      "sha256": "abef94430b8b2cfee9be0023a5cfae25d47e909216f52ac606993cff5abc7616",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/art/elite_boss_20261018/resonant_eavesback_states.png",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-be7ffac3-e063-4225-bc51-311629b44433.png",
+      "prompt": "Production sprite atlas for ORVASK pixel art game. EDIT identity of first reference (approved Eavesback): create ELITE Resonant Eavesback. Other references are hero cluster/style and background palette only. Preserve squat unknown organism, small left-facing head under overlapping eaves-shell, rust brown tissue and four chunky grounded feet. Add ONE distinctive tall asymmetric resonating cavity between upper blue-grey shell plates. No mechanical components. Two equal cells side by side in ONE horizontal 1536x1024 landscape sheet, entire bodies separate with wide transparent gutter, identical physical scale and feet baseline 84 percent high. LEFT CELL idle/closed: cavity enclosed by tall uneven folded plates, chest quiet. RIGHT CELL resonating/preparing: SAME creature feet and silhouette base, tall shell opens like two thick hinged organic plates, reveals large muted amber/brown hollow resonating throat, head tips slightly down. Larger broad angular silhouette than ordinary Eavesback, not recolor only. Left facing in both cells. Low horizontal body, disproportionately high asymmetric back; sparse massive clusters, bluegrey shell/dark desaturated blue shadow/tarnished rust tissue, limited quiet palette, soft impression from broad masses not optical blur. Match first reference EXACT broad pixel cluster density and low internal contrast. Runtime around 130x95 screen pixels. No surface noise, tiny spikes, small rivets, dithering, glossy highlights, complex anatomy, continuous black outline, no text UI labels cell borders, no ground cast shadow or environmental background. Genuine transparent alpha background, only two poses of same new elite creature.",
+      "states": [
+        "idle",
+        "resonating"
+      ],
+      "visible_height": 124,
+      "sha256": "a3c22ebb09ad7d076f8fda580c2be711e1397be88ba49ae337830c2ab459f74b",
+      "source_dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "integration": "redesign/challenge_art.gd + residential_battle_view.gd; original PNGs unchanged. Atlas regions and planted foot anchors in Godot; nearest rendering + existing alpha cutoff shader rejects diffuse fringe. Two authored poses, procedural walk/impact/death/state transition. No claim of full frame-by-frame animation.",
+  "evidence": "docs/qa/reports/elite_boss_2026-10-18.md"
+}

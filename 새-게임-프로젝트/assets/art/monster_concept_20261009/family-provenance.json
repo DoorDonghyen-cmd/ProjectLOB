@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-09",
+  "tool": "built-in image_gen",
+  "status": "New runner/electric-weakness visual candidates; development preview only, user acceptance pending. Eavesback visual family approved separately.",
+  "inputs": [
+    {
+      "path": "res://assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+      "role": "approved protagonist cluster density and edges; no anatomy/costume copying"
+    },
+    {
+      "path": "res://assets/art/monster_concept_20261009/eavesback_v1.png",
+      "role": "user-approved monster family colors/value grouping; no shell shape copying"
+    },
+    {
+      "path": "res://assets/art/tower_sample_20261003/residential_tower.png",
+      "role": "environment palette and quiet color masses"
+    }
+  ],
+  "assets": [
+    {
+      "file": "foldrunner_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-d1968647-7a91-43b7-9fa5-dad1b7bb4ffa.png",
+      "sha256": "61c0a00817f4504ca90fe02aa3322c8b07f9e3518bb0d3d1290d575f1eda3663",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha128_bounds": [
+        107,
+        226,
+        1148,
+        1117
+      ],
+      "logical_display_size": [
+        84,
+        72
+      ],
+      "existing_role": "runner",
+      "prompt": "foldrunner-prompt.txt",
+      "iterations": 1
+    },
+    {
+      "file": "rainpouch_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-3e592a05-922c-421b-95d5-f4ba8b5b84df.png",
+      "sha256": "a747636c8839f47c66b820cd6780c0b8d5fc1a5e4a1235a8263a47b09cbd70df",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha128_bounds": [
+        321,
+        137,
+        1041,
+        1150
+      ],
+      "logical_display_size": [
+        62,
+        88
+      ],
+      "existing_role": "evader",
+      "prompt": "rainpouch-prompt.txt",
+      "iterations": 1
+    }
+  ],
+  "processing": "Both generated PNGs copied unchanged; Godot draw_texture_rect_region clips measured content bounds, uses nearest filtering and shared bottom-centre foot anchor. No offline image edits. Fractional alpha / fixed-grid purity not guaranteed.",
+  "verification": "3 actual render sizes,221 checks/0failures, empty stderr. Public developer menu and load/fire/reload; existing electric weakness A/B damage bonus+2; old preview and normal production separate."
+}

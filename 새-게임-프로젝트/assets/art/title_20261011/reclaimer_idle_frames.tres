@@ -1,0 +1,32 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3]
+[ext_resource type="Texture2D" path="res://assets/art/title_20261011/reclaimer_idle_v1.png" id="1"]
+[sub_resource type="AtlasTexture" id="Pose0"]
+atlas = ExtResource("1")
+region = Rect2(124, 47, 360, 560)
+filter_clip = true
+[sub_resource type="AtlasTexture" id="Pose1"]
+atlas = ExtResource("1")
+region = Rect2(717, 47, 360, 560)
+filter_clip = true
+[sub_resource type="AtlasTexture" id="Pose2"]
+atlas = ExtResource("1")
+region = Rect2(124, 643, 360, 560)
+filter_clip = true
+[sub_resource type="AtlasTexture" id="Pose3"]
+atlas = ExtResource("1")
+region = Rect2(718, 643, 360, 560)
+filter_clip = true
+[resource]
+animations = [{
+"frames": [
+{"duration": 2.4, "texture": SubResource("Pose0")},
+{"duration": 0.8, "texture": SubResource("Pose1")},
+{"duration": 1.8, "texture": SubResource("Pose0")},
+{"duration": 0.18, "texture": SubResource("Pose3")},
+{"duration": 0.85, "texture": SubResource("Pose2")},
+{"duration": 0.22, "texture": SubResource("Pose3")},
+{"duration": 0.65, "texture": SubResource("Pose0")}],
+"loop": true,
+"name": &"rest",
+"speed": 1.0
+}]

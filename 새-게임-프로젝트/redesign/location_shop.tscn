@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://redesign/service_location.tscn" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/service_layers_20261011/shop_background.png" id="2"]
+[ext_resource type="Resource" path="res://redesign/service_actor_shop_work.tres" id="3"]
+[node name="ServiceLocation" instance=ExtResource("1")]
+place_kind = "shop"
+compact_counter = true
+[node name="PlaceArt" parent="." index="0"]
+custom_minimum_size = Vector2(480,160)
+size_flags_horizontal = 0
+texture = ExtResource("2")
+[node name="PlaceActor" parent="PlaceArt" index="0"]
+profile = ExtResource("3")
+room_foot = Vector2(0.409, 0.9)
+room_height = 0.643
+[node name="PlaceTitle" parent="Copy" index="0"]
+text = "상점"
+[node name="PlaceHint" parent="Copy" index="1"]
+text = "가판대 너머에서 목소리가 들린다."
+
+[node name="Copy" parent="." index="1"]
+size_flags_horizontal = 3
+
+[node name="PlaceActions" parent="Copy" index="2"]
+size_flags_horizontal = 0
+custom_minimum_size = Vector2(220,0)

@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-09",
+  "tool": "built-in image_gen edit",
+  "file": "facilities_v2.png",
+  "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-adce83d4-5451-4ad8-b4ea-c1487ecf473b.png",
+  "references": [
+    {
+      "file": "residential_shaft.png",
+      "role": "background style reference"
+    },
+    {
+      "file": "facilities.png",
+      "role": "edit target; eight identities and atlas order retained"
+    }
+  ],
+  "prompt": "EDIT the SECOND image (8 facility sprite atlas) to fit the pixel language of FIRST image (background STYLE reference only). Output ONLY the atlas on true transparent background. Preserve eight facility identities, EXACT four columns/two rows order and generous gaps; do not output background. Completely REDRAW these sprites as VERY coarse, understated environmental pixel silhouettes. The existing atlas is much too detailed, shiny, beveled and outlined. Remove ALL bolts, scratches, texture noise, specular edge highlights, fine shutter slats, tiny greebles. Think each object drawn with ONLY 24 x 20 large logical pixels, scaled up nearest-neighbor; every color patch should be large and geometrically simple. Flat chunky broad masses exactly like distant architecture in first image. Maximum 3 or 4 flat shades per object plus ONE small light accent. Matte muted blue gray/petrol palette sampled from first image. No black ink contour tracing the whole object, no bright outline, no metallic glints, no blur, no gradient, no antialias soft smoothing. Lower contrast but maintain clear silhouettes on dark background. Top row: simple closed shutter with 3 broad panels/red lamp; fortified taller twin-pillar gate/two muted red lamps; open workbench with one large wrench silhouette/amber lamp; tall twin-column central sealed gate. Bottom row: warm muted ocher flat awning over a simple counter/one amber lamp; 3 broad stacked supply crates with tiny pale latch; simple antenna dish and rectangular purple-lit terminal; blocky rounded vent with only 3 grille bars and dark teal opening. The awning should resemble the warm refuge built into first image, not a detailed RPG item. Restrained environmental objects, coherent quiet large color blocks. Same scale across cells and fully isolated objects with short plain footing. No text, no UI borders, no scene, no labels. The deliberate lack of detail is critical; do not make polished high resolution pixel illustration.",
+  "processing": "Generated PNG copied unchanged. Runtime AtlasTexture bounds separate sprites, nearest filtering. Original facilities.png retained.",
+  "status": "Integrated; visual review and user's acceptance recorded separately.",
+  "sha256": "f0f8173a404e1df0818e56291b4174648e789b73f2f2ce700a2405fa19bf123b",
+  "dimensions": [
+    1774,
+    887
+  ],
+  "mode": "RGBA",
+  "verification": "Isolated three-resolution map UI: 506 checks, zero failures. Actual small-map and traveled-map captures visually reviewed. User style approval and Galaxy testing pending."
+}

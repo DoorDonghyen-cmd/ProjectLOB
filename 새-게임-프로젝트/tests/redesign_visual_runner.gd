@@ -52,13 +52,13 @@ func _run() -> void:
 	var basic := screen.find_child("load_basic", true, false) as Button
 	basic.grab_focus()
 	await settle()
-	check(screen.ammo_inspector.text.contains("회수탄") and screen.ammo_inspector.text.contains("피해 4"), "keyboard focus exposes current gun damage")
+	check(screen.ammo_inspector.text.contains("기본탄") and screen.ammo_inspector.text.contains("피해 4"), "keyboard focus exposes current gun damage")
 	check(basic.tooltip_text.contains("관통 1") and basic.tooltip_text.contains("명중 6"), "compact card retains exact gate stats in tooltip")
 	await click("details")
 	check(screen.find_child("CombatDetails", true, false) != null, "clickable combat information is available without hover")
 	await capture("10_details")
 	for child in screen.get_children():
-		if child is AcceptDialog: child.get_ok_button().pressed.emit()
+		if child is AcceptDialog or child.has_meta("lob_modal"): child.get_ok_button().pressed.emit()
 	await settle()
 	check(screen.model.s == initial, "opening and closing details preserves combat state")
 	await click("load_basic")
@@ -85,7 +85,7 @@ func _run() -> void:
 	await click("rules")
 	await capture("08_rules")
 	for child in screen.get_children():
-		if child is AcceptDialog:
+		if child is AcceptDialog or child.has_meta("lob_modal"):
 			check(child.size.y <= 760 and child.get_ok_button().is_visible_in_tree(), "rules dialog and close button fit viewport")
 			child.queue_free()
 	await settle()

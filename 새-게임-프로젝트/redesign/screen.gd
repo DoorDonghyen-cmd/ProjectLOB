@@ -4,6 +4,7 @@ const Content = preload("res://redesign/content.gd")
 const BattleView = preload("res://redesign/battle_view.gd")
 const MagazineView = preload("res://redesign/magazine_view.gd")
 const AmmoVisual = preload("res://redesign/ammo_visual.gd")
+const AmmoSynergy = preload("res://redesign/ammo_synergy.gd")
 const AmmoCardView = preload("res://redesign/ammo_card_view.gd")
 const PartCardView = preload("res://redesign/part_card_view.gd")
 const CombatPartView = preload("res://redesign/combat_part_view.gd")
@@ -54,11 +55,14 @@ var inspected_ammo := "basic"
 var combat_forecast: Dictionary = {}
 var full_forecast: Dictionary = {}
 var next_forecast: Dictionary = {}
+var forecast_pending := false
+var forecast_refresh_waiting := false
+var forecast_worker: Node
 var show_full_forecast := false
 var hand_layout: Array = []
 var hand_layout_key := ""
+var hand_page := 0
 var used_hand_tokens: Array = []
-var preparation_options_open := false
 var preferences = Preferences.new()
 var ui_theme: Theme
 var main_scroll: ScrollContainer
@@ -66,13 +70,27 @@ var content_margin: MarginContainer
 var workspace_overlay: Control
 var selected_weapon_id := "single"
 var selected_loadout_id := "balanced"
+var selected_outfit_id := "carrier"
 var selected_difficulty := 0
 var preparation_training := false
 var preparation_seed := ""
+var feedback = preload("res://redesign/presentation_feedback.gd").new()
 
 func _ready() -> void:
+	# Keep the formal entry scene visible in the editor; runtime binds this same scene.
+	var title_preview := get_node_or_null("TitlePreview")
+	if title_preview != null:
+		remove_child(title_preview)
+		title_preview.free()
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	forecast_worker = preload("res://redesign/forecast_worker.gd").new()
+	add_child(forecast_worker)
+	forecast_worker.completed.connect(_forecast_completed)
 	RenderingServer.set_default_clear_color(BG)
 	preferences.load_preferences()
+	add_child(feedback)
+	feedback.configure(preferences.data)
+	add_child(preload("res://redesign/touch_scroll_policy.gd").new())
 	if is_equal_approx(presentation_speed, 1.0):
 		presentation_speed = preferences.motion_scale()
 	ui_theme = Theme.new()
@@ -82,10 +100,9 @@ func _ready() -> void:
 	ui_theme.set_color("font_color", "Button", INK)
 	ui_theme.set_color("font_disabled_color", "Button", Color("a0b1ba"))
 	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
-		var box := _style(PANEL if state == "normal" else Color("28404b"))
-		box.border_color = ACCENT if state in ["hover", "focus"] else Color("38515d")
-		box.set_border_width_all(1)
+		var box := _console_style("button", state)
 		ui_theme.set_stylebox(state, "Button", box)
+	preload("res://redesign/console_widgets.gd").apply_to(ui_theme)
 	theme = ui_theme
 	main_scroll = ScrollContainer.new()
 	main_scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -120,7 +137,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	for i in range(get_child_count() - 1, -1, -1):
 		var child := get_child(i)
-		if child is AcceptDialog and child.visible:
+		if child.has_meta("lob_modal") and child.visible:
 			child.hide()
 			child.queue_free()
 			return
@@ -140,6 +157,14 @@ func _style(color: Color) -> StyleBoxFlat:
 func _scaled(value: int) -> int:
 	return maxi(12, roundi(float(value) * float(preferences.data.get("text_scale", 1.0))))
 
+func _console_style(kind: String, state: String = "normal") -> StyleBoxTexture:
+	var style := preload("res://redesign/combat_pixel_skin.gd").box(kind, state)
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.content_margin_top = 14 if state == "pressed" else 12
+	style.content_margin_bottom = 10 if state == "pressed" else 12
+	return style
+
 func _label(parent: Node, value: String, font_size: int = 20, color: Color = INK) -> Label:
 	var label := Label.new()
 	label.text = value
@@ -158,7 +183,7 @@ func _row(parent: Node) -> HBoxContainer:
 
 func _panel(parent: Node) -> VBoxContainer:
 	var panel := PanelContainer.new()
-	panel.add_theme_stylebox_override("panel", _style(PANEL))
+	panel.add_theme_stylebox_override("panel", _console_style("panel"))
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	parent.add_child(panel)
 	var column := VBoxContainer.new()
@@ -175,19 +200,19 @@ func _button(parent: Node, title: String, key: String, callback: Callable, disab
 	button.custom_minimum_size.y = 52
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.disabled = disabled or busy
+	if key not in ["confirm", "fire", "reload", "skip_animation"]:
+		button.pressed.connect(func(): feedback.play("click"))
 	button.pressed.connect(callback)
 	parent.add_child(button)
 	return button
 
-func _primary_button(button: Button, color: Color = ACCENT) -> Button:
+func _primary_button(button: Button, _color: Color = ACCENT) -> Button:
 	button.add_theme_color_override("font_color", Color("101920"))
 	button.add_theme_color_override("font_hover_color", Color("101920"))
 	button.add_theme_color_override("font_pressed_color", Color("101920"))
 	button.add_theme_color_override("font_focus_color", Color("101920"))
 	for state in ["normal", "hover", "pressed", "focus"]:
-		var box := _style(color.lightened(0.08) if state in ["hover", "focus"] else (color.darkened(0.12) if state == "pressed" else color))
-		box.border_color = color.lightened(0.22)
-		box.set_border_width_all(2 if state in ["hover", "focus"] else 1)
+		var box := _console_style("primary", state)
 		button.add_theme_stylebox_override(state, box)
 	return button
 
@@ -198,7 +223,8 @@ func _hint(parent: Node, value: String) -> Label:
 	hint.name = "ContextHint"
 	return hint
 
-func _focus_control(control: Control) -> void:
+func _focus_control(control: Variant) -> void:
+	# Deferred focus may outlive its page during quick navigation.
 	if is_instance_valid(control) and control.is_inside_tree() and control.is_visible_in_tree():
 		control.grab_focus()
 
@@ -217,13 +243,37 @@ func _screen_intro(title: String, question: String = "") -> void:
 	if not question.is_empty():
 		_label(body, question, 20, INK)
 
+func _forecast_completed() -> void:
+	if is_instance_valid(workspace_overlay):
+		forecast_refresh_waiting = true
+		return
+	if not busy and page == "run" and model.s.phase in ["plan", "ready"] and (campaign == null or campaign.s.phase == "combat"):
+		redraw()
+
 func redraw() -> void:
+	# Acquisition feedback belongs to the resulting screen, not later navigation.
+	var previous_notice := get_node_or_null("AmmoAcquiredNotice")
+	if previous_notice != null:
+		remove_child(previous_notice)
+		previous_notice.queue_free()
+	# Plan/ready and hand edits share a screen; only navigation changes fade in.
+	var stage := page
+	if page == "run":
+		stage = str(campaign.s.phase) if campaign != null else str(model.s.phase)
+		if stage in ["plan", "ready"]: stage = "combat"
+	var flow := page + ":" + stage
+	if page == "run" and campaign != null: flow += ":" + str(campaign.s.node)
+	feedback.enter(flow, body, stage == "reward")
+	forecast_pending = false
+	if page != "run" or model.s.get("phase", "") not in ["plan", "ready"] or (campaign != null and campaign.s.phase != "combat"):
+		forecast_worker.cancel_request()
+		forecast_refresh_waiting = false
 	combat_parts.clear()
 	_close_workspace()
 	_reset_scroll.call_deferred()
 	var combat_screen: bool = page == "run" and str(model.s.phase) in ["plan", "ready"]
 	var compact_combat: bool = combat_screen and size.y < 960
-	var edge_margin := 10 if compact_combat else 20
+	var edge_margin := 0 if page in ["menu", "loadout"] else (10 if compact_combat else 20)
 	content_margin.custom_minimum_size.y = 0
 	for side in ["left", "right", "top", "bottom"]:
 		content_margin.add_theme_constant_override("margin_" + side, edge_margin)
@@ -255,47 +305,34 @@ func _combat_header(compact: bool) -> void:
 	var status_panel := PanelContainer.new()
 	status_panel.name = "CombatStatusBar"
 	status_panel.custom_minimum_size.y = 56 if compact else 64
-	var status_style := _style(Color("15252e"))
+	var status_style := _style(Color("101d22"))
 	status_style.content_margin_left = 12
 	status_style.content_margin_right = 10
 	status_style.content_margin_top = 6
 	status_style.content_margin_bottom = 6
 	status_style.border_color = WeaponView.COLORS[model.s.gun]
-	status_style.border_width_left = 5
+	status_style.border_width_left = 0
 	status_panel.add_theme_stylebox_override("panel", status_style)
 	body.add_child(status_panel)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 8 if compact else 12)
 	status_panel.add_child(row)
 
-	var location_text := "%s  %02d/35" % [CampaignContent.info(int(campaign.s.region)).name, campaign.absolute_floor()] if campaign != null else "훈련  %02d/07" % (int(model.s.floor) + 1)
-	var location := _label(row, location_text, 18 if compact else 20, Color("63dce8"))
+	var location_text := str(campaign.region_info().name) if campaign != null else "훈련  %02d/07" % (int(model.s.floor) + 1)
+	var location := _label(row, location_text, 18 if compact else 20, Color("d3c9aa"))
 	location.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	location.custom_minimum_size.x = 156 if compact else 210
 	location.autowrap_mode = TextServer.AUTOWRAP_OFF
 
-	var identity_text := "%s · %s" % [spec.name, "연쇄" if spec.mode == "chain" else "단발"]
-	var identity_label := _label(row, identity_text, 17 if compact else 18, WeaponView.COLORS[model.s.gun])
-	identity_label.name = "WeaponIdentity"
-	identity_label.tooltip_text = "%s\n파츠 %d/%d · 탄창 %d칸" % [spec.identity, active_parts.size(), Content.MAX_EQUIPPED_PARTS, model.capacity()]
-	identity_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-	if compact:
-		identity_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		identity_label.custom_minimum_size.x = 118
-
-	var metrics_text := "T%d · 적%d · +%d" % [int(model.s.turns), model.alive_count(), model.reserve_count()] if compact else "%d턴  │  전열 %d  │  증원 %d" % [int(model.s.turns), model.alive_count(), model.reserve_count()]
-	var metrics := _label(row, metrics_text, 14 if compact else 16, INK)
-	metrics.name = "CombatMetrics"
-	metrics.size_flags_horizontal = Control.SIZE_SHRINK_END
-	metrics.autowrap_mode = TextServer.AUTOWRAP_OFF
-	var reserve_marker := Label.new()
-	reserve_marker.name = "ReinforcementCount"
-	reserve_marker.visible = false
-	row.add_child(reserve_marker)
-	if campaign != null:
-		var resources := _label(row, "Cr%d ◆%d" % [int(campaign.s.credits), int(campaign.s.compressor_charges)] if compact else "%dCr  ◆%d" % [int(campaign.s.credits), int(campaign.s.compressor_charges)], 14 if compact else 16, ACCENT)
-		resources.size_flags_horizontal = Control.SIZE_SHRINK_END
-		resources.autowrap_mode = TextServer.AUTOWRAP_OFF
+	var identity_button := _button(row, str(spec.name), "weapon_identity", _weapon_details.bind(str(model.s.gun)))
+	identity_button.custom_minimum_size = Vector2(96, 40)
+	identity_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	identity_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	identity_button.add_theme_font_size_override("font_size", _scaled(18))
+	identity_button.tooltip_text = spec.identity
+	if model.reserve_count() > 0:
+		var reserve_marker := _label(row, "증원 %d" % model.reserve_count(), 16, MUTED)
+		reserve_marker.name = "ReinforcementCount"
 	var header_spacer := Control.new()
 	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(header_spacer)
@@ -343,8 +380,14 @@ func _combat_header(compact: bool) -> void:
 	skip.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	skip.custom_minimum_size = Vector2(76, 36)
 	skip.size_flags_horizontal = Control.SIZE_SHRINK_END
-	skip.add_theme_font_size_override("font_size", _scaled(14))
+	skip.add_theme_font_size_override("font_size", _scaled(16))
+	skip.add_theme_font_override("font", preload("res://redesign/combat_pixel_font.tres"))
+	skip.autowrap_mode = TextServer.AUTOWRAP_OFF
+	preload("res://redesign/combat_treatment.gd").finish_button(skip)
 	skip.visible = busy
+	for button in row.get_children():
+		if button is Label: button.add_theme_font_override("font", preload("res://redesign/combat_pixel_font.tres"))
+		if button is Button: preload("res://redesign/combat_surface.gd").finish_button(button)
 
 func _reset_scroll() -> void:
 	if is_instance_valid(main_scroll):
@@ -356,65 +399,10 @@ func _menu() -> void:
 	var city_saved: bool = city_probe.restore()
 	var training_probe = Model.new()
 	var training_saved: bool = training_probe.restore_run(SAVE)
-	var home := _row(body)
-	home.name = "TitleLayout"
-	home.custom_minimum_size.y = 535
-	var hero := _panel(home)
-	hero.get_parent().name = "TitleHero"
-	hero.get_parent().size_flags_stretch_ratio = 1.45
-	hero.alignment = BoxContainer.ALIGNMENT_CENTER
-	hero.add_theme_constant_override("separation", 16)
-	_label(hero, "LAST ON", 58, INK)
-	_label(hero, "BOARD", 86, ACCENT)
-	_label(hero, "탄환의 순서가 전투를 바꾼다", 27, INK)
-	var preview = Model.new()
-	preview.start("single", 1)
-	var sequence := _row(hero)
-	for id in ["charge", "precise", "pierce"]:
-		var card := AmmoCardView.new()
-		card.custom_minimum_size = Vector2(0, 154)
-		card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		card.setup(id, 0, preview.s)
-		sequence.add_child(card)
-	_label(hero, "탄환 조합  →  연쇄 사격  →  나만의 빌드", 18, MUTED)
-	var actions := _panel(home)
-	actions.get_parent().name = "TitleActions"
-	actions.get_parent().custom_minimum_size.x = 390
-	actions.alignment = BoxContainer.ALIGNMENT_CENTER
-	actions.add_theme_constant_override("separation", 14)
-	_label(actions, "출격", 17, Color("63dce8"))
-	if city_saved and not city_probe.s.settled:
-		var saved := VBoxContainer.new()
-		saved.name = "ContinueRunCard"
-		actions.add_child(saved)
-		_label(saved, "%02d / 35층 · %s" % [maxi(1, city_probe.absolute_floor()), Content.GUNS[city_probe.s.gun].name], 26, ACCENT)
-		_label(saved, "%s · %d Cr" % [CampaignContent.info(int(city_probe.s.region)).name, int(city_probe.s.credits)], 17, MUTED)
-		_primary_button(_button(actions, "등반 계속  ›", "resume", _resume)).custom_minimum_size.y = 72
-	else:
-		_label(actions, "다섯 무기, 하나의 등반", 28, INK)
-		_label(actions, "총기를 고르고 탄환과 파츠로\n35층을 돌파할 빌드를 만드세요.", 19, MUTED)
-	var start := _button(actions, "새 등반 준비  ›", "new_run_setup", _open_preparation.bind(false))
-	start.custom_minimum_size.y = 72
-	if not city_saved or city_probe.s.settled: _primary_button(start)
-	_button(actions, "기초 훈련 · 7교전", "training_setup", _open_preparation.bind(true))
-	if training_saved: _button(actions, "훈련 이어하기", "resume_training", _resume_training)
-	if not bool(preferences.data.get("guide_seen", false)):
-		_button(actions, "처음이라면 · 1분 안내", "first_guide", _guide).add_theme_font_size_override("font_size", _scaled(17))
-	if FileAccess.file_exists(Campaign.SAVE) and not city_saved:
-		_label(actions, "도시 저장을 읽을 수 없습니다. 새 등반 전까지 원본을 보존합니다.", 16, DANGER)
-	if FileAccess.file_exists(SAVE) and not training_saved:
-		_label(actions, "훈련 저장을 읽을 수 없습니다. 기존 파일은 보존됩니다.", 16, DANGER)
-	var utilities := _row(body)
-	for item in [["기록실", "city_archive", _city_archive], ["조작 안내", "guide", _guide], ["게임 규칙", "rules", _rules], ["설정", "settings", _settings]]:
-		var utility := _button(utilities, item[0], item[1], item[2])
-		utility.add_theme_font_size_override("font_size", _scaled(17))
-	var dev := _button(utilities, "개발", "dev", _developer)
-	dev.size_flags_horizontal = Control.SIZE_SHRINK_END
-	dev.custom_minimum_size.x = 86
-	_hint(body, "진행은 자동 저장됩니다.")
-	var default_focus := body.find_child("resume", true, false) as Button
-	if default_focus == null: default_focus = body.find_child("new_run_setup", true, false) as Button
-	_focus_control.call_deferred(default_focus)
+	var title = preload("res://redesign/title_screen.tscn").instantiate()
+	title.custom_minimum_size = size
+	body.add_child(title)
+	title.bind_screen(self, city_probe, city_saved, training_saved)
 
 func _open_preparation(training: bool = false) -> void:
 	if busy:
@@ -429,176 +417,16 @@ func _remember_preparation_seed() -> void:
 	if is_instance_valid(seed_input) and not seed_input.text.is_empty():
 		preparation_seed = seed_input.text
 
-func _select_weapon(id: String) -> void:
-	_remember_preparation_seed()
-	selected_weapon_id = id
-	redraw()
-
-func _select_loadout(id: String) -> void:
-	_remember_preparation_seed()
-	selected_loadout_id = id
-	redraw()
-
 func _loadout_screen() -> void:
 	var probe = Campaign.new()
 	probe.restore()
-	var unlocks: Array = probe.profile.unlocks
-	if not unlocks.has(selected_loadout_id): selected_loadout_id = "balanced"
+	if not probe.profile.unlocks.has(selected_loadout_id): selected_loadout_id = "balanced"
+	selected_difficulty = clampi(selected_difficulty, 0, int(probe.profile.ascension))
 	if preparation_seed.is_empty(): preparation_seed = str(int(Time.get_unix_time_from_system()) % 1000000)
-	var top := _row(body)
-	var back := _button(top, "‹ 돌아가기", "loadout_back", _to_menu)
-	back.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	back.custom_minimum_size.x = 150
-	_label(top, "훈련 준비" if preparation_training else "출격 준비", 30, INK)
-	var badge := _label(top, "7교전" if preparation_training else "35층 등반", 18, ACCENT)
-	badge.size_flags_horizontal = Control.SIZE_SHRINK_END
-	badge.autowrap_mode = TextServer.AUTOWRAP_OFF
-	_label(body, "01   전투 방식을 선택하세요", 18, MUTED)
-	var weapons := GridContainer.new()
-	weapons.name = "WeaponSelection"
-	weapons.columns = 5
-	weapons.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	weapons.add_theme_constant_override("h_separation", 10)
-	body.add_child(weapons)
-	for id in Content.GUNS:
-		var spec: Dictionary = Content.GUNS[id]
-		var chosen: bool = id == selected_weapon_id
-		var button := _button(weapons, "", "weapon_select_" + id, _select_weapon.bind(id))
-		button.custom_minimum_size.y = 160
-		button.tooltip_text = str(spec.text)
-		var style := _style(Color("263c44") if chosen else Color("17242c"))
-		style.border_color = WeaponView.COLORS[id] if chosen else Color("3a4e58")
-		style.set_border_width_all(3 if chosen else 1)
-		button.add_theme_stylebox_override("normal", style)
-		var margin := MarginContainer.new()
-		margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		button.add_child(margin)
-		margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		for side in ["left", "right", "top", "bottom"]: margin.add_theme_constant_override("margin_" + side, 10)
-		var copy := VBoxContainer.new()
-		copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		margin.add_child(copy)
-		var icon := WeaponView.new()
-		icon.gun_id = id
-		icon.display_scale = 1.6
-		copy.add_child(icon)
-		var name_label := _label(copy, ("✓ " if chosen else "") + str(spec.name), 22, WeaponView.COLORS[id])
-		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		var role := _label(copy, str(spec.role), 16, MUTED)
-		role.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		role.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var spec: Dictionary = Content.GUNS[selected_weapon_id]
-	var showcase := _panel(body)
-	showcase.get_parent().name = "SelectedWeaponPanel"
-	var heading := _row(showcase)
-	_label(heading, str(spec.name) + "  ·  " + str(spec.identity), 24, WeaponView.COLORS[selected_weapon_id])
-	var details := _button(heading, "규칙 상세", "weapon_info_" + selected_weapon_id, _weapon_details.bind(selected_weapon_id))
-	details.custom_minimum_size = Vector2(130, 46)
-	details.size_flags_horizontal = Control.SIZE_SHRINK_END
-	details.add_theme_font_size_override("font_size", _scaled(16))
-	var metrics := _row(showcase)
-	_label(metrics, "%s   /   탄창 %d칸   /   재장전 %d턴" % ["전탄 연쇄" if spec.mode == "chain" else "한 발씩 발사", spec.capacity, spec.reload], 19, INK)
-	_label(metrics, str(spec.recommendation), 17, MUTED)
-	_label(body, "02   시작 보급 · 탄환을 누르면 효과 확인", 18, MUTED)
-	var supply := _panel(body)
-	var supply_row := _row(supply)
-	if preparation_training:
-		_label(supply_row, "훈련 보급 · 교전마다 새 탄환을 익힙니다", 20, INK)
-	else:
-		var choices := _row(supply_row)
-		choices.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		choices.name = "LoadoutSelection"
-		for id in unlocks:
-			var button := _button(choices, str(CampaignContent.LOADOUTS[id].name), "loadout_select_" + id, _select_loadout.bind(id))
-			button.custom_minimum_size.y = 46
-			button.add_theme_font_size_override("font_size", _scaled(17))
-			if id == selected_loadout_id:
-				var selected_style := _style(Color("243942"))
-				selected_style.border_color = WeaponView.COLORS[selected_weapon_id]
-				selected_style.border_width_bottom = 3
-				button.add_theme_stylebox_override("normal", selected_style)
-	var start_deck: Array = Content.COURSE_GRANTS[0] if preparation_training else (Content.start_deck(selected_weapon_id) if selected_loadout_id == "balanced" else CampaignContent.LOADOUTS[selected_loadout_id].deck)
-	var rounds := _row(supply)
-	rounds.name = "StartingDeckPreview"
-	var seen: Array = []
-	for id in start_deck:
-		if seen.has(id): continue
-		seen.append(id)
-		var detail := _button(rounds, "", "starting_detail_" + str(id), _starting_round_details.bind(str(id)))
-		detail.custom_minimum_size.y = 90
-		var item := VBoxContainer.new()
-		item.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		detail.add_child(item)
-		item.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		item.offset_top = 8
-		item.offset_bottom = -8
-		var bullet := Control.new()
-		bullet.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		bullet.custom_minimum_size.y = 38
-		bullet.draw.connect(func(): AmmoVisual.round_icon(bullet, Vector2(bullet.size.x * 0.5, 19), str(id), 0.42))
-		item.add_child(bullet)
-		var caption := _label(item, "%s ×%d" % [Content.AMMO[id].name, start_deck.count(id)], 16, MUTED)
-		caption.name = "StartingRound_" + str(id)
-		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		caption.tooltip_text = str(Content.AMMO[id].text)
-	var footer := _row(body)
-	var options := _row(body)
-	options.name = "PreparationOptions"
-	options.visible = preparation_options_open
-	var settings := _button(footer, "등반 설정  ▾", "preparation_options", func():
-		preparation_options_open = not preparation_options_open
-		options.visible = preparation_options_open
-	)
-	settings.custom_minimum_size.x = 180
-	settings.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	var difficulty_status := _label(footer, "기본 난도" if selected_difficulty == 0 else "난도 %d" % selected_difficulty, 17, MUTED)
-	if not preparation_training:
-		var difficulty_caption := _label(options, "난도", 17, MUTED)
-		difficulty_caption.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		difficulty_caption.autowrap_mode = TextServer.AUTOWRAP_OFF
-		difficulty_option = SpinBox.new()
-		difficulty_option.name = "CityDifficulty"
-		difficulty_option.custom_minimum_size = Vector2(100, 48)
-		difficulty_option.max_value = int(probe.profile.ascension)
-		difficulty_option.value = clampi(selected_difficulty, 0, int(probe.profile.ascension))
-		selected_difficulty = int(difficulty_option.value)
-		difficulty_option.editable = int(probe.profile.ascension) > 0
-		difficulty_option.tooltip_text = "등반 성공 시 다음 난도가 해금됩니다."
-		difficulty_status.text = "기본 난도" if selected_difficulty == 0 else "난도 %d" % selected_difficulty
-		difficulty_option.value_changed.connect(func(value: float):
-			selected_difficulty = int(value)
-			difficulty_status.text = "기본 난도" if selected_difficulty == 0 else "난도 %d" % selected_difficulty
-		)
-		options.add_child(difficulty_option)
-	var seed_caption := _label(options, "시드", 17, MUTED)
-	seed_caption.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	seed_caption.autowrap_mode = TextServer.AUTOWRAP_OFF
-	seed_input = LineEdit.new()
-	seed_input.name = "Seed"
-	seed_input.text = preparation_seed
-	seed_input.custom_minimum_size = Vector2(150, 48)
-	seed_input.text_changed.connect(func(value: String): preparation_seed = value)
-	options.add_child(seed_input)
-	var randomize := _button(options, "새 시드", "randomize_seed", func():
-		preparation_seed = str(int(Time.get_ticks_usec()) % 1000000)
-		seed_input.text = preparation_seed
-	)
-	randomize.custom_minimum_size.x = 112
-	randomize.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	var space := Control.new()
-	space.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	footer.add_child(space)
-	var launch := _primary_button(_button(footer, "훈련 시작  ›" if preparation_training else "이 구성으로 출격  ›", "start_" + selected_weapon_id, _request_start.bind(selected_weapon_id, false)), WeaponView.COLORS[selected_weapon_id])
-	launch.custom_minimum_size = Vector2(290, 64)
-	launch.size_flags_horizontal = Control.SIZE_SHRINK_END
-	_focus_control.call_deferred(body.find_child("weapon_select_" + selected_weapon_id, true, false))
-
-func _starting_round_details(id: String) -> void:
-	var column := _dialog(str(Content.AMMO[id].name), true)
-	column.name = "StartingRoundDetails"
-	_label(column, str(Content.AMMO[id].text), 21)
-	_label(column, "선택 무기 · " + str(Content.GUNS[selected_weapon_id].text), 18, MUTED)
+	var equipment = preload("res://redesign/equipment_screen.tscn").instantiate()
+	equipment.custom_minimum_size = Vector2(size.x, maxf(size.y, 620.0))
+	body.add_child(equipment)
+	equipment.bind_screen(self, probe.profile)
 
 func _request_start(id: String, same_seed: bool) -> void:
 	if busy:
@@ -607,22 +435,10 @@ func _request_start(id: String, same_seed: bool) -> void:
 		_start(id, same_seed)
 		return
 	var active := Campaign.new()
-	if not active.restore() or bool(active.s.get("settled", false)):
+	if not active.restore() or (bool(active.s.get("settled", false)) and not active.restoration_pending()):
 		_start(id, same_seed)
 		return
-	var dialog := ConfirmationDialog.new()
-	dialog.name = "NewRunConfirmation"
-	dialog.title = "진행 중인 등반 교체"
-	dialog.dialog_text = "%02d / 35층 · %s 진행이 저장되어 있습니다.\n새 %s 등반으로 교체할까요?" % [active.absolute_floor(), Content.GUNS[active.s.gun].name, Content.GUNS[id].name]
-	dialog.ok_button_text = "새 등반 시작"
-	dialog.cancel_button_text = "계속 보관"
-	dialog.confirmed.connect(func():
-		dialog.queue_free()
-		_start(id, same_seed)
-	)
-	dialog.canceled.connect(dialog.queue_free)
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(620, 260))
+	_confirmation("진행 중인 등반 교체", "%s · %s 진행이 저장되어 있습니다.\n새 %s 등반으로 교체할까요?" % [active.region_info().name, Content.GUNS[active.s.gun].name, Content.GUNS[id].name], "NewRunConfirmation", "새 등반 시작", "계속 보관", _start.bind(id, same_seed))
 
 func _start(id: String, same_seed: bool) -> void:
 	if busy: return
@@ -633,11 +449,13 @@ func _start(id: String, same_seed: bool) -> void:
 		var run_seed: int = int(campaign.s.seed) if same_seed else int(preparation_seed)
 		var difficulty: int = int(campaign.s.difficulty) if same_seed else selected_difficulty
 		var loadout: String = str(campaign.s.loadout) if same_seed else selected_loadout_id
+		var map_version: int = int(campaign.s.get("map_version", 1)) if same_seed else CampaignContent.RouteMap.VERSION
+		var outfit: String = str(campaign.s.get("outfit", "work")) if same_seed else selected_outfit_id
 		var progress = Campaign.new()
 		progress.restore()
 		if same_seed and debug_session: progress.profile = campaign.profile.duplicate(true)
 		campaign = progress
-		campaign.start(id, run_seed, difficulty, loadout)
+		campaign.start(id, run_seed, difficulty, loadout, map_version, outfit)
 		model = campaign.model
 		debug_session = debug_session and same_seed
 		page = "run"
@@ -657,7 +475,7 @@ func _start(id: String, same_seed: bool) -> void:
 func _resume() -> void:
 	if busy: return
 	var probe = Campaign.new()
-	if full_game_enabled and probe.restore() and not probe.s.settled:
+	if full_game_enabled and probe.restore() and (not probe.s.settled or probe.restoration_pending()):
 		campaign = probe
 		model = campaign.model
 		debug_session = false
@@ -680,18 +498,84 @@ func _to_menu() -> void:
 	redraw()
 
 func _new_battle_view() -> Control:
-	return BattleView.new()
+	var view: Control = preload("res://redesign/samples/ranged_battle_view.tscn").instantiate()
+	if debug_session and campaign != null and campaign.get_meta("eavesback_preview", false):
+		view.free()
+		if campaign.get_meta("creature_family_preview", false):
+			view = preload("res://redesign/samples/residential_creatures_view.tscn").instantiate()
+		else:
+			view = preload("res://redesign/samples/eavesback_view.tscn").instantiate()
+	elif campaign != null and int(campaign.s.get("region", -1)) == 0 and int(campaign.s.get("roster_version", 1)) >= 2:
+		view.free()
+		view = preload("res://redesign/residential_battle_view.tscn").instantiate()
+	view.reduced_feedback = str(preferences.data.motion) == "instant"
+	view.projectile_inspected.connect(_combat_projectile_details)
+	return view
+
+func _combat_projectile_details(target_id: int) -> void:
+	if busy: return
+	var projectile: Dictionary = model.target_entity(target_id)
+	if projectile.is_empty(): return
+	var column := _dialog("압력탄", true)
+	column.name = "ProjectileDetails"
+	_label(column, "%dm · 도달 %d턴 · HP 1" % [projectile.distance, preload("res://redesign/ranged.gd").arrival(projectile)], 24)
+	_label(column, "가장 가까워지면 다음 탄으로 자동 요격합니다. 산개도 확정 요격합니다.\n본체를 처치해도 이미 발사된 탄은 남습니다. 0m 도달 시 패배합니다.\n과열로 강제 재장전하는 동안에도 압력탄은 매 턴 6m씩 이동합니다.", 19)
+
+func _reload_forecast_text(prediction: Dictionary) -> String:
+	if model.s.phase == "plan" and model.s.plan.is_empty():
+		return "재장전 %d턴 · 냉각 %d" % [model.base_reload_cost(), Content.reload_cooling(model.s)]
+	var thermal: Dictionary = prediction.get("heat", {})
+	if float(thermal.get("forced_probability", 0)) > 0:
+		var low := int(thermal.forced_cost_min)
+		var high := int(thermal.forced_cost_max)
+		var value := str(high) if low == high else "%d~%d" % [low, high]
+		return "강제 재장전 %s턴%s" % [value, " · 위험" if prediction.get("phase", "") == "lost" or float(prediction.get("lost_probability", 0)) > 0 else ""]
+	var reload: Dictionary = prediction.get("reload", {})
+	if reload.get("random", false):
+		if float(reload.get("required_probability", 0)) <= 0: return "사격 후 충돌 위험" if float(reload.get("lost_probability", 0)) > 0 else "다음 재장전 없음"
+		var low := int(reload.get("cost_min", 0))
+		var high := int(reload.get("cost_max", 0))
+		var value := str(low) if low == high else "%d~%d" % [low, high]
+		return "재장전 %s턴 · 열 %s%s" % [value, str(reload.temperature_min) if reload.temperature_min == reload.temperature_max else "%d~%d" % [reload.temperature_min, reload.temperature_max], " · 위험" if float(reload.get("lost_probability", 0)) > 0 else ""]
+	if not bool(reload.get("required", false)):
+		if str(reload.get("phase", "")) == "lost": return "사격 후 충돌"
+		return "교전 돌파 · 재장전 없음" if str(reload.get("phase", "")) in ["won", "reward"] else "재장전 %d턴" % model.reload_cost()
+	return "재장전 %d턴 · 열 %d%s" % [reload.cost, reload.temperature_after, " · 위험" if reload.phase == "lost" else ""]
+
+
+func _heat_consequence(prediction: Dictionary) -> String:
+	var heat: Dictionary = prediction.get("heat", {})
+	var chance := float(heat.get("overheat_probability", 0))
+	if chance <= 0: return ""
+	var forced := float(heat.get("forced_probability", 0))
+	var heading := "과열 · 사격 중단" if chance >= 0.999999 else "과열 가능 %d%%" % roundi(chance * 100)
+	if forced > 0:
+		# Include the legacy surcharge when viewing an older saved run.
+		return heading + "\n강제 재장전 %d턴%s · 열 0" % [model.base_reload_cost() + 1 + int(model.s.get("legacy_reload_penalty", 0)), " 가능" if forced < 0.999999 else ""]
+	return heading + ("\n교전 종료 · 재장전 없음" if str(prediction.get("phase", "")) in ["won", "reward"] else "\n접촉 위험" if str(prediction.get("phase", "")) == "lost" else "")
 
 func _combat() -> void:
 	var compact := size.y < 960
 	var previous := combat_forecast
-	full_forecast = Forecast.analyze(model.s)
-	next_forecast = Forecast.analyze(model.s, true)
-	if int(full_forecast.get("turns", 0)) <= 1: show_full_forecast = false
+	var queued: Array = model.s.plan if model.s.phase == "plan" else model.s.magazine
+	if model.s.gun == "scatter" and queued.size() >= 5:
+		full_forecast = forecast_worker.request(model.s)
+		forecast_pending = full_forecast.is_empty()
+		if forecast_pending:
+			full_forecast = {"pending": true, "shots": [], "turns": 0, "phase": model.s.phase, "enemies": model.s.enemies, "projectiles": model.s.get("projectiles", []), "reserve": model.s.get("reinforcements", []), "remaining": queued, "heat": {}}
+		next_forecast = full_forecast
+	else:
+		forecast_worker.cancel_request()
+		full_forecast = Forecast.analyze(model.s, false, true)
+		next_forecast = Forecast.analyze(model.s, true, true)
+	if int(full_forecast.get("turns", 0)) <= int(next_forecast.get("turns", 0)): show_full_forecast = false
 	combat_forecast = full_forecast if show_full_forecast else next_forecast
 	var layout := CombatWorkbench.instantiate()
 	layout.name = "CombatWorkbench"
-	layout.add_theme_constant_override("separation", 5 if compact else 10)
+	var combat_theme := ui_theme.duplicate() as Theme
+	combat_theme.default_font = preload("res://redesign/combat_pixel_font.tres")
+	layout.theme = combat_theme
+	layout.add_theme_constant_override("separation", 2)
 	layout.size_flags_vertical = Control.SIZE_FILL
 	body.add_child(layout)
 
@@ -699,41 +583,42 @@ func _combat() -> void:
 	tactical_grid.columns = 1
 	tactical_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL if compact else Control.SIZE_FILL
 	tactical_grid.add_theme_constant_override("h_separation", 8 if compact else 14)
-	tactical_grid.add_theme_constant_override("v_separation", 6 if compact else 10)
+	tactical_grid.add_theme_constant_override("v_separation", 0)
 	if compact:
-		(layout.get_node("TacticalGrid/CandidatesPanel/CandidatesColumn") as VBoxContainer).add_theme_constant_override("separation", 4)
+		(layout.get_node("TacticalGrid/CandidatesPanel/CandidatesColumn") as VBoxContainer).add_theme_constant_override("separation", 2)
 		(layout.get_node("TacticalGrid/QueuePanel/QueueColumn") as VBoxContainer).add_theme_constant_override("separation", 4)
-	var current_stack: Array = model.s.plan if model.s.phase == "plan" else model.s.magazine
-	var candidate_active: bool = model.s.phase == "plan" and current_stack.is_empty()
 	for panel_path in ["%CandidatesPanel", "%QueuePanel"]:
 		var panel := layout.get_node(panel_path) as PanelContainer
 		panel.size_flags_vertical = Control.SIZE_EXPAND_FILL if compact else Control.SIZE_FILL
-		var panel_active: bool = candidate_active if panel_path == "%CandidatesPanel" else not candidate_active
-		var panel_style := _style(Color("172a34") if panel_active else PANEL)
-		panel_style.border_color = ACCENT if panel_active else Color("304852")
-		panel_style.set_border_width_all(2 if panel_active else 1)
-		if compact:
-			panel_style.content_margin_left = 8
-			panel_style.content_margin_right = 8
-			panel_style.content_margin_top = 6
-			panel_style.content_margin_bottom = 6
+		# Both sections share the workbench backing; margins are counted once.
+		var panel_style := StyleBoxEmpty.new()
+		panel_style.content_margin_left = 12
+		panel_style.content_margin_right = 12
+		panel_style.content_margin_top = 6 if panel_path == "%QueuePanel" else 4
+		panel_style.content_margin_bottom = 4
 		panel.add_theme_stylebox_override("panel", panel_style)
+		# The new hand uses quiet surfaces; avoid repeating the old mechanical frame.
 	var hand_heading := layout.get_node("TacticalGrid/CandidatesPanel/CandidatesColumn/HandHeader/HandHeading") as Label
-	hand_heading.text = "탄환 선택"
-	hand_heading.add_theme_font_size_override("font_size", _scaled(18 if compact else 22))
+	hand_heading.get_parent().add_theme_constant_override("separation", 10)
+	hand_heading.text = "탄환 선택 · %d/%d장" % [model.s.hand.size(), Content.hand_capacity(model.s)]
+	hand_heading.tooltip_text = "%s · 가방 %d장 · 교환 %d회\n남은 패는 재장전 시 사용 더미로 보내고 새 패를 뽑습니다." % [Content.outfit_name(model.s), Content.hand_capacity(model.s), Content.exchange_capacity(model.s)]
+	hand_heading.add_theme_font_size_override("font_size", _scaled(20 if compact else 22))
+	hand_heading.add_theme_color_override("font_color", Color("aec4c3"))
 	var queue_heading := layout.get_node("%QueueHeading") as Label
-	queue_heading.add_theme_font_size_override("font_size", _scaled(17 if compact else 20))
+	queue_heading.add_theme_font_size_override("font_size", _scaled(20 if compact else 22))
+	queue_heading.add_theme_color_override("font_color", Color("aec4c3"))
 	var hand_controls := layout.get_node("%HandControls") as HBoxContainer
-	if campaign != null and bool(preferences.data.hints):
-		var lesson := CampaignContent.lesson(campaign.node(), model.s)
-		if not lesson.is_empty():
-			hand_heading.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-			var lesson_label := _label(hand_heading.get_parent(), lesson, 17, MUTED)
-			lesson_label.name = "EncounterLesson"
-			lesson_label.autowrap_mode = TextServer.AUTOWRAP_OFF
-			lesson_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-			lesson_label.tooltip_text = lesson
-			hand_heading.get_parent().move_child(lesson_label, 1)
+	if not model.s.get("prepared", []).is_empty():
+		var prepared_names: PackedStringArray = []
+		for id in model.s.prepared: prepared_names.append(Content.AMMO[id].name)
+		var reservation := _label(hand_heading.get_parent(), "다음 패 예약 · " + " / ".join(prepared_names), 17, Color("c4c392"))
+		reservation.name = "ReservationStatus"
+		reservation.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		reservation.autowrap_mode = TextServer.AUTOWRAP_OFF
+		reservation.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		reservation.tooltip_text = reservation.text + "\n재장전하면 소유 탄환을 다음 패로 가져옵니다. 탄환을 복제하지 않습니다."
+		hand_heading.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		hand_heading.get_parent().move_child(reservation, 1)
 	var steps := layout.get_node("%CombatSteps") as PanelContainer
 	steps.visible = not compact
 	var battle_preview := layout.get_node("%BattlePreview")
@@ -743,12 +628,25 @@ func _combat() -> void:
 	battle_view.name = "BattleView"
 	battle_view.compact_ui = compact
 	battle_view.region = int(campaign.s.region) if campaign != null else 0
+	if campaign != null:
+		# Campaign depth includes shops/events and comes from the selected node,
+		# unlike the combat model's encounter index or the number of visited rooms.
+		battle_view.set_route_background(int(campaign.s.region), int(campaign.s.floor), int(campaign.region_info().floors))
 	battle_view.inspection_enabled = not busy
 	layout.get_node("%BattleHost").add_child(battle_view)
-	if compact: battle_view.custom_minimum_size.y = 248
-	battle_view.sync(model.s, combat_forecast)
-	if campaign != null: battle_view.caption = str(campaign.node().name)
-	if model.s.get("course", false): battle_view.caption = Content.lesson(model.s)
+	# Give the stage the recovered hand space and part of the spare tall-screen
+	# height. Actor scale uses the previous stage height, not this layout budget.
+	battle_view.character_reference_height = 240.0 if compact else 350.0
+	battle_view.custom_minimum_size.y = 280.0 + clampf(size.y - 800.0, 0.0, 140.0) * 0.65 if compact else 390.0
+	layout.preferred_battle_height = battle_view.custom_minimum_size.y
+	layout.bottom_margin = 10.0 if compact else 20.0
+	battle_view.sync(model.s, {} if forecast_pending else combat_forecast)
+	if debug_session and campaign != null and campaign.has_meta("background_preview"):
+		battle_view.show_caption = true
+		battle_view.caption = ["초반 · 생활 통로", "중반 · 폐쇄 주거지", "상층 · 승강 설비"][int(campaign.get_meta("background_preview"))] + " · 배경 미리보기"
+	if model.s.get("course", false):
+		battle_view.show_caption = true
+		battle_view.caption = Content.lesson(model.s)
 	if not combat_forecast.get("random", false) and not combat_forecast.shots.is_empty(): battle_view.first_shot = combat_forecast.shots[0]
 	battle_view.shot_started.connect(_visual_shot)
 	battle_view.shot_impacted.connect(_visual_impact)
@@ -759,7 +657,9 @@ func _combat() -> void:
 
 	var decision_prompt := layout.get_node("%DecisionPrompt") as Label
 	decision_prompt.add_theme_font_size_override("font_size", _scaled(14 if compact else 17))
-	decision_prompt.text = "탄을 선택하면 발사 순서에 추가됩니다" if model.s.plan.is_empty() else "왼쪽부터 발사 · 전장에서 처치와 충돌 위험 확인"
+	decision_prompt.text = "마지막에 넣은 탄부터 발사 · 새 탄은 맨 앞에" if model.s.phase == "plan" else "장전 확정 · 왼쪽부터 발사"
+	if model.s.phase == "plan" and not model.s.plan.is_empty() and Content.anchor(str(model.s.plan[0])) == "first":
+		decision_prompt.text = "첫 발 고정 · 더 넣으려면 맨 앞 탄을 회수하세요"
 	var prompt_style := _style(Color("17313a"))
 	prompt_style.border_color = Color("63dce8") if model.s.plan.is_empty() else ACCENT
 	prompt_style.border_width_left = 4
@@ -779,21 +679,29 @@ func _combat() -> void:
 			compressor.tooltip_text = "압축 코어 %d/2 · 같은 탄환을 서로 끌어 임시 압축\n코어는 런 동안 유지되며 상점에서 충전합니다." % int(model.s.field_compression_left)
 			var compressor_style := _style(PANEL)
 			compressor_style.border_color = Color("63dce8") if not field_ids.is_empty() else Color("38515d")
-			compressor_style.set_border_width_all(1)
-			compressor.add_theme_stylebox_override("panel", compressor_style)
+			compressor_style.set_border_width_all(0)
+			compressor.add_theme_stylebox_override("panel", preload("res://redesign/combat_pixel_skin.gd").box("button"))
 			hand_controls.add_child(compressor)
 			var compressor_view := FieldCompressorView.new()
 			compressor_view.name = "CompressorGlyph"
 			compressor_view.setup(int(model.s.field_compression_left), not field_ids.is_empty())
 			compressor.add_child(compressor_view)
 		var exchange_button := _button(hand_controls, "패 교환  %d" % model.s.exchange_left, "exchange", _exchange_dialog, model.s.phase != "plan" or model.s.exchange_left <= 0 or (model.s.draw.is_empty() and model.s.discard.is_empty()))
-		exchange_button.custom_minimum_size = Vector2(106 if compact else 132, 36 if compact else 44)
+		exchange_button.custom_minimum_size = Vector2(116 if compact else 132, 36 if compact else 44)
+		exchange_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 		exchange_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-		exchange_button.add_theme_font_size_override("font_size", _scaled(14 if compact else 16))
+		exchange_button.add_theme_font_size_override("font_size", _scaled(18))
 
+	var hand_synergies: Dictionary = {}
+	var bag_button := _button(hand_controls, "탄환 가방", "ammo_bag", _ammo_bag)
+	bag_button.custom_minimum_size = Vector2(116 if compact else 132, 36 if compact else 44)
+	bag_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	bag_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	bag_button.add_theme_font_size_override("font_size", _scaled(18))
+	bag_button.tooltip_text = "전체 보유 · 손패 · 장전 · 뽑을 탄 · 버린 탄 확인 (턴 소모 없음)"
 	var field_ids: Array = model.field_compressible_ids()
 	var compression_actions := layout.get_node("%CompressionActions") as HBoxContainer
-	for compress_id_value in field_ids:
+	for compress_id_value in field_ids.slice(0, 2):
 		var compress_id := str(compress_id_value)
 		var compress_button := CompressionPairButton.new()
 		compress_button.name = "compress_pair_" + compress_id
@@ -801,14 +709,44 @@ func _combat() -> void:
 		compress_button.pressed.connect(_field_compress_click.bind(compress_id))
 		compression_actions.add_child(compress_button)
 		compress_button.tooltip_text = "압축 코어 1개를 사용합니다. 드래그하지 않아도 같은 결과가 적용됩니다."
+	if field_ids.size() > 2:
+		var more := _button(compression_actions, "+%d종" % (field_ids.size() - 2), "compress_more", _field_compression_choices)
+		more.custom_minimum_size = Vector2(70, 44)
 	var grid := layout.get_node("%AmmoGrid") as GridContainer
-	grid.columns = 6 if get_tree().root.size.x >= 900 else 3
-	var ids: Array = ["basic"]
+	grid.columns = 10
+	var ids: Array = [] if Content.uses_ammo_cards(model.s) else ["basic"]
 	for hand_id in model.s.hand:
 		if not ids.has(hand_id): ids.append(hand_id)
 	var entries: Array = _hand_entries()
-	for entry in entries:
+	grid.columns = 10
+	var pages := maxi(1, ceili(float(entries.size()) / 10.0))
+	hand_page = clampi(hand_page, 0, pages - 1)
+	if pages > 1:
+		var pager := HBoxContainer.new()
+		pager.name = "HandPager"
+		hand_controls.add_child(pager)
+		for step in [-1, 1]:
+			if step == 1:
+				var page_label := _label(pager, "%d/%d" % [hand_page + 1, pages], 16, INK)
+				page_label.name = "HandPageNumber"
+				page_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+				page_label.custom_minimum_size.x = 40
+				page_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+			var page_button := _button(pager, "‹" if step < 0 else "›", "hand_previous" if step < 0 else "hand_next", _change_hand_page.bind(step), (hand_page == 0 if step < 0 else hand_page == pages - 1))
+			page_button.custom_minimum_size = Vector2(40, 36)
+			_compact_control(page_button, 36)
+			page_button.tooltip_text = "이전 탄환" if step < 0 else "나머지 탄환 보기"
+	for entry_index in range(entries.size()):
+		var entry: Dictionary = entries[entry_index]
 		var id := str(entry.id)
+		if str(entry.get("zone", "")) in ["used", "compressed"]:
+			var used := preload("res://redesign/ammo_hand_slot.tscn").instantiate()
+			used.name = "hand_" + str(entry.zone) + "_%d" % entry_index
+			used.slot_state = str(entry.zone)
+			used.set_meta("hand_index",entry_index)
+			grid.add_child(used)
+			used.visible = entry_index / 10 == hand_page
+			continue
 		var count := int(entry.count)
 		var held: bool = bool(entry.get("held", false))
 		var disabled: bool = held or not model.can_load(id)
@@ -816,38 +754,60 @@ func _combat() -> void:
 		var copy_number := int(entry.copy)
 		var key := "load_" + id + ("" if copy_number == 1 else "_%d" % copy_number)
 		var can_compress := not held and field_ids.has(id)
-		var button := AmmoHandButton.new()
+		var button := preload("res://redesign/combat_ammo_card.tscn").instantiate()
 		button.name = key
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		button.custom_minimum_size.y = 154
+		button.custom_minimum_size.y = 132
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.disabled = disabled or busy
 		button.setup(id, token, can_compress, model.s)
-		button.pressed.connect(_load.bind(id, key))
+		button.pressed.connect(_activate_hand_card.bind(button, id, key))
+		button.detail_requested.connect(_hand_ammo_details)
 		button.pair_dropped.connect(_field_drop)
 		grid.add_child(button)
+		button.visible = entry_index / 10 == hand_page
+		button.set_meta("synergy", hand_synergies.get(id, {}).duplicate(true) if not disabled else {})
 		button.tooltip_text = _ammo_stats(id) + "\n" + Readability.description(id, model.s) + ("\n같은 표시 탄환 위로 끌어 압축" if can_compress else "")
-		button.custom_minimum_size.y = 154
+		if not disabled and hand_synergies.has(id):
+			button.tooltip_text += "\n" + AmmoSynergy.text(hand_synergies[id])
+			button.tooltip_text += "\n장전 후 발사 레일 맨 뒤로 옮겨 연결합니다." if hand_synergies[id].move else "\n지금 장전하면 앞에서 연결됩니다."
+		button.custom_minimum_size.y = 132
 		button.mouse_entered.connect(_inspect_ammo.bind(id))
 		button.focus_entered.connect(_inspect_ammo.bind(id))
+		for preview_event in [button.mouse_entered, button.mouse_exited, button.focus_entered, button.focus_exited]:
+			preview_event.connect(_preview_hand_insertion.call_deferred)
 		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
-			var base_color := Color("15262f").lerp(AmmoVisual.COLORS[id], 0.08)
+			var base_color := Color("202e33").lerp(AmmoVisual.COLORS[id], 0.035)
 			if state in ["hover", "focus"]: base_color = base_color.lightened(0.08)
 			elif state == "pressed": base_color = base_color.darkened(0.08)
 			elif state == "disabled": base_color = Color("101b22")
-			var style := _style(base_color)
-			style.border_color = Color("63dce8") if can_compress else AmmoVisual.COLORS[id].darkened(0.18)
-			style.set_border_width_all(2 if can_compress or state in ["hover", "focus"] else 1)
+			var style := _style(Color(0,0,0,0))
+			style.border_color = Color("a7bfb8") if state in ["hover", "focus"] else Color("526568")
+			style.set_border_width_all(0)
 			style.content_margin_left = 6
 			style.content_margin_right = 6
 			style.content_margin_top = 4
 			style.content_margin_bottom = 4
 			button.add_theme_stylebox_override(state, style)
-		var card_view := AmmoCardView.new()
-		card_view.name = "CardInfo"
-		card_view.compact_ui = false
-		card_view.setup(id, count, model.s, disabled, can_compress, "장전한 탄" if held else "")
-		button.add_child(card_view)
+		var card_view: Control = button.get_node("CardInfo")
+		card_view.compact_ui = true
+		card_view.combat_skin = true
+		card_view.synergy = hand_synergies.get(id, {}) if not disabled else {}
+		card_view.setup(id, count, model.s, disabled, can_compress, "장전한 탄" if held else (model.load_block_reason(id) if disabled else ""))
+
+	# Ten persistent positions make six-card and ten-card bags use the same card width.
+	var visible_entries := mini(10,entries.size()-hand_page*10)
+	for slot_index in range(visible_entries,10):
+		var empty := preload("res://redesign/ammo_hand_slot.tscn").instantiate()
+		empty.name = "hand_slot_%d" % slot_index
+		empty.slot_state = "locked" if slot_index>=Content.hand_capacity(model.s) else "empty"
+		empty.set_meta("hand_index",slot_index)
+		grid.add_child(empty)
+	var details_button := _button(hand_controls,"탄 상세","hand_details",func(): _hand_ammo_details(inspected_ammo))
+	details_button.custom_minimum_size=Vector2(96,36)
+	details_button.autowrap_mode=TextServer.AUTOWRAP_OFF
+	details_button.add_theme_font_size_override("font_size",_scaled(18))
+	details_button.tooltip_text="카드를 길게 눌러도 상세를 확인할 수 있습니다. 확인은 턴을 소모하지 않습니다."
 
 	ammo_inspector = layout.get_node("%AmmoInspector") as Label
 	ammo_inspector.add_theme_font_size_override("font_size", _scaled(17))
@@ -856,16 +816,19 @@ func _combat() -> void:
 	ammo_inspector.hide()
 	calculation_label = ammo_inspector
 	_inspect_ammo(inspected_ammo if ids.has(inspected_ammo) else "basic")
-	_reserve_preview(layout.get_node("%ReserveHost"), compact)
+	layout.get_node("%ReserveHost").hide()
 
 	var stack: Array = model.s.plan if model.s.phase == "plan" else model.s.magazine
-	queue_heading.text = "발사 순서  ·  %d/%d칸" % [Content.slots_used(stack), model.capacity()]
+	queue_heading.text = "발사 순서 · %d/%d칸" % [Content.slots_used(stack), model.capacity()]
+	if model.s.phase == "plan" and not stack.is_empty() and Content.anchor(str(stack[0])) == "first":
+		queue_heading.text = "첫 발 고정 · 맨 앞 회수 후 추가 장전"
 	if str(model.s.gun) == "amplifier": queue_heading.text += " · 처치 시 연속"
 	var magazine_preview := layout.get_node("%MagazinePreview")
 	magazine_preview.get_parent().remove_child(magazine_preview)
 	magazine_preview.queue_free()
 	magazine_view = MagazineView.new()
 	magazine_view.name = "MagazineView"
+	magazine_view.reduced_motion = str(preferences.data.motion) == "instant"
 	magazine_view.compact_ui = false
 	magazine_view.stack = stack.duplicate()
 	magazine_view.capacity = model.capacity()
@@ -877,8 +840,10 @@ func _combat() -> void:
 		if i >= previous.get("shots", []).size() or combat_forecast.shots[i].damage != previous.shots[i].damage or combat_forecast.shots[i].target != previous.shots[i].target:
 			magazine_view.changed_slots.append(i)
 	magazine_view.slot_pressed.connect(_slot_action)
+	magazine_view.slot_hovered.connect(_highlight_slot_targets)
+	magazine_view.mouse_exited.connect(func(): _highlight_slot_targets(selected_slot))
 	magazine_view.confirmed = model.s.phase == "ready"
-	if not stack.is_empty(): magazine_view.forecast = full_forecast
+	if not stack.is_empty() and not forecast_pending: magazine_view.forecast = full_forecast
 	layout.get_node("%MagazineHost").add_child(magazine_view)
 
 	var edits := layout.get_node("%EditActions") as HBoxContainer
@@ -886,78 +851,126 @@ func _combat() -> void:
 	_button(edits, "뒤로 →", "slot_next", func(): _move_slot(selected_slot, selected_slot + 1))
 	_button(edits, "선택 회수", "remove_selected", func(): _remove_slot(selected_slot))
 	_button(edits, "탄 상세", "inspect_slots", _slot_details, stack.is_empty())
-	_button(edits, "끝 탄 회수", "undo", _undo, model.s.phase != "plan" or stack.is_empty())
+	edits.visible = model.s.phase == "plan" and not stack.is_empty()
 	for edit in edits.get_children():
-		edit.custom_minimum_size = Vector2(100, 40)
-		edit.add_theme_font_size_override("font_size", _scaled(15))
+		edit.custom_minimum_size = Vector2(112, 40)
+		edit.autowrap_mode = TextServer.AUTOWRAP_OFF
+		edit.add_theme_font_size_override("font_size", _scaled(18))
 		_compact_control(edit, 40)
 	_update_slot_actions()
 
-	var preview: Dictionary = model.preview()
 	preview_label = layout.get_node("%ForecastLabel") as Label
-	preview_label.add_theme_font_size_override("font_size", _scaled(15 if compact else 18))
-	preview_label.add_theme_color_override("font_color", ACCENT if int(preview.get("damage", 0)) > 0 else MUTED)
-	preview_label.custom_minimum_size.y = 26 if compact else 36
-	var result_style := _style(Color("183039") if not stack.is_empty() else Color("14252e"))
-	result_style.border_color = ACCENT if not stack.is_empty() else Color("38515d")
-	result_style.border_width_left = 4 if not stack.is_empty() else 1
-	result_style.content_margin_left = 8 if compact else 16
-	result_style.content_margin_right = 8 if compact else 16
-	result_style.content_margin_top = 5 if compact else 9
-	result_style.content_margin_bottom = 5 if compact else 9
-	preview_label.add_theme_stylebox_override("normal", result_style)
-	preview_label.text = "선택 결과 · " + _preview_text(preview)
-	preview_label.tooltip_text = str(preview.get("text", "누른 순서대로 발사합니다. 피해·거리·속성 효과를 함께 설계하세요."))
-	if not stack.is_empty():
-		preview_label.text = ("계속 발사 · %d턴 · " % int(full_forecast.turns) if show_full_forecast else "이번 발사 · 1턴 · ") + Forecast.compact_summary(combat_forecast)
-		preview_label.tooltip_text = "무작위 표적의 HP 범위와 처치·접촉 확률입니다." if combat_forecast.get("random", false) else "전장의 HP 화살표도 이 범위의 결과입니다. 전체 탄창 예측은 중간 재장전 없이 계속 발사하는 조건입니다."
+	preview_label.add_theme_font_size_override("font_size", _scaled(18))
+	preview_label.add_theme_color_override("font_color", INK)
+	preview_label.custom_minimum_size.y = 24
+	preview_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	preview_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	preview_label.visible = not stack.is_empty()
+	preview_label.text = ("전체 사격 · " if show_full_forecast else "이번 발사 · ") + Forecast.compact_summary(combat_forecast) if not stack.is_empty() else ""
+	preview_label.tooltip_text = "무작위 표적은 범위와 확률로 표시합니다. 탄창의 탄을 눌러 상세를 확인할 수 있습니다."
 	if not stack.is_empty(): _inspect_slot(clampi(selected_slot, 0, stack.size() - 1))
-
 	var actions := layout.get_node("%CombatActions") as VBoxContainer
-	if model.s.phase == "plan":
-		var confirm_button := _button(actions, "장전 확정", "confirm", _confirm, stack.is_empty())
-		confirm_button.custom_minimum_size.y = 44 if compact else 52
-		confirm_button.add_theme_font_size_override("font_size", _scaled(17 if compact else 20))
-		_primary_button(confirm_button)
-		confirm_button.tooltip_text = "시간 소모 없음. 확정 후 순서를 바꾸려면 재장전해야 합니다."
-		_label(actions, "확정 후 변경: 재장전 %d턴" % model.reload_cost(), 16, MUTED).name = "ConfirmCost"
-	else:
-		var fire_label := "연쇄 사격 · %d발 · 1턴" % stack.size() if Content.chains(model.s) else "처형 연쇄 · 처치 시 계속 · 1턴"
-		var fire_count: int = next_forecast.shots.size()
-		var fire_button := _primary_button(_button(actions, "발사  ·  %d발" % fire_count, "fire", _fire, stack.is_empty()))
-		fire_button.tooltip_text = fire_label
-		fire_button.custom_minimum_size.y = 44
-		fire_button.add_theme_font_size_override("font_size", _scaled(17 if compact else 20))
-		var projected: Array = model.movement_preview(model.reload_cost())
-		var lethal := false
-		for i in range(projected.size()):
-			if model.s.enemies[i].hp > 0 and projected[i] <= 0:
-				lethal = true
-		var reload_button := _button(actions, "재장전 · %d턴%s" % [model.reload_cost(), " · 접촉 위험" if lethal else ""], "reload", _reload)
-		reload_button.custom_minimum_size.y = 36 if compact else 44
-		reload_button.add_theme_font_size_override("font_size", _scaled(16 if compact else 20))
-	for action in actions.get_children():
-		if action is Button: _compact_control(action)
+	var primary := _primary_button(_button(actions, "장전 확정" if model.s.phase == "plan" else "발사", "confirm" if model.s.phase == "plan" else "fire", _confirm if model.s.phase == "plan" else _fire, stack.is_empty() or forecast_pending))
+	if model.s.phase == "ready" and not forecast_pending:
+		var thermal_count: Dictionary = next_forecast.get("heat", {})
+		var low := int(thermal_count.get("fired_min", 0))
+		var high := int(thermal_count.get("fired_max", 0))
+		primary.text = "발사 · %s발" % (str(high) if low == high else "%d~%d" % [low, high])
+	# Match the visible magazine plate (82 high, inset by 3 on each edge).
+	primary.custom_minimum_size.y = magazine_view.custom_minimum_size.y - 6
+	if model.s.phase == "plan" and not stack.is_empty(): primary.text = "장전 확정 · %d발" % stack.size()
+	primary.autowrap_mode = TextServer.AUTOWRAP_OFF
+	primary.add_theme_font_size_override("font_size", _scaled(24))
+	primary.tooltip_text = "확정은 시간 소모 없음 · 발사 1턴" if model.s.phase == "plan" else "발사 후 적이 행동합니다. 과열 시 사격이 끊깁니다."
+	# The outcome strip keeps one stable line, including overheat consequences.
+	# The warning claims width only when shown, never another row of height.
+	var warning_host := VBoxContainer.new()
+	warning_host.name = "OverheatWarningHost"
+	actions.add_child(warning_host)
+	var warning := _label(warning_host, "", 17, DANGER)
+	warning.autowrap_mode = TextServer.AUTOWRAP_OFF
+	warning.text = _heat_consequence(combat_forecast).replace("\n", " · ")
+	warning.tooltip_text = _heat_consequence(combat_forecast)
+	warning.name = "OverheatWarning"
+	warning.visible = not warning.text.is_empty() and not stack.is_empty()
+	if forecast_pending:
+		warning.text = "예측 계산 중"
+		warning.visible = true
+		preview_label.text = "표적별 결과 계산 중"
 
 	layout.arrange_combat()
+	var outcome_parent := preview_label.get_parent()
+	var strip := HBoxContainer.new()
+	strip.name = "ThermalOutcome"
+	strip.add_theme_constant_override("separation", 12)
+	outcome_parent.add_child(strip)
+	outcome_parent.move_child(strip, preview_label.get_index())
+	var heat_view := preload("res://redesign/heat_gauge.gd").new()
+	heat_view.name = "HeatGauge"
+	heat_view.reduced_motion = str(preferences.data.motion) == "instant"
+	heat_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	strip.add_child(heat_view)
+	heat_view.sync(model.s, combat_forecast)
+	if model.s.phase == "ready" or Content.uses_ammo_cards(model.s):
+		var reload_now := Forecast.reload_now(model.s, true)
+		heat_view.reload_temperature = int(reload_now.temperature_after)
+		var lethal := str(reload_now.phase) == "lost"
+		var consequence := Forecast.reload_consequence(reload_now)
+		var reload_title := "패 재장전" if model.s.phase == "plan" else "재장전"
+		var reload_detail := consequence if not consequence.is_empty() else "냉각 %d" % Content.reload_cooling(model.s)
+		var reload_button := _button(strip, "%s · %s\n열 %d → %d · 적 %d턴" % [reload_title, reload_detail, int(model.s.heat), int(reload_now.temperature_after), int(reload_now.cost)], "reload", _reload)
+		reload_button.custom_minimum_size = Vector2(220, 68)
+		reload_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+		reload_button.set_meta("reload_warning", not consequence.is_empty())
+		reload_button.set_meta("reload_lethal", lethal)
+		reload_button.add_theme_font_size_override("font_size", _scaled(18 if not consequence.is_empty() else 20))
+		reload_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+		reload_button.add_theme_font_override("font", preload("res://redesign/combat_pixel_font.tres"))
+		reload_button.tooltip_text = "지금 재장전 · 냉각 %d · 미발사 탄과 남은 패를 버리고 새 패를 뽑습니다. 강제 재장전은 추가 1턴과 열 0." % Content.reload_cooling(model.s)
+		for preview_event in [reload_button.mouse_entered, reload_button.mouse_exited, reload_button.focus_entered, reload_button.focus_exited]:
+			preview_event.connect(_preview_reload_heat.call_deferred)
+		if not consequence.is_empty():
+			reload_button.tooltip_text += "\n이번 재장전 결과: " + consequence
+		if lethal: _primary_button(reload_button, DANGER)
+	if battle_view.has_signal("feedback_changed"): battle_view.feedback_changed.connect(_heat_feedback)
 	var result_row := HBoxContainer.new()
 	result_row.name = "ForecastRow"
-	result_row.custom_minimum_size.y = 40
-	var result_parent := preview_label.get_parent()
-	var result_index := preview_label.get_index()
-	result_parent.add_child(result_row)
-	result_parent.move_child(result_row, result_index)
+	# Reserve the result row even before loading: reveal content, not geometry.
+	result_row.custom_minimum_size.y = 32
+	result_row.add_theme_constant_override("separation", 12)
+	result_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	outcome_parent.add_child(result_row)
 	preview_label.reparent(result_row)
 	preview_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	if int(full_forecast.get("turns", 0)) > 1:
+	# The shot outcome belongs to the firing rail. Its reserved line separates
+	# that rail from the thermal instrument, which now sits beside the hand.
+	outcome_parent.move_child(result_row, strip.get_index())
+	# Keep the action itself centered on the cartridges. Its warning belongs
+	# to the reserved outcome row, so hidden warning space cannot offset it.
+	warning_host.reparent(result_row)
+	warning_host.custom_minimum_size.x = 0
+	warning_host.size_flags_horizontal = Control.SIZE_SHRINK_END
+	warning_host.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	if int(full_forecast.get("turns", 0)) > int(next_forecast.get("turns", 0)):
 		var scope := _button(result_row, "이번 발사 보기" if show_full_forecast else "전체 %d턴 보기" % int(full_forecast.turns), "forecast_scope", func():
 			show_full_forecast = not show_full_forecast
 			redraw()
 		)
-		scope.custom_minimum_size = Vector2(150, 40)
+		scope.custom_minimum_size = Vector2(176, 32)
+		scope.autowrap_mode = TextServer.AUTOWRAP_OFF
 		scope.size_flags_horizontal = Control.SIZE_SHRINK_END
-		scope.add_theme_font_size_override("font_size", _scaled(15))
-		_compact_control(scope, 40)
+		scope.add_theme_font_size_override("font_size", _scaled(18))
+		_compact_control(scope, 32)
+	result_row.move_child(warning_host, result_row.get_child_count()-1)
+
+	# Skin functional controls without changing their layout or touch rectangles.
+	for key in ["confirm", "fire", "reload", "slot_previous", "slot_next", "remove_selected", "inspect_slots", "exchange", "ammo_bag", "hand_details", "forecast_scope", "hand_previous", "hand_next"]:
+		var control := layout.find_child(key, true, false) as Button
+		if control != null:
+			preload("res://redesign/combat_treatment.gd").finish_button(control, key in ["confirm", "fire"])
+	for control in compression_actions.get_children():
+		if control is Button:
+			preload("res://redesign/combat_treatment.gd").finish_button(control)
 
 func _compact_control(button: Button, height: int = 44) -> void:
 	button.custom_minimum_size.y = height
@@ -969,16 +982,22 @@ func _compact_control(button: Button, height: int = 44) -> void:
 		style.content_margin_right = 10
 		button.add_theme_stylebox_override(state, style)
 
+func _change_hand_page(step: int) -> void:
+	if busy: return
+	hand_page += step
+	redraw()
+
 func _hand_entries() -> Array:
-	var key := JSON.stringify([model.s.seed, model.s.gun, model.s.floor, model.s.reloads, model.s.exchange_left, model.s.get("course", false)])
+	var key := JSON.stringify([model.s.get("ammo_cycle", 0), model.s.seed, model.s.gun, model.s.floor, model.s.reloads, model.s.exchange_left, model.s.get("course", false)])
 	if hand_layout_key != key:
 		hand_layout_key = key
+		hand_page = 0
 		used_hand_tokens.clear()
-		hand_layout = [{"id": "basic", "count": 0, "token": "basic", "copy": 1}]
+		hand_layout = [] if Content.uses_ammo_cards(model.s) else [{"id": "basic", "count": 0, "token": "basic", "copy": 1}]
 		var pool: Array = model.s.hand.duplicate()
 		if model.s.phase == "ready":
 			for id in model.s.magazine:
-				if id != "basic" and not Content.is_temporary(str(id)): pool.append(id)
+				if (id != "basic" or Content.uses_ammo_cards(model.s)) and not Content.is_temporary(str(id)): pool.append(id)
 		var field: Dictionary = model.s.get("field_compression", {})
 		if not field.is_empty():
 			pool.append(field.source)
@@ -990,10 +1009,10 @@ func _hand_entries() -> Array:
 			for i in range(pool.count(id)):
 				hand_layout.append({"id": id, "count": 1, "token": "load_" + str(id) + ("" if i == 0 else "_%d" % (i + 1)), "copy": i + 1})
 	var entries := hand_layout.duplicate(true)
-	entries[0].count = model.available("basic")
+	if not Content.uses_ammo_cards(model.s): entries[0].count = model.available("basic")
 	var held_tokens: Array = []
 	var ids: Array = []
-	for entry in entries.slice(1):
+	for entry in entries.slice(0 if Content.uses_ammo_cards(model.s) else 1):
 		if ids.has(entry.id): continue
 		ids.append(entry.id)
 		var copies: Array = entries.filter(func(e): return e.id == entry.id)
@@ -1008,7 +1027,20 @@ func _hand_entries() -> Array:
 			if not held_tokens.has(copy_entry.token):
 				held_tokens.append(copy_entry.token)
 				spent -= 1
-	for entry in entries: entry.held = held_tokens.has(entry.token)
+	var loaded: Array = (model.s.plan if model.s.phase == "plan" else model.s.magazine).duplicate()
+	var field: Dictionary = model.s.get("field_compression",{})
+	var compressed_copies := 2 if not field.is_empty() else 0
+	for entry in entries:
+		entry.held = held_tokens.has(entry.token)
+		entry.zone = "available"
+		if not entry.held: continue
+		if loaded.has(entry.id):
+			loaded.erase(entry.id)
+			entry.zone="loaded"
+		elif compressed_copies>0 and str(entry.id)==str(field.get("source","")):
+			entry.zone="compressed"
+			compressed_copies-=1
+		else: entry.zone="used"
 	return entries
 
 func _combat_steps(layout: Control) -> void:
@@ -1036,11 +1068,11 @@ func _combat_steps(layout: Control) -> void:
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.autowrap_mode = TextServer.AUTOWRAP_OFF
 func _ammo_stats(id: String) -> String:
-	return Content.AMMO[id].name + "   " + Readability.stats(id, model.s, true)
+	return Content.AMMO[id].name + " · " + Content.grade_detail(id) + "   " + Readability.stats(id, model.s, true)
 
 func _candidate_outcome(id: String) -> Dictionary:
 	if not model.can_load(id):
-		return {"text": "보유 없음" if model.available(id) <= 0 else "공간 부족", "positive": false}
+		return {"text": model.load_block_reason(id), "positive": false}
 	var insert_at := Content.insertion_index(model.s.plan, id)
 	var copy := Model.new()
 	copy.s = model.s.duplicate(true)
@@ -1057,7 +1089,7 @@ func _candidate_outcome(id: String) -> Dictionary:
 		var shot: Dictionary = shots[insert_at]
 		if shot.get("random", false):
 			return {"text": "무작위 %d~%d 피해" % [shot.damage_min, shot.damage_max], "positive": int(shot.damage_max) > 0}
-		var result := "%s %s" % [Forecast.tag(int(shot.target)), Forecast.outcome(shot)]
+		var result := "%s %s" % [Forecast.tag(int(shot.target), model.s.enemies), Forecast.outcome(shot)]
 		return {"text": result, "positive": int(shot.get("damage", 0)) > 0 or int(shot.get("blocked_hits", 0)) > 0}
 	return {"text": "결과 확인", "positive": false}
 
@@ -1100,7 +1132,7 @@ func _reward() -> void:
 	for enemy_index in range(next_enemies.size()):
 		var e: Dictionary = next_enemies[enemy_index]
 		var enemy_card := _panel(enemy_row)
-		_label(enemy_card, "%s  %s" % [Forecast.tag(enemy_index), e.name], 18)
+		_label(enemy_card, str(e.name), 18)
 		_label(enemy_card, "HP %d · 장갑 %d" % [e.hp, e.def], 17, MUTED)
 		_label(enemy_card, "%dm  /  턴당 −%dm" % [e.distance, e.speed], 17, MUTED)
 	if model.s.get("course", false):
@@ -1144,6 +1176,7 @@ func _ending() -> void:
 	_label(body, "%d / 7 교전 통과 · %d턴 · %d발 · 재장전 %d회" % [7 if won else int(model.s.floor), model.s.turns, model.s.shots, model.s.reloads], 22, MUTED)
 	var run_report := _label(body, RunInsight.combat_report_line(model.s), 19, ACCENT)
 	run_report.name = "RunReport"
+	_heat_report(body, model.s)
 	if not won:
 		var advice := _panel(body)
 		_label(advice, "다음 설계", 20, ACCENT)
@@ -1163,7 +1196,7 @@ func _ammo_names(ids: Array) -> String:
 func _reserve_preview(parent: Node, compact: bool = false) -> void:
 	var reserve := _panel(parent)
 	reserve.name = "ReserveAmmo"
-	reserve.tooltip_text = "다음 두 발은 순서 공개 · 나머지는 대기/사용 구성을 공개하고 순서는 숨깁니다."
+	reserve.tooltip_text = "재장전 시 남은 패도 버린 더미로 이동합니다. 뽑을 덱이 비면 버린 더미를 섞습니다. 다음 두 발은 순서 공개 · 나머지는 구성만 공개합니다."
 	if compact:
 		var reserve_style := _style(Color("14242c"))
 		reserve_style.content_margin_left = 6
@@ -1175,7 +1208,7 @@ func _reserve_preview(parent: Node, compact: bool = false) -> void:
 	flow.add_theme_constant_override("h_separation", 4 if compact else 6)
 	flow.add_theme_constant_override("v_separation", 3 if compact else 5)
 	reserve.add_child(flow)
-	_label(flow, "다음", 12 if compact else 14, ACCENT)
+	_label(flow, "재장전 · 새 패", 14, MUTED)
 	var next_count: int = mini(2, model.s.draw.size())
 	if next_count == 0: _label(flow, "셔플", 14, MUTED)
 	for i in range(next_count): _reserve_chip(flow, str(model.s.draw[i]), str(i + 1), 1, true, "next", compact)
@@ -1229,13 +1262,71 @@ func _changed() -> void:
 	_persist()
 	redraw.call_deferred()
 
+func _preview_hand_insertion() -> void:
+	if not is_instance_valid(magazine_view) or not magazine_view.is_inside_tree(): return
+	var grid := find_child("AmmoGrid", true, false)
+	var hovered := ""
+	var focused := ""
+	if grid != null and not busy and model.s.phase == "plan":
+		for button in grid.get_children():
+			if not button is AmmoHandButton or not button.is_visible_in_tree() or button.disabled: continue
+			if button.is_hovered(): hovered = button.ammo_id
+			if button.has_focus(): focused = button.ammo_id
+	magazine_view.preview_insertion(hovered if not hovered.is_empty() else focused)
+
+func _preview_reload_heat() -> void:
+	var heat_view := find_child("HeatGauge", true, false)
+	var button := find_child("reload", true, false) as Button
+	if heat_view != null:
+		heat_view.preview_reload(not busy and button != null and not button.disabled and (button.is_hovered() or button.has_focus()))
+
+func _activate_hand_card(button: Button, id: String, key: String) -> void:
+	if button.suppress_activation or is_instance_valid(workspace_overlay): return
+	_load(id,key)
+
+func _hand_ammo_details(id: String = "") -> void:
+	if busy: return
+	var choices: Array=[]
+	for entry in _hand_entries():
+		if not choices.has(entry.id): choices.append(entry.id)
+	for value in model.s.plan + model.s.magazine:
+		if not choices.has(value): choices.append(value)
+	if choices.is_empty(): return
+	if not choices.has(id): id=str(choices[0])
+	var index:=choices.find(id)
+	var column:=_workspace("탄환 상세","길게 누르기 · 확인은 턴을 소모하지 않습니다")
+	var details:=preload("res://redesign/ammo_hand_details.tscn").instantiate()
+	column.add_child(details)
+	details.get_node("Heading/Title").text=Content.AMMO[id].name
+	var card: Control=details.get_node("Overview/Card")
+	card.setup(id,1,model.s)
+	var primary: Dictionary=Content.primary_stat(id,model.s)
+	details.get_node("Overview/Stats/Power").text=str(primary.label)+" "+str(primary.value)+(" · 관통 %d"%Content.penetration(id,model.s) if Content.penetration(id,model.s)>0 else "")
+	details.get_node("Overview/Stats/Heat").text="발열 %s · 현재 열 %d / %d"%[Content.heat_label(id,model.s),model.s.heat,Content.heat_limit(model.s)]
+	var traits:=Content.grade_name(id)+" · 탄창 %d칸"%Content.slot_cost(id)
+	var tune:=str(Content.AMMO[id].get("tune",""))
+	if not tune.is_empty(): traits+=" · 화력 개조" if tune=="power" else " · 방열 개조"
+	var constraint:=Content.compression_cost_text(id,model.s) if Content.is_compressed(id) else ""
+	if not constraint.is_empty(): traits+=" · "+constraint
+	details.get_node("Overview/Stats/Traits").text=traits
+	details.get_node("Description").text=Readability.description(id,model.s)
+	details.get_node("Status").text="지금 장전 가능" if model.can_load(id) else model.load_block_reason(id)
+	for pair in [["Previous",-1],["Next",1]]:
+		var button: Button=details.get_node("Heading/"+str(pair[0]))
+		button.name="hand_detail_"+str(pair[0]).to_lower()
+		button.disabled=choices.size()<2
+		button.pressed.connect(_hand_ammo_details.bind(str(choices[posmod(index+int(pair[1]),choices.size())])))
+		preload("res://redesign/combat_treatment.gd").finish_button(button)
+	_workspace_focus_chain.call_deferred()
+
 func _load(id: String, source_key: String = "") -> void:
 	if busy: return
 	var source := find_child(source_key if not source_key.is_empty() else "load_" + id, true, false) as Button
 	var from: Vector2 = source.get_global_rect().get_center() if source else Vector2(300, 500)
 	var insertion_index := Content.insertion_index(model.s.plan, id)
 	if model.load_round(id):
-		if id != "basic": used_hand_tokens.append(str(source.name) if source else "load_" + id)
+		feedback.play("load")
+		if id != "basic" or Content.uses_ammo_cards(model.s): used_hand_tokens.append(str(source.name) if source else "load_" + id)
 		inspected_ammo = id
 		selected_slot = insertion_index
 		busy = true
@@ -1252,6 +1343,7 @@ func _field_drop(id: String, source_center: Vector2, target_center: Vector2) -> 
 	var temporary_id := Content.field_id(id)
 	var insertion_index := Content.insertion_index(model.s.plan, temporary_id)
 	if model.field_compress(id):
+		feedback.play("confirm")
 		inspected_ammo = temporary_id
 		selected_slot = insertion_index
 		busy = true
@@ -1270,20 +1362,42 @@ func _field_compress_click(id: String) -> void:
 	var to := second.get_global_rect().get_center() if second else from + Vector2(120, 0)
 	_field_drop(id, from, to)
 
+func _field_compression_choices() -> void:
+	var panel := _workspace("임시 고급 압축", "코어 1개 · 발사/재장전 뒤 원본 두 장 복원 · 영구 덱은 바뀌지 않습니다.")
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	panel.add_child(grid)
+	for source in model.field_compressible_ids():
+		var id := str(source)
+		var cell := _panel(grid)
+		var card := AmmoCardView.new()
+		card.custom_minimum_size = Vector2(270, 154)
+		card.setup(Content.field_id(id), 1, model.s)
+		cell.add_child(card)
+		_label(cell, Content.compression_cost_text(Content.field_id(id), model.s), 17, MUTED)
+		_button(cell, "임시 압축 · 코어 1개", "field_choose_" + id, func():
+			_close_workspace()
+			_field_compress_click(id)
+		)
+
 func _undo() -> void:
 	if busy: return
-	_remove_slot(model.s.plan.size() - 1)
+	_remove_slot(0)
 
 func _confirm() -> void:
 	if busy: return
-	if model.confirm(): _changed()
+	if model.confirm():
+		feedback.play("confirm")
+		_changed()
 
 func _fire() -> void:
 	if busy: return
 	var before: Dictionary = model.s.duplicate(true)
 	if model.fire():
 		var detail: Dictionary = model.s.history.back().detail
-		await _present(before, detail.results, detail.get("advance_events", []), false, detail.get("deployments", []))
+		await _present(before, detail.results, detail.get("advance_events", []), false, detail.get("deployments", []), detail)
 
 func _reload() -> void:
 	if busy: return
@@ -1294,9 +1408,12 @@ func _reload() -> void:
 
 func _choose(id: String, remove_id: String) -> void:
 	if busy: return
-	if model.choose_reward(id, remove_id): _changed()
+	if model.choose_reward(id, remove_id):
+		feedback.play("confirm")
+		_changed()
 
-func _present(before: Dictionary, results: Array, advance_events: Array, reloading: bool, deployments: Array = []) -> void:
+func _present(before: Dictionary, results: Array, advance_events: Array, reloading: bool, deployments: Array = [], fire_detail: Dictionary = {}) -> void:
+	feedback.begin_action()
 	busy = true
 	_persist()
 	find_child("skip_animation", true, false).show()
@@ -1305,34 +1422,104 @@ func _present(before: Dictionary, results: Array, advance_events: Array, reloadi
 	for button in find_children("*", "Button", true, false):
 		button.disabled = button.name != "skip_animation"
 	battle_view.speed_scale = presentation_speed
-	await battle_view.play_action(before, model.s, results, advance_events, reloading, deployments)
-	last_presentation = {"before": before, "after": model.s.duplicate(true), "shown_enemies": battle_view.enemies.duplicate(true), "events": battle_view.visual_events.duplicate(true)}
+	var forced: Dictionary = fire_detail.get("forced_reload", {})
+	var shown_events: Array = []
+	if not forced.is_empty():
+		var intermediate: Dictionary = before.duplicate(true)
+		intermediate.enemies = fire_detail.firing_enemies.duplicate(true)
+		intermediate.projectiles = fire_detail.firing_projectiles.duplicate(true)
+		intermediate.reinforcements = fire_detail.firing_reinforcements.duplicate(true)
+		intermediate.turns = int(before.turns) + 1
+		intermediate.heat = int(results.back().heat_after)
+		intermediate.phase = "ready"
+		await battle_view.play_action(before, intermediate, results, advance_events, false, deployments)
+		shown_events = battle_view.visual_events.duplicate(true)
+		preview_label.text = "과열 · 강제 재장전 %d턴" % int(forced.cost)
+		await battle_view.play_action(intermediate, model.s, [], forced.get("advance_events", []), true, forced.get("deployments", []))
+	else:
+		await battle_view.play_action(before, model.s, results, advance_events, reloading, deployments)
+	shown_events.append_array(battle_view.visual_events)
+	last_presentation = {"before": before, "after": model.s.duplicate(true), "shown_enemies": battle_view.enemies.duplicate(true), "events": shown_events}
 	busy = false
 	redraw()
 
 func _visual_shot(result: Dictionary) -> void:
+	feedback.shot(result)
+	preload("res://redesign/ui_impulse.gd").flash(find_child("fire",true,false) as Button,Color("edc47a"))
+	var action := find_child("fire", true, false) as Button
+	if action: action.text = "연쇄 발사" if Content.chains(model.s) else "사격 중"
 	magazine_view.consume()
 	for view in combat_parts.values():
 		view.activated = false
 		view.queue_redraw()
-	preview_label.text = "%s  →  %s" % [AmmoVisual.SHORT[str(result.id)], Forecast.tag(int(result.target))]
+	preview_label.text = "%s  →  %s" % [AmmoVisual.SHORT[str(result.id)], Forecast.tag(int(result.target), model.s.enemies)]
 	preview_label.tooltip_text = str(result.text)
 
 func _visual_impact(result: Dictionary) -> void:
+	feedback.impact(result)
+	magazine_view.show_impact()
+	magazine_view.show_pending_boost(result.get("pending_boost", {}))
+	var heat_view := find_child("HeatGauge", true, false)
+	if heat_view: heat_view.show_value(int(result.get("heat_after", 0)))
 	var effects: Array = result.get("part_effects", [])
 	for effect in effects:
 		if combat_parts.has(str(effect.id)):
 			combat_parts[str(effect.id)].activated = true
 			combat_parts[str(effect.id)].queue_redraw()
-	magazine_view.impact_active = not effects.is_empty() or int(result.get("focus_damage", 0)) > 0 or int(result.get("math", {}).get("boost", 0)) > 0
+	magazine_view.impact_active = int(result.get("detonation", 0)) > 0 or int(result.get("chase_bonus", 0)) > 0 or not effects.is_empty() or int(result.get("focus_damage", 0)) > 0 or int(result.get("math", {}).get("boost", 0)) > 0 or int(result.get("math", {}).get("factor", 1)) > 1
 	magazine_view.queue_redraw()
-	preview_label.text = "%s → %s  −%d" % [AmmoVisual.SHORT[str(result.id)], Forecast.tag(int(result.target)), int(result.damage)]
+	preview_label.text = "%s → %s  −%d" % [AmmoVisual.SHORT[str(result.id)], Forecast.tag(int(result.target), model.s.enemies), int(result.damage)]
+	if not Content.is_attack(str(result.id)):
+		var readout := preload("res://redesign/damage_readout.gd").entry(result)
+		preview_label.text = "%s · %s %s" % [Content.AMMO[str(result.id)].name, readout.number, readout.label]
+	if int(result.get("math", {}).get("factor", 1)) > 1: preview_label.text += " · 배율 ×%d" % int(result.math.factor)
 	if not effects.is_empty():
 		preview_label.text += " · %s %s" % [Content.PARTS[str(effects[0].id)].name, effects[0].label]
 	if int(result.get("focus_damage", 0)) > 0:
 		preview_label.text += " · 집중 +%d" % int(result.focus_damage)
 	elif int(result.get("math", {}).get("boost", 0)) > 0:
 		preview_label.text += " · 증폭 +%d" % int(result.math.boost)
+
+	if not result.get("prepared_rounds", []).is_empty(): preview_label.text += " · 다음 패 %d장 예약" % result.prepared_rounds.size()
+	for entry in [["sequence_bonus", "탄종 연계 +%d"], ["interrupted", "차단 %d턴"], ["transferred", "화상 이동 %d"], ["armor_removed", "장갑 −%d"], ["detonation", "기폭 %d"], ["chase_bonus", "추격 +%d"], ["cooled", "냉각 −%d"]]:
+		if int(result.get(entry[0], 0)) > 0: preview_label.text += " · " + str(entry[1]) % int(result[entry[0]])
+
+func _heat_feedback(event: Dictionary) -> void:
+	feedback.heat_event(event)
+	var kind := str(event.get("kind", ""))
+	# Follow firing/cooling events immediately, rather than waiting for impact.
+	if kind in ["heat_added", "heat_removed", "kill_cooling"]:
+		var gauge := find_child("HeatGauge", true, false)
+		if gauge: gauge.show_value(int(event.heat))
+		return
+	var action := find_child("fire", true, false) as Button
+	if action == null: action = find_child("confirm", true, false) as Button
+	var warning := find_child("OverheatWarning", true, false) as Label
+	var reload_action := find_child("reload", true, false) as Button
+	if kind in ["reload_turn", "cooling_turn"]:
+		preload("res://redesign/ui_impulse.gd").flash(reload_action,Color("9abdc8"))
+		var turn := int(event.turn) + 1
+		var total := int(event.total)
+		preload("res://redesign/ui_impulse.gd").steps(reload_action,turn,total)
+		if action: action.text = "%s %d/%d" % ["냉각 중" if kind == "cooling_turn" else "재장전", turn, total]
+		if warning:
+			warning.text = "적 행동 %d / %d턴" % [turn, total]
+			warning.show()
+		if reload_action:
+			reload_action.text = "냉각 진행 중\n열 %d → %d" % [int(event.heat), int(model.s.heat)]
+		preview_label.show()
+		preview_label.text = "추가 냉각 · 적 접근" if kind == "cooling_turn" else "재장전 · 적 접근"
+	elif kind == "overheat_lock":
+		preload("res://redesign/ui_impulse.gd").flash(action,Color("ed9167"))
+		if action: action.text = "과열 · 사격 중단"
+	elif kind == "reload_complete":
+		preload("res://redesign/ui_impulse.gd").flash(reload_action,Color("9abdc8"))
+		var heat_view := find_child("HeatGauge", true, false)
+		if heat_view: heat_view.show_value(int(event.get("heat", 0)))
+		if action: action.text = "냉각 완료"
+		if warning: warning.hide()
+		if reload_action: reload_action.text = "재장전 완료\n남은 열 %d" % int(event.heat)
+		preview_label.text = "냉각 완료 · 열 %d" % int(event.heat)
 
 func _update_combat_parts() -> void:
 	for id in combat_parts:
@@ -1349,6 +1536,9 @@ func _combat_part_details(id: String) -> void:
 	_label(column, str(Content.PARTS[id].name), 26, PartCardView.COLORS[id])
 	_label(column, PartFeedback.readiness(next_forecast, id), 20, ACCENT)
 	_label(column, str(Content.PARTS[id].text), 19)
+	if Model.Engines.IDS.has(id):
+		_label(column, Model.Engines.value(model.s,id), 24, ACCENT)
+		_label(column, Model.Engines.progress(model.s,id), 18, MUTED)
 	var downside := str(Content.PARTS[id].get("downside", ""))
 	if not downside.is_empty(): _label(column, "대가 · " + downside, 19, DANGER)
 	_label(column, "아이콘 아래 칸은 이번 발사의 탄환 순서입니다. 밝은 칸에서 발동을 예상하며, 실제 발동 시 아이콘과 해당 탄이 함께 빛납니다.", 17, MUTED)
@@ -1360,44 +1550,68 @@ func _encounter_debrief(parent: Node, state: Dictionary) -> void:
 	row.name = "EncounterDebrief"
 	var summary := _label(row, "교전 기록 · %d발 / %d기 처치" % [report.shots, report.kills], 18, MUTED)
 	summary.name = "EncounterReport"
-	for item in PartFeedback.highlights(current):
-		var text := _label(row, str(item.text), 18, ACCENT)
-		text.name = "BuildHighlight_" + str(item.id)
-		text.tooltip_text = "한 탄환에 여러 타격이 있어도 발동은 1발로 기록합니다. 발동 횟수를 추가 HP 피해로 합산하지 않습니다."
 	var details := _button(row, "기록", "encounter_record", _encounter_record.bind(current))
 	details.autowrap_mode = TextServer.AUTOWRAP_OFF
 	details.size_flags_horizontal = Control.SIZE_SHRINK_END
 	details.custom_minimum_size = Vector2(64, 40)
+	for id in state.get("engine",{}).get("gains",[]):
+		var growth := _label(parent, "%s 성장 · %s" % [Content.PARTS[id].name,Model.Engines.value(state,id)], 22, ACCENT)
+		growth.name = "EngineGrowth"
+	_heat_report(parent, current)
+	var highlights := HFlowContainer.new()
+	highlights.add_theme_constant_override("h_separation", 24)
+	parent.add_child(highlights)
+	for item in PartFeedback.highlights(current):
+		var text := _label(highlights, str(item.text), 16, MUTED)
+		text.name = "BuildHighlight_" + str(item.id)
+		text.autowrap_mode = TextServer.AUTOWRAP_OFF
+		text.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		text.tooltip_text = "한 탄환에 여러 타격이 있어도 발동은 1발로 기록합니다. 발동 횟수를 추가 HP 피해로 합산하지 않습니다."
+	highlights.visible = highlights.get_child_count() > 0
+
+func _heat_report(parent: Node, state: Dictionary) -> void:
+	var report := RunInsight.combat_report(state)
+	if int(report.shots) == 0: return
+	var row := _row(parent)
+	row.name = "HeatReport"
+	row.tooltip_text = RunInsight.heat_report_tip(report)
+	# Three open columns, no extra panels. Numbers lead; details live in the record.
+	for item in [["최고 열", str(report.heat_peak), INK], ["탄·파츠 냉각", "−%d" % report.cooled if int(report.cooled) > 0 else "0", INK], ["강제 재장전", "%d회" % report.forced_reloads, DANGER if int(report.forced_reloads) > 0 else MUTED]]:
+		var column := VBoxContainer.new()
+		column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		column.add_theme_constant_override("separation", 0)
+		column.tooltip_text = row.tooltip_text
+		row.add_child(column)
+		_label(column, str(item[0]), 15, MUTED)
+		_label(column, str(item[1]), 27, item[2])
 
 func _encounter_record(state: Dictionary) -> void:
-	var column := _dialog("이번 교전 기록")
+	var column := _workspace("교전 기록", "이번 전투에서 실제로 발생한 효과입니다.")
 	_label(column, RunInsight.combat_report_line(state), 20, ACCENT)
+	_heat_report(column, state)
+	_label(column, RunInsight.heat_report_tip(RunInsight.combat_report(state)), 17, MUTED)
 	for event in state.get("history", []):
 		if str(event.get("action", "")) != "fire": continue
 		for shot in event.get("detail", {}).get("results", []):
 			_label(column, str(shot.get("text", "")), 18)
 
 func _skip_animation() -> void:
-	if busy and is_instance_valid(battle_view): battle_view.fast_forward = true
+	if busy and is_instance_valid(battle_view):
+		feedback.skip_action()
+		battle_view.fast_forward = true
 
 func _dialog(title: String, compact: bool = false) -> VBoxContainer:
-	var dialog := AcceptDialog.new()
-	dialog.title = title
-	dialog.min_size = Vector2i(520, 240) if compact else Vector2i(720, 480)
-	dialog.dialog_hide_on_ok = true
-	dialog.confirmed.connect(dialog.queue_free)
-	dialog.canceled.connect(dialog.queue_free)
+	var dialog = preload("res://redesign/console_dialog.tscn").instantiate()
 	add_child(dialog)
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(530, 190) if compact else Vector2(780, 500)
-	dialog.add_child(scroll)
-	var column := VBoxContainer.new()
-	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_theme_constant_override("separation", 16)
-	column.set_meta("dialog", dialog)
-	scroll.add_child(column)
-	dialog.popup_centered.call_deferred(Vector2i(580, 330) if compact else Vector2i(820, 640))
-	return column
+	return dialog.setup(self, title, compact)
+
+func _confirmation(title: String, message: String, key: String, accept_text: String, cancel_text: String, callback: Callable) -> Control:
+	var column := _dialog(title, true)
+	var dialog: Control = column.get_meta("dialog")
+	dialog.name = key
+	_label(column, message, 21, INK)
+	dialog.ask(accept_text, cancel_text, callback)
+	return dialog
 
 var workspace_return_focus: WeakRef
 
@@ -1407,6 +1621,11 @@ func _workspace(title: String, subtitle: String = "") -> VBoxContainer:
 	if prior != null: workspace_return_focus = weakref(prior)
 	var overlay := PanelContainer.new()
 	overlay.name = "WorkspaceOverlay"
+	var battle_overlay: bool = page == "run" and model.s.get("phase", "") in ["plan", "ready"]
+	if battle_overlay:
+		var overlay_theme := ui_theme.duplicate() as Theme
+		overlay_theme.default_font = preload("res://redesign/combat_pixel_font.tres")
+		overlay.theme = overlay_theme
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.z_index = 100
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -1439,6 +1658,7 @@ func _workspace(title: String, subtitle: String = "") -> VBoxContainer:
 		_label(titles, subtitle, 16, MUTED)
 	var close := _button(header, "닫기", "workspace_close", _close_workspace)
 	close.custom_minimum_size = Vector2(112, 44)
+	if battle_overlay: preload("res://redesign/combat_surface.gd").finish_button(close)
 	close.size_flags_horizontal = Control.SIZE_SHRINK_END
 	var scroll := ScrollContainer.new()
 	scroll.name = "WorkspaceScroll"
@@ -1475,9 +1695,13 @@ func _close_workspace() -> void:
 		var prior = workspace_return_focus.get_ref()
 		if is_instance_valid(prior) and prior.is_visible_in_tree(): prior.grab_focus()
 	workspace_return_focus = null
+	if forecast_refresh_waiting:
+		forecast_refresh_waiting = false
+		_forecast_completed.call_deferred()
 
 func _apply_preferences() -> void:
 	presentation_speed = preferences.motion_scale()
+	feedback.configure(preferences.data)
 	if ui_theme != null:
 		ui_theme.default_font_size = _scaled(20)
 	redraw.call_deferred()
@@ -1490,14 +1714,15 @@ func _guide() -> void:
 	column.name = "FirstGuide"
 	var steps := [
 		["1", "탄환을 고른다", "아이콘의 큰 수치는 피해, 방패 수치는 관통입니다. 같은 탄환 두 장은 빛나는 결합 표시가 있을 때 서로 끌어 압축할 수 있습니다."],
-		["2", "순서를 읽는다", "탄창은 왼쪽부터 발사합니다. 증폭은 뒤 2발, 화상은 전진 직전, 전이는 다른 생존 적에게 적용됩니다."],
-		["3", "확정하고 쏜다", "예상 처치와 안전 거리를 확인한 뒤 확정합니다. 발사와 재장전 뒤에는 적이 접근하므로 턴 수까지 계산하세요."],
+		["2", "순서를 읽는다", "마지막에 넣은 탄이 맨 앞에서 발사됩니다. 증폭은 다음 공격탄, 화상은 전진 직전, 전이는 다른 생존 적에게 적용됩니다."],
+		["3", "열과 시간을 확인한다", "열 한계에 닿으면 사격이 끊기고 강제 재장전합니다. 냉각탄은 그 전에 놓으세요. 예상 처치와 총 경과 턴을 확인한 뒤 확정하고 쏩니다."],
 	]
 	for entry in steps:
 		var panel := _panel(column)
 		var row := _row(panel)
 		var badge := _label(row, str(entry[0]), 34, ACCENT)
 		badge.custom_minimum_size.x = 48
+		badge.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 		var copy := VBoxContainer.new()
 		copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_child(copy)
@@ -1505,13 +1730,13 @@ func _guide() -> void:
 		_label(copy, str(entry[2]), 17, MUTED)
 	var flow := _panel(column)
 	_label(flow, "도시 흐름", 22, ACCENT)
-	_label(flow, "경로 선택  →  전투/보급/무기고  →  계층 관문  →  35층 정점", 19)
+	_label(flow, "경로 선택  →  전투/보급/무기고  →  구역 관문  →  정상 제어실", 19)
 	_label(flow, "처음에는 7교전 기초 훈련으로 탄환 효과만 익힐 수 있습니다.", 17, MUTED)
 
 func _settings() -> void:
 	if busy:
 		return
-	var column := _dialog("설정 · 읽기와 진행", true)
+	var column := _dialog("설정 · 읽기와 소리", true)
 	column.name = "SettingsDialog"
 	var text_row := _row(column)
 	_label(text_row, "글자 크기", 20).custom_minimum_size.x = 170
@@ -1543,6 +1768,21 @@ func _settings() -> void:
 		preferences.set_value("motion", str(motion_option.get_item_metadata(index)))
 		_apply_preferences()
 	)
+	var audio_row := _row(column)
+	_label(audio_row, "효과음", 20).custom_minimum_size.x = 170
+	var audio_option := OptionButton.new()
+	audio_option.name = "EffectsVolumeSetting"
+	audio_option.custom_minimum_size = Vector2(260, 48)
+	for percent in [0, 25, 50, 75, 100]:
+		audio_option.add_item("끄기" if percent == 0 else "%d%%" % percent)
+		if roundi(float(preferences.data.effects_volume) * 4) == audio_option.item_count - 1:
+			audio_option.select(audio_option.item_count - 1)
+	audio_row.add_child(audio_option)
+	audio_option.item_selected.connect(func(index: int):
+		preferences.set_value("effects_volume", index * 0.25)
+		feedback.configure(preferences.data)
+		feedback.play("load")
+	)
 	var hint_toggle := CheckButton.new()
 	hint_toggle.name = "ContextHintsSetting"
 	hint_toggle.text = "상황 도움말 표시"
@@ -1563,7 +1803,7 @@ func _settings() -> void:
 func _part_gallery() -> void:
 	if busy:
 		return
-	var column := _dialog("파츠 아이콘 · 20종 미리보기")
+	var column := _dialog("파츠 아이콘 · %d종 미리보기" % (Content.PARTS.size() - 1))
 	column.name = "PartGallery"
 	_label(column, "형태와 색으로 먼저 구분하고, 수치와 설명은 필요할 때만 읽습니다.", 18, MUTED)
 	var grid := GridContainer.new()
@@ -1584,18 +1824,19 @@ func _part_gallery() -> void:
 func _rules() -> void:
 	if busy: return
 	var column := _dialog("순서를 설계하는 법")
-	_label(column, "누른 순서대로 · 피해와 관통", 30, ACCENT)
-	_label(column, "1. 피해는 타격당 기본 화력, 관통은 무시하는 장갑입니다. 장전한 순서대로 발사하며 확정 전에는 칸을 눌러 회수할 수 있습니다.")
+	_label(column, "마지막 장전부터 발사 · 피해와 관통", 30, ACCENT)
+	_label(column, "1. 피해는 타격당 기본 화력, 관통은 무시하는 장갑입니다. 마지막에 넣은 탄부터 발사합니다. 레일은 실제 발사 순서이며 확정 전에는 이동하거나 회수할 수 있습니다.")
 	_label(column, "2. 보행자·쇄도·산개·압쇄는 한 탄창을 1턴에 연쇄 발사합니다. 증강은 1발을 쏘고, 주 표적을 처치하면 다음 탄도 이어 쏩니다. 한 번의 발사가 끝나면 1턴이 지나고 살아남은 적이 전진합니다.")
-	_label(column, "3. 보행자는 전술탄 피해 +2, 회수탄 피해 +1. 쇄도는 같은 적의 주 타격 3회마다 추가 피해 4. 연발의 두 타격은 각각 세며 화상/전이는 세지 않습니다.")
+	_label(column, "발열 · 한계에 닿은 탄까지 효과를 처리한 뒤 사격을 중단합니다. 적이 남으면 기본 재장전 + 냉각 1턴이 자동 진행됩니다. 냉각탄은 과열 전에 놓으세요. 일반 재장전은 무기별 일정량만 냉각하고 남은 열은 다음 탄창에 이어집니다. 강제 재장전은 열을 0으로 낮춥니다.", 19, ACCENT)
+	_label(column, "3. 보행자는 공격탄 피해 +1, 기본탄 피해 +1. 증폭·파쇄·냉각은 공격탄 보너스에서 제외합니다. 쇄도는 같은 적의 주 타격 3회마다 추가 피해 4. 연타탄의 두 타격은 각각 세며 화상/전이는 세지 않습니다.")
 	_label(column, "4. 산개는 탄환마다 살아 있는 적 중 무작위 표적을 선택합니다. 확률과 HP 범위가 예상이며 확정 결과가 아닙니다. 나머지는 가장 가까운 적부터 조준합니다.")
-	_label(column, "5. 압쇄는 화상 턴당 피해 2와 전이 피해 3. 증강은 탄환 기본 피해/관통과 증폭/넉백/화상 피해/전이 강도 2배입니다. 연발은 2타, 증폭은 뒤 2발, 화상 기간은 유지합니다.")
-	_label(column, "6. 증폭은 다음 2발에 적용하고 연발의 각 타격을 강화합니다. 화상은 전진 직전에 진행합니다. 실제 총기 수치와 효과는 탄환 카드에서 확인하세요.")
-	_label(column, "7. 재장전마다 회수탄과 5장 패를 보충하고 교환 1회를 복구합니다. 예비 급탄기는 교환을 2회로 늘립니다. 넉백은 일반 탄창 총 2m, 증강은 4m까지입니다. 관문 용량 +2는 파츠와 독립적입니다.")
-	_label(column, "8. 관문에서는 같은 일반탄 2장을 한 발로 압축할 수 있습니다. 이어진 두 칸, 앞쪽 결합부, 뒤쪽 마개가 각각 공간과 자동 발사 위치를 보여 줍니다.")
-	_label(column, "9. 같은 일반탄 두 발을 전투 중 임시 압축하면 압축 코어 1개를 씁니다. 확정 전에 회수하면 두 발과 코어가 돌아오며, 코어는 상점에서 최대 2개까지 충전합니다.")
+	_label(column, "5. 압쇄는 화상 턴당 피해 2와 전이 피해 3. 증강은 탄환 기본 피해/관통과 증폭/넉백/화상 피해/전이 강도 2배입니다. 기본 연타탄은 2타, 증폭은 다음 공격탄에 적용하며, 화상 기간은 유지합니다.")
+	_label(column, "6. 일반 증폭은 다음 공격 1발 +3, 고급 증폭은 공격 2발, 배율탄은 다음 공격 ×2입니다. 지원탄은 강화 효과를 소비하지 않습니다. 일반·잔열 증폭은 서로 교체하고 배율도 중첩하지 않습니다. 덧셈과 배율은 함께 쓸 수 있습니다. 배율 공격은 추가 열 +3, 잔열 증폭은 공격 직전 고열이 필요합니다. 증강의 배율탄은 ×3입니다. 화상은 전진 직전에 진행합니다. 실제 총기 수치와 효과는 탄환 카드에서 확인하세요.")
+	_label(column, "7. 재장전마다 남은 패를 순환하고 복장 가방만큼 새 패를 뽑습니다. 작업복은 5장/교환1회, 운반복은 6장/0회, 정찰복은 4장/2회로 시작합니다. 정비소·관문에서 다른 보상 대신 가방을 +1장 확장하며 최대 10장입니다. 기본탄도 가방에 포함되는 개별 카드입니다. 사용한 탄은 버린 더미로 이동하고, 뽑을 더미가 비면 다시 섞습니다. 공격 없이 재장전해도 적은 재장전 턴만큼 전진합니다. 교환 횟수도 복구합니다. 예비 급탄기는 교환 +1회입니다. 기존 복장 미지정 등반은 이전 가방 규칙을 유지합니다. 넉백은 일반 탄창 총 2m, 증강은 4m까지입니다. 관문 용량 +2는 파츠와 독립적입니다.")
+	_label(column, "8. 회색 한 줄은 일반, 파란 두 줄은 고급입니다. 같은 일반탄 2장을 고급 1장으로 압축합니다. 상점에서는 방문당 1회 18Cr, 정비소·관문에서는 기존 정비/보상을 사용합니다. 덱은 최소 8장, 고급 재압축은 아직 지원하지 않습니다.")
+	_label(column, "9. 전투 압축은 코어 1개를 쓰는 임시 고급탄입니다. 작은 금색 점이 임시 상태입니다. 확정 전 회수하면 두 발과 코어 복구, 발사/재장전 뒤에는 원본 두 장만 돌아옵니다. 영구 등급은 바뀌지 않습니다. 코어는 상점에서 최대 2개까지 충전합니다.")
 	_label(column, "10. 상층 부유체는 3턴마다 다른 적을 2m 당기고, 흡수 구체는 직접 타격으로 배리어를 먼저 소모하며, 태세 드론은 전진 뒤 장갑 4와 0을 교대합니다.")
-	_label(column, "11. 도시 등반은 5계층 35층. 파츠는 최대 5개를 함께 장착하고 금색 코어는 하나만 사용합니다. 청록 ▲는 이점, 적색 ▼는 패널티입니다.")
+	_label(column, "11. 탑의 여러 구역을 지나 정상으로 향합니다. 매 등반의 경로와 시설이 달라집니다. 파츠는 최대 5개를 함께 장착하고 금색 코어는 하나만 사용합니다. 청록 ▲는 이점, 적색 ▼는 패널티입니다.")
 
 func _weapon_details(id: String) -> void:
 	if busy: return
@@ -1607,7 +1848,7 @@ func _weapon_details(id: String) -> void:
 	_label(column, "%d칸 → 최대 %d칸 · 선택한 무기는 이번 등반 끝까지 유지" % [spec.capacity, int(spec.capacity) + 2], 18, MUTED)
 	_label(column, spec.recommendation, 19, ACCENT)
 	if id == "scatter":
-		_label(column, "탄환마다 생존 표적을 다시 무작위 선택합니다. 연발의 두 타격은 같은 표적입니다. 피해가 흩어지는 비용을 큰 탄창으로 보상하며, 예측은 HP 범위와 처치 확률을 보여 줍니다.", 18)
+		_label(column, "탄환마다 생존 표적을 다시 무작위 선택합니다. 연타탄의 두 타격은 같은 표적입니다. 피해가 흩어지는 비용을 큰 탄창으로 보상하며, 예측은 HP 범위와 처치 확률을 보여 줍니다.", 18)
 	elif id == "heavy":
 		_label(column, "소이의 화상은 기간을 유지하며 턴당 2피해, 전격은 다른 생존 적에게 3피해를 전달합니다. 물리탄에는 별도 관통 보정이 없습니다.", 18)
 	elif id == "burst":
@@ -1615,9 +1856,11 @@ func _weapon_details(id: String) -> void:
 	elif id == "amplifier":
 		_label(column, "기본 피해/관통 2배 · 증폭 +4 · 충격 4m · 화상 턴당 2 · 전이 4. 타격 수와 지속 기간은 유지합니다. 주 표적 처치 시 다음 탄도 이어 쏘며, 생존 표적에서 멈춘 뒤 적이 전진합니다.", 18)
 	var loadout := selected_loadout_id if page == "loadout" else (str(campaign.s.loadout) if campaign != null else "balanced")
-	var deck: Array = Content.start_deck(id) if loadout == "balanced" else CampaignContent.LOADOUTS[loadout].deck
-	_label(column, "도시 시작 보급 / " + CampaignContent.LOADOUTS[loadout].name, 20, ACCENT)
+	var deck: Array = CampaignContent.Acquisition.start_deck()
+	_label(column, "출발 탄환 · 기본탄 %d장" % deck.size(), 20, ACCENT)
 	_label(column, RunInsight.deck_summary(deck), 18)
+	_label(column, "기본탄으로 출발 · 첫 승리 후 코어와 특수탄 선택", 18, MUTED)
+	_label(column, "첫 특수탄 보급 선호 · " + CampaignContent.LOADOUTS[loadout].name, 16, MUTED)
 	_label(column, "기초 훈련에서는 무기와 관계없이 같은 순서로 탄환을 배웁니다.", 16, MUTED)
 
 func _inspect_slot(index: int) -> void:
@@ -1626,14 +1869,18 @@ func _inspect_slot(index: int) -> void:
 	magazine_view.selected_index = index
 	magazine_view.queue_redraw()
 	_update_slot_actions()
-	if full_forecast.shots.is_empty():
+	if forecast_pending:
+		calculation_label.text = "예측 계산 중입니다. 완료되면 이 탄의 피해와 열 변화를 확인할 수 있습니다."
+	elif full_forecast.shots.is_empty():
 		calculation_label.text = Readability.explain({}) if model.s.phase == "plan" else "다음 탄창을 장전하세요."
-	elif index >= full_forecast.shots.size():
-		calculation_label.text = "%d번 · 전투가 먼저 끝나 이 탄은 발사되지 않습니다." % (index + 1)
+	elif index >= full_forecast.shots.size() or float(full_forecast.shots[index].get("used_probability", 1.0)) == 0.0:
+		var hot_chance := float(full_forecast.get("heat", {}).get("overheat_probability", 0))
+		var reason := "앞선 탄에서 과열되어" if hot_chance >= 0.999999 else ("과열 또는 전투 종료로" if hot_chance > 0 else "전투가 먼저 끝나")
+		calculation_label.text = "%d번 · %s 이 탄은 발사되지 않습니다." % [index + 1, reason]
 	else:
 		var shot: Dictionary = full_forecast.shots[index]
 		calculation_label.add_theme_color_override("font_color", INK)
-		calculation_label.text = "%d번 %s → " % [index + 1, Content.AMMO[shot.id].name] + Readability.explain(shot)
+		calculation_label.text = "%d번 %s → " % [index + 1, Content.AMMO[shot.id].name] + Readability.explain(shot, model.s.enemies)
 		calculation_label.text = ("이번 발사\n" if int(shot.get("action", 0)) == 0 else "%d번째 발사 시 · 중간 재장전 없음\n" % (int(shot.action) + 1)) + calculation_label.text
 		var sequence_note := Forecast.note(full_forecast, index)
 		if not sequence_note.is_empty(): calculation_label.text += "\n순서 효과 · " + sequence_note
@@ -1641,13 +1888,30 @@ func _inspect_slot(index: int) -> void:
 func _slot_action(index: int) -> void:
 	if busy: return
 	_inspect_slot(index)
+	_highlight_slot_targets(index)
+	if model.s.phase == "ready": _slot_details()
+
+func _highlight_slot_targets(index: int) -> void:
+	if busy or not is_instance_valid(battle_view): return
+	battle_view.preview_targets.clear()
+	var shots: Array = full_forecast.get("shots", [])
+	if index >= 0 and index < shots.size():
+		var shot: Dictionary = shots[index]
+		if shot.get("random", false):
+			for candidate in shot.get("targets", []):
+				if float(candidate.get("probability", 0)) > 0: battle_view.preview_targets.append(int(candidate.target))
+		else:
+			battle_view.preview_targets.append(int(shot.target))
+			for other in shot.get("secondary", []):
+				battle_view.preview_targets.append(int(other.target))
+	battle_view.queue_redraw()
 
 func _slot_details() -> void:
 	if busy: return
 	var stack: Array = model.s.plan if model.s.phase == "plan" else model.s.magazine
 	if stack.is_empty(): return
 	_inspect_slot(clampi(selected_slot, 0, stack.size() - 1))
-	var column := _dialog("탄환 계산 · %d번" % (selected_slot + 1), true)
+	var column := _workspace("탄환 계산 · %d번" % (selected_slot + 1), "발사 순서의 선택한 탄 · 확인은 턴을 소모하지 않습니다")
 	column.name = "SlotDetails"
 	_label(column, calculation_label.text, 19)
 	_label(column, str(Content.AMMO[stack[selected_slot]].text), 17, MUTED)
@@ -1679,11 +1943,44 @@ func _forget_hand_token(id: String) -> void:
 			used_hand_tokens.remove_at(i)
 			break
 
+func _ammo_synergy() -> void:
+	if busy or model.s.phase != "plan": return
+	var column := _workspace("탄환 연계", "효과가 맞물리는 후보 · 추가 보너스 규칙은 없습니다")
+	column.name = "AmmoSynergyDetails"
+	_label(column, "발사 순서 → 로 표시합니다. 장전은 반대로, 마지막에 넣은 탄이 먼저 나갑니다.", 18, MUTED)
+	var links: Array = []
+	if model.s.plan.is_empty(): links = AmmoSynergy.hand_pairs(model.s)
+	else: links = AmmoSynergy.hand_hints(model.s).values()
+	if links.is_empty():
+		_label(column, "현재 패·표적·발열에서 확인되는 연결이 없습니다. 탄을 회수하거나 교환해 다른 구성을 살펴보세요.", 19)
+	for link in links:
+		var row := _row(column)
+		for id in [link.first,link.second]:
+			var icon := AmmoVisual.new()
+			icon.ammo_id = str(id)
+			icon.custom_minimum_size = Vector2(38,52)
+			row.add_child(icon)
+		var info := VBoxContainer.new()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(info)
+		_label(info, AmmoSynergy.text(link), 19, Color("e4bd72"))
+		var instruction := "장전: %s → %s" % [Content.AMMO[link.second].name, Content.AMMO[link.first].name]
+		if link.has("move"): instruction = "장전 후 레일 맨 뒤로 이동" if link.move else "지금 장전하면 앞에서 연결"
+		_label(info,instruction,17,MUTED)
+	_label(column, "후보는 최적해를 뜻하지 않습니다. 발열·처치·발사 중단은 레일에서 확인하세요.",17,MUTED)
+
+func _ammo_bag() -> void:
+	if busy: return
+	var column := _workspace("탄환 가방", "보유 탄과 순환 상태 · 확인은 턴을 소모하지 않습니다")
+	var bag := preload("res://redesign/ammo_bag_view.tscn").instantiate()
+	column.add_child(bag)
+	bag.setup(self)
+
 func _exchange_dialog() -> void:
 	if busy or model.s.phase != "plan" or model.s.exchange_left <= 0: return
-	var column := _dialog("전술탄 1장 교환", true)
+	var column := _dialog("탄환 1장 교환", true)
 	column.name = "ExchangeDialog"
-	_label(column, "다음 탄: " + _ammo_names(model.s.draw.slice(0, 1)), 20, ACCENT)
+	_label(column, "다음 탄: " + (_ammo_names(model.s.draw.slice(0, 1)) if not model.s.draw.is_empty() else "버린 더미에서 무작위"), 20, ACCENT)
 	var ids: Array = []
 	for id in model.s.hand:
 		if ids.has(id): continue
@@ -1705,47 +2002,46 @@ func _details() -> void:
 	var part_names := PackedStringArray()
 	for id in Content.equipped_parts(model.s): part_names.append(str(Content.PARTS[id].name))
 	_label(column, "시드 %s · %s\n파츠 %d/%d · %s" % [str(model.s.seed), Content.GUNS[model.s.gun].text, part_names.size(), Content.MAX_EQUIPPED_PARTS, " · ".join(part_names) if not part_names.is_empty() else "없음"], 18)
+	_label(column, "진행 %d턴 · 현재 적 %d · 증원 %d" % [model.s.turns, model.alive_count(), model.reserve_count()], 18, MUTED)
+	if campaign != null: _label(column, "크레딧 %d · 압축 코어 %d" % [campaign.s.credits, campaign.s.compressor_charges], 18, MUTED)
 	_label(column, "적 정보", 22, ACCENT)
 	for e in model.s.enemies:
 		_label(column, "%s · HP %d/%d · 장갑 %d · 화상 %d\n거리 %dm · 접근 %dm\n%s" % [e.name, e.hp, e.max_hp, e.def, e.burn, e.distance, e.speed, Content.enemy_rule(e)], 18)
 	_label(column, "탄환 · 현재 총기/파츠 반영", 22, ACCENT)
-	var ids: Array = ["basic"]
+	var ids: Array = [] if Content.uses_ammo_cards(model.s) else ["basic"]
 	for id in model.s.deck:
 		if not ids.has(id): ids.append(id)
 	for id in ids:
 		_label(column, _ammo_stats(id), 19, AmmoVisual.COLORS[id])
-		_label(column, "재장전 시 %d발 공급" % model.supply_capacity() if id == "basic" else Readability.description(id, model.s), 17, MUTED)
+		_label(column, "재장전 시 %d발 공급" % model.supply_capacity() if id == "basic" and not Content.uses_ammo_cards(model.s) else Readability.description(id, model.s), 17, MUTED)
 	_label(column, "덱 %d장 · 남은 덱 %d · 사용탄 %d\n%s" % [model.s.deck.size(), model.s.draw.size(), model.s.discard.size(), _ammo_names(model.s.deck)], 18)
 	_label(column, "최근 결과\n" + str(model.s.message), 18, MUTED)
 
 func _enemy_details(index: int) -> void:
 	if busy or index < 0 or index >= model.s.enemies.size(): return
 	var e: Dictionary = model.s.enemies[index]
-	var column := _dialog("적 정보 · 자동 조준 유지", true)
+	var column := _workspace("적 정보", "현재 능력과 아이콘 · 자동 조준은 유지됩니다")
 	column.name = "EnemyDetails"
 	column.set_meta("enemy_index", index)
-	_label(column, "%s · %s" % [Forecast.tag(index), e.name], 26, ACCENT)
-	_label(column, "HP %d/%d   장갑 %d   화상 %d" % [e.hp, e.max_hp, e.def, e.burn], 21)
+	_label(column, str(e.name), 26, ACCENT)
+	_label(column, "HP %d/%d" % [e.hp, e.max_hp], 21)
 	_label(column, "거리 %dm · 다음 접근 %dm" % [e.distance, e.speed], 19, MUTED)
 	if model.s.gun == "burst":
 		_label(column, "집중 %d/3 · 같은 적 3회 적중마다 추가 피해 4\n재장전 후에도 유지 · 보호에 막힌 타격은 누적되지만 추가 피해는 막힙니다." % int(e.get("focus_hits", 0)), 18, ACCENT)
+	var icons = preload("res://redesign/enemy_status_icons.gd")
+	for entry in icons.entries(e):
+		var row := _row(column)
+		var icon: Control = icons.new()
+		icon.icon_id = entry.icon
+		icon.custom_minimum_size = Vector2(28, 28)
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(icon)
+		_label(row, entry.text, 18, icons.COLORS[entry.icon])
 	var rule := Content.enemy_rule(e)
 	if not rule.is_empty():
 		var rule_panel := _panel(column)
 		_label(rule_panel, "행동 규칙", 17, ACCENT)
 		_label(rule_panel, rule, 18)
-	if combat_forecast.get("random", false):
-		var predicted: Dictionary = combat_forecast.enemies[index]
-		_label(column, "무작위 예상 HP %d~%d · 처치 %d%%" % [predicted.hp_min, predicted.hp_max, floori(minf(1.0, float(predicted.kill_probability) + 0.0000001) * 100)], 18, ACCENT)
-		_label(column, "탄환마다 그 시점에 살아 있는 적 중 같은 확률로 선택합니다.", 18, MUTED)
-		return
-	var hits: PackedStringArray = []
-	for i in range(combat_forecast.get("shots", []).size()):
-		var shot: Dictionary = combat_forecast.shots[i]
-		if shot.target == index: hits.append("%d발 %s" % [i + 1, Forecast.outcome(shot)])
-		for other in shot.get("secondary", []):
-			if int(other.target) == index: hits.append("%d발 %s −%d" % [i + 1, "확산" if other.get("kind", "arc") == "spread" else "전이", other.damage])
-	_label(column, "연속 사격 예상: " + (" · ".join(hits) if not hits.is_empty() else "피격 없음"), 18, ACCENT)
 
 func _reinforcement_details(index: int) -> void:
 	if busy or index < 0 or index >= model.s.get("reinforcements", []).size(): return
@@ -1758,10 +2054,32 @@ func _reinforcement_details(index: int) -> void:
 	var rule := Content.enemy_rule(enemy)
 	if not rule.is_empty(): _label(column, rule, 18, MUTED)
 
+func _developer_lab() -> void:
+	_close_workspace()
+	var prior := get_viewport().gui_get_focus_owner()
+	if prior != null: workspace_return_focus = weakref(prior)
+	var lab: Control = preload("res://redesign/developer_lab.tscn").instantiate()
+	lab.z_index = 100
+	lab.close_requested.connect(_close_workspace)
+	workspace_overlay = lab
+	add_child(lab)
+	_workspace_focus_chain.call_deferred()
+
 func _developer() -> void:
 	campaign = null
 	var column := _dialog("개발자 테스트 · 기존 저장 보존")
 	_label(column, "화면과 규칙을 즉시 확인하는 연습", 26)
+	_button(column, "복장 작업실 · 4종 동작 비교", "debug_outfits", func():
+		column.get_meta("dialog").hide()
+		column.get_meta("dialog").queue_free()
+		var preview := preload("res://redesign/outfit_preview.tscn").instantiate()
+		add_child(preview)
+	)
+	_button(column, "개발 작업대 · UI 점검 / 탄환·파츠 실험", "debug_lab", func():
+		column.get_meta("dialog").hide()
+		column.get_meta("dialog").queue_free()
+		_developer_lab()
+	)
 	var ux_row := _row(column)
 	_button(ux_row, "처음 안내", "debug_first_guide", func():
 		column.get_meta("dialog").hide()
@@ -1778,6 +2096,11 @@ func _developer() -> void:
 		column.get_meta("dialog").queue_free()
 		_part_gallery()
 	)
+	for sample in [["연속 타격", "volley_drive"], ["고열 화력", "thermal_drive"], ["단발 집중", "siege_drive"], ["탄종 집약", "ordinary"], ["압축 준비", "compressed"], ["화상 추격", "burn"]]:
+		_button(column, "파츠 빌드 · " + sample[0], "debug_parts_" + sample[1], func():
+			column.get_meta("dialog").queue_free()
+			_debug_part_build(str(sample[1]))
+		)
 	var weapon_row := GridContainer.new()
 	weapon_row.columns = 2
 	column.add_child(weapon_row)
@@ -1792,10 +2115,39 @@ func _developer() -> void:
 		page = "loadout"
 		redraw()
 	)
+	_button(column, "전투 비주얼 · 장전과 과열", "debug_combat_finish", func():
+		column.get_meta("dialog").hide()
+		_debug_combat_finish()
+		column.get_meta("dialog").queue_free()
+	)
+	var background_row := _row(column)
+	for stage in range(3):
+		_button(background_row, "구역 배경 · " + ["초반", "중반", "상층"][stage], "debug_background_%d" % stage, func():
+			column.get_meta("dialog").hide()
+			_debug_ascent_background(stage)
+			column.get_meta("dialog").queue_free()
+		)
+	_button(column, "몬스터 동작 · 처마등", "debug_eavesback", func():
+		column.get_meta("dialog").hide()
+		_debug_eavesback()
+		column.get_meta("dialog").queue_free()
+	)
+	_button(column, "몬스터 시안 · 주거 통로", "debug_residential_creatures", func():
+		column.get_meta("dialog").hide()
+		_debug_eavesback(true)
+		column.get_meta("dialog").queue_free()
+	)
+	var challenge_row := _row(column)
+	for encounter_kind in ["elite","boss"]:
+		_button(challenge_row,"정예 · 공명 처마등" if encounter_kind == "elite" else "보스 · 폐쇄 당직","debug_challenge_" + encounter_kind,func():
+			column.get_meta("dialog").hide()
+			_debug_challenge(encounter_kind)
+			column.get_meta("dialog").queue_free()
+		)
 	var city_row := GridContainer.new()
 	city_row.columns = 3
 	column.add_child(city_row)
-	for entry in [["도시 분기 맵", "map"], ["크레딧 무기고", "shop"], ["탄환 보급", "supply"], ["선택 이벤트", "event"], ["관문 압축 선택", "gate"], ["도시 승리 정산", "ending"], ["도시 패배 정산", "loss"], ["도시 전투 보상", "reward"], ["덱·장비", "deck"], ["기록실", "archive"]]:
+	for entry in [["출발 장면 · 밸브", "departure"], ["탑 탐사도", "map"], ["크레딧 무기고", "shop"], ["탄환 보급", "supply"], ["정비 작업대", "workshop"], ["선택 이벤트", "event"], ["관문 압축 선택", "gate"], ["정상 복구 · 귀환", "ending"], ["도시 패배 정산", "loss"], ["도시 전투 보상", "reward"], ["덱·장비", "deck"], ["기록실", "archive"]]:
 		_button(city_row, entry[0], "debug_city_" + entry[1], func():
 			column.get_meta("dialog").hide()
 			_debug_city(entry[1])
@@ -1812,10 +2164,10 @@ func _developer() -> void:
 		model.s.plan = []
 		model.s.plan_load_order = []
 		model.load_round("push_c")
-		model.load_round("precise_c")
 		# Show all three physical constraints in one real magazine: first fitting,
 		# a two-cell body, and the last fitting.
 		model.load_round("pierce_c")
+		model.load_round("precise_c")
 		debug_session = true
 		selected_slot = 0
 		inspect_slots = false
@@ -1900,7 +2252,7 @@ func _developer() -> void:
 		model.s.hand = ["charge", "precise", "arc", "pierce", "bore"]
 		model.s.draw = ["push", "charge", "precise"]
 		model.s.discard = []
-		for id in ["charge", "precise", "arc", "pierce"]: model.load_round(id)
+		for id in Content.loading_order(["charge", "precise", "arc", "pierce"]): model.load_round(id)
 		debug_session = true
 		selected_slot = 0
 		inspect_slots = false
@@ -1953,7 +2305,7 @@ func _developer() -> void:
 		model.s.hand = model.s.deck.duplicate()
 		model.s.draw = []
 		model.s.discard = []
-		for id in ["bore", "push", "charge", "precise", "arc"]: model.load_round(id)
+		for id in Content.loading_order(["bore", "push", "charge", "precise", "arc"]): model.load_round(id)
 		debug_session = true
 		selected_slot = 3
 		inspect_slots = true
@@ -1970,8 +2322,8 @@ func _developer() -> void:
 		model.s.hand = model.s.deck.slice(0, 5)
 		model.s.draw = ["push", "arc"]
 		model.s.discard = []
-		model.load_round("charge")
 		model.load_round("precise")
+		model.load_round("charge")
 		model.confirm()
 		model.fire()
 		model.fire()
@@ -1992,7 +2344,7 @@ func _developer() -> void:
 		model.s.enemies[1].max_hp = 4
 		model.s.enemies[1].def = 0
 		model.s.hand = ["push", "charge", "precise", "bore", "arc"]
-		for id in ["bore", "push", "precise", "charge"]: model.load_round(id)
+		for id in Content.loading_order(["bore", "push", "precise", "charge"]): model.load_round(id)
 		debug_session = true
 		page = "run"
 		column.get_meta("dialog").queue_free()
@@ -2010,28 +2362,97 @@ func _developer() -> void:
 			redraw()
 		)
 
-func _campaign_action(command: String, value: Variant = "", extra: String = "") -> void:
+func _campaign_action(command: String, value: Variant = "", extra: String = "", replacement: String = "") -> void:
 	if busy or campaign == null: return
 	var accepted := false
 	match command:
+		"departure_next": accepted = campaign.advance_departure()
+		"departure_skip": accepted = campaign.advance_departure(true)
+		"restore_supply": accepted = campaign.restore_supply()
 		"enter": accepted = campaign.enter(int(value))
 		"reward": accepted = campaign.reward(str(value), extra)
 		"gate": accepted = campaign.gate(str(value), extra)
-		"buy": accepted = campaign.buy(int(value))
+		"buy": accepted = campaign.buy(int(value), extra)
 		"buy_compressor": accepted = campaign.buy_compressor_charge()
 		"reroll": accepted = campaign.reroll()
 		"shop_refine": accepted = campaign.shop_refine(str(value))
+		"shop_compress": accepted = campaign.shop_compress(str(value))
+		"tune": accepted = campaign.tune(int(value), extra)
 		"equip": accepted = campaign.equip(str(value))
 		"replace_part": accepted = campaign.replace_part(str(value), extra)
 		"dismantle": accepted = campaign.dismantle(str(value))
-		"resolve": accepted = campaign.resolve(str(value), extra)
+		"resolve": accepted = campaign.resolve(str(value), extra, replacement)
 		"leave": accepted = campaign.leave()
 	if accepted:
+		if command in ["reward", "buy", "buy_compressor", "shop_refine", "shop_compress", "tune", "equip", "replace_part"]:
+			feedback.play("confirm")
 		model = campaign.model
 		selected_slot = 0
 		inspect_slots = false
 		previous_forecast = {}
 		_changed()
+		if command == "enter": _map_arrival_feedback.call_deferred(campaign, int(campaign.s.node))
+
+func _ammo_acquired_notice(id: String, replaced: bool) -> void:
+	if not is_inside_tree() or campaign == null: return
+	var prior := get_node_or_null("AmmoAcquiredNotice")
+	if prior != null:
+		remove_child(prior)
+		prior.queue_free()
+	var notice := Label.new()
+	notice.name = "AmmoAcquiredNotice"
+	notice.text = "%s 확보 · %s · 덱 %d장" % [Content.AMMO[id].name,"기본탄과 교체" if replaced else "한 장 추가",model.s.deck.size()]
+	notice.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	notice.z_index = 190
+	notice.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	notice.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	notice.add_theme_font_override("font",preload("res://redesign/combat_pixel_font.tres"))
+	notice.add_theme_font_size_override("font_size",_scaled(20))
+	notice.add_theme_color_override("font_color",Color("e9dfc4"))
+	notice.add_theme_stylebox_override("normal",_console_style("panel"))
+	add_child(notice)
+	notice.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	notice.offset_left = -minf(310,size.x*0.45)
+	notice.offset_right = minf(310,size.x*0.45)
+	notice.offset_top = -86
+	notice.offset_bottom = -26
+	var motion: float = preferences.motion_scale()
+	if str(preferences.data.motion) == "instant":
+		var notice_ref: WeakRef = weakref(notice)
+		get_tree().create_timer(1.8).timeout.connect(func():
+			var live_notice = notice_ref.get_ref()
+			if is_instance_valid(live_notice): live_notice.queue_free()
+		)
+		return
+	var tween := notice.create_tween()
+	notice.modulate.a = 0.0
+	tween.tween_property(notice,"modulate:a",1.0,0.12*motion)
+	tween.tween_interval(1.5)
+	tween.tween_property(notice,"modulate:a",0.0,0.18*motion)
+	tween.tween_callback(notice.queue_free)
+
+
+func _map_arrival_feedback(expected_campaign, expected_node: int) -> void:
+	if page != "run" or campaign != expected_campaign or int(campaign.s.node) != expected_node: return
+	if str(preferences.data.motion) == "instant": return
+	var old = get_node_or_null("MapArrivalFeedback")
+	if old != null:
+		remove_child(old)
+		old.queue_free()
+	var line := ColorRect.new()
+	line.name = "MapArrivalFeedback"
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.color = Color("edc47a")
+	add_child(line)
+	line.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	line.offset_left = 10
+	line.offset_right = -10
+	line.offset_top = 2
+	line.offset_bottom = 4
+	var feedback := line.create_tween()
+	feedback.tween_property(line, "modulate:a", 0.0, 0.18 * preferences.motion_scale()).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	feedback.tween_callback(line.queue_free)
 
 func _city_archive() -> void:
 	var progress = Campaign.new()
@@ -2040,6 +2461,41 @@ func _city_archive() -> void:
 	city_ui.ui = self
 	city_ui.campaign = campaign
 	city_ui.archive()
+
+func _debug_part_build(kind: String) -> void:
+	campaign = null
+	debug_session = true
+	model.start("single", 731042)
+	var rounds: Array = ["charge", "precise", "pierce", "cool", "sequence", "bore"]
+	var parts: Array = ["ordinary_chain", "chain_sink"]
+	if Model.Engines.IDS.has(kind):
+		rounds = ["basic","charge","precise","pierce","cool","charge_hot"]
+		parts = [kind,"duplex" if kind=="volley_drive" else "supply","radiator"]
+		model.s.outfit = "carrier"
+	if kind == "compressed":
+		rounds = ["shatter", "pierce_c", "cool", "bore_c", "charge", "push"]
+		parts = ["compression_sink", "overbore", "lens"]
+	elif kind == "burn":
+		rounds = ["bore", "precise", "detonate", "chase", "cool", "spread"]
+		parts = ["igniter", "reclaimer", "duplex"]
+	model.s.deck = rounds + ["charge", "precise", "pierce", "cool"]
+	model.s.equipped_parts = parts
+	model.begin_encounter()
+	model.s.hand = rounds.slice(0, Content.hand_capacity(model.s))
+	model.s.draw = model.s.deck.duplicate()
+	for id in model.s.hand: model.s.draw.erase(id)
+	model.s.enemies = [CampaignContent._enemy(["wall", 22, 3, 1, 20]), CampaignContent._enemy(["runner", 16, 0, 2, 25]), CampaignContent._enemy(["runner", 14, 0, 2, 29])]
+	model.assign_opening_lanes()
+	model.s.encounter_total = 3
+	model.s.deployed = 3
+	model.s.floor = 6
+	if kind == "compressed": model.s.heat = 5
+	if kind == "thermal_drive": model.s.heat = Content.hot_threshold(model.s)
+	hand_layout_key = ""
+	show_full_forecast = false
+	previous_forecast = {}
+	page = "run"
+	redraw()
 
 func _debug_weapon(id: String) -> void:
 	hand_layout_key = ""
@@ -2056,11 +2512,84 @@ func _debug_weapon(id: String) -> void:
 		{"kind": "runner", "name": Content.ENEMY_NAMES.runner, "hp": 12, "max_hp": 12, "def": 0, "speed": 2, "distance": 20, "burn": 0},
 		{"kind": "evader", "name": Content.ENEMY_NAMES.evader, "hp": 8, "max_hp": 8, "def": 1, "speed": 2, "distance": 22, "burn": 0},
 	]
-	for round_id in ["charge", "precise", "arc"]: model.load_round(round_id)
+	for round_id in Content.loading_order(["charge", "precise", "arc"]): model.load_round(round_id)
 	debug_session = true
 	selected_slot = 0
 	inspect_slots = false
 	previous_forecast = {}
+	page = "run"
+	redraw()
+
+func _debug_combat_finish() -> void:
+	_debug_eavesback(true)
+	campaign.s.gun = "burst"
+	model.s.gun = "burst"
+	model.s.deck = ["basic", "precise", "charge_hot", "cool", "pierce", "arc", "bore", "push", "basic", "cool"]
+	model.s.hand = model.s.deck.slice(0, 5)
+	model.s.draw = model.s.deck.slice(5)
+	model.s.discard = []
+	model.s.heat = 5
+	model.s.enemies[0].hp = 7
+	model.s.enemies[0].max_hp = 7
+	redraw()
+
+func _debug_ascent_background(stage: int) -> void:
+	_debug_eavesback(true)
+	campaign.remove_meta("eavesback_preview")
+	campaign.set_meta("background_preview", clampi(stage, 0, 2))
+	var depth := ceili(float(clampi(stage, 0, 2) * int(campaign.region_info().floors)) / 3.0) + 1
+	var rooms: Array = campaign.current_nodes().filter(func(room): return int(room.floor) == depth)
+	campaign.s.floor = depth
+	campaign.s.node = rooms[0].id
+	redraw()
+
+func _debug_eavesback(family: bool = false) -> void:
+	hand_layout_key = ""
+	show_full_forecast = false
+	debug_session = true
+	campaign = Campaign.new()
+	campaign.start("single", 731042, 0, "balanced", 2)
+	campaign.s.departure_step = 3
+	campaign.enter(int(campaign.choices()[0].id))
+	campaign.set_meta("eavesback_preview", true)
+	if family: campaign.set_meta("creature_family_preview", true)
+	model = campaign.model
+	model.s.deck = ["pierce", "bore", "thermal", "charge", "arc", "cool", "pierce", "thermal", "bore", "arc"]
+	model.begin_encounter()
+	model.s.hand = model.s.deck.slice(0, Content.hand_capacity(model.s))
+	model.s.draw = model.s.deck.slice(Content.hand_capacity(model.s))
+	model.s.discard = []
+	model.s.enemies = [CampaignContent._enemy(["wall", 24, 3, 1, 18]), CampaignContent._enemy(["spitter", 12, 0, 0, 26])]
+	model.s.enemies[0].name = "처마등 · 시안"
+	model.s.reinforcements = []
+	model.s.encounter_total = 2
+	model.s.deployed = 2
+	if family:
+		model.s.enemies = [
+			CampaignContent._enemy(["runner", 12, 0, 2, 14]),
+			CampaignContent._enemy(["wall", 24, 3, 1, 19]),
+			CampaignContent._enemy(["evader", 18, 0, 1, 24]),
+			CampaignContent._enemy(["spitter", 12, 0, 0, 29]),
+		]
+		for i in range(3): model.s.enemies[i].name = ["숨접이 · 시안", "처마등", "빗주머니 · 시안"][i]
+		model.s.encounter_total = 4
+		model.s.deployed = 4
+	model.assign_opening_lanes()
+	selected_slot = 0
+	inspect_slots = false
+	previous_forecast = {}
+	page = "run"
+	redraw()
+
+func _debug_challenge(kind: String) -> void:
+	debug_session = true
+	campaign = preload("res://redesign/challenge_preview.gd").campaign(kind)
+	model = campaign.model
+	hand_layout_key = ""
+	show_full_forecast = false
+	previous_forecast = {}
+	selected_slot = 0
+	inspect_slots = false
 	page = "run"
 	redraw()
 
@@ -2069,8 +2598,10 @@ func _debug_city(kind: String) -> void:
 	show_full_forecast = false
 	debug_session = true
 	campaign = Campaign.new()
-	campaign.start("burst", 731042)
+	campaign.start("burst", 731042, 0, "balanced", 2 if kind in ["map", "departure", "workshop"] else 1)
+	campaign.s.departure_step = 3
 	campaign.s.credits = 75
+	if kind == "departure": campaign.s.departure_step = 0
 	if kind == "shop":
 		campaign.s.floor = 3
 		campaign.s.node = 301
@@ -2079,6 +2610,14 @@ func _debug_city(kind: String) -> void:
 		campaign.s.floor = 2
 		campaign.s.node = 201
 		campaign.enter(301)
+	elif kind == "workshop":
+		for room in campaign.current_nodes():
+			if not room.get("workshop", false): continue
+			campaign.s.node = room.id
+			campaign.s.floor = room.floor
+			campaign.s.phase = "supply"
+			campaign.s.resolved = false
+			break
 	elif kind == "event":
 		campaign.s.floor = 1
 		campaign.s.node = 101

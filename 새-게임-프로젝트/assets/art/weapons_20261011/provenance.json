@@ -1,0 +1,75 @@
+{
+  "created_on": "2026-10-11",
+  "tool": "built-in image_gen",
+  "status": "Integrated equipment-screen artwork, awaiting user concept preference.",
+  "references": [
+    {
+      "path": "../actor_cohesion_20261005/reclaimer_grouped_v2.png",
+      "role": "approved pixel clusters and palette; no character copying"
+    },
+    {
+      "path": "single_v1.png",
+      "role": "family material reference for four subsequent designs"
+    }
+  ],
+  "scope": "Equipment showcase and five selection cards. Existing battle hero sprites and combat rules unchanged.",
+  "display": "AtlasTexture with 8 source-pixel bounds padding, nearest filtering, existing alpha<0.5 cutoff shader. Original bitmaps unmodified.",
+  "assets": [
+    {
+      "id": "single",
+      "file": "single_v1.png",
+      "prompt": "Production pixel-art inventory weapon sprite for ORVASK, an inhabited dystopian mechanical tower. Input reference is STYLE ONLY: match muted bluegrey steel, rusty cloth, quiet broad pixel clusters and grouped shadows, NOT the person. One isolated complete firearm in strict side profile, muzzle pointing RIGHT horizontally, grip down, no person or hand. Design should read at 160x72 game pixels and at a 360x170 equipment showcase. Chunky stepped pixel edges, broad metal plates, 3 shade groups per material, restrained selective contours, no continuous black outline, no tiny bolts, grain, gradients, dithering, engraved decorations, text, numbers, labels or background shadows. Dark steel, worn muted brass and a small warm brown cloth grip. Transparent canvas, landscape 3:2, object centered with 10 percent transparent margins. Artistic fictional game prop, no technical diagrams. SUBJECT: WALKER, reliable service REVOLVER. Compact sturdy angular blued-steel revolver with one large blocky SIX-FACET CYLINDER, medium-length heavy squared barrel, a blunt raised hammer, solid curved wooden grip wrapped with one faded rust fabric band. Top break-frame seam suggests maintenance. Silhouette elegant and practical, believable weight and construction. A few substantial aged brass fittings on cylinder hinge. No sci-fi glow, no tactical rails, no giant cogwheel, no exaggerated oversized barrel. Distinctive old tower security issue weapon.",
+      "sha256": "c334639fc68ef3aae28b0c7d1762d9f14641462b8f2f586693bc06bdc8b2f3f2",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "atlas_resource": "single_v1.tres"
+    },
+    {
+      "id": "burst",
+      "file": "burst_v1.png",
+      "prompt": "Production pixel-art inventory weapon sprite for ORVASK, an inhabited dystopian mechanical tower. Input reference is STYLE ONLY: match muted bluegrey steel, rusty cloth, quiet broad pixel clusters and grouped shadows, NOT the person. One isolated complete firearm in strict side profile, muzzle pointing RIGHT horizontally, grip down, no person or hand. Design should read at 160x72 game pixels and at a 360x170 equipment showcase. Chunky stepped pixel edges, broad metal plates, 3 shade groups per material, restrained selective contours, no continuous black outline, no tiny bolts, grain, gradients, dithering, engraved decorations, text, numbers, labels or background shadows. Dark steel, worn muted brass and a small warm brown cloth grip. Transparent canvas, landscape 3:2, object centered with 10 percent transparent margins. Artistic fictional game prop, no technical diagrams. Input 2 is the matching gun family's material and pixel treatment; do NOT copy its silhouette. BURST, a compact heavy automatic carbine for focused repeated hits. Unique silhouette: short skeletal shoulder stock at LEFT, low long rectangular bluegrey receiver, vertical dark curved magazine dropping from the center, separate slim pistol grip behind it, stubby square barrel with exactly three large ventilation slots. A broad steel foregrip and a small brass cocking handle. No revolver cylinder, no round gear. Faded rust cloth on butt and grip. Long horizontal silhouette unlike a pistol. Industrial utilitarian handmade tower guard weapon.",
+      "sha256": "fd361b5cea3fafdd9ff7ed64eac5389a89700705ca28c6f57ca68c9026e5cc7c",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "atlas_resource": "burst_v1.tres"
+    },
+    {
+      "id": "scatter",
+      "file": "scatter_v1.png",
+      "prompt": "Production pixel-art inventory weapon sprite for ORVASK, an inhabited dystopian mechanical tower. Input reference is STYLE ONLY: match muted bluegrey steel, rusty cloth, quiet broad pixel clusters and grouped shadows, NOT the person. One isolated complete firearm in strict side profile, muzzle pointing RIGHT horizontally, grip down, no person or hand. Design should read at 160x72 game pixels and at a 360x170 equipment showcase. Chunky stepped pixel edges, broad metal plates, 3 shade groups per material, restrained selective contours, no continuous black outline, no tiny bolts, grain, gradients, dithering, engraved decorations, text, numbers, labels or background shadows. Dark steel, worn muted brass and a small warm brown cloth grip. Transparent canvas, landscape 3:2, object centered with 10 percent transparent margins. Artistic fictional game prop, no technical diagrams. Input 2 is the matching gun family's material and pixel treatment; do NOT copy its silhouette. SCATTER, an old mechanical scattergun for distributing individual shots among targets. Unique silhouette: squat break-action receiver, oversized WIDE FLARED HEXAGONAL MUZZLE at RIGHT, one short thick barrel, large compact brass rotary ammunition drum tucked underneath mid receiver, curved wood grip and a stub of shoulder brace at LEFT. This is a heavy short blunderbuss-like industrial gun, not a double barrel rifle. Strong sloped barrel profile and wide mouth distinguish it. Steel, weathered dark brown wood, sparse aged brass. No glowing plasma, no magic, no cogwheel decorations.",
+      "sha256": "f2e51472f3d345c22d7d17b5009838f15878324d5940ddcc1d85eea8fdcc7add",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "atlas_resource": "scatter_v1.tres"
+    },
+    {
+      "id": "heavy",
+      "file": "heavy_v1.png",
+      "prompt": "Production pixel-art inventory weapon sprite for ORVASK, an inhabited dystopian mechanical tower. Input reference is STYLE ONLY: match muted bluegrey steel, rusty cloth, quiet broad pixel clusters and grouped shadows, NOT the person. One isolated complete firearm in strict side profile, muzzle pointing RIGHT horizontally, grip down, no person or hand. Design should read at 160x72 game pixels and at a 360x170 equipment showcase. Chunky stepped pixel edges, broad metal plates, 3 shade groups per material, restrained selective contours, no continuous black outline, no tiny bolts, grain, gradients, dithering, engraved decorations, text, numbers, labels or background shadows. Dark steel, worn muted brass and a small warm brown cloth grip. Transparent canvas, landscape 3:2, object centered with 10 percent transparent margins. Artistic fictional game prop, no technical diagrams. Input 2 is the matching gun family's material and pixel treatment; do NOT copy its silhouette. CRUSHER, an industrial elemental-ammunition projector, NOT a normal pistol. Unique bulky box-shaped silhouette: two squat vertical pressure cylinders mounted above the rear receiver, a SINGLE large curved copper pipe feeding forward into a short wide ceramic-insulated barrel. Front barrel has three thick cooling ribs. A stout lower support grip, heavy angular rear grip, no shoulder stock. Dark bluegrey casing, desaturated ivory insulation, dark oxidized copper pipes, faded rust grip tape. Only one tiny amber pressure window, NOT glowing neon. Canisters and pipe are large readable forms, not many thin cables. Tool-like tower maintenance equipment repurposed as weapon.",
+      "sha256": "6c1fc730a5e9406aec3b1a7a01ba3b5747b166c7f09a82ac9640d1d7b2e47802",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "atlas_resource": "heavy_v1.tres"
+    },
+    {
+      "id": "amplifier",
+      "file": "amplifier_v1.png",
+      "prompt": "Production pixel-art inventory weapon sprite for ORVASK, an inhabited dystopian mechanical tower. Input reference is STYLE ONLY: match muted bluegrey steel, rusty cloth, quiet broad pixel clusters and grouped shadows, NOT the person. One isolated complete firearm in strict side profile, muzzle pointing RIGHT horizontally, grip down, no person or hand. Design should read at 160x72 game pixels and at a 360x170 equipment showcase. Chunky stepped pixel edges, broad metal plates, 3 shade groups per material, restrained selective contours, no continuous black outline, no tiny bolts, grain, gradients, dithering, engraved decorations, text, numbers, labels or background shadows. Dark steel, worn muted brass and a small warm brown cloth grip. Transparent canvas, landscape 3:2, object centered with 10 percent transparent margins. Artistic fictional game prop, no technical diagrams. Input 2 is the matching gun family's material and pixel treatment; do NOT copy its silhouette. AMPLIFIER, a powerful SINGLE-SHOT precision pistol. Unique sleek LONG BARREL silhouette: long narrow octagonal barrel extending far right, visibly oversized square hinged breech block at rear with a short heavy lever on top, one thick ivory ceramic ring around barrel root, angular steep compact grip at left bottom wrapped with faded rust cloth, single broad brass counterweight under barrel root. No revolver cylinder, no drum, no magazine, no stock, no scope, no silencer, no glowing futuristic laser. Asymmetric dense rear mechanism and long quiet tapering barrel. Clearly different from the service revolver, looks deliberate and powerful.",
+      "sha256": "aa4f29ccf31db599fea8177002fe06ba08879d333dec975f2ca04c71667d3014",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "atlas_resource": "amplifier_v1.tres"
+    }
+  ],
+  "review": "Godot 4.7 equipment regression 457 checks, no failures. Five guns at three logical resolutions captured; showcase and rail inspected. User preference pending."
+}

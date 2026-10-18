@@ -35,7 +35,7 @@ func fixture(gun: String, enemies: Array, rounds: Array = ["basic"], seed_value:
 	for id in model.s.hand: model.s.draw.erase(id)
 	model.s.discard = []
 	model.s.enemies = enemies.duplicate(true)
-	for id in rounds: check(model.load_round(id), "fixture load " + gun + "/" + id)
+	for id in Content.loading_order(rounds): check(model.load_round(id), "fixture load " + gun + "/" + id)
 	return model
 
 func fire(model) -> Array:
@@ -60,7 +60,7 @@ func _run() -> void:
 			campaign.model.s.capacity_bonus = bonus
 			check(campaign.model.capacity() == int(Content.GUNS[gun].capacity) + bonus, "capacity growth " + gun)
 		var seen_parts: Array = []
-		for revision in range(12):
+		for revision in range(Content.PARTS.size() * 2):
 			for offer in Data.offers({"id": 401}, 731042, revision, gun, []):
 				if offer.type == "part":
 					check(Content.accepts_part(gun, offer.id) and offer.id != "none", "eligible city shop " + gun)
@@ -103,7 +103,7 @@ func _run() -> void:
 				model.s.part = "lens"
 				var shot: Dictionary = fire(model)[0]
 				var raw: int = {"basic": 2, "pierce": 3, "precise": 2}[id] * (2 if gun == "amplifier" else 1) + ((1 if id == "basic" else 2) if gun == "single" else 0)
-				var pen: int = (3 if id == "pierce" else 0) * (2 if gun == "amplifier" else 1) + 2
+				var pen: int = (3 if id == "pierce" else 0) * (2 if gun == "amplifier" else 1) + (2 if id == "pierce" else 0)
 				var expected := maxi(1, raw - maxi(0, armor - pen)) * (2 if id == "precise" else 1)
 				check(shot.damage == expected and shot.pen == pen, "raw/armor/lens contract " + gun + "/" + id + "/" + str(armor))
 	# Focus counts actual primary hits, retains across reload, and never spills on death.
@@ -161,12 +161,12 @@ func _run() -> void:
 	check(fire(part_model)[0].hits == 3, "duplex strengthens repeated-hit build")
 	# Multi-part builds stack up to five modules while only one rule-changing core
 	# can be active. Strong cores expose their cost through the same live math.
-	check(Content.PARTS.size() == 21, "twenty collectible parts plus the empty slot")
+	check(Content.PARTS.size() == 29, "twenty-eight collectible parts plus the empty slot")
 	var five_parts := ["lens", "coil", "capacitor", "rammer", "duplex"]
 	check(Content.valid_part_set("single", five_parts) and not Content.valid_part_set("single", five_parts + ["opening"]), "five simultaneous part slots")
 	check(not Content.valid_part_set("single", ["field_press", "overbore"]), "only one core part may be equipped")
 	var stacked_state := {"gun": "single", "capacity_bonus": 0, "part": "none", "equipped_parts": five_parts}
-	check(Content.penetration("basic", stacked_state) == 2 and Content.burn_amount("bore", stacked_state) == 4 and Content.effect_value("arc", stacked_state) == 3 and Content.effect_value("push", stacked_state) == 3 and Content.hit_count("precise", stacked_state) == 3, "five equipped modules apply together")
+	check(Content.penetration("basic", stacked_state) == 0 and Content.penetration("pierce", stacked_state) == 5 and Content.burn_amount("bore", stacked_state) == 4 and Content.effect_value("arc", stacked_state) == 3 and Content.effect_value("push", stacked_state) == 3 and Content.hit_count("precise", stacked_state) == 3, "five equipped modules apply together")
 	var press = Model.new()
 	press.start("single", 731042)
 	press.s.equipped_parts = ["field_press"]
@@ -176,7 +176,7 @@ func _run() -> void:
 	caliber.s.equipped_parts = ["overbore"]
 	caliber.s.part = "none"
 	var caliber_shot: Dictionary = fire(caliber)[0]
-	check(caliber.capacity() == 3 and caliber_shot.math.base == 5 and caliber_shot.pen == 2, "overbore trades one slot for damage and penetration")
+	check(caliber.capacity() == 3 and caliber_shot.math.base == 3 and caliber_shot.pen == 0, "overbore keeps its slot cost but no longer boosts supply rounds")
 	var ordered = fixture("single", [enemy(200)], ["basic", "pierce", "bore"])
 	ordered.s.equipped_parts = ["opening", "triad"]
 	ordered.s.part = "none"
@@ -210,17 +210,17 @@ func _run() -> void:
 	check(fire(pushing)[0].push == 4 and pushing.s.push_left == 0 and pushing.s.enemies[0].distance == 23, "amplifier four meter shared magazine budget")
 	check(pushing.reload_magazine() and pushing.s.push_left == 4, "amplifier push budget resets on reload")
 	# Compressed rounds trade frequency, magazine space, or firing position for a
-	# concentrated effect. Placement is automatic so the visual fit is the rule.
-	check(Content.COMPRESSIONS.size() == 6, "six ordinary families have one compressed form")
+	# concentrated effect. Load end anchors first and front anchors last.
+	check(Content.COMPRESSIONS.size() == 17, "seventeen ordinary families have one compressed form")
 	for source in Content.COMPRESSIONS:
 		var compressed_id: String = Content.compressed_id(source)
 		check(Content.is_compressed(compressed_id) and Content.source_id(compressed_id) == source and Content.AMMO[compressed_id].name == Content.AMMO[source].name, "compressed family keeps familiar name " + source)
-	var fitted = fixture("single", [enemy(200)], ["push_c", "precise_c", "pierce"])
-	check(fitted.s.plan == ["precise_c", "pierce", "push_c"] and Content.slots_used(fitted.s.plan) == 3, "first and last compressed rounds auto-fit regardless of tap order")
+	var fitted = fixture("single", [enemy(200)], ["precise_c", "pierce", "push_c"])
+	check(fitted.s.plan == ["precise_c", "pierce", "push_c"] and Content.slots_used(fitted.s.plan) == 3, "reverse loading preserves first and last compressed firing positions")
 	fitted.s.deck.append_array(["arc_c", "charge_c"])
 	fitted.s.hand.append_array(["arc_c", "charge_c"])
 	check(not fitted.can_load("arc_c") and not fitted.can_load("charge_c"), "one first and one last anchor per magazine")
-	check(fitted.undo() and fitted.s.plan == ["precise_c", "push_c"], "undo removes the most recently tapped round after auto placement")
+	check(fitted.undo() and fitted.s.plan == ["pierce", "push_c"], "recall removes the front round")
 	var bulky = fixture("single", [enemy(200)], ["pierce_c", "basic", "basic"])
 	check(Content.slots_used(bulky.s.plan) == 4 and not bulky.load_round("basic"), "heavy compressed round physically consumes two slots")
 	var compressed_shot: Dictionary = fire(fixture("burst", [enemy(100)], ["precise_c"]))[0]
@@ -231,14 +231,14 @@ func _run() -> void:
 	check(compressed_shot.burn_added == 6, "compressed incendiary fills burn duration in one shot")
 	compressed_shot = fire(fixture("single", [enemy(100)], ["push_c"]))[0]
 	check(compressed_shot.push == 3, "compressed impact receives its disclosed local push budget")
-	var delayed = fixture("single", [enemy(200)], ["charge_c", "basic"])
+	var delayed = fixture("single", [enemy(200)], ["basic", "charge_c"])
 	fire(delayed)
 	check(delayed.s.buff.get("dmg", 0) == 4 and delayed.s.buff.get("persistent", false), "compressed boost is forced last and survives into reload")
 	check(delayed.reload_magazine() and delayed.s.buff.get("dmg", 0) == 4 and not delayed.s.buff.has("persistent"), "compressed boost crosses exactly one reload boundary")
 	check(delayed.load_round("basic") and delayed.confirm() and delayed.fire() and delayed.s.history.back().detail.results[0].damage == 7, "next magazine consumes carried compressed boost")
 	# Field compression spends one run-owned core. It is independent from the hand
 	# exchange, reversible before confirmation, and never changes the persistent deck.
-	check(Content.FIELD_COMPRESSIONS.size() == 6, "six ordinary families support field compression")
+	check(Content.FIELD_COMPRESSIONS.size() == 17, "seventeen ordinary families support field compression")
 	var field_model = Model.new()
 	field_model.start("single", 731042)
 	field_model.s.deck = ["precise", "precise", "charge", "charge", "pierce", "bore", "arc", "push"]
@@ -286,7 +286,8 @@ func _run() -> void:
 	abandoned.s.discard = []
 	abandoned.s.enemies = [enemy(200)]
 	check(abandoned.field_compress("push") and abandoned.confirm() and abandoned.reload_magazine(), "confirmed field round may be abandoned by reload")
-	check(abandoned.s.discard.count("push") == 2 and not abandoned.s.discard.has("push_f") and abandoned.s.field_compression_left == 0, "post-confirm reload splits originals without refund")
+	var recycled: Array = abandoned.s.hand + abandoned.s.draw + abandoned.s.discard
+	check(recycled.count("push") == 2 and not recycled.has("push_f") and abandoned.s.field_compression.is_empty() and abandoned.s.field_compression_left == 0, "post-confirm reload splits originals into the cycling deck without refund")
 	var stocked = Model.new()
 	stocked.start("single", 731042)
 	stocked.begin_encounter(2)
@@ -308,7 +309,7 @@ func _run() -> void:
 	course.start("single", 731042, true)
 	course.s.hand = ["charge", "charge"]
 	check(course.s.field_compression_left == 0 and course.field_compressible_ids().is_empty(), "guided course hides field compression")
-	var predicted = fixture("single", [enemy(200), enemy(100, 0, 22), enemy(100, 0, 24)], ["push_c", "precise_c", "arc"])
+	var predicted = fixture("single", [enemy(200), enemy(100, 0, 22), enemy(100, 0, 24)], ["precise_c", "arc", "push_c"])
 	var prediction_before := Forecast.analyze(predicted.s)
 	var actual_copy = Model.new()
 	actual_copy.s = predicted.s.duplicate(true)

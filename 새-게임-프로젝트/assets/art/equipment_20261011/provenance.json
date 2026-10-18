@@ -1,0 +1,28 @@
+{
+  "created_on": "2026-10-11",
+  "tool": "built-in image_gen",
+  "purpose": "Equipment selection room and outfit preview; no combat sprite replacement.",
+  "references": [
+    "assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+    "assets/art/tower_sample_20261003/residential_tower.png"
+  ],
+  "assets": [
+    {
+      "path": "outfits_v1.png",
+      "prompt": "Production game sprite atlas, exactly THREE full-body outfits of the SAME character, arranged LEFT TO RIGHT in three equal-width cells, transparent background, landscape 3:2 canvas. Reference image locks character identity, broad low-detail pixel clusters, blue-grey work cap with square pale lamp, plain warm face, rusty shoulder scarf, boots, and adult proportions. ALL THREE face slightly LEFT in identical relaxed three-quarter standing pose, empty hands resting naturally beside belt, EXACTLY TWO ARMS/TWO HANDS, no gun, no other objects, same body height and boot baseline. Left cell BASIC WORK CLOTHES: preserve original long muted blue-grey work coat, rusty shoulder cloth, compact backpack, normal belt. Middle cell CARGO COAT: muted dusty brown/ochre long heavy work coat, visibly larger rectangular cargo backpack and two broad hip cargo pockets; same cap, scarf and person. Right cell SCOUT WORK CLOTHES: muted desaturated olive-grey shorter light work jacket with split coat tails, small slim pack, simple diagonal utility strap; same cap/scarf/person. These are functional clothing variations, NOT armor classes, fantasy robes or new people. No added helmet variants. Big restrained coherent pixel clusters and grouped shadows like reference, low internal contrast. Approximately 50 logical pixels tall appearance, not high-detail illustration. No smooth blur, dithering, seams, rivets, highlights, continuous heavy outline, fake texture, extra fingers. 10 percent transparent margin around every sprite. Keep original subdued colors. No labels, UI, cell dividers, ground or cast shadows.",
+      "correction_prompt": "Precisely fix this 3-outfit transparent sprite atlas. Preserve the canvas dimensions, cell placements, character scale, boots, face, pixel style and all three clothes. LEFTMOST character: remove ONLY the small stray peach-colored vertical patch at the upper left waist/chest (near the coat pocket above the hanging left arm); it reads as a third hand. Replace it with uninterrupted dark blue-grey coat cloth. Each character must have exactly two hands, at the ends of the two hanging arms. Remove the diffuse glow/haze surrounding ALL characters so background is completely transparent and only the crisp pixel silhouettes remain. Do not draw black background. Preserve all other pixels as closely as possible. No new detail, no text.",
+      "original_output": "exec-d4aed00a-1b52-477e-9f6b-dc37d50d5f50.png",
+      "normalization": "No bitmap editing. Godot AtlasTexture per outfit, nearest filtering and existing alpha<0.5 silhouette cutout. Generated figures face right; retained for the equipment composition.",
+      "sha256": "87555c8a394cd6e7aa5968e3545fe4f5ddbba401c68add7748ac7eaa54644afe"
+    },
+    {
+      "path": "workshop_v1.png",
+      "prompt": "Create a widescreen pixel art background for a dystopian tower game's equipment selection room. Match the attached reference's broad, restrained pixel clusters, muted bluegrey iron, sparse warm amber light, industrial architecture, soft grouped value shapes, no dithering. Interior of a small inhabited maintenance workshop high in the massive tower. Composition for UI: LEFT third and RIGHT third very dark calm matte steel wall areas with sparse structural pipes, free of clutter. CENTER third an open standing area with an overhead warm worklamp, bluegrey lockers behind, just a glimpse of tower through a narrow tall window. Clear flat horizontal floor edge across the scene at exactly 76 percent down the image, illuminated center floor for one hero to stand; lower quarter dark floor plate. No characters, no guns, no text, no UI frames, no letters, no symbols. Feels like a tired survivor's practical preparation room, not shiny scifi, not dungeon fantasy. Large readable pixel shapes, approx 384x216 logical pixel appearance; no smooth painting, no overtextured AI detail. Dark atmospheric quiet image, enough flat negative space for UI overlays. 16:9 landscape.",
+      "original_output": "exec-c33eadb7-2201-4604-9875-d3981c1056b4.png",
+      "normalization": "Unmodified bitmap. Runtime floor alignment follows the equipment stage.",
+      "sha256": "c5aaefd2d24674be1b16a5511ba652e2c915f92889e84923b406f501adaee532"
+    }
+  ],
+  "interaction_reference": "https://www.megacrit.com/images/steam_screenshot3_new.png",
+  "notes": "No third-party art copied. Costume effects remain existing Content.OUTFITS rules."
+}

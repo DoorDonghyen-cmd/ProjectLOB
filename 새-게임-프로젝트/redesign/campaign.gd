@@ -3,7 +3,8 @@ extends RefCounted
 const Content = preload("res://redesign/campaign_content.gd")
 const Ammo = preload("res://redesign/content.gd")
 const Model = preload("res://redesign/model.gd")
-const Lore = preload("res://scripts/core/lore_catalog.gd")
+const Encounters = preload("res://redesign/encounter_scenes.gd")
+const Lore = preload("res://redesign/city_story.gd")
 const SAVE := "user://city_campaign_v1.json"
 const MIN_DECK := 8
 const MAX_COMPRESSOR_CHARGES := 2
@@ -16,34 +17,94 @@ var profile: Dictionary = defaults()
 static func defaults() -> Dictionary:
 	return {"cores": 0, "lore": [], "runs": 0, "wins": 0, "ascension": 0, "best_region": 0, "unlocks": ["balanced"]}
 
-func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = "balanced") -> void:
+func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = "balanced", map_version: int = Content.RouteMap.VERSION, outfit: String = "work") -> void:
 	if not profile.unlocks.has(loadout): loadout = "balanced"
-	s = {"version": 4, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": Content.START_CREDITS, "pressure": 0, "slots": 0, "parts": [], "equipped_parts": [], "shop_seen_parts": [], "visited": [], "clears": 0, "compressor_charges": 1, "shop_revision": 0, "shop_part_bought": false, "shop_compressor_bought": false, "shop_refined": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "정점까지 35층. 다음 목적지를 선택하세요."}
-	model.start(gun, seed_value)
+	if not Ammo.OUTFITS.has(outfit): outfit = "work"
+	s = {"version": 4, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": Content.START_CREDITS, "pressure": 0, "slots": 0, "parts": [], "equipped_parts": [], "shop_seen_parts": [], "shop_seen_ammo": [], "visited": [], "clears": 0, "compressor_charges": 1, "shop_revision": 0, "shop_part_bought": false, "shop_compressor_bought": false, "shop_refined": false, "shop_tuned": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "다음 목적지를 선택하세요."}
+	s.build_version = 1
+	s.discovery_version = Content.Discovery.VERSION
+	s.opening_reward_step = 0
+	s.roster_version = Content.Residential.VERSION
+	s.outfit = outfit
+	s.bag_version = Ammo.BAG_VERSION
+	s.bag_upgrades = 0
+	model.start(gun, seed_value, false, outfit)
+	s.map_version = map_version
+	s.place_version = 1 if map_version >= 3 else 0
+	s.encounter = {}
+	s.supply_offers = []
+	s.departure_step = 0
+	s.restoration_done = false
+	s.message = Lore.OBJECTIVE
 	model.s.equipped_parts = []
-	model.s.deck = Ammo.start_deck(gun) if loadout == "balanced" else Content.LOADOUTS[loadout].deck.duplicate()
+	model.s.deck = Content.Acquisition.start_deck()
 	model.begin_encounter(int(s.compressor_charges))
 
 func current_nodes() -> Array:
-	return Content.nodes(int(s.region), int(s.seed))
+	return Content.nodes(int(s.region), int(s.seed), int(s.get("map_version", 1)))
+
+func region_info(region: int = -1) -> Dictionary:
+	return Content.info(int(s.region) if region < 0 else region, int(s.get("map_version", 1)))
+
+func total_floors() -> int:
+	var total := 0
+	for region in range(5): total += int(region_info(region).floors)
+	return total
+
+func route_outlook(id: int) -> String:
+	var pending: Array = [id]
+	var seen: Array = []
+	var facilities: Dictionary = {}
+	var rooms := current_nodes()
+	while not pending.is_empty():
+		var next_id: int = int(pending.pop_front())
+		if seen.has(next_id): continue
+		seen.append(next_id)
+		for room in rooms:
+			if int(room.id) != next_id: continue
+			if next_id != id and Content.room_kind(room) in ["shop", "workshop", "elite"]:
+				var label := Content.kind_name(Content.room_kind(room))
+				facilities[label] = true
+			pending.append_array(room.next)
+	var lines: PackedStringArray = []
+	for label in facilities: lines.append(label)
+	return "이후 도달 가능 · " + " / ".join(lines) if not lines.is_empty() else "이후 경로 · 관문으로 연결"
+
+func departure_pending() -> bool:
+	return s.get("phase", "") == "map" and int(s.get("region", -1)) == 0 and int(s.get("floor", -1)) == 0 and int(s.get("departure_step", 3)) < 3
+
+func advance_departure(skip: bool = false) -> bool:
+	if not departure_pending(): return false
+	s.departure_step = 3 if skip else int(s.departure_step) + 1
+	return true
+
+func restoration_pending() -> bool:
+	return s.get("phase", "") == "won" and not bool(s.get("restoration_done", true))
+
+func restore_supply() -> bool:
+	if not restoration_pending(): return false
+	s.restoration_done = true
+	_log("restore_supply", {})
+	return true
 
 func node() -> Dictionary:
 	for item in current_nodes():
 		if int(item.id) == int(s.node): return item
 	return {}
 
+func modern_places() -> bool:
+	return int(s.get("place_version", 0)) == 1
+
+func is_shortcut(id: int) -> bool:
+	return node().get("shortcuts", []).has(id)
+
 func choices() -> Array:
 	var result: Array = []
 	if s.phase != "map": return result
 	var current := node()
 	for item in current_nodes():
-		if int(item.floor) != int(s.floor) + 1: continue
-		# A right branch stays right until the path merges, so earlier choices matter.
-		if not current.is_empty() and int(current.lane) == 1 and int(item.lane) == 0:
-			var count := 0
-			for other in current_nodes():
-				if int(other.floor) == int(item.floor): count += 1
-			if count > 1: continue
+		if current.is_empty() and int(item.floor) != 1: continue
+		if not current.is_empty() and not current.next.has(item.id): continue
 		result.append(item)
 	return result
 
@@ -52,41 +113,29 @@ func enter(id: int) -> bool:
 	for item in choices():
 		if int(item.id) == id: selected = item
 	if selected.is_empty(): return false
+	s.departure_step = 3
 	s.floor = selected.floor
 	s.node = id
 	s.resolved = false
+	s.encounter = {}
+	s.supply_offers = []
 	if selected.route == "duct": s.pressure = 2
 	s.visited.append(id)
 	_log("enter", {"id": id, "route": selected.route})
 	match str(selected.kind):
 		"combat", "boss":
-			_sync_equipped_parts()
-			model.s.floor = mini(5, int(s.region) + (1 if int(s.floor) >= 5 else 0))
-			model.s.capacity_bonus = s.slots
-			model.s.encounter_id = id
-			# Each node has its own draw stream without resetting run statistics/history.
-			model.s.seed = str(int(s.seed) + id * 101)
-			model.begin_encounter(int(s.compressor_charges))
-			if int(s.region) == 0 and int(s.floor) == 1: Content.prepare_opening_hand(model)
-			var formation := Content.encounter_pack(selected, int(s.seed), str(s.gun), int(s.difficulty), int(s.pressure))
-			model.s.enemies = formation.active
-			model.s.reinforcements = formation.reserve
-			model.assign_opening_lanes()
-			model.s.encounter_total = int(formation.total)
-			model.s.deployed = model.s.enemies.size()
-			model.s.wave = 1
-			model.s.encounter_name = selected.name
-			s.pressure = 0
-			s.phase = "combat"
+			_begin_combat(selected)
 		"shop":
 			s.phase = "shop"
 			s.shop_revision = 0
 			s.shop_part_bought = false
 			s.shop_compressor_bought = false
 			s.shop_refined = false
+			s.shop_tuned = false
 			_stock_shop(selected)
 		"supply":
 			s.phase = "supply"
+			if modern_places() and not selected.get("workshop", false): s.supply_offers = _supply_options()
 			collect_lore(3 + int(s.region) * 4)
 		"event": s.phase = "event"
 		"bypass":
@@ -95,6 +144,26 @@ func enter(id: int) -> bool:
 			s.resolved = true
 			s.message = "전투를 피해 이동했습니다. 남겨진 기록을 회수했습니다."
 	return true
+
+func _begin_combat(selected: Dictionary) -> void:
+	_sync_equipped_parts()
+	model.s.floor = mini(5, int(s.region) + (1 if int(s.floor) >= 5 else 0))
+	model.s.capacity_bonus = s.slots
+	model.s.encounter_id = int(selected.id)
+	# Each node has its own draw stream without resetting run statistics/history.
+	model.s.seed = str(int(s.seed) + int(selected.id) * 101)
+	model.begin_encounter(int(s.compressor_charges))
+	if int(s.region) == 0 and int(s.floor) == 1: Content.prepare_opening_hand(model)
+	var formation := Content.encounter_pack(selected, int(s.seed), str(s.gun), int(s.difficulty), int(s.pressure), int(s.get("roster_version", 1)))
+	model.s.enemies = formation.active
+	model.s.reinforcements = formation.reserve
+	model.assign_opening_lanes()
+	model.s.encounter_total = int(formation.total)
+	model.s.deployed = model.s.enemies.size()
+	model.s.wave = 1
+	model.s.encounter_name = selected.name
+	s.pressure = 0
+	s.phase = "combat"
 
 func sync_combat() -> void:
 	if s.is_empty() or s.phase != "combat": return
@@ -106,12 +175,18 @@ func sync_combat() -> void:
 		s.message = model.s.message
 		settle(false)
 	elif model.s.phase in ["reward", "won"]:
+		if modern_places() and s.get("encounter", {}).get("stage", "") == "combat":
+			var found := Encounters.outcome(str(node().event), str(s.encounter.choice), int(s.seed), int(s.node))
+			s.credits += int(found.bonus)
+			s.encounter.stage = "cleared"
+			s.message = "현장 물자 확보 · +%dCr" % int(found.bonus)
 		s.clears += 1
 		s.phase = "reward"
 		_log("clear", {"node": s.node, "shots": model.s.shots, "turns": model.s.turns})
 		if node().kind == "boss": collect_lore(4 + int(s.region) * 4)
 
 func credit_reward() -> int:
+	if node().get("elite", false): return 22 + int(s.region)
 	var used := 0
 	var elapsed := 0
 	for i in range(model.s.history.size() - 1, -1, -1):
@@ -121,7 +196,8 @@ func credit_reward() -> int:
 			used += event.detail.results.size()
 			elapsed += 1
 		if event.action == "reload": elapsed += int(event.detail.cost)
-	return maxi(8, 12 + int(s.region) - maxi(0, used - 6) - maxi(0, elapsed - 6) - int(s.difficulty)) + (Content.ROUTE_REWARD_BONUS if str(node().get("route", "stairs")) == "duct" else 0)
+	var base := 10 if int(s.get("map_version", 1)) >= 2 else 12
+	return maxi(8, base + int(s.region) - maxi(0, used - 6) - maxi(0, elapsed - 6) - int(s.difficulty)) + (Content.ROUTE_REWARD_BONUS if str(node().get("route", "stairs")) == "duct" else 0)
 
 func encounter_report_state() -> Dictionary:
 	var state: Dictionary = model.s.duplicate(true)
@@ -133,11 +209,24 @@ func encounter_report_state() -> Dictionary:
 
 func reward(choice: String, remove_id: String = "") -> bool:
 	if s.phase != "reward" or s.resolved: return false
+	var opening_core := engine_reward() and int(s.get("discovery_version",0)) >= 3
+	var opening_ammo := first_ammo_reward()
+	if not remove_id.is_empty() and not reward_options().has(choice): return false
 	if choice == "credits": s.credits += credit_reward()
 	elif choice == "skip": pass
-	elif Content.rewards(node(), int(s.seed)).has(choice) and model.s.deck.size() < 14:
-		model.s.deck.append(choice)
+	elif part_rewards().has(choice):
+		s.parts.append(choice)
+		if can_equip(choice): s.equipped_parts.append(choice)
+		_sync_equipped_parts()
+	elif reward_options().has(choice) and can_acquire_ammo(choice, remove_id):
+		_acquire_ammo(choice, remove_id)
 	else: return false
+	if opening_core:
+		s.opening_reward_step = 1
+		s.message = "첫 특수탄을 선택하세요. 기본탄 한 장과 교체할 수 있습니다."
+		_log("opening_core", {"choice":choice})
+		return true
+	if opening_ammo: s.opening_reward_step = 2
 	s.resolved = true
 	_log("reward", {"choice": choice, "removed": remove_id})
 	if node().kind == "boss":
@@ -150,6 +239,104 @@ func reward(choice: String, remove_id: String = "") -> bool:
 	else: s.phase = "map"
 	return true
 
+func reward_options() -> Array:
+	if modern_places() and s.phase == "event": return s.get("encounter", {}).get("offers", []).duplicate()
+	if modern_places() and s.phase == "supply" and not node().get("workshop", false):
+		return s.supply_offers.duplicate() if not s.get("supply_offers", []).is_empty() else _supply_options()
+	if engine_reward(): return []
+	if first_ammo_reward(): return Content.Acquisition.first_options(int(s.seed), str(s.gun), s.parts, str(s.loadout))
+	if node().get("elite", false): return []
+	return Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)))
+
+func _supply_options() -> Array:
+	var found := Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts, int(s.discovery_version))
+	var eligible: Array = []
+	for id in model.s.deck:
+		if Ammo.COMPRESSIONS.has(id) and Ammo.grade(id) <= 0 and not eligible.has(id): eligible.append(id)
+	var single: Array = eligible.filter(func(id): return model.s.deck.count(id) == 1)
+	if not single.is_empty(): eligible = single
+	var special: Array = eligible.filter(func(id): return Ammo.source_id(id) != "basic")
+	if not special.is_empty(): eligible = special
+	if not eligible.is_empty():
+		var random := Content.rng(int(s.seed), int(s.node) + 7193)
+		var matching: String = eligible[random.randi_range(0, eligible.size() - 1)]
+		found.erase(matching)
+		found.push_front(matching)
+	return found.slice(0, 3)
+
+func encounter_scene() -> Dictionary:
+	return Encounters.scene(str(node().get("event", "siphon")))
+
+func _resolve_encounter(choice: String, value: String, replacement: String) -> bool:
+	var stage: String = s.get("encounter", {}).get("stage", "")
+	if choice == "skip" and stage in ["", "loot"]:
+		s.encounter = {"choice":"skip", "stage":"finished", "offers":[]}
+		s.resolved = true
+		s.message = "흔적을 뒤로하고 길을 이어갑니다."
+	elif choice == "encounter" and stage.is_empty():
+		var option := Encounters.choice(str(node().event), value)
+		if option.is_empty() or int(s.credits) < int(option.cost): return false
+		var result := Encounters.outcome(str(node().event), value, int(s.seed), int(s.node))
+		s.credits -= int(option.cost)
+		s.encounter = {"choice":value, "stage":"finished", "offers":[]}
+		s.message = result.text
+		collect_lore(2 + int(s.region) * 4)
+		match str(result.type):
+			"combat": s.encounter.stage = "ambush"
+			"ammo":
+				s.encounter.stage = "loot"
+				s.encounter.offers = Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts, int(s.discovery_version))
+				s.credits += int(result.amount)
+			"credits": s.credits += int(result.amount)
+		s.resolved = s.encounter.stage == "finished"
+	elif choice == "fight" and stage == "ambush":
+		var battle: Dictionary = node().duplicate(true)
+		battle.kind = "combat"
+		battle.name = str(encounter_scene().title)
+		battle.route = "stairs"
+		s.encounter.stage = "combat"
+		_begin_combat(battle)
+	elif choice == "ammo" and stage == "loot" and reward_options().has(value) and can_acquire_ammo(value, replacement):
+		_acquire_ammo(value, replacement)
+		s.encounter.stage = "finished"
+		s.resolved = true
+	else: return false
+	_log("encounter", {"choice":choice,"value":value,"stage":s.encounter.stage})
+	return true
+
+func engine_reward() -> bool:
+	return s.get("phase", "") == "reward" and int(s.get("build_version",0))==1 and int(s.clears)==1 and (int(s.get("discovery_version",0)) < 3 or int(s.get("opening_reward_step",2)) == 0)
+
+func first_ammo_reward() -> bool:
+	return s.get("phase", "") == "reward" and int(s.get("discovery_version",0)) >= 3 and int(s.clears)==1 and int(s.get("opening_reward_step",2)) == 1
+
+func replaceable_basics() -> Array:
+	return Content.Acquisition.replaceable(model.s.deck) if int(s.get("discovery_version",0)) >= 3 else []
+
+func can_acquire_ammo(id: String, replace_id: String = "") -> bool:
+	if not Ammo.AMMO.has(id) or Ammo.is_temporary(id): return false
+	if replace_id.is_empty(): return model.s.deck.size() < 14
+	return replaceable_basics().has(replace_id) and replace_id != id
+
+func _acquire_ammo(id: String, replace_id: String) -> void:
+	if replace_id.is_empty(): model.s.deck.append(id)
+	else: model.s.deck[model.s.deck.find(replace_id)] = id
+	s.message = "%s 1장 %s" % [Ammo.AMMO[id].name, "획득 · 기본탄 1장 교체" if not replace_id.is_empty() else "추가"]
+
+func part_rewards() -> Array:
+	if engine_reward(): return Ammo.PARTS.keys().filter(func(id): return Model.Engines.IDS.has(id) and not s.parts.has(id))
+	if first_ammo_reward(): return []
+	if not node().get("elite", false): return []
+	var options: Array = []
+	for offer in Content.offers(node(), int(s.seed), 0, str(s.gun), s.parts, s.get("shop_seen_parts", []), [], [], int(s.get("discovery_version",0))):
+		if offer.type == "part" and not s.parts.has(offer.id): options.append(offer.id)
+	return options.slice(0, 2)
+
+func can_equip_reward(id: String) -> bool:
+	var proposed: Array = equipped_parts()
+	proposed.append(id)
+	return Ammo.valid_part_set(str(s.gun), proposed)
+
 func compressible_ids() -> Array:
 	var result: Array = []
 	if model.s.deck.size() <= MIN_DECK: return result
@@ -157,9 +344,28 @@ func compressible_ids() -> Array:
 		if model.s.deck.count(source) >= 2: result.append(source)
 	return result
 
+func bag_growth_limit() -> int:
+	# Gates invest toward the next region; workbenches use the current region's cap.
+	return mini(Ammo.MAX_BAG_CAPACITY, 6 + int(s.region) + (1 if s.phase == "gate" else 0))
+
+func can_grow_bag() -> bool:
+	return int(s.get("bag_version", 0)) == Ammo.BAG_VERSION and Ammo.hand_capacity(model.s) < bag_growth_limit()
+
+func bag_growth_hint() -> String:
+	if int(s.get("bag_version", 0)) != Ammo.BAG_VERSION: return "새 등반에서 가방 성장 가능"
+	if Ammo.hand_capacity(model.s) >= Ammo.MAX_BAG_CAPACITY: return "최대 10장 도달"
+	if not can_grow_bag(): return "현재 구역 한도 · 다음 구역에서 확장"
+	return "구역 한도 %d장 · 최종 10장" % bag_growth_limit()
+
+func _grow_bag() -> void:
+	s.bag_upgrades += 1
+	model.s.bag_upgrades = s.bag_upgrades
+	s.message = "가방 확장 · 다음 교전부터 %d장 선택" % Ammo.hand_capacity(model.s)
+
 func gate(choice: String, ammo_id: String = "") -> bool:
 	if s.phase != "gate" or s.resolved: return false
 	if choice == "slot" and int(s.slots) < 2: s.slots += 1
+	elif choice == "bag" and can_grow_bag(): _grow_bag()
 	elif choice == "credits": s.credits += 24
 	elif choice == "compress" and compressible_ids().has(ammo_id):
 		model.s.deck.erase(ammo_id)
@@ -175,14 +381,15 @@ func gate(choice: String, ammo_id: String = "") -> bool:
 	profile.best_region = maxi(int(profile.best_region), int(s.region))
 	return true
 
-func buy(index: int) -> bool:
+func buy(index: int, replace_id: String = "") -> bool:
 	if s.phase != "shop" or index < 0 or index >= s.offers.size(): return false
 	var offer: Dictionary = s.offers[index]
 	if offer.sold or int(s.credits) < int(offer.price): return false
 	if offer.type == "part":
+		if not replace_id.is_empty(): return false
 		if s.parts.has(offer.id): return false
 		if not Ammo.PARTS.has(offer.id) or offer.id == "none": return false
-	elif offer.type != "ammo" or not Ammo.AMMO.has(offer.id) or offer.id == "basic" or model.s.deck.size() >= 14: return false
+	elif offer.type != "ammo" or offer.id == "basic" or not can_acquire_ammo(str(offer.id), replace_id): return false
 	s.credits -= int(offer.price)
 	offer.sold = true
 	if offer.type == "part":
@@ -193,8 +400,8 @@ func buy(index: int) -> bool:
 			s.message = "%s 구매 · 빈 슬롯에 장착했습니다." % Ammo.PARTS[offer.id].name
 		else:
 			s.message = "%s 구매 · 장착 조건이 맞지 않아 보관함으로 이동했습니다." % Ammo.PARTS[offer.id].name
-	else: model.s.deck.append(offer.id)
-	_log("purchase", {"id": offer.id, "price": offer.price})
+	else: _acquire_ammo(str(offer.id), replace_id)
+	_log("purchase", {"id": offer.id, "price": offer.price, "removed":replace_id})
 	return true
 
 func buy_compressor_charge() -> bool:
@@ -220,14 +427,51 @@ func reroll() -> bool:
 	return true
 
 func _stock_shop(shop_node: Dictionary) -> void:
-	s.offers = Content.offers(shop_node, int(s.seed), int(s.shop_revision), str(s.gun), s.parts, s.get("shop_seen_parts", []))
+	s.offers = Content.offers(shop_node, int(s.seed), int(s.shop_revision), str(s.gun), s.parts, s.get("shop_seen_parts", []), s.get("shop_seen_ammo", []), s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)))
 	for offer in s.offers:
+		if offer.type == "ammo" and not s.get("shop_seen_ammo", []).has(offer.id):
+			if not s.has("shop_seen_ammo"): s.shop_seen_ammo = []
+			s.shop_seen_ammo.append(offer.id)
 		if offer.type == "part" and not s.shop_seen_parts.has(offer.id): s.shop_seen_parts.append(offer.id)
 
 func shop_refine(id: String) -> bool:
 	# Kept as a rejected legacy command so old automation cannot silently mutate
-	# the new deck. Compression is a visible gate decision instead.
+	# the new deck. Use the priced shop_compress or the gate decision instead.
 	return false
+
+const COMPRESSION_PRICE := 18
+const TUNE_PRICE := 12
+
+func tune(index: int, mode: String) -> bool:
+	var workshop: bool = modern_places() and s.phase == "supply" and node().get("workshop", false) and not s.resolved
+	if modern_places():
+		if not workshop: return false
+	elif s.phase != "shop" or int(s.get("discovery_version",0)) < 2 or bool(s.get("shop_tuned",false)) or int(s.credits) < TUNE_PRICE: return false
+	if index < 0 or index >= model.s.deck.size(): return false
+	var source := str(model.s.deck[index])
+	var result := Ammo.Variants.tuned(source, Ammo.AMMO, mode)
+	if result.is_empty(): return false
+	model.s.deck[index] = result
+	if workshop: s.resolved = true
+	else:
+		s.credits -= TUNE_PRICE
+		s.shop_tuned = true
+	s.message = "%s 1장 · %s. 같은 탄의 다른 사본은 유지됩니다." % [Ammo.AMMO[source].name, "화력 +1" if mode == "power" else "발열 −1"]
+	_log("tune", {"source":source,"id":result,"price":0 if workshop else TUNE_PRICE})
+	return true
+
+
+func shop_compress(id: String) -> bool:
+	if modern_places(): return false
+	if s.phase != "shop" or bool(s.get("shop_refined", false)) or int(s.credits) < COMPRESSION_PRICE or not compressible_ids().has(id): return false
+	model.s.deck.erase(id)
+	model.s.deck.erase(id)
+	model.s.deck.append(Ammo.compressed_id(id))
+	s.credits -= COMPRESSION_PRICE
+	s.shop_refined = true
+	s.message = "%s 일반 2장 → 고급 1장 · 덱에 영구 적용했습니다." % Ammo.AMMO[id].name
+	_log("shop_compress", {"id": id, "price": COMPRESSION_PRICE})
+	return true
 
 func equipped_parts() -> Array:
 	return s.get("equipped_parts", []).duplicate()
@@ -283,14 +527,30 @@ func dismantle(id: String) -> bool:
 	_log("dismantle", {"id": id})
 	return true
 
-func resolve(choice: String, ammo_id: String = "") -> bool:
+func resolve(choice: String, ammo_id: String = "", replace_id: String = "") -> bool:
 	if s.resolved or not s.phase in ["supply", "event"]: return false
 	var current := node()
+	if modern_places() and s.phase == "event": return _resolve_encounter(choice, ammo_id, replace_id)
+	if not replace_id.is_empty() and (choice != "ammo" or current.get("workshop",false)): return false
 	if choice == "skip": s.message = "현재 구성을 유지했습니다."
+	elif current.get("workshop", false):
+		if choice == "bag" and can_grow_bag():
+			_grow_bag()
+		elif choice == "compress" and compressible_ids().has(ammo_id):
+			model.s.deck.erase(ammo_id)
+			model.s.deck.erase(ammo_id)
+			model.s.deck.append(Ammo.compressed_id(ammo_id))
+			s.message = Ammo.AMMO[ammo_id].name + " 2장을 압축했습니다. 이번 정비를 사용했습니다."
+		elif choice == "remove" and model.s.deck.size() > MIN_DECK and model.s.deck.has(ammo_id):
+			model.s.deck.erase(ammo_id)
+			s.message = Ammo.AMMO[ammo_id].name + " 1장을 덱에서 제거했습니다. 이번 정비를 사용했습니다."
+		elif choice == "core" and not modern_places() and int(s.compressor_charges) < MAX_COMPRESSOR_CHARGES:
+			s.compressor_charges += 1
+			s.message = "압축 코어 +1. 이번 정비를 사용했습니다."
+		else: return false
 	elif s.phase == "supply":
-		if choice == "ammo" and Content.rewards(current, int(s.seed)).has(ammo_id) and model.s.deck.size() < 14:
-			model.s.deck.append(ammo_id)
-			s.message = Ammo.AMMO[ammo_id].name + " 1장을 보급받았습니다."
+		if choice == "ammo" and reward_options().has(ammo_id) and can_acquire_ammo(ammo_id, replace_id):
+			_acquire_ammo(ammo_id, replace_id)
 		else: return false
 	else:
 		match str(current.event):
@@ -303,10 +563,9 @@ func resolve(choice: String, ammo_id: String = "") -> bool:
 				if choice == "lore":
 					collect_lore(2 + int(s.region) * 4)
 					s.message = "도시 기록을 회수했습니다."
-				elif choice == "ammo" and model.s.deck.size() < 14:
-					var id: String = Content.rewards(current, int(s.seed))[0]
-					model.s.deck.append(id)
-					s.message = Ammo.AMMO[id].name + " 1장을 회수했습니다."
+				elif choice == "ammo" and can_acquire_ammo(str(reward_options()[0]), replace_id):
+					var id: String = reward_options()[0]
+					_acquire_ammo(id, replace_id)
 				else: return false
 			"salvage":
 				if choice != "sell" or model.s.deck.size() <= MIN_DECK or not model.s.deck.has(ammo_id): return false
@@ -314,7 +573,7 @@ func resolve(choice: String, ammo_id: String = "") -> bool:
 				s.credits += 16
 				s.message = Ammo.AMMO[ammo_id].name + " 1장 분해 · +16Cr."
 	s.resolved = true
-	_log("resolve", {"choice": choice, "ammo": ammo_id})
+	_log("resolve", {"choice": choice, "ammo": ammo_id, "removed":replace_id})
 	return true
 
 func leave() -> bool:
@@ -324,7 +583,7 @@ func leave() -> bool:
 	return true
 
 func collect_lore(id: int) -> void:
-	if not profile.lore.has(id):
+	if not profile.lore.any(func(known): return int(known) == id):
 		profile.lore.append(id)
 		profile.lore.sort()
 
@@ -348,7 +607,7 @@ func unlock(id: String) -> bool:
 
 func absolute_floor() -> int:
 	var count := int(s.floor)
-	for region in range(int(s.region)): count += int(Content.info(region).floors)
+	for region in range(int(s.region)): count += int(region_info(region).floors)
 	return count
 
 func _log(action: String, detail: Dictionary) -> void:
@@ -360,12 +619,13 @@ func save(path: String = SAVE) -> Error:
 	if s.phase != "combat":
 		_sync_equipped_parts()
 		model.s.capacity_bonus = s.slots
-		model.s.hand = model.s.deck.slice(0, 5)
-		model.s.draw = model.s.deck.slice(5)
+		model.s.hand = model.s.deck.slice(0, Ammo.hand_capacity(model.s))
+		model.s.draw = model.s.deck.slice(Ammo.hand_capacity(model.s))
 		model.s.discard = []
 		model.s.magazine = []
 		model.s.plan = []
 		model.s.plan_load_order = []
+		model.s.prepared = []
 		model.s.field_compression = {}
 		model.s.field_compression_left = 0
 		model.s.buff = {}
@@ -389,6 +649,8 @@ func restore_state(data: Dictionary) -> bool:
 	if not data.get("campaign") is Dictionary or not data.get("combat") is Dictionary or not data.get("profile") is Dictionary: return false
 	var state: Dictionary = data.campaign
 	state = state.duplicate(true)
+	if not Ammo.valid_bag_state(state): return false
+	if state.has("outfit") and (not state.outfit is String or not Ammo.OUTFITS.has(state.outfit)): return false
 	var legacy_v1: bool = int(state.get("version", -1)) == 1
 	if legacy_v1:
 		state.compressor_charges = 1
@@ -400,6 +662,35 @@ func restore_state(data: Dictionary) -> bool:
 		state.equipped_parts = [legacy_part] if state.get("parts", []).has(legacy_part) else []
 		state.version = 4
 	if not state.has("shop_refined"): state.shop_refined = false
+	if not state.has("shop_tuned"): state.shop_tuned = false
+	if state.has("build_version") and not _whole(state.build_version,1,1): return false
+	if not state.has("discovery_version"): state.discovery_version = 0
+	if not _whole(state.discovery_version, 0, Content.Discovery.VERSION): return false
+	if not state.has("opening_reward_step"):
+		if int(state.discovery_version) >= 3: return false
+		state.opening_reward_step = 2
+	if not _whole(state.opening_reward_step,0,2): return false
+	if int(state.discovery_version) >= 3 and int(state.opening_reward_step) == 1 and (state.get("phase","") != "reward" or int(state.get("clears",0)) != 1 or state.get("resolved",true)): return false
+	if not state.has("roster_version"): state.roster_version = 1
+	if not _whole(state.roster_version, 1, Content.Residential.VERSION): return false
+	if not state.has("map_version"): state.map_version = 1
+	if not _whole(state.map_version, 1, Content.RouteMap.VERSION): return false
+	if not state.has("place_version"): state.place_version = 0
+	if not _whole(state.place_version, 0, 1) or (int(state.map_version) >= 3) != (int(state.place_version) == 1): return false
+	if not state.has("encounter"): state.encounter = {}
+	if not state.has("supply_offers"): state.supply_offers = []
+	if not state.encounter is Dictionary or not state.supply_offers is Array: return false
+	# Existing saves keep their place; completed older runs do not gain a pending ending.
+	if not state.has("departure_step"): state.departure_step = 3
+	if not state.has("restoration_done"): state.restoration_done = state.get("phase", "") == "won"
+	if not _whole(state.departure_step, 0, 3) or not state.restoration_done is bool: return false
+	if state.restoration_done and state.get("phase", "") != "won": return false
+	if not state.has("shop_seen_ammo"): state.shop_seen_ammo = []
+	if not state.shop_seen_ammo is Array: return false
+	var ammo_seen: Array = []
+	for id in state.shop_seen_ammo:
+		if not id is String or not Ammo.AMMO.has(id) or Ammo.is_temporary(id) or id == "basic" or ammo_seen.has(id): return false
+		ammo_seen.append(id)
 	var progress: Dictionary = data.profile
 	for key in ["version", "seed", "gun", "difficulty", "loadout", "region", "floor", "node", "phase", "credits", "pressure", "slots", "parts", "equipped_parts", "shop_seen_parts", "visited", "clears", "compressor_charges", "shop_revision", "shop_part_bought", "shop_compressor_bought", "offers", "resolved", "settled", "log", "message"]:
 		if not state.has(key): return false
@@ -407,10 +698,10 @@ func restore_state(data: Dictionary) -> bool:
 	if not Ammo.GUNS.has(state.gun) or not Content.LOADOUTS.has(state.loadout): return false
 	for key in ["region", "floor", "node", "difficulty", "credits", "pressure", "slots", "clears", "shop_revision"]:
 		if not _whole(state[key], 0, 1000000): return false
-	if state.region > 4 or state.floor > int(Content.info(int(state.region)).floors) or state.difficulty > 10 or not int(state.pressure) in [0, 2] or state.slots > 2: return false
+	if state.region > 4 or state.floor > int(Content.info(int(state.region), int(state.map_version)).floors) or state.difficulty > 10 or not int(state.pressure) in [0, 2] or state.slots > 2: return false
 	if not _whole(state.compressor_charges, 0, MAX_COMPRESSOR_CHARGES): return false
 	if not state.phase in ["map", "combat", "reward", "gate", "shop", "supply", "event", "bypass", "won", "lost"]: return false
-	for key in ["resolved", "settled", "shop_part_bought", "shop_compressor_bought", "shop_refined"]:
+	for key in ["resolved", "settled", "shop_part_bought", "shop_compressor_bought", "shop_refined", "shop_tuned"]:
 		if not state[key] is bool: return false
 	for key in ["parts", "equipped_parts", "shop_seen_parts", "visited", "offers", "log"]:
 		if not state[key] is Array: return false
@@ -432,7 +723,9 @@ func restore_state(data: Dictionary) -> bool:
 			if not offer.has(key): return false
 		if not offer.sold is bool or not _whole(offer.price, 1, 100): return false
 		if offer.type == "ammo":
-			if not Ammo.AMMO.has(offer.id) or offer.id == "basic" or int(offer.price) != 12: return false
+			if not Ammo.AMMO.has(offer.id) or offer.id == "basic" or Ammo.is_temporary(str(offer.id)): return false
+			# Preserve already stocked legacy offers, including the old 12Cr high-output round.
+			if int(offer.price) != 12 and not (Ammo.grade(str(offer.id)) == 1 and int(offer.price) == 24): return false
 		elif offer.type != "part" or offer.id == "none" or not Ammo.PARTS.has(offer.id) or int(offer.price) != 30 or not Ammo.accepts_part(str(state.gun), str(offer.id)): return false
 	for key in defaults():
 		if not progress.has(key): return false
@@ -450,6 +743,9 @@ func restore_state(data: Dictionary) -> bool:
 	if not progress.unlocks.has("balanced") or not progress.unlocks.has(state.loadout) or state.difficulty > progress.ascension: return false
 	var combat = Model.new()
 	if not combat.restore_state(data.combat): return false
+	if state.get("outfit", "") != combat.s.get("outfit", ""): return false
+	for key in ["bag_version", "bag_upgrades"]:
+		if state.get(key, 0) != combat.s.get(key, 0): return false
 	if legacy_v1 and state.phase == "combat": state.compressor_charges = int(combat.s.field_compression_left)
 	if combat.s.gun != state.gun or combat.s.get("capacity_bonus", 0) > state.slots: return false
 	var combat_parts: Array = Ammo.equipped_parts(combat.s)
@@ -463,19 +759,18 @@ func restore_state(data: Dictionary) -> bool:
 	var seen_nodes: Array = []
 	var previous: Dictionary = {}
 	for id in state.visited:
-		if not _whole(id, 101, 40801) or seen_nodes.has(int(id)): return false
+		if not _whole(id, 101, 41004) or seen_nodes.has(int(id)): return false
 		var region := int(id) / 10000
 		if region > int(state.region): return false
 		var found: Dictionary = {}
-		for item in Content.nodes(region, int(state.seed)):
+		for item in Content.nodes(region, int(state.seed), int(state.map_version)):
 			if int(item.id) == int(id): found = item
 		if found.is_empty(): return false
 		if previous.is_empty():
 			if found.region != 0 or found.floor != 1: return false
 		elif found.region == previous.region:
-			if int(found.floor) != int(previous.floor) + 1: return false
-			var next_nodes := Content.nodes(region, int(state.seed)).filter(func(item): return int(item.floor) == int(found.floor))
-			if int(previous.lane) == 1 and int(found.lane) == 0 and next_nodes.size() > 1: return false
+			if int(found.floor) <= int(previous.floor): return false
+			if not previous.next.has(found.id): return false
 		elif int(found.region) != int(previous.region) + 1 or found.floor != 1 or previous.kind != "boss": return false
 		previous = found
 		seen_nodes.append(int(id))
@@ -484,10 +779,12 @@ func restore_state(data: Dictionary) -> bool:
 		if int(state.region) > 0 and (previous.is_empty() or int(previous.region) != int(state.region) - 1 or previous.kind != "boss"): return false
 	elif current.is_empty() or current.floor != state.floor: return false
 	elif previous.is_empty() or int(previous.id) != int(state.node): return false
-	if state.phase in ["combat", "reward", "gate", "won", "lost"] and not current.get("kind", "") in ["combat", "boss"]: return false
+	if not _valid_places(state, current): return false
+	var event_combat: bool = int(state.place_version) == 1 and current.get("kind", "") == "event" and state.encounter.get("stage", "") in ["combat", "cleared"]
+	if state.phase in ["combat", "reward", "gate", "won", "lost"] and not current.get("kind", "") in ["combat", "boss"] and not (event_combat and state.phase in ["combat", "reward", "lost"]): return false
 	if state.phase in ["shop", "supply", "event", "bypass"] and current.get("kind", "") != state.phase: return false
 	if state.phase == "gate" and (current.kind != "boss" or int(state.region) == 4): return false
-	if state.phase == "won" and (int(state.region) != 4 or int(state.floor) != 8): return false
+	if state.phase == "won" and (int(state.region) != 4 or int(state.floor) != int(Content.info(4, int(state.map_version)).floors)): return false
 	if state.phase == "combat" and not combat.s.phase in ["plan", "ready"]: return false
 	if state.phase == "combat":
 		var compression_bonus := Ammo.field_compression_bonus(combat.s)
@@ -502,3 +799,28 @@ func restore_state(data: Dictionary) -> bool:
 
 static func _whole(value: Variant, minimum: int, maximum: int) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and float(value) == floorf(float(value)) and value >= minimum and value <= maximum
+
+static func _valid_places(state: Dictionary, current: Dictionary) -> bool:
+	if state.supply_offers.size() > 3: return false
+	for id in state.supply_offers:
+		if not id is String or not Ammo.AMMO.has(id) or Ammo.is_temporary(id): return false
+	if state.encounter.is_empty():
+		return not (current.get("kind", "") == "event" and int(state.place_version) == 1 and state.phase in ["combat", "reward", "lost"])
+	if int(state.place_version) != 1 or current.get("kind", "") != "event": return false
+	var event: Dictionary = state.encounter
+	if not event.get("choice") is String or not event.get("stage") is String or not event.get("offers") is Array: return false
+	if event.offers.size() > 2: return false
+	for id in event.offers:
+		if not id is String or not Ammo.AMMO.has(id) or Ammo.is_temporary(id): return false
+	if event.choice == "skip": return event.stage == "finished" and state.resolved and state.phase in ["event", "map"] and event.offers.is_empty()
+	var result := Encounters.outcome(str(current.event), event.choice, int(state.seed), int(state.node))
+	if result.is_empty(): return false
+	if result.type == "combat":
+		if not event.offers.is_empty(): return false
+		match str(event.stage):
+			"ambush": return state.phase == "event" and not state.resolved
+			"combat": return state.phase in ["combat", "lost"] and not state.resolved
+			"cleared": return (state.phase == "reward" and not state.resolved) or (state.phase == "map" and state.resolved)
+		return false
+	if event.stage == "loot": return result.type == "ammo" and not event.offers.is_empty() and state.phase == "event" and not state.resolved
+	return event.stage == "finished" and state.resolved and state.phase in ["event", "map"]

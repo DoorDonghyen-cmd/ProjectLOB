@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-18",
+  "purpose": "Combat feed rail, thermal gauge and matching action keys",
+  "method": "Original authored GDScript pixel geometry and cached 40x32 RGBA nine-patch textures",
+  "runtime_assets": [
+    {
+      "path": "새-게임-프로젝트/redesign/instrument_skin.gd",
+      "sha256": "7b6d757b827da5ee4af5a24cd9c8a9119f54e1951e00ee636715efc29e352e29"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/magazine_view.gd",
+      "sha256": "f23fced8d9467535828689ea8a92f81d3f9de9bd468f92cb04c0661878f0bcc8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/heat_gauge.gd",
+      "sha256": "8f0d22c2a0910488ad00681827cb4a96de6155eddb5c993f272e7005224c4199"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_treatment.gd",
+      "sha256": "a9cd96192ea7c56d4fb7bbad8ff6799309e1dcad3d5ec3ae1ae967fcda18fa63"
+    }
+  ],
+  "reference": {
+    "requested_pinterest": "https://kr.pinterest.com/search/pins/?q=distopia%20pixel%20art%20ui",
+    "pinterest_access": "Unavailable in web tool; no browser available",
+    "viewed_public_reference": "https://store.steampowered.com/app/1389550/Mind_Scanners/",
+    "reference_use": "Material grouping, instrument channel and edge detail; not copied into game"
+  },
+  "validation": "1854 checks passed; rendered captures inspected; user visual approval and Galaxy device pending",
+  "report": "docs/qa/reports/combat_instruments_2026-10-18.md"
+}

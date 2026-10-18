@@ -1,0 +1,160 @@
+{
+  "date": "2026-10-13",
+  "tool": "image_gen built-in",
+  "reference_roles": [
+    "edit target: v2 combat weapon",
+    "style comparison: coarse character vs overly fine weapon"
+  ],
+  "jobs": [
+    {
+      "id": "single",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/single_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/qa_runtime/outfits_live/20261013_233718/actor_hoist_burst.png"
+      ],
+      "prompt": "Edit target image1 weapon. Image2 shows the problem: tiny fine outlined weapon against a broad blocky character. Match the CHARACTER's chunkiness, NOT the gun in image2. Keep exact target 1536x1024 transparent canvas, weapon bounds/position/sideview and all major components/attachment positions. Strong graphic simplification: each colored pixel cluster should be roughly 50-80 source pixels across instead of tiny 12-20 px detail. This weapon is drawn only about 40px wide in game. Merge internal outlines into adjacent colored masses. No black borders separating metal panels. No thin bevel lines, tiny trigger subdivisions, screw dots, grip stitching, brass edge stripes. One solid low-contrast area per large material with at most one broad shadow patch. Selective low-contrast silhouette edges only, not black comic outlines. Matte muted blue-gray main metal, low saturation ochre instead of bright yellow brass, muted russet grip. Preserve original full silhouette and major detachable component shapes so existing animation registration remains valid. Preserve muzzle opening and actual grip. Do not enlarge weapon or move parts. Flat COARSE pixel masses. Do not blur or make vector smooth. No gradients, noise, glow, halo, shadow, ground or background. Return weapon alone, genuine transparent alpha.",
+      "file": "single_v3.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-d912eead-ba92-44a8-aa19-ec981555c00b.png",
+      "sha256": "47ebc67583766c8d07b85a7724314c7762c4412f36403c960d7309679d96b47a",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "opaque_bbox": [
+        90,
+        176,
+        1480,
+        949
+      ],
+      "reference_hashes": [
+        "ba62e2888e57be4d0bbbf2c9bb972bfb5c7b54aa19b29b592bfdc8b0cd72eea5",
+        "043c3f6c7d9acafb26cd197ee59d93b1302a9bf84495a8fabbeb8acae491189c"
+      ]
+    },
+    {
+      "id": "amplifier",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/amplifier_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/qa_runtime/outfits_live/20261013_233718/actor_hoist_burst.png"
+      ],
+      "prompt": "Edit target image1 weapon. Image2 shows the problem: tiny fine outlined weapon against a broad blocky character. Match the CHARACTER's chunkiness, NOT the gun in image2. Keep exact target 1536x1024 transparent canvas, weapon bounds/position/sideview and all major components/attachment positions. Strong graphic simplification: each colored pixel cluster should be roughly 50-80 source pixels across instead of tiny 12-20 px detail. This weapon is drawn only about 40px wide in game. Merge internal outlines into adjacent colored masses. No black borders separating metal panels. No thin bevel lines, tiny trigger subdivisions, screw dots, grip stitching, brass edge stripes. One solid low-contrast area per large material with at most one broad shadow patch. Selective low-contrast silhouette edges only, not black comic outlines. Matte muted blue-gray main metal, low saturation ochre instead of bright yellow brass, muted russet grip. Preserve original full silhouette and major detachable component shapes so existing animation registration remains valid. Preserve muzzle opening and actual grip. Do not enlarge weapon or move parts. Flat COARSE pixel masses. Do not blur or make vector smooth. No gradients, noise, glow, halo, shadow, ground or background. Return weapon alone, genuine transparent alpha.",
+      "file": "amplifier_v3.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-758c5501-12c1-4f00-bef8-4240695bb6f7.png",
+      "sha256": "d82cb2f8c95fbe6e2e17316fa088412cafcd9f572737641ba2cffe7d4b438317",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "opaque_bbox": [
+        48,
+        257,
+        1521,
+        858
+      ],
+      "reference_hashes": [
+        "4e02c7b082130726f00c43b33869658a9333f1095d9f590789e3f0de2d54c19a",
+        "043c3f6c7d9acafb26cd197ee59d93b1302a9bf84495a8fabbeb8acae491189c"
+      ]
+    },
+    {
+      "id": "burst",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/burst_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/qa_runtime/outfits_live/20261013_233718/actor_hoist_burst.png"
+      ],
+      "prompt": "Edit target image1 weapon. Image2 shows the problem: tiny fine outlined weapon against a broad blocky character. Match the CHARACTER's chunkiness, NOT the gun in image2. Keep exact target 1536x1024 transparent canvas, weapon bounds/position/sideview and all major components/attachment positions. Strong graphic simplification: each colored pixel cluster should be roughly 50-80 source pixels across instead of tiny 12-20 px detail. This weapon is drawn only about 40px wide in game. Merge internal outlines into adjacent colored masses. No black borders separating metal panels. No thin bevel lines, tiny trigger subdivisions, screw dots, grip stitching, brass edge stripes. One solid low-contrast area per large material with at most one broad shadow patch. Selective low-contrast silhouette edges only, not black comic outlines. Matte muted blue-gray main metal, low saturation ochre instead of bright yellow brass, muted russet grip. Preserve original full silhouette and major detachable component shapes so existing animation registration remains valid. Preserve muzzle opening and actual grip. Do not enlarge weapon or move parts. Flat COARSE pixel masses. Do not blur or make vector smooth. No gradients, noise, glow, halo, shadow, ground or background. Return weapon alone, genuine transparent alpha.",
+      "file": "burst_v3.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-27fef4c3-32be-4c2b-9ee4-b9119cf6e2b3.png",
+      "sha256": "e4d40bceda3a093c36572ef2fe8d34caad21f5358bb8e144c03eccedcf11e7c8",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "opaque_bbox": [
+        42,
+        267,
+        1498,
+        866
+      ],
+      "reference_hashes": [
+        "8ed07d0328ac65e42801904084b093dc38a990acba725efa4cc0b66854cfc83b",
+        "043c3f6c7d9acafb26cd197ee59d93b1302a9bf84495a8fabbeb8acae491189c"
+      ]
+    },
+    {
+      "id": "scatter",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/scatter_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/qa_runtime/outfits_live/20261013_233718/actor_hoist_burst.png"
+      ],
+      "prompt": "Edit target image1 weapon. Image2 shows the problem: tiny fine outlined weapon against a broad blocky character. Match the CHARACTER's chunkiness, NOT the gun in image2. Keep exact target 1536x1024 transparent canvas, weapon bounds/position/sideview and all major components/attachment positions. Strong graphic simplification: each colored pixel cluster should be roughly 50-80 source pixels across instead of tiny 12-20 px detail. This weapon is drawn only about 40px wide in game. Merge internal outlines into adjacent colored masses. No black borders separating metal panels. No thin bevel lines, tiny trigger subdivisions, screw dots, grip stitching, brass edge stripes. One solid low-contrast area per large material with at most one broad shadow patch. Selective low-contrast silhouette edges only, not black comic outlines. Matte muted blue-gray main metal, low saturation ochre instead of bright yellow brass, muted russet grip. Preserve original full silhouette and major detachable component shapes so existing animation registration remains valid. Preserve muzzle opening and actual grip. Do not enlarge weapon or move parts. Flat COARSE pixel masses. Do not blur or make vector smooth. No gradients, noise, glow, halo, shadow, ground or background. Return weapon alone, genuine transparent alpha.",
+      "file": "scatter_v3.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-78c19e53-8ffd-4f9e-989f-91502f9d6494.png",
+      "sha256": "9cbf34fabf7f96971c2b9bedd269732ce6882a1ebc453c56c46b626b74a91085",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "opaque_bbox": [
+        20,
+        178,
+        1516,
+        919
+      ],
+      "reference_hashes": [
+        "4c35f3a096c35b170698030bda310593a8347340ee24560617ac36205ef239d7",
+        "043c3f6c7d9acafb26cd197ee59d93b1302a9bf84495a8fabbeb8acae491189c"
+      ]
+    },
+    {
+      "id": "heavy",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/heavy_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/qa_runtime/outfits_live/20261013_233718/actor_hoist_burst.png"
+      ],
+      "prompt": "Edit target image1 weapon. Image2 shows the problem: tiny fine outlined weapon against a broad blocky character. Match the CHARACTER's chunkiness, NOT the gun in image2. Keep exact target 1536x1024 transparent canvas, weapon bounds/position/sideview and all major components/attachment positions. Strong graphic simplification: each colored pixel cluster should be roughly 50-80 source pixels across instead of tiny 12-20 px detail. This weapon is drawn only about 40px wide in game. Merge internal outlines into adjacent colored masses. No black borders separating metal panels. No thin bevel lines, tiny trigger subdivisions, screw dots, grip stitching, brass edge stripes. One solid low-contrast area per large material with at most one broad shadow patch. Selective low-contrast silhouette edges only, not black comic outlines. Matte muted blue-gray main metal, low saturation ochre instead of bright yellow brass, muted russet grip. Preserve original full silhouette and major detachable component shapes so existing animation registration remains valid. Preserve muzzle opening and actual grip. Do not enlarge weapon or move parts. Flat COARSE pixel masses. Do not blur or make vector smooth. No gradients, noise, glow, halo, shadow, ground or background. Return weapon alone, genuine transparent alpha.",
+      "file": "heavy_v3.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-29a36197-8349-46ab-aab1-511c8d69f352.png",
+      "sha256": "f76b8d5210f78303c940f978909f2ef09623b64185f77f207311484ec3e33b74",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "opaque_bbox": [
+        81,
+        90,
+        1486,
+        939
+      ],
+      "reference_hashes": [
+        "ac2b7bceb9e3ecfa400e6164e697fcf0cb14a350985c684440cca5b8b9ab0ce9",
+        "043c3f6c7d9acafb26cd197ee59d93b1302a9bf84495a8fabbeb8acae491189c"
+      ]
+    }
+  ]
+}

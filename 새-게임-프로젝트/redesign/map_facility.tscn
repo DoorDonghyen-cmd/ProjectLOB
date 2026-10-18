@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://redesign/map_facility.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/map_residential_20261009/facilities_v2.png" id="2"]
+
+[sub_resource type="AtlasTexture" id="Atlas_default"]
+atlas = ExtResource("2")
+region = Rect2(44, 164, 374, 277)
+filter_clip = true
+
+[sub_resource type="StyleBoxEmpty" id="Style_transparent"]
+
+[node name="MapFacility" type="Button"]
+custom_minimum_size = Vector2(104, 78)
+offset_right = 112.0
+offset_bottom = 78.0
+theme_override_styles/normal = SubResource("Style_transparent")
+theme_override_styles/hover = SubResource("Style_transparent")
+theme_override_styles/pressed = SubResource("Style_transparent")
+theme_override_styles/hover_pressed = SubResource("Style_transparent")
+theme_override_styles/disabled = SubResource("Style_transparent")
+theme_override_styles/focus = SubResource("Style_transparent")
+toggle_mode = true
+script = ExtResource("1")
+
+[node name="Picture" type="TextureRect" parent="."]
+texture_filter = 1
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -37.0
+offset_top = 14.0
+offset_right = 37.0
+offset_bottom = 63.0
+mouse_filter = 2
+texture = SubResource("Atlas_default")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Risk" type="Label" parent="."]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -18.0
+offset_top = 17.0
+offset_right = -2.0
+offset_bottom = 39.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.93, 0.64, 0.46, 1)
+theme_override_colors/font_shadow_color = Color(0.025, 0.045, 0.06, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 20
+text = "+"
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 23.0
+offset_bottom = 22.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16

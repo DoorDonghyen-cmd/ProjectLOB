@@ -61,7 +61,7 @@ func capture(label: String) -> void:
 
 func close_dialogs() -> void:
 	for child in screen.get_children():
-		if child is AcceptDialog: child.hide(); child.queue_free()
+		if child is AcceptDialog or child.has_meta("lob_modal"): child.hide(); child.queue_free()
 	await settle()
 
 func viewport_controls(keys: Array) -> void:
@@ -177,7 +177,7 @@ func _run() -> void:
 		if gun != screen.selected_weapon_id:
 			if not await click("weapon_select_" + gun): break
 		if not await click("start_" + gun): break
-		var replacement := screen.find_child("NewRunConfirmation", true, false) as ConfirmationDialog
+		var replacement := screen.find_child("NewRunConfirmation", true, false) as Control
 		if replacement != null:
 			replacement.confirmed.emit()
 			await settle()

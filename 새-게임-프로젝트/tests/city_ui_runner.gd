@@ -22,6 +22,10 @@ func check(condition: bool, label: String) -> bool:
 func settle() -> void:
 	for i in range(4): await process_frame
 	while is_instance_valid(screen) and screen.busy: await process_frame
+	var deadline := Time.get_ticks_msec() + 20000
+	while is_instance_valid(screen) and screen.forecast_pending and Time.get_ticks_msec() < deadline:
+		await process_frame
+	if is_instance_valid(screen): check(not screen.forecast_pending, "exact forecast ready before inspection")
 	await RenderingServer.frame_post_draw
 
 func fresh() -> void:
@@ -155,7 +159,12 @@ func replay(expected: Dictionary) -> void:
 	if str(expected.gun) != "single":
 		if not await click("weapon_select_" + str(expected.gun)): return
 	if not await click("start_" + str(expected.gun)): return
+	if not await click("story_skip"): return
 	check(screen.campaign != null and screen.campaign.s.phase == "map", "normal start opens city map")
+	# Replay the recorded map version after separately checking the normal new-run UI.
+	screen.campaign.s.map_version = int(expected.campaign.get("map_version", 1))
+	screen.redraw()
+	await settle()
 	await capture("city_start_" + str(expected.gun))
 	var captured: Array = []
 	var resumed := false
@@ -193,6 +202,8 @@ func replay(expected: Dictionary) -> void:
 	check(normalized(rules_snapshot.state(screen.model.s)) == normalized(rules_snapshot.state(expected.combat)), "full combat history agrees (optional presentation observations excluded)")
 	check(normalized(screen.campaign.profile) == normalized(expected.profile), "full profile awards agree")
 	await capture("city_complete_" + str(expected.gun))
+	if not await click("story_restore"): return
+	if not await click("story_results"): return
 	if await click("city_archive"):
 		await capture("city_archive_" + str(expected.gun))
 		await click("city_unlock_thermal")
@@ -438,7 +449,7 @@ func developer() -> void:
 
 func six_slot_layout(expected: Dictionary) -> void:
 	var campaign = Campaign.new()
-	campaign.start(str(expected.gun), int(expected.seed))
+	campaign.start(str(expected.gun), int(expected.seed), 0, "balanced", int(expected.campaign.get("map_version", 1)))
 	var final_capacity := int(Ammo.GUNS[expected.gun].capacity) + 2
 	var found := false
 	for command in expected.commands:

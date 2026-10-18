@@ -1,3 +1,4 @@
+@tool
 extends Control
 ## Native mechanical weapon illustrations; the silhouette is the weapon identity.
 const COLORS := {"single": Color("a9dfbf"), "burst": Color("f3ba75"), "scatter": Color("87c9df"), "heavy": Color("c4ace5"), "amplifier": Color("e6c176")}

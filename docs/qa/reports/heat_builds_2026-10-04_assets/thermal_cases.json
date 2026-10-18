@@ -1,0 +1,40 @@
+[
+	{
+		"build": "radiator",
+		"heat": 9,
+		"shots": 4,
+		"turns": 1
+	},
+	{
+		"build": "reclaimer",
+		"kill": true,
+		"shots": 2,
+		"turns": 1
+	},
+	{
+		"build": "reclaimer",
+		"kill": false,
+		"shots": 1,
+		"turns": 3
+	},
+	{
+		"build": "ember_core",
+		"damage": 26,
+		"heat": 5,
+		"sequence": [
+			"charge_hot",
+			"thermal",
+			"vent"
+		]
+	},
+	{
+		"build": "ember_core",
+		"damage": 16,
+		"heat": 5,
+		"sequence": [
+			"thermal",
+			"charge_hot",
+			"vent"
+		]
+	}
+]

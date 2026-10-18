@@ -1,12 +1,20 @@
+@tool
 extends Control
 ## Icon-first part card shared by shops, rewards, and equipment summaries.
 const Content = preload("res://redesign/content.gd")
-const FONT = preload("res://redesign/ui_font.tres")
+const FONT = preload("res://redesign/combat_pixel_font.tres")
+const PixelSkin = preload("res://redesign/combat_pixel_skin.gd")
 
 const INK := Color("e7e4d9")
 const MUTED := Color("94a9ae")
 const CHIP := Color("12212a")
 const COLORS := {
+	"volley_drive":Color("c9b47a"), "thermal_drive":Color("db9e75"), "siege_drive":Color("a9bdc1"),
+	"ordinary_chain": Color("b9c6a3"), "compression_sink": Color("9db9d2"),
+	"cooling_breech": Color("a1c6cf"), "chain_sink": Color("b8b1d3"), "indexer": Color("b9cca5"),
+	"radiator": Color("96b9d0"),
+	"reclaimer": Color("94c4ba"),
+	"ember_core": Color("ed9167"),
 	"none": Color("667982"),
 	"lens": Color("79b6f2"),
 	"loader": Color("a9dfbf"),
@@ -30,17 +38,25 @@ const COLORS := {
 	"triad": Color("ffd86b"),
 }
 
-var part_id := "none"
+@export var part_id := "none"
 var state: Dictionary = {}
 var equipped := false
 var compact := false
-var mini := false
-var portrait := false
+@export var mini := false
+@export var portrait := false
 var slot_number := 1
+var selected_visual := false
+var outgoing_visual := false
+var interaction: BaseButton
+const Tag = preload("res://redesign/ammo_card_face.gd")
 
 func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if get_parent() is BaseButton:
+		interaction = get_parent()
+		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		for event in [interaction.mouse_entered,interaction.mouse_exited,interaction.focus_entered,interaction.focus_exited,interaction.button_down,interaction.button_up]: event.connect(queue_redraw)
 	queue_redraw()
 
 func setup(id: String, current_state: Dictionary, is_equipped: bool = false, is_compact: bool = false, is_mini: bool = false) -> void:
@@ -49,139 +65,94 @@ func setup(id: String, current_state: Dictionary, is_equipped: bool = false, is_
 	equipped = is_equipped
 	compact = is_compact
 	mini = is_mini
-	tooltip_text = str(Content.PARTS[part_id].text)
+	tooltip_text = Content.part_grade_summary(part_id) + "\n" + str(Content.PARTS[part_id].text)
+	var progress := preload("res://redesign/damage_engines.gd").progress(state,part_id)
+	if not progress.is_empty(): tooltip_text += "\n" + progress
 	queue_redraw()
 
 func effect_title() -> String:
 	return str(Content.PARTS[part_id].get("effect", "장착 슬롯"))
 
 func effect_value() -> String:
-	return str(Content.PARTS[part_id].get("value", "비어 있음"))
+	return preload("res://redesign/damage_engines.gd").value(state,part_id) if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.PARTS[part_id].get("value", "비어 있음"))
 
 func role_text() -> String:
-	return str(Content.PARTS[part_id].get("role", "전투 사이 무료 교체"))
+	return "성장 %d/8" % preload("res://redesign/damage_engines.gd").level(state,part_id) if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.PARTS[part_id].get("role", "전투 사이 무료 교체"))
 
 func _draw() -> void:
 	if not Content.PARTS.has(part_id): return
-	var accent: Color = COLORS.get(part_id, Color("94a9ae"))
-	if portrait:
-		_draw_portrait(accent)
-		return
-	if mini:
-		_draw_mini(accent)
-		return
-	var icon_center := Vector2(45 if compact else 51, size.y * 0.5)
-	var icon_scale := 0.82 if compact else 1.0
-	var fill := accent
-	fill.a = 0.07 if not equipped else 0.13
-	draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), fill, true)
-	if equipped:
-		draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), accent, false, 2.0)
-	if Content.is_core_part(part_id):
-		draw_rect(Rect2(Vector2(5, 5), size - Vector2(10, 10)), Color("ffd86b"), false, 2.0)
-	draw_rect(Rect2(icon_center - Vector2(34, 30), Vector2(68, 60)), Color("14232b"))
-	_draw_part_icon(icon_center, accent, icon_scale)
-	var text_x := 88.0 if compact else 102.0
-	var title_y := 28.0 if compact else 31.0
-	draw_string(FONT, Vector2(text_x, title_y), str(Content.PARTS[part_id].name), HORIZONTAL_ALIGNMENT_LEFT, size.x - text_x - 12, 19 if compact else 21, accent)
-	_draw_effect_icon(Vector2(text_x + 10, 53 if compact else 59), accent, 0.82 if compact else 1.0)
-	draw_string(FONT, Vector2(text_x + 29, 60 if compact else 66), "▲ " + effect_value(), HORIZONTAL_ALIGNMENT_LEFT, size.x - text_x - 38, 16 if compact else 19, INK)
-	var downside := str(Content.PARTS[part_id].get("downside", ""))
-	if not downside.is_empty():
-		draw_string(FONT, Vector2(text_x, 79 if compact else 88), "▼ " + downside, HORIZONTAL_ALIGNMENT_LEFT, size.x - text_x - 12, 14 if compact else 16, Color("ef7777"))
-	elif not compact:
-		draw_string(FONT, Vector2(text_x, 88), effect_title() + " · " + role_text(), HORIZONTAL_ALIGNMENT_LEFT, size.x - text_x - 12, 15, MUTED)
-	if not compact and not downside.is_empty():
-		draw_string(FONT, Vector2(text_x, 108), role_text(), HORIZONTAL_ALIGNMENT_LEFT, size.x - text_x - 12, 14, MUTED)
-	if equipped:
-		var label := "장착"
-		var width := FONT.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x + 14
-		draw_rect(Rect2(size.x - width - 5, 5, width, 22), CHIP, true)
-		draw_string(FONT, Vector2(size.x - width + 2, 21), label, HORIZONTAL_ALIGNMENT_LEFT, width - 8, 14, accent)
-	elif Content.is_core_part(part_id):
-		draw_rect(Rect2(size.x - 55, 5, 50, 22), CHIP, true)
-		draw_string(FONT, Vector2(size.x - 49, 21), "CORE", HORIZONTAL_ALIGNMENT_LEFT, 42, 13, Color("ffd86b"))
-
-func _draw_portrait(accent: Color) -> void:
-	draw_style_box(_device_frame(accent), Rect2(Vector2(2, 2), size - Vector2(4, 4)))
-	draw_string(FONT, Vector2(12, 23), "%02d" % slot_number, HORIZONTAL_ALIGNMENT_LEFT, 30, 13, MUTED)
-	if Content.is_core_part(part_id):
-		draw_string(FONT, Vector2(size.x - 52, 23), "CORE", HORIZONTAL_ALIGNMENT_LEFT, 45, 12, accent)
-	_draw_part_icon(Vector2(size.x * 0.5, 59), accent, 0.9)
-	draw_string(FONT, Vector2(8, 104), str(Content.PARTS[part_id].name) if part_id != "none" else "빈 슬롯", HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 16, INK)
-	if part_id == "none": return
-	draw_string(FONT, Vector2(8, 129), effect_title(), HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 14, MUTED)
-	draw_string(FONT, Vector2(8, 153), effect_value(), HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 18, accent)
-
-func _device_frame(accent: Color) -> StyleBoxFlat:
-	var frame := StyleBoxFlat.new()
-	frame.bg_color = Color("1b2c34")
-	frame.border_color = Color(accent, 0.65)
-	frame.set_border_width_all(1)
-	frame.border_width_top = 3
-	frame.set_corner_radius_all(0)
-	return frame
-
-func _draw_mini(accent: Color) -> void:
+	var w := size.x
+	var h := size.y
+	var disabled := interaction != null and interaction.disabled
+	var focused := interaction != null and not disabled and (interaction.is_hovered() or interaction.has_focus())
+	var selected := selected_visual or focused
+	var y := 2.0 if interaction != null and interaction.is_pressed() and not disabled else 0.0
+	var accent: Color = COLORS.get(part_id,Color("a7b7ac")).lerp(Color("c6c5ac"),0.4)
 	if part_id == "none":
-		draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), Color("293d46"), false, 1)
-		draw_string(FONT, Vector2(0, size.y * 0.62), "＋", HORIZONTAL_ALIGNMENT_CENTER, size.x, 20, Color("60747b"))
+		draw_style_box(PixelSkin.box("well"),Rect2(2,2,w-4,h-4))
+		for x in [w*0.5-17,w*0.5+11]: draw_rect(Rect2(x,h*0.43,6,12),Color("465c5d"))
+		if not mini: Tag.text(self,"빈 장착대",Vector2(8,h-22),w-16,15,Color("91a39d"),true)
 		return
-	var fill := accent
-	fill.a = 0.08 if part_id == "none" else 0.16
-	draw_rect(Rect2(Vector2(1, 1), size - Vector2(2, 2)), fill, true)
-	draw_rect(Rect2(Vector2(1, 1), size - Vector2(2, 2)), accent, false, 2.0 if equipped else 1.0)
-	if Content.is_core_part(part_id):
-		draw_rect(Rect2(Vector2(4, 4), size - Vector2(8, 8)), Color("ffd86b"), false, 2.0)
-	_draw_part_icon(Vector2(31, size.y * 0.5), accent, 0.58)
-	draw_string(FONT, Vector2(61, 27), str(Content.PARTS[part_id].name), HORIZONTAL_ALIGNMENT_LEFT, size.x - 67, 15, accent)
-	var value_color := Color("ef7777") if part_id == "none" else INK
-	draw_string(FONT, Vector2(61, 49), effect_value(), HORIZONTAL_ALIGNMENT_LEFT, size.x - 67, 13, value_color)
-	if Content.is_core_part(part_id):
-		draw_rect(Rect2(size.x - 39, 4, 34, 17), CHIP, true)
-		draw_string(FONT, Vector2(size.x - 35, 17), "CORE", HORIZONTAL_ALIGNMENT_LEFT, 29, 10, Color("ffd86b"))
+	Tag.surface(self,Rect2(0,y,w,h-y),selected,disabled)
+	_draw_grade(Vector2(12,5+y))
+	if outgoing_visual:
+		for x in [3.0,w-5]: draw_rect(Rect2(x,10,2,h-24),Color("e6a580"))
+	if portrait:
+		# A device seated on mounting rails, with its own stamped specification plate.
+		draw_rect(Rect2(9,12+y,w-18,76),Color("162b30"))
+		for x in [19.0,w-24]:
+			draw_rect(Rect2(x,34+y,5,35),Color("435b58"))
+			draw_rect(Rect2(x+1,38+y,2,19),Color("75867b"))
+		_draw_part_icon(Vector2(w*0.5,52+y),accent,1.0)
+		if Content.is_core_part(part_id): Tag.text(self,"코어",Vector2(w-45,24+y),34,13,Color("dac28b"))
+		Tag.text(self,str(Content.PARTS[part_id].name),Vector2(9,105+y),w-18,19,Color("e9e2cc"),true)
+		draw_rect(Rect2(9,114+y,w-18,h-125-y),Color("c6c5ac"))
+		Tag.text(self,effect_value(),Vector2(15,136+y),w-30,23,Color("203236"),true)
+		var note := "교체 대상" if outgoing_visual else effect_title()
+		Tag.text(self,note,Vector2(13,h-13+y),w-26,12,Color("203236"),true)
+	else:
+		var icon_w := 57.0 if mini else 80.0
+		draw_rect(Rect2(9,12+y,icon_w-9,h-27),Color("162b30"))
+		_draw_part_icon(Vector2((icon_w+9)*0.5,h*0.5+y),accent,0.58 if mini else 1.0)
+		var title := str(Content.PARTS[part_id].name)
+		Tag.text(self,title,Vector2(icon_w+9,28+y),w-icon_w-21,17 if mini else 21,Color("e9e2cc"))
+		Tag.text(self,effect_value(),Vector2(icon_w+9,50+y),w-icon_w-21,15 if mini else 24,accent)
+		if not mini:
+			var downside := str(Content.PARTS[part_id].get("downside",""))
+			var note := "대가 · "+downside if not downside.is_empty() else effect_title()
+			Tag.text(self,note,Vector2(icon_w+9,h-15+y),w-icon_w-21,15,Color("e6a580") if not downside.is_empty() else Color("a5b4ac"))
+
+func _draw_grade(at: Vector2) -> void:
+	# One/two/three short bars are readable without coloring the entire card.
+	for i in range(Content.part_grade(part_id) + 1):
+		draw_rect(Rect2(at + Vector2(i * 8, 0), Vector2(5, 6)), Content.part_grade_color(part_id))
 
 func _draw_part_icon(p: Vector2, accent: Color, scale_factor: float) -> void:
-	# Small mechanical silhouettes share the ammunition's square pixel language.
-	var patterns := {
-		"none": ["............", ".....ss.....", ".....ss.....", "..ssssssss..", "..ssssssss..", ".....ss.....", ".....ss.....", "............"],
-		"lens": ["..........ss", ".sssssssssss", "ssHHaaaaHHss", "ssHHaaaaHHss", ".sssssssssss", "..ss....ss..", "..ss....ss..", "............"],
-		"loader": ["..ss....ss..", ".sHHssssHHs.", ".sHHaaaaHHs.", ".ssHHHHHHss.", "...ssssss...", "....HHHH....", "...ssssss...", "...aaaaaa..."],
-		"supply": ["..ssssssss..", "..sHHHHHHs..", "..saaaaaas..", "..sHHHHHHs..", "..saaaaaas..", "..sHHHHHHs..", "...sHHHHs...", "...ssssss..."],
-		"coil": ["..ssssssss..", "..sHHHHHHs..", ".aaHHHHHHaa.", ".ssaaaaaass.", ".aaHHHHHHaa.", ".ssaaaaaass.", "..sHHHHHHs..", "..ssssssss.."],
-		"capacitor": ["..ss..ss....", ".sHHssHHs...", ".sHHaaHHs...", ".sHHssHHs...", ".sHHaaHHs...", ".sHHssHHs...", "..ssssss....", "...s..s....."],
-		"rammer": ["....ssss....", "..sssHHs....", "ssHHsHHs....", "saaHsHHsssss", "saaHsHHsHHHs", "ssHHsHHsssss", "..sssHHs....", "....ssss...."],
-		"sequencer": [".ssssssssss.", ".sHHHHHHHHs.", ".saaHaaHaas.", ".saaHaaHaas.", ".sHHHHHHHHs.", ".ssssssssss.", "..s..s..s...", "............"],
-		"duplex": ["...ss..ss...", "..sHHssHHs..", "..sHHaaHHs..", "..sHHssHHs..", "..sHHssHHs..", "..sHHaaHHs..", "..ssssssss..", "...ss..ss..."],
-		"igniter": [".....aa.....", "....aaaa....", "..sssHHsss..", "..sHHaaHHs..", "..sHHaaHHs..", "..ssssssss..", "...sHHHHs...", "....ssss...."],
-		"breaker": ["....ssss....", "..ssHHHHss..", ".sHHsHHsHHs.", ".sHHaHHaHHs.", ".sHHaaaaHHs.", "..ssHHHHss..", "....ssss....", ".....ss....."],
-		"executioner": ["....ssss....", "..ssHHHHss..", ".sHHHaaHHHs.", ".sHaaaaaaHs.", ".sHHHaaHHHs.", "..ssHHHHss..", "...ss..ss...", "...ss..ss..."],
-		"reserve": ["..sss..sss..", "..sHs..sHs..", "..sas..sas..", "..sHs..sHs..", ".ssssssssss.", ".sHHHHHHHHs.", ".saaaaaaaa s".replace(" ", ""), ".ssssssssss."],
-		"opening": [".aa.........", ".aaaa.......", ".ssHHssssss.", ".saaaHHHHHs.", ".ssHHssssss.", ".ssss.......", ".ss.........", "............"],
-		"afterburner": [".........aa.", ".......aaaa.", ".ssssssHHss.", ".sHHHHHaaas.", ".ssssssHHss.", ".......ssss.", ".........ss.", "............"],
-		"field_press": [".ssssssssss.", ".sHHHHHHHHs.", ".saaaaaaaa s".replace(" ", ""), ".ss..aa..ss.", ".ss..aa..ss.", ".saaaaaaaa s".replace(" ", ""), ".sHHHHHHHHs.", ".ssssssssss."],
-		"overbore": ["....ssss....", "...sHHHHs...", ".sssaaaa sss".replace(" ", ""), ".sHHaaaaHHs.", ".sHHaaaaHHs.", ".sssaaaa sss".replace(" ", ""), "...sHHHHs...", "....ssss...."],
-		"inferno": ["..aa....aa..", "..aaaaaa aa.".replace(" ", ""), "...aaaaaa...", "..ssaaaa ss.".replace(" ", ""), ".sHHaaaaHHs.", ".sHHHHHHHHs.", "..ssHHHHss..", "....ssss...."],
-		"arc_splitter": [".ss......ss.", ".sHs....sHs.", "..sHa..aHs..", "...sHaaHs...", "...sHaaHs...", "..sHa..aHs..", ".sHs....sHs.", ".ss......ss."],
-		"momentum": ["....ssss....", "..ssHHHHss..", ".sHHHaaHHHs.", ".sHHaaaHHHs.", ".sHaaaaaaHs.", "..ssHHHHss..", "....ssss....", ".....ss....."],
-		"triad": ["..ss.ss.ss..", "..sH.sH.sH..", "..sa.sa.sa..", "..sH.sH.sH..", ".ssssssssss.", ".sHHHHHHHHs.", ".saaaaaaaa s".replace(" ", ""), ".ssssssssss."],
-	}
-	var pixels: Array = patterns.get(part_id, patterns.none)
-	var unit := maxf(1, floorf(5 * scale_factor))
-	var origin := (p - Vector2(12, 8) * unit * 0.5).floor()
-	for y in range(pixels.size()):
-		var line := str(pixels[y])
-		for x in range(line.length()):
-			var token := line.substr(x, 1)
-			if token == ".": continue
-			var color := Color("516b74")
-			if token == "H": color = Color("b9c5bc")
-			elif token == "a": color = accent
-			draw_rect(Rect2(origin + Vector2(x, y) * unit, Vector2.ONE * unit), color)
+	preload("res://redesign/part_icon_art.gd").draw(self, part_id, p, accent, scale_factor)
 
 func _draw_effect_icon(center: Vector2, color: Color, scale_factor: float) -> void:
 	draw_set_transform(center, 0.0, Vector2.ONE * scale_factor)
 	match part_id:
+		"cooling_breech":
+			for y in [-8, 0, 8]: draw_rect(Rect2(-10, y - 1, 20, 2), color)
+		"ordinary_chain", "compression_sink":
+			for x in [-9, 4]: draw_rect(Rect2(x, -7, 5, 14), color, false, 2)
+			draw_line(Vector2(-2, 0), Vector2(3, 0), color, 2)
+		"chain_sink":
+			for x in [-8, 0, 8]:
+				if x == 8: draw_rect(Rect2(x - 2, -6, 4, 12), color)
+				else: draw_rect(Rect2(x - 2, -6, 4, 12), color, false, 2)
+		"indexer":
+			draw_rect(Rect2(-10, -8, 7, 15), color, false, 2)
+			draw_rect(Rect2(3, -8, 7, 15), color, false, 2)
+		"radiator":
+			for x in [-8.0, 0.0, 8.0]: draw_rect(Rect2(x - 2, -9, 4, 18), color)
+		"reclaimer":
+			draw_arc(Vector2.ZERO, 9, 0, PI * 1.7, 12, color, 2.0)
+			draw_line(Vector2(-4, 0), Vector2(4, 0), color, 3.0)
+		"ember_core":
+			draw_rect(Rect2(-8, -8, 16, 16), color, false, 2.0)
+			draw_rect(Rect2(-3, -3, 6, 6), color)
 		"lens":
 			var shield := PackedVector2Array([Vector2(-8, -8), Vector2(8, -8), Vector2(7, 2), Vector2(0, 10), Vector2(-7, 2), Vector2(-8, -8)])
 			draw_polyline(shield, color, 2.5)

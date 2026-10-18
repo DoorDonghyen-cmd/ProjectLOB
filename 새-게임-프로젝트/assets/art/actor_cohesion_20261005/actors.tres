@@ -1,0 +1,55 @@
+[gd_resource type="Resource" load_steps=15 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/art/actor_cohesion_20261005/runner_grouped_v2.png" id="runner"]
+[ext_resource type="Texture2D" path="res://assets/art/actor_cohesion_20261005/wall_grouped_v2.png" id="wall"]
+[ext_resource type="Texture2D" path="res://assets/art/actor_cohesion_20261005/evader_grouped_v2.png" id="evader"]
+[ext_resource type="Texture2D" path="res://assets/art/actor_cohesion_20261005/caster_grouped_v2.png" id="caster"]
+[ext_resource type="Texture2D" path="res://assets/art/actor_cohesion_20261005/absorber_grouped_v2.png" id="absorber"]
+[ext_resource type="Texture2D" path="res://assets/art/actor_cohesion_20261005/stance_grouped_v2.png" id="stance"]
+[ext_resource type="Texture2D" path="res://assets/art/actor_cohesion_20261005/pressure_toad_atlas_v2.png" id="spitter"]
+
+[sub_resource type="AtlasTexture" id="Atlas_runner"]
+atlas = ExtResource("runner")
+region = Rect2(61, 243, 1152, 875)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_wall"]
+atlas = ExtResource("wall")
+region = Rect2(172, 139, 921, 1038)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_evader"]
+atlas = ExtResource("evader")
+region = Rect2(237, 105, 756, 1076)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_caster"]
+atlas = ExtResource("caster")
+region = Rect2(272, 255, 723, 735)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_absorber"]
+atlas = ExtResource("absorber")
+region = Rect2(181, 231, 888, 848)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_stance"]
+atlas = ExtResource("stance")
+region = Rect2(62, 330, 1155, 712)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Atlas_spitter"]
+atlas = ExtResource("spitter")
+region = Rect2(131, 301, 729, 485)
+filter_clip = true
+
+[resource]
+metadata/sprites = {
+"runner": {"texture": SubResource("Atlas_runner"), "size": Vector2(67, 51)},
+"wall": {"texture": SubResource("Atlas_wall"), "size": Vector2(48, 54)},
+"evader": {"texture": SubResource("Atlas_evader"), "size": Vector2(38, 54)},
+"caster": {"texture": SubResource("Atlas_caster"), "size": Vector2(45, 46)},
+"absorber": {"texture": SubResource("Atlas_absorber"), "size": Vector2(48, 46)},
+"stance": {"texture": SubResource("Atlas_stance"), "size": Vector2(75, 46)},
+"spitter": {"texture": SubResource("Atlas_spitter"), "size": Vector2(49, 33.5)}
+}

@@ -34,7 +34,7 @@ func press(key: String) -> void:
 
 func close_dialogs() -> void:
 	for child in screen.get_children():
-		if child is AcceptDialog:
+		if child is AcceptDialog or child.has_meta("lob_modal"):
 			child.hide()
 			child.queue_free()
 	await settle()
@@ -90,14 +90,14 @@ func _run() -> void:
 	await press("new_run_setup")
 	await press("weapon_select_burst")
 	await press("start_burst")
-	var confirm := screen.find_child("NewRunConfirmation", true, false) as ConfirmationDialog
+	var confirm := screen.find_child("NewRunConfirmation", true, false) as Control
 	check(confirm != null and screen.page == "loadout", "new run replacement requires confirmation")
 	if confirm != null:
 		confirm.canceled.emit()
 		await settle()
 	check(screen.page == "loadout", "cancel keeps current run and preparation")
 	await press("start_burst")
-	confirm = screen.find_child("NewRunConfirmation", true, false) as ConfirmationDialog
+	confirm = screen.find_child("NewRunConfirmation", true, false) as Control
 	if confirm != null:
 		confirm.confirmed.emit()
 		await settle()

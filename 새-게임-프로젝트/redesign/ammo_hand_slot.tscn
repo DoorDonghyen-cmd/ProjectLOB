@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://redesign/ammo_hand_slot.gd" id="1"]
+[node name="AmmoHandSlot" type="Control"]
+custom_minimum_size = Vector2(108,132)
+size_flags_horizontal = 3
+script = ExtResource("1")

@@ -1,0 +1,107 @@
+{
+  "method": "Independent production encounters; six seeds; each gun's starting deck; no parts, growth, exchange or compression; legal load/confirm/fire/reload. Random shuffles actual tactical hand, fills with basic only if needed. Basic uses only renewable basic. Guided selects among 32 random full magazines by immediate actual deterministic consequences, no future draw or random target search. Not full-run or human win rates. Contact margin ignores future support pulls and projectile spawns.",
+  "errors": [],
+  "groups": [
+    {
+      "gun": "single",
+      "policy": "random",
+      "battles": 216,
+      "wins": 211,
+      "mean_turns": 9.69
+    },
+    {
+      "gun": "single",
+      "policy": "basic",
+      "battles": 216,
+      "wins": 197,
+      "mean_turns": 13.24
+    },
+    {
+      "gun": "single",
+      "policy": "guided",
+      "battles": 216,
+      "wins": 216,
+      "mean_turns": 6.81
+    },
+    {
+      "gun": "burst",
+      "policy": "random",
+      "battles": 216,
+      "wins": 215,
+      "mean_turns": 12.13
+    },
+    {
+      "gun": "burst",
+      "policy": "basic",
+      "battles": 216,
+      "wins": 173,
+      "mean_turns": 14.41
+    },
+    {
+      "gun": "scatter",
+      "policy": "random",
+      "battles": 216,
+      "wins": 194,
+      "mean_turns": 10.93
+    },
+    {
+      "gun": "scatter",
+      "policy": "basic",
+      "battles": 216,
+      "wins": 48,
+      "mean_turns": 10.92
+    },
+    {
+      "gun": "heavy",
+      "policy": "random",
+      "battles": 216,
+      "wins": 216,
+      "mean_turns": 7.52
+    },
+    {
+      "gun": "heavy",
+      "policy": "basic",
+      "battles": 216,
+      "wins": 168,
+      "mean_turns": 14.78
+    },
+    {
+      "gun": "heavy",
+      "policy": "guided",
+      "battles": 216,
+      "wins": 216,
+      "mean_turns": 6.38
+    },
+    {
+      "gun": "amplifier",
+      "policy": "random",
+      "battles": 216,
+      "wins": 189,
+      "mean_turns": 13.92
+    },
+    {
+      "gun": "amplifier",
+      "policy": "basic",
+      "battles": 216,
+      "wins": 39,
+      "mean_turns": 12.1
+    }
+  ],
+  "opening_orders": [
+    {
+      "floor": 1,
+      "orders": 24,
+      "first_action_wins": 14
+    },
+    {
+      "floor": 2,
+      "orders": 24,
+      "first_action_wins": 6
+    },
+    {
+      "floor": 3,
+      "orders": 24,
+      "first_action_wins": 0
+    }
+  ]
+}

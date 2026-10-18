@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-11",
+  "purpose": "Noncombat shop, supply and compression interiors",
+  "identity_reference": "assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+  "style_reference": "assets/art/tower_sample_20261003/residential_tower.png",
+  "entries": [
+    {
+      "kind": "workshop",
+      "prompt": "Create production environment art for ORVASK pixel art game, very wide landscape 3:1 panorama. Reference 1 is approved hero identity: dark slate coat, rust scarf/shoulder cape, dark brimmed lamp hat, backpack and brown boots. Reference 2 is approved world pixel cluster style, use equally chunky simplified pixel clusters, muted teal steel and small amber light, no smooth painted shading or busy microdetail. New scene: inside an improvised ammunition compression workshop in a dystopian residential tower. Hero stands CENTER with BACK FULLY TO CAMERA, entire body visible, working with both hands on a heavy steel workbench facing rear wall, mechanical ammunition press immediately to his right, a few brass cartridges on bench, overhead amber task lamp. Bench and hero form central clear silhouette, cabinets and pipework on flanks, small distant teal tower window, grounded feet on metal floor. Hero height approximately 45% image height, all core subjects within central 70% width. Quiet lived-in refuge. Fixed scene, no combat weapon held, no other person, no text, lettering, UI, frame, watermark. Broad angular pixel shapes matching the references. Purpose actual in-game location illustration, not concept poster.",
+      "tool": "image_gen.imagegen",
+      "file": "workshop_v1.png",
+      "original_generated_file": "exec-dfa8e660-bd85-475e-87a3-5177181ba1fd.png",
+      "sha256": "4bb8b55f677bdb396e0cfa61026034e6b24fea3e34e7d853749c36bc978851ba",
+      "canvas": [
+        2172,
+        724
+      ],
+      "post_processing": "none; copied original PNG",
+      "reference_order": [
+        "identity_reference",
+        "style_reference"
+      ],
+      "review": "Integrated Godot visual review complete; user preference pending"
+    },
+    {
+      "kind": "shop",
+      "prompt": "Create production game environment panorama 3:1 wide landscape for ORVASK, same chunky clustered pixel art as supplied references. Ref1 approved hero dark slate coat, rust scarf, lamp brimmed hat, boots backpack; ref2 tower world teal industrial architecture; ref3 workshop cohesive companion interior style. New setting: INSIDE a tiny inhabited salvaged ammunition shop in enormous dystopian tower. Camera in shop looking across worn steel counter. Hero at left-center, full body back three-quarter view facing right toward service hatch, relaxed conversation posture, weapon stowed. High sales counter at center-right, hanging fabric curtain and stacked shelves tightly concealing proprietor completely: NO visible shopkeeper, face, human silhouette or hands; a warm lit narrow service opening and small brass speaking grille implies dialogue from behind it. A tea mug, cartridge trays and a mechanical till on counter, ammunition drawers behind counter; discreet cool tower window at left. Small amber task lights, muted teal slate rust, low saturation, broad clean pixel shapes, same pixel detail density as refs, no gradients/photorealism. Whole hero and counter within middle 70% width; boots touch floor, no cropping. No lettering, UI, speech bubbles, signage text, watermark. Actual environmental scene, not poster.",
+      "tool": "image_gen.imagegen",
+      "file": "shop_v1.png",
+      "original_generated_file": "exec-c06412a4-2799-46b6-86dc-e985af8879eb.png",
+      "sha256": "d974a170f97c069ff7f76cadff6d2ace5c778b0b868fdfc418a36debb989efcf",
+      "canvas": [
+        2171,
+        724
+      ],
+      "post_processing": "none; copied original PNG",
+      "reference_order": [
+        "identity_reference",
+        "style_reference",
+        "workshop_v1.png"
+      ],
+      "review": "Integrated Godot visual review complete; user preference pending"
+    },
+    {
+      "kind": "supply",
+      "prompt": "Produce a third cohesive location background for ORVASK: supply storage depot, very wide 3:1 landscape pixel art panorama. References show approved hero (1), world (2), shop companion scene(3). Retain large chunky grouped pixel clusters, slate teal steel, restrained warm amber task light, subtle rust fabric, hand-authored pixel game feeling with simple forms, no polished vector lines or smooth painting. Inside reclaimed storage room in dystopian megatower. Hero full body back three-quarter view near center-left, same dark lamp hat, slate long coat, rust shoulder scarf, backpack and brown boots, examining an open waist high supply locker with cartridge trays in center. A clear raised locker door, organised spare ammo cases, stacked sealed storage crates, shelves and overhead pipes. No shop counter or shopkeeper. Small cool tower window far right. Modest humane refuge in dangerous architecture. Entire hero and opened locker fit central 65% width with feet grounded, hero height45%canvas, generously spaced broad silhouettes, no excessive decoration. No text labels, symbols pretending to be letters, numbers, buttons, UI or frames. Static production game location art.",
+      "tool": "image_gen.imagegen",
+      "file": "supply_v1.png",
+      "original_generated_file": "exec-2c5c3fce-7fa5-409a-809d-4ab14145c971.png",
+      "sha256": "77b42373e3acb6868c7f968167dae875af534a26299d6cc16d06a876234eb088",
+      "canvas": [
+        2172,
+        724
+      ],
+      "post_processing": "none; copied original PNG",
+      "reference_order": [
+        "identity_reference",
+        "style_reference",
+        "shop_v1.png"
+      ],
+      "review": "Integrated Godot visual review complete; user preference pending"
+    }
+  ],
+  "identity_reference_sha256": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85",
+  "style_reference_sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b"
+}

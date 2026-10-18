@@ -1,0 +1,268 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://redesign/developer_lab.gd" id="1"]
+[sub_resource type="StyleBoxFlat" id="Background"]
+bg_color = Color(0.063, 0.098, 0.125, 1)
+content_margin_left = 18.0
+content_margin_right = 18.0
+content_margin_top = 16.0
+content_margin_bottom = 16.0
+
+[node name="DeveloperLab" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Background")
+script = ExtResource("1")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+text = "개발 작업대"
+
+[node name="Close" type="Button" parent="Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(108, 44)
+text = "닫기"
+
+[node name="Nav" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+
+[node name="BuildTab" type="Button" parent="Layout/Nav"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "탄환 · 파츠 실험"
+
+[node name="UITab" type="Button" parent="Layout/Nav"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI 상태 점검"
+
+[node name="Build" type="VBoxContainer" parent="Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Settings" type="HBoxContainer" parent="Layout/Build"]
+layout_mode = 2
+
+[node name="Gun" type="OptionButton" parent="Layout/Build/Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "보행자"
+
+[node name="Encounter" type="OptionButton" parent="Layout/Build/Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "장갑 검문"
+
+[node name="HeatLabel" type="Label" parent="Layout/Build/Settings"]
+layout_mode = 2
+text = "시작 열"
+
+[node name="Heat" type="SpinBox" parent="Layout/Build/Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 30.0
+
+[node name="SeedLabel" type="Label" parent="Layout/Build/Settings"]
+layout_mode = 2
+text = "시드"
+
+[node name="Seed" type="SpinBox" parent="Layout/Build/Settings"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 99999.0
+value = 42.0
+
+[node name="Stats" type="Label" parent="Layout/Build"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "탄창 4칸 · 열 한계 12 · 재장전 1턴 / 냉각 8"
+
+[node name="Columns" type="HBoxContainer" parent="Layout/Build"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Library" type="VBoxContainer" parent="Layout/Build/Columns"]
+layout_mode = 2
+custom_minimum_size = Vector2(255, 0)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.7
+
+[node name="Filters" type="HBoxContainer" parent="Layout/Build/Columns/Library"]
+layout_mode = 2
+
+[node name="Kind" type="OptionButton" parent="Layout/Build/Columns/Library/Filters"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "탄환"
+
+[node name="Search" type="LineEdit" parent="Layout/Build/Columns/Library/Filters"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "이름 · 효과 검색"
+
+[node name="Catalog" type="ItemList" parent="Layout/Build/Columns/Library"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 110)
+
+[node name="Count" type="Label" parent="Layout/Build/Columns/Library"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "현재 Content에서 불러온 목록"
+
+[node name="Detail" type="VBoxContainer" parent="Layout/Build/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Card" type="Button" parent="Layout/Build/Columns/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 144)
+text = "탄환 또는 파츠 선택"
+tooltip_text = "카드 확인 후 아래 버튼으로 장전 또는 장착"
+
+[node name="Description" type="RichTextLabel" parent="Layout/Build/Columns/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 62)
+text = "현재 총기와 파츠가 반영된 카드입니다."
+
+[node name="Add" type="Button" parent="Layout/Build/Columns/Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "선택한 탄환 장전"
+
+[node name="Run" type="VBoxContainer" parent="Layout/Build/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.25
+
+[node name="Parts" type="Label" parent="Layout/Build/Columns/Run"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "장착 0/5 · 코어 최대 1개"
+
+[node name="Order" type="Label" parent="Layout/Build/Columns/Run"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "발사 순서 →\n아직 장전한 탄환이 없습니다."
+
+[node name="Edit" type="HBoxContainer" parent="Layout/Build/Columns/Run"]
+layout_mode = 2
+
+[node name="Undo" type="Button" parent="Layout/Build/Columns/Run/Edit"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "마지막 삽입 회수"
+
+[node name="Clear" type="Button" parent="Layout/Build/Columns/Run/Edit"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "초기화"
+
+[node name="Trial" type="Button" parent="Layout/Build/Columns/Run"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "예측 + 실제 발사 시험"
+
+[node name="Result" type="RichTextLabel" parent="Layout/Build/Columns/Run"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 72)
+text = "탄환을 장전하고 시험하세요.\n같은 시드는 같은 대열과 무작위 표적을 재현합니다."
+
+[node name="Pin" type="Button" parent="Layout/Build/Columns/Run"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "이 결과를 비교 기준으로"
+
+[node name="Notice" type="Label" parent="Layout/Build"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "개발용 준비 패 · 실제 발사 계산 사용 · 플레이 저장과 분리"
+
+[node name="Gallery" type="ScrollContainer" parent="Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Content" type="VBoxContainer" parent="Layout/Gallery"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Heading" type="Label" parent="Layout/Gallery/Content"]
+layout_mode = 2
+text = "공용 조작부 · 동일한 리소스의 상태 비교"
+theme_override_font_sizes/font_size = 26
+
+[node name="Buttons" type="HBoxContainer" parent="Layout/Gallery/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Controls" type="HBoxContainer" parent="Layout/Gallery/Content"]
+layout_mode = 2
+
+[node name="Options" type="OptionButton" parent="Layout/Gallery/Content/Controls"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "드롭다운"
+
+[node name="Toggle" type="CheckButton" parent="Layout/Gallery/Content/Controls"]
+layout_mode = 2
+text = "선택 표시"
+
+[node name="DisabledToggle" type="CheckButton" parent="Layout/Gallery/Content/Controls"]
+layout_mode = 2
+text = "비활성"
+button_pressed = true
+disabled = true
+
+[node name="Cards" type="HBoxContainer" parent="Layout/Gallery/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Help" type="Label" parent="Layout/Gallery/Content"]
+layout_mode = 2
+autowrap_mode = 3
+text = "상단 표본은 상태를 고정한 비교용입니다. 아래 버튼은 실제 입력에 반응합니다.\nTab으로 포커스를 이동하고 Enter/Space로 누르세요. Esc는 작업대를 닫습니다."
+
+[node name="Interactive" type="Button" parent="Layout/Gallery/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 48)
+text = "직접 눌러 반응 확인"
+
+[node name="InputStatus" type="Label" parent="Layout/Gallery/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "입력 대기"

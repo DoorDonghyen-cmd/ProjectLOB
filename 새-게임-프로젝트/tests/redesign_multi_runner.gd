@@ -69,7 +69,7 @@ func capture(name: String) -> void:
 
 func close_dialogs() -> void:
 	for child in screen.get_children():
-		if child is AcceptDialog: child.get_ok_button().pressed.emit()
+		if child is AcceptDialog or child.has_meta("lob_modal"): child.get_ok_button().pressed.emit()
 	await settle()
 
 func _run() -> void:

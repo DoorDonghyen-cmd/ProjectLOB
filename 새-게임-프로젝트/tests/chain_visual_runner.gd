@@ -33,7 +33,7 @@ func tap(key: String) -> void:
 
 func close_dialogs() -> void:
 	for child in screen.get_children():
-		if child is AcceptDialog: await tap_control(child.get_ok_button())
+		if child is AcceptDialog or child.has_meta("lob_modal"): await tap_control(child.get_ok_button())
 
 func capture(name: String) -> void:
 	await settle()

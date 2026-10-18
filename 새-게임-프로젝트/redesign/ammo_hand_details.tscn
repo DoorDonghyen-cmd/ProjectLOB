@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://redesign/ammo_card_view.gd" id="1"]
+
+[node name="HandAmmoDetails" type="VBoxContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="Heading" type="HBoxContainer" parent="."]
+theme_override_constants/separation = 12
+[node name="Title" type="Label" parent="Heading"]
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+text = "기본탄"
+[node name="Previous" type="Button" parent="Heading"]
+custom_minimum_size = Vector2(72,48)
+text = "←"
+[node name="Next" type="Button" parent="Heading"]
+custom_minimum_size = Vector2(72,48)
+text = "→"
+
+[node name="Overview" type="HBoxContainer" parent="."]
+theme_override_constants/separation = 24
+[node name="Card" type="Control" parent="Overview"]
+custom_minimum_size = Vector2(180,132)
+size_flags_vertical = 4
+script = ExtResource("1")
+ammo_id = "basic_p2"
+hand_skin = true
+[node name="Stats" type="VBoxContainer" parent="Overview"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+[node name="Power" type="Label" parent="Overview/Stats"]
+theme_override_font_sizes/font_size = 26
+text = "피해 3"
+[node name="Heat" type="Label" parent="Overview/Stats"]
+theme_override_font_sizes/font_size = 22
+text = "발열 +2 · 현재 열 0 / 12"
+autowrap_mode = 2
+[node name="Traits" type="Label" parent="Overview/Stats"]
+theme_override_font_sizes/font_size = 20
+text = "일반 · 탄창 1칸"
+autowrap_mode = 2
+[node name="Description" type="Label" parent="."]
+theme_override_font_sizes/font_size = 22
+text = "물리 탄환. 사용한 탄은 버린 더미로 이동합니다."
+autowrap_mode = 2
+[node name="Status" type="Label" parent="."]
+theme_override_font_sizes/font_size = 19
+text = "확인은 턴을 소모하지 않습니다."
+autowrap_mode = 2

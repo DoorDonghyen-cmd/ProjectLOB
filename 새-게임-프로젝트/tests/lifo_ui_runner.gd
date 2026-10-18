@@ -1,0 +1,77 @@
+extends "res://tests/ammo_expansion_ui_runner.gd"
+
+func _run() -> void:
+	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/lifo/"):
+		quit(1)
+		return
+	screen = load("res://redesign/main.tscn").instantiate()
+	screen.save_enabled = false
+	screen.presentation_speed = 0.02
+	root.add_child(screen)
+	await settle()
+	for resolution in [Vector2i(1280, 900), Vector2i(1008, 630), Vector2i(1440, 630)]:
+		root.size = resolution
+		await settle()
+		await combat(["charge", "precise", "pierce", "cool"])
+		var hand_rect: Rect2 = screen.find_child("load_pierce", true, false).get_global_rect()
+		for id in ["pierce", "precise", "charge"]:
+			await tap("load_" + id)
+			check(screen.model.s.plan[0] == id and screen.magazine_view.stack[0] == id, "newest input enters model and visible firing slot one")
+			check(screen.selected_slot == 0, "new front selected after arrival animation")
+		check(screen.model.s.plan == ["charge", "precise", "pierce"], "three real clicks produce reverse firing order")
+		var heading: Label = screen.find_child("QueueHeading", true, false)
+		check(heading.is_visible_in_tree() and heading.text.contains("마지막 장전부터"), "loading rule is actually visible on firing rail")
+		check(heading.get_line_count() == 1, "loading rule fits one line")
+		check(screen.find_child("load_pierce", true, false).get_global_rect().is_equal_approx(hand_rect), "hand does not jump as stack grows")
+		fit()
+		await capture("lifo_combo_%d" % resolution.x)
+		# Explicit editing acts on firing order, then front recall removes that slot.
+		await tap("slot_next")
+		check(screen.model.s.plan == ["precise", "charge", "pierce"], "move button changes firing sequence")
+		await tap("undo")
+		check(screen.model.s.plan == ["charge", "pierce"], "front recall after manual edit")
+		await tap("load_precise")
+		await tap("slot_next")
+		check(screen.model.s.plan == ["charge", "precise", "pierce"], "restored intended combo through public input")
+		var expected: Dictionary = screen.next_forecast.duplicate(true)
+		await tap("confirm")
+		check(screen.model.s.magazine == ["charge", "precise", "pierce"], "confirm preserves displayed order")
+		await tap("fire")
+		var shots: Array = screen.model.s.history.back().detail.results
+		check(shots.map(func(shot): return shot.id) == ["charge", "precise", "pierce"], "actual firing events match visible order")
+		check(screen.model.s.enemies == expected.enemies and screen.last_presentation.shown_enemies == expected.enemies, "prediction, resolver and animation agree")
+		await capture("lifo_fired_%d" % resolution.x)
+		await combat(["vent", "thermal", "charge_hot", "pierce"])
+		screen.model.s.equipped_parts = ["ember_core"]
+		screen.redraw()
+		await settle()
+		await tap("load_charge_hot")
+		check(screen.find_child("load_vent", true, false).disabled, "last-fired fitting cannot be loaded late")
+		check(screen.find_child("load_vent", true, false).find_child("CardInfo", true, false).footer_text() == "먼저 장전", "blocked vent draws required loading order")
+		await capture("lifo_vent_blocked_%d" % resolution.x)
+		await tap("undo")
+		for id in ["vent", "thermal", "charge_hot"]: await tap("load_" + id)
+		check(screen.model.s.plan == ["charge_hot", "thermal", "vent"], "last-fired vent loaded first, then strict LIFO")
+		check(screen.full_forecast.shots[1].thermal_bonus == 4 and screen.full_forecast.shots[2].vented == 4, "thermal and cooling effects use reversed loading order")
+		await capture("lifo_vent_%d" % resolution.x)
+		await combat(["precise_c", "pierce", "push_c"])
+		await tap("load_precise_c")
+		check(screen.find_child("load_pierce", true, false).disabled, "front fitting locks later loading")
+		check(screen.find_child("QueueHeading", true, false).is_visible_in_tree() and screen.find_child("QueueHeading", true, false).text.contains("맨 앞 회수"), "front fitting recovery actually visible without tooltip")
+		await capture("lifo_front_lock_%d" % resolution.x)
+		await tap("undo")
+		for id in ["push_c", "pierce", "precise_c"]: await tap("load_" + id)
+		check(screen.model.s.plan == ["precise_c", "pierce", "push_c"], "first and last fitting use same LIFO input")
+		fit()
+		await capture("lifo_fittings_%d" % resolution.x)
+		await combat(["pierce", "pierce", "charge"])
+		await tap("load_charge")
+		await tap("compress_pair_pierce")
+		check(screen.model.s.plan == ["pierce_f", "charge"], "field compression is the most recent inserted round")
+		await tap("undo")
+		check(screen.model.s.plan == ["charge"] and screen.model.s.hand.count("pierce") == 2 and screen.model.s.field_compression_left == 1, "front compression recall restores pair and core")
+		await capture("lifo_compression_cancel_%d" % resolution.x)
+	screen.queue_free()
+	await process_frame
+	print("LIFO UI COMPLETE checks=%d failures=%d" % [checks, failures])
+	quit(0 if failures == 0 else 1)

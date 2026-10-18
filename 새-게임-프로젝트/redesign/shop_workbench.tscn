@@ -1,16 +1,25 @@
-[gd_scene format=3]
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="1"]
+[ext_resource type="PackedScene" path="res://redesign/shop_offer.tscn" id="2"]
+[ext_resource type="Script" path="res://redesign/part_card_view.gd" id="3"]
+[sub_resource type="Theme" id="Theme"]
+default_font = ExtResource("1")
+default_font_size = 18
 
 [node name="ShopWorkbench" type="VBoxContainer"]
+theme = SubResource("Theme")
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="TopActions" type="HBoxContainer" parent="."]
+[node name="TopActions" type="HFlowContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="CurrentBuildPanel" type="PanelContainer" parent="."]
+visible = false
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -56,7 +65,7 @@ horizontal_alignment = 2
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="OffersHeader" type="HFlowContainer" parent="."]
+[node name="OffersHeader" type="HBoxContainer" parent="."]
 layout_mode = 2
 theme_override_constants/h_separation = 14
 
@@ -64,15 +73,12 @@ theme_override_constants/h_separation = 14
 layout_mode = 2
 theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
 theme_override_font_sizes/font_size = 24
-text = "진열"
+text = "오늘의 물건"
 
-[node name="OffersHint" type="Label" parent="OffersHeader"]
+[node name="Space" type="Control" parent="OffersHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
-theme_override_font_sizes/font_size = 16
-text = "상품을 눌러 현재 빌드와 비교합니다"
-vertical_alignment = 1
+mouse_filter = 2
 
 [node name="WalletStatus" type="Label" parent="OffersHeader"]
 unique_name_in_owner = true
@@ -90,15 +96,34 @@ theme_override_constants/separation = 10
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.0
-columns = 2
+size_flags_stretch_ratio = 2.25
+columns = 3
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
+
+[node name="AmmoPreview" parent="OfferWorkspace/ShopOfferGrid" instance=ExtResource("2")]
+
+[node name="CardInfo" parent="OfferWorkspace/ShopOfferGrid/AmmoPreview/Item" index="0"]
+ammo_id = "charge"
+
+[node name="PartPreview" parent="OfferWorkspace/ShopOfferGrid" instance=ExtResource("2")]
+
+[node name="CardInfo" parent="OfferWorkspace/ShopOfferGrid/PartPreview/Item" index="0"]
+script = ExtResource("3")
+part_id = "field_press"
+portrait = true
+
+[node name="CorePreview" parent="OfferWorkspace/ShopOfferGrid" instance=ExtResource("2")]
+
+[node name="CardInfo" parent="OfferWorkspace/ShopOfferGrid/CorePreview/Item" index="0"]
+script = ExtResource("3")
+part_id = "thermal_drive"
+portrait = true
 
 [node name="OfferComparePanel" type="PanelContainer" parent="OfferWorkspace"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(340, 284)
+custom_minimum_size = Vector2(350, 274)
 size_flags_horizontal = 3
 
 [node name="OfferCompareColumn" type="VBoxContainer" parent="OfferWorkspace/OfferComparePanel"]
@@ -109,8 +134,14 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
-theme_override_font_sizes/font_size = 21
+theme_override_font_sizes/font_size = 24
 text = "상품을 선택해 비교"
+autowrap_mode = 2
+
+[node name="OfferCompareStatus" type="Label" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
+unique_name_in_owner = true
+text = "구매 후 · 보관함"
+theme_override_font_sizes/font_size = 17
 autowrap_mode = 2
 
 [node name="OfferCompareBody" type="Label" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
@@ -120,6 +151,22 @@ theme_override_colors/font_color = Color(0.82, 0.84, 0.85, 1)
 theme_override_font_sizes/font_size = 17
 text = "카드를 누르면 현재 구성과 구매 후 변화를 이곳에서 확인할 수 있습니다."
 autowrap_mode = 2
+
+[node name="OfferCompareCost" type="Label" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
+unique_name_in_owner = true
+text = "대가 · 탄창 −2칸"
+theme_override_font_sizes/font_size = 18
+autowrap_mode = 2
+
+[node name="OfferCompareChange" type="Label" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
+unique_name_in_owner = true
+text = "현재 장착은 유지됩니다."
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 2
+
+[node name="Space" type="Control" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
+size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="OfferCompareActions" type="VBoxContainer" parent="OfferWorkspace/OfferComparePanel/OfferCompareColumn"]
 unique_name_in_owner = true
@@ -134,3 +181,10 @@ theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
 theme_override_font_sizes/font_size = 16
 text = "빈 슬롯이 없거나 코어가 중복되면 구매한 파츠는 보관함으로 이동합니다."
 autowrap_mode = 2
+
+[editable path="OfferWorkspace/ShopOfferGrid/AmmoPreview"]
+[editable path="OfferWorkspace/ShopOfferGrid/AmmoPreview/Item"]
+[editable path="OfferWorkspace/ShopOfferGrid/PartPreview"]
+[editable path="OfferWorkspace/ShopOfferGrid/PartPreview/Item"]
+[editable path="OfferWorkspace/ShopOfferGrid/CorePreview"]
+[editable path="OfferWorkspace/ShopOfferGrid/CorePreview/Item"]

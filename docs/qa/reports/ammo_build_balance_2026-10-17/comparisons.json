@@ -1,0 +1,414 @@
+{
+  "comparisons": [
+    {
+      "burn": 0,
+      "damage": 0,
+      "heat": 2,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "차단/후열 원거리",
+      "launches": 1,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "disrupt"
+      ],
+      "parts": [],
+      "reserved": [],
+      "shots": 1,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 3,
+      "heat": 3,
+      "initial_heat": 0,
+      "interrupted": 1,
+      "kills": 0,
+      "label": "차단/노출된 강한 원거리",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "disrupt",
+        "basic"
+      ],
+      "parts": [],
+      "reserved": [],
+      "shots": 2,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 6,
+      "heat": 4,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "증폭/노출된 강한 원거리",
+      "launches": 1,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "charge",
+        "basic"
+      ],
+      "parts": [],
+      "reserved": [],
+      "shots": 2,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 11,
+      "heat": 8,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "예약/연쇄",
+      "launches": 0,
+      "next_hand": [
+        "pierce",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "charge",
+        "prepare",
+        "pierce"
+      ],
+      "parts": [
+        "volley_drive"
+      ],
+      "reserved": [
+        "pierce"
+      ],
+      "shots": 3,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 19,
+      "heat": 7,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "추가 공격/연쇄",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "basic",
+        "charge",
+        "pierce"
+      ],
+      "parts": [
+        "volley_drive"
+      ],
+      "reserved": [],
+      "shots": 3,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 0,
+      "heat": 0,
+      "initial_heat": 5,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "예약/잔열5",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "charge",
+        "prepare",
+        "pierce"
+      ],
+      "parts": [
+        "thermal_drive"
+      ],
+      "reserved": [],
+      "shots": 2,
+      "turns": 3
+    },
+    {
+      "burn": 0,
+      "damage": 15,
+      "heat": 8,
+      "initial_heat": 5,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "냉각/잔열5",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "cool",
+        "charge",
+        "pierce"
+      ],
+      "parts": [
+        "thermal_drive"
+      ],
+      "reserved": [],
+      "shots": 3,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 9,
+      "heat": 3,
+      "initial_heat": 0,
+      "interrupted": 1,
+      "kills": 0,
+      "label": "차단/돌파",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "disrupt",
+        "basic"
+      ],
+      "parts": [
+        "siege_drive"
+      ],
+      "reserved": [],
+      "shots": 2,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 16,
+      "heat": 0,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 1,
+      "label": "증폭/돌파",
+      "launches": 0,
+      "order": [
+        "charge",
+        "basic"
+      ],
+      "parts": [
+        "siege_drive"
+      ],
+      "reserved": [],
+      "shots": 2,
+      "turns": 1
+    },
+    {
+      "burn": 4,
+      "damage": 4,
+      "heat": 4,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "불씨/화상 지원",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "bore",
+        "spread"
+      ],
+      "parts": [
+        "coil",
+        "inferno"
+      ],
+      "reserved": [],
+      "shots": 2,
+      "turns": 1
+    },
+    {
+      "burn": 5,
+      "damage": 3,
+      "heat": 2,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "화상/소이만",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "bore"
+      ],
+      "parts": [
+        "coil",
+        "inferno"
+      ],
+      "reserved": [],
+      "shots": 1,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 5,
+      "heat": 3,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "전격/파츠 없음",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "arc"
+      ],
+      "parts": [],
+      "reserved": [],
+      "shots": 1,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 12,
+      "heat": 3,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "전격/전이 파츠",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "arc"
+      ],
+      "parts": [
+        "capacitor",
+        "arc_splitter"
+      ],
+      "reserved": [],
+      "shots": 1,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 4,
+      "heat": 5,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "파쇄/장갑4 연타",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "shatter",
+        "precise"
+      ],
+      "parts": [],
+      "reserved": [],
+      "shots": 2,
+      "turns": 1
+    },
+    {
+      "burn": 0,
+      "damage": 3,
+      "heat": 5,
+      "initial_heat": 0,
+      "interrupted": 0,
+      "kills": 0,
+      "label": "기본/장갑4 연타",
+      "launches": 0,
+      "next_hand": [
+        "basic",
+        "basic",
+        "basic",
+        "basic",
+        "basic"
+      ],
+      "order": [
+        "basic",
+        "precise"
+      ],
+      "parts": [],
+      "reserved": [],
+      "shots": 2,
+      "turns": 1
+    }
+  ],
+  "observed": [
+    "pierce",
+    "precise",
+    "arc",
+    "push",
+    "bore",
+    "bypass",
+    "charge",
+    "shatter",
+    "detonate",
+    "chase",
+    "cool",
+    "vent",
+    "thermal",
+    "sequence",
+    "spread",
+    "charge_heat",
+    "charge_hot"
+  ]
+}

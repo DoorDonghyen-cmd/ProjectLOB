@@ -1,0 +1,22 @@
+{
+  "tool": "image_gen built-in",
+  "inputs": [
+    {
+      "path": "새-게임-프로젝트/assets/art/monster_concept_20261009/eavesback_v1.png",
+      "role": "approved creature identity and style"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png",
+      "role": "world palette only"
+    }
+  ],
+  "prompts": [
+    "Create a production pixel-art animation key-pose SPRITE SHEET for the supplied Eavesback creature. Input 1 is the EXACT identity and approved style target: low broad creature facing LEFT, three broad overlapping blue-gray roof/eave shell plates, tiny warm amber eye at left, muted rust underside, short stumpy stone-gray feet, no recognizable real animal face. Input 2 is palette/world context ONLY, do not draw environment. Preserve the creature's broad softly grouped pixel clusters, quiet surfaces, selective contours and low internal contrast. Output transparent background, no shadows, glow, gradients, words, labels, UI, grid or scenery. Layout exactly 2 columns by 2 rows of equal size. Each cell contains ONE entire creature, same apparent volume/scale, same ground line within cell and facing left, generous transparent margins. Top-left: relaxed standing pose matching reference identity. Top-right: walking weight shift, front foot lifted and opposite rear foot advanced, roof plates moving slightly as a unit. Bottom-left: recoil/braced hit pose, feet planted, shell compressed down over the body, head withdrawn, no damage effects. Bottom-right: attack/forward shove pose, front plate lowered and thrust forward left, rear legs braced, head still recognizable. These are distinct useful poses of the SAME creature, not four redesigns. Coarse deliberate stair-step contours, broad pixel color blocks, no tiny seams or polished specular edges. No full black outline. Match muted slate shell and rusty underside of input1. Transparent canvas approximately 1536x1024, each creature occupies at most 80% cell width and 75% cell height. Ground anchor at same local height for all four cells.",
+    "Edit this 2x2 creature sprite atlas for engine import. Keep the same four poses and identity, exact coarse pixel style, muted slate/rust palette. Remove ALL diffuse glow, haze, floor shadows and semitransparent halo; only opaque creature pixels with hard pixel edges on truly transparent background. CRITICAL: leave a completely empty transparent horizontal gutter of at least 64 pixels centered on the horizontal midpoint and a vertical gutter of at least 48 pixels centered on the vertical midpoint. Keep each full creature strictly INSIDE its own quadrant with generous margin on all sides. Make each pose the SAME body volume and apparent height where pose allows. Creature front faces LEFT. Foot grounding line at 82% of each cell height. No labels/grid. Maintain distinct raised front foot walk (top right), crouched hit (bottom left), lowered forward shove attack (bottom right), rest (top left). Do not add details. No soft gradients, blurs or light auras anywhere.",
+    "FINAL CLEAN SPRITE EXPORT. The image has unwanted glowing fog around the creatures. Remove that fog completely. Hard-cut silhouette, all empty space must have alpha 0. Creature interior must be fully opaque. NO translucent or feathered pixels, NO gradients, NO ambient light, NO painted backdrop. Preserve all four creatures and their existing poses/pixel block colors as closely as possible. This is a technical background/halo removal, not a redesign. Four isolated pixel sprites in a 2x2 sheet, empty clear gutters, same dimensions. The empty space should look like a clean transparent cutout, not a black background or shadow. Pixel-art crispness. Retain large chunky matte colored stair-step pixels."
+  ],
+  "selected": "art_source/monsters/eavesback/keyposes_v1.png",
+  "scope": "Development eavesback/family scenes; no campaign roster replacement",
+  "alpha": "Generation retained diffuse partial alpha. Runtime cutout shader discards alpha below 0.5 and preserves death tint. Original RGBA is retained.",
+  "review": "Internal in-game review; user motion preference pending"
+}

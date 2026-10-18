@@ -1,23 +1,35 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://redesign/deck_loadout.gd" id="1"]
+
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="2"]
+[ext_resource type="Script" path="res://redesign/part_card_view.gd" id="3"]
+[ext_resource type="PackedScene" path="res://redesign/part_inspector.tscn" id="4"]
+[sub_resource type="StyleBoxEmpty" id="Plain"]
+
+[sub_resource type="Theme" id="Theme"]
+default_font = ExtResource("2")
+default_font_size = 18
 
 [node name="DeckLoadout" type="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 script = ExtResource("1")
+theme = SubResource("Theme")
 
 [node name="SummaryPanel" type="PanelContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 
+theme_override_styles/panel = SubResource("Plain")
 
 [node name="DeckSummary" type="Label" parent="SummaryPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 autowrap_mode = 2
+text = "쇄도 · 탄창 5칸 · 재장전 1턴 · 탄환 10/14"
 
 [node name="TabActions" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
@@ -55,13 +67,14 @@ theme_override_constants/separation = 12
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.3
+size_flags_stretch_ratio = 2.1
 theme_override_constants/separation = 10
 
 [node name="EquipmentPanel" type="PanelContainer" parent="PartsWorkspace/PartsCollection"]
 unique_name_in_owner = true
 layout_mode = 2
 
+theme_override_styles/panel = SubResource("Plain")
 
 [node name="EquipmentColumn" type="VBoxContainer" parent="PartsWorkspace/PartsCollection/EquipmentPanel"]
 unique_name_in_owner = true
@@ -72,6 +85,7 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
+text = "장착대 5/5 · 코어 1/1"
 
 [node name="EquippedPartGrid" type="GridContainer" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn"]
 unique_name_in_owner = true
@@ -79,10 +93,47 @@ layout_mode = 2
 columns = 5
 theme_override_constants/h_separation = 6
 
+
+[node name="Preview0" type="Control" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn/EquippedPartGrid"]
+custom_minimum_size = Vector2(120,180)
+size_flags_horizontal = 3
+script = ExtResource("3")
+part_id = "volley_drive"
+portrait = true
+
+[node name="Preview1" type="Control" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn/EquippedPartGrid"]
+custom_minimum_size = Vector2(120,180)
+size_flags_horizontal = 3
+script = ExtResource("3")
+part_id = "radiator"
+portrait = true
+
+[node name="Preview2" type="Control" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn/EquippedPartGrid"]
+custom_minimum_size = Vector2(120,180)
+size_flags_horizontal = 3
+script = ExtResource("3")
+part_id = "lens"
+portrait = true
+
+[node name="Preview3" type="Control" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn/EquippedPartGrid"]
+custom_minimum_size = Vector2(120,180)
+size_flags_horizontal = 3
+script = ExtResource("3")
+part_id = "loader"
+portrait = true
+
+[node name="Preview4" type="Control" parent="PartsWorkspace/PartsCollection/EquipmentPanel/EquipmentColumn/EquippedPartGrid"]
+custom_minimum_size = Vector2(120,180)
+size_flags_horizontal = 3
+script = ExtResource("3")
+part_id = "supply"
+portrait = true
+
 [node name="InventoryPanel" type="PanelContainer" parent="PartsWorkspace/PartsCollection"]
 unique_name_in_owner = true
 layout_mode = 2
 
+theme_override_styles/panel = SubResource("Plain")
 
 [node name="InventoryColumn" type="VBoxContainer" parent="PartsWorkspace/PartsCollection/InventoryPanel"]
 unique_name_in_owner = true
@@ -93,11 +144,12 @@ theme_override_constants/separation = 8
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
+text = "보관함 · 2개"
 
 [node name="InventoryScroll" type="ScrollContainer" parent="PartsWorkspace/PartsCollection/InventoryPanel/InventoryColumn"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(0, 180)
+custom_minimum_size = Vector2(0, 156)
 horizontal_scroll_mode = 0
 follow_focus = true
 
@@ -105,14 +157,29 @@ follow_focus = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-columns = 3
+columns = 2
 theme_override_constants/h_separation = 6
 theme_override_constants/v_separation = 8
+
+
+[node name="Preview0" type="Control" parent="PartsWorkspace/PartsCollection/InventoryPanel/InventoryColumn/InventoryScroll/InventoryGrid"]
+custom_minimum_size = Vector2(200,72)
+size_flags_horizontal = 3
+script = ExtResource("3")
+part_id = "compression_sink"
+mini = true
+
+[node name="Preview1" type="Control" parent="PartsWorkspace/PartsCollection/InventoryPanel/InventoryColumn/InventoryScroll/InventoryGrid"]
+custom_minimum_size = Vector2(200,72)
+size_flags_horizontal = 3
+script = ExtResource("3")
+part_id = "thermal_drive"
+mini = true
 
 [node name="PartInspector" type="PanelContainer" parent="PartsWorkspace"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(350, 0)
+custom_minimum_size = Vector2(390, 0)
 size_flags_horizontal = 3
 
 [node name="PartDetails" type="VBoxContainer" parent="PartsWorkspace/PartInspector"]
@@ -120,10 +187,13 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 10
 
+[node name="Preview" parent="PartsWorkspace/PartInspector/PartDetails" instance=ExtResource("4")]
+
 [node name="DeckPanel" type="PanelContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 
+theme_override_styles/panel = SubResource("Plain")
 
 [node name="DeckGrid" type="GridContainer" parent="DeckPanel"]
 unique_name_in_owner = true

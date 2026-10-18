@@ -1,0 +1,41 @@
+{
+  "created_on": "2026-10-11",
+  "tool": "built-in image_gen",
+  "status": "User-reported arm inconsistency and oversized weapon correction; integrated v2; human acceptance pending.",
+  "supersedes": "pistol_body_v1.png / long_body_v1.png for combat renderer",
+  "references": [
+    {
+      "path": "pistol_body_v1.png",
+      "role": "edit target, correct camera-near firing arm and shorten reach",
+      "sha256": "575599d2e1115ee51a2e27067ce30856109a965d12961ef5badf42af364aec7b"
+    },
+    {
+      "path": "long_body_v1.png",
+      "role": "edit target, shorten two-hand span and lower firing grip",
+      "sha256": "7600dbb96980d926d0a8ca930479ee65dd030f6146d2a01a7399d4764665bb56"
+    }
+  ],
+  "assets": [
+    {
+      "file": "pistol_body_v2.png",
+      "prompt": "Edit the provided transparent 3 by 2 pixel-art BODY sprite sheet. Precise anatomy correction, preserve same character, cap, costume, style, six equal 512-square cells, same body size and feet baselines, transparent background. NO guns or props; weapons are attached separately. Correct TOP MIDDLE aiming figure: the camera-facing RIGHT shoulder/arm (the large blue sleeve beneath the rust scarf, on the LEFT side of this right-facing figure's chest) must be the active pistol arm. Its upper arm slopes DOWN AND FORWARD into a clearly BENT elbow; its forearm rises gently FORWARD to a compact empty grip at LOWER CHEST height. Keep elbow visibly bent, NOT straight stretched, and keep gripping hand only about one head-width forward from chest. Total shoulder-to-fist horizontal distance at most 105 source pixels. Wrist faces RIGHT naturally, thumb at top, no reversed palm. The far LEFT arm must stay relaxed DOWN behind the torso, mostly occluded, its small hand at far hip, never sticking out forward. TOP RIGHT recoil must use the SAME visible RIGHT arm and same shoulder, with elbow bent, fist 15 pixels up and 10 pixels back relative to aim. Keep gun grip below chin. Idle and three bottom poses must also use this same camera-near RIGHT hand as weapon grip, and far LEFT hand as support during reload only. Do not swap arms between frames. Keep TWO anatomically coherent arms, no extra arms or hands. Keep broad muted bluegrey pixel clusters with few interior details; same feet, height, coat, scarf, backpack and cap. No outlines, labels, borders, light bloom or weapon. Output still exactly 3 columns x 2 rows, full transparent background.",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "generator_output": "exec-ee71a8a1-c5a1-4eb2-b980-c7dbbb8e9b7a.png",
+      "sha256": "f7dfec1dcb162cf65675a03ed17df5d3e5455a4182f6a8b06563b80d9c00010f"
+    },
+    {
+      "file": "long_body_v2.png",
+      "prompt": "Precise anatomy edit of this transparent 3x2 pixel character BODY atlas. Keep SAME person, bluegrey lamp cap, rust scarf, bluegrey coat, backpack, boots, same broad pixel clusters, six full body figures, same height/foot baselines, exact 3 columns and 2 rows of square512 cells. No guns or props; separate small carbine attached by engine. FIX TWO-HAND GUN POSES with SHORT compact bent arms: camera-near RIGHT upper arm under rust scarf slopes down, elbow at lower chest; right trigger fist at LOWER CHEST in front of torso. Far LEFT forearm goes forward underneath invisible weapon and left supporting fist sits only about65 source pixels farther RIGHT and15 pixels ABOVE trigger fist. Both hands BELOW CHIN, total hand separation at most80 sourcepixels, never long stretched arms. Do NOT hold hands by face or straight forward at shoulder height. TOP LEFT idle: right trigger fist at lower chest/waist and left support fist65px further right and15px lower; natural compact stance. TOP MIDDLE aim: both elbows bent, right trigger fist LOWER CHEST, left support fist65px further right and15px ABOVE right. TOP RIGHT recoil: same arms and shoulder as aim, both fists12px back and8px up; exactly2 fists. BOTTOM LEFT reload open: right trigger fist holds invisible receiver at lower chest, far left hand reaches BELOW imaginary magazine at70px right and65px below trigger fist. BOTTOM MIDDLE reload seat: same right trigger fist at lower chest, left hand35px right and30px below it pushing invisible magazine up. BOTTOM RIGHT cooling: lower compact two hand hold near waist. Every figure has exactly TWO arms, no mirror-swapped arms, no extra hand. Keep original rest of body stable, same feet across poses. Transparent background, no gun, no magazines, no text, no labels, no glow, no borders. Very important: COMPACT ARMS BELOW FACE so that a small carbine does not obscure head or torso.",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "generator_output": "exec-c6e3e049-c757-497a-b104-71975885a90d.png",
+      "sha256": "b7d18ffa90eae753633e6fed5d34047b7f50dcb66cbf5a09d6c2257053e21f5b"
+    }
+  ],
+  "display": "Original RGBA unchanged. 3x2 body cells; alpha cutoff and nearest sampling in Godot. Hand/foot coordinates re-registered for v2. Long-gun fixed scale derives from 96.21px v2 aim hand span vs previous 172.03px, about44% reduction. Actual body-relative kick rotation and continuous part extraction use current visual timeline."
+}

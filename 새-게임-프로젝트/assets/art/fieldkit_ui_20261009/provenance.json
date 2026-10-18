@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-09",
+  "tool": "built-in image_gen",
+  "generation_count": 1,
+  "reference_role": "approved tower background palette and broad pixel clusters only",
+  "reference": "assets/art/tower_sample_20261003/residential_tower.png",
+  "prompt_file": "prompt.txt",
+  "source_file": "fieldkit_atlas.png",
+  "sha256": "670f6c283c3fb0d84e1095e351402c331fc374cdf0d175f94a73189007d4562a",
+  "source_size": [
+    1536,
+    1024
+  ],
+  "source_alpha_extrema": [
+    0,
+    254
+  ],
+  "alpha_regions": {
+    "receiver": [
+      44,
+      137,
+      962,
+      345
+    ],
+    "card": [
+      1053,
+      85,
+      446,
+      542
+    ],
+    "canvas": [
+      48,
+      628,
+      957,
+      302
+    ],
+    "trigger": [
+      1053,
+      727,
+      446,
+      179
+    ]
+  },
+  "runtime_preparation": "source PNG untouched; Godot extracts declared alpha regions once, nearest samples card at 0.5 and other frames at 0.25, caches ImageTextures; nine-slice protects corner detail from whole-image stretching",
+  "implementation": "redesign/fieldkit_art.gd",
+  "editor_preview": "redesign/samples/fieldkit_resource_preview.tscn",
+  "dynamic_content": "All text, numbers, ammunition art, state, selection and input remain Godot code/nodes",
+  "status": "Withdrawn from live combat after user rejected dated material, weak pixel impression and inconsistent integration; retained as history",
+  "superseded_by": "redesign/combat_pixel_skin.gd"
+}

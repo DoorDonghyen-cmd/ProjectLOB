@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-09",
+  "tool": "built-in image_gen",
+  "status": "User-approved exploration chart symbols adopted in production and development maps",
+  "assets": [
+    {
+      "file": "survey_symbols.png",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-ed806279-32ca-4d44-988a-e6a4079dce67.png",
+      "prompt": "Game UI sprite atlas: eight exceptionally readable coarse pixel-art route-map STENCIL SYMBOLS, true transparent background. EXACT 4 columns x 2 rows, equally sized isolated symbols centered in generously padded equal square cells. Landscape 2:1 canvas. THESE ARE FLAT SYMBOLS painted on a survivor's industrial tower exploration chart, NOT miniature buildings, NOT rendered objects, NOT badges or boxed cards. Use ONE flat warm ivory ink color (#d4cfb3), no shading, no gradients, no glow, no outlines, no dirt speckles, no background. Broad chunky square pixel edges, 24x24 logical pixel grid feeling, bold strong different silhouettes readable at 32px. Limit detail and ensure empty negative spaces remain broad. Top row left to right: 1 COMBAT = two crossed short cartridge bullets with pointed tips; 2 ELITE = angular menacing horned sentry mask, 2 large eye holes and pointed chin, no outer shield; 3 BOSS/GATE = tall archway with 3 heavy vertical portcullis bars and small upward arrow above it; 4 SHOP = simple balance scale with two large pans and central coin disk, recognizable trading symbol. Bottom row left to right: 5 WORKSHOP = one large diagonal open-ended wrench, open jaw and square handle hole; 6 SUPPLY = broad closed crate with thick lid and large central clasp, no cross or medical symbol; 7 SIGNAL/EVENT = antenna mast with two pairs of blocky radio wave arcs; 8 BYPASS = a bent route arrow curving around a central solid vertical obstacle, clear gap around obstacle, points upward. All exactly same ivory color, optically matched sizes, zero lettering, zero numerals, zero connecting lines between cells. Strong elegant pictograms for a serious atmospheric pixel game, mechanically precise broad shapes.",
+      "use": "Seven symbol regions; initial horned elite is rejected and not displayed",
+      "sha256": "88188acb7e5089e9b6cf8f167e03881218c3f3220da49fbba40fe0a194dbc0be",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "file": "survey_symbols_guard.png",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-9a1233a4-1e02-4618-82df-54f85f72ce8b.png",
+      "prompt": "Edit this transparent 4x2 route-map symbol atlas. Keep the other SEVEN symbols, their positions, ivory color, alpha background and scale unchanged. Replace ONLY the top row SECOND symbol (currently horned demonic mask): it is inappropriate for our industrial dystopian tower. Draw instead a bold geometric MECHANICAL SENTRY rank insignia: a flat blocky robot face with square forehead, two rectangular negative-space eye slots, squared jaw, and three small rectangular armor teeth along the top. NO HORNS, no skull, no animal, no devil, no spikes, no triangular fantasy crest. Coarse pixel-art ivory stencil with broad hard square edges, flat single color, thick solid readable shapes. At 32px it should look like an armored mechanical guard mask, distinct from the gate and crossed cartridge symbols. Exactly preserve grid spacing and transparent background; no text, no scene, no badge border, no other changes.",
+      "reference": "survey_symbols.png",
+      "use": "Elite mechanical sentry region only; keeps original other seven regions unchanged",
+      "sha256": "68553841a820702d66c2c2b3951d40901d8143bb839fb201d6fddebe9f255504",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "processing": "Generated RGBA files copied unchanged. Godot AtlasTexture regions and modulate supply placement/state coloring. No offline image edits.",
+  "references": "Existing residential shaft background retained at chart margins; no newly generated world background.",
+  "production_adoption_date": "2026-10-09"
+}

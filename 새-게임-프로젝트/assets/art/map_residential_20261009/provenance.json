@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-09",
+  "tool": "built-in image_gen",
+  "status": "Integrated first-region map background and shared facility atlas; user visual acceptance pending",
+  "reference": "res://assets/art/tower_sample_20261003/residential_tower.png (style reference only)",
+  "assets": [
+    {
+      "file": "residential_shaft.png",
+      "prompt": "Create a production game background ONLY, no UI, no words, no nodes, no icons, no drawn map routes. Landscape 3:2 canvas. A far zoomed-out orthographic cutaway view INSIDE an impossibly enormous dystopian industrial tower, lower residential shaft sector. Match the supplied reference's chunky low-resolution pixel art, broad quiet clusters of muted blue-gray and dark petrol, restrained edges, warm tiny amber occupied windows. This is for a vertically scrolling route map overlaid in code: keep central 80% subdued, dark spacious readable negative space, broad shadow silhouettes of colossal structural uprights, hanging elevator cables and distant sealed galleries; less detail and much darker in the middle than reference. Giant shaft vanishes beyond top and bottom; no sky horizon, no ground floor, no repeating row of floors. Strong depth with muted layered silhouettes, tiny habitation structures at left and right margins, a few laundry lines, one small warm refuge at lower left. Avoid any prominent horizontal continuous bridge or decorative line that could be confused with a selectable route. No bright center, no lights behind central paths. True visibly chunky handmade pixel art, large color masses, no gradients, no blur, no fine stippling, no polished reflective illustration, no characters. It should feel like exploring a dark inhabited infrastructure cathedral, not a spreadsheet and not a city skyline. Reference is STYLE ONLY; invent new far-zoom composition, not a battle platform.",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-1c835add-03d8-4bc1-b0e9-352189154bc9.png",
+      "usage": "Map region 0 background; separate from seeded nodes and routes",
+      "sha256": "5c7f8adc7fe62f69d75d50b7ff3c0da0fcb3154ca55aafdfe08f129663d98cb7",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "file": "facilities.png",
+      "prompt": "Transparent-background pixel art sprite atlas for a dystopian industrial tower route map. EXACTLY eight isolated miniature facility sprites, arranged in a perfectly regular FOUR COLUMNS by TWO ROWS grid, landscape aspect ratio 2:1. Each sprite centered in its own equal cell with generous transparent padding, identical baseline and comparable size. No labels, letters, numbers, frames, connecting roads, scenery or shadows outside each sprite. Orthographic FRONT view tiny architectural cutouts (NOT isometric). Each object sits on its own short metal footing. Chunky low-resolution pixel art as if each sprite drawn on about 48x32 pixels, large flat color clusters, restrained highlights, no fine noise/gradients/blur. Muted blue steel and gray with tiny amber/red status lights, designed to read at 72x48 display pixels on a dark teal background. Row 1 left to right: 1 COMBAT = closed industrial shutter doorway with red warning lamp; 2 ELITE = heavy fortified shutter with two tall red warning beacons, angular black armored buttresses and ocher hazard stripes; 3 WORKSHOP = open maintenance bench with a large wrench hanging under a small industrial hood, warm work light; 4 BOSS = monumental sealed gate with twin thick columns and a central red vertical seal. Row 2 left to right: 5 SHOP = small warm ocher fabric awning over a supply counter with a hanging amber lamp, human survival warmth; 6 SUPPLY = compact stack of blue-gray reinforced storage chests one with ivory latch, blue indicator; 7 EVENT/SIGNAL = broken relay terminal with a tall asymmetrical antenna dish and small purple signal light; 8 BYPASS = round ventilation opening in wall with a bent grille, turquoise interior. Shapes must be visibly distinct even in monochrome. No people, no weapons as icons. Crisp stepped pixel edges, cohesive charming atmospheric industrial pixel art. True alpha background.",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-59fb9923-ff9a-4411-8a5f-de14ded13228.png",
+      "usage": "RGBA 8-sprite atlas, runtime AtlasTexture bounds in redesign/map_facility.gd; all map regions and both map versions",
+      "sha256": "77900a62072d216c69c8dc2993fe4935b496c0050e02a5e7e7e8f75055143b19",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    }
+  ],
+  "processing": "Copied generated PNGs unchanged. Atlas regions and nearest texture filtering are runtime presentation. No image edits or palette conversion.",
+  "validation": "Godot import; 3 resolutions; 506 functional checks, 0 failures; actual selected/traveled/legacy screenshots inspected. Galaxy testing and user visual acceptance pending."
+}

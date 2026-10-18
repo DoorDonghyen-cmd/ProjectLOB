@@ -18,7 +18,7 @@ func check(ok: bool, label: String) -> void:
 
 func shop():
 	var campaign = Campaign.new()
-	campaign.start("burst", 731042)
+	campaign.start("burst", 731042, 0, "balanced", 1)
 	campaign.s.floor = 3
 	campaign.s.node = 301
 	campaign.s.visited = [101, 201, 301]
@@ -37,7 +37,7 @@ func run() -> void:
 	for gun in Ammo.GUNS:
 		for seed_value in range(24):
 			var campaign = Campaign.new()
-			campaign.start(gun, seed_value)
+			campaign.start(gun, seed_value, 0, "balanced", 1)
 			check(campaign.s.credits == 30, "new run funds first part")
 			var deck: Array = campaign.model.s.deck.duplicate()
 			check(campaign.enter(101), "opening entry")
@@ -60,11 +60,11 @@ func run() -> void:
 			check(Data.encounter(third, seed_value, gun, 0, 0).any(func(e): return e.has("weakness")), "third combat introduces electric target")
 			var left_reward: int = campaign.credit_reward()
 			var other = Campaign.new()
-			other.start(gun, seed_value)
+			other.start(gun, seed_value, 0, "balanced", 1)
 			other.enter(102)
 			check(other.credit_reward() == left_reward + Data.ROUTE_REWARD_BONUS and int(other.model.s.enemies[0].distance) == int(opening[0].distance) - 2, "duct risk has an explicit credit trade")
 			var seen: Array = []
-			for revision in range(10):
+			for revision in range(ceili(Data.eligible_parts(gun).size() / 2.0)):
 				var offers := Data.offers({"id": 401, "region": 0}, seed_value, revision, gun, [], seen)
 				for offer in offers:
 					if offer.type != "part": continue
@@ -112,7 +112,7 @@ func run() -> void:
 		check(search.exchange("push") == reserve_equipped, "only reserve can search again in this magazine")
 		check(search.s.hand.has("charge") == reserve_equipped, "extra exchange opens a different legal combination")
 		if reserve_equipped:
-			check(search.load_round("charge") and search.load_round("precise") and search.confirm() and search.fire(), "newly found combo can actually fire")
+			check(search.load_round("precise") and search.load_round("charge") and search.confirm() and search.fire(), "newly found combo can actually fire")
 	campaign = shop()
 	campaign.s.parts = ["reserve"]
 	campaign.equip("reserve")

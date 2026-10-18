@@ -1,0 +1,155 @@
+{
+  "version": 2,
+  "reviewed_on": "2026-10-09",
+  "direction": "docs/direction/pixel-production.md",
+  "path_base": "repository_root",
+  "note": "Reference inventory, not copied image assets. Inspect originals before generation; hashes detect silent drift, not visual quality. Counterexamples are review-only unless an explicitly labelled contrast reference is needed.",
+  "families": {
+    "actor": [
+      "hero",
+      "battle_background",
+      "battle_context"
+    ],
+    "hero_motion": [
+      "hero",
+      "hero_actions",
+      "battle_context"
+    ],
+    "background": [
+      "battle_background",
+      "battle_context"
+    ],
+    "map_symbol": [
+      "chart_symbols",
+      "chart_guard",
+      "chart_context"
+    ],
+    "monster": [
+      "hero",
+      "eavesback",
+      "battle_background"
+    ]
+  },
+  "references": [
+    {
+      "id": "hero",
+      "path": "새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+      "status": "approved",
+      "role": "Actor style: broad clusters and restrained contours; costume only for this protagonist.",
+      "sha256": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "hero_actions",
+      "path": "새-게임-프로젝트/assets/art/actor_motion_20261005/reclaimer_actions_v1.png",
+      "status": "approved_visual",
+      "role": "Four protagonist poses; not a guarantee of final animation timing.",
+      "sha256": "4542dff35a2df3dc42540b0ac86d5f56b935615ec2685cde0b8ce6c3620a67f2",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "battle_background",
+      "path": "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png",
+      "status": "approved",
+      "role": "World palette, depth, clustered architecture; do not copy scene layout to every region.",
+      "sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "mode": "RGB"
+    },
+    {
+      "id": "battle_context",
+      "path": "docs/qa/reports/hero_mass_v2_2026-10-05_assets/after_rest_1280.png",
+      "status": "historical_context",
+      "role": "Approved hero in game scale; old HUD, frog and balance are not approval targets.",
+      "sha256": "68e4c62c0fc714cc1507b0603ab62728c7322d991123c18987c183b5bff18c44",
+      "dimensions": [
+        1280,
+        900
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "chart_symbols",
+      "path": "새-게임-프로젝트/assets/art/map_chart_20261009/survey_symbols.png",
+      "status": "approved_except_elite",
+      "role": "Seven chart symbols only. Exclude top-row second horned mask.",
+      "sha256": "88188acb7e5089e9b6cf8f167e03881218c3f3220da49fbba40fe0a194dbc0be",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "chart_guard",
+      "path": "새-게임-프로젝트/assets/art/map_chart_20261009/survey_symbols_guard.png",
+      "status": "approved_elite_region_only",
+      "role": "Use only Rect2(488,88,356,316), mechanical sentry symbol; other cells are not runtime source.",
+      "sha256": "68553841a820702d66c2c2b3951d40901d8143bb839fb201d6fddebe9f255504",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "chart_context",
+      "path": "docs/qa/reports/map_chart_adoption_2026-10-09_assets/selected_1008x630.png",
+      "status": "adopted_layout",
+      "role": "Chart plane, flat glyphs, contrast hierarchy, common legend; not actor shading style.",
+      "sha256": "6403336bc78d7bfe3f806830d9368bda5b6dcebc235e12fc27fba5b90cc77105",
+      "dimensions": [
+        1008,
+        630
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "dense_actor_counterexample",
+      "path": "docs/qa/reports/actor_cohesion_2026-10-05_assets/after_rest_1280.png",
+      "status": "counterexample",
+      "role": "Older hero only: too many small internal lines and dark edges. Do not reject every object or HUD in this capture.",
+      "sha256": "4e78988b1ea3f3a5014919dc8918d815e7535c2673697448ebd090516bbc6164",
+      "dimensions": [
+        1280,
+        900
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "floating_map_counterexample",
+      "path": "docs/qa/reports/map_art_2026-10-09_assets/selected_1008x630.png",
+      "status": "counterexample",
+      "role": "Prior miniature buildings over architecture/graph: detailed surfaces and floating spatial language.",
+      "sha256": "d075c1e4d88014e0e39bb30ede19fac64f42a711b30fb68154a6b15f5f270ff2",
+      "dimensions": [
+        1008,
+        630
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "eavesback",
+      "path": "새-게임-프로젝트/assets/art/monster_concept_20261009/eavesback_v1.png",
+      "status": "approved_visual",
+      "role": "Monster family color masses and low-detail contours; not mandatory anatomy, name, lore or stats",
+      "sha256": "2ea86267030096b47a43779ebdb39fe755bb75ba950c7155ad3dc78623602edc",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    }
+  ]
+}

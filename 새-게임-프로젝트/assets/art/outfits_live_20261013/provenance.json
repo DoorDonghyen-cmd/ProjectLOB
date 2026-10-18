@@ -1,0 +1,532 @@
+{
+  "date": "2026-10-13",
+  "tool": "image_gen built-in",
+  "scope": "New outfit live integration; 3 new costume motion sets, expedition reuses adopted preview resources.",
+  "jobs": [
+    {
+      "id": "heatworker_pistol",
+      "outfit": "heatworker",
+      "mode": "pistol",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to ochre short shoulder cape, tall padded collar, compact three-slat back radiator, long hip canisters over blue gray work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 1536x1024 atlas 3columns x2rows, cells512x512. EXACT original hand coordinates, foot coordinates, head locations and six poses: row1 idle/aim/recoil; row2 reload_open/reload_seat/cooling. Do not recenter figures. One arm aiming imaginary pistol, other low.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-e1d128bf-6d6e-485c-8c03-370dc002032f.png",
+      "file": "heatworker_pistol.png",
+      "version": 1,
+      "sha256": "5ef1187ac905e1ce8c4488f1873725844a50795fbd8feb00918847627e5adc08",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+          "sha256": "f7dfec1dcb162cf65675a03ed17df5d3e5455a4182f6a8b06563b80d9c00010f"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png",
+          "sha256": "480f2a64bde0005949994d72fb1fbaba6896343f1e0ca2aea3c4274b0bde65bb"
+        }
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        201,
+        34,
+        1344,
+        986
+      ]
+    },
+    {
+      "id": "heatworker_long",
+      "outfit": "heatworker",
+      "mode": "long",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to ochre short shoulder cape, tall padded collar, compact three-slat back radiator, long hip canisters over blue gray work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 1536x1024 atlas 3columns x2rows, cells512x512. EXACT original hand coordinates, foot coordinates, head locations and six poses: row1 idle/aim/recoil; row2 reload_open/reload_seat/cooling. Do not recenter figures. Two bent arms holding imaginary long gun.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-71ceae8f-1778-48c3-ab45-6e96d7741e59.png",
+      "file": "heatworker_long.png",
+      "version": 1,
+      "sha256": "8e769be6f8f7eec5ad6fe99c9ca7013cfdccedcaa567e914ad61194abb571951",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+          "sha256": "b7d18ffa90eae753633e6fed5d34047b7f50dcb66cbf5a09d6c2257053e21f5b"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png",
+          "sha256": "480f2a64bde0005949994d72fb1fbaba6896343f1e0ca2aea3c4274b0bde65bb"
+        }
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        187,
+        26,
+        1349,
+        988
+      ]
+    },
+    {
+      "id": "heatworker_shop",
+      "outfit": "heatworker",
+      "mode": "shop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to ochre short shoulder cape, tall padded collar, compact three-slat back radiator, long hip canisters over blue gray work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter shop pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-eeff6dc5-cad0-4482-a84b-1a9e2fa46efb.png",
+      "file": "heatworker_shop.png",
+      "version": 1,
+      "sha256": "0196542ec86e885e2201bfd62a3d424429bbba41cd2f252e604c8fb90a60be39",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+          "sha256": "859aef9225e166f98168b386497260be9c2e6d624160406025299877063dab9b"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png",
+          "sha256": "480f2a64bde0005949994d72fb1fbaba6896343f1e0ca2aea3c4274b0bde65bb"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        750,
+        152,
+        1011,
+        670
+      ]
+    },
+    {
+      "id": "heatworker_supply",
+      "outfit": "heatworker",
+      "mode": "supply",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to ochre short shoulder cape, tall padded collar, compact three-slat back radiator, long hip canisters over blue gray work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter supply pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-bce97114-77b5-4f9c-8de1-3223493fb283.png",
+      "file": "heatworker_supply.png",
+      "version": 1,
+      "sha256": "d744f03367160f1aafb9e5668cb35014de4fcbf7ffe471b005e77ee32befc91b",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+          "sha256": "3ca1b8526dc59e8f74fa89b233021684a2ce182306bb8295fd4e41eaeb4b1533"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png",
+          "sha256": "480f2a64bde0005949994d72fb1fbaba6896343f1e0ca2aea3c4274b0bde65bb"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        774,
+        165,
+        1047,
+        656
+      ]
+    },
+    {
+      "id": "heatworker_workshop",
+      "outfit": "heatworker",
+      "mode": "workshop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to ochre short shoulder cape, tall padded collar, compact three-slat back radiator, long hip canisters over blue gray work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter workshop pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-c5c96771-1754-4a99-a8d0-1ee8402bc4ee.png",
+      "file": "heatworker_workshop.png",
+      "version": 1,
+      "sha256": "02e79b5c1e025d4e490164cf5d4912bd93c1ab74b9c09ca0225d2d0eb80c08c5",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+          "sha256": "52e2478d420e25754a642675c4d41eb6081a7ac73f45fb1baf53f617926b5366"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/07_heatworker_v1.png",
+          "sha256": "480f2a64bde0005949994d72fb1fbaba6896343f1e0ca2aea3c4274b0bde65bb"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        955,
+        192,
+        1192,
+        635
+      ]
+    },
+    {
+      "id": "hoist_pistol",
+      "outfit": "hoist",
+      "mode": "pistol",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to U-shaped dark external load frame and covered round back winch, cream harness straps and hip support over slate work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 1536x1024 atlas 3columns x2rows, cells512x512. EXACT original hand coordinates, foot coordinates, head locations and six poses: row1 idle/aim/recoil; row2 reload_open/reload_seat/cooling. Do not recenter figures. One arm aiming imaginary pistol, other low. CRITICAL: the FIRST TOP LEFT idle figure MUST bend the near right elbow forward across the torso, fist at (344,226) in its 512 cell, EXACTLY matching image1. Do not lower that arm or put the hand on hip. Other arm relaxed lower hand at (375,302). Preserve all other reference poses. Fingers are warm skin orange, no gloves over attachment points.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-7a27f314-183e-439a-90d1-aa78bbbd40eb.png",
+      "file": "hoist_pistol.png",
+      "version": 2,
+      "sha256": "c37f6a763d4306a6ff5fdc3e3ff24647e5dc5c1eef6c6bfa753063e4ca378310",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+          "sha256": "f7dfec1dcb162cf65675a03ed17df5d3e5455a4182f6a8b06563b80d9c00010f"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png",
+          "sha256": "146c7f61d0f82761511ac4fee429f415674a62190472fa7202d946a1e2034ebe"
+        }
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        191,
+        35,
+        1344,
+        984
+      ]
+    },
+    {
+      "id": "hoist_long",
+      "outfit": "hoist",
+      "mode": "long",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to U-shaped dark external load frame and covered round back winch, cream harness straps and hip support over slate work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 1536x1024 atlas 3columns x2rows, cells512x512. EXACT original hand coordinates, foot coordinates, head locations and six poses: row1 idle/aim/recoil; row2 reload_open/reload_seat/cooling. Do not recenter figures. Two bent arms holding imaginary long gun. CRITICAL: the FIRST TOP LEFT idle figure MUST bend the near right elbow forward across the torso, fist at (327,224) in its 512 cell, EXACTLY matching image1. Do not lower that arm or put the hand on hip. Other arm slopes forward with support fist at (405,267). Preserve all other reference poses. Fingers are warm skin orange, no gloves over attachment points.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-9412da7f-d647-410f-877d-b63e97dca0bc.png",
+      "file": "hoist_long.png",
+      "version": 2,
+      "sha256": "7dd3ee76db3b869b57956516389b2cffe9b6da64fa7c8544b04126cc35dabe3e",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+          "sha256": "b7d18ffa90eae753633e6fed5d34047b7f50dcb66cbf5a09d6c2257053e21f5b"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png",
+          "sha256": "146c7f61d0f82761511ac4fee429f415674a62190472fa7202d946a1e2034ebe"
+        }
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        183,
+        27,
+        1353,
+        986
+      ]
+    },
+    {
+      "id": "hoist_shop",
+      "outfit": "hoist",
+      "mode": "shop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to U-shaped dark external load frame and covered round back winch, cream harness straps and hip support over slate work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter shop pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-8ff209c8-1e34-4eb6-8f3a-5b09630fd6b9.png",
+      "file": "hoist_shop.png",
+      "version": 1,
+      "sha256": "8ca535b0384cb890a08facab4e80ed5e1ee9bfae7a954a0e21d1ee28819ba198",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+          "sha256": "859aef9225e166f98168b386497260be9c2e6d624160406025299877063dab9b"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png",
+          "sha256": "146c7f61d0f82761511ac4fee429f415674a62190472fa7202d946a1e2034ebe"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        763,
+        149,
+        1029,
+        655
+      ]
+    },
+    {
+      "id": "hoist_supply",
+      "outfit": "hoist",
+      "mode": "supply",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to U-shaped dark external load frame and covered round back winch, cream harness straps and hip support over slate work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter supply pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-8f0868a0-d59e-46c4-a6cb-94e8efe0a99b.png",
+      "file": "hoist_supply.png",
+      "version": 1,
+      "sha256": "c5b367cd3f30b4291121f51b8b03c03f0efe874732c02d73b17e576c7be397c1",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+          "sha256": "3ca1b8526dc59e8f74fa89b233021684a2ce182306bb8295fd4e41eaeb4b1533"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png",
+          "sha256": "146c7f61d0f82761511ac4fee429f415674a62190472fa7202d946a1e2034ebe"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        784,
+        167,
+        1045,
+        637
+      ]
+    },
+    {
+      "id": "hoist_workshop",
+      "outfit": "hoist",
+      "mode": "workshop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to U-shaped dark external load frame and covered round back winch, cream harness straps and hip support over slate work coat. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter workshop pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-8798d974-a8fc-4d0b-9f61-48064917e5b8.png",
+      "file": "hoist_workshop.png",
+      "version": 1,
+      "sha256": "d77d30f52b5b15b549162b33ac50e709f420ba407978a25c4496cf925f38c689",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+          "sha256": "52e2478d420e25754a642675c4d41eb6081a7ac73f45fb1baf53f617926b5366"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/08_hoist_v1.png",
+          "sha256": "146c7f61d0f82761511ac4fee429f415674a62190472fa7202d946a1e2034ebe"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        953,
+        193,
+        1195,
+        633
+      ]
+    },
+    {
+      "id": "recovery_pistol",
+      "outfit": "recovery",
+      "mode": "pistol",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to olive slate long work coat, cream left shoulder plate and external LEFT forearm brace, sealed rectangular back cases and one short hose, human body not cyborg. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 1536x1024 atlas 3columns x2rows, cells512x512. EXACT original hand coordinates, foot coordinates, head locations and six poses: row1 idle/aim/recoil; row2 reload_open/reload_seat/cooling. Do not recenter figures. One arm aiming imaginary pistol, other low.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-373ed68c-fa7c-4670-9269-b40990f74564.png",
+      "file": "recovery_pistol.png",
+      "version": 1,
+      "sha256": "7e5664dd866fa88b7d0193efc5d4be4168d3c78665f67d9929676f40c752873c",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+          "sha256": "f7dfec1dcb162cf65675a03ed17df5d3e5455a4182f6a8b06563b80d9c00010f"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png",
+          "sha256": "0abc7909028eb635f129065e495bea5464f77a00418cdec43b8f4a6b982671c6"
+        }
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        179,
+        33,
+        1361,
+        987
+      ]
+    },
+    {
+      "id": "recovery_long",
+      "outfit": "recovery",
+      "mode": "long",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to olive slate long work coat, cream left shoulder plate and external LEFT forearm brace, sealed rectangular back cases and one short hose, human body not cyborg. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 1536x1024 atlas 3columns x2rows, cells512x512. EXACT original hand coordinates, foot coordinates, head locations and six poses: row1 idle/aim/recoil; row2 reload_open/reload_seat/cooling. Do not recenter figures. Two bent arms holding imaginary long gun.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-1721729c-79c0-4eb9-b137-f30f690e3f60.png",
+      "file": "recovery_long.png",
+      "version": 1,
+      "sha256": "af35fffdc1a6fa8a1435ede4f26f66f0eb5ae615360e5f33dfbe8740df989b7b",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+          "sha256": "b7d18ffa90eae753633e6fed5d34047b7f50dcb66cbf5a09d6c2257053e21f5b"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png",
+          "sha256": "0abc7909028eb635f129065e495bea5464f77a00418cdec43b8f4a6b982671c6"
+        }
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        173,
+        28,
+        1349,
+        986
+      ]
+    },
+    {
+      "id": "recovery_shop",
+      "outfit": "recovery",
+      "mode": "shop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to olive slate long work coat, cream left shoulder plate and external LEFT forearm brace, sealed rectangular back cases and one short hose, human body not cyborg. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter shop pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-e14a64ea-3c7f-4189-8729-8d1b6ffdb6be.png",
+      "file": "recovery_shop.png",
+      "version": 1,
+      "sha256": "b8155b5b0dcf4555fd75a75ff1bc2aeea6e228aad76ea398c7665d8bf40db00c",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+          "sha256": "859aef9225e166f98168b386497260be9c2e6d624160406025299877063dab9b"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png",
+          "sha256": "0abc7909028eb635f129065e495bea5464f77a00418cdec43b8f4a6b982671c6"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        761,
+        149,
+        1026,
+        650
+      ]
+    },
+    {
+      "id": "recovery_supply",
+      "outfit": "recovery",
+      "mode": "supply",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to olive slate long work coat, cream left shoulder plate and external LEFT forearm brace, sealed rectangular back cases and one short hose, human body not cyborg. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter supply pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-d2695e11-1481-4655-a67f-360dbf5d9c44.png",
+      "file": "recovery_supply.png",
+      "version": 1,
+      "sha256": "507b9891663e628048cdced2932d1c3a7491893c3fe807215205d18e46507eb0",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+          "sha256": "3ca1b8526dc59e8f74fa89b233021684a2ce182306bb8295fd4e41eaeb4b1533"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png",
+          "sha256": "0abc7909028eb635f129065e495bea5464f77a00418cdec43b8f4a6b982671c6"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        785,
+        168,
+        1052,
+        648
+      ]
+    },
+    {
+      "id": "recovery_workshop",
+      "outfit": "recovery",
+      "mode": "workshop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png"
+      ],
+      "prompt": "Edit target image1, costume reference image2. Change ONLY clothing/pack to olive slate long work coat, cream left shoulder plate and external LEFT forearm brace, sealed rectangular back cases and one short hose, human body not cyborg. Keep same hat, face, rust scarf, brown boots and proportions. COARSE large pixel clusters, muted 2-3 grouped values, no finer seams, noise, gradients, rim light or glow. Preserve hands exactly in silhouette and location for attaching independent weapons. No held gun or tool, no background or ground shadow, no labels. TRUE transparent alpha background. Preserve EXACT 2172x724 canvas and tiny solitary actor position, hand height and foot location, vast transparent space. Same rear three-quarter workshop pose. No furniture or objects.",
+      "generated_source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-fe518827-28b8-452e-ba50-a249f10ccb09.png",
+      "file": "recovery_workshop.png",
+      "version": 1,
+      "sha256": "7a0a22214ad882b9e24dee9115c48609c5b4cb258db30b96e104851c4ff48431",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+          "sha256": "52e2478d420e25754a642675c4d41eb6081a7ac73f45fb1baf53f617926b5366"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/09_recovery_v1.png",
+          "sha256": "0abc7909028eb635f129065e495bea5464f77a00418cdec43b8f4a6b982671c6"
+        }
+      ],
+      "size": [
+        2172,
+        724
+      ],
+      "mode_actual": "RGBA",
+      "opaque_bbox": [
+        947,
+        198,
+        1191,
+        626
+      ]
+    }
+  ]
+}

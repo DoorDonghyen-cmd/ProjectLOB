@@ -67,15 +67,20 @@ func run() -> void:
 			check(screen.selected_weapon_id == id, "whole card selects " + id)
 			var actual = Campaign.new()
 			actual.start(id, 817263)
+			await touch("starting_deck")
 			for ammo in actual.model.s.deck:
 				var caption := screen.find_child("StartingRound_" + str(ammo), true, false) as Label
 				check(caption != null and caption.text.ends_with("×%d" % actual.model.s.deck.count(ammo)), "starting supply matches actual weapon deck")
+			await touch("DialogClose")
 			bounds("start_" + id)
 			check(not screen.main_scroll.get_v_scroll_bar().visible, "preparation fits " + id)
+		await touch("preparation_options")
 		screen.seed_input.text = "817263"
+		screen.seed_input.text_changed.emit("817263")
+		await touch("DialogClose")
 		await touch("weapon_select_burst")
 		check(screen.preparation_seed == "817263", "seed survives weapon selection")
-		bounds("StartingDeckPreview")
+		bounds("starting_deck")
 		await capture("weapons_" + str(resolution.x))
 		screen._debug_city("shop")
 		await settle()
@@ -137,7 +142,8 @@ func run() -> void:
 		screen.city_ui.deck()
 		await settle()
 		await touch("equipped_part_detail_0")
-		check(screen.find_child("city_deck_equip_capacitor", true, false) == null, "combat equipment is read only")
+		var locked_action := screen.find_child("city_deck_equip_capacitor", true, false) as Button
+		check(locked_action == null or not locked_action.is_visible_in_tree(), "combat equipment is read only")
 		check(not screen.campaign.replace_part("field_press", "overbore"), "combat replacement rejected by model")
 		screen._close_workspace()
 		screen._to_menu()
@@ -178,14 +184,14 @@ func run() -> void:
 	await settle()
 	await touch("city_part_select_lens")
 	await touch("city_deck_dismantle_lens")
-	var confirmation := screen.find_child("PartDismantleConfirmation", true, false) as ConfirmationDialog
+	var confirmation := screen.find_child("PartDismantleConfirmation", true, false) as Control
 	check(confirmation != null and screen.campaign.s.parts.has("lens"), "dismantle waits for player confirmation")
 	confirmation.canceled.emit()
 	await settle()
 	check(screen.campaign.s.parts.has("lens"), "cancel keeps stored part")
 	var old_credits: int = screen.campaign.s.credits
 	await touch("city_deck_dismantle_lens")
-	confirmation = screen.find_child("PartDismantleConfirmation", true, false) as ConfirmationDialog
+	confirmation = screen.find_child("PartDismantleConfirmation", true, false) as Control
 	confirmation.confirmed.emit()
 	await settle()
 	check(not screen.campaign.s.parts.has("lens") and screen.campaign.s.credits == old_credits + 10, "confirmed dismantle consumes one part for 10 credits")
@@ -201,15 +207,23 @@ func run() -> void:
 	bounds("resume")
 	await capture("main_continue")
 	await touch("new_run_setup")
+	await touch("preparation_options")
 	await touch("loadout_select_thermal")
-	var thermal_count: int = saved.Content.LOADOUTS.thermal.deck.count("bore")
-	check((screen.find_child("StartingRound_bore", true, false) as Label).text.ends_with("×%d" % thermal_count), "unlocked supply changes actual preview")
 	screen.difficulty_option.value = 2
+	await touch("DialogClose")
+	await touch("starting_deck")
+	var thermal_run = Campaign.new()
+	thermal_run.profile = saved.profile.duplicate(true)
+	thermal_run.start("burst", 9182, 0, "thermal")
+	for ammo in thermal_run.model.s.deck:
+		var caption := screen.find_child("StartingRound_" + str(ammo), true, false) as Label
+		check(caption != null and caption.text.ends_with("×%d" % thermal_run.model.s.deck.count(ammo)), "unlocked supply still previews the actual basic-only starter")
+	await touch("DialogClose")
 	await settle()
 	check(screen.selected_difficulty == 2, "unlocked difficulty can be changed")
 	await capture("unlocked_supplies")
 	await touch("start_burst")
-	var run_confirm := screen.find_child("NewRunConfirmation", true, false) as ConfirmationDialog
+	var run_confirm := screen.find_child("NewRunConfirmation", true, false) as Control
 	check(run_confirm != null and screen.page == "loadout", "existing run is protected even after developer practice")
 	if run_confirm != null: run_confirm.canceled.emit()
 	await settle()

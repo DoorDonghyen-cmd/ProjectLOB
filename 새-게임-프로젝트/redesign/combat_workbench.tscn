@@ -1,12 +1,29 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://redesign/combat_workbench.gd" id="1_workbench"]
+[ext_resource type="FontVariation" path="res://redesign/combat_pixel_font.tres" id="2_font"]
+
+[ext_resource type="StyleBoxFlat" path="res://redesign/hand_surface_action.tres" id="skin_card"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/console/well_normal.tres" id="skin_well"]
+[ext_resource type="StyleBoxFlat" path="res://redesign/hand_surface_button.tres" id="skin_button"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/console/primary_normal.tres" id="skin_primary"]
+[ext_resource type="StyleBoxEmpty" path="res://redesign/hand_surface_panel.tres" id="skin_panel"]
+[ext_resource type="StyleBoxEmpty" path="res://redesign/hand_surface_panel.tres" id="skin_tray"]
+
+[ext_resource type="PackedScene" path="res://redesign/combat_ammo_card.tscn" id="hand_card"]
+[ext_resource type="PackedScene" path="res://redesign/ammo_hand_slot.tscn" id="hand_slot"]
+
+[sub_resource type="Theme" id="Theme_preview"]
+default_font = ExtResource("2_font")
+default_font_size = 20
+Button/styles/normal = ExtResource("skin_button")
 
 [node name="CombatWorkbench" type="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 10
+theme_override_constants/separation = 2
 script = ExtResource("1_workbench")
+theme = SubResource("Theme_preview")
 
 [node name="BattleHost" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
@@ -25,6 +42,7 @@ vertical_alignment = 1
 [node name="CombatSteps" type="PanelContainer" parent="."]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
+visible = false
 layout_mode = 2
 
 [node name="StepRow" type="HBoxContainer" parent="CombatSteps"]
@@ -59,11 +77,99 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-columns = 2
+columns = 1
 theme_override_constants/h_separation = 14
-theme_override_constants/v_separation = 10
+theme_override_constants/v_separation = 0
+
+[node name="QueuePanel" type="PanelContainer" parent="TacticalGrid"]
+theme_override_styles/panel = ExtResource("skin_panel")
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="QueueColumn" type="VBoxContainer" parent="TacticalGrid/QueuePanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="FiringRailHeader" type="HBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="QueueHeading" type="Label" parent="TacticalGrid/QueuePanel/QueueColumn/FiringRailHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
+theme_override_font_sizes/font_size = 20
+text = "발사 순서 · 0/4칸"
+
+[node name="EditActions" type="HBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn/FiringRailHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FiringRail" type="HBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn"]
+custom_minimum_size = Vector2(0, 82)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MagazineHost" type="VBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn/FiringRail"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="MagazinePreview" type="Label" parent="TacticalGrid/QueuePanel/QueueColumn/FiringRail/MagazineHost"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 82)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
+theme_override_font_sizes/font_size = 18
+text = "①  ②  ③  ④\n마지막 장전 탄부터 발사"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CombatActions" type="VBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn/FiringRail"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
+[node name="EditorPreviewAction" type="Button" parent="TacticalGrid/QueuePanel/QueueColumn/FiringRail/CombatActions"]
+theme_override_styles/normal = ExtResource("skin_card")
+theme_override_colors/font_color = Color(0.125, 0.22, 0.23, 1)
+custom_minimum_size = Vector2(220, 76)
+layout_mode = 2
+text = "장전 확정"
+disabled = true
+
+[node name="EditorPreviewThermal" type="HBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn"]
+custom_minimum_size = Vector2(0, 68)
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Temperature" type="Label" parent="TacticalGrid/QueuePanel/QueueColumn/EditorPreviewThermal"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "발열 0 / 14\n▰ ▰ ▰ ▰ ▰ ▰ ▰ ▰ ▰ ▰ ▰ ▰ ▰ ▰"
+
+[node name="Reload" type="Button" parent="TacticalGrid/QueuePanel/QueueColumn/EditorPreviewThermal"]
+custom_minimum_size = Vector2(220, 68)
+layout_mode = 2
+text = "재장전 · 냉각 9\n열 0 → 0 · 적 2턴"
+
+[node name="ForecastLabel" type="Label" parent="TacticalGrid/QueuePanel/QueueColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
+theme_override_font_sizes/font_size = 18
+text = "선택 결과 · 탄환을 눌러 장전하세요"
+autowrap_mode = 2
 
 [node name="CandidatesPanel" type="PanelContainer" parent="TacticalGrid"]
+theme_override_styles/panel = ExtResource("skin_tray")
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
@@ -84,17 +190,24 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
 theme_override_font_sizes/font_size = 22
-text = "보유 탄환"
+text = "탄환 선택 · 6/6장"
 
-[node name="HandControls" type="HBoxContainer" parent="TacticalGrid/CandidatesPanel/CandidatesColumn"]
+[node name="HandControls" type="HBoxContainer" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/HandHeader"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 6
 
+[node name="CompressionActions" type="HBoxContainer" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/HandHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 6
+
 [node name="DecisionPrompt" type="Label" parent="TacticalGrid/CandidatesPanel/CandidatesColumn"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
@@ -102,22 +215,47 @@ theme_override_font_sizes/font_size = 17
 text = "1. 탄을 고르세요 · 카드 아래에 이번 결과가 표시됩니다"
 autowrap_mode = 2
 
-[node name="CompressionActions" type="HBoxContainer" parent="TacticalGrid/CandidatesPanel/CandidatesColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 6
-
 [node name="AmmoGrid" type="GridContainer" parent="TacticalGrid/CandidatesPanel/CandidatesColumn"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-columns = 3
-theme_override_constants/h_separation = 8
+columns = 10
+theme_override_constants/h_separation = 6
 theme_override_constants/v_separation = 8
+
+[node name="EditorPreviewHand0" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_card") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand1" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_card") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand2" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_card") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand3" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_card") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand4" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_card") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand5" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_card") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand6" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_slot") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand7" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_slot") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand8" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_slot") ]
+layout_mode = 2
+
+[node name="EditorPreviewHand9" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/AmmoGrid" instance=ExtResource("hand_slot") ]
+layout_mode = 2
 
 [node name="AmmoInspector" type="Label" parent="TacticalGrid/CandidatesPanel/CandidatesColumn"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 17
@@ -126,53 +264,5 @@ autowrap_mode = 2
 
 [node name="ReserveHost" type="VBoxContainer" parent="TacticalGrid/CandidatesPanel/CandidatesColumn"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
-
-[node name="QueuePanel" type="PanelContainer" parent="TacticalGrid"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="QueueColumn" type="VBoxContainer" parent="TacticalGrid/QueuePanel"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="QueueHeading" type="Label" parent="TacticalGrid/QueuePanel/QueueColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
-theme_override_font_sizes/font_size = 20
-text = "발사 순서 · 0/4칸"
-
-[node name="MagazineHost" type="VBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="MagazinePreview" type="Label" parent="TacticalGrid/QueuePanel/QueueColumn/MagazineHost"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 110)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
-theme_override_font_sizes/font_size = 18
-text = "①  ②  ③  ④\n장전한 순서대로 발사"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="EditActions" type="HBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ForecastLabel" type="Label" parent="TacticalGrid/QueuePanel/QueueColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
-theme_override_font_sizes/font_size = 18
-text = "선택 결과 · 탄환을 눌러 장전하세요"
-autowrap_mode = 2
-
-[node name="CombatActions" type="VBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_constants/separation = 8

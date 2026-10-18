@@ -1,0 +1,937 @@
+{
+  "method": "Independent production encounters; six seeds; each gun's starting deck; no parts, growth, exchange or compression; legal load/confirm/fire/reload. Random shuffles actual tactical hand, fills with basic only if needed. Basic uses only renewable basic. Guided selects among 32 random full magazines by immediate actual deterministic consequences, no future draw or random target search. Not full-run or human win rates. Contact margin ignores future support pulls and projectile spawns.",
+  "cases": 2592,
+  "failures": [],
+  "groups": [
+    {
+      "gun": "single",
+      "policy": "random",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 6.995,
+      "median_min_contact_turns": 10.0
+    },
+    {
+      "gun": "single",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 14.065,
+      "median_min_contact_turns": 7.0
+    },
+    {
+      "gun": "single",
+      "policy": "guided",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 5.329,
+      "median_min_contact_turns": 11.5
+    },
+    {
+      "gun": "burst",
+      "policy": "random",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 10.153,
+      "median_min_contact_turns": 9.0
+    },
+    {
+      "gun": "burst",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 15.653,
+      "median_min_contact_turns": 6.0
+    },
+    {
+      "gun": "scatter",
+      "policy": "random",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 8.833,
+      "median_min_contact_turns": 9.5
+    },
+    {
+      "gun": "scatter",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 169,
+      "mean_turns": 17.731,
+      "median_min_contact_turns": 1.916666666666665
+    },
+    {
+      "gun": "heavy",
+      "policy": "random",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 7.468,
+      "median_min_contact_turns": 9.5
+    },
+    {
+      "gun": "heavy",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 16.917,
+      "median_min_contact_turns": 5.833333333333335
+    },
+    {
+      "gun": "heavy",
+      "policy": "guided",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 6.319,
+      "median_min_contact_turns": 10.3333333333333
+    },
+    {
+      "gun": "amplifier",
+      "policy": "random",
+      "cases": 216,
+      "wins": 216,
+      "mean_turns": 13.481,
+      "median_min_contact_turns": 8.5
+    },
+    {
+      "gun": "amplifier",
+      "policy": "basic",
+      "cases": 216,
+      "wins": 126,
+      "mean_turns": 21.463,
+      "median_min_contact_turns": 0.5
+    }
+  ],
+  "opening_orders": [
+    {
+      "fixed_owned_hand": [
+        "charge",
+        "precise",
+        "pierce",
+        "push"
+      ],
+      "floor": 1,
+      "results": [
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "precise",
+            "pierce",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "precise",
+            "push",
+            "pierce"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "pierce",
+            "precise",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "pierce",
+            "push",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "push",
+            "precise",
+            "pierce"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "push",
+            "pierce",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "charge",
+            "pierce",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "charge",
+            "push",
+            "pierce"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "pierce",
+            "charge",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "pierce",
+            "push",
+            "charge"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "push",
+            "charge",
+            "pierce"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "push",
+            "pierce",
+            "charge"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "charge",
+            "precise",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "charge",
+            "push",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "precise",
+            "charge",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "precise",
+            "push",
+            "charge"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "push",
+            "charge",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "push",
+            "precise",
+            "charge"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "push",
+            "charge",
+            "precise",
+            "pierce"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "push",
+            "charge",
+            "pierce",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "push",
+            "precise",
+            "charge",
+            "pierce"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "push",
+            "precise",
+            "pierce",
+            "charge"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "push",
+            "pierce",
+            "charge",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 14,
+          "kills": 2,
+          "plan": [
+            "push",
+            "pierce",
+            "precise",
+            "charge"
+          ],
+          "won": true
+        }
+      ]
+    },
+    {
+      "fixed_owned_hand": [
+        "charge",
+        "precise",
+        "pierce",
+        "push"
+      ],
+      "floor": 2,
+      "results": [
+        {
+          "damage": 15,
+          "kills": 1,
+          "plan": [
+            "charge",
+            "precise",
+            "pierce",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 15,
+          "kills": 1,
+          "plan": [
+            "charge",
+            "precise",
+            "push",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 15,
+          "kills": 1,
+          "plan": [
+            "charge",
+            "pierce",
+            "precise",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "pierce",
+            "push",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 15,
+          "kills": 1,
+          "plan": [
+            "charge",
+            "push",
+            "precise",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "push",
+            "pierce",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "charge",
+            "pierce",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "precise",
+            "charge",
+            "push",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "precise",
+            "pierce",
+            "charge",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "precise",
+            "pierce",
+            "push",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "precise",
+            "push",
+            "charge",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "precise",
+            "push",
+            "pierce",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "charge",
+            "precise",
+            "push"
+          ],
+          "won": true
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "charge",
+            "push",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "pierce",
+            "precise",
+            "charge",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "pierce",
+            "precise",
+            "push",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "pierce",
+            "push",
+            "charge",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "pierce",
+            "push",
+            "precise",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "push",
+            "charge",
+            "precise",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "push",
+            "charge",
+            "pierce",
+            "precise"
+          ],
+          "won": true
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "push",
+            "precise",
+            "charge",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "push",
+            "precise",
+            "pierce",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "push",
+            "pierce",
+            "charge",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 10,
+          "kills": 1,
+          "plan": [
+            "push",
+            "pierce",
+            "precise",
+            "charge"
+          ],
+          "won": false
+        }
+      ]
+    },
+    {
+      "fixed_owned_hand": [
+        "charge",
+        "precise",
+        "pierce",
+        "push"
+      ],
+      "floor": 3,
+      "results": [
+        {
+          "damage": 15,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "precise",
+            "pierce",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 17,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "precise",
+            "push",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 15,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "pierce",
+            "precise",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "pierce",
+            "push",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 17,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "push",
+            "precise",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 16,
+          "kills": 2,
+          "plan": [
+            "charge",
+            "push",
+            "pierce",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 17,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "charge",
+            "pierce",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 19,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "charge",
+            "push",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 17,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "pierce",
+            "charge",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 13,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "pierce",
+            "push",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 19,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "push",
+            "charge",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 13,
+          "kills": 2,
+          "plan": [
+            "precise",
+            "push",
+            "pierce",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 17,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "charge",
+            "precise",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 20,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "charge",
+            "push",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 12,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "precise",
+            "charge",
+            "push"
+          ],
+          "won": false
+        },
+        {
+          "damage": 12,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "precise",
+            "push",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 12,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "push",
+            "charge",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 13,
+          "kills": 2,
+          "plan": [
+            "pierce",
+            "push",
+            "precise",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 19,
+          "kills": 2,
+          "plan": [
+            "push",
+            "charge",
+            "precise",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 20,
+          "kills": 2,
+          "plan": [
+            "push",
+            "charge",
+            "pierce",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 12,
+          "kills": 2,
+          "plan": [
+            "push",
+            "precise",
+            "charge",
+            "pierce"
+          ],
+          "won": false
+        },
+        {
+          "damage": 12,
+          "kills": 2,
+          "plan": [
+            "push",
+            "precise",
+            "pierce",
+            "charge"
+          ],
+          "won": false
+        },
+        {
+          "damage": 12,
+          "kills": 2,
+          "plan": [
+            "push",
+            "pierce",
+            "charge",
+            "precise"
+          ],
+          "won": false
+        },
+        {
+          "damage": 13,
+          "kills": 2,
+          "plan": [
+            "push",
+            "pierce",
+            "precise",
+            "charge"
+          ],
+          "won": false
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "redesign/model.gd": "2345ad3a760faa425be5910197598467a0c7d41c00b7045d486c1b79921d18f3",
+    "redesign/content.gd": "fc828afc38173dfc97c47cf1069eb309daec72934cd39d34cf1e8f0b12b071a5",
+    "redesign/campaign_content.gd": "6cb65b6efea7e1e09592da9aecfc82f2caa5ec73d9d1b1756abc1a3993c635c8",
+    "redesign/campaign.gd": "19c2092d8f4477c38546a647ad7f3cbcaa1e882884de7f08cbea43b814bd268d",
+    "tests/ammo_choice_audit.gd": "48a014c3fb2ac525ebb8f299dc62b3fcf69dd135ed9c1abbdb5e5ad45d953376"
+  }
+}

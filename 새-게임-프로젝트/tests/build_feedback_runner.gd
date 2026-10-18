@@ -40,7 +40,7 @@ func fixture(gun: String, parts: Array, rounds: Array, enemies: Array = []):
 	model.s.enemies = enemies.duplicate(true) if not enemies.is_empty() else [enemy()]
 	model.s.push_left = Content.push_budget(model.s)
 	model.s.supply = model.supply_capacity()
-	for id in rounds: check(model.load_round(id), "legal fixture load " + id)
+	for id in Content.loading_order(rounds): check(model.load_round(id), "legal fixture load " + id)
 	check(Content.valid_part_set(gun, parts), "legal part set " + str(parts))
 	return model
 
@@ -127,7 +127,7 @@ func run() -> void:
 	check(has_effect(shots[0], "coil") and has_effect(shots[0], "inferno"), "effective duration modifiers are observed")
 	shots = fire(fixture("single", ["coil", "duplex"], ["bore", "precise"], [enemy(1), enemy(1, 0, 1)]))
 	check(not has_effect(shots[0], "coil") and not has_effect(shots[1], "duplex"), "dead targets do not claim burn or unfired extra hits")
-	for item in [["lens", "pierce"], ["capacitor", "arc"], ["rammer", "push"], ["sequencer", "charge"], ["overbore", "basic"], ["arc_splitter", "arc"], ["momentum", "push"], ["executioner", "basic"]]:
+	for item in [["lens", "pierce"], ["capacitor", "arc"], ["rammer", "push"], ["sequencer", "charge"], ["overbore", "pierce_c"], ["arc_splitter", "arc"], ["momentum", "push"], ["executioner", "basic"]]:
 		var targets := [enemy(5 if item[0] == "executioner" else 100, 5 if item[0] == "lens" else 0), enemy(100, 0, 1), enemy(100, 0, 2)]
 		shots = fire(fixture("heavy", [item[0]], [item[1]], targets))
 		check(has_effect(shots[0], item[0]), "applied part observation " + item[0])
@@ -194,7 +194,7 @@ func run() -> void:
 	check(screen.find_child("CombatPartDetails", true, false) != null, "touch opens condition and penalty")
 	await capture("part_condition_phone")
 	for child in screen.get_children():
-		if child is AcceptDialog: child.hide(); child.queue_free()
+		if child is AcceptDialog or child.has_meta("lob_modal"): child.hide(); child.queue_free()
 	await settle()
 	await tap("confirm")
 	ready_parts_position = (screen.find_child("CombatParts", true, false) as Control).global_position
@@ -218,9 +218,8 @@ func run() -> void:
 	check(screen.find_child("BuildHighlight_opening", true, false) != null, "reward exposes current encounter part")
 	await capture("debrief_phone")
 	await tap("encounter_record")
-	check(screen.get_children().any(func(child): return child is AcceptDialog), "full record remains accessible by touch")
-	for child in screen.get_children():
-		if child is AcceptDialog: child.hide(); child.queue_free()
+	check(is_instance_valid(screen.workspace_overlay), "full record remains accessible by touch")
+	await tap("workspace_close")
 	await settle()
 	# Real campaign header includes currencies; exercise all five slots and its reward route.
 	screen.campaign = preload("res://redesign/campaign.gd").new()
@@ -247,7 +246,7 @@ func run() -> void:
 	check(text_width + record_button.get_theme_stylebox("normal").get_minimum_size().x <= record_button.size.x and record_button.size.y <= 64, "record button has room for one readable line")
 	await capture("campaign_debrief_phone")
 	await tap("encounter_record")
-	check(screen.get_children().any(func(child): return child is AcceptDialog), "campaign record reachable by touch")
+	check(is_instance_valid(screen.workspace_overlay), "campaign record reachable by touch")
 	var artifact := {"seed": 731042, "comparisons": comparisons, "checks": checks, "failures": failures}
 	var file := FileAccess.open(output.path_join("build_feedback_report.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(artifact, "\t"))

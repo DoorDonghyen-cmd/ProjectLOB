@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-18",
+  "purpose": "Compact cohesive combat control deck, stable outcome line and viewport height allocation",
+  "method": "Existing authored pixel skin, original GDScript backdrop and Godot container metrics",
+  "runtime_sources": [
+    {
+      "path": "새-게임-프로젝트/redesign/screen.gd",
+      "sha256": "a00a47925a045c6d724022ef59b572963ec276e574bea848fd6c812c26ff7fca"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_workbench.gd",
+      "sha256": "a4b2fb0ab90585a461e73053e46471153a6e1e5d4a149ae1bc791f5116dea062"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_workbench.tscn",
+      "sha256": "233bae62567664cdddf705e7c849383d34e579b68bce97a6ca0a5d39202d8873"
+    }
+  ],
+  "report": "docs/qa/reports/combat_spacing_2026-10-18.md",
+  "validation": "3136 checks passed: hand1444 + spacing826 + heat410 + finish456. Actual GPU captures inspected. Galaxy and human visual feedback pending."
+}

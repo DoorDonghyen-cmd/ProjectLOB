@@ -1,0 +1,313 @@
+[gd_scene load_steps=14 format=3]
+[ext_resource type="Script" path="res://redesign/outfit_preview.gd" id="1"]
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="2"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_normal.tres" id="3"]
+[ext_resource type="Texture2D" path="res://assets/art/outfit_preview_20261011/10_expedition_v3.png" id="4"]
+[ext_resource type="Script" path="res://redesign/outfit_preview_stage.gd" id="5"]
+[ext_resource type="PackedScene" path="res://redesign/weapon_actor.tscn" id="6"]
+[ext_resource type="Script" path="res://redesign/outfit_preview_actor.gd" id="7"]
+[ext_resource type="Texture2D" path="res://assets/art/service_layers_20261011/shop_background.png" id="8"]
+[ext_resource type="Script" path="res://redesign/service_actor_layer.gd" id="9"]
+[ext_resource type="Resource" path="res://redesign/outfit_preview_shop.tres" id="10"]
+[ext_resource type="Shader" path="res://redesign/monster_alpha_cutout.gdshader" id="11"]
+[sub_resource type="ShaderMaterial" id="Cutout"]
+shader = ExtResource("11")
+[sub_resource type="Theme" id="Theme"]
+default_font = ExtResource("2")
+default_font_size = 19
+Label/colors/font_color = Color(0.85,0.87,0.82,1)
+Button/colors/font_color = Color(0.85,0.87,0.82,1)
+Button/styles/normal = ExtResource("3")
+
+[node name="OutfitPreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = SubResource("Theme")
+script = ExtResource("1")
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.055,0.09,0.11,1)
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_bottom = 12
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+[node name="Header" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+[node name="Title" type="Label" parent="Margin/Layout/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 28
+text = "복장 작업실"
+
+[node name="Close" type="Button" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "닫기"
+
+[node name="Notice" type="Label" parent="Margin/Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65,0.72,0.72,1)
+theme_override_font_sizes/font_size = 17
+text = "외형 미리보기 · 획득·가방·성능은 바뀌지 않습니다."
+[node name="Outfits" type="HFlowContainer" parent="Margin/Layout"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+
+[node name="Heatworker" type="Button" parent="Margin/Layout/Outfits"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "7칸 · 방열복"
+
+[node name="Hoist" type="Button" parent="Margin/Layout/Outfits"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "8칸 · 인양 장구"
+
+[node name="Recovery" type="Button" parent="Margin/Layout/Outfits"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "9칸 · 회수 장구"
+
+[node name="Expedition" type="Button" parent="Margin/Layout/Outfits"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "10칸 · 원정복"
+
+[node name="Name" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "밀폐형 원정복"
+[node name="Status" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.71,0.77,0.75,1)
+text = "채택 시안 · 전투·장소용 외형 검토"
+[node name="Modes" type="HFlowContainer" parent="Margin/Layout"]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+
+[node name="ConceptButton" type="Button" parent="Margin/Layout/Modes"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "앞·뒤 시안"
+
+[node name="BattleButton" type="Button" parent="Margin/Layout/Modes"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "전투"
+
+[node name="ShopButton" type="Button" parent="Margin/Layout/Modes"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "상점"
+
+[node name="SupplyButton" type="Button" parent="Margin/Layout/Modes"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "보급"
+
+[node name="WorkshopButton" type="Button" parent="Margin/Layout/Modes"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "작업대"
+
+[node name="Stage" type="Control" parent="Margin/Layout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,210)
+size_flags_vertical = 3
+mouse_filter = 2
+clip_contents = true
+[node name="Concept" type="TextureRect" parent="Margin/Layout/Stage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("4")
+expand_mode = 1
+stretch_mode = 5
+[node name="Battle" type="Control" parent="Margin/Layout/Stage"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("5")
+[node name="WeaponActorViewport" parent="Margin/Layout/Stage/Battle" instance=ExtResource("6")]
+[node name="Actor" parent="Margin/Layout/Stage/Battle/WeaponActorViewport" index="0"]
+script = ExtResource("7")
+[node name="Room" type="TextureRect" parent="Margin/Layout/Stage"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("8")
+expand_mode = 1
+stretch_mode = 5
+[node name="RoomActor" type="Control" parent="Margin/Layout/Stage/Room"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("9")
+material = SubResource("Cutout")
+profile = ExtResource("10")
+room_foot = Vector2(0.409,0.9)
+room_height = 0.643
+[node name="CombatControls" type="VBoxContainer" parent="Margin/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 6
+[node name="Guns" type="HFlowContainer" parent="Margin/Layout/CombatControls"]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+
+[node name="Single" type="Button" parent="Margin/Layout/CombatControls/Guns"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "보행자"
+
+[node name="Burst" type="Button" parent="Margin/Layout/CombatControls/Guns"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "쇄도"
+
+[node name="Scatter" type="Button" parent="Margin/Layout/CombatControls/Guns"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "산개"
+
+[node name="Heavy" type="Button" parent="Margin/Layout/CombatControls/Guns"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "압쇄"
+
+[node name="Amplifier" type="Button" parent="Margin/Layout/CombatControls/Guns"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "증강"
+
+[node name="Poses" type="HFlowContainer" parent="Margin/Layout/CombatControls"]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+
+[node name="Idle" type="Button" parent="Margin/Layout/CombatControls/Poses"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "대기"
+
+[node name="Aim" type="Button" parent="Margin/Layout/CombatControls/Poses"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "조준"
+
+[node name="Recoil" type="Button" parent="Margin/Layout/CombatControls/Poses"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "반동"
+
+[node name="ReloadOpen" type="Button" parent="Margin/Layout/CombatControls/Poses"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "장전 열기"
+
+[node name="ReloadSeat" type="Button" parent="Margin/Layout/CombatControls/Poses"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "장전 닫기"
+
+[node name="Cooling" type="Button" parent="Margin/Layout/CombatControls/Poses"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "냉각"
+
+[node name="Actions" type="HFlowContainer" parent="Margin/Layout/CombatControls"]
+layout_mode = 2
+theme_override_constants/h_separation = 6
+
+[node name="Fire" type="Button" parent="Margin/Layout/CombatControls/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "발사 재생"
+
+[node name="Reload" type="Button" parent="Margin/Layout/CombatControls/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = false
+text = "재장전 재생"
+
+[node name="Zoom" type="Button" parent="Margin/Layout/CombatControls/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+text = "2배 확대"
+
+[editable path="Margin/Layout/Stage/Battle/WeaponActorViewport"]

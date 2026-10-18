@@ -78,6 +78,10 @@ func _run() -> void:
 	screen._debug_city("ending")
 	screen.campaign.s.equipped_parts = ["capacitor", "rammer", "sequencer", "opening", "field_press"]
 	screen.redraw()
+	await settle()
+	(screen.find_child("story_restore", true, false) as Button).pressed.emit()
+	await settle()
+	(screen.find_child("story_results", true, false) as Button).pressed.emit()
 	await capture("ending_phone")
 	visible_bounds("retry")
 	visible_bounds("EquippedPartStrip")

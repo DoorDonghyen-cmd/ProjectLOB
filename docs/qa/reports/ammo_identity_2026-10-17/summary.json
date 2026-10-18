@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-17",
+  "branch": "prototype/core-redesign",
+  "base_commit": "7037ee41b6daf2e553eb5d2ec3498735f3d98c1e",
+  "preexisting_dirty_paths": 545,
+  "engine": "Godot 4.7 stable 5b4e0cb0f",
+  "tests": {
+    "identity_rules": 3770,
+    "identity_ui": 386,
+    "campaign": 6909,
+    "acquisition_rules": 2729,
+    "payoff_rules": 942,
+    "acquisition_ui": 83
+  },
+  "failures": 0,
+  "runs": [
+    {
+      "core": "volley_drive",
+      "gun": "single",
+      "phase": "gate",
+      "commands": 70
+    },
+    {
+      "core": "volley_drive",
+      "gun": "burst",
+      "phase": "gate",
+      "commands": 83
+    },
+    {
+      "core": "volley_drive",
+      "gun": "scatter",
+      "phase": "gate",
+      "commands": 68
+    },
+    {
+      "core": "volley_drive",
+      "gun": "heavy",
+      "phase": "gate",
+      "commands": 77
+    },
+    {
+      "core": "volley_drive",
+      "gun": "amplifier",
+      "phase": "gate",
+      "commands": 70
+    },
+    {
+      "core": "thermal_drive",
+      "gun": "single",
+      "phase": "gate",
+      "commands": 74
+    },
+    {
+      "core": "thermal_drive",
+      "gun": "burst",
+      "phase": "gate",
+      "commands": 95
+    },
+    {
+      "core": "thermal_drive",
+      "gun": "scatter",
+      "phase": "gate",
+      "commands": 81
+    },
+    {
+      "core": "thermal_drive",
+      "gun": "heavy",
+      "phase": "gate",
+      "commands": 91
+    },
+    {
+      "core": "thermal_drive",
+      "gun": "amplifier",
+      "phase": "gate",
+      "commands": 71
+    },
+    {
+      "core": "siege_drive",
+      "gun": "single",
+      "phase": "gate",
+      "commands": 68
+    },
+    {
+      "core": "siege_drive",
+      "gun": "burst",
+      "phase": "gate",
+      "commands": 75
+    },
+    {
+      "core": "siege_drive",
+      "gun": "scatter",
+      "phase": "gate",
+      "commands": 66
+    },
+    {
+      "core": "siege_drive",
+      "gun": "heavy",
+      "phase": "gate",
+      "commands": 74
+    },
+    {
+      "core": "siege_drive",
+      "gun": "amplifier",
+      "phase": "gate",
+      "commands": 56
+    }
+  ],
+  "wider_searches": [
+    {
+      "core": "thermal_drive",
+      "gun": "scatter",
+      "node": 802,
+      "seed": 731042,
+      "steps": 22
+    }
+  ],
+  "unverified": [
+    "human choice experience",
+    "full five-region balance",
+    "Galaxy performance"
+  ],
+  "sources": {
+    "새-게임-프로젝트/redesign/ammo_card_view.gd": "185a7be61fc702cf2fca83e4fa726fcdf6d9e33fb3ed3a9390ef3690de8007f8",
+    "새-게임-프로젝트/redesign/ammo_discovery.gd": "a37130fe39e5fff101b2a3dff7e4c26d2426d22f9db31819b3226eb9d813957c",
+    "새-게임-프로젝트/redesign/ammo_variants.gd": "33482263ae94b400e43ae40ddf70b5313405097c8af8f0336699267e199566c0",
+    "새-게임-프로젝트/redesign/ammo_visual.gd": "77fc9ec0e521db1be542718d5b47c8fc33f3f8abc2133ddc23b62fdfcb5a83c4",
+    "새-게임-프로젝트/redesign/battle_view.gd": "b6419692813e65d4e33c951e233f44be700b3016205880c0f88eb0187e4363d4",
+    "새-게임-프로젝트/redesign/build_guide.gd": "9dc6ced7bba94e0d5d3032ff96c6a42157bb7ed61d66107befb3d1e0e11a6aa8",
+    "새-게임-프로젝트/redesign/campaign.gd": "061309356a16bf9ee1b55777de76be4d7f4cebe7d1574c55fa39c6f518529f28",
+    "새-게임-프로젝트/redesign/campaign_content.gd": "44fa9b9b3dc05612cf3e8e7debcebe583107993fef26c7d4d74994b100a3a496",
+    "새-게임-프로젝트/redesign/campaign_ui.gd": "649472fd2bfa8c61a4ae11382023a05843c322dbeb6c16777adfb517541108de",
+    "새-게임-프로젝트/redesign/content.gd": "bb56b686a42bfd819eeaaf27b89c4c3b1b76039600483ef1e570636f52d585b8",
+    "새-게임-프로젝트/redesign/equipment_screen.gd": "6940f05473933d084f1a51df790957180194f655e6431355d7d8d4861fbf7d9e",
+    "새-게임-프로젝트/redesign/model.gd": "301c06a9072b28b291217170b4f7f0b0224626d8f3c573d0db9eaeeb4214e113",
+    "새-게임-프로젝트/redesign/readability.gd": "547680cc35eb6d86afc83115d153ddd48158af3bd354c0e2678377ccf692a778",
+    "새-게임-프로젝트/redesign/run_insight.gd": "787252acda85e504121d0546e756a0531dc366e87e212e241f4b7452633484bd",
+    "새-게임-프로젝트/redesign/screen.gd": "4cba191cd0eaa20c60df0ed7d879e149324d5c5551ada7c34e1580b576337eae",
+    "새-게임-프로젝트/tests/ammo_identity_campaign_runner.gd": "167ab417baaae6dafb7d2a48031de57e4b8a8a6e7d4c2541024a3f301a3521e5",
+    "새-게임-프로젝트/tests/ammo_identity_rules_runner.gd": "776fa1177f0444dbd330ad770fcfc01d438ce148b8ccfe801c773a29db0dfaa0",
+    "새-게임-프로젝트/tests/ammo_identity_ui_runner.gd": "e5db85ecd1905da4ad180cfa2d89b6567ea1ef8adc37df05a6975e7a9eff5858"
+  }
+}

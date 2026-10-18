@@ -15,6 +15,7 @@ func begin(gun: String = "burst") -> void:
 	screen.page = "run"
 	screen.redraw()
 	await settle()
+	await tap("story_skip")
 
 func run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/weapons/ui/"):

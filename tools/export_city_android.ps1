@@ -1,10 +1,12 @@
-param(
-    [string]$GodotPath = 'C:\Users\mdyt7\OneDrive\Desktop\Godot_v4.7-stable_win64_console.exe',
+﻿param(
+    [string]$GodotPath = 'D:\ProjectLoB\.tmp\godot-4.7\Godot_v4.7-stable_win64_console.exe',
     [string]$AndroidSdk = "$env:LOCALAPPDATA\Android\Sdk",
     [string]$JavaSdk = 'C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot',
     [string]$BuildToolsVersion = '36.1.0',
-    [int]$VersionCode = 20260920,
-    [string]$VersionName = '0.4.20260920'
+    [ValidateSet('universal', 'arm64')][string]$Architecture = 'universal',
+    [int]$VersionCode = [int](Get-Date -Format 'yyyyMMdd'),
+    [string]$VersionName = ('0.5.' + (Get-Date -Format 'yyyyMMdd.HHmmss')),
+    [string]$OutputDirectory = ''
 )
 $ErrorActionPreference = 'Stop'
 if (-not (Test-Path -LiteralPath $GodotPath)) {
@@ -12,7 +14,7 @@ if (-not (Test-Path -LiteralPath $GodotPath)) {
 }
 $repo = Split-Path -Parent $PSScriptRoot
 $project = (Get-ChildItem -LiteralPath $repo -Directory | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot') } | Select-Object -First 1).FullName
-$build = Join-Path $repo 'builds\city-android'
+$build = if ($OutputDirectory) { [IO.Path]::GetFullPath($OutputDirectory) } else { Join-Path $repo 'builds\city-android' }
 $apk = Join-Path $build 'LastOnBoard-city.apk'
 $templates = Join-Path $env:APPDATA 'Godot\export_templates\4.7.stable'
 $debugKey = Join-Path $env:APPDATA 'Godot\keystores\debug.keystore'
@@ -29,17 +31,23 @@ $indices = [regex]::Matches($existing, '\[preset\.(\d+)\]') | ForEach-Object { [
 $index = if ($indices) { ($indices | Measure-Object -Maximum).Maximum + 1 } else { 0 }
 $templateRoot = $templates.Replace('\', '/')
 $exportPath = $apk.Replace('\', '/')
+$presetName = "Android City Test $VersionCode"
+# Keep retired source art on disk; exclude only the reviewed, explicit paths.
+$exclusions = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'mobile_export_exclusions.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$excludeFilter = (@('tests/*') + @($exclusions.files)) -join ','
+$armv7Enabled = if ($Architecture -eq 'universal') { 'true' } else { 'false' }
+$abis = if ($Architecture -eq 'universal') { @('arm64-v8a', 'armeabi-v7a') } else { @('arm64-v8a') }
 $preset = @"
 
 [preset.$index]
-name="Android City Test"
+name="$presetName"
 platform="Android"
 runnable=true
 dedicated_server=false
 custom_features=""
 export_filter="all_resources"
 include_filter="assets/fonts/*OFL*.txt"
-exclude_filter="tests/*"
+exclude_filter="$excludeFilter"
 export_path="$exportPath"
 script_export_mode=2
 
@@ -47,7 +55,7 @@ script_export_mode=2
 custom_template/debug="$templateRoot/android_debug.apk"
 custom_template/release="$templateRoot/android_release.apk"
 gradle_build/use_gradle_build=false
-architectures/armeabi-v7a=true
+architectures/armeabi-v7a=$armv7Enabled
 architectures/arm64-v8a=true
 architectures/x86=false
 architectures/x86_64=false
@@ -91,7 +99,7 @@ export/android/debug_keystore_pass="android"
     # Android's standard local debug certificate; never a release signing key.
     [IO.File]::WriteAllText((Join-Path $settingsRoot 'editor_settings-4.7.tres'), $settings, $utf8)
     [IO.File]::WriteAllText($presetPath, $temporaryContent, $utf8)
-    $arguments = @('--headless', '--path', ('"{0}"' -f $project), '--export-debug', '"Android City Test"', ('"{0}"' -f $apk))
+    $arguments = @('--headless', '--path', ('"{0}"' -f $project), '--export-debug', ('"{0}"' -f $presetName), ('"{0}"' -f $apk))
     $process = Start-Process -FilePath $GodotPath -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $build 'export.stdout.log') -RedirectStandardError (Join-Path $build 'export.stderr.log')
     $null = $process.Handle
     if (-not $process.WaitForExit(300000)) { Stop-Process -Id $process.Id -Force; throw 'Android export timed out' }
@@ -110,7 +118,11 @@ export/android/debug_keystore_pass="android"
     $badging | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $build 'package.log')
     $badgingText = $badging -join "`n"
     if (-not $badgingText.Contains("versionCode='$VersionCode'") -or -not $badgingText.Contains("versionName='$VersionName'")) { throw 'Unexpected APK version' }
-    if (-not $badgingText.Contains("name='com.lastonboard.prototype'") -or -not $badgingText.Contains("arm64-v8a") -or -not $badgingText.Contains("armeabi-v7a")) { throw 'Unexpected APK package or ABI' }
+    if (-not $badgingText.Contains("name='com.lastonboard.prototype'")) { throw 'Unexpected APK package' }
+    foreach ($abi in $abis) {
+        if (-not $badgingText.Contains($abi)) { throw "Missing APK ABI: $abi" }
+    }
+    if ($Architecture -eq 'arm64' -and $badgingText.Contains('armeabi-v7a')) { throw 'Unexpected ARMv7 payload in ARM64 build' }
     $manifest = @{
         built_at = [DateTime]::UtcNow.ToString('o')
         source_commit = $sourceCommit
@@ -123,16 +135,20 @@ export/android/debug_keystore_pass="android"
         version_code = $VersionCode
         version_name = $VersionName
         game_loop = 'five regions; 35 floors; map/shop/events/progression; separate seven-combat training'
-        field_compression = 'once per combat; cyan pair affordance; tap loads; matching-card drag compresses'
+        field_compression = 'run-owned compression cores; shop recharge; part-defined exceptions'
+        content_sha256 = (Get-FileHash -LiteralPath (Join-Path $project 'redesign/content.gd') -Algorithm SHA256).Hash
+        main_scene = 'res://redesign/main.tscn'
         weapons = @('single','burst','scatter','heavy','amplifier')
         orientation = 'user landscape; Android screenOrientation 11'
-        architectures = @('arm64-v8a','armeabi-v7a')
+        architectures = @($abis)
+        excluded_source_art = @($exclusions.files)
         signing = 'standard local Android debug certificate; verified'
         alignment = 'zipalign 4-byte and 16KiB shared libraries verified'
         android_runtime = 'not tested on a device or emulator'
     }
     $manifest | ConvertTo-Json | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $build 'build_manifest.json')
-    Copy-Item -LiteralPath (Join-Path $repo 'docs/android_install_city_2026-09-20.md') -Destination (Join-Path $build 'INSTALL.md') -Force
+    Copy-Item -LiteralPath (Join-Path $repo 'docs/mobile_install.md') -Destination (Join-Path $build 'INSTALL.md') -Force
+    Add-Content -LiteralPath (Join-Path $build 'INSTALL.md') -Encoding UTF8 -Value ("`nThis package: " + ($abis -join ', '))
     Get-Item -LiteralPath $apk | Select-Object FullName, Length
     Write-Output "SHA256: $($manifest.sha256)"
 } finally {

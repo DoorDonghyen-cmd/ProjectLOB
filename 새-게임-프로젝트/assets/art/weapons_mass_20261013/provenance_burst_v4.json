@@ -1,0 +1,34 @@
+{
+  "refs": [
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/burst_v3.png",
+    "D:/ProjectLoB/worktrees/core-redesign/qa_runtime/outfits_live/20261013_235344/actor_hoist_burst.png"
+  ],
+  "prompt": "Edit IMAGE 1 weapon only. IMAGE 2 is character line-weight/cluster-scale reference; the thin-lined gun in image2 is the problem to FIX. Preserve exact 1536x1024 canvas, right-facing weapon design, silhouette bounds, grip at495,631 support1150,535 muzzle1495,390 and magazine region702,475,232,390. Main change: THICK DARK CHARCOAL BLUE OUTER CONTOUR approximately 40-50 source pixels thick drawn INWARD within existing weapon silhouette. Broad squared stair-step edges matching the coarse character's 6-10px dark contour after weapon reduction. Not thin 1-pixel-looking outline. Simplify silhouette tiny notches; keep long barrel, stock, curved magazine, trigger opening and main grip recognizable. Interior has NO tiny dark panel outlines, no parallel fine lines, rivets, shine, grip stitching. Main barrel and receiver are one broad blue-gray area with ONE block shadow. Brass dull low saturation ochre; red wrapping one large patch. Coarse color blocks roughly50-70sourcepx. No thin bright border next to dark contour. Keep grip muzzle and detachable magazine positions exactly because this is a registered animated game asset. Do not rescale/recenter or move components. Weapon alone, no character, no labels, no ground, NO halo/glow/drop shadow/blur/gradients. Genuine transparent alpha background. Strong chunky pixel silhouette, quiet simple interior.",
+  "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-44037cd2-b40d-4a0c-af92-58b3da376d35.png",
+  "file": "burst_v4.png",
+  "tool": "image_gen built-in",
+  "reference_roles": [
+    "weapon edit target v3",
+    "character line weight comparison"
+  ],
+  "sha256": "7a533b253b3d1937c696cf3ce3de51cfc2a23bb279a882cd1817da51a2b49bee",
+  "size": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    254
+  ],
+  "opaque_bbox": [
+    42,
+    261,
+    1498,
+    880
+  ],
+  "reference_hashes": [
+    "e4d40bceda3a093c36572ef2fe8d34caad21f5358bb8e144c03eccedcf11e7c8",
+    "ac8e9002c8e8df5e2de276d5f81384285fd3321b72fa0cab7a86aad7a7e20af2"
+  ]
+}

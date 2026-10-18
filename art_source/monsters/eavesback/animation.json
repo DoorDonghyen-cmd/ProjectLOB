@@ -1,0 +1,14 @@
+{
+  "source": "eavesback.ase",
+  "atlas_source": "keyposes_v1.png",
+  "cell": [768, 512],
+  "display_scale": 0.166153846,
+  "anchors": [[410,493], [410,494], [410,435], [410,432]],
+  "initial_durations_ms": [180,180,180,160],
+  "clips": {
+    "idle": {"from":0,"to":0,"loop":true},
+    "walk": {"from":0,"to":1,"loop":true},
+    "hit": {"from":2,"to":2,"loop":false},
+    "attack": {"from":3,"to":3,"loop":false}
+  }
+}

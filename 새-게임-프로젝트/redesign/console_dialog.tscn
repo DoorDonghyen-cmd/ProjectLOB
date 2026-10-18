@@ -1,0 +1,123 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://redesign/console_dialog.gd" id="1"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/panel_normal.tres" id="2"]
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="3"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_normal.tres" id="4"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/primary_normal.tres" id="5"]
+
+[node name="ConsoleDialog" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+z_index = 200
+script = ExtResource("1")
+
+[node name="Shade" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.025, 0.045, 0.06, 0.8)
+
+[node name="Frame" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -220.0
+offset_right = 320.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("2")
+
+[node name="Margin" type="MarginContainer" parent="Frame"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Layout" type="VBoxContainer" parent="Frame/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Header" type="HBoxContainer" parent="Frame/Margin/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Frame/Margin/Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("3")
+theme_override_colors/font_color = Color(0.83, 0.87, 0.84, 1)
+theme_override_font_sizes/font_size = 26
+text = "파츠 분해"
+autowrap_mode = 2
+
+[node name="DialogClose" type="Button" parent="Frame/Margin/Layout/Header"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 48)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("4")
+text = "닫기"
+
+[node name="Rule" type="ColorRect" parent="Frame/Margin/Layout"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.29, 0.38, 0.4, 1)
+
+[node name="DialogScroll" type="ScrollContainer" parent="Frame/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+scroll_deadzone = 12
+
+[node name="DialogContent" type="VBoxContainer" parent="Frame/Margin/Layout/DialogScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="Preview" type="Label" parent="Frame/Margin/Layout/DialogScroll/DialogContent"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3")
+theme_override_colors/font_color = Color(0.55, 0.67, 0.68, 1)
+theme_override_font_sizes/font_size = 20
+text = "선택한 파츠를 분해하고 10Cr를 받습니다.\n분해한 파츠는 보관함에서 사라집니다."
+autowrap_mode = 2
+
+[node name="DialogActions" type="HBoxContainer" parent="Frame/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="DialogCancel" type="Button" parent="Frame/Margin/Layout/DialogActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("4")
+text = "보관"
+
+[node name="DialogConfirm" type="Button" parent="Frame/Margin/Layout/DialogActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("5")
+theme_override_colors/font_color = Color(0.06, 0.1, 0.12, 1)
+text = "분해 · +10Cr"

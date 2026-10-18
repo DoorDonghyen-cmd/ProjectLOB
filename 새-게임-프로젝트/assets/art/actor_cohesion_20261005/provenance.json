@@ -1,0 +1,520 @@
+{
+  "generator": "built-in image_gen.imagegen",
+  "date": "2026-10-05",
+  "status": "hero v2 user-approved; all seven enemy v2 assets integrated and visually checked; enemy-specific user review pending",
+  "assets": [
+    {
+      "id": "reclaimer",
+      "file": "reclaimer_grouped_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-e2c57ba8-9b6b-436b-b5ab-c0a9515ab332.png",
+      "prompt": "hero-prompt.txt",
+      "references": [
+        "assets/art/tower_sample_20261003/reclaimer.png",
+        "assets/art/tower_sample_20261003/residential_tower.png"
+      ],
+      "sha256": "73a02fb7df4edcffd96f384047aa11bce24c0da8c0a42f6ce37b1113eff35b9f",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        363,
+        117,
+        1030,
+        1183
+      ],
+      "faint_alpha_pixels_1_to_15": 12093,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "spitter",
+      "file": "pressure_toad_atlas_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-16411de7-c619-4752-82c5-203b1963b981.png",
+      "prompt": "toad-prompt.txt",
+      "references": [
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "assets/art/tower_sample_20261003/residential_tower.png",
+        "historical baseline battle screenshot (reference for former placeholder)"
+      ],
+      "sha256": "a18a8f516cf3b7eb01b968832315bc0510db273a38397fbf18f86fe9cbbe8932",
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        158,
+        298,
+        1697,
+        743
+      ],
+      "faint_alpha_pixels_1_to_15": 15190,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "runner",
+      "file": "runner_grouped_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-8f71241a-99e5-434b-b789-2acb5a2baded.png",
+      "prompt": "runner-prompt.txt",
+      "references": [
+        "assets/art/pixel_20261003/runner.png",
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "qa_runtime/actor_cohesion/after/after_four_actors.png at intermediate hero+toad-only stage (mutable QA output)"
+      ],
+      "sha256": "63e9ef9c7591c97b7a5d30da8cc37937266f29da092ffaf0d662a4bbba0eba6f",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        85,
+        250,
+        1171,
+        1097
+      ],
+      "faint_alpha_pixels_1_to_15": 16982,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "wall",
+      "file": "wall_grouped_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-e618f582-5185-403e-ad0f-b0e4253d0310.png",
+      "prompt": "wall-prompt.txt",
+      "references": [
+        "assets/art/pixel_20261003/wall.png",
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "qa_runtime/actor_cohesion/after/after_four_actors.png at intermediate hero+toad-only stage (mutable QA output)"
+      ],
+      "sha256": "ff84370232efd6cdb9d8ee3580183cd771b4a8d944080a75f49f895bec2870b6",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        171,
+        143,
+        1084,
+        1176
+      ],
+      "faint_alpha_pixels_1_to_15": 17148,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "evader",
+      "file": "evader_grouped_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-d4047f33-6dd4-4979-b247-9c6dc2b9d2dc.png",
+      "prompt": "evader-prompt.txt",
+      "references": [
+        "assets/art/pixel_20261003/evader.png",
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "qa_runtime/actor_cohesion/after/after_four_actors.png at intermediate hero+toad-only stage (mutable QA output)"
+      ],
+      "sha256": "c3f141be988b8986174a927eecfed2ddbd9b39b1ced941b9d4e3bd2c14461ff1",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        248,
+        106,
+        997,
+        1180
+      ],
+      "faint_alpha_pixels_1_to_15": 17652,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "caster",
+      "file": "caster_grouped_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-37cfa97b-8ed8-44ca-b384-7777806d9faf.png",
+      "prompt": "caster-prompt.txt",
+      "references": [
+        "assets/art/pixel_20261003/caster.png",
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "qa_runtime/actor_cohesion/after/after_four_actors.png at intermediate hero+toad-only stage (mutable QA output)"
+      ],
+      "sha256": "e1d7a0067284a1b3d0b18ef496efc72c373113ce89cb263df7462b55952170c2",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        264,
+        263,
+        992,
+        985
+      ],
+      "faint_alpha_pixels_1_to_15": 7057,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "absorber",
+      "file": "absorber_grouped_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-2bad4add-73b0-4afa-9ce6-8a9a55a80b39.png",
+      "prompt": "absorber-prompt.txt",
+      "references": [
+        "assets/art/pixel_20261003/absorber.png",
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "qa_runtime/actor_cohesion/after/after_four_actors.png at intermediate hero+toad-only stage (mutable QA output)"
+      ],
+      "sha256": "8f9ccf1ff73f8076ee51d22c072297d1d79c9817905acb705395d3f41313b524",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        174,
+        229,
+        1086,
+        1080
+      ],
+      "faint_alpha_pixels_1_to_15": 7441,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "stance",
+      "file": "stance_grouped_v1.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-b146a91d-c727-47e4-aa14-e3e2e15ce1e1.png",
+      "prompt": "stance-prompt.txt",
+      "references": [
+        "assets/art/pixel_20261003/stance.png",
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "qa_runtime/actor_cohesion/after/after_four_actors.png at intermediate hero+toad-only stage (mutable QA output)"
+      ],
+      "sha256": "e301127f393c42b1e07c065276d508d639f38834e39cf2add5a62a85b1539d64",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        74,
+        330,
+        1183,
+        1014
+      ],
+      "faint_alpha_pixels_1_to_15": 14420,
+      "note": "Generated original copied byte-for-byte. PNG was not resized, recolored or composited in Python. Godot handles atlas regions and display sizing."
+    },
+    {
+      "id": "reclaimer_v2",
+      "file": "reclaimer_grouped_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-9b7d788d-783a-4176-a1df-93b86a4136bc.png",
+      "prompt": "hero-v2-prompt.txt",
+      "references": [
+        "assets/art/actor_cohesion_20261005/reclaimer_grouped_v1.png",
+        "assets/art/tower_sample_20261003/residential_tower.png",
+        "docs/qa/reports/actor_cohesion_2026-10-05_assets/after_roster_runner_1008.png"
+      ],
+      "intent": "Stronger, broad pixel mass grouping to match the background. Selected costume, pose and display scale preserved.",
+      "sha256": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_128": [
+        367,
+        118,
+        1033,
+        1183
+      ],
+      "note": "Copied byte-for-byte from built-in image_gen output. No PNG post-processing. Godot uses original character anchor and 0.65 scale."
+    },
+    {
+      "id": "runner_v2",
+      "target": "runner_grouped_v1.png",
+      "file": "runner_grouped_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-6220b1d5-7cb5-43bb-bd99-548fc2619df0.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "region": [
+        61,
+        243,
+        1152,
+        875
+      ],
+      "display_size_at_scale_2": [
+        134,
+        102
+      ],
+      "sha256": "e823ed75bb2c0a757f51a8812268693ffcf3cc46881c33b223a34787c56bdfa6",
+      "prompt": "runner-v2-prompt.txt",
+      "references": [
+        "runner_grouped_v1.png",
+        "reclaimer_grouped_v2.png",
+        "../tower_sample_20261003/residential_tower.png"
+      ],
+      "note": "Built-in image_gen output copied byte-for-byte; Godot atlas regions and scale only.",
+      "kind": "runner"
+    },
+    {
+      "id": "wall_v2",
+      "target": "wall_grouped_v1.png",
+      "file": "wall_grouped_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-c0bf0bb3-f6f6-4fd8-b55e-655e51ba7445.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "region": [
+        172,
+        139,
+        921,
+        1038
+      ],
+      "display_size_at_scale_2": [
+        96,
+        108
+      ],
+      "sha256": "049c4e339d8665f34d16dffeae80d24741eb9bb43ea682e1fe33b4599190e5a6",
+      "prompt": "wall-v2-prompt.txt",
+      "references": [
+        "wall_grouped_v1.png",
+        "reclaimer_grouped_v2.png",
+        "../tower_sample_20261003/residential_tower.png"
+      ],
+      "note": "Built-in image_gen output copied byte-for-byte; Godot atlas regions and scale only.",
+      "kind": "wall"
+    },
+    {
+      "id": "evader_v2",
+      "target": "evader_grouped_v1.png",
+      "file": "evader_grouped_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-48aa77ae-ad3b-4b04-88e6-c8a8105d5b0d.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "region": [
+        237,
+        105,
+        756,
+        1076
+      ],
+      "display_size_at_scale_2": [
+        76,
+        108
+      ],
+      "sha256": "ac276424efcf53acc7688722b67f69091eb30f914c48fc5be4bb510211c21312",
+      "prompt": "evader-v2-prompt.txt",
+      "references": [
+        "evader_grouped_v1.png",
+        "reclaimer_grouped_v2.png",
+        "../tower_sample_20261003/residential_tower.png"
+      ],
+      "note": "Built-in image_gen output copied byte-for-byte; Godot atlas regions and scale only.",
+      "kind": "evader"
+    },
+    {
+      "id": "caster_v2",
+      "target": "caster_grouped_v1.png",
+      "file": "caster_grouped_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-71b71cc9-270b-426c-a150-349b4dc24307.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "region": [
+        272,
+        255,
+        723,
+        735
+      ],
+      "display_size_at_scale_2": [
+        90,
+        92
+      ],
+      "sha256": "7b696bd1ab719ed2f387e6cf9d4770a8f15211572fb52d820a71388f9708339a",
+      "prompt": "caster-v2-prompt.txt",
+      "references": [
+        "caster_grouped_v1.png",
+        "reclaimer_grouped_v2.png",
+        "../tower_sample_20261003/residential_tower.png"
+      ],
+      "note": "Built-in image_gen output copied byte-for-byte; Godot atlas regions and scale only.",
+      "kind": "caster"
+    },
+    {
+      "id": "absorber_v2",
+      "target": "absorber_grouped_v1.png",
+      "file": "absorber_grouped_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-701e394d-f905-4145-ba81-f96177c507d3.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "region": [
+        181,
+        231,
+        888,
+        848
+      ],
+      "display_size_at_scale_2": [
+        96,
+        92
+      ],
+      "sha256": "b3b15f5566de161cb99582a6d3f1a35942efa7bbb99b2e1f375bc3023ebe3827",
+      "prompt": "absorber-v2-prompt.txt",
+      "references": [
+        "absorber_grouped_v1.png",
+        "reclaimer_grouped_v2.png",
+        "../tower_sample_20261003/residential_tower.png"
+      ],
+      "note": "Built-in image_gen output copied byte-for-byte; Godot atlas regions and scale only.",
+      "kind": "absorber"
+    },
+    {
+      "id": "stance_v2",
+      "target": "stance_grouped_v1.png",
+      "file": "stance_grouped_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-752cc0b4-4613-4ec0-94be-749faf056ca9.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "region": [
+        62,
+        330,
+        1155,
+        712
+      ],
+      "display_size_at_scale_2": [
+        150,
+        92
+      ],
+      "sha256": "5c0c16b02552f87bb373b0be97f275e474545b57179193a4aedf2e6cbc995654",
+      "prompt": "stance-v2-prompt.txt",
+      "references": [
+        "stance_grouped_v1.png",
+        "reclaimer_grouped_v2.png",
+        "../tower_sample_20261003/residential_tower.png"
+      ],
+      "note": "Built-in image_gen output copied byte-for-byte; Godot atlas regions and scale only.",
+      "kind": "stance"
+    },
+    {
+      "id": "spitter_v2",
+      "target": "pressure_toad_atlas_v1.png",
+      "file": "pressure_toad_atlas_v2.png",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-55907a3f-2c3f-4694-809c-8cbbc8eaf6a8.png",
+      "cell_width": 887,
+      "frame_bboxes_alpha_128": [
+        [
+          151,
+          303,
+          858,
+          784
+        ],
+        [
+          93,
+          303,
+          817,
+          784
+        ]
+      ],
+      "size": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "region": [
+        131,
+        301,
+        729,
+        485
+      ],
+      "display_size_at_scale_2": [
+        98,
+        67.0
+      ],
+      "sha256": "9ee4552ce01e7a4d43e2c8c1af930d98d4cf6f1840215eddde812fd7962f2c51",
+      "prompt": "spitter-v2-prompt.txt",
+      "references": [
+        "pressure_toad_atlas_v1.png",
+        "reclaimer_grouped_v2.png",
+        "../tower_sample_20261003/residential_tower.png"
+      ],
+      "note": "Built-in image_gen output copied byte-for-byte; Godot atlas regions and scale only.",
+      "charged_region": [
+        978,
+        301,
+        729,
+        485
+      ],
+      "charged_cell_alignment": [
+        -40,
+        0
+      ],
+      "alignment_note": "Both feet baselines are y784. The second generated pose is shifted left around 40 source pixels; independent source origin aligns body/feet while preserving throat expansion.",
+      "kind": "spitter"
+    }
+  ],
+  "current_hero": "reclaimer_grouped_v2.png",
+  "user_acceptance": {
+    "date": "2026-10-05",
+    "asset": "reclaimer_grouped_v2.png",
+    "scope": "visual style, selected character appearance and continued art direction",
+    "feedback": "딱 내가 원하던 느낌",
+    "pending_at_acceptance": "enemy v2 alignment and frame animation"
+  },
+  "current_enemies": {
+    "runner": "runner_grouped_v2.png",
+    "wall": "wall_grouped_v2.png",
+    "evader": "evader_grouped_v2.png",
+    "caster": "caster_grouped_v2.png",
+    "absorber": "absorber_grouped_v2.png",
+    "stance": "stance_grouped_v2.png",
+    "spitter": "pressure_toad_atlas_v2.png"
+  }
+}

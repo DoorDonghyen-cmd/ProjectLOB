@@ -1,0 +1,43 @@
+{
+  "tool": "built-in image_gen",
+  "prompts": [
+    "Create a production transparent 2x2 sprite atlas for a quiet TITLE-SCREEN IDLE ANIMATION, exactly four full-body frames of the SAME approved pixel character. Input 1 locks identity and broad muted pixel-cluster style; input 2 is the approved character animation style, NOT the new poses. The character must face LEFT in EVERY frame, opposite to the references. Preserve blue-grey work coat, rusty red shoulder cape/scarf, blue-grey miner/work cap with a small square cream lamp, plain warm face with no detailed eyes, backpack, work trousers, boots and long dark gun. Calm tired technician resting beside a workshop, looking toward a vast tower on the left. LEFT-facing profile/very slight three-quarter, relaxed stance. Gun safely lowered diagonally toward lower LEFT, hand near waist holds it, muzzle clear of floor. Free hand rests on belt except small cap gesture. Frame1 top-left: relaxed still idle, head looking left. Frame2 top-right: same stance, subtle inhalation raises chest/head a single logical pixel, feet fixed. Frame3 bottom-left: free hand gently touches brim of cap, head tips slightly up-left to gaze toward upper tower. Frame4 bottom-right: hand lowered halfway back toward belt, shoulders settle. Feet identical spacing and baseline, identical body scale and equipment, no turning, no stepping. All four cells exactly equally sized, same character ground anchor in every cell, generous clear margin. Deliberately low-detail broad blocky coherent pixels like input1; no extra seams, bolts, highlights, outlining, gritty texture or increased contrast. Chunk sizes proportionate to original: full body roughly 45 logical pixels high, not a detailed high-res sprite. No floor, shadows, background, labels, lettering or cell border. True transparent alpha outside each full sprite. Make the movement restrained and easy to align, not a combat pose or salute.",
+    "Edit this four-frame transparent sprite atlas with one precise anatomy correction. Preserve the atlas resolution, all four cells, pixel cluster style, colors, clothing, left-facing direction, margins and planted boots. In BOTTOM LEFT frame only, there are currently THREE hands: a hand touching the cap, a hand gripping the lowered gun at the left hip, and an erroneous peach hand at the right waist. Remove the erroneous peach hand and its bent waist arm on the RIGHT side of the bottom-left character; fill that small area with the broad blue-grey coat/backpack silhouette matching the other frames. The two remaining arms are one holding the lowered gun and one raised across the front to touch the cap. Exactly two arms and two hands. Ensure the raised arm reads as connected to the shoulder. Do NOT alter the other three frames or add any details/background. Preserve true transparent alpha."
+  ],
+  "inputs": [
+    "assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+    "assets/art/actor_motion_20261005/reclaimer_actions_v1.png"
+  ],
+  "asset": "assets/art/title_20261011/reclaimer_idle_v1.png",
+  "notes": "Original generated RGBA kept intact. Godot AtlasTexture regions register four poses to planted feet; runtime alpha cutoff rejects translucent fringes. Title-only; battle art unchanged.",
+  "regions": [
+    [
+      124,
+      47,
+      360,
+      560
+    ],
+    [
+      717,
+      47,
+      360,
+      560
+    ],
+    [
+      124,
+      643,
+      360,
+      560
+    ],
+    [
+      718,
+      643,
+      360,
+      560
+    ]
+  ],
+  "anchor": [
+    210,
+    560
+  ]
+}

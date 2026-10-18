@@ -1,0 +1,39 @@
+[
+  {
+    "id": "pixel-ui",
+    "commit": "1b321ac44c8e55f89ba9aeae92f7b4feff5c2df1",
+    "passed": true,
+    "scope": "Godot 4.7 headless editor load; no visual or production compatibility claim",
+    "logs": "qa_runtime/reference_candidates/pixel-ui",
+    "errors": []
+  },
+  {
+    "id": "importality",
+    "commit": "532715c16788ac3d720879947f145d94379a619e",
+    "passed": false,
+    "scope": "Godot 4.7 headless editor load; no visual or production compatibility claim",
+    "logs": "qa_runtime/reference_candidates/importality",
+    "errors": [
+      "ERROR: 8 resources still in use at exit (run with --verbose for details)."
+    ]
+  },
+  {
+    "id": "card-skeleton",
+    "commit": "b12123f607346cd24f27fa5e33f71ad207c02769",
+    "passed": false,
+    "scope": "Godot 4.7 headless editor load; no visual or production compatibility claim",
+    "logs": "qa_runtime/reference_candidates/card-skeleton",
+    "errors": [
+      "SCRIPT ERROR: Parse Error: Preload file \"res://icon.svg\" does not exist.",
+      "ERROR: Failed to load script \"res://addons/CardGameSkeleton/Menus/CardMenu.gd\" with error \"Parse error\".",
+      "SCRIPT ERROR: Parse Error: Preload file \"res://icon.svg\" does not exist.",
+      "ERROR: Failed to load script \"res://addons/CardGameSkeleton/Menus/EditCardMenu.gd\" with error \"Parse error\".",
+      "ERROR: Failed loading resource: res://CardImages/CardBack.jpg.",
+      "SCRIPT ERROR: Parse Error: Preload file \"res://icon.svg\" does not exist.",
+      "ERROR: Failed to load script \"res://addons/CardGameSkeleton/Menus/DeckMenu.gd\" with error \"Parse error\".",
+      "SCRIPT ERROR: Parse Error: Preload file \"res://icon.svg\" does not exist.",
+      "SCRIPT ERROR: Parse Error: Preload file \"res://icon.svg\" does not exist.",
+      "ERROR: Failed to load script \"res://addons/CardGameSkeleton/Menus/NewDeckMenu.gd\" with error \"Parse error\"."
+    ]
+  }
+]

@@ -1,21 +1,27 @@
 extends RefCounted
-## The production city's names/altitudes remain the single source of truth.
+## Stable route IDs and floor counts; current tower names live in this adapter.
 const City = preload("res://scripts/core/map_generator.gd")
 const Ammo = preload("res://redesign/content.gd")
 const BuildGuide = preload("res://redesign/build_guide.gd")
+const RouteMap = preload("res://redesign/route_map.gd")
+const Residential = preload("res://redesign/residential_roster.gd")
+const Discovery = preload("res://redesign/ammo_discovery.gd")
 const START_CREDITS := 30
+const Acquisition = preload("res://redesign/ammo_acquisition.gd")
 const ROUTE_REWARD_BONUS := 6
 const REGIONS := ["section_a", "section_b", "section_c", "section_d", "section_e"]
 const LOADOUTS := {
-	"balanced": {"name": "무기 기본 보급", "deck": Ammo.START_DECK},
-	"amplify": {"name": "증폭·연발", "deck": ["charge", "charge", "charge", "precise", "precise", "precise", "pierce", "pierce", "bore", "push"]},
-	"thermal": {"name": "화상·거리", "deck": ["bore", "bore", "bore", "push", "push", "charge", "precise", "precise", "pierce", "arc"]},
-	"voltage": {"name": "전격·관통", "deck": ["arc", "arc", "arc", "pierce", "pierce", "charge", "charge", "precise", "precise", "push"]},
+	"balanced": {"name": "코어·무기 맞춤", "deck": Ammo.START_DECK},
+	"amplify": {"name": "연타 보급", "deck": ["charge", "charge", "charge", "precise", "precise", "precise", "pierce", "pierce", "push", "push"]},
+	"thermal": {"name": "소이 보급", "deck": ["bore", "bore", "bore", "push", "push", "arc", "pierce", "pierce", "bore", "arc"]},
+	"voltage": {"name": "전격 보급", "deck": ["arc", "arc", "arc", "pierce", "pierce", "charge", "charge", "precise", "precise", "arc"]},
 }
 
-static func info(region: int) -> Dictionary:
+static func info(region: int, map_version: int = 1) -> Dictionary:
 	var data: Dictionary = City.section_info(REGIONS[region]).duplicate(true)
-	data.brief = ["멈춘 선로를 건너 첫 승강기로 향하세요.", "주조장의 불길 사이에서 쓸 만한 부품을 회수하세요.", "도시를 움직이는 기계들이 아직 길을 지키고 있습니다.", "닫힌 통행로를 뚫고 상층부로 올라가세요.", "마지막 승강기까지, 완성한 빌드를 시험하세요."][region]
+	if map_version >= 2: data.floors = RouteMap.LENGTHS[region]
+	data.name = ["승강장·주거 통로", "축열 주조장", "우수 정원", "송전 회랑", "관측대·제어실"][region]
+	data.brief = ["우리 동네를 다시 잠그는 명령은 정상에서 내려옵니다.", "열은 충분합니다. 닫힌 분기로는 닿지 않을 뿐입니다.", "열린 격리문 너머에도 사람이 남아 있습니다.", "공급 목록 밖의 불빛을 따라 정상으로 향하세요.", "중앙의 차단 명령을 해제하고 현장 제어권을 여세요."][region]
 	return data
 
 static func rng(seed_value: int, salt: int) -> RandomNumberGenerator:
@@ -40,7 +46,13 @@ static func names(region: int) -> Dictionary:
 		3: return City._names_d()
 	return City._names_e()
 
-static func nodes(region: int, seed_value: int) -> Array:
+static func nodes(region: int, seed_value: int, map_version: int = 1) -> Array:
+	if map_version >= 2:
+		var generated := RouteMap.generate(region, seed_value, map_version)
+		for item in generated:
+			if item.kind == "shop": item.name = ["승강장 잡화점", "주조장 고물상", "정원 교역소", "회랑 물자상", "관측대 상점"][region] if map_version >= 3 else preload("res://redesign/city_story.gd").SHOPS[region].place
+			if item.kind == "boss" and region == 4: item.name = "중앙 제어실 관문"
+		return generated
 	var result: Array = []
 	var table := names(region)
 	var floors := int(info(region).floors)
@@ -58,20 +70,41 @@ static func nodes(region: int, seed_value: int) -> Array:
 			var kind: String = kinds[lane]
 			var label := str(table.get(old_id, ["비공개 구획", ""])[0]).split(" (")[0]
 			if kind == "event": label = "비공개 구획"
+			if kind == "shop": label = preload("res://redesign/city_story.gd").SHOPS[region].place
+			if kind == "boss" and region == 4: label = "중앙 제어실 관문"
 			var route := "stairs" if lane == 0 else "duct"
 			if kind == "shop": route = "stairs" if (seed_value + region) % 2 == 0 else "duct"
 			var random := rng(seed_value, id)
 			var event_kind: String = ["siphon", "archive", "salvage"][random.randi_range(0, 2)] if kind == "event" else ""
 			result.append({"id": id, "region": region, "floor": floor_number, "lane": lane, "kind": kind, "name": label, "route": route, "event": event_kind})
+	# Materialize the original topology too: drawing, traversal and validation share one source.
+	for item in result:
+		item.next = []
+		var following := result.filter(func(target): return int(target.floor) == int(item.floor) + 1)
+		for target in following:
+			if int(item.lane) == 1 and int(target.lane) == 0 and following.size() > 1: continue
+			item.next.append(target.id)
 	return result
 
+static func room_kind(node: Dictionary) -> String:
+	if node.get("elite", false): return "elite"
+	if node.get("workshop", false): return "workshop"
+	return str(node.kind)
+
 static func kind_name(kind: String) -> String:
-	return {"combat": "전투", "boss": "관문", "shop": "무기고", "supply": "보급", "bypass": "우회", "event": "신호"}.get(kind, kind)
+	return {"combat": "전투", "elite": "정예", "workshop": "공방", "boss": "관문", "shop": "상점", "supply": "탄약고", "bypass": "샛길", "event": "조우"}.get(kind, kind)
 
 static func hint(node: Dictionary) -> String:
+	if int(node.get("map_version", 1)) >= 3:
+		if node.get("workshop", false): return "무료 작업 1회 · 압축 / 개조 / 제거 / 가방 확장"
+		if node.kind == "shop": return "파츠·탄환·전투용 압축 충전 구매"
+		if node.kind == "supply": return "보유 탄 보충 또는 새로운 탄환 · 무료 1장"
+		if node.kind == "event": return "사람과 설비가 남긴 흔적 · 현장에서 단서를 살펴보세요."
+	if node.get("elite", false): return "정예와 호위 · 위험한 전열\n미보유 파츠 최대 2종 중 1개 또는 크레딧"
+	if node.get("workshop", false): return "무료 정비 1회 · 탄환 압축 / 1장 제거 / 압축 코어 충전"
 	match str(node.kind):
 		"combat": return "적 편성 공개 · 탄환 또는 크레딧 보상"
-		"boss": return "계층 관문 · 처치하면 다음 계층으로"
+		"boss": return "최종 관문 · 처치 후 정상 설비 복구" if int(node.region) == 4 else "구역 관문 · 처치하면 다음 구역으로"
 		"shop": return "탄환·파츠 구매 · 보유 파츠 교체"
 		"supply": return "공개된 탄환 중 1장 보급"
 		"bypass": return "전투 없이 이동 · 기록 1개 발견"
@@ -94,6 +127,10 @@ static func _enemy(row: Array, boss_name: String = "") -> Dictionary:
 		enemy.stance_def = maxi(4, int(row[2]))
 		enemy.stance_closed = true
 		enemy.def = int(enemy.stance_def)
+	elif kind == "spitter":
+		enemy.speed = 0
+		enemy.ranged_phase = "prepare"
+		enemy.ranged_left = 2
 	elif kind == "evader":
 		enemy.weakness = "electric"
 	if row.size() > 5:
@@ -106,7 +143,7 @@ static func _enemy(row: Array, boss_name: String = "") -> Dictionary:
 			enemy.def = int(enemy.stance_def) if bool(enemy.stance_closed) else 0
 	return enemy
 
-static func encounter_pack(node: Dictionary, seed_value: int, gun: String, difficulty: int, pressure: int) -> Dictionary:
+static func encounter_pack(node: Dictionary, seed_value: int, gun: String, difficulty: int, pressure: int, roster_version: int = 1) -> Dictionary:
 	var region := int(node.region)
 	var local_floor := int(node.floor)
 	var random := rng(seed_value, int(node.id))
@@ -114,7 +151,7 @@ static func encounter_pack(node: Dictionary, seed_value: int, gun: String, diffi
 	var rows: Array = []
 	if region == 0 and local_floor == 1:
 		# One new idea: combine rounds before introducing armor or weakness.
-		rows = [["runner", 6, 0, 2, 22], ["runner", 8, 0, 2, 26]]
+		rows = [["runner", 8, 0, 2, 18], ["runner", 12, 0, 2, 22]]
 	elif region == 0 and local_floor == 2:
 		rows = [["wall", 10, 3, 1, 22], ["runner", 6, 0, 2, 26]]
 	elif region == 0 and local_floor == 3:
@@ -154,11 +191,36 @@ static func encounter_pack(node: Dictionary, seed_value: int, gun: String, diffi
 			var speed := 1 if kind in ["wall", "caster", "absorber"] else 2
 			if region >= 3 and kind == "runner" and local_floor >= 5: speed = 3
 			rows.append([kind, hp, armor, speed, mini(34, 18 + region * 2 + i * 3 + (2 if speed == 3 else 0))])
+	if not boss and (region > 0 or local_floor >= 5):
+		var role := posmod(region + local_floor, 3)
+		if role == 0:
+			rows[0] = ["wall", 10 + mini(region, 2), 4, 1, 22 + region]
+		elif role == 1:
+			rows[0] = ["absorber", 7 + mini(region, 2), 0, 1, 22 + region]
+		else:
+			rows[0] = ["wall", 8, 3, 1, 22 + region]
+			rows[1] = ["spitter", 7 + mini(region, 2), 0, 0, 25 + region]
+	var residential := region == 0 and roster_version >= 2
+	if residential: rows = Residential.rows(node, random)
+	if roster_version >= 3: rows = preload("res://redesign/assault_roster.gd").rows(node,random,rows)
+	if roster_version >= 4: rows = Acquisition.opening_rows(node, rows)
+	if roster_version >= 5: rows = preload("res://redesign/residential_challenges.gd").rows(node, rows)
 	var enemies: Array = []
 	for i in range(rows.size()):
 		var row: Array = rows[i]
 		var enemy := _enemy(row, str(node.name) if boss and i == 0 else "")
-		enemy.distance = maxi(6, int(enemy.distance) - pressure - mini(4, difficulty / 2))
+		if residential: Residential.identify(enemy, boss and i == 0)
+		if roster_version >= 5: preload("res://redesign/residential_challenges.gd").identify(enemy, row)
+		if node.get("elite", false) and i == 0 and not enemy.has("rank"):
+			enemy.hp = ceili(float(enemy.hp) * 1.35)
+			enemy.max_hp = enemy.hp
+			enemy.name = "강화 " + str(enemy.name)
+		# Heat needs a meaningful action deadline. Reserves still enter at their
+		# published distance and do not move on their arrival turn.
+		var approach := int(enemy.distance)
+		if not (region == 0 and local_floor == 1): approach = ceili(approach * 0.65)
+		enemy.distance = maxi(6, approach - pressure - mini(4, difficulty / 2))
+		if node.get("elite", false): enemy.distance = maxi(6, int(enemy.distance) - 1)
 		enemies.append(enemy)
 	var active_count := mini(4, enemies.size())
 	for i in range(enemies.size()):
@@ -168,17 +230,59 @@ static func encounter_pack(node: Dictionary, seed_value: int, gun: String, diffi
 static func encounter(node: Dictionary, seed_value: int, gun: String, difficulty: int, pressure: int) -> Array:
 	return encounter_pack(node, seed_value, gun, difficulty, pressure).active
 
-static func rewards(node: Dictionary, seed_value: int) -> Array:
-	var options := shuffle(["charge", "precise", "pierce", "bore", "push", "arc"], rng(seed_value, int(node.id) + 700))
-	# Preserve one random alternative while supplying a tool for the next lesson.
-	if int(node.get("region", -1)) == 0 and int(node.get("floor", 0)) == 1:
-		options.erase("pierce")
-		options.push_front("pierce")
-	return options.slice(0, 2)
+# New roles open in stages; duplicates remain valuable for compression.
+static func ammo_pool(node: Dictionary, discovery_version: int = 0) -> Array:
+	var pool := _legacy_ammo_pool(node)
+	return Discovery.ammo(pool, discovery_version) if discovery_version >= 1 else pool
+
+static func _legacy_ammo_pool(node: Dictionary) -> Array:
+	var pool: Array = Ammo.TACTICAL_AMMO.duplicate()
+	if int(node.get("region", 0)) == 0:
+		if int(node.get("floor", 1)) == 2:
+			return pool.slice(0, 6) + ["shatter", "disrupt", "bypass"]
+		if int(node.get("floor", 1)) < 2:
+			return pool.slice(0, 6)
+		if int(node.get("floor", 1)) < 5:
+			return pool.slice(0, 9) + ["cool", "disrupt", "bypass"]
+	return pool
+
+static func rewards(node: Dictionary, seed_value: int, deck: Array = [], equipped: Array = [], discovery_version: int = 0) -> Array:
+	var options := shuffle(ammo_pool(node, discovery_version), rng(seed_value, int(node.id) + 700))
+	var families: Array = []
+	for id in deck:
+		var source := Ammo.source_id(str(id))
+		if not families.has(source): families.append(source)
+	var links := {"bore": ["detonate", "push", "spread", "disrupt"], "charge": ["precise", "charge_hot", "chase", "prepare"], "precise": ["shatter", "charge", "chase", "prepare"], "arc": ["bypass", "chase", "sequence"], "pierce": ["chase", "bypass", "sequence"], "cool": ["charge_hot", "thermal", "sequence"], "thermal": ["charge_heat", "vent"], "charge_heat": ["thermal", "vent", "precise"], "vent": ["charge_hot", "thermal"], "prepare": ["charge", "precise", "sequence"], "disrupt": ["bore", "bypass"], "spread": ["bore", "detonate"], "sequence": ["shatter", "cool", "prepare"]}
+	var partners: Array = families.duplicate()
+	if deck.has("charge_hot"):
+		partners.append_array(["charge", "precise", "cool", "vent", "thermal"])
+	for family in families:
+		for id in links.get(family, []):
+			if not partners.has(id): partners.append(id)
+	var fitting := options.filter(func(id): return partners.has(id))
+	var core_options := Discovery.fitting(options, equipped, discovery_version) if discovery_version >= 1 else preload("res://redesign/build_affinity.gd").candidates(options,equipped)
+	if not core_options.is_empty(): fitting = core_options
+	var first: String = fitting[0] if not fitting.is_empty() else options[0]
+	if int(node.get("region", -1)) == 0 and int(node.get("floor", 0)) == 1: first = "pierce"
+	options.erase(first)
+	var discoveries := options.filter(func(id): return not (families if discovery_version >= 2 else deck).has(id))
+	var second: String = discoveries[0] if not discoveries.is_empty() else options[0]
+	var result: Array = [first, advanced_offer(second, node, rng(seed_value, int(node.id) + 1700))]
+	if discovery_version >= 2:
+		var profiles := rng(seed_value, int(node.id) + 3700)
+		for i in range(result.size()): result[i] = Ammo.Variants.offer(result[i], Ammo.AMMO, profiles, node)
+	return result
+
+static func advanced_offer(id: String, node: Dictionary, random: RandomNumberGenerator) -> String:
+	# Keep opening build ingredients accessible; occasional later finds supplement compression.
+	if int(node.get("region", 0)) >= 1 and Ammo.COMPRESSIONS.has(id) and random.randf() < 0.15:
+		return Ammo.compressed_id(id)
+	return id
 
 static func opening_pair(state: Dictionary) -> Array:
-	if state.gun == "heavy" and state.deck.has("bore") and state.deck.has("push"): return ["bore", "push"]
-	return ["charge", "precise"]
+	var precise: Array = state.deck.filter(func(id): return Ammo.source_id(str(id)) == "precise")
+	if (state.gun == "heavy" or not state.deck.has("charge") or precise.is_empty()) and state.deck.has("bore") and state.deck.has("push"): return ["bore", "push"]
+	return ["charge", str(precise[0]) if not precise.is_empty() else "precise"]
 
 static func prepare_opening_hand(model) -> void:
 	var wanted := opening_pair(model.s)
@@ -194,24 +298,50 @@ static func prepare_opening_hand(model) -> void:
 static func lesson(node: Dictionary, state: Dictionary) -> String:
 	if int(node.get("region", -1)) != 0: return ""
 	match int(node.get("floor", 0)):
-		1: return "소이 → 충격 · 화상 동안 거리를 벌려보세요" if opening_pair(state) == ["bore", "push"] else "증폭 → 연발 · 순서를 바꿔 예상 피해를 비교해 보세요"
-		2: return "장갑 등장 · 철갑탄의 관통과 예상 HP를 확인하세요"
-		3: return "전격은 다른 적에게 전이 · 여러 적의 HP를 함께 확인하세요"
-		5: return "파츠 아이콘을 누르면 조건 · 빛나는 칸은 발동 예상 순서"
+		1: return "충격 → 소이 장전 · 소이가 먼저 발사" if opening_pair(state) == ["bore", "push"] else "연타 → 증폭 장전 · 증폭이 먼저 발사"
+		2: return "장갑 돌파 · 관통으로 뚫거나 화상·밀치기로 시간을 버세요"
+		3: return "원거리 준비 · 먼저 처치하거나 발사된 압력탄을 요격하세요"
+		4, 5: return "증원 대기 · 열은 다음 탄창에도 남습니다"
 		6: return "전열 뒤에도 증원 · 다음 탄창과 압축 자원을 남겨두세요"
 	return ""
 
-static func eligible_parts(gun: String) -> Array:
+static func eligible_parts(gun: String, discovery_version: int = 0) -> Array:
 	var result: Array = []
 	for id in Ammo.PARTS:
 		if id == "none": continue
 		if Ammo.accepts_part(gun, id): result.append(id)
-	return result
+	return Discovery.parts(result) if discovery_version >= 1 else result
 
-static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = []) -> Array:
+static func part_grade_weights(node: Dictionary) -> Array:
+	if node.get("elite", false): return [20, 50, 30]
+	return [55, 35, 10] if int(node.get("region", 0)) == 0 else [45, 40, 15]
+
+static func pick_part(candidates: Array, node: Dictionary, random: RandomNumberGenerator) -> String:
+	# Draw a grade before drawing a part, so adding content does not dilute rarity.
+	# Missing grades are renormalized after ownership/discovery/role filtering.
+	var weights := part_grade_weights(node)
+	var pools: Array = [[], [], []]
+	for id in candidates: pools[Ammo.part_grade(str(id))].append(id)
+	var total := 0
+	for grade in range(3):
+		if not pools[grade].is_empty(): total += int(weights[grade])
+	if total == 0: return "none"
+	var ticket := random.randi_range(1, total)
+	for grade in range(3):
+		if pools[grade].is_empty(): continue
+		ticket -= int(weights[grade])
+		if ticket <= 0: return str(pools[grade][random.randi_range(0, pools[grade].size() - 1)])
+	return str(candidates[0])
+
+static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = [], seen_ammo: Array = [], equipped: Array = [], discovery_version: int = 0) -> Array:
 	var random := rng(seed_value, int(node.id) + 1900 + revision * 37)
-	var ammo_id: String = shuffle(["charge", "precise", "pierce", "bore", "push", "arc"], random)[0]
-	var parts: Array = eligible_parts(gun)
+	var ammo_choices := shuffle(ammo_pool(node, discovery_version), random)
+	var seen_families := seen_ammo.map(func(id): return Ammo.source_id(str(id))) if discovery_version >= 2 else seen_ammo
+	var unseen_ammo := ammo_choices.filter(func(id): return not seen_families.has(id) and not seen_families.has(Ammo.compressed_id(id)))
+	var ammo_id: String = unseen_ammo[0] if not unseen_ammo.is_empty() else ammo_choices[0]
+	ammo_id = advanced_offer(ammo_id, node, rng(seed_value, int(node.id) + 2900 + revision * 37))
+	if discovery_version >= 2: ammo_id = Ammo.Variants.offer(ammo_id, Ammo.AMMO, rng(seed_value, int(node.id) + 4700 + revision * 37), node)
+	var parts: Array = eligible_parts(gun, discovery_version)
 	for id in owned: parts.erase(id)
 	var unseen: Array = []
 	var repeated: Array = []
@@ -226,17 +356,18 @@ static func offers(node: Dictionary, seed_value: int, revision: int, gun: String
 		# Never repeat a seen part while an unseen candidate remains.
 		var candidates: Array = pool.filter(func(id): return not seen.has(id))
 		if candidates.is_empty(): candidates = pool.duplicate()
-		var preferred: Array = candidates.filter(func(id):
-			if revision == 0 and int(node.get("region", 0)) == 0: return not Ammo.is_core_part(id)
-			return Ammo.is_core_part(id) == (selected.size() == 1)
-		)
-		if not preferred.is_empty(): candidates = preferred
+		if revision == 0 and int(node.get("region", 0)) == 0 and not node.get("elite", false):
+			var modules := candidates.filter(func(id): return not Ammo.is_core_part(id))
+			if not modules.is_empty(): candidates = modules
 		if not selected.is_empty():
 			var different := candidates.filter(func(id): return BuildGuide.family(id) != BuildGuide.family(str(selected[0])))
 			if not different.is_empty(): candidates = different
-		var picked: String = candidates[0]
+		else:
+			var compatible := Discovery.modules(candidates, equipped) if discovery_version >= 1 else preload("res://redesign/build_affinity.gd").candidates(candidates,equipped,true)
+			if not compatible.is_empty(): candidates = compatible
+		var picked: String = pick_part(candidates, node, random)
 		selected.append(picked)
 		pool.erase(picked)
-	var result: Array = [{"id": ammo_id, "type": "ammo", "price": 12, "sold": false}]
+	var result: Array = [{"id": ammo_id, "type": "ammo", "price": 24 if Ammo.grade(ammo_id) == 1 else 12, "sold": false}]
 	for id in selected: result.append({"id": id, "type": "part", "price": 30, "sold": false, "new": not seen.has(id)})
 	return result

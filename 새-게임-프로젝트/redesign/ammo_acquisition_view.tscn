@@ -1,0 +1,70 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://redesign/ammo_card_view.gd" id="1"]
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="2"]
+
+[node name="AcquisitionLayout" type="HBoxContainer"]
+custom_minimum_size = Vector2(650, 284)
+size_flags_horizontal = 3
+theme_override_constants/separation = 28
+
+[node name="Incoming" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(230, 0)
+size_flags_horizontal = 0
+theme_override_constants/separation = 10
+
+[node name="IncomingCard" type="Control" parent="Incoming"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(230, 196)
+size_flags_horizontal = 0
+mouse_filter = 2
+script = ExtResource("1")
+ammo_id = "precise_p2"
+showcase_ui = true
+
+[node name="Price" type="Label" parent="Incoming"]
+unique_name_in_owner = true
+theme_override_fonts/font = ExtResource("2")
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.65,0.71,0.67,1)
+text = "구매 가격 · 12 Cr"
+autowrap_mode = 2
+
+[node name="Choices" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ReplaceHeading" type="Label" parent="Choices"]
+unique_name_in_owner = true
+theme_override_fonts/font = ExtResource("2")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.92,0.89,0.80,1)
+text = "기본탄 한 장과 교체"
+autowrap_mode = 2
+
+[node name="DeckCount" type="Label" parent="Choices"]
+unique_name_in_owner = true
+theme_override_fonts/font = ExtResource("2")
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.65,0.71,0.67,1)
+text = "덱 10장 유지 · 아래에서 내보낼 탄 선택"
+autowrap_mode = 2
+
+[node name="ReplaceList" type="VBoxContainer" parent="Choices"]
+unique_name_in_owner = true
+theme_override_constants/separation = 8
+
+[node name="Preview" type="Button" parent="Choices/ReplaceList"]
+custom_minimum_size = Vector2(0,62)
+text = "기본탄  피해 1 · 발열 +1  → 교체"
+
+[node name="Alternative" type="Label" parent="Choices"]
+unique_name_in_owner = true
+theme_override_fonts/font = ExtResource("2")
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.65,0.71,0.67,1)
+text = "기존 탄을 남기고 싶다면"
+
+[node name="AddHost" type="VBoxContainer" parent="Choices"]
+unique_name_in_owner = true

@@ -25,20 +25,24 @@ func _draw() -> void:
 	var accent := GOLD if kind == "credits" else (CYAN if kind in ["compress", "core"] else ACCENT)
 	draw_rect(Rect2(Vector2(2, 2), size - Vector2(4, 4)), Color(accent, 0.06), true)
 	match kind:
+		"bag": _draw_bag(Vector2(53, size.y * 0.5), accent)
 		"slot": _draw_slots(Vector2(54, size.y * 0.5), accent)
 		"compress": _draw_compress(Vector2(56, size.y * 0.5), accent)
 		"credits": _draw_credits(Vector2(53, size.y * 0.5), accent)
 		"core": _draw_core(Vector2(57, size.y * 0.5), accent)
-	var title: String = str({"slot": "탄창 확장", "compress": "탄환 압축", "credits": "크레딧", "core": "압축 코어"}.get(kind, "선택"))
+	var title: String = str({"bag": "가방 확장", "slot": "탄창 확장", "compress": "탄환 압축", "credits": "크레딧", "core": "압축 코어"}.get(kind, "선택"))
 	var value := ""
 	var caption := ""
 	match kind:
+		"bag":
+			value = "%d → %d장" % [int(data.before), int(data.after)]
+			caption = str(data.get("caption", "이번 등반 · 최대 10장"))
 		"slot":
 			value = "%d → %d칸" % [int(data.get("before", 4)), int(data.get("after", 5))]
 			caption = "영구 용량 +1"
 		"compress":
 			value = "2발 → 1발"
-			caption = "위치·공간 제약 추가"
+			caption = "일반 → 고급 · 장전 제약"
 		"credits":
 			value = "+%d Cr" % int(data.get("amount", 24))
 			caption = "다음 무기고 자금"
@@ -90,3 +94,11 @@ func _draw_core(center: Vector2, color: Color) -> void:
 	draw_polyline(diamond, color, 3.0)
 	var count := int(data.get("count", 0))
 	for i in range(2): draw_circle(center + Vector2(43, -7 + i * 14), 4, ACCENT if i < count else Color("3d4f57"))
+
+func _draw_bag(center: Vector2, color: Color) -> void:
+	draw_rect(Rect2(center + Vector2(-23, -23), Vector2(46, 46)), Color("657672"))
+	draw_rect(Rect2(center + Vector2(-15, -31), Vector2(30, 8)), Color("455958"))
+	draw_rect(Rect2(center + Vector2(-27, -21), Vector2(54, 9)), Color("8a9787"))
+	for i in range(10):
+		var at := center + Vector2(-19 + (i % 5) * 8, -5 + (i / 5) * 12)
+		draw_rect(Rect2(at, Vector2(6, 8)), color if i < int(data.get("after", 5)) else Color("3a4b4c"))

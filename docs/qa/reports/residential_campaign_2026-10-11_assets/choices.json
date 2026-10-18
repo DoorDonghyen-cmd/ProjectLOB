@@ -1,0 +1,57 @@
+{
+  "heat_order": [
+    {
+      "heat": 0,
+      "kills": 2,
+      "order": [
+        "charge_hot",
+        "precise",
+        "pierce",
+        "cool"
+      ],
+      "projectiles": [
+        {
+          "burn": 0,
+          "def": 0,
+          "distance": 16,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 3,
+          "speed": 6,
+          "uid": 1
+        }
+      ],
+      "reloads": 1,
+      "shots": 3,
+      "turns": 3
+    },
+    {
+      "heat": 11,
+      "kills": 2,
+      "order": [
+        "charge_hot",
+        "cool",
+        "pierce",
+        "precise"
+      ],
+      "projectiles": [],
+      "reloads": 0,
+      "shots": 4,
+      "turns": 1
+    }
+  ],
+  "roles": [
+    {
+      "basic_damage": 1,
+      "matching_damage": 5,
+      "role": "wall"
+    },
+    {
+      "basic_damage": 3,
+      "matching_damage": 7,
+      "role": "evader"
+    }
+  ]
+}

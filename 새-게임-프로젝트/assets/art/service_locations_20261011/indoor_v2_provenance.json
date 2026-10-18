@@ -1,0 +1,53 @@
+{
+  "purpose": "Enclosed region-independent interiors. Preserve approved scene and hero; remove exterior tower views.",
+  "entries": [
+    {
+      "kind": "workshop",
+      "prompt": "Precisely edit this approved pixel-art workshop panorama. Change ONLY the exterior-looking window/opening areas at far left and right: replace all visible tower silhouettes, skyline, glowing distant buildings, exterior railings and sky with enclosed interior architecture: opaque weathered slate-teal steel wall panels, a closed ribbed metal shutter on the right and closed utility cabinet panels on the left, simple broad dark pixel shapes and subtle cool ambient indoor light. This room must work in any region of a tower with NO view outside whatsoever. Preserve the composition, same canvas aspect ratio3:1, hero exact back-facing pose and size, face, hat, clothing, backpack, boots, workbench, ammunition press, warm lamp, floor and every central prop. Keep the existing pixel cluster density, muted palette and warm/cool balance; no extra detail, no new text/UI. Do not redesign the scene or shift the hero. Retain enough indoor teal value contrast to avoid a black featureless room.",
+      "tool": "image_gen.imagegen",
+      "edit_target": "workshop_v1.png",
+      "output": "workshop_v2.png",
+      "original_generated_file": "exec-88f59649-50d4-46ff-bd29-94265797ca0d.png",
+      "sha256": "372c88be8978de7b4e6beea1d881eabd54d850029070e3f0c16453ab9d275453",
+      "input_sha256": "4bb8b55f677bdb396e0cfa61026034e6b24fea3e34e7d853749c36bc978851ba",
+      "canvas": [
+        2172,
+        724
+      ],
+      "post_processing": "none; raw image copy",
+      "review": "No outside view; hero/bench composition visually retained. Outfit still baked into scene."
+    },
+    {
+      "kind": "shop",
+      "prompt": "Precisely edit supplied approved pixel-art shop panorama. Change ONLY the large exterior opening on LEFT showing cyan tower buildings: completely replace exterior skyline, sky, distant lit windows and outside railings with a CLOSED opaque slate-teal ribbed metal shutter set in interior industrial wall, cool low-key ambient indoor lighting. NO exterior view anywhere, no distant architecture. Make it a region-neutral enclosed shop. Preserve hero EXACT existing position/size/back-three-quarter conversational pose/clothes/hat/backpack, all central counter, red drapes, hidden shopkeeper arrangement, shelves, lights, floor and composition. Keep 3:1 wide panorama dimensions and chunky pixel style, no new text/UI, no extra human. Preserve warm lamps and enough muted cool light on closed shutter to keep depth without black empty area. Do not otherwise redesign approved image.",
+      "tool": "image_gen.imagegen",
+      "edit_target": "shop_v1.png",
+      "output": "shop_v2.png",
+      "original_generated_file": "exec-6f21c1e9-6a60-403f-972f-99b481952a3c.png",
+      "sha256": "b9b02442b106984692b8c0e0caabd10ebb98f9cee1d74f861144581705f782e2",
+      "input_sha256": "d974a170f97c069ff7f76cadff6d2ace5c778b0b868fdfc418a36debb989efcf",
+      "canvas": [
+        2172,
+        724
+      ],
+      "post_processing": "none; raw image copy",
+      "review": "No outside view; hero/bench composition visually retained. Outfit still baked into scene."
+    },
+    {
+      "kind": "supply",
+      "prompt": "Precise local edit of approved pixel-art supply room image: remove exterior view in rightmost tall opening. Replace cyan sky, faraway tower buildings, glowing distant windows, and exterior railing with fully closed opaque teal-slate steel shutter and interior wall panels, low-key cool indoor bounce light. No exterior landscape anywhere. Preserve ALL other scene components, exact hero back-three-quarter pose/clothes/hat/backpack/boots and size/location, open ammunition chest, cabinets, crates, pipes, lamps and floor. Region-neutral indoor supply depot to reuse across game regions. Same 3:1 wide canvas, same hand-crafted chunky pixel grouping and muted palette, preserve visibility with quiet teal wall values. No extra text, UI, new characters or redesign.",
+      "tool": "image_gen.imagegen",
+      "edit_target": "supply_v1.png",
+      "output": "supply_v2.png",
+      "original_generated_file": "exec-09c8435c-7ddd-4a57-b859-3a83d087b6f2.png",
+      "sha256": "63eb355bd53a708b57c9864575bdd939da674499587894567dee64bd456a9704",
+      "input_sha256": "77b42373e3acb6868c7f968167dae875af534a26299d6cc16d06a876234eb088",
+      "canvas": [
+        2172,
+        724
+      ],
+      "post_processing": "none; raw image copy",
+      "review": "No outside view; hero/bench composition visually retained. Outfit still baked into scene."
+    }
+  ]
+}

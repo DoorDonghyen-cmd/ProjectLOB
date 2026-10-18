@@ -1,0 +1,247 @@
+{
+  "boost_damage": [
+    [
+      12,
+      6
+    ],
+    [
+      2,
+      3
+    ]
+  ],
+  "partners": {
+    "arc": [
+      "shatter",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "bore": [
+      "push",
+      "shatter",
+      "detonate",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "disrupt",
+      "spread",
+      "sequence"
+    ],
+    "bypass": [
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "charge": [
+      "precise",
+      "pierce",
+      "chase",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "charge_heat": [
+      "precise",
+      "pierce",
+      "chase",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "charge_hot": [
+      "precise",
+      "pierce",
+      "chase",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "chase": [
+      "charge",
+      "shatter",
+      "cool",
+      "charge_hot",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence",
+      "charge_heat"
+    ],
+    "cool": [
+      "charge",
+      "precise",
+      "pierce",
+      "bore",
+      "push",
+      "arc",
+      "detonate",
+      "chase",
+      "bypass",
+      "charge_hot",
+      "prepare",
+      "disrupt",
+      "spread",
+      "sequence"
+    ],
+    "detonate": [
+      "bore",
+      "shatter",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "disrupt": [
+      "bore",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "pierce": [
+      "charge",
+      "cool",
+      "charge_hot",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence",
+      "charge_heat"
+    ],
+    "precise": [
+      "charge",
+      "shatter",
+      "cool",
+      "charge_hot",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence",
+      "charge_heat"
+    ],
+    "prepare": [
+      "basic",
+      "charge",
+      "precise",
+      "pierce",
+      "bore",
+      "push",
+      "arc",
+      "shatter",
+      "detonate",
+      "chase",
+      "bypass",
+      "cool",
+      "charge_hot",
+      "vent",
+      "thermal",
+      "disrupt",
+      "spread",
+      "sequence",
+      "charge_heat"
+    ],
+    "push": [
+      "bore",
+      "shatter",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "sequence": [
+      "basic",
+      "charge",
+      "precise",
+      "pierce",
+      "bore",
+      "push",
+      "arc",
+      "shatter",
+      "detonate",
+      "chase",
+      "bypass",
+      "cool",
+      "charge_hot",
+      "vent",
+      "thermal",
+      "prepare",
+      "disrupt",
+      "spread",
+      "charge_heat"
+    ],
+    "shatter": [
+      "basic",
+      "precise",
+      "bore",
+      "push",
+      "arc",
+      "detonate",
+      "chase",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "spread": [
+      "bore",
+      "cool",
+      "vent",
+      "thermal",
+      "prepare",
+      "sequence"
+    ],
+    "thermal": [
+      "basic",
+      "charge",
+      "precise",
+      "pierce",
+      "bore",
+      "push",
+      "arc",
+      "shatter",
+      "detonate",
+      "chase",
+      "bypass",
+      "charge_hot",
+      "vent",
+      "prepare",
+      "disrupt",
+      "spread",
+      "sequence",
+      "charge_heat"
+    ],
+    "vent": [
+      "basic",
+      "charge",
+      "precise",
+      "pierce",
+      "bore",
+      "push",
+      "arc",
+      "shatter",
+      "detonate",
+      "chase",
+      "bypass",
+      "charge_hot",
+      "thermal",
+      "prepare",
+      "disrupt",
+      "spread",
+      "sequence",
+      "charge_heat"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "status": "director_visual_study_not_adopted",
+  "created": "2026-10-17",
+  "tool": "built-in image_gen",
+  "source_images": [
+    "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-8742382c-2dd1-4c05-8466-1ba6f2193141.png",
+    "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-7b44e8f2-77e7-4586-b98f-5b29f8492305.png"
+  ],
+  "prompts": [
+    "Create an original pixel-art ammunition sprite atlas for the game ORVASK, for use as actual inventory art. INPUT 1 is a style reference only: the approved player character. Match its broad, quiet pixel clusters and weathered cloth/metal value grouping. INPUT 2 is the environment and palette reference only. Do not include the person, architecture, text, UI or scenery.\n\nOUTPUT: a transparent 1536x1024 PNG sprite atlas, exactly 3 columns by 2 rows of equal 512x512 cells. Exactly one individual cartridge centered in each cell with generous transparent padding. Each cartridge fits inside a central 180x320 area, tip upward, straight orthographic side view with the same gentle upper-left light. No labels, no numerals, no shadows on the ground, no frames, no drop shadows, no checkerboard painted into the image. Real alpha transparency. Each is drawn as chunky authentic low-resolution pixel art (roughly 32x56 logical pixels, enlarged with square pixels), restrained 5-7 broad material shades per item; no smooth gradients, no blur, no hairline detail, no neon glows, no illustrative high-resolution textures.\n\nTop left: basic cartridge, a blunt dark copper projectile with a short broad olive-brass casing, one dark crimp groove and solid weighty base, well worn utility ammunition. Top middle: armor-piercing cartridge, a long tapered graphite steel penetrator extending out of a shorter warm brass casing, a thick ivory ceramic collar; its sharply elongated silhouette is distinct from the basic round. Top right: double-hit cartridge, TWO short blunt steel projectiles seated together side by side in one common broad rectangular dark gunmetal cartridge base, a single copper retention band, clearly two hits in one cartridge; no floating bullets.\nBottom left: amplifier cartridge, an ochre ceramic cap, stout dark oxidized metal casing around a visible large amber core window, one broad steel binding bracket; a mechanical charge cell, NOT a bullet with a medical plus symbol. Bottom middle: cooling cartridge, a squat rounded steel canister with three thick horizontal cooling fins and a pale desaturated blue center band, practical industrial coolant, no icicles or snowflake pasted on. Bottom right: electric cartridge, a broad maroon-bakelite insulated housing with two capped copper terminals and a dark central gap, worn brass base; a contained capacitor round, no loose lightning streaks.\n\nDesign all six as manufactured objects from a working-class tower maintenance culture. Distinct silhouettes and material combinations, not the same tube recolored. Large connected shadows; tiny highlights only where they explain the form. A recognizably hand-authored game asset set, readable as tiny icons and satisfying enlarged on ammunition cards. No military brand markings or fantasy ornament.",
+    "Edit the supplied six-cartridge pixel-art atlas. Preserve exactly the six identities, 3-column x 2-row ordering, silhouette centers, relative sizes and 1536x1024 canvas. Make it a clean production sprite sheet: completely remove every glow, halo, colored haze, cast shadow and dark backdrop outside the six solid cartridge silhouettes. Empty space must be fully transparent alpha zero, including between the paired projectiles and around fins; solid metal must be opaque. Do not paint a checkerboard. Do not move or crop the cartridges.\n\nRefine the objects to have MATTE, muted, chunky pixel surfaces. Reduce shiny highlights to one or two broad quiet patches per material, no glare, no soft lighting gradients. Keep the copper and brass slightly dull and aged, the graphite spearhead mostly dark, the amplifier's ochre core non-emissive, the cooling blue band non-emissive and the electric housing desaturated rusty red. Preserve distinct silhouette and functional construction; do not add cracks, rivets, scratches, labels, text, UI, badges, sparks or other ornament. Pixel edges should remain hard square steps; softness comes from large low-contrast color clusters, never blur. Reference 2 is the already approved character's restrained material shading, not a subject to include. Output only the clean transparent atlas."
+  ],
+  "references": [
+    "새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+    "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png"
+  ],
+  "output": "새-게임-프로젝트/assets/art/ammo_recast_20261017/cartridges_v2.png",
+  "composition": "3 columns x 2 rows; basic, pierce, precise, charge, cool, arc",
+  "normalization": "Original PNG preserved. Only Godot draw_texture_rect_region selects the art bounds; no resampling or pixel rewrite of the file.",
+  "scope": "Standalone engine art study; current live ammunition art and campaign screens unchanged.",
+  "sha256": "4c023f8fbbaa95a977f625f912bc50785e5dfc6c2d9f474be6e904b0d8d2fe26",
+  "review": {
+    "engine": "Godot 4.7 stable, Compatibility",
+    "viewports": [
+      "1008x630",
+      "1280x800",
+      "1440x630"
+    ],
+    "status": "Director inspected all three captures; user preference and Galaxy unverified",
+    "alpha": "Original RGBA retained; alpha maximum 254, no pixel rewrite. No visible surrounding haze in Godot preview.",
+    "composition": "Actual residential battle scene plus separate prototype controls; not the full combat HUD."
+  }
+}

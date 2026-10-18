@@ -1,0 +1,199 @@
+[gd_scene load_steps=12 format=3]
+[ext_resource type="Script" path="res://redesign/title_screen.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/title_20261011/tower_threshold.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/title/orvask_wordmark.svg" id="3"]
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="4"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/primary_normal.tres" id="5"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_normal.tres" id="6"]
+[ext_resource type="PackedScene" path="res://redesign/title_reclaimer.tscn" id="7"]
+[ext_resource type="Shader" path="res://assets/ui/title/shelter_light.gdshader" id="8"]
+[sub_resource type="ShaderMaterial" id="Light"]
+resource_local_to_scene = true
+shader = ExtResource("8")
+[sub_resource type="StyleBoxFlat" id="Quiet"]
+bg_color = Color(0.035, 0.065, 0.08, 0)
+content_margin_left = 12.0
+content_margin_right = 12.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+[sub_resource type="Theme" id="Theme"]
+default_font = ExtResource("4")
+default_font_size = 20
+Label/colors/font_color = Color(0.86, 0.86, 0.8, 1)
+Button/colors/font_color = Color(0.68, 0.75, 0.74, 1)
+Button/colors/font_hover_color = Color(0.96, 0.9, 0.71, 1)
+Button/colors/font_focus_color = Color(0.96, 0.9, 0.71, 1)
+Button/styles/normal = SubResource("Quiet")
+Button/styles/hover = ExtResource("6")
+Button/styles/focus = ExtResource("6")
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+clip_contents = true
+texture_filter = 1
+theme = SubResource("Theme")
+script = ExtResource("1")
+[node name="ArtFrame" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 800.0
+mouse_filter = 2
+[node name="Backdrop" type="TextureRect" parent="ArtFrame"]
+unique_name_in_owner = true
+material = SubResource("Light")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = ExtResource("2")
+expand_mode = 1
+[node name="Reclaimer" parent="ArtFrame" instance=ExtResource("7")]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.773
+anchor_right = 0.836
+anchor_top = 0.664
+anchor_bottom = 0.824
+mouse_filter = 2
+offset_right = 0.0
+offset_bottom = 0.0
+[node name="TitleHero" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.055
+anchor_right = 0.375
+anchor_top = 0.145
+anchor_bottom = 0.79
+theme_override_constants/separation = 12
+[node name="Wordmark" type="TextureRect" parent="TitleHero"]
+custom_minimum_size = Vector2(0, 84)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3")
+expand_mode = 1
+stretch_mode = 4
+[node name="KoreanTitle" type="Label" parent="TitleHero"]
+layout_mode = 2
+text = "오 르 바 스 크"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.74, 0.68, 0.56, 1)
+[node name="Tagline" type="Label" parent="TitleHero"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "돌아갈 곳의 불을 켜기 위해."
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.63, 0.7, 0.7, 1)
+[node name="BreathingRoom" type="Control" parent="TitleHero"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+[node name="SaveCaption" type="Label" parent="TitleHero"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "승강장·주거 통로 · 보행자"
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.68, 0.75, 0.74, 1)
+autowrap_mode = 3
+[node name="resume" type="Button" parent="TitleHero"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "등반 계속  ›"
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = ExtResource("6")
+[node name="new_run_setup" type="Button" parent="TitleHero"]
+unique_name_in_owner = true
+visible = true
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "새 등반  ›"
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = ExtResource("5")
+theme_override_colors/font_color = Color(0.07, 0.12, 0.14, 1)
+[node name="settings" type="Button" parent="TitleHero"]
+unique_name_in_owner = true
+visible = true
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+text = "설정"
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = ExtResource("6")
+[node name="first_guide" type="Button" parent="TitleHero"]
+unique_name_in_owner = true
+visible = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "처음이라면 · 조작 안내"
+theme_override_font_sizes/font_size = 17
+[node name="SaveWarning" type="Label" parent="TitleHero"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.6, 0.46, 1)
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 3
+[node name="Footer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.055
+anchor_right = 0.945
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -80.0
+offset_bottom = -24.0
+theme_override_constants/separation = 8
+[node name="training_setup" type="Button" parent="Footer"]
+unique_name_in_owner = true
+visible = true
+custom_minimum_size = Vector2(112, 52)
+layout_mode = 2
+text = "기초 훈련"
+theme_override_font_sizes/font_size = 17
+[node name="resume_training" type="Button" parent="Footer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(112, 52)
+layout_mode = 2
+text = "훈련 계속"
+theme_override_font_sizes/font_size = 17
+[node name="city_archive" type="Button" parent="Footer"]
+unique_name_in_owner = true
+visible = true
+custom_minimum_size = Vector2(112, 52)
+layout_mode = 2
+text = "기록실"
+theme_override_font_sizes/font_size = 17
+[node name="guide" type="Button" parent="Footer"]
+unique_name_in_owner = true
+visible = true
+custom_minimum_size = Vector2(112, 52)
+layout_mode = 2
+text = "조작 안내"
+theme_override_font_sizes/font_size = 17
+[node name="rules" type="Button" parent="Footer"]
+unique_name_in_owner = true
+visible = true
+custom_minimum_size = Vector2(112, 52)
+layout_mode = 2
+text = "게임 규칙"
+theme_override_font_sizes/font_size = 17
+[node name="FooterSpace" type="Control" parent="Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+[node name="dev" type="Button" parent="Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 52)
+layout_mode = 2
+text = "개발"
+theme_override_font_sizes/font_size = 16

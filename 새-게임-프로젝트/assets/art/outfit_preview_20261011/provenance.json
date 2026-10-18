@@ -1,0 +1,194 @@
+{
+  "date": "2026-10-11",
+  "tool": "image_gen built-in",
+  "scope": "Art-only preview. Expedition v3 adopted by user; acquisition deferred explicitly. Other three remain comparison concepts. No gameplay unlock, outfit choice or bag change.",
+  "jobs": [
+    {
+      "id": "expedition_pistol",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png"
+      ],
+      "prompt": "Edit target image 1. Image 2 is the USER APPROVED expedition costume design. Replace ONLY the clothing/head/pack of the character(s) in input1 with this sealed expedition suit: olive-gray long work coat, dark visor sealed helmet with small warm square lamp, thick collar, rust scarf tab, compact chest filter and ONE simplified breathing hose, ochre sleeve patch, twin compact life-support modules on back, brown boots. Human wearing suit, no robot arms. Simplify costume into big muted pixel masses, 2-3 grouped values, no tiny hose ribs, no scattered pixels/noise, no gradients or glow, no fine seams. Retain the COARSE pixel cluster scale of input1, not finer concept rendering. Hands retain their exact source shape and coordinates for attachment; skin or dark gloves are okay but do not change silhouette.\nOutput real transparent background (alpha), no opaque background, no shadows, no labels or UI. Preserve input1's EXACT canvas, exact pose, camera direction, actor pixel bounds, foot/hand positions and crop. Clothing may alter silhouette slightly behind torso but never move hands or feet. No weapon, tool, table or scenery. Do not add any held object. This is a registered 1536x1024 six-pose atlas, 3 columns x2 rows of512x512. CRITICAL preserve every cell's original limb poses and placements EXACTLY. Do not recenter sprites in their cells. Row1 idle / aim / recoil, row2 reload open / reload seat / cooling. There are exactly6 separate full figures. In each, hands and feet must remain exactly at the reference locations; only change costume. Preserve open transparent space between cells. In aim/recoil one arm extended holding imaginary pistol, other relaxed low.",
+      "file": "expedition_pistol.png",
+      "generated_source": "exec-7a0df0ce-8a1a-423b-8f1e-56ca7212194c.png",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/pistol_body_v2.png",
+          "sha256": "F7DFEC1DCB162CF65675A03ED17DF5D3E5455A4182F6A8B06563B80D9C00010F"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png",
+          "sha256": "5FA66F49CC68C9478999D7EF29B46299A6036279FC891D2C333CE7FFA892CF31"
+        }
+      ]
+    },
+    {
+      "id": "expedition_long",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png"
+      ],
+      "prompt": "Edit target image 1. Image 2 is the USER APPROVED expedition costume design. Replace ONLY the clothing/head/pack of the character(s) in input1 with this sealed expedition suit: olive-gray long work coat, dark visor sealed helmet with small warm square lamp, thick collar, rust scarf tab, compact chest filter and ONE simplified breathing hose, ochre sleeve patch, twin compact life-support modules on back, brown boots. Human wearing suit, no robot arms. Simplify costume into big muted pixel masses, 2-3 grouped values, no tiny hose ribs, no scattered pixels/noise, no gradients or glow, no fine seams. Retain the COARSE pixel cluster scale of input1, not finer concept rendering. Hands retain their exact source shape and coordinates for attachment; skin or dark gloves are okay but do not change silhouette.\nOutput real transparent background (alpha), no opaque background, no shadows, no labels or UI. Preserve input1's EXACT canvas, exact pose, camera direction, actor pixel bounds, foot/hand positions and crop. Clothing may alter silhouette slightly behind torso but never move hands or feet. No weapon, tool, table or scenery. Do not add any held object. This is a registered 1536x1024 six-pose atlas, 3 columns x2 rows of512x512. CRITICAL preserve every cell's original limb poses and placements EXACTLY. Do not recenter sprites in their cells. Row1 idle / aim / recoil, row2 reload open / reload seat / cooling. There are exactly6 separate full figures. In each, hands and feet must remain exactly at the reference locations; only change costume. Preserve open transparent space between cells. In aim/recoil two bent arms positioned to hold imaginary long gun.",
+      "file": "expedition_long.png",
+      "generated_source": "exec-ea1a7e92-987a-42a1-9ab7-469e1545bea8.png",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+          "sha256": "B7D18FFA90EAE753633E6FED5D34047B7F50DCB66CBF5A09D6C2257053E21F5B"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png",
+          "sha256": "5FA66F49CC68C9478999D7EF29B46299A6036279FC891D2C333CE7FFA892CF31"
+        }
+      ]
+    },
+    {
+      "id": "expedition_shop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png"
+      ],
+      "prompt": "Edit target image 1. Image 2 is the USER APPROVED expedition costume design. Replace ONLY the clothing/head/pack of the character(s) in input1 with this sealed expedition suit: olive-gray long work coat, dark visor sealed helmet with small warm square lamp, thick collar, rust scarf tab, compact chest filter and ONE simplified breathing hose, ochre sleeve patch, twin compact life-support modules on back, brown boots. Human wearing suit, no robot arms. Simplify costume into big muted pixel masses, 2-3 grouped values, no tiny hose ribs, no scattered pixels/noise, no gradients or glow, no fine seams. Retain the COARSE pixel cluster scale of input1, not finer concept rendering. Hands retain their exact source shape and coordinates for attachment; skin or dark gloves are okay but do not change silhouette.\nOutput real transparent background (alpha), no opaque background, no shadows, no labels or UI. Preserve input1's EXACT canvas, exact pose, camera direction, actor pixel bounds, foot/hand positions and crop. Clothing may alter silhouette slightly behind torso but never move hands or feet. No weapon, tool, table or scenery. Do not add any held object. This is a 2172x724 transparent location-actor image. Preserve the small solitary actor at its EXACT original position and occupied height, with vast transparent space elsewhere. It is a rear three-quarter standing conversation pose with hand out toward counter; no furniture included. Do NOT zoom the actor or fill canvas. Keep same hand height and foot placement so original background can be reused.",
+      "file": "expedition_shop.png",
+      "generated_source": "exec-4c387d5f-6617-4dc9-8ad5-1b9e68ca51b4.png",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+          "sha256": "859AEF9225E166F98168B386497260BE9C2E6D624160406025299877063DAB9B"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png",
+          "sha256": "5FA66F49CC68C9478999D7EF29B46299A6036279FC891D2C333CE7FFA892CF31"
+        }
+      ]
+    },
+    {
+      "id": "expedition_supply",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png"
+      ],
+      "prompt": "Edit target image 1. Image 2 is the USER APPROVED expedition costume design. Replace ONLY the clothing/head/pack of the character(s) in input1 with this sealed expedition suit: olive-gray long work coat, dark visor sealed helmet with small warm square lamp, thick collar, rust scarf tab, compact chest filter and ONE simplified breathing hose, ochre sleeve patch, twin compact life-support modules on back, brown boots. Human wearing suit, no robot arms. Simplify costume into big muted pixel masses, 2-3 grouped values, no tiny hose ribs, no scattered pixels/noise, no gradients or glow, no fine seams. Retain the COARSE pixel cluster scale of input1, not finer concept rendering. Hands retain their exact source shape and coordinates for attachment; skin or dark gloves are okay but do not change silhouette.\nOutput real transparent background (alpha), no opaque background, no shadows, no labels or UI. Preserve input1's EXACT canvas, exact pose, camera direction, actor pixel bounds, foot/hand positions and crop. Clothing may alter silhouette slightly behind torso but never move hands or feet. No weapon, tool, table or scenery. Do not add any held object. This is a 2172x724 transparent location-actor image. Preserve the small solitary actor at its EXACT original position and occupied height, with vast transparent space elsewhere. It is a rear three-quarter slightly leaning examining supplies with hands in front; no furniture included. Do NOT zoom the actor or fill canvas. Keep same hand height and foot placement so original background can be reused.",
+      "file": "expedition_supply.png",
+      "generated_source": "exec-cb7237ea-98cf-4951-82af-1aab536ba288.png",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+          "sha256": "3CA1B8526DC59E8F74FA89B233021684A2CE182306BB8295FD4E41EAEB4B1533"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png",
+          "sha256": "5FA66F49CC68C9478999D7EF29B46299A6036279FC891D2C333CE7FFA892CF31"
+        }
+      ]
+    },
+    {
+      "id": "expedition_workshop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png"
+      ],
+      "prompt": "Edit target image 1. Image 2 is the USER APPROVED expedition costume design. Replace ONLY the clothing/head/pack of the character(s) in input1 with this sealed expedition suit: olive-gray long work coat, dark visor sealed helmet with small warm square lamp, thick collar, rust scarf tab, compact chest filter and ONE simplified breathing hose, ochre sleeve patch, twin compact life-support modules on back, brown boots. Human wearing suit, no robot arms. Simplify costume into big muted pixel masses, 2-3 grouped values, no tiny hose ribs, no scattered pixels/noise, no gradients or glow, no fine seams. Retain the COARSE pixel cluster scale of input1, not finer concept rendering. Hands retain their exact source shape and coordinates for attachment; skin or dark gloves are okay but do not change silhouette.\nOutput real transparent background (alpha), no opaque background, no shadows, no labels or UI. Preserve input1's EXACT canvas, exact pose, camera direction, actor pixel bounds, foot/hand positions and crop. Clothing may alter silhouette slightly behind torso but never move hands or feet. No weapon, tool, table or scenery. Do not add any held object. This is a 2172x724 transparent location-actor image. Preserve the small solitary actor at its EXACT original position and occupied height, with vast transparent space elsewhere. It is a rear three-quarter back-facing standing at workbench with forearms forward; no furniture included. Do NOT zoom the actor or fill canvas. Keep same hand height and foot placement so original background can be reused.",
+      "file": "expedition_workshop.png",
+      "generated_source": "exec-af6d3355-47f4-4ac7-ad39-968091e94cea.png",
+      "reference_hashes": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+          "sha256": "52E2478D420E25754A642675C4D41EB6081A7AC73F45FB1BAF53F617926B5366"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/art/concepts/2026-10-11-outfits/10_expedition_v3.png",
+          "sha256": "5FA66F49CC68C9478999D7EF29B46299A6036279FC891D2C333CE7FFA892CF31"
+        }
+      ]
+    }
+  ],
+  "registration": {
+    "cell": [
+      512,
+      512
+    ],
+    "combat_size": [
+      1536,
+      1024
+    ],
+    "pistol_aim_grip_offset": [
+      28,
+      0
+    ],
+    "source_rects": {
+      "shop": [
+        757,
+        144,
+        268,
+        505
+      ],
+      "supply": [
+        787,
+        166,
+        267,
+        476
+      ],
+      "workshop": [
+        947,
+        186,
+        248,
+        449
+      ]
+    },
+    "render_alpha_threshold": 0.5
+  },
+  "review": {
+    "technical": "Real alpha audited; raw source preserved, no raster postprocessing. Profiles use region drawing and alpha cutout to suppress diffuse edges. Both weapon families and 3 place poses previewed.",
+    "visual": "Helmet silhouette, muted coat, ochre shoulder and paired back modules kept. Hands remain uncovered to keep registered pose shape. Small rendered view checked; high magnification exposes source softness. Three place poses are static.",
+    "limitations": "Not a released equippable outfit. Other 3 outfits have concept previews only. Galaxy and player motion preference untested. No idle walking sprite sheet or new gameplay rules."
+  },
+  "files": [
+    {
+      "bytes": 1273204,
+      "file": "07_heatworker_v1.png",
+      "sha256": "480F2A64BDE0005949994D72FB1FBABA6896343F1E0CA2AEA3C4274B0BDE65BB"
+    },
+    {
+      "bytes": 1202501,
+      "file": "08_hoist_v1.png",
+      "sha256": "146C7F61D0F82761511AC4FEE429F415674A62190472FA7202D946A1E2034EBE"
+    },
+    {
+      "bytes": 1258823,
+      "file": "09_recovery_v1.png",
+      "sha256": "0ABC7909028EB635F129065E495BEA5464F77A00418CDEC43B8F4A6B982671C6"
+    },
+    {
+      "bytes": 1310685,
+      "file": "10_expedition_v3.png",
+      "sha256": "5FA66F49CC68C9478999D7EF29B46299A6036279FC891D2C333CE7FFA892CF31"
+    },
+    {
+      "bytes": 1346198,
+      "file": "expedition_long.png",
+      "sha256": "6D30B8700C169C55B4B1C8554B7B0600543DB4AFBB7D40B068126AE139705535"
+    },
+    {
+      "bytes": 1286885,
+      "file": "expedition_pistol.png",
+      "sha256": "A4B37C7E7A762D70CAA3E946EF0966F33F4702C3158978828A9CD19886CBF37D"
+    },
+    {
+      "bytes": 171931,
+      "file": "expedition_shop.png",
+      "sha256": "F28C2E67B63E382B75BF3F2CEDADC674B1BD2636916700D1A1E4944DB83F281E"
+    },
+    {
+      "bytes": 172470,
+      "file": "expedition_supply.png",
+      "sha256": "025ADFD9E468BC002C9C5D739D56A1CF2EAFFF88ADA89FCEE84EE377B4CEC68D"
+    },
+    {
+      "bytes": 163561,
+      "file": "expedition_workshop.png",
+      "sha256": "79170F8C6D75E387670C049403037869150B2A864DC85C62A0D2EDEA0EDBBBCA"
+    }
+  ]
+}

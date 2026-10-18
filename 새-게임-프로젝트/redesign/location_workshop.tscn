@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://redesign/service_location.tscn" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/service_layers_20261011/workshop_background.png" id="2"]
+[ext_resource type="Resource" path="res://redesign/service_actor_workshop_work.tres" id="3"]
+[node name="ServiceLocation" instance=ExtResource("1")]
+place_kind = "workshop"
+[node name="PlaceArt" parent="." index="0"]
+texture = ExtResource("2")
+[node name="PlaceActor" parent="PlaceArt" index="0"]
+profile = ExtResource("3")
+room_foot = Vector2(0.49, 0.852)
+room_height = 0.535
+[node name="PlaceTitle" parent="Copy" index="0"]
+text = "정비 작업대"
+[node name="PlaceHint" parent="Copy" index="1"]
+text = "하나만 선택 · 이번 정비는 무료입니다."

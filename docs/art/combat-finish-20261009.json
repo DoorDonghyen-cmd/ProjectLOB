@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-09",
+  "status": "integrated_first_visual_pass_user_review_pending",
+  "method": "Godot CanvasItem procedural pixel geometry; existing approved raster assets retained",
+  "brief": "Preserve fixed combat layout and adopted grouped pixel art; industrial instrument frames, feed channels, thermal cells, contact and event feedback.",
+  "reference": "docs/qa/reports/combat_hierarchy_2026-10-09_assets/stable_first_load_1008.png",
+  "sources": [
+    "새-게임-프로젝트/redesign/combat_surface.gd",
+    "새-게임-프로젝트/redesign/heat_gauge.gd",
+    "새-게임-프로젝트/redesign/magazine_view.gd",
+    "새-게임-프로젝트/redesign/samples/tower_battle_view.gd",
+    "새-게임-프로젝트/redesign/samples/risk_battle_view.gd"
+  ],
+  "display": {
+    "panel": "uses existing PanelContainer bounds; no layout minimum added",
+    "heat": "360x68 logical px minimum; original current/peak typography preserved",
+    "fx": "2px-snapped environment/casing particles, existing hero/monster size unchanged"
+  },
+  "generation_prompt": null,
+  "new_raster_assets": false,
+  "integration": "shared main combat HUD and battle adapters; developer demo uses existing creature concepts only inside practice",
+  "limitations": [
+    "Sound not added",
+    "No new character/monster/background paintings",
+    "Galaxy performance and human readability review pending"
+  ]
+}

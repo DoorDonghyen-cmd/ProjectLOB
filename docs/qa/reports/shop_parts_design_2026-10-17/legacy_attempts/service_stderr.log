@@ -1,0 +1,7 @@
+SCRIPT ERROR: Invalid access to property or key 'disabled' on a base object of type 'null instance'.
+   at: _run (res://tests/service_location_ui_runner.gd:159)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/service_location_ui_runner.gd:159)
+       [1] press (res://tests/service_location_ui_runner.gd:38)
+       [2] tap (res://tests/ammo_risk_ui_runner.gd:44)
+       [3] settle (res://tests/ammo_risk_ui_runner.gd:22)

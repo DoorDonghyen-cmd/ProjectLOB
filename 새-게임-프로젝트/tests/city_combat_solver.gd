@@ -80,7 +80,7 @@ func solve(model, width: int = 3, max_depth: int = 7) -> Array:
 					path.append({"action": "fire"})
 					if simulation.s.phase in ["reward", "won"]: return path
 					if simulation.s.phase == "lost": break
-					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state, simulation.s.target_rng_state, simulation.s.buff, simulation.s.push_left, simulation.s.get("reinforcements", []), simulation.s.get("reload_heat", 0), simulation.s.get("projectiles", []), simulation.s.get("projectile_serial", 0)])
+					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state, simulation.s.target_rng_state, simulation.s.buff, simulation.s.push_left, simulation.s.get("reinforcements", []), simulation.s.get("heat", 0), simulation.s.get("legacy_reload_penalty", 0), simulation.s.get("projectiles", []), simulation.s.get("projectile_serial", 0), simulation.s.get("previous_kill", false)])
 					if seen.has(key): continue
 					seen[key] = true
 					next.append({"model": clone(simulation), "path": path.duplicate(true), "score": score(simulation)})

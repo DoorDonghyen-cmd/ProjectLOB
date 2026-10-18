@@ -9,6 +9,7 @@ const DEFAULTS := {
 	"motion": "normal",
 	"hints": true,
 	"guide_seen": false,
+	"effects_volume": 0.5,
 }
 
 var data: Dictionary = DEFAULTS.duplicate(true)
@@ -34,6 +35,9 @@ func load_preferences(path: String = SAVE) -> bool:
 	data.motion = motion
 	data.hints = bool(source.get("hints", true))
 	data.guide_seen = bool(source.get("guide_seen", false))
+	var audio_value: Variant = source.get("effects_volume", 0.5)
+	if (audio_value is float or audio_value is int) and is_finite(float(audio_value)):
+		data.effects_volume = clampf(float(audio_value), 0.0, 1.0)
 	return true
 
 func save_preferences(path: String = SAVE) -> Error:
@@ -51,6 +55,10 @@ func save_preferences(path: String = SAVE) -> Error:
 func set_value(key: String, value: Variant, path: String = SAVE) -> Error:
 	if not DEFAULTS.has(key):
 		return ERR_INVALID_PARAMETER
+	if key == "effects_volume":
+		if not (value is float or value is int) or not is_finite(float(value)):
+			return ERR_INVALID_PARAMETER
+		value = clampf(float(value), 0.0, 1.0)
 	data[key] = value
 	return save_preferences(path)
 

@@ -1,0 +1,113 @@
+{
+  "tool": "image_gen.imagegen",
+  "entries": [
+    {
+      "kind": "workshop",
+      "role": "bg",
+      "prompt": "Edit this exact approved game scene into a CLEAN BACKGROUND PLATE. Remove ONLY the entire human hero in the center including hat, head, scarf, backpack, hands, body, boots, leaving ZERO person fragments. Reconstruct the occluded workbench edge and drawer fronts, wall/tool board and floor naturally underneath, continuous horizontal bench top. Keep all remaining scene pixels/composition as faithfully as possible, same 2172x724 3:1 panoramic canvas, unchanged camera, lamps, bench, brass cartridges, press on right, opaque closed shutters, cabinets and floor geometry. No people or silhouettes anywhere. Keep chunky muted pixel art and same warm light. No exterior windows, no new props, no text. This plate will be layered with a separately extracted hero at the exact original location.",
+      "input": "../service_locations_20261011/workshop_v2.png",
+      "output": "workshop_background.png",
+      "transparent_background": false,
+      "sha256": "ff2bf0afc5c8627645eb0de2910167e60b4fcd795e257aba6189b9749fdc38fc",
+      "size": [
+        2170,
+        725
+      ],
+      "generated_source": "exec-2c988075-c56d-4b2d-a373-88531dc43924.png",
+      "input_sha256": "372c88be8978de7b4e6beea1d881eabd54d850029070e3f0c16453ab9d275453",
+      "initial_generated_source": "exec-27dd3cae-6516-4072-a219-62cf9cdf8771.png",
+      "note": "Initial background retained a hand; repair entry produced final file."
+    },
+    {
+      "kind": "workshop",
+      "role": "actor",
+      "prompt": "Extract ONLY the existing human character from this exact pixel art scene onto genuine TRANSPARENT background (alpha). Preserve the exact back-facing working pose, hat, scarf, backpack, coat, both complete arms and visible hands, legs and boots, existing pixel shapes and warm lighting. No table, cartridges, press, shadow, floor, wall, lamp, background or other object. Keep the original wide 3:1 canvas and original character size and position: hero silhouette occupies approximately x44%-54%, y32%-86%. All other pixels must be transparent. This is a precise layer separation, not a new pose or redesign. Do not center/enlarge the subject or draw any rectangle under it. There must be transparent holes between the legs and arm/body where background was visible.",
+      "input": "../service_locations_20261011/workshop_v2.png",
+      "output": "workshop_work.png",
+      "transparent_background": true,
+      "sha256": "52e2478d420e25754a642675c4d41eb6081a7ac73f45fb1baf53f617926b5366",
+      "size": [
+        2172,
+        724
+      ],
+      "generated_source": "exec-3cadf224-d4e3-4a52-9f7c-b7316e25bbe6.png",
+      "input_sha256": "372c88be8978de7b4e6beea1d881eabd54d850029070e3f0c16453ab9d275453"
+    },
+    {
+      "kind": "shop",
+      "role": "bg",
+      "prompt": "Remove ONLY the hero from this exact approved enclosed shop panorama. Entire human including hat, scarf, backpack, face, both arms and ALL skin-colored hands, coat, legs, boots must disappear. Reconstruct hidden shelving, counter surface and counter front and floor behind him. IMPORTANT remove the skin-colored hand on countertop just left of mug too; no floating hand/arm remnants. Keep mug, cartridge trays, curtain, counter, shutter, lighting and every other prop and camera composition unchanged. No other people. Exact same 3:1 full panorama and pixel-art density. This is an empty clean background plate for independent hero overlay, no redesign, no outside view or text.",
+      "input": "../service_locations_20261011/shop_v2.png",
+      "output": "shop_background.png",
+      "transparent_background": false,
+      "sha256": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab",
+      "size": [
+        2172,
+        724
+      ],
+      "generated_source": "exec-c5d64833-d902-477d-9664-ca9488164721.png",
+      "input_sha256": "b9b02442b106984692b8c0e0caabd10ebb98f9cee1d74f861144581705f782e2"
+    },
+    {
+      "kind": "shop",
+      "role": "actor",
+      "prompt": "Extract ONLY the human hero from this approved shop scene onto genuine transparent alpha background. Exact same relaxed back-three-quarter pose talking across counter, bent right arm with hand resting at counter height, brimmed lamp hat, rust scarf, slate coat, backpack, dark trousers and boots. Preserve pixel shape/lighting/style, do not redesign, rotate, mirror or add anatomy. Remove ALL non-character objects: no mug, counter, shelves, floor, shadows or scenery, no box. Preserve wide 3:1 original canvas, hero position approximately x35%-47%, y25%-90%. Transparent everywhere except human with transparent spaces between limbs. Do not crop feet. A separate registered sprite for overlaying the cleaned shop.",
+      "input": "../service_locations_20261011/shop_v2.png",
+      "output": "shop_work.png",
+      "transparent_background": true,
+      "sha256": "859aef9225e166f98168b386497260be9c2e6d624160406025299877063dab9b",
+      "size": [
+        2172,
+        724
+      ],
+      "generated_source": "exec-382d1c58-ba78-41f7-a164-056637a31f54.png",
+      "input_sha256": "b9b02442b106984692b8c0e0caabd10ebb98f9cee1d74f861144581705f782e2"
+    },
+    {
+      "kind": "supply",
+      "role": "bg",
+      "prompt": "Turn supplied approved supply depot scene into an empty BACKGROUND PLATE. Remove the ENTIRE human near center-left including hat, scarf, backpack, body, arms, EVERY skin-colored hand touching the chest, legs and boots. Reconstruct the hidden left side of open supply chest, shelves, chest drawers and metal floor naturally. No person or fragment should remain. Keep the existing open chest lid and its cartridge trays, other crates, shutters, pipes, lamps, warm light and muted pixel style, and all other scene content. Exact same 3:1 full panorama and camera/composition. No new props or text. No exterior view. It must look like the same place with hero visibility switched off.",
+      "input": "../service_locations_20261011/supply_v2.png",
+      "output": "supply_background.png",
+      "transparent_background": false,
+      "sha256": "be5864206d6a34d8d3bfb9184cc1b2f12adeab89b5712ba3c62ac15c19e29884",
+      "size": [
+        2171,
+        724
+      ],
+      "generated_source": "exec-78826b61-fd42-4c8c-81d6-9ee7b0eb4d77.png",
+      "input_sha256": "63eb355bd53a708b57c9864575bdd939da674499587894567dee64bd456a9704"
+    },
+    {
+      "kind": "supply",
+      "role": "actor",
+      "prompt": "Extract ONLY human hero from this approved supply scene as genuine TRANSPARENT alpha sprite. Exact back-three-quarter pose examining an open chest, hand bent at chest height, dark lamp brimmed hat, rust scarf, backpack, slate coat, trousers and boots. Keep same silhouette, colors, chunky grouped pixel style and ambient lighting, no redesign. Remove ALL chest, cartridge, shelf, crate, wall, ground, shadow and scenery pixels. No background rectangle or outlines added. Wide 3:1 original canvas, character remains approximately x36%-46%,y32%-83%; no enlarging or centering. Transparent holes between limbs. Entire boots and hands retained. Sprite for placing back over cleaned supply scene.",
+      "input": "../service_locations_20261011/supply_v2.png",
+      "output": "supply_work.png",
+      "transparent_background": true,
+      "sha256": "3ca1b8526dc59e8f74fa89b233021684a2ce182306bb8295fd4e41eaeb4b1533",
+      "size": [
+        2172,
+        724
+      ],
+      "generated_source": "exec-ae24c7e0-04e0-4549-9127-ca4b7d61902a.png",
+      "input_sha256": "63eb355bd53a708b57c9864575bdd939da674499587894567dee64bd456a9704"
+    },
+    {
+      "kind": "workshop",
+      "role": "repair",
+      "prompt": "Tiny local correction to this empty workshop background plate. There is a leftover disembodied peach-colored human hand on the bench at x53%,y53%, immediately LEFT of the three upright brass cartridges near the press. REMOVE that floating hand and small wrist entirely, replace with uninterrupted amber wall and bench surface. No humans or skin-colored fragments anywhere. Preserve all other pixels, objects, lighting, closed shutters, exact camera and 3:1 composition unchanged. This must be a clean person-free background.",
+      "input_generated": "exec-27dd3cae-6516-4072-a219-62cf9cdf8771.png",
+      "output": "workshop_background.png",
+      "sha256": "ff2bf0afc5c8627645eb0de2910167e60b4fcd795e257aba6189b9749fdc38fc",
+      "size": [
+        2170,
+        725
+      ],
+      "generated_source": "exec-2c988075-c56d-4b2d-a373-88531dc43924.png"
+    }
+  ],
+  "scope": "Separate default outfit poses from reusable enclosed rooms. Carrier/scout new art not produced.",
+  "method": "Raw generation/edit copies. GDScript uses registered texture subregions and contain transform; no bitmap post-processing.",
+  "alpha_audit": "Actors are RGBA. Remote near-zero-alpha noise exists outside subject; serialized source rectangles select the actual sprite. No bitmap edits. Matched artwork position by registered foot and height, not generation canvas."
+}

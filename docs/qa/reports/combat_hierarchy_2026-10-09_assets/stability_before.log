@@ -1,0 +1,29 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 591.86 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+FAIL: first load stable BattleView before=[P: (10.0, 76.0), S: (1260.0, 280.0)] after=[P: (10.0, 76.0), S: (1260.0, 249.0)]
+FAIL: first load stable FiringRailHeader before=[P: (18.0, 367.0), S: (1244.0, 25.0)] after=[P: (18.0, 336.0), S: (1244.0, 40.0)]
+FAIL: first load stable FiringRail before=[P: (18.0, 396.0), S: (1244.0, 92.0)] after=[P: (18.0, 380.0), S: (1244.0, 92.0)]
+FAIL: first load stable ThermalOutcome before=[P: (18.0, 492.0), S: (1244.0, 78.0)] after=[P: (18.0, 476.0), S: (1244.0, 78.0)]
+FAIL: first load stable CandidatesPanel before=[P: (10.0, 582.0), S: (1260.0, 194.0)] after=[P: (10.0, 596.0), S: (1260.0, 194.0)]
+FAIL: first load stable AmmoGrid before=[P: (18.0, 633.0), S: (1244.0, 140.0)] after=[P: (18.0, 647.0), S: (1244.0, 140.0)]
+FAIL: terminal overheat has no reload
+FAIL: terminal outcome described correctly
+FAIL: full multi-action preview reveals later overheat
+FAIL: next action does not inherit later overheat
+FAIL: first load stable FiringRailHeader before=[P: (18.0, 432.0), S: (1244.0, 25.0)] after=[P: (18.0, 432.0), S: (1244.0, 40.0)]
+FAIL: first load stable FiringRail before=[P: (18.0, 461.0), S: (1244.0, 92.0)] after=[P: (18.0, 476.0), S: (1244.0, 92.0)]
+FAIL: first load stable ThermalOutcome before=[P: (18.0, 557.0), S: (1244.0, 78.0)] after=[P: (18.0, 572.0), S: (1244.0, 78.0)]
+FAIL: first load stable CandidatesPanel before=[P: (10.0, 647.0), S: (1260.0, 194.0)] after=[P: (10.0, 692.0), S: (1260.0, 194.0)]
+FAIL: first load stable AmmoGrid before=[P: (18.0, 698.0), S: (1244.0, 140.0)] after=[P: (18.0, 743.0), S: (1244.0, 140.0)]
+FAIL: confirmed magazine hides edit buttons
+FAIL: visible bounds fire
+FAIL: usable fire
+FAIL: forced reload actual result agrees
+FAIL: first load stable BattleView before=[P: (10.0, 76.0), S: (1808.0, 280.0)] after=[P: (10.0, 76.0), S: (1808.0, 249.0)]
+FAIL: first load stable FiringRailHeader before=[P: (18.0, 367.0), S: (1792.0, 25.0)] after=[P: (18.0, 336.0), S: (1792.0, 40.0)]
+FAIL: first load stable FiringRail before=[P: (18.0, 396.0), S: (1792.0, 92.0)] after=[P: (18.0, 380.0), S: (1792.0, 92.0)]
+FAIL: first load stable ThermalOutcome before=[P: (18.0, 492.0), S: (1792.0, 78.0)] after=[P: (18.0, 476.0), S: (1792.0, 78.0)]
+FAIL: first load stable CandidatesPanel before=[P: (10.0, 582.0), S: (1808.0, 194.0)] after=[P: (10.0, 596.0), S: (1808.0, 194.0)]
+FAIL: first load stable AmmoGrid before=[P: (18.0, 633.0), S: (1792.0, 140.0)] after=[P: (18.0, 647.0), S: (1792.0, 140.0)]
+COMBAT HIERARCHY UI COMPLETE checks=542 failures=25

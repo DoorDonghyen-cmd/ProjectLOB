@@ -1,118 +1,111 @@
 extends Control
 const Art = preload("res://redesign/world_art.gd")
+const Facility = preload("res://redesign/map_facility.tscn")
+const RESIDENTIAL = preload("res://assets/art/map_residential_20261009/residential_shaft.png")
 signal entered(id: int)
 signal selected(id: int)
 signal inspected(id: int)
 const Data = preload("res://redesign/campaign_content.gd")
-const FONT = preload("res://redesign/ui_font.tres")
-const COLORS := {"combat": Color("a4b4ba"), "boss": Color("f2a38d"), "shop": Color("e4cc84"), "supply": Color("a9dfbf"), "event": Color("baace4"), "bypass": Color("8dbfc9")}
+const COLORS := {"combat": Color("a4b4ba"), "elite": Color("ec9677"), "workshop": Color("d6bb84"), "boss": Color("f2a38d"), "shop": Color("e4cc84"), "supply": Color("a9bfdf"), "event": Color("baace4"), "bypass": Color("8dbfc9")}
 var nodes: Array = []
 var available: Array = []
 var visited: Array = []
 var current := 0
 var floors := 6
 var positions: Dictionary = {}
+var selection := 0
+var reachable: Array = []
+var modern := false
+var residential := false
+
+func select_room(id: int) -> void:
+	if selection == id: return
+	selection = id
+	reachable = [id]
+	for item in nodes:
+		if reachable.has(int(item.id)):
+			for next_id in item.next:
+				if not reachable.has(int(next_id)): reachable.append(int(next_id))
+	for i in range(nodes.size()):
+		get_child(i).refresh(int(nodes[i].id) == id)
+	queue_redraw()
 
 func setup(campaign) -> void:
 	nodes = campaign.current_nodes()
 	available = campaign.choices().map(func(item): return int(item.id))
-	visited = campaign.s.visited.duplicate()
+	visited = campaign.s.visited.map(func(id): return int(id))
 	current = int(campaign.s.node)
-	floors = int(Data.info(int(campaign.s.region)).floors)
-	custom_minimum_size.y = maxi(410, floors * 64 + 24)
+	floors = int(campaign.region_info().floors)
+	modern = int(campaign.s.get("map_version", 1)) >= 2
+	residential = int(campaign.s.region) == 0
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	custom_minimum_size.y = maxi(450, floors * 90 + 24)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	clip_contents = true
 	resized.connect(_layout)
 	for item in nodes:
-		var button := Button.new()
+		var button := Facility.instantiate()
 		button.name = "map_node_" + str(item.id)
-		button.text = ("● " if int(item.id) == current else ("✓ " if visited.has(int(item.id)) else "")) + str(item.name)
-		button.text += "\n" + Data.kind_name(str(item.kind))
-		if available.has(int(item.id)):
-			button.text += " · " + ("계단" if item.route == "stairs" else ("위험 +%dCr" % Data.ROUTE_REWARD_BONUS if item.kind in ["combat", "boss"] else "환기 −2m"))
-		button.add_theme_font_size_override("font_size", 16)
-		button.add_theme_color_override("font_color", Color("e7e4d9") if available.has(int(item.id)) else (Color("a9dfbf") if visited.has(int(item.id)) else Color("81939c")))
-		for state in ["normal", "hover", "pressed", "focus"]:
-			var box := StyleBoxFlat.new()
-			box.bg_color = Color("243b43") if available.has(int(item.id)) else Color("192b35")
-			box.border_color = COLORS[item.kind] if available.has(int(item.id)) or state != "normal" else Color("344c59")
-			box.set_border_width_all(2 if available.has(int(item.id)) else 1)
-			box.set_corner_radius_all(4)
-			box.content_margin_left = 29
-			button.add_theme_stylebox_override(state, box)
-		button.tooltip_text = Data.hint(item)
+		var role := Data.room_kind(item)
+		var caption := Data.kind_name(role) + (" +" if item.route == "duct" else "")
+		button.configure(role, caption, available.has(int(item.id)), int(item.id) == current, visited.has(int(item.id)))
+		button.tooltip_text = str(item.name)
 		button.pressed.connect(func():
+			select_room(int(item.id))
 			if available.has(int(item.id)): selected.emit(int(item.id))
 			else: inspected.emit(int(item.id))
 		)
 		add_child(button)
-		var badge := Badge.new()
-		badge.kind = item.kind
-		badge.color = COLORS[item.kind] if available.has(int(item.id)) else Color("6e8995")
-		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		badge.position = Vector2(10, 12)
-		badge.size = Vector2(20, 20)
-		button.add_child(badge)
 	_layout.call_deferred()
 
 func _layout() -> void:
 	positions.clear()
 	var spacing := (size.y - 24) / float(floors)
-	var width := minf(270, (size.x - 130) * 0.41)
+	var width := minf(112, (size.x - 32) / 4.4)
 	for i in range(nodes.size()):
 		var item: Dictionary = nodes[i]
 		var single := 0
 		for other in nodes:
 			if int(other.floor) == int(item.floor): single += 1
-		var x := size.x * (0.5 if single == 1 else (0.31 if int(item.lane) == 0 else 0.71))
+		var ratio := (float(item.lane) + 0.5) / 4.0 if modern else (0.26 if int(item.lane) == 0 else 0.74)
+		var graph_width := minf(1000, size.x - 32)
+		var x := (size.x - graph_width) * 0.5 + graph_width * (0.5 if single == 1 else ratio)
 		var y := 12 + (floors - int(item.floor) + 0.5) * spacing
 		positions[int(item.id)] = Vector2(x, y)
 		var button := get_child(i) as Button
-		button.position = Vector2(x - width / 2, y - 26)
-		button.size = Vector2(width, 52)
+		button.position = Vector2(x - width / 2, y - 39)
+		button.size = Vector2(width, 78)
 	queue_redraw()
 
 func _draw() -> void:
-	Art.cover(self, Art.texture("city_overview"), Rect2(Vector2.ZERO, size))
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.04, 0.07, 0.10, 0.7))
-	var spacing := (size.y - 24) / float(floors)
-	for f in range(1, floors + 1):
-		var y := 12 + (floors - f + 0.5) * spacing
-		draw_line(Vector2(70, y + spacing / 2), Vector2(size.x - 12, y + spacing / 2), Color("24343d"), 1)
-		draw_string(FONT, Vector2(16, y + 5), "%02dF" % f, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("a4b4ba"))
+	Art.cover(self, RESIDENTIAL if residential else Art.texture("city_overview"), Rect2(Vector2.ZERO, size))
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.025, 0.045, 0.06, 0.22 if residential else 0.80))
+	# One translucent chart surface groups the route graph, while the shaft
+	# stays visible through it and beside it. Individual facilities stay unboxed.
+	var chart_width := minf(1040, size.x - 8)
+	var chart := Rect2(Vector2((size.x - chart_width) * 0.5, 4), Vector2(chart_width, size.y - 8))
+	draw_rect(chart, Color(0.035, 0.075, 0.10, 0.52))
+	draw_rect(chart, Color(0.38, 0.51, 0.56, 0.38), false, 1)
 	for item in nodes:
 		for target in nodes:
-			if int(target.floor) != int(item.floor) + 1: continue
-			var target_count := 0
-			for other in nodes:
-				if int(other.floor) == int(target.floor): target_count += 1
-			if int(item.lane) == 1 and int(target.lane) == 0 and target_count > 1: continue
+			if not item.next.has(target.id): continue
 			if not positions.has(int(item.id)) or not positions.has(int(target.id)): continue
 			var active: bool = int(item.id) == current and available.has(int(target.id))
-			draw_line(positions[int(item.id)] - Vector2(0, 26), positions[int(target.id)] + Vector2(0, 26), Color("a9dfbf") if active else Color("354653"), 3 if active else 1, true)
-
-class Badge extends Control:
-	var kind := "combat"
-	var color := Color.WHITE
-	func _draw() -> void:
-		match kind:
-			"combat":
-				draw_line(Vector2(3, 3), Vector2(17, 17), color, 3)
-				draw_line(Vector2(17, 3), Vector2(3, 17), color, 3)
-			"boss":
-				draw_colored_polygon(PackedVector2Array([Vector2(10, 0), Vector2(20, 10), Vector2(10, 20), Vector2(0, 10)]), color)
-			"shop":
-				draw_rect(Rect2(1, 3, 18, 12), color, false, 2)
-				draw_line(Vector2(5, 19), Vector2(15, 19), color, 2)
-			"supply":
-				draw_rect(Rect2(1, 4, 18, 14), color, false, 2)
-				draw_line(Vector2(10, 7), Vector2(10, 15), color, 2)
-				draw_line(Vector2(6, 11), Vector2(14, 11), color, 2)
-			"event":
-				draw_circle(Vector2(10, 10), 8, color, false, 2)
-				draw_line(Vector2(10, 4), Vector2(10, 11), color, 2)
-				draw_circle(Vector2(10, 15), 1, color)
-			"bypass":
-				draw_line(Vector2(1, 10), Vector2(18, 10), color, 2)
-				draw_line(Vector2(12, 4), Vector2(18, 10), color, 2)
-				draw_line(Vector2(12, 16), Vector2(18, 10), color, 2)
+			var preview := reachable.has(int(item.id)) and reachable.has(int(target.id))
+			var traveled := visited.has(int(item.id)) and visited.has(int(target.id))
+			var color := Color("edc47a") if active else (Color("b5a786") if preview else (Color("72868b") if traveled else Color("4b6673")))
+			# Clip the original diagonal to each target's edge. Joining only top/bottom
+			# makes branches look horizontal and falsely connects adjacent facilities.
+			var origin: Vector2 = positions[int(item.id)]
+			var destination: Vector2 = positions[int(target.id)]
+			var direction := (destination - origin).normalized()
+			var half_width: float = get_child(0).size.x * 0.5
+			var edge := minf(half_width / maxf(absf(direction.x), 0.001), 39.0 / maxf(absf(direction.y), 0.001))
+			var start := origin + direction * edge
+			var end := destination - direction * edge
+			draw_line(start, end, Color("0b1720"), 7, false)
+			draw_line(start, end, color, 3 if active or preview else 2, false)
+			if active or preview:
+				var midpoint := (start + end) * 0.5
+				draw_rect(Rect2(midpoint.round() - Vector2(2, 2), Vector2(4, 4)), color)

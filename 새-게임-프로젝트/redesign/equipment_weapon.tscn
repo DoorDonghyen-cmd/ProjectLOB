@@ -1,0 +1,14 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="Script" path="res://redesign/equipment_weapon.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/art/weapons_20261011/single_v1.tres" id="2"]
+[ext_resource type="Shader" path="res://redesign/monster_alpha_cutout.gdshader" id="3"]
+[sub_resource type="ShaderMaterial" id="Cutout"]
+shader = ExtResource("3")
+[node name="WeaponArt" type="TextureRect"]
+texture_filter = 1
+mouse_filter = 2
+material = SubResource("Cutout")
+texture = ExtResource("2")
+expand_mode = 1
+stretch_mode = 5
+script = ExtResource("1")

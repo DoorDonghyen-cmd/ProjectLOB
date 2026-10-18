@@ -9,7 +9,7 @@ var ammo_id := "basic"
 
 func _ready() -> void:
 	text = ""
-	custom_minimum_size = Vector2(174, 44)
+	custom_minimum_size = Vector2(190, 44)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	queue_redraw()
@@ -27,6 +27,7 @@ func _draw() -> void:
 	AmmoVisual.round_icon(self, Vector2(42, 23), ammo_id, 0.20)
 	draw_string(FONT, Vector2(57, 29), "→", HORIZONTAL_ALIGNMENT_CENTER, 19, 18, Color("94a9ae", alpha))
 	var center := Vector2(87, 23)
+	AmmoVisual.grade_mark(self, Vector2(77, 5), Content.field_id(ammo_id), alpha)
 	var diamond := PackedVector2Array([
 		center + Vector2(0, -9), center + Vector2(9, 0),
 		center + Vector2(0, 9), center + Vector2(-9, 0), center + Vector2(0, -9),

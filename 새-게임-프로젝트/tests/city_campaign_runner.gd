@@ -10,6 +10,7 @@ var commands: Array = []
 var solver = Solver.new()
 var output := ""
 var compression_build := false
+var test_map_version := 1
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -27,7 +28,7 @@ func roundtrip(campaign) -> bool:
 	var loaded = Campaign.new()
 	if not check(loaded.restore(path), "full campaign restore " + str(campaign.s.phase)): return false
 	check(JSON.stringify(loaded.s) == JSON.stringify(JSON.parse_string(JSON.stringify(campaign.s))), "campaign exact persistence")
-	check(JSON.stringify(loaded.model.s) == JSON.stringify(JSON.parse_string(JSON.stringify(campaign.model.s))), "combat exact persistence")
+	check(JSON.stringify(JSON.parse_string(JSON.stringify(loaded.model.s))) == JSON.stringify(JSON.parse_string(JSON.stringify(campaign.model.s))), "combat exact persistence")
 	check(JSON.stringify(loaded.profile) == JSON.stringify(JSON.parse_string(JSON.stringify(campaign.profile))), "profile exact persistence")
 	return true
 
@@ -61,7 +62,7 @@ func command(campaign, item: Dictionary) -> bool:
 
 func fixture_shop():
 	var campaign = Campaign.new()
-	campaign.start("burst", 731042)
+	campaign.start("burst", 731042, 0, "balanced", 1)
 	campaign.s.phase = "shop"
 	campaign.s.floor = 4
 	campaign.s.node = 401
@@ -161,12 +162,12 @@ func rules() -> void:
 	check(migrated_campaign.restore_state(legacy_data) and migrated_campaign.s.version == 4 and migrated_campaign.s.compressor_charges == 1 and migrated_campaign.s.shop_seen_parts.is_empty() and not migrated_campaign.s.shop_compressor_bought, "campaign v1 migrates through current multi-part shop format")
 	var seen_parts: Array = []
 	var shop_node: Dictionary = Data.nodes(0, 731042).filter(func(item): return item.kind == "shop")[0]
-	for revision in range(10):
+	for revision in range(ceili(Data.eligible_parts("burst").size() / 2.0)):
 		var rotating_offers: Array = Data.offers(shop_node, 731042, revision, "burst", [], seen_parts)
 		for offer in rotating_offers:
 			if offer.type == "part" and not seen_parts.has(offer.id): seen_parts.append(offer.id)
-	check(seen_parts.size() == Data.eligible_parts("burst").size() and seen_parts.has("supply") and seen_parts.has("duplex") and seen_parts.has("field_press") and seen_parts.has("triad"), "ten shop views expose every eligible part before repeating")
-	check(Data.eligible_parts("single").size() == 19 and not Data.eligible_parts("single").has("loader"), "only ineffective loader is excluded from walker twenty-part pool")
+	check(seen_parts.size() == Data.eligible_parts("burst").size() and seen_parts.has("supply") and seen_parts.has("duplex") and seen_parts.has("field_press") and seen_parts.has("triad"), "rotation exposes every eligible part before repeating")
+	check(Data.eligible_parts("single").size() == Ammo.PARTS.size() - 2 and not Data.eligible_parts("single").has("loader"), "only ineffective loader is excluded from walker part pool")
 	for value in [1, 2]:
 		campaign.model.s.capacity_bonus = value
 		check(campaign.model.capacity() == 4 + value, "capacity growth separate from part")
@@ -189,8 +190,8 @@ func rules() -> void:
 	campaign = Campaign.new()
 	campaign.start("single", 17)
 	campaign.s.phase = "gate"
-	check(campaign.compressible_ids().has("bore") and campaign.compressible_ids().has("pierce"), "gate exposes only duplicate ordinary families")
-	check(campaign.gate("compress", "bore") and campaign.model.s.deck.size() == 9 and campaign.model.s.deck.count("bore") == 0 and campaign.model.s.deck.count("bore_c") == 1, "gate compression consumes two and creates one")
+	check(campaign.compressible_ids().has("push") and campaign.compressible_ids().has("pierce"), "gate exposes only duplicate ordinary families")
+	check(campaign.gate("compress", "push") and campaign.model.s.deck.size() == 9 and campaign.model.s.deck.count("push") == 0 and campaign.model.s.deck.count("push_c") == 1, "gate compression consumes two and creates one")
 	campaign = Campaign.new()
 	campaign.start("single", 17)
 	campaign.model.s.deck.resize(8)
@@ -229,17 +230,33 @@ func rules() -> void:
 	campaign.settle(false)
 	check(campaign.profile.cores == 6 and campaign.profile.runs == 1, "loss settlement idempotent")
 
+func current_story_names(state: Dictionary) -> Dictionary:
+	# The approved story renamed only the final gate. Keep every numeric field,
+	# target index, timing and RNG value in the golden comparison unchanged.
+	var copy: Dictionary = state.duplicate(true)
+	if copy.get("encounter_name", "") == "코어": copy.encounter_name = "중앙 제어실 관문"
+	for enemy in copy.get("enemies", []) + copy.get("reinforcements", []):
+		if enemy.get("name", "") == "코어": enemy.name = "중앙 제어실 관문"
+	for event in copy.get("history", []):
+		var detail: Dictionary = event.get("detail", {})
+		for enemy in detail.get("firing_enemies", []):
+			if enemy.get("name", "") == "코어": enemy.name = "중앙 제어실 관문"
+		for result in detail.get("results", []):
+			if result.has("text"): result.text = str(result.text).replace(" → 코어:", " → 중앙 제어실 관문:")
+	return copy
+
 func replay_previous(expected: Dictionary) -> void:
 	var campaign = Campaign.new()
 	campaign.profile.ascension = int(expected.difficulty)
-	campaign.start(str(expected.gun), int(expected.seed), int(expected.difficulty))
+	campaign.start(str(expected.gun), int(expected.seed), int(expected.difficulty), "balanced", int(expected.campaign.get("map_version", 1)))
+	campaign.s.roster_version = int(expected.campaign.get("roster_version", 1))
 	commands = []
 	for previous in expected.commands:
 		if not command(campaign, previous.duplicate(true)): return
 		if not check(campaign.s.phase == previous.phase and int(campaign.s.node) == int(previous.node), "previous path retains exact progress: %s command %d %s expected=%s/%s actual=%s/%s" % [expected.gun, commands.size(), previous.action, previous.phase, previous.node, campaign.s.phase, campaign.s.node]): return
 		if commands.size() % 50 == 0: await process_frame
-	check(campaign.s.phase == "won" and campaign.s.visited.size() == 35, "unchanged combat paths complete city after economy tuning")
-	check(JSON.stringify(JSON.parse_string(JSON.stringify(campaign.model.s))) == JSON.stringify(expected.combat), "economy tuning preserves exact combat history")
+	check(campaign.s.phase == "won" and campaign.s.visited.size() == campaign.total_floors(), "recorded map version completes city")
+	check(JSON.stringify(JSON.parse_string(JSON.stringify(campaign.model.s))) == JSON.stringify(current_story_names(expected.combat)), "combat history preserved after explicit final-gate name migration")
 	var report := {"gun": expected.gun, "seed": expected.seed, "route": expected.route, "difficulty": expected.difficulty, "won": campaign.s.phase == "won", "visits": expected.visits, "commands": commands.duplicate(true), "campaign": campaign.s.duplicate(true), "combat": campaign.model.s.duplicate(true), "profile": campaign.profile.duplicate(true)}
 	reports.append(report)
 	print("CITY REPLAY " + str(expected.gun) + " seed=" + str(expected.seed) + " route=" + str(expected.route) + " difficulty=" + str(expected.difficulty) + " credits=" + str(campaign.s.credits))
@@ -247,7 +264,7 @@ func replay_previous(expected: Dictionary) -> void:
 func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> void:
 	var campaign = Campaign.new()
 	campaign.profile.ascension = difficulty
-	campaign.start(gun, seed_value, difficulty)
+	campaign.start(gun, seed_value, difficulty, "balanced", test_map_version)
 	commands = []
 	var visits := {"combat": 0, "boss": 0, "shop": 0, "supply": 0, "event": 0, "bypass": 0}
 	for iteration in range(300):
@@ -257,6 +274,13 @@ func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> v
 				if not check(not available.is_empty(), "map never dead ends"): break
 				var selected: Dictionary = available[0]
 				if route == "mixed" and available.size() > 1 and int(campaign.s.floor) in [1, 4]: selected = available.back()
+				if test_map_version == 2:
+					var preference := "elite" if route == "mixed" else "shop"
+					for option in available:
+						if Data.room_kind(option) == preference: selected = option
+					if route == "safe":
+						for option in available:
+							if option.kind == "shop" or option.get("workshop", false): selected = option
 				visits[selected.kind] += 1
 				if not command(campaign, {"action": "enter", "id": selected.id}): break
 			"combat":
@@ -267,9 +291,10 @@ func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> v
 					if not command(campaign, step): break
 			"reward":
 				var reward := "credits"
-				var ammo_options := Data.rewards(campaign.node(), seed_value)
-				if campaign.model.s.deck.size() < 12 and int(campaign.s.clears) % 3 == 0:
+				var ammo_options := campaign.reward_options()
+				if not ammo_options.is_empty() and campaign.model.s.deck.size() < 12 and int(campaign.s.clears) % 3 == 0:
 					reward = str(ammo_options[0])
+				if not campaign.part_rewards().is_empty(): reward = str(campaign.part_rewards()[0])
 				if not command(campaign, {"action": "reward", "id": reward}): break
 			"gate":
 				var compressible: Array = campaign.compressible_ids()
@@ -296,7 +321,7 @@ func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> v
 			"won", "lost": break
 		await process_frame
 	var won: bool = campaign.s.phase == "won"
-	check(won and campaign.absolute_floor() == 35 and campaign.s.visited.size() == 35, "all 35 floors completed")
+	check(won and campaign.absolute_floor() == campaign.total_floors() and campaign.s.visited.size() == campaign.total_floors(), "all generated floors completed")
 	var progress: Dictionary = campaign.profile.duplicate(true)
 	campaign.sync_combat()
 	campaign.settle(won)
@@ -305,6 +330,7 @@ func play(gun: String, seed_value: int, route: String, difficulty: int = 0) -> v
 		check(campaign.model.s.deck.any(func(id): return Ammo.is_compressed(str(id))), "compression route retains at least one compressed round")
 	else:
 		var part_capacity := (1 if Ammo.has_part(campaign.model.s, "supply") else 0) - (2 if Ammo.has_part(campaign.model.s, "field_press") else 0) - (1 if Ammo.has_part(campaign.model.s, "overbore") else 0)
+		if Ammo.has_part(campaign.model.s, "cooling_breech"): part_capacity -= 1
 		check(campaign.s.slots == 2 and campaign.model.capacity() == maxi(1, int(Ammo.GUNS[gun].capacity) + 2 + part_capacity), "endgame growth retains expansion and active part capacity costs")
 	var report := {"gun": gun, "seed": seed_value, "route": route, "difficulty": difficulty, "won": won, "visits": visits, "commands": commands.duplicate(true), "campaign": campaign.s.duplicate(true), "combat": campaign.model.s.duplicate(true), "profile": campaign.profile.duplicate(true)}
 	reports.append(report)

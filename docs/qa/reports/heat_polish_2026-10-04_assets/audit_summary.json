@@ -1,0 +1,453 @@
+{
+  "method": "Four seeds, five guns, four real production encounters with reserves, three identical ten-card decks per matched package. Four equal two-part packages plus zero-part diagnostic baseline. Independent encounters, not a campaign/economy simulation. Random shuffle versus fixed heat-aware hand heuristic; neither reads hidden RNG, future draw or outcomes. No exchange/compression/upgrade search. Policies are probes, not optimal players or human win rates. Cooling estimate ignores kill cooling; unfired includes terminal unused ammo, not just heat loss.",
+  "cases": 2400,
+  "failures": [],
+  "by_policy_package": [
+    {
+      "policy": "random",
+      "package": "baseline",
+      "cases": 240,
+      "cleared": 222,
+      "mean_turns_all_outcomes": 10.541666666666666,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 0,
+        "forced": 167,
+        "thermal_hot": 80,
+        "thermal_shots": 259,
+        "unfired": 314,
+        "vent_shots": 181,
+        "vented": 686
+      }
+    },
+    {
+      "policy": "random",
+      "package": "firepower",
+      "cases": 240,
+      "cleared": 231,
+      "mean_turns_all_outcomes": 9.375,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 0,
+        "forced": 147,
+        "thermal_hot": 78,
+        "thermal_shots": 243,
+        "unfired": 317,
+        "vent_shots": 154,
+        "vented": 579
+      }
+    },
+    {
+      "policy": "random",
+      "package": "cooling",
+      "cases": 240,
+      "cleared": 231,
+      "mean_turns_all_outcomes": 9.975,
+      "metrics": {
+        "cooling": 2808,
+        "ember_shots": 0,
+        "forced": 0,
+        "thermal_hot": 38,
+        "thermal_shots": 263,
+        "unfired": 288,
+        "vent_shots": 210,
+        "vented": 769
+      }
+    },
+    {
+      "policy": "random",
+      "package": "hot",
+      "cases": 240,
+      "cleared": 212,
+      "mean_turns_all_outcomes": 10.970833333333333,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 1051,
+        "forced": 449,
+        "thermal_hot": 107,
+        "thermal_shots": 252,
+        "unfired": 440,
+        "vent_shots": 113,
+        "vented": 412
+      }
+    },
+    {
+      "policy": "random",
+      "package": "buffered_hot",
+      "cases": 240,
+      "cleared": 228,
+      "mean_turns_all_outcomes": 9.504166666666666,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 742,
+        "forced": 66,
+        "thermal_hot": 65,
+        "thermal_shots": 244,
+        "unfired": 272,
+        "vent_shots": 185,
+        "vented": 702
+      }
+    },
+    {
+      "policy": "heat_order",
+      "package": "baseline",
+      "cases": 240,
+      "cleared": 234,
+      "mean_turns_all_outcomes": 9.158333333333333,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 0,
+        "forced": 114,
+        "thermal_hot": 147,
+        "thermal_shots": 147,
+        "unfired": 331,
+        "vent_shots": 179,
+        "vented": 715
+      }
+    },
+    {
+      "policy": "heat_order",
+      "package": "firepower",
+      "cases": 240,
+      "cleared": 237,
+      "mean_turns_all_outcomes": 8.408333333333333,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 0,
+        "forced": 101,
+        "thermal_hot": 142,
+        "thermal_shots": 142,
+        "unfired": 342,
+        "vent_shots": 168,
+        "vented": 671
+      }
+    },
+    {
+      "policy": "heat_order",
+      "package": "cooling",
+      "cases": 240,
+      "cleared": 234,
+      "mean_turns_all_outcomes": 8.75,
+      "metrics": {
+        "cooling": 2916,
+        "ember_shots": 0,
+        "forced": 0,
+        "thermal_hot": 48,
+        "thermal_shots": 104,
+        "unfired": 329,
+        "vent_shots": 178,
+        "vented": 694
+      }
+    },
+    {
+      "policy": "heat_order",
+      "package": "hot",
+      "cases": 240,
+      "cleared": 235,
+      "mean_turns_all_outcomes": 9.029166666666667,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 1101,
+        "forced": 314,
+        "thermal_hot": 114,
+        "thermal_shots": 114,
+        "unfired": 303,
+        "vent_shots": 153,
+        "vented": 610
+      }
+    },
+    {
+      "policy": "heat_order",
+      "package": "buffered_hot",
+      "cases": 240,
+      "cleared": 236,
+      "mean_turns_all_outcomes": 8.279166666666667,
+      "metrics": {
+        "cooling": 0,
+        "ember_shots": 738,
+        "forced": 56,
+        "thermal_hot": 113,
+        "thermal_shots": 113,
+        "unfired": 285,
+        "vent_shots": 174,
+        "vented": 695
+      }
+    }
+  ],
+  "by_policy_deck": [
+    {
+      "policy": "random",
+      "deck": "combo",
+      "cases": 400,
+      "cleared": 379,
+      "mean_turns_all_outcomes": 9.6875,
+      "metrics": {
+        "cooling": 940,
+        "ember_shots": 672,
+        "forced": 394,
+        "thermal_hot": 0,
+        "thermal_shots": 0,
+        "unfired": 511,
+        "vent_shots": 0,
+        "vented": 0
+      }
+    },
+    {
+      "policy": "random",
+      "deck": "thermal",
+      "cases": 400,
+      "cleared": 349,
+      "mean_turns_all_outcomes": 10.215,
+      "metrics": {
+        "cooling": 940,
+        "ember_shots": 669,
+        "forced": 341,
+        "thermal_hot": 368,
+        "thermal_shots": 1261,
+        "unfired": 591,
+        "vent_shots": 843,
+        "vented": 3148
+      }
+    },
+    {
+      "policy": "random",
+      "deck": "elemental",
+      "cases": 400,
+      "cleared": 396,
+      "mean_turns_all_outcomes": 10.3175,
+      "metrics": {
+        "cooling": 928,
+        "ember_shots": 452,
+        "forced": 94,
+        "thermal_hot": 0,
+        "thermal_shots": 0,
+        "unfired": 529,
+        "vent_shots": 0,
+        "vented": 0
+      }
+    },
+    {
+      "policy": "heat_order",
+      "deck": "combo",
+      "cases": 400,
+      "cleared": 390,
+      "mean_turns_all_outcomes": 9.335,
+      "metrics": {
+        "cooling": 990,
+        "ember_shots": 628,
+        "forced": 371,
+        "thermal_hot": 0,
+        "thermal_shots": 0,
+        "unfired": 535,
+        "vent_shots": 0,
+        "vented": 0
+      }
+    },
+    {
+      "policy": "heat_order",
+      "deck": "thermal",
+      "cases": 400,
+      "cleared": 391,
+      "mean_turns_all_outcomes": 7.8,
+      "metrics": {
+        "cooling": 952,
+        "ember_shots": 678,
+        "forced": 113,
+        "thermal_hot": 564,
+        "thermal_shots": 620,
+        "unfired": 487,
+        "vent_shots": 852,
+        "vented": 3385
+      }
+    },
+    {
+      "policy": "heat_order",
+      "deck": "elemental",
+      "cases": 400,
+      "cleared": 395,
+      "mean_turns_all_outcomes": 9.04,
+      "metrics": {
+        "cooling": 974,
+        "ember_shots": 533,
+        "forced": 101,
+        "thermal_hot": 0,
+        "thermal_shots": 0,
+        "unfired": 568,
+        "vent_shots": 0,
+        "vented": 0
+      }
+    }
+  ],
+  "by_policy_gun": [
+    {
+      "policy": "random",
+      "gun": "single",
+      "cases": 240,
+      "cleared": 235,
+      "mean_turns_all_outcomes": 7.8625,
+      "metrics": {
+        "cooling": 591,
+        "ember_shots": 367,
+        "forced": 236,
+        "thermal_hot": 81,
+        "thermal_shots": 233,
+        "unfired": 425,
+        "vent_shots": 145,
+        "vented": 563
+      }
+    },
+    {
+      "policy": "random",
+      "gun": "burst",
+      "cases": 240,
+      "cleared": 230,
+      "mean_turns_all_outcomes": 11.020833333333334,
+      "metrics": {
+        "cooling": 578,
+        "ember_shots": 352,
+        "forced": 81,
+        "thermal_hot": 78,
+        "thermal_shots": 251,
+        "unfired": 282,
+        "vent_shots": 174,
+        "vented": 683
+      }
+    },
+    {
+      "policy": "random",
+      "gun": "scatter",
+      "cases": 240,
+      "cleared": 219,
+      "mean_turns_all_outcomes": 9.6875,
+      "metrics": {
+        "cooling": 544,
+        "ember_shots": 402,
+        "forced": 122,
+        "thermal_hot": 76,
+        "thermal_shots": 253,
+        "unfired": 405,
+        "vent_shots": 177,
+        "vented": 708
+      }
+    },
+    {
+      "policy": "random",
+      "gun": "heavy",
+      "cases": 240,
+      "cleared": 234,
+      "mean_turns_all_outcomes": 8.945833333333333,
+      "metrics": {
+        "cooling": 565,
+        "ember_shots": 413,
+        "forced": 179,
+        "thermal_hot": 92,
+        "thermal_shots": 287,
+        "unfired": 285,
+        "vent_shots": 185,
+        "vented": 725
+      }
+    },
+    {
+      "policy": "random",
+      "gun": "amplifier",
+      "cases": 240,
+      "cleared": 206,
+      "mean_turns_all_outcomes": 12.85,
+      "metrics": {
+        "cooling": 530,
+        "ember_shots": 259,
+        "forced": 211,
+        "thermal_hot": 41,
+        "thermal_shots": 237,
+        "unfired": 234,
+        "vent_shots": 162,
+        "vented": 469
+      }
+    },
+    {
+      "policy": "heat_order",
+      "gun": "single",
+      "cases": 240,
+      "cleared": 240,
+      "mean_turns_all_outcomes": 6.733333333333333,
+      "metrics": {
+        "cooling": 610,
+        "ember_shots": 399,
+        "forced": 164,
+        "thermal_hot": 114,
+        "thermal_shots": 132,
+        "unfired": 342,
+        "vent_shots": 156,
+        "vented": 620
+      }
+    },
+    {
+      "policy": "heat_order",
+      "gun": "burst",
+      "cases": 240,
+      "cleared": 237,
+      "mean_turns_all_outcomes": 9.891666666666667,
+      "metrics": {
+        "cooling": 594,
+        "ember_shots": 342,
+        "forced": 65,
+        "thermal_hot": 114,
+        "thermal_shots": 125,
+        "unfired": 344,
+        "vent_shots": 168,
+        "vented": 671
+      }
+    },
+    {
+      "policy": "heat_order",
+      "gun": "scatter",
+      "cases": 240,
+      "cleared": 221,
+      "mean_turns_all_outcomes": 8.958333333333334,
+      "metrics": {
+        "cooling": 555,
+        "ember_shots": 443,
+        "forced": 74,
+        "thermal_hot": 131,
+        "thermal_shots": 138,
+        "unfired": 406,
+        "vent_shots": 159,
+        "vented": 636
+      }
+    },
+    {
+      "policy": "heat_order",
+      "gun": "heavy",
+      "cases": 240,
+      "cleared": 239,
+      "mean_turns_all_outcomes": 7.645833333333333,
+      "metrics": {
+        "cooling": 600,
+        "ember_shots": 402,
+        "forced": 124,
+        "thermal_hot": 102,
+        "thermal_shots": 118,
+        "unfired": 302,
+        "vent_shots": 192,
+        "vented": 765
+      }
+    },
+    {
+      "policy": "heat_order",
+      "gun": "amplifier",
+      "cases": 240,
+      "cleared": 239,
+      "mean_turns_all_outcomes": 10.395833333333334,
+      "metrics": {
+        "cooling": 557,
+        "ember_shots": 253,
+        "forced": 158,
+        "thermal_hot": 103,
+        "thermal_shots": 107,
+        "unfired": 196,
+        "vent_shots": 177,
+        "vented": 693
+      }
+    }
+  ]
+}

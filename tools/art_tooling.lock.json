@@ -74,6 +74,24 @@
     "D:/ProjectLoB/.codex/config.toml",
     "D:\\ProjectLoB\\worktrees\\core-redesign\\.codex\\config.toml"
   ],
+  "reference_library": {
+    "catalog": "reference_library/README.md",
+    "versions": "reference_library/sources.lock.json",
+    "decisions": "reference_library/review.json",
+    "acquire": "python tools/acquire_reference_sources.py",
+    "verify": "python tools/acquire_reference_sources.py --verify",
+    "source_count": 12,
+    "verified_on": "2026-10-11",
+    "upstream_plugins_enabled_in_game": false
+  },
+  "hero_source_pipeline": {
+    "source": "art_source/hero/reclaimer_actions.ase",
+    "registration": "art_source/hero/poses.json",
+    "export": "python tools/export_hero_animation.py",
+    "check": "python tools/export_hero_animation.py --check",
+    "scope": "Lossless four-pose atlas and Godot registration metadata; not newly generated in-between frames",
+    "verified_on": "2026-10-11"
+  },
   "verification": {
     "art_pipeline": "qa_runtime/art_tooling/art_tools.json",
     "godot_mcp": "qa_runtime/art_tooling/godot_mcp.json",

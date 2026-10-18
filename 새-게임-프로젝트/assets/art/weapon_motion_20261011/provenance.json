@@ -1,0 +1,57 @@
+{
+  "created_on": "2026-10-11",
+  "tool": "built-in image_gen",
+  "status": "Integrated director-selected combat poses; user motion preference and Galaxy performance pending.",
+  "references": [
+    {
+      "path": "../actor_motion_20261005/reclaimer_actions_v1.png",
+      "role": "Approved character costume, pixel clusters and palette for pistol body",
+      "sha256": "4542dff35a2df3dc42540b0ac86d5f56b935615ec2685cde0b8ce6c3620a67f2"
+    },
+    {
+      "path": "pistol_body_v1.png",
+      "role": "Matching person and pixel style for long-gun body",
+      "sha256": "575599d2e1115ee51a2e27067ce30856109a965d12961ef5badf42af364aec7b"
+    }
+  ],
+  "display": "3x2 grid, 512x512 cells. Original PNGs unmodified. Godot shader cuts alpha below 0.5; nearest filtered GPU body/weapon/hand composition. Registration in redesign/weapon_actor.gd.",
+  "scope": "Two body pose families, five registered existing equipment weapons. Long-gun recoil reuses aim body with existing procedural recoil. Default bluegrey outfit only; not layered outfit/helmet animation.",
+  "assets": [
+    {
+      "file": "pistol_body_v1.png",
+      "prompt": "Production animation BODY sprite sheet for this exact approved pixel character, transparent background. EXACTLY SIX complete full-body sprites in a regular 3 COLUMNS by 2 ROWS grid, each square cell. Landscape 3:2 canvas. Same adult male reclaimer, bluegrey lamp cap, red-brown shoulder scarf, long bluegrey coat, backpack, brown boots, same scale and foot baseline in EVERY cell, facing RIGHT. Match reference's broad plain pixel clusters and low-detail grouped shadows; roughly 45 logical pixels tall character, no added detail. IMPORTANT: draw NO WEAPON, no gun, no prop, no magazine, no effects anywhere. The right hand is shaped to grasp an INVISIBLE pistol that will be rendered separately by the game. The empty gripping hand must be distinct and readable. Left arm stays down or at chest unless reloading. Exactly two arms and two hands per figure. TOP LEFT: relaxed idle, right elbow bent, right fist forward at waist height, left hand resting down at side. TOP MIDDLE: ONE-HANDED aiming stance, right arm extending horizontally to the RIGHT at shoulder height, right gripping fist at far right, left arm down by body. TOP RIGHT: recoil, right elbow bends a little and right empty gripping fist raises slightly, left arm remains down; boots planted. BOTTOM LEFT: opening the breech, right empty grip held forward at lower chest, left hand reaches towards and slightly above the right fist. BOTTOM MIDDLE: seating a round, right empty grip at lower chest, left hand reaches forward just below the right fist, palms do not overlap into extra fingers. BOTTOM RIGHT: cooling/rest, right empty grip at waist with elbow bent, left hand relaxed near belt. NO GUNS: these are body and arm layers only, weapons will be attached later. Every cell has the same hat-to-boot height, with 8 percent margin. No cell borders, text, ground, cast shadows, numbers, labels, black outlines or diffuse glow. Keep the reference costume and anatomy; do not make a new character.",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "cells": [
+        "idle",
+        "aim",
+        "recoil",
+        "reload_open",
+        "reload_seat",
+        "cooling"
+      ],
+      "generator_output": "exec-82f63681-0449-43ee-b7a9-8ff874ff409f.png",
+      "sha256": "575599d2e1115ee51a2e27067ce30856109a965d12961ef5badf42af364aec7b"
+    },
+    {
+      "file": "long_body_v1.png",
+      "prompt": "Create matching modular BODY sprite atlas for TWO-HANDED LONG-GUN handling, using this exact character and the same broad pixel clusters. Transparent background, six full-body figures in EXACT 3 columns by 2 rows equal square cells, landscape 3:2. Same bluegrey lamp cap, rust shoulder scarf, long bluegrey work coat, backpack, boots, adult proportions. All face RIGHT. Keep identical height and boot baseline across all cells. No weapons, no magazines, no held props, no gun silhouette: the engine attaches a separate gun sprite. Each figure exactly two arms, two small peach hands. All hands should be plain small gripping fists, not detailed fingers. TOP LEFT idle: right rear hand at waist, left supporting hand further forward to the right and slightly lower, holding an INVISIBLE short rifle angled down about 15 degrees. TOP MIDDLE aim: right trigger hand in front of upper chest, left support hand approximately 95 source pixels farther RIGHT and 15 pixels ABOVE the trigger hand, elbows naturally bent, empty space between hands for separate rifle. TOP RIGHT recoil: same two-hand aim but shoulders lean back slightly and support hand rises about 15 pixels, boots remain planted. BOTTOM LEFT reload open: right trigger hand holds invisible gun in front of lower chest, left hand lowers below and farther forward, leaving room to manipulate a magazine or breech. BOTTOM MIDDLE reload seat: trigger hand at lower chest, left hand returns upward under invisible fore-end. BOTTOM RIGHT cooling: both empty hands support an invisible gun lower at waist, steady inspection pose. Back hand can be partially obscured by forearm but never add a third hand. Keep quiet grouped shadows and broad simple shapes, not many seams, not thin outlines. The reference contains six ONE-hand poses: change the arms to TWO-hand stance as described; retain same person. 8 percent transparent margins per cell, no labels, numbers, outlines, vignette, ground or diffuse glow.",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "cells": [
+        "idle",
+        "aim",
+        "unused_recoil",
+        "reload_open",
+        "reload_seat",
+        "cooling"
+      ],
+      "generator_output": "exec-f4312beb-cb0d-4654-bcf0-e6caeda2ca85.png",
+      "sha256": "7600dbb96980d926d0a8ca930479ee65dd030f6146d2a01a7399d4764665bb56"
+    }
+  ]
+}

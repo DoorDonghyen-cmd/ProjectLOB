@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://redesign/ammo_card_view.gd" id="1"]
+[sub_resource type="StyleBoxEmpty" id="Empty"]
+
+[node name="AmmoOffer" type="Button"]
+custom_minimum_size = Vector2(260, 220)
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("Empty")
+theme_override_styles/hover = SubResource("Empty")
+theme_override_styles/pressed = SubResource("Empty")
+theme_override_styles/focus = SubResource("Empty")
+theme_override_styles/disabled = SubResource("Empty")
+tooltip_text = "선택한 탄환을 기본탄과 교체하거나 덱에 추가합니다."
+
+[node name="CardInfo" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1")
+ammo_id = "precise_p2"
+showcase_ui = true
+offer_action = true

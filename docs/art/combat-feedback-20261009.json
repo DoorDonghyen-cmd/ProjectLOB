@@ -1,0 +1,11 @@
+{
+  "status": "implemented; user feel pending",
+  "tool": "Godot CanvasItem drawing and Control tween, no bitmap generation",
+  "reference": "User-selected combat_pixel_ui_2026-10-09, existing pixel font and actors",
+  "sources": {
+    "새-게임-프로젝트/redesign/damage_readout.gd": "54920546a685fb82256eaefe2b057cb8c269f2dfdadfc1a17d74f3a62cbbe8dc",
+    "새-게임-프로젝트/redesign/ui_impulse.gd": "e8fb1c11f0d82026cf56f215bfe8d2173d6d9ae019b1635de00ee18a79f4448d"
+  },
+  "semantics": "resolved result.damage/hits and secondary/burn events only; no invented crit or split damage",
+  "scope": "transient UI/damage feedback; unchanged model, RNG, target and container geometry"
+}

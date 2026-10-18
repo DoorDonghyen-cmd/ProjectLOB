@@ -1,7 +1,7 @@
 extends RefCounted
 ## Presentation observations only. No commands, RNG, or counterfactual HP totals.
 const Content = preload("res://redesign/content.gd")
-const PASSIVE := ["loader", "supply", "reserve", "field_press"]
+const PASSIVE := ["loader", "supply", "reserve", "field_press", "radiator", "cooling_breech"]
 
 static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array, burn_before: int) -> Array:
 	var effects: Array = []
@@ -14,15 +14,18 @@ static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array
 		var label := ""
 		match part:
 			"overbore":
-				if unblocked: label = "피해 +2"
+				if unblocked and Content.is_heavy_attack(id): label = "중량 피해 +3"
 			"lens":
-				if unblocked and int(shot.math.armor_before) > int(shot.pen) - 2: label = "관통 +2"
+				if unblocked and int(spec.pen) > 0 and int(shot.math.armor_before) > int(shot.pen) - 2: label = "관통 +2"
 			"breaker":
 				if int(shot.barrier_removed) > int(shot.blocked_hits): label = "보호 파쇄"
 			"duplex":
-				if Content.source_id(id) == "precise" and int(shot.hits) > int(spec.get("hits", 2)): label = "타격 +1"
+				var direct_hits := int(shot.hits)
+				for impact in shot.get("secondary",[]):
+					if impact.get("kind","") == "relay": direct_hits += 1
+				if Content.source_id(id) == "precise" and direct_hits > int(spec.get("hits", 2)): label = "타격 +1"
 			"sequencer":
-				if spec.effect == "boost": label = "증폭 +1"
+				if spec.effect == "boost" and int(spec.get("boost_factor", 1)) == 1: label = "증폭 +1"
 			"coil", "inferno":
 				var bonus := 1 if part == "coil" else 2
 				# A capped or killed target must not claim extra burn duration.
@@ -31,7 +34,7 @@ static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array
 					label = "화상 +%d" % mini(bonus, int(shot.burn) - without)
 			"capacitor", "arc_splitter":
 				# Applied enhancement, not additive credit for enemy HP removed.
-				if not shot.secondary.is_empty(): label = "전이 강화"
+				if spec.effect == "arc" and not shot.secondary.is_empty(): label = "전이 강화"
 			"rammer", "momentum":
 				if int(shot.push) > 0: label = "밀기 %dm" % int(shot.push)
 		if not label.is_empty(): effects.append({"id": part, "label": label})
@@ -51,7 +54,15 @@ static func slots(prediction: Dictionary, part: String) -> Array:
 
 static func readiness(prediction: Dictionary, part: String) -> String:
 	if PASSIVE.has(part): return "장착 중 · " + str(Content.PARTS[part].upside)
-	if prediction.get("random", false): return "무작위 표적 · 실제 발사 후 발동 확인"
+	if prediction.get("pending", false): return "발동 예측 계산 중"
+	if prediction.get("random", false):
+		if part in ["reclaimer", "ember_core", "chain_sink", "indexer", "ordinary_chain", "compression_sink", "volley_drive", "thermal_drive", "siege_drive"]:
+			var chances: PackedStringArray = []
+			for i in range(prediction.get("shots", []).size()):
+				var chance := float(prediction.shots[i].get("part_probabilities", {}).get(part, 0))
+				if chance > 0: chances.append("%d번 %d%%" % [i + 1, roundi(chance * 100)])
+			return "발동 예상 · " + " / ".join(chances) if not chances.is_empty() else "이번 발사에서 발동 없음"
+		return "무작위 표적 · 실제 발사 후 발동 확인"
 	var positions := slots(prediction, part)
 	if positions.is_empty(): return "이번 발사에서 발동 없음"
 	var labels: PackedStringArray = []
@@ -83,7 +94,7 @@ static func highlights(state: Dictionary) -> Array:
 			if int(shot.get("math", {}).get("boost", 0)) > 0 and int(shot.get("hits", 0)) > int(shot.get("blocked_hits", 0)): boosted += 1
 	var ids: Array = counts.keys()
 	ids.sort_custom(func(a, b):
-		var conditional := ["triad", "igniter", "opening", "afterburner", "executioner"]
+		var conditional := ["triad", "igniter", "opening", "afterburner", "executioner", "reclaimer", "ember_core"]
 		if conditional.has(a) != conditional.has(b): return conditional.has(a)
 		if int(counts[a]) != int(counts[b]): return int(counts[a]) > int(counts[b])
 		return str(a) < str(b)

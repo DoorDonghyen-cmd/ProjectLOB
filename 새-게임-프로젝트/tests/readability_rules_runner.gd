@@ -91,7 +91,7 @@ func _run() -> void:
 					var m = armed(gun, [id], [enemy(999, armor)], part)
 					check(m.fire(), "formula shot fires")
 					var shot: Dictionary = m.s.history.back().detail.results[0]
-					var expected_pen := int(Content.AMMO[id].pen) * (2 if gun == "amplifier" else 1) + (2 if part == "lens" else 0)
+					var expected_pen := int(Content.AMMO[id].pen) * (2 if gun == "amplifier" else 1) + (2 if part == "lens" and int(Content.AMMO[id].pen) > 0 else 0)
 					var gun_bonus := (1 if id == "basic" else 2) if gun == "single" else int(Content.GUNS[gun].bonus)
 					var expected_raw := int(Content.AMMO[id].dmg) * (2 if gun == "amplifier" else 1) + gun_bonus
 					var expected_per_hit := maxi(1, expected_raw - maxi(0, armor - expected_pen))

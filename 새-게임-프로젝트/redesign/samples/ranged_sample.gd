@@ -19,7 +19,7 @@ func _seed_sample() -> void:
 	combat_forecast = {}
 	last_presentation = {}
 	_hand_entries()
-	for id in RangedData.initial_plan(hot_opening, scenario_index): model.load_round(id)
+	for id in Content.loading_order(RangedData.initial_plan(hot_opening, scenario_index)): model.load_round(id)
 
 func select_case(index: int) -> void:
 	if busy: return
@@ -83,7 +83,7 @@ func _visual_impact(result: Dictionary) -> void:
 	super._visual_impact(result)
 	if result.get("intercept", false):
 		preview_label.text = "%s · 요격" % AmmoVisual.SHORT[str(result.id)]
-		if int(result.get("boost_granted", 0)) > 0: preview_label.text += " → 다음 2발 +%d" % int(result.boost_granted)
+		if int(result.get("boost_granted", 0)) > 0: preview_label.text += " → 다음 %d발 +%d" % [int(result.get("boost_rounds", 2)), int(result.boost_granted)]
 		elif not result.get("secondary", []).is_empty(): preview_label.text += " · 전이 −%d" % int(result.secondary[0].damage)
 
 func _risk_feedback(event: Dictionary) -> void:

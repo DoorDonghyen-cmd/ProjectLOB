@@ -1,0 +1,75 @@
+{
+  "generator": "built-in image_gen.imagegen",
+  "date": "2026-10-05",
+  "status": "four hero key-pose artwork and design user-approved as the desired look; integrated in main combat; automated and visual QA passed; animation timing and transition feel review pending",
+  "file": "reclaimer_actions_v1.png",
+  "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-ec8d491e-7351-4087-9aa2-83b7eadf3b44.png",
+  "reference": "../actor_cohesion_20261005/reclaimer_grouped_v2.png",
+  "prompt": "hero-actions-prompt.txt",
+  "sha256": "4542dff35a2df3dc42540b0ac86d5f56b935615ec2685cde0b8ce6c3620a67f2",
+  "size": [
+    1254,
+    1254
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "frames": [
+    {
+      "pose": "aim",
+      "cell": [
+        0,
+        0
+      ],
+      "visible_bbox_alpha_128": [
+        141,
+        57,
+        605,
+        613
+      ]
+    },
+    {
+      "pose": "recoil",
+      "cell": [
+        1,
+        0
+      ],
+      "visible_bbox_alpha_128": [
+        92,
+        57,
+        540,
+        613
+      ]
+    },
+    {
+      "pose": "reload_open",
+      "cell": [
+        0,
+        1
+      ],
+      "visible_bbox_alpha_128": [
+        144,
+        30,
+        554,
+        585
+      ]
+    },
+    {
+      "pose": "reload_seat",
+      "cell": [
+        1,
+        1
+      ],
+      "visible_bbox_alpha_128": [
+        112,
+        28,
+        521,
+        585
+      ]
+    }
+  ],
+  "registration": "redesign/actor_motion.gd owns cell, per-pose boot pivot and muzzle coordinates. Runtime nearest-filtered display. Accepted original idle texture retained.",
+  "note": "Original generated PNG copied byte-for-byte. No raster resampling, recolouring or compositing was applied. Enemy movement is procedural; no new enemy walk sprite sheets generated."
+}

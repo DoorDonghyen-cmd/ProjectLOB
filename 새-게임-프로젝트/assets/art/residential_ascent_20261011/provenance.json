@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-11",
+  "tool": "built-in image_gen",
+  "reference": "../tower_sample_20261003/residential_tower.png",
+  "early": "Reuses approved residential_tower.png unchanged.",
+  "assets": [
+    {
+      "file": "middle_v1.png",
+      "prompt": "Create a new production pixel-art battle background variant for the SAME dystopian residential tower as attached approved reference. Reference is style, palette, architecture and ground-plane guidance only. Output landscape PNG 1536x1024 opaque. Camera is a flat side-on 2D platform battlefield, NOT isometric. ONE continuous walkable horizontal steel platform extends edge-to-edge with its TOP FOOT-CONTACT edge at exactly y=780. Railing BEHIND actors, understructure below y=790. Quiet empty combat band y=530..780, especially x120..1450. No characters, enemies, guns, UI, words or numbers. Broad coherent pixel clusters, stepped edges, quiet large value groups, low-contrast misty depth; muted teal/slate industrial city and tiny restrained warm lamps. Match reference density, avoid dense bolts/noise/gloss/soft blur. Architecture spans far outside image to convey enormous vertical tower. Not a recolor: visibly different construction and landmarks. Keep platform visually grounded and no foreground pillars obstructing actors.MID-ASCENT residential district: sealed and abandoned apartment facades, stacked shuttered doors, severed distant bridges, exposed thick service pipes, a sagging laundry line without inhabitants. Large empty dark doorway at left instead of cozy stall. A single surviving amber window far left and two modest platform maintenance lamps. Muted cool blue-grey, sparse warmth. Background centered on diagonal BROKEN stairway silhouette and thick utility pipe; distant buildings dissolve into mist. Foreground continuous platform intact.",
+      "floor_y": 728,
+      "sha256": "f12a3253cc7548e2fb40913e2a8bc3a99f3c03196d716fa9b84b4ecd42d5e6e3"
+    },
+    {
+      "file": "upper_v1.png",
+      "prompt": "Create a new production pixel-art battle background variant for the SAME dystopian residential tower as attached approved reference. Reference is style, palette, architecture and ground-plane guidance only. Output landscape PNG 1536x1024 opaque. Camera is a flat side-on 2D platform battlefield, NOT isometric. ONE continuous walkable horizontal steel platform extends edge-to-edge with its TOP FOOT-CONTACT edge at exactly y=780. Railing BEHIND actors, understructure below y=790. Quiet empty combat band y=530..780, especially x120..1450. No characters, enemies, guns, UI, words or numbers. Broad coherent pixel clusters, stepped edges, quiet large value groups, low-contrast misty depth; muted teal/slate industrial city and tiny restrained warm lamps. Match reference density, avoid dense bolts/noise/gloss/soft blur. Architecture spans far outside image to convey enormous vertical tower. Not a recolor: visibly different construction and landmarks. Keep platform visually grounded and no foreground pillars obstructing actors.UPPER residential district / approach to the next industrial region: vast freight elevator shaft, two enormous vertical lift guide rails, overhead pulley wheels and hanging thick cables, distant suspended lift cage and massive sealed service gate on rear wall. Tiny amber hazard lamps and a faint deep rusty furnace glow in the far-right distant opening hint next foundry zone. No houses/stall in foreground. Muted desaturated teal/slate, deeper distance, very large simple silhouettes. All lift cables behind combat band. Foreground continuous platform intact.",
+      "floor_y": 772,
+      "sha256": "e0943ed72c18b69a4dac977c6b3fa7270fef77a24e2e9e024ca06ddefeb22e8e"
+    }
+  ],
+  "processing": "Generated originals copied unchanged. Ground line registered from actual image; prompt target was not assumed to be exact. Godot crops without stretching.",
+  "validation": "Godot 4.7 Compatibility: 881 checks, 0 failures. Actual 1280x900/1008x630/1440x630 captures visually inspected for ground contact, style and HUD/actor contrast. Human acceptance/Galaxy untested.",
+  "reference_sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b"
+}

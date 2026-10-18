@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-18",
+  "purpose": "Separate firing rail from heat, group heat with hand, unify stepped pixel steel frames",
+  "method": "Original GDScript geometry using existing instrument_skin plate; native live text and existing ammo art",
+  "references": [
+    "docs/qa/reports/combat_spacing_2026-10-18/loaded_1280.png",
+    "docs/direction/pixel-production.md"
+  ],
+  "runtime_sources": [
+    {
+      "path": "새-게임-프로젝트/redesign/screen.gd",
+      "sha256": "99684e1826019ac4c94299f5797f915cb5822b7fcc7459378490ae930320d16b"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_workbench.gd",
+      "sha256": "32c98a4b74f0ec7afbf8907f59382c56786c72db6b6be5b9497be309f8d55d75"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_hand_face.gd",
+      "sha256": "637e100c4070125b8cc44af8f6006c835223ae6dd5f71cb54c85d69a469545d1"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_hand_slot.gd",
+      "sha256": "a0fb4aadca68097bb9a9ae4af1df56169a2068c466b9208b9f443597024d8fac"
+    }
+  ],
+  "gameplay_hashes_unchanged": [
+    {
+      "path": "새-게임-프로젝트/redesign/model.gd",
+      "sha256": "301c06a9072b28b291217170b4f7f0b0224626d8f3c573d0db9eaeeb4214e113"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/content.gd",
+      "sha256": "bb56b686a42bfd819eeaaf27b89c4c3b1b76039600483ef1e570636f52d585b8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign.gd",
+      "sha256": "ed03005111712bc43b5624f4cae973ee2023ac7f6673a9974d5453d1717734a8"
+    }
+  ],
+  "geometry_1280x800": {
+    "rail_to_heat_before_after": [
+      4,
+      40
+    ],
+    "heat_to_hand_heading_before_after": [
+      44,
+      8
+    ],
+    "deck_height": 430,
+    "card_height": 132,
+    "slots": 10
+  },
+  "report": "docs/qa/reports/combat_card_finish_2026-10-18.md",
+  "validation": "2270 checks passed: hand1444 + focused layout826; actual GPU renders inspected; Galaxy and user aesthetics pending."
+}

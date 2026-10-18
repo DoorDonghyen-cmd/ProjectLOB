@@ -115,7 +115,7 @@ func _run() -> void:
 	var details := screen.find_child("EnemyDetails", true, false)
 	check(details != null and int(details.get_meta("enemy_index", -1)) == 2, "enemy plaque opens touch details")
 	for child in screen.get_children():
-		if child is AcceptDialog:
+		if child is AcceptDialog or child.has_meta("lob_modal"):
 			child.hide()
 			child.queue_free()
 	await settle()

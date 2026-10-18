@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "trigger": "User requests an APK for mobile testing",
+  "package_id": "com.lastonboard.prototype",
+  "signing_certificate_sha256": "0a3420ad97d1643438c7871760216ada3e9b04dfac291a53ccf86821a5fbf1b5",
+  "drive": {
+    "folder_id": "1TFdLBn5mCbLWtwg2EP-ZeNW1oCgcWzbO",
+    "folder_url": "https://drive.google.com/drive/folders/1TFdLBn5mCbLWtwg2EP-ZeNW1oCgcWzbO",
+    "folder_name": "Last on Board - Mobile Builds",
+    "sharing": "private; preserve existing permissions",
+    "upload_mime_type": "application/zip",
+    "max_upload_bytes": 104857600
+  },
+  "delivery": "Build and validate APK, ZIP with install notes, upload through connected Google Drive, verify metadata/checksum, return observed URL",
+  "workflow": "docs/mobile-delivery.md"
+}

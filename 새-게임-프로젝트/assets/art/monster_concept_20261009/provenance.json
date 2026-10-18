@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-09",
+  "tool": "built-in image_gen",
+  "status": "User positively reviewed overall Eavesback visual; retained as monster style reference. Still development-only; name/lore/stats are director proposals.",
+  "file": "eavesback_v1.png",
+  "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-e426af90-e2a0-4e6a-b07c-c0772f991cef.png",
+  "sha256": "2ea86267030096b47a43779ebdb39fe755bb75ba950c7155ad3dc78623602edc",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "alpha128_bounds": [
+    54,
+    134,
+    1470,
+    891
+  ],
+  "alpha_note": "Source retains fractional alpha; majority of body is alpha254. Not claimed binary or strict palette/grid. Repaired candidate inspected in actual Godot renders; no exterior glow apparent at display scale.",
+  "initial_candidate": {
+    "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-dbe10e54-dfa1-4afd-96d2-379df1362145.png",
+    "reason_for_revision": "Transparency fringe / apparent mist in first preview",
+    "prompt": "generation-prompt.txt"
+  },
+  "edit_prompt": "alpha-repair-prompt.txt",
+  "generation_inputs": [
+    {
+      "path": "res://assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+      "role": "approved actor color masses and edges; not anatomy/costume"
+    },
+    {
+      "path": "res://assets/art/tower_sample_20261003/residential_tower.png",
+      "role": "environment palette and cluster density"
+    }
+  ],
+  "processing": "Generated final PNG copied byte-for-byte. Runtime source Rect2(54,134,1416,757), logical display108x58, bottom-centre ground anchor. No offline bitmap edits. Existing wall combat role retained only in debug fixture.",
+  "verification": "run_eavesback_checks.ps1:163 checks/0failures; three real rendered resolutions; actual developer-entry touch, load/fire/reload, 4 actors, normal view after preview. New animation frames/monster behavior not implemented."
+}

@@ -35,7 +35,7 @@ func _seed_sample() -> void:
 	previous_forecast = {}
 	# Establish all six hand cards before loading so spent cards retain their places.
 	_hand_entries()
-	for id in ["charge", "precise", "pierce"]: model.load_round(id)
+	for id in Content.loading_order(["charge", "precise", "pierce"]): model.load_round(id)
 
 func reset_sample() -> void:
 	if busy: return

@@ -14,6 +14,11 @@ func check(ok: bool, message: String) -> void:
 
 func settle() -> void:
 	for i in range(8): await process_frame
+	if is_instance_valid(screen) and "forecast_pending" in screen:
+		var deadline := Time.get_ticks_msec() + 20000
+		while screen.forecast_pending and Time.get_ticks_msec() < deadline:
+			await process_frame
+		check(not screen.forecast_pending, "exact forecast completes")
 	await RenderingServer.frame_post_draw
 
 func capture(id: String) -> void:

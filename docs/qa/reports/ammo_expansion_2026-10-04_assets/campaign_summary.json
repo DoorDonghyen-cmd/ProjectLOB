@@ -1,0 +1,177 @@
+{
+  "checks": 29973,
+  "failures": [],
+  "explored": 327018,
+  "seed": 731042,
+  "source_sha256": "75d98d97bb056ecbca8ddf281204a87b39c898bd375a990bb6e26653198a80e5",
+  "runs": [
+    {
+      "gun": "single",
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 0,
+        "combat": 20,
+        "event": 0,
+        "shop": 5,
+        "supply": 5
+      },
+      "nodes": 35,
+      "commands": 593
+    },
+    {
+      "gun": "single",
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 5,
+        "combat": 11,
+        "event": 9,
+        "shop": 5,
+        "supply": 0
+      },
+      "nodes": 35,
+      "commands": 356
+    },
+    {
+      "gun": "burst",
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 0,
+        "combat": 20,
+        "event": 0,
+        "shop": 5,
+        "supply": 5
+      },
+      "nodes": 35,
+      "commands": 506
+    },
+    {
+      "gun": "burst",
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 5,
+        "combat": 11,
+        "event": 9,
+        "shop": 5,
+        "supply": 0
+      },
+      "nodes": 35,
+      "commands": 418
+    },
+    {
+      "gun": "scatter",
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 0,
+        "combat": 20,
+        "event": 0,
+        "shop": 5,
+        "supply": 5
+      },
+      "nodes": 35,
+      "commands": 558
+    },
+    {
+      "gun": "scatter",
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 5,
+        "combat": 11,
+        "event": 9,
+        "shop": 5,
+        "supply": 0
+      },
+      "nodes": 35,
+      "commands": 453
+    },
+    {
+      "gun": "heavy",
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 0,
+        "combat": 20,
+        "event": 0,
+        "shop": 5,
+        "supply": 5
+      },
+      "nodes": 35,
+      "commands": 668
+    },
+    {
+      "gun": "heavy",
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 5,
+        "combat": 11,
+        "event": 9,
+        "shop": 5,
+        "supply": 0
+      },
+      "nodes": 35,
+      "commands": 377
+    },
+    {
+      "gun": "amplifier",
+      "route": "safe",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 0,
+        "combat": 20,
+        "event": 0,
+        "shop": 5,
+        "supply": 5
+      },
+      "nodes": 35,
+      "commands": 557
+    },
+    {
+      "gun": "amplifier",
+      "route": "mixed",
+      "difficulty": 0,
+      "won": true,
+      "visits": {
+        "boss": 5,
+        "bypass": 5,
+        "combat": 11,
+        "event": 9,
+        "shop": 5,
+        "supply": 0
+      },
+      "nodes": 35,
+      "commands": 391
+    }
+  ],
+  "commands": 4877,
+  "final_code_replay": {
+    "checks": 34160,
+    "failures": [],
+    "runs": 10,
+    "commands": 4877,
+    "source_sha256": "ba60199ea7eb152320d1093a7eadd456574395c692a5d2353fb858b267d0247b"
+  }
+}

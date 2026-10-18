@@ -1,0 +1,26 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/art/monster_motion_20261011/eavesback_frames.tres" id="1"]
+[ext_resource type="Shader" path="res://redesign/monster_alpha_cutout.gdshader" id="2"]
+[ext_resource type="Script" path="res://redesign/samples/eavesback_animation_preview.gd" id="3"]
+
+[sub_resource type="ShaderMaterial" id="Cutout"]
+shader = ExtResource("2")
+
+[node name="EavesbackAnimationPreview" type="Node2D"]
+script = ExtResource("3")
+
+[node name="Ground" type="Line2D" parent="."]
+points = PackedVector2Array(30, 232, 390, 232)
+width = 2.0
+default_color = Color(0.3,0.4,0.42,1)
+
+[node name="Creature" type="AnimatedSprite2D" parent="."]
+position = Vector2(80,68)
+scale = Vector2(0.332307692,0.332307692)
+texture_filter = 1
+material = SubResource("Cutout")
+sprite_frames = ExtResource("1")
+animation = &"walk"
+autoplay = "walk"
+centered = false

@@ -3,7 +3,7 @@ extends Control
 ## compressed core, while the miniature magazine shows its physical fit.
 const Content = preload("res://redesign/content.gd")
 const Ammo = preload("res://redesign/ammo_visual.gd")
-const FONT = preload("res://redesign/ui_font.tres")
+const FONT = preload("res://redesign/combat_pixel_font.tres")
 const INK := Color("e7e4d9")
 const MUTED := Color("6f8790")
 const ACCENT := Color("a9dfbf")
@@ -25,17 +25,18 @@ func setup(source: String, current_state: Dictionary) -> void:
 func _draw() -> void:
 	if state.is_empty() or not Content.AMMO.has(result_id): return
 	var middle := size.x * 0.5
-	Ammo.round_icon(self, Vector2(middle - 72, 34), source_id, 0.34)
-	Ammo.round_icon(self, Vector2(middle - 45, 34), source_id, 0.34)
+	Ammo.grade_mark(self, Vector2(middle - 66, 6), source_id)
+	Ammo.grade_mark(self, Vector2(middle + 28, 6), result_id)
+	preload("res://redesign/ammo_art.gd").draw(self,source_id,Rect2(middle-88,10,26,50))
+	preload("res://redesign/ammo_art.gd").draw(self,source_id,Rect2(middle-56,10,26,50))
 	draw_line(Vector2(middle - 25, 34), Vector2(middle - 8, 34), MUTED, 2.0)
 	draw_colored_polygon(PackedVector2Array([Vector2(middle - 8, 29), Vector2(middle, 34), Vector2(middle - 8, 39)]), ACCENT)
-	Ammo.round_icon(self, Vector2(middle + 39, 34), result_id, 0.52)
+	preload("res://redesign/ammo_art.gd").draw(self,result_id,Rect2(middle+24,7,31,57))
 	draw_string(FONT, Vector2(8, 76), Content.AMMO[source_id].name, HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 18, Ammo.COLORS[result_id])
-	_draw_damage(Vector2(24, 94), Color("e4bd72"))
-	draw_string(FONT, Vector2(35, 100), str(Content.damage(result_id, state)), HORIZONTAL_ALIGNMENT_LEFT, 35, 17, Color("e4bd72"))
-	_draw_penetration(Vector2(82, 94), Color("79b6f2"))
-	draw_string(FONT, Vector2(94, 100), str(Content.penetration(result_id, state)), HORIZONTAL_ALIGNMENT_LEFT, 35, 17, Color("79b6f2"))
+	var stat: Dictionary=Content.primary_stat(result_id,state)
+	draw_string(FONT,Vector2(10,100),str(stat.label)+" "+str(stat.value),HORIZONTAL_ALIGNMENT_LEFT,size.x-108,20,Color("ded5bb"))
 	_draw_fit(Vector2(size.x - 86, 85), result_id)
+	draw_string(FONT, Vector2(8, 124), "일반 2 → 고급 1 · 열 " + Content.heat_label(result_id, state), HORIZONTAL_ALIGNMENT_CENTER, size.x - 16, 16, Color("b5ab95"))
 
 func _draw_fit(origin: Vector2, id: String) -> void:
 	var cell := Vector2(18, 17)

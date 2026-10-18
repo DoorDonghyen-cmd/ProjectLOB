@@ -1,0 +1,79 @@
+{
+  "origin": "Original procedural synthesis for ProjectLoB; no third-party recordings",
+  "sample_rate": 44100,
+  "generator": "tools/build_feedback_audio.py",
+  "sounds": [
+    {
+      "file": "click.wav",
+      "duration": 0.045,
+      "peak": 0.16,
+      "sha256": "758587f420b67974fe554239fc474c50d8ea3f6243abedacbd1f20aa56eb2f5c"
+    },
+    {
+      "file": "load.wav",
+      "duration": 0.13,
+      "peak": 0.32,
+      "sha256": "514752b9a85c7cd473a34a4028e84d8ef741196c4196c6f58b2afdc06bd3d1bf"
+    },
+    {
+      "file": "confirm.wav",
+      "duration": 0.18,
+      "peak": 0.36,
+      "sha256": "180cd067ad95b583bf3494954dc584a45fb3d7c76375932662e9755b77974aee"
+    },
+    {
+      "file": "fire.wav",
+      "duration": 0.22,
+      "peak": 0.58,
+      "sha256": "15058704ad658384051e07beeee2c502ad97c0fd5e2154e9b53b33152419143c"
+    },
+    {
+      "file": "fire_power.wav",
+      "duration": 0.3,
+      "peak": 0.65,
+      "sha256": "c8e8345182d5707c969a6f4a3c567c6b9a6e5567024af2bcac2f7088f304257b"
+    },
+    {
+      "file": "hit.wav",
+      "duration": 0.12,
+      "peak": 0.35,
+      "sha256": "6c186bb8c00224316c3b3f43596473a5b79d61b506ae2d6686a283f99f655a0d"
+    },
+    {
+      "file": "armor.wav",
+      "duration": 0.2,
+      "peak": 0.32,
+      "sha256": "0e477c7c869f7a8bc072794f331993bafa76fb2943a77386fb25a3d922266bd7"
+    },
+    {
+      "file": "overheat.wav",
+      "duration": 0.36,
+      "peak": 0.33,
+      "sha256": "1d64d489e9581b2cc2d10f469e206ff43e330fb1bd6fba1b92cfc83ff525d09e"
+    },
+    {
+      "file": "reload.wav",
+      "duration": 0.27,
+      "peak": 0.32,
+      "sha256": "ff7d4e6e6dc34ea1ac27c44472c994d523bd107cb460db10bffc4d2960e1535b"
+    },
+    {
+      "file": "cool.wav",
+      "duration": 0.34,
+      "peak": 0.25,
+      "sha256": "0ecb5c5e843af9bdbff3d5987ab1dfeb294a111cb314abbf420830ee99fa5b35"
+    },
+    {
+      "file": "ready.wav",
+      "duration": 0.18,
+      "peak": 0.24,
+      "sha256": "02b3ad662364cdcd8aa73a281fd88420f9e7215118bde4c13ed1a67b28feba16"
+    },
+    {
+      "file": "reward.wav",
+      "duration": 0.38,
+      "peak": 0.3,
+      "sha256": "e1ac18488ef261a0b0ccc38a5b60257211ddcf15481fa93030e395f71aecbee4"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-18",
+  "purpose": "Combat typography hierarchy and removal of redundant captions",
+  "method": "Existing pixel font, GDScript text sizing and native button layout; no new raster art",
+  "parent_art_record": "docs/art/combat-instruments-20261018.json",
+  "runtime_sources": [
+    {
+      "path": "새-게임-프로젝트/redesign/screen.gd",
+      "sha256": "4b91e4d5041c567f99e2999b64a89effc8b094613477b11fd4d69aba875a1c48"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/battle_view.gd",
+      "sha256": "f9163e538cafd4853f1368df22051a9ce8affe0532d0b497af4659797966d616"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/magazine_view.gd",
+      "sha256": "f8da46453c59210b4cccd5c43be54c7f18b7410efdea17f5cf5a4390114c1235"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/heat_gauge.gd",
+      "sha256": "d2e32a79e2e53aaeb9f7a30395bb27ff29a3ebdc9d92408a3d301108bb9d953d"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_hand_face.gd",
+      "sha256": "bcbeb9451196b8d269dc65a8f5fb8f1160fa5ea537f37f2460ff34803038c086"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_hand_slot.gd",
+      "sha256": "e7c62000a3bcebe2f8df6f74bdc969ec3e9f8babb01ac51b9431d8f3e7cfc698"
+    }
+  ],
+  "gameplay_hashes_unchanged": [
+    {
+      "path": "새-게임-프로젝트/redesign/model.gd",
+      "sha256": "301c06a9072b28b291217170b4f7f0b0224626d8f3c573d0db9eaeeb4214e113"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/content.gd",
+      "sha256": "bb56b686a42bfd819eeaaf27b89c4c3b1b76039600483ef1e570636f52d585b8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign.gd",
+      "sha256": "ed03005111712bc43b5624f4cae973ee2023ac7f6673a9974d5453d1717734a8"
+    }
+  ],
+  "validation": "1854 existing checks passed; GPU captures inspected at 3 resolutions; Galaxy and user readability pending",
+  "report": "docs/qa/reports/combat_typography_2026-10-18.md"
+}

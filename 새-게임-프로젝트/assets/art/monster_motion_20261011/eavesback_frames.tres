@@ -1,0 +1,34 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/art/monster_motion_20261011/eavesback.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Frame0"]
+
+atlas = ExtResource("1")
+
+region = Rect2(0, 0, 768, 512)
+
+[sub_resource type="AtlasTexture" id="Frame1"]
+
+atlas = ExtResource("1")
+
+region = Rect2(768, 0, 768, 512)
+
+[sub_resource type="AtlasTexture" id="Frame2"]
+
+atlas = ExtResource("1")
+
+region = Rect2(1536, 0, 768, 512)
+
+[sub_resource type="AtlasTexture" id="Frame3"]
+
+atlas = ExtResource("1")
+
+region = Rect2(2304, 0, 768, 512)
+
+[resource]
+
+animations = [{"frames": [{"duration": 180, "texture": SubResource("Frame0")}], "loop": true, "name": &"idle", "speed": 1000.0},
+{"frames": [{"duration": 180, "texture": SubResource("Frame0")},{"duration": 180, "texture": SubResource("Frame1")}], "loop": true, "name": &"walk", "speed": 1000.0},
+{"frames": [{"duration": 180, "texture": SubResource("Frame2")}], "loop": false, "name": &"hit", "speed": 1000.0},
+{"frames": [{"duration": 160, "texture": SubResource("Frame3")}], "loop": false, "name": &"attack", "speed": 1000.0}]

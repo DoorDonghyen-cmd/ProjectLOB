@@ -170,7 +170,7 @@ func _inspect_projectile() -> void:
 	var details := screen.find_child("ProjectileDetails", true, false)
 	check(details != null, "projectile can be inspected through field label")
 	if details == null: return
-	var dialog := details.get_meta("dialog") as AcceptDialog
+	var dialog := details.get_meta("dialog") as Control
 	check(Rect2(Vector2.ZERO, root.size).encloses(Rect2(dialog.position, dialog.size)), "projectile detail fits mobile viewport")
 	await capture("ranged_projectile_details")
 	var close_point := Vector2(dialog.position) + dialog.get_ok_button().get_global_rect().get_center()

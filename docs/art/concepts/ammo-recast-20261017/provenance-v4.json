@@ -1,0 +1,40 @@
+{
+  "status": "director_visual_study_revision_user_requested",
+  "created": "2026-10-17",
+  "tool": "built-in image_gen",
+  "request": "Reduce cartridge size and match the subdued pixel masses of the existing character and environment.",
+  "input": "새-게임-프로젝트/assets/art/ammo_recast_20261017/cartridges_v2.png",
+  "references": [
+    "새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+    "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png"
+  ],
+  "attempts": [
+    {
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-0a344578-d84e-40ce-a4c6-00874323608d.png",
+      "prompt": "Use case: style-transfer.\nAsset: edit the supplied six-cartridge pixel-art atlas for ORVASK.\nInput 1 is the target atlas. Keep all SIX cartridge identities, row/column order, geometry, upward orientation, positions, and the 1536x1024 canvas. Input 2 is the APPROVED character style. Input 3 is the APPROVED environment style. They are style references only; do not include a character or scenery.\n\nThe user finds the cartridges too crisp, shiny, and visually separate from that character and environment. Repaint their INTERNAL SHADING and EDGES to match those references much more closely.\nUse broad, simple, flat pixel clusters, about 12-16 coarse connected color masses per cartridge rather than many facets. Matte diffuse material. Three nearby value groups per material, with a narrow muted value range. Merge the many metal facets into one main face and one joined shadow. Remove the bright specular strips, ivory glints, chrome rim highlights and continuous near-black outlines. Boundaries should use adjacent desaturated material colors and selective charcoal shadow, like the low-contrast coat in input 2. Keep hard square pixel steps but do not use sharpening, airbrush, blur, smooth gradients, microtexture, scratch noise or glow.\n\nReduce the saturation/brightness of the copper, brass and orange cores. Basic: dull brown copper and subdued ochre-brass. Pierce: muted blue-gray steel spear and gray-beige collar. Twin: two charcoal steel tips and one restrained rusty binding. Amplifier: non-emissive ochre ceramic inside oxidized steel. Cooling: subdued blue-gray block between broad dark fins. Electric: dull red-brown insulator with two dark copper terminals.\nPreserve their distinguishing silhouettes: blunt bullet / long spear / paired bullets / framed core / finned canister / two-terminal capacitor. Preserve relative shape and alpha cutouts. Each must remain recognizable in a 30x75-pixel display.\nKeep objects at their existing source sizes; the game renderer will separately reduce their screen size by 30 percent. Do not crop or reposition.\n\nOutput only the edited transparent RGBA sprite atlas. Empty pixels fully transparent. No background, haze, glow, ground shadow, words, icons or UI. The softness must come from the flat restrained color masses of the supplied character and background, never blur.",
+      "status": "Intermediate: metal highlights remained too strong."
+    },
+    {
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-061920c6-89c1-4159-86da-2c4a1478d0d7.png",
+      "prompt": "Edit the first image: six ORVASK ammunition sprites. The current result is STILL far too polished and high-contrast compared with the approved character (input 2) and environment (input 3). Make a visibly stronger simplification this time.\n\nKeep the six recognizable silhouettes and their 3-by-2 order, upward orientation, positions, 1536x1024 canvas and transparent background. Repaint the surfaces as VERY SIMPLE FLAT LOW-CONTRAST COLOR BLOCKS, like the coat and boots in input 2. Each whole cartridge should use only a handful of broad connected shapes. No cylindrical multi-step rendering. No rim-light.\n\nRequired visual changes:\n- Remove the shiny yellow/brass ring rims. Draw each base and band as one broad dull khaki block plus one quiet dark side.\n- Remove near-white highlights entirely. The spear collar should be muted warm gray, not ivory. The paired steel tips should be two flat gray blocks with one darker edge, no silver highlight.\n- Replace strong continuous black outlines with the object's own shadow colors. Use broad dark side planes, not a black traced perimeter.\n- The cooling fins should be simple dark gray horizontal bars; remove the silver top edges. The center is flat muted slate blue.\n- The amplifier's orange core is muted ochre, only base and one shadow; no luminous yellow.\n- The electric casing is dark dusty brick brown, just one main face and a shadow; terminals dark brown copper without bright caps.\n- Eliminate tiny inner facets and grid-like surface speckles. Silhouette pixel steps remain crisp; there is no blur.\n\nThe result should feel weathered, subdued, and slightly rough, matching the large unpolished pixel clusters in the supplied character, not luxurious collectible icons. Large joined shadows and minimal internal contrast. Keep the function evident through silhouette. DO NOT add grime speckles, cracks, labels, UI, scenery, shadows, haze or glows.\nReturn transparent RGBA sprite atlas only.",
+      "status": "Selected for engine comparison; user preference not yet confirmed."
+    }
+  ],
+  "output": "새-게임-프로젝트/assets/art/ammo_recast_20261017/cartridges_v4.png",
+  "normalization": "Original RGBA PNG copied unchanged. Godot selects measured bounds and draws nearest-filtered regions.",
+  "display": "Card illustrations use a 0.70 scale within the previous art area. The small queue icons and all text retain their size.",
+  "scope": "Existing standalone UI art preview only. Production combat screens and gameplay unchanged.",
+  "sha256": "c9c1e48c1d13b9320c8103f8a3114ba08c060443389cef34b708e62d27ab7580",
+  "review": {
+    "engine": "Godot 4.7 stable Compatibility",
+    "viewports": [
+      "1008x630",
+      "1280x800",
+      "1440x630"
+    ],
+    "functional": "Existing isolated art-preview checks: failures=0. LIFO, confirm/fire, heat forecast/current heat and area bounds.",
+    "visual": "All three viewport captures inspected. Smaller silhouettes, reduced rim highlights and broad muted masses. No visible surrounding halo in Godot.",
+    "limits": "Original RGBA alpha retained (0..254); not a normalized limited-palette production asset. Human preference and Galaxy unverified."
+  },
+  "current_display": "Subsequent compact ten-card revision uses a 31x57 card art area, card height 132, ten columns. Original art and queue icons unchanged. See ammo_recast_2026-10-17.md."
+}
