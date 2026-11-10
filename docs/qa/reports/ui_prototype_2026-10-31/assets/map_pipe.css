@@ -1,0 +1,137 @@
+/* Pipe-schematic map trial (director proposal, 2026-11-01).
+   Same nodes and `next` links as the chart map; only the drawing changes.
+   One art pixel = 2x2 CSS px: stencils are pre-scaled PNGs drawn at native size, lines are 2/4 px. */
+
+.pmap .pm-body { gap: 8px; padding: 8px; }
+
+/* --- left rail: the five regions as one supply line, home at the bottom, control room on top --- */
+.pm-rail { color: #3f7076; position: relative; flex: 0 0 128px; display: flex; flex-direction: column; justify-content: space-between; padding: 6px 0 6px 4px; }
+.pm-rail-line { position: absolute; left: 17px; width: 2px; top: 0; height: 0; z-index: 0;
+  background: repeating-linear-gradient(180deg, #1d4f56 0 2px, transparent 2px 4px); }
+.pm-rail-fill { position: absolute; left: -1px; width: 4px; bottom: 0; height: 0; background: #f3cf73; box-shadow: 0 0 0 2px #3a2c10; }
+.pm-rail-you { position: absolute; left: 12px; width: 12px; height: 4px; background: #5cdddc; box-shadow: 0 2px 0 #01080a; z-index: 2; }
+.pm-stop { position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; min-height: 30px; color: #3f7076; }
+.pm-stop .pm-ic { flex: none; background: currentColor; box-shadow: none; }
+.pm-stop .pm-ic-slot { flex: none; width: 28px; display: grid; place-items: center; background: var(--bg, #03141a); padding: 2px 0; }
+.pm-stop span { display: flex; flex-direction: column; min-width: 0; }
+.pm-stop b { font-weight: normal; font-size: 12px; line-height: 16px; color: #8fb0b0; white-space: nowrap; }
+.pm-stop small { font-size: 12px; line-height: 16px; color: #56777a; white-space: nowrap; }
+.pm-stop.now { color: #5cdddc; }
+.pm-stop.now b { color: #5cdddc; font-size: 16px; line-height: 20px; text-shadow: 0 2px 0 #01080a; }
+.pm-stop.now small { color: #8fb0b0; }
+.pm-stop.open { color: #f3cf73; }
+.pm-stop.end { color: #8fb0b0; }
+.pm-stop.end b { color: #8fb0b0; }
+.pm-stop.end small { color: #ff6f61; }
+
+/* --- centre board --- */
+.pm-board { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0; padding: 8px 10px 6px !important; }
+.pm-gate { position: relative; flex: none; height: 52px; display: flex; align-items: center; justify-content: center; gap: 12px;
+  color: #c9a45a; image-rendering: pixelated;
+  border: 12px solid transparent; border-image: url("px_reload.png") 6 fill / 12px / 0 repeat; padding: 0 8px; margin: 0 2px; }
+.pm-gate .pm-wheel { position: absolute; top: 50%; margin-top: -13px; background: #6f5a30; }
+.pm-gate .pm-boss_small { display: none; }
+.pm-gate .pm-wheel.l { left: 2px; } .pm-gate .pm-wheel.r { right: 2px; }
+.pm-gate span { display: flex; flex-direction: column; align-items: flex-start; }
+.pm-gate b { font-weight: normal; font-size: 16px; line-height: 20px; color: #f2dcaa; text-shadow: 0 2px 0 #01080a; }
+.pm-gate small { font-size: 12px; line-height: 16px; color: #c9a45a; }
+.pm-gate.later, .pm-gate.off { color: #6f5a30; }
+.pm-gate.later b, .pm-gate.off b { color: #a08a5c; }
+.pm-gate.reach { color: #f3cf73; }
+.pm-gate.sel { border-image-source: url("px_active.png"); color: #e4fffd; }
+.pm-gate.sel small { color: #8fb0b0; }
+
+.pm-scroll { position: relative; flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+  scrollbar-color: #2c7a80 #04181e; scrollbar-width: thin; }
+.pm-plane { position: relative; width: 100%;
+  background:
+    linear-gradient(90deg, rgba(29, 79, 86, 0.16) 2px, transparent 2px) 0 0 / 32px 32px,
+    linear-gradient(rgba(29, 79, 86, 0.16) 2px, transparent 2px) 0 0 / 32px 32px; }
+.pm-pipes { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.pm-pipes path { fill: none; stroke-linecap: butt; stroke-linejoin: miter; shape-rendering: crispEdges; }
+.pm-pipes .off   { stroke: #15363c; stroke-width: 2; stroke-dasharray: 2 4; }
+.pm-pipes .later { stroke: #24585e; stroke-width: 2; }
+.pm-pipes .preview { stroke: #3d7f86; stroke-width: 2; }
+.pm-pipes .open  { stroke: #5cdddc; stroke-width: 2; }
+.pm-pipes .trail-case { stroke: #3a2c10; stroke-width: 8; }
+.pm-pipes .trail { stroke: #f3cf73; stroke-width: 4; }
+.pm-pipes .pick-case { stroke: #0d3a40; stroke-width: 8; }
+.pm-pipes .pick  { stroke: #5cdddc; stroke-width: 4; }
+.pm-pipes .flow  { stroke: #e4fffd; stroke-width: 2; stroke-dasharray: 2 6; animation: pm-flow 0.5s steps(4) infinite; }
+@keyframes pm-flow { to { stroke-dashoffset: -8; } }
+
+/* Place marks: a one-colour stencil tinted by state. No box behind a place; only corners/face. */
+.pm-ic { display: block; background: currentColor; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+.pn { position: absolute; width: 60px; height: 44px; margin: -22px 0 0 -30px; display: grid; place-items: center; color: #4f7c80; z-index: 1; }
+.pn.off { color: #24464c; }
+.pn.later { color: #4f7c80; }
+.pn.later.preview { color: #83afb0; }
+.pn.visited { color: #a38a4e; }
+.pn.current { color: #f3cf73; outline: 2px dashed #e4f2ee; outline-offset: -2px; }
+.pn.reach { color: #e4f2ee; --c: #f3cf73;
+  background:
+    linear-gradient(var(--c), var(--c)) left top / 10px 2px no-repeat, linear-gradient(var(--c), var(--c)) left top / 2px 10px no-repeat,
+    linear-gradient(var(--c), var(--c)) right top / 10px 2px no-repeat, linear-gradient(var(--c), var(--c)) right top / 2px 10px no-repeat,
+    linear-gradient(var(--c), var(--c)) left bottom / 10px 2px no-repeat, linear-gradient(var(--c), var(--c)) left bottom / 2px 10px no-repeat,
+    linear-gradient(var(--c), var(--c)) right bottom / 10px 2px no-repeat, linear-gradient(var(--c), var(--c)) right bottom / 2px 10px no-repeat; }
+.pn { isolation: isolate; }
+.pn.sel { color: #e4fffd; background: none; }
+.pn.sel::before { content: ""; position: absolute; inset: 0; z-index: -1; image-rendering: pixelated;
+  border: 12px solid transparent; border-image: url("px_active.png") 6 fill / 12px / 0 repeat; }
+.pn.sel .pm-ic, .pm-gate.sel .pm-boss { animation: pm-flash 0.24s steps(2) 1; }
+@keyframes pm-flash { from { filter: brightness(1.8); } to { filter: none; } }
+.pn:focus-visible, .pm-gate:focus-visible { outline: 2px solid #f3cf73; outline-offset: 2px; }
+.pn.k-elite::after { content: ""; position: absolute; right: 6px; top: 4px; width: 4px; height: 4px; background: #ff6f61; box-shadow: 0 2px 0 #01080a; }
+
+/* --- right column: only the picked place, one exception line, and the actions --- */
+.pm-side-col { flex: 0 0 216px; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+.pm-side { display: flex; flex-direction: column; gap: 8px; padding: 12px 12px 10px !important; min-width: 0; }
+.pm-side .pm-pick { display: flex; align-items: center; gap: 10px; color: #e4f2ee; }
+.pm-side .pm-name { font-size: 16px; line-height: 20px; color: var(--ink, #e4f2ee); }
+.pm-side .pm-kind { font-size: 12px; line-height: 16px; color: var(--gold, #f3cf73); }
+.pm-side .pm-note { font-size: 12px; line-height: 16px; color: #ff9a6a; border-left: 4px solid #ff9a6a; padding: 2px 0 2px 8px; }
+.pm-side .pm-note.calm { color: #8fb0b0; border-color: #2c7a80; }
+.pm-side .pm-fill { flex: 1; }
+.pm-side .row { display: flex; gap: 6px; }
+.pm-side .row .btn { flex: 1; min-width: 0; padding-left: 8px !important; padding-right: 8px !important; }
+
+/* --- symbol key, opened from the side column --- */
+.pm-key { position: absolute; z-index: 5; left: 6px; right: 6px; top: 6px; max-height: calc(100% - 12px); overflow: auto;
+  padding: 10px 14px !important; display: flex; flex-direction: column; gap: 6px; }
+.pm-key .hd { display: flex; align-items: center; justify-content: space-between; }
+.pm-key h3 { margin: 0; font-weight: normal; font-size: 16px; line-height: 20px; color: #5cdddc; }
+.pm-key .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px 8px; }
+.pm-key .it { display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 16px; color: #e4f2ee; min-height: 48px; }
+.pm-key .ico { flex: none; width: 48px; display: grid; place-items: center; color: #e4f2ee; }
+.pm-key .lines { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.pm-key .ln { display: flex; align-items: center; gap: 10px; font-size: 12px; line-height: 16px; color: #8fb0b0; }
+.pm-key .ln i { flex: none; width: 32px; height: 4px; }
+.pm-board { position: relative; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-pipes .flow, .pn.sel .pm-ic, .pm-gate.sel .pm-boss { animation: none; }
+}
+@container (max-width: 900px) {
+  .pm-rail { flex-basis: 104px; }
+  .pm-stop.now b { font-size: 12px; line-height: 16px; }
+  .pm-side-col { flex-basis: 176px; }
+  .pm-gate { height: 44px; }
+  .pm-gate small { display: none; }
+}
+@container (max-height: 420px) {
+  .pmap .pm-body { padding: 4px; gap: 6px; }
+  .pm-board { padding: 4px 6px 4px !important; }
+  /* Thin gate plate: the small 2x frame keeps one art pixel = 2 CSS px. */
+  .pm-gate { height: 44px; border-width: 8px; border-image: url("px_tag_named.png") 4 fill / 8px / 0 repeat; }
+  .pm-gate.sel { border-image-source: url("px_chip_on.png"); }
+  .pm-gate small, .pm-gate .pm-boss { display: none; }
+  .pm-gate .pm-boss_small { display: block; }
+  .pm-key .grid { grid-template-columns: repeat(4, 1fr); }
+}
+@container (max-width: 620px) {
+  .pmap .pm-body { flex-direction: column; overflow: auto; }
+  .pm-rail { display: none; }
+  .pm-board { flex: none; height: 420px; }
+  .pm-side-col { flex: none; }
+}

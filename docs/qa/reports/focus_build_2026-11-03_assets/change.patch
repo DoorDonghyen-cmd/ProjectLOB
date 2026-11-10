@@ -1,0 +1,1261 @@
+--- before/.agents/skills/00-project-manager/task_tracker.md
++++ after/.agents/skills/00-project-manager/task_tracker.md
+@@ -1,4 +1,6 @@
+ # ProjectLoB 현재 작업
++
++**최신 — 핵심 탄·위치 파츠 본편 적용(2026-11-03):** [현행 규칙](../../../docs/direction/focus-build.md). 주력 2장+지원 1장 시작, 집중/지원/강화 획득, 첫/세 번째/마지막 공격 배율을 새 등반에 연결했다. [5총기 125전투·정확한 재생/저장·피해/화면/회귀](../../../docs/qa/reports/focus_build_2026-11-03.md). 기능 통과·사람 재미 확인 대기. 다음은 성장/보상 이유와 후반 탄약 체감 → 대표 편성 → 지도 밀도. 반복 사격 통과 감소가 목표가 아니며 Android/복장 혼합은 후속이다.
+ 
+ **최신 — 본편 사격/열 통합·덱 빌딩 재검토(2026-11-03):** [현행 규칙](../../../docs/direction/fire-control.md). 새 등반 범위 선택+교체 열 유지, 전용 냉각1행동 열0.5총기6등반154전투·실제 입력/새 프로세스 저장·이전 규칙 회귀 확인. [검증·남은 정예 사례](../../../docs/qa/reports/fire_control_2026-11-03.md). 사용자 사격 반복 문제는125상태 중99통과로 확인. [다음 편성/집중 획득/코어 운용 개편 근거](../../../docs/history/design/deckbuilding-review-2026-11-03.md). 본편 통합은 완료, 덱 빌딩 재미는 문제 확인/후속 설계 단계. Android/복장 혼합·지도 밀도 후속 유지.
+ 
+--- before/docs/direction/art-and-ux.md
++++ after/docs/direction/art-and-ux.md
+@@ -1,4 +1,6 @@
+ # 아트와 UX — 도트 아트와 탄환 조합
++
++**최신 — 주력 보상·위치 발동 판독(2026-11-03):** [핵심 탄/위치 파츠](focus-build.md)의 수량·지원 탄과 실제 발동 이유를 기존 라인+도트 카드/HUD에 표시한다. 주력 묶음은 `focus_ammo_offer.tscn` 재사용 컴포넌트다. 새 등반 보상은 작은 창에서 화면 전체 축소 대신 원래 글자 크기·세로 스크롤을 사용하고 740px에서 두 열로 배치한다. 이탈 시 지도/메뉴 배율을 복원한다. [실제 3크기·조작](../qa/reports/focus_build_2026-11-03.md). Android 안전 영역·손가락/장시간 성능은 미검증이다.
+ 
+ **배관도 그래픽 후속 — 2026-11-01:** 사용자가 별도 그래픽 보완을 승인했다. 기존 라인 + 도트 구성에 장소 기호/구역별 문양과 닫힘·연결 형태/관문 차단장치·배관 접속부를 연결하고 지도 바탕의 반복 디더를 덜었다. 실제 표시 크기에서 작성한 원본을2배로 내보내며 기호 의미·배치·조작은 유지한다. [제작과 전후 검수](../qa/reports/pipe_map_art_2026-11-01.md). 전체 화면의 미감과 실기기 판독성은 사용자 후속 확인이다.
+ 
+--- before/docs/direction/current.md
++++ after/docs/direction/current.md
+@@ -1,4 +1,6 @@
+ # ORVASK — 현재 방향과 결정 상태
++
++**최신 — 핵심 탄·발사 위치 파츠(2026-11-03):** 사용자 승인에 따라 [주력 탄 성장](focus-build.md)을 새 등반에 적용했다. 첫 주력 2장+지원 1장으로 기본탄 3장 교체, 동일 탄 보충/지원/강화 프로필 획득, 첫 발 ×2·세 번째 발 ×3·실제 증폭된 마지막 단타 ×3. 5총기 125전투 획득 등반과 재생/저장/기존 규칙 회귀 확인. [화면·검증·한계](../qa/reports/focus_build_2026-11-03.md). 이전의 적 대응 우선·반복 사격 통과 감소 목표는 대체한다. 잘 만든 덱이 사격만으로 강해지는 것은 허용하며, 주력 탄의 성장과 선택 이유가 읽히는지 사람 확인이 다음이다. 리벳/리액터 후반 탄약·Android·복장 혼합·지도 밀도는 후속이다.
+ 
+ **최신 — 사격·열 관리 본편 통합과 덱 빌딩 문제 확인(2026-11-03):** 사용자 지시2·3에 따라 [새 등반 사격 범위/열 관리](fire-control.md)를 적용했다. 교체는 열 유지/기존 비용, 전용 냉각은1행동 열0. 교체1행동안은 반복 사격 통과를 늘려 제외했다.5총기·6등반154전투 경로, 본편 입력/저장/이전 저장 회귀 확인. 스플린터 특정 정예/획득 경로의 난도 편차는 남는다. [검증·화면](../qa/reports/fire_control_2026-11-03.md). 사용자 "생각 없이 사격해도 진행"은125진입 중99반복 통과로 확인됐다. [덱 빌딩 재검토](../history/design/deckbuilding-review-2026-11-03.md). 다음은 조합별 대응 편성과 집중 획득/연계 보상이며, 덱/보상/적 수치는 이번에 바꾸지 않았다. 아래 본편 미적용/사람 확인 후 통합 계획은 이 실행 결과로 갱신한다.
+ 
+--- before/docs/direction/damage-growth.md
++++ after/docs/direction/damage-growth.md
+@@ -1,4 +1,6 @@
+ # 화력 성장 — 탄환·총기·파츠
++
++**현행 추가 — 주력 탄과 조건의 곱(2026-11-03):** [핵심 탄 성장](focus-build.md) 새 등반은 기본/지원/파츠 추가 피해를 합산한 뒤 증폭·위치·코어·관문/강행 배율을 적용한다. 첫 발/세 번째 발/강화 마무리 파츠와 실제 강화 프로필 획득을 연결했다. 기존 코어 성장량과 상한은 변경하지 않았다. [통제된 6→36, 중첩 108피해와 실제 125전투](../qa/reports/focus_build_2026-11-03.md). 조건부 피해 차이의 기능 확인이며 사람의 성장 체감은 후속이다.
+ 
+ **현행 — 후반 관문 코어 성장 확장(2026-10-30):** 사용자 순차 개편 실행 승인에 따라 새 등반 `growth_version=1`에서 후반 상한 확장을 선택할 수 있다. 방식과 수치는 디렉터 적용값이다. 초반 코어 선택·8단계·성장 속도와 기존 피해식은 유지한다. [전체 비교·검증·화면·한계](../qa/reports/late_core_growth_2026-10-30.md).
+ 
+--- /dev/null
++++ after/docs/direction/focus-build.md
+@@ -0,0 +1,22 @@
++# 핵심 탄과 발사 위치 파츠
++
++2026-11-03. 사용자 확정: 발라트로처럼 핵심 탄을 중심으로 피해가 크게 증폭되는 덱 빌딩을 먼저 개편하고, 파츠도 세 번째 발 강화처럼 재검토한다. 아래 수치·지급 방식은 디렉터의 첫 구현값이며 사람 재미 검증 전이다.
++
++## 이번 적용
++
++- 새 등반에 `focus_build_version=1`. 이전 저장은 변경하지 않는다. 기존 사격 범위·빼내기·열·적·지도 규칙을 사용한다.
++- 첫 전투의 코어 선택 다음에 연타 / 철갑 / 열방출 중 주력 탄을 고른다. 주력 2장과 지원 1장으로 위력이 낮은 기본탄 3장을 교체한다. 총 탄약 수는 유지한다. 선택 전에 실제 구성과 교체를 표시한다.
++- 이후 일반 탄 보상은 보유 주력의 동일 프로필 보충 / 연계 지원 / 강화 탄 또는 새 발견을 제시한다. 첫 구역 깊이 4 이후에는 가능한 주력의 화력 개조본, 이후 압축본을 제시한다. 새 1장을 확보하는 선택이며 기존 모든 탄을 자동 강화하지 않는다. 원래 발열·점유 칸·위치 제약을 그대로 표시하고 적용한다. 주력은 보유 공격 특수탄의 가장 많은 계열로 판단하고 동률은 장착 코어 연계로 판단한다. 별도 영구 직업 잠금은 없다. 공방·보급과 상점의 탄 진열도 집중 획득을 지원한다.
++- 선두 격발기: 첫 실제 발사 탄의 직접 피해 ×2. 제3 격발기(신규 모듈): 세 번째 실제 발사 탄의 직접 피해 ×3. 후미 점화기: 실제 증폭을 받은 마지막 단타의 직접 피해 ×3, 재장전 +1행동 유지. 지원탄도 발사 순서에 포함하며 그 자리에 지원탄을 쏘면 위치 강화는 소비된다. 연타의 여러 타격은 한 발이다. 빼낸 탄은 세지 않고 냉각은 순서를 유지하며 교체 시 초기화한다.
++- 합산 피해 → 증폭 배율 → 위치 파츠 → 코어/관문/강행 배율 → 장갑 순서. 위치 강화는 직접 타격과 기존 잔타/초과 피해 전달에만 적용한다. 화상·기폭·전이 재발동이나 무한 재귀는 없다.
++- 증폭/연타/열/관통 파츠는 기존 조합 재료로 유지한다. 모든 파츠를 위치 조건으로 바꾸지 않는다. 냉각·탄창·관통은 큰 피해를 성립시키는 보조 선택이다. 성장 코어 일괄 약화·적 HP 상향은 하지 않는다.
++
++## 검증 질문
++
++같은 투자량에서 주력 탄을 모으고 지원·위치 파츠를 맞춘 덱의 피해와 처치선이 달라지는가? 첫 획득 후 다음 전투에 조합 재료가 보이는가? 사격을 그대로 이어가도 잘 만든 덱이 강한 것은 허용한다. 반복 사격 승률을 낮추는 것이 목표가 아니다.
++
++실제 Model/Forecast로 위치 조건(지원·연타·빼내기·부분 사격·냉각·교체), 배율 중첩, 산개 분포, 획득 전후, 저장 복원과 이전 규칙을 검증한다. 본편 획득 경로와 5총기의 등반을 확인한다. 결과·사람 확인·모바일 미검증을 분리해 기록한다.
++
++## 구현·검증 상태
++
++본편 새 등반 적용 및 규칙/예측·3크기 실제 UI·저장/이전 규칙 회귀 완료. 5총기 125전투 획득 경로와 현재 코드 재생 통과. [결과·화면·남은 탄약/사람 확인](../qa/reports/focus_build_2026-11-03.md). 기능 조건을 유지하며 다음은 성장 체감과 획득 선택 이유의 플레이 확인이다. 제3 격발기는 하나의 모듈이며 성장 코어와 함께 장착할 수 있다. 초기 첫 미발견 파츠 진열에서 제시하고 이후 기존 파츠 획득 풀에 들어간다.
+--- before/docs/direction/game-design.md
++++ after/docs/direction/game-design.md
+@@ -1,4 +1,6 @@
+ # 게임 설계 — 조합과 빌드가 중심인 등반
++
++**현행 — 핵심 탄 성장과 위치 파츠(2026-11-03):** 사용자가 큰 피해를 만드는 덱 빌딩을 우선하고 세 번째 발 강화 같은 파츠 재검토를 승인했다. [주력 묶음·집중 획득/강화·위치 배율](focus-build.md)을 새 등반에 적용했다. 기존 코어/지원/방열·관통을 조합 재료로 유지하며 적 HP/지도/사격 입력은 유지한다. 반복 사격 통과율을 낮추는 것이 성공 기준은 아니다. [125전투·조작·저장·사람 확인 범위](../qa/reports/focus_build_2026-11-03.md).
+ 
+ **현행 — 사격 범위·교체/냉각 분리(2026-11-03):** 본편 새 등반에 [앞줄 범위 선택](fire-control.md)을 적용했다. 교체는 기존 행동 비용/열·연속 누적 유지, 전용 냉각은1행동 열0/누적 초기화/잔탄 보존이다. 냉각 약실의 교체 냉각+4 유지, 고열 위력 감소는 미채택. `fire_control_version=1` 없는 저장은 원래 규칙. 덱 빌딩은 [사격 반복 문제](../history/design/deckbuilding-review-2026-11-03.md)가 남아 있어 전투 편성·획득 집중도를 후속으로 검토한다.
+ 
+--- before/docs/direction/magazine-build.md
++++ after/docs/direction/magazine-build.md
+@@ -1,61 +1,63 @@
+-# 탄창 등반의 덱 빌딩 보강
+-
+-**사용자 재평가 — 2026-11-03:** 버전2 이후에도 "그냥 별 생각없이 사격을 해도 진행"된다는 후기를 받았다. 실제 획득125진입 상태의 반복 사격/교체 정책이99개를 통과했다. [조사·한계·다음 개편](../history/design/deckbuilding-review-2026-11-03.md). [사격 범위/열 관리](fire-control.md)는 본편 새 등반에 통합했으나 덱 빌딩 재미 해결로 기록하지 않는다. 다음 초점은 조합별 대응 편성, 핵심 탄 집중 확보, 자동 성장과 능동 선택의 차이다. 아래 덱·보상·적 수치는 이번 조사에서 유지한다.
+-
+-## 결정 상태
+-
+-- **사용자 승인(2026-11-01):** [덱 빌딩 재미 검토](../history/design/deckbuilding-review-2026-11-01.md)의 개편 제안을 진행하라고 지시했다. 아래 세 가지를 구현했다.
+-- **디렉터 구현값:** 출발 기본탄 수(14), 삼중 시퀀서 보너스(+3), 조건 종류 수(3종)는 디렉터가 정한 첫 값이다. 사용자 체감 확인 전이다.
+-- **적용 범위:** 본편 **새 등반**만. 새 등반은 `magazine_build_version = 1`을 캠페인과 전투 상태 양쪽에 기록한다. 이 값이 없는 이전 저장, 훈련, 탄창 여정·비교 화면은 기존 규칙 그대로다. 진행 중 저장을 강제로 바꾸지 않는다.
+-- **유지:** 자동 탄창 장전, 총기별 부분 사격, 냉각, 교체, 빼내기(탄창당 2발), 전투의 첫 탄창에 보유 특수탄 1장을 앞당기는 규칙, 적 편성, 보상·상점·공방 경제.
+-
+-## 버전 2 — 적 체력 상향(2026-11-01 후속)
+-
+-- **사용자 플레이 후기:** "덱 체감은 아직 크게 느껴지지 않아, 그냥 발사만 하면 적을 전부 처치해서 기본적으로 몬스터 체력도 올라가야 할 것 같고. 한 탄창 다 비우기 전에 끝나버려."
+-- **측정(버전 1, 자동 탐색):** 리벳 일반 전투는 탄창 평균 1.0개(0.3~1.5), 1구역 일반 전투는 0.3~0.8개만 쓰고 끝났다. 전투가 첫 탄창에서 끝나면 교체·덱 순환이 일어나지 않아 덱 구성이 결과에 닿지 않는다.
+-- **규칙(디렉터 첫 값):** 새 등반은 `magazine_build_version = 2`. 전투 진입 시 모든 적(대기 증원 포함)의 체력을 **일반 ×2.0, 정예 ×1.6**으로 올린다(올림). **보스전은 원래 체력·거리를 유지한다.** **움직이는 적은 출발 거리를 체력 증가분의 절반만큼 늘린다(×1.5 / ×1.3).** 제자리 사수는 위치와 발사 주기를 유지한다. 속도, 장갑, 압력탄은 바꾸지 않는다. **장갑 있는 적(장갑 또는 방어 자세 장갑 > 0)은 체력 증가의 절반만 적용한다(일반 ×1.5, 정예 ×1.3).** 비율 장갑이 이미 실질 체력을 늘리기 때문이다.
+-- **보스를 올리지 않은 이유:** 버전 1에서도 보스전은 탄창 1.8~2.8개를 쓰는 긴 전투였다. 스플린터의 최종 보스는 원래 체력에서 19행동(비상 보급 포함)으로 겨우 이기고, ×1.2부터는 넓은 탐색으로도 이길 수 없었다. 처음 시험한 보스 ×1.4는 철회했다.
+-- **거리와 장갑 예외를 둔 이유:** 체력만 2배로 올리자 1구역 4번째 전투(빠르게 접근하는 장갑6 교대 방패병)가 래칫·스플린터로 넓은 탐색에서도 이길 수 없었다. 거리를 1.5배로 늘려도 체력32 방패병은 관통탄 없는 덱에서 불가능했다. 방패병 체력 24(×1.5)에서는 사격·교체·냉각을 섞은 7행동으로 이긴다. 할 일이 늘어난 만큼 시간도 일부 주되, 전체 압박은 오른다.
+-- **3발 사격 총기의 출발 덱:** 래칫·스플린터·리액터(한 번에 3발)는 기본탄 **20장**(위력2 ×12, 3 ×8)으로 출발한다. 리벳·스파이크는 14장. 체력 상향 뒤 14장 덱으로는 세 총기가 전투 중 탄을 다 써서 비상 보급에 기댔다(래칫 12회, 리액터 9회, 리액터 최종 보스 57턴). 스플린터는 최종 보스를 넓은 탐색으로도 이길 수 없었다.
+-- 버전 1 저장은 체력·거리를 바꾸지 않는다. 버전 1의 출발 덱·파츠·연계 표시는 버전 2에도 그대로 적용된다.
+-
+-## 바뀐 규칙
+-
+-| # | 항목 | 이전(전체 탄창 등반 v1) | 새 등반 |
+-| --- | --- | --- | --- |
+-| 1 | 출발 덱 | 기본탄 20장(위력1 ×6, 2 ×8, 3 ×6) | **기본탄 14장(위력2 ×8, 3 ×6)**. 위력1 기본탄 6장을 뺐다. |
+-| 2 | 삼중 시퀀서 | 직전 두 발과 다른 탄종을 세 번째로 쏘면 그 탄 +5 | **장전된 탄창에 서로 다른 특수 탄종이 3종 이상이면 그 탄창의 특수 공격탄마다 +3.** 순서 무관. 기본탄 −1은 유지. |
+-| 3 | 압축 안정기 | 일반 전술탄 **바로 다음** 압축탄 발열 −2 | **탄창에 일반 전술탄이 1장 이상 있으면** 그 탄창의 압축탄 발열 −2 |
+-| 4 | 후미 점화기 | 마지막 단타가 증폭을 **받았을 때** ×2 (증폭이 바로 앞에 있어야 함) | **탄창에 증폭·배율탄이 있으면** 마지막 단타 ×2 |
+-| 5 | 선두 격발기 | 효과 같음. 설명이 "어떤 탄을 선두에 놓을지 결정합니다" | 효과 같음. 설명을 "쏘기 전에 앞 탄을 빼내면 다음 탄이 첫 발" 로 정정 |
+-| 6 | 전투 화면 안내 줄 | 총기 설명 + "냉각은 잔탄 유지 · 교체는 예비로 복귀" | 위험 경고가 없을 때 **"이번 탄창 · 증폭탄→철갑탄 · 삼중 3종 +3"** 처럼 지금 탄창에서 성립한 연계를 최대 3개 표시. 없으면 기존 문구. |
+-
+-"탄창 구성"은 장전 순간의 탄 목록(`magazine_loaded`)에서 빼낸 탄을 뺀 것이다. 이미 쏜 탄은 그 탄창 동안 계속 센다. 그래서 같은 탄창 안에서 사격 순서와 상관없이 조건이 일정하고, 빼내기는 조건을 깨거나(예: 3종 → 2종) 앞 탄을 바꾸는 선택이 된다.
+-
+-## 이유
+-
+-- 기본탄 20장은 획득한 탄을 묽게 만든다. 같은 획득 경로에서 기본탄 6장을 빼면 첫 두 탄창의 평균 특수탄 수가 1구역 관문 1.3 → 1.75발, 2구역 관문 2.05 → 2.7발로 늘어난다(리벳 자동 검증 덱, 첫 특수탄 앞당기기 포함 무작위 2만 회 계산). 위력1 탄을 뺐으므로 남은 탄의 평균 위력은 오른다.
+-- 플레이어가 순서를 정할 수 없는데 "바로 다음", "직전 두 발" 같은 인접 조건을 두면 결과가 운에 맡겨진다. 구성 조건으로 바꾸면 무엇을 얻고 무엇을 빼는지(덱 빌딩)가 직접 결과를 만든다.
+-- 자동 장전 순간에 성립한 연계를 읽을 수 있어야 그 결과를 "내 빌드가 만든 것"으로 느낀다. 새 위젯을 만들지 않고 기존 안내 줄을 쓴다.
+-
+-## 하지 않은 것
+-
+-- 적 편성 변경(그냥 쏘기만으로는 손해인 전투): 기존 [빼내기 후속 범위](magazine-ejection.md#사용자-후기와-다음-비교-범위)에 남긴다.
+-- 보상의 기본 동작을 "기본탄과 교체"로 바꾸기: 보상 화면이 다른 작업과 겹쳐 이번에는 하지 않았다. 출발 덱 축소로 먼저 효과를 본다.
+-- 교차 급탄기·연쇄 방열기·증폭 시퀀서: 이미 탄창 전체나 고정 위치(세 번째 발)를 기준으로 해서 운에 덜 좌우된다. 그대로 둔다.
+-
+-## 구현 위치
+-
+-| 파일 | 변경 |
+-| --- | --- |
+-| `redesign/magazine_build.gd` (새 파일) | 버전, 출발 덱(총기별), 탄창 구성 판정(삼중/압축/후미), 연계 문구, 버전2 적 체력·거리 `strengthen()` |
+-| `redesign/campaign.gd` | 새 등반 `start()`에서 버전 기록과 출발 덱 교체. `_begin_combat()`에서 탄창 장전 직전 `strengthen()` 호출. 저장 복원 시 버전 범위와 캠페인·전투 일치 검사. 전투 밖 저장 때 `magazine_loaded` 비움 |
+-| `redesign/model.gd` | 장전·빼내기 때 `magazine_loaded` 갱신, `_shot()`의 세 파츠 조건 분기, 복원 검사 |
+-| `redesign/content.gd` | `MAGAZINE_BUILD_PARTS` 설명과 `part_spec()` 병합 |
+-| `redesign/forecast.gd` | 무작위 예측 캐시 키에 버전과 `magazine_loaded` 추가 |
+-| `redesign/campaign_hud/combat.gd` | 안내 줄에 연계 표시 |
+-| `redesign/equipment_screen.gd`, `redesign/screen.gd` | 출발 덱 미리보기·상세가 14장을 보여 줌 |
+-| `tests/magazine_build_rules.gd`, `tests/magazine_build_visual.gd` (새 파일) | 규칙·호환 검사, 실제 HUD 표시 검사 |
+-| `tests/campaign_magazine_solver.gd` | 자동 탐색이 실패하면 더 깊게(폭24·깊이40) 한 번 더 찾음. 버전2의 긴 전투를 따라가기 위한 검증 도구 변경 |
+-
+-검증과 정확한 변경분은 [보고서](../qa/reports/magazine_build_2026-11-01.md)에 있다.
++# 탄창 등반의 덱 빌딩 보강
++
++**최신 — 주력 탄과 위치 배율(2026-11-03):** [핵심 탄 개편](focus-build.md)을 별도 `focus_build_version=1`로 새 등반에 적용했다. 첫 획득부터 주력 2장과 지원 1장으로 구성하고 보충/강화 선택을 연결했다. 기존 버전2 시작 총량·적 HP와 열/사격 입력은 유지한다. [5총기 전체 등반·검증](../qa/reports/focus_build_2026-11-03.md). 잘 만든 덱이 반복 사격으로 강한 것은 허용하며, 아래 반복 통과 수치만으로 재미 문제를 확정하지 않는다.
++
++**사용자 재평가 — 2026-11-03:** 버전2 이후에도 "그냥 별 생각없이 사격을 해도 진행"된다는 후기를 받았다. 실제 획득125진입 상태의 반복 사격/교체 정책이99개를 통과했다. [조사·한계·다음 개편](../history/design/deckbuilding-review-2026-11-03.md). [사격 범위/열 관리](fire-control.md)는 본편 새 등반에 통합했으나 덱 빌딩 재미 해결로 기록하지 않는다. 다음 초점은 조합별 대응 편성, 핵심 탄 집중 확보, 자동 성장과 능동 선택의 차이다. 아래 덱·보상·적 수치는 이번 조사에서 유지한다.
++
++## 결정 상태
++
++- **사용자 승인(2026-11-01):** [덱 빌딩 재미 검토](../history/design/deckbuilding-review-2026-11-01.md)의 개편 제안을 진행하라고 지시했다. 아래 세 가지를 구현했다.
++- **디렉터 구현값:** 출발 기본탄 수(14), 삼중 시퀀서 보너스(+3), 조건 종류 수(3종)는 디렉터가 정한 첫 값이다. 사용자 체감 확인 전이다.
++- **적용 범위:** 본편 **새 등반**만. 새 등반은 `magazine_build_version = 1`을 캠페인과 전투 상태 양쪽에 기록한다. 이 값이 없는 이전 저장, 훈련, 탄창 여정·비교 화면은 기존 규칙 그대로다. 진행 중 저장을 강제로 바꾸지 않는다.
++- **유지:** 자동 탄창 장전, 총기별 부분 사격, 냉각, 교체, 빼내기(탄창당 2발), 전투의 첫 탄창에 보유 특수탄 1장을 앞당기는 규칙, 적 편성, 보상·상점·공방 경제.
++
++## 버전 2 — 적 체력 상향(2026-11-01 후속)
++
++- **사용자 플레이 후기:** "덱 체감은 아직 크게 느껴지지 않아, 그냥 발사만 하면 적을 전부 처치해서 기본적으로 몬스터 체력도 올라가야 할 것 같고. 한 탄창 다 비우기 전에 끝나버려."
++- **측정(버전 1, 자동 탐색):** 리벳 일반 전투는 탄창 평균 1.0개(0.3~1.5), 1구역 일반 전투는 0.3~0.8개만 쓰고 끝났다. 전투가 첫 탄창에서 끝나면 교체·덱 순환이 일어나지 않아 덱 구성이 결과에 닿지 않는다.
++- **규칙(디렉터 첫 값):** 새 등반은 `magazine_build_version = 2`. 전투 진입 시 모든 적(대기 증원 포함)의 체력을 **일반 ×2.0, 정예 ×1.6**으로 올린다(올림). **보스전은 원래 체력·거리를 유지한다.** **움직이는 적은 출발 거리를 체력 증가분의 절반만큼 늘린다(×1.5 / ×1.3).** 제자리 사수는 위치와 발사 주기를 유지한다. 속도, 장갑, 압력탄은 바꾸지 않는다. **장갑 있는 적(장갑 또는 방어 자세 장갑 > 0)은 체력 증가의 절반만 적용한다(일반 ×1.5, 정예 ×1.3).** 비율 장갑이 이미 실질 체력을 늘리기 때문이다.
++- **보스를 올리지 않은 이유:** 버전 1에서도 보스전은 탄창 1.8~2.8개를 쓰는 긴 전투였다. 스플린터의 최종 보스는 원래 체력에서 19행동(비상 보급 포함)으로 겨우 이기고, ×1.2부터는 넓은 탐색으로도 이길 수 없었다. 처음 시험한 보스 ×1.4는 철회했다.
++- **거리와 장갑 예외를 둔 이유:** 체력만 2배로 올리자 1구역 4번째 전투(빠르게 접근하는 장갑6 교대 방패병)가 래칫·스플린터로 넓은 탐색에서도 이길 수 없었다. 거리를 1.5배로 늘려도 체력32 방패병은 관통탄 없는 덱에서 불가능했다. 방패병 체력 24(×1.5)에서는 사격·교체·냉각을 섞은 7행동으로 이긴다. 할 일이 늘어난 만큼 시간도 일부 주되, 전체 압박은 오른다.
++- **3발 사격 총기의 출발 덱:** 래칫·스플린터·리액터(한 번에 3발)는 기본탄 **20장**(위력2 ×12, 3 ×8)으로 출발한다. 리벳·스파이크는 14장. 체력 상향 뒤 14장 덱으로는 세 총기가 전투 중 탄을 다 써서 비상 보급에 기댔다(래칫 12회, 리액터 9회, 리액터 최종 보스 57턴). 스플린터는 최종 보스를 넓은 탐색으로도 이길 수 없었다.
++- 버전 1 저장은 체력·거리를 바꾸지 않는다. 버전 1의 출발 덱·파츠·연계 표시는 버전 2에도 그대로 적용된다.
++
++## 바뀐 규칙
++
++| # | 항목 | 이전(전체 탄창 등반 v1) | 새 등반 |
++| --- | --- | --- | --- |
++| 1 | 출발 덱 | 기본탄 20장(위력1 ×6, 2 ×8, 3 ×6) | **기본탄 14장(위력2 ×8, 3 ×6)**. 위력1 기본탄 6장을 뺐다. |
++| 2 | 삼중 시퀀서 | 직전 두 발과 다른 탄종을 세 번째로 쏘면 그 탄 +5 | **장전된 탄창에 서로 다른 특수 탄종이 3종 이상이면 그 탄창의 특수 공격탄마다 +3.** 순서 무관. 기본탄 −1은 유지. |
++| 3 | 압축 안정기 | 일반 전술탄 **바로 다음** 압축탄 발열 −2 | **탄창에 일반 전술탄이 1장 이상 있으면** 그 탄창의 압축탄 발열 −2 |
++| 4 | 후미 점화기 | 마지막 단타가 증폭을 **받았을 때** ×2 (증폭이 바로 앞에 있어야 함) | **탄창에 증폭·배율탄이 있으면** 마지막 단타 ×2 |
++| 5 | 선두 격발기 | 효과 같음. 설명이 "어떤 탄을 선두에 놓을지 결정합니다" | 효과 같음. 설명을 "쏘기 전에 앞 탄을 빼내면 다음 탄이 첫 발" 로 정정 |
++| 6 | 전투 화면 안내 줄 | 총기 설명 + "냉각은 잔탄 유지 · 교체는 예비로 복귀" | 위험 경고가 없을 때 **"이번 탄창 · 증폭탄→철갑탄 · 삼중 3종 +3"** 처럼 지금 탄창에서 성립한 연계를 최대 3개 표시. 없으면 기존 문구. |
++
++"탄창 구성"은 장전 순간의 탄 목록(`magazine_loaded`)에서 빼낸 탄을 뺀 것이다. 이미 쏜 탄은 그 탄창 동안 계속 센다. 그래서 같은 탄창 안에서 사격 순서와 상관없이 조건이 일정하고, 빼내기는 조건을 깨거나(예: 3종 → 2종) 앞 탄을 바꾸는 선택이 된다.
++
++## 이유
++
++- 기본탄 20장은 획득한 탄을 묽게 만든다. 같은 획득 경로에서 기본탄 6장을 빼면 첫 두 탄창의 평균 특수탄 수가 1구역 관문 1.3 → 1.75발, 2구역 관문 2.05 → 2.7발로 늘어난다(리벳 자동 검증 덱, 첫 특수탄 앞당기기 포함 무작위 2만 회 계산). 위력1 탄을 뺐으므로 남은 탄의 평균 위력은 오른다.
++- 플레이어가 순서를 정할 수 없는데 "바로 다음", "직전 두 발" 같은 인접 조건을 두면 결과가 운에 맡겨진다. 구성 조건으로 바꾸면 무엇을 얻고 무엇을 빼는지(덱 빌딩)가 직접 결과를 만든다.
++- 자동 장전 순간에 성립한 연계를 읽을 수 있어야 그 결과를 "내 빌드가 만든 것"으로 느낀다. 새 위젯을 만들지 않고 기존 안내 줄을 쓴다.
++
++## 하지 않은 것
++
++- 적 편성 변경(그냥 쏘기만으로는 손해인 전투): 기존 [빼내기 후속 범위](magazine-ejection.md#사용자-후기와-다음-비교-범위)에 남긴다.
++- 보상의 기본 동작을 "기본탄과 교체"로 바꾸기: 보상 화면이 다른 작업과 겹쳐 이번에는 하지 않았다. 출발 덱 축소로 먼저 효과를 본다.
++- 교차 급탄기·연쇄 방열기·증폭 시퀀서: 이미 탄창 전체나 고정 위치(세 번째 발)를 기준으로 해서 운에 덜 좌우된다. 그대로 둔다.
++
++## 구현 위치
++
++| 파일 | 변경 |
++| --- | --- |
++| `redesign/magazine_build.gd` (새 파일) | 버전, 출발 덱(총기별), 탄창 구성 판정(삼중/압축/후미), 연계 문구, 버전2 적 체력·거리 `strengthen()` |
++| `redesign/campaign.gd` | 새 등반 `start()`에서 버전 기록과 출발 덱 교체. `_begin_combat()`에서 탄창 장전 직전 `strengthen()` 호출. 저장 복원 시 버전 범위와 캠페인·전투 일치 검사. 전투 밖 저장 때 `magazine_loaded` 비움 |
++| `redesign/model.gd` | 장전·빼내기 때 `magazine_loaded` 갱신, `_shot()`의 세 파츠 조건 분기, 복원 검사 |
++| `redesign/content.gd` | `MAGAZINE_BUILD_PARTS` 설명과 `part_spec()` 병합 |
++| `redesign/forecast.gd` | 무작위 예측 캐시 키에 버전과 `magazine_loaded` 추가 |
++| `redesign/campaign_hud/combat.gd` | 안내 줄에 연계 표시 |
++| `redesign/equipment_screen.gd`, `redesign/screen.gd` | 출발 덱 미리보기·상세가 14장을 보여 줌 |
++| `tests/magazine_build_rules.gd`, `tests/magazine_build_visual.gd` (새 파일) | 규칙·호환 검사, 실제 HUD 표시 검사 |
++| `tests/campaign_magazine_solver.gd` | 자동 탐색이 실패하면 더 깊게(폭24·깊이40) 한 번 더 찾음. 버전2의 긴 전투를 따라가기 위한 검증 도구 변경 |
++
++검증과 정확한 변경분은 [보고서](../qa/reports/magazine_build_2026-11-01.md)에 있다.
+--- before/docs/direction/parts-builds.md
++++ after/docs/direction/parts-builds.md
+@@ -1,4 +1,6 @@
+ # 파츠 역할과 탄환 빌드
++
++**현행 추가 — 위치 파츠와 주력 탄(2026-11-03):** `focus_build_version=1` 새 등반에서 선두 격발기 첫 발 ×2, 신규 모듈 제3 격발기 세 번째 실제 탄 ×3, 후미 점화기 실제 증폭된 마지막 단타 ×3을 적용했다. 지원탄도 순서에 포함하며 빼내기는 제외, 냉각/부분 사격은 유지, 교체는 초기화. 성장/증폭/연타·냉각·관통 파츠는 각 역할을 유지한다. [전체 조건·계산 순서·획득](focus-build.md) · [검증](../qa/reports/focus_build_2026-11-03.md). 아래 기존 규칙은 해당 이전 저장에 남는다. 전 파츠 일괄 교체나 사람 재미 확정은 아니다.
+ 
+ **현행 — 발동 체감1차(2026-10-28):** 실제 발동 결과를 사용해 연쇄/복열·돌파/후미·열압의 궤적과 적중 형태를 구별하고, 대표 발동·실제 사격 합계·발동 파츠를 사격 후에도 표시한다. 지원탄/차폐 실패를 피해 증가로 표시하지 않으며 파츠별 추가 HP를 역산하지 않는다. 기존 효과·수치는 유지했고162조건 전후 결과가 같다. [화면·기능·성능 한계](../qa/reports/build_feedback_2026-10-28.md). 사람의 체감은 후속이다.
+ 
+--- before/docs/direction/playtest-priorities.md
++++ after/docs/direction/playtest-priorities.md
+@@ -1,4 +1,6 @@
+ # 플레이 피드백 통합 우선순위
++
++**최신 우선순위 — 핵심 탄 성장 적용(2026-11-03):** 사용자 승인으로 [주력 탄·발사 위치 파츠](focus-build.md)를 먼저 적용했다. [5총기 125전투·피해 차이·화면·회귀](../qa/reports/focus_build_2026-11-03.md). 다음은 주력/강화 보상을 고를 이유와 성장 체감, 지원과 위치 배율의 이해도, 리벳·리액터 후반 탄약 여유 확인 → 완성한 화력에 맞는 대표 편성 → 지도 밀도 순이다. 잘 만든 덱의 반복 사격 승리는 허용한다. 이전의 대응 편성 우선 순서를 대체하며 자동 승률을 재미 판정으로 사용하지 않는다. Android 실기기와 복장 혼합은 별도 미확인이다.
+ 
+ **본편 통합 후 우선순위 — 2026-11-03:** 사용자2·3 실행 지시에 따라 [사격 범위/열 관리](fire-control.md)를 새 등반에 연결하고 후반·파츠·탄약·이전 저장을 검증했다. [6등반154전투·입력/저장·미해결 정예 사례](../qa/reports/fire_control_2026-11-03.md). 최신 사용자 문제는 "그냥 별 생각없이 사격을 해도 진행"이며 독립125상태 중99반복 통과로 확인됐다. 다음은 **조합에 따라 대응이 달라지는 대표 편성 → 핵심 탄 집중/연계/발견 획득 비교 → 코어별 운용 차이 → 지도 밀도·전체 등반 조정**이다. [근거와 범위](../history/design/deckbuilding-review-2026-11-03.md). 복장 혼합·Android 실제 배율/복귀·지속 성능은 병행 미해결로 유지한다.
+ 
+--- before/docs/history/daily/2026-11-03.md
++++ after/docs/history/daily/2026-11-03.md
+@@ -8,3 +8,14 @@
+ - 덱 빌딩 조사: 획득125진입 상태의 사격/빈 탄창 교체 반복 통과99개. 같은 탄 순서의 파츠 제거 대조16개. 초반 낮은 특수탄 비중과 후반 넓고 얕은 구성, 일반 보상 후보의 새 계열 우선 정책을 확인했다. 실제 사용자 덱이나 연속 플레이 승률로 일반화하지 않는다.
+ - 다음은 조합별 대응 편성·집중/연계/발견 보상·코어 운용 차이다. 덱/보상/적 수치는 이번 조사에서 유지했다. APK·커밋·푸시·외부 게시 없음. Android 실제 조작·배율/복귀·지속 성능과 복장 혼합 제보는 미확인.
+ - [규칙](../../direction/fire-control.md) · [실제 화면/검사/변경분](../../qa/reports/fire_control_2026-11-03.md) · [덱 빌딩 검토](../design/deckbuilding-review-2026-11-03.md).
++
++
++## 핵심 탄 성장·발사 위치 파츠
++
++- 사용자가 발라트로처럼 피해를 크게 키우는 방향과 세 번째 발 강화 같은 파츠 재검토를 승인했다. 반복 사격의 횟수 감소보다 의도적으로 만든 덱의 성장과 결과를 우선한다.
++- 새 등반에 주력 2장+지원 1장의 기본탄 교체, 집중 보충·지원·화력 개조/압축본 획득, 선두 ×2/제3 ×3/실제 증폭 마무리 ×3을 적용했다. 기존 저장·적 HP·지도·사격/열 규칙을 유지했다.
++- 같은 탄창에서 주력 연타의 피해 6→36, 증폭/위치/후미/코어 중첩 108을 실제 모델로 확인했다. 통제된 기능 사례이며 획득 승률이나 사람 재미는 아니다.
++- 최종 5총기 125전투 전체 등반, 현재 소스 재생 12,876검사, 규칙 643·실제 UI 74·기존 사격 249·비교 규칙 5,805·HUD 11,536검사 실패 0, 임포트 통과. 첫 주력 선택을 별도 프로세스에서 정확히 복원했다.
++- 초기 복사본 위주 정책의 리벳/스파이크 최종 보스 실패를 보존했다. 강화 획득과 검사 획득/장착 정책을 함께 변경했으므로 한 변수의 단독 효과로 해석하지 않는다. 최종 리벳 1회/리액터 4회 비상 보급, 사람 성장 체감·Android 실제 사용은 후속이다.
++- 새 주력 보상 컴포넌트와 작은 보상 화면의 원래 글자 크기/스크롤을 연결하고 이탈 배율 복귀를 확인했다. APK·커밋·푸시·외부 게시 없음.
++- [규칙](../../direction/focus-build.md) · [변경·실제 화면·검증과 경계](../../qa/reports/focus_build_2026-11-03.md).
+--- before/docs/history/index.md
++++ after/docs/history/index.md
+@@ -1,6 +1,6 @@
+ # ProjectLoB 작업 기록
+ 
+-- [2026-11-03 사격·열 관리 본편 통합·후반/파츠/탄약 검증·덱 빌딩 재검토](daily/2026-11-03.md)
++- [2026-11-03 핵심 탄·위치 파츠 적용·사격/열 본편 통합·덱 빌딩 검토](daily/2026-11-03.md)
+ 
+ - [2026-11-02 플레이 피드백·배율/방문 경로 수정·탄창/지도 가독성·사격 범위/교체/냉각 비교](daily/2026-11-02.md)
+ 
+--- /dev/null
++++ after/docs/qa/reports/focus_build_2026-11-03.md
+@@ -0,0 +1,78 @@
++# 핵심 탄·발사 위치 파츠 본편 적용
++
++2026-11-03. 사용자 승인: 핵심 탄으로 피해를 크게 키우는 성장 구조, 세 번째 발 강화 등 파츠 재검토. [현재 규칙](../../direction/focus-build.md). `PLAY.cmd` → **새 등반**에 적용했다. 기존 저장의 탄·보상·파츠 규칙은 유지한다. 재미의 사람 검증은 아직이다.
++
++## 적용한 흐름
++
++첫 전투에서 성장 코어를 고른 다음 연타·철갑·열방출 중 주력 탄을 선택한다. 주력 2장과 지원 1장이 낮은 위력의 기본탄 3장을 대체하므로 시작 탄약 총량은 그대로다. 이후 보상·공방·보급은 같은 주력의 복사본과 지원을 제시하고, 첫 구역 깊이 4부터 가능한 화력 개조본/압축본도 제시한다. 상점 탄 진열은 주력을 보충할 수 있다. 강화는 **새 1장 확보**이며 기존 모든 탄을 자동 변경하지 않는다. 현재 탄의 발열·점유 칸·위치 제약은 유지한다.
++
++선두 격발기는 첫 발 직접 피해 ×2, 새 모듈 제3 격발기는 세 번째 실제 발사 탄 ×3, 후미 점화기는 실제 증폭을 받은 마지막 단타 ×3이다. 제3 격발기는 새 등반의 초반 첫 미발견 파츠 진열에 나오며 이후 일반 파츠 풀에도 포함된다. 지원탄은 순서에 포함하고, 빼내기는 제외한다. 부분 사격·냉각·저장 복원으로 순서를 초기화하지 않으며 교체 시 초기화한다.
++
++성장 코어·증폭·연타·방열·관통 파츠의 기존 역할은 남겼다. 모든 파츠를 위치 조건으로 바꾸거나 적 체력을 일괄 상향하지 않았다. 큰 피해가 실제 어느 탄과 파츠에서 나왔는지를 HUD 연계 문구·발동 표시·피해 표시로 연결했다. 새 보상 화면은 작은 창에서 정수 크기의 글자와 스크롤을 쓰고 지도/메뉴로 나갈 때 원래 배율을 복원한다.
++
++## 선택에 따른 피해 차이
++
++아래는 실제 Model/Forecast로 만든 **통제된 기능 사례**다. 획득한 덱의 일반 승률이나 사람이 선택할 확률을 뜻하지 않는다. 적 체력/거리를 충분히 둬 초과 피해와 조작 시점을 측정했다.
++
++| 비교 | 관측 |
++| --- | --- |
++| 동일 탄창 `기본탄 → 증폭 → 기본탄 → 연타` | 그대로 쏜 마지막 연타 6피해. 가운데 기본탄을 합법적으로 빼내 증폭·세 번째 위치를 연타에 맞추면 36피해 |
++| `기본탄 → 증폭 → 철갑`, 제3 격발기 + 후미 점화기 + 돌파 코어 | 합산 6 × 위치 3 × 후미 3 × 코어 2 = 108 직접 피해. 일괄 피해 상향이 아니라 조건의 중첩 |
++| 세 번째 자리에 지원탄 | 직접 피해·위치 배율 없음. 다음 공격으로 위치 배율을 넘겨주지 않음 |
++| 연타의 남은 타격 | 다음 적으로 전달될 때도 그 탄의 위치 배율을 유지. 재귀적인 추가 발동 없음 |
++| 산개 | 서로 다른 장갑을 가진 3표적의 공개 예측 범위 안에 실제 피해가 들어옴. 숨은 표적을 확정으로 표시하지 않음 |
++
++[규칙 검사 원시 결과](focus_build_2026-11-03_assets/rules.json). 6→36은 해당 조건에서 주력 탄 한 발의 피해이며 모든 덱의 피해가 6배가 됐다는 주장이 아니다.
++
++## 실제 획득으로 전체 등반
++
++시드 731042, 운반복, 현재 지도의 합법 경로와 구매·보상·교체·관문 선택을 사용했다. 승리·크레딧·파츠를 주입하지 않았다. 획득 정책은 공개된 주력/지원/강화와 소유 파츠를 사용한다. 전투 탐색은 미래 탄 순서/RNG를 보므로 사람의 난도·승률이나 최적 행동 증거가 아니다.
++
++| 총기 | 전투 | 사용 행동 합계 | 수동 냉각 | 비상 보급 | 완주 |
++| --- | ---: | ---: | ---: | ---: | --- |
++| 리벳(single) | 25 | 318 | 2 | 1 | 성공 |
++| 래칫(burst) | 25 | 275 | 4 | 0 | 성공 |
++| 스플린터(scatter) | 25 | 280 | 5 | 0 | 성공 |
++| 리액터(heavy) | 25 | 429 | 6 | 4 | 성공 |
++| 스파이크(amplifier) | 25 | 270 | 10 | 0 | 성공 |
++
++5등반 125전투, 획득/입력/저장 검사 11,892개 실패 0. 같은 명령을 별도로 현재 코드에 재생해 **12,876개 실패 0**, 최종 덱·행동 시간·정상 도달 보상 1회 지급을 확인했다. [주요 3총기](focus_build_2026-11-03_assets/climb_primary.json) · [다른 2총기](focus_build_2026-11-03_assets/climb_alternate.json) · [현재 소스 재생](focus_build_2026-11-03_assets/replay.json).
++
++처음의 복사본 위주 후보와 획득 정책은 리벳·스파이크 최종 보스에서 제한 탐색이 실패했다. 이후 강화 프로필의 실제 확보 경로를 연결하고, 검사 정책도 주력 5장 제한에서 7장과 보유 관통 파츠 선택으로 바꿨다. 최종 성공을 강화 후보 하나의 단독 효과로 해석하지 않는다. 초기 실패도 [별도 기록](focus_build_2026-11-03_assets/initial_primary.json)에 보존한다. 리벳/리액터의 비상 보급 사용은 남은 자원 균형 확인 사항이다.
++
++최종 완주 경로는 빼내기를 사용하지 않았다. 잘 구성한 덱이 그대로 사격해도 강한 상황은 허용한다. 별도의 같은 덱 비교가 빼내기로 주력 탄을 맞추는 선택의 이득을 입증하지만, 전체 등반에서 얼마나 자연스럽게 쓰는지는 사람 확인이 필요하다. 이전 99/125 반복 통과 수치를 낮추는 것을 이번 개편의 성공 기준으로 사용하지 않는다.
++
++## 실제 화면·조작
++
++1280×800 첫 주력 선택. 묶음의 수량과 실제 지원 탄을 선택 전에 표시한다.
++
++![주력 탄 선택](focus_build_2026-11-03_assets/package_1280x800.png)
++
++844×390에서는 전체 화면 축소를 해제하고 세로 스크롤을 사용한다. 740×360은 두 열로 배치하며 아래의 세 번째 선택지도 실제 터치로 선택했다.
++
++![작은 화면 보상](focus_build_2026-11-03_assets/package_cards_844x390.png)
++
++실제 HUD에 통제 상태를 표시해 가운데 탄 빼내기 → 1발씩 사격 → 세 번째 철갑탄 배율을 확인했다. 이 그림의 적/탄창은 설명용 통제 상태이며 획득 경로 화면과 구분한다.
++
++![세 번째 탄의 발동 안내](focus_build_2026-11-03_assets/third_ready_844x390.png)
++
++## 검사와 경계
++
++모든 검사는 `qa_runtime/focus_build_20261103/` 및 기존 QA 전용 저장에서 수행했다. Godot 4.7 stable, Windows의 실제 렌더링/터치 이벤트 검사다.
++
++| 검사 | 결과 |
++| --- | --- |
++| `tools/run_focus_build.ps1 -Mode rules -Label final` | 643검사 실패 0. 배율/연타/지원/빼내기/냉각/교체/산개/예측/버전 검증, 실제 UI 선택 저장을 새 프로세스에서 복원 |
++| `-Mode ui -Label final` | 74검사 실패 0. 실제 새 등반·첫 전투·코어·주력 묶음·3크기·스크롤/터치·획득 저장·배율 복귀·전투 HUD |
++| `-Mode climb -Label growth_primary/growth_alternate` | 5완주 125전투, 11,892검사 실패 0 |
++| `-Mode replay -Label final` | 12,876검사 실패 0 |
++| 기존 `run_fire_control.ps1 -Mode rules -Label focus_regression` | 249검사 실패 0 |
++| 기존 `run_fire_heat_checks.ps1 -Mode rules -Label focus_regression` | 5,805검사 실패 0. 과거 모델과 기존 규칙 전체 상태 비교 포함 |
++| 기존 `run_prototype_hud.ps1 -Mode ui -Fast` | 11,536검사 실패 0 |
++| 기존 `run_prototype_hud.ps1 -Mode import` | 통과 |
++
++초기 UI 검사는 탐색의 ‘기본 최대 발수 0’을 UI에서 1발로 지정해 전투가 덜 끝나는 테스트 오류가 있었다. 최대 발수로 입력하도록 바로잡았으며 초기 실패를 통과 결과로 세지 않았다. 산개 캐시 검사의 첫 예시도 구/신 배율 결과가 우연히 같은 피해여서 서로 다른 결과가 나오는 실제 탄으로 수정했다.
++
++Android 안전 영역·손가락 조작·장시간 발열/성능, 성장의 재미·반복 사격이 충분히 다른 느낌인지에 대한 사람 확인은 미검증이다. 기존 복장 혼합 제보와 지도 전투 밀도는 별도 후속이다. APK·커밋·푸시·외부 게시 없음.
++
++[소스/결과 해시](focus_build_2026-11-03_assets/manifest.json) · [이번 변경만 분리한 패치](focus_build_2026-11-03_assets/change.patch).
+--- /dev/null
++++ after/tools/run_focus_build.ps1
+@@ -0,0 +1,21 @@
++param([ValidateSet('rules','climb','ui','replay')][string]$Mode='rules',[string]$Label='final',[string]$Guns='single,burst,scatter,heavy,amplifier',[int]$Seed=731042)
++$ErrorActionPreference='Stop'
++if($Label -notmatch '^[a-zA-Z0-9_-]+$'){throw 'Invalid label'}
++$repo=Split-Path -Parent $PSScriptRoot
++$project=(Get-ChildItem -LiteralPath $repo -Directory | Where-Object {Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')} | Select-Object -First 1).FullName
++$runtime=Join-Path $repo ('qa_runtime/focus_build_20261103/'+$Mode+'_'+$Label)
++$env:APPDATA=Join-Path $runtime 'Roaming';$env:LOCALAPPDATA=Join-Path $runtime 'Local';$env:QA_OUTPUT_DIR=$runtime
++$env:QA_GUNS=$Guns;$env:QA_SEED=$Seed
++New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
++$stdout=Join-Path $runtime 'stdout.log';$stderr=Join-Path $runtime 'stderr.log'
++$arguments=@('--path',('"'+$project+'"'),'--script',('res://tests/focus_build_'+$Mode+'.gd'))
++if($Mode -eq 'ui'){$arguments+=@('--rendering-method','gl_compatibility','--resolution','1280x800','--position','-2000,-2000')}else{$arguments+='--headless'}
++$process=Start-Process -FilePath 'D:/ProjectLoB/.tmp/godot-4.7/Godot_v4.7-stable_win64_console.exe' -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
++$null=$process.Handle;$deadline=[DateTime]::UtcNow.AddMinutes(25)
++while(-not $process.WaitForExit(500)){
++ $errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++ if($errors -match 'ERROR:|Parse Error' -or [DateTime]::UtcNow -gt $deadline){Stop-Process -Id $process.Id;throw "Focus build stopped: $errors"}
++}
++$process.WaitForExit();$result=Get-Content -Raw -LiteralPath $stdout -Encoding UTF8;$errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++Write-Output ($result -split "`n" | Select-Object -Last 8)
++if($process.ExitCode -ne 0 -or $errors -match 'ERROR:' -or $result -notmatch 'FOCUS BUILD COMPLETE checks=\d+ failures=0'){throw "Focus build failed; see $stdout $errors"}
+--- before/새-게임-프로젝트/redesign/ammo_discovery.gd
++++ after/새-게임-프로젝트/redesign/ammo_discovery.gd
+@@ -4,6 +4,7 @@
+ const PAUSED_AMMO := ["prepare", "disrupt"]
+ const PAUSED_PARTS := ["indexer"]
+ const LINKS := {
++	"third_striker": ["charge", "charge_hot", "precise", "pierce", "vent"],
+ 	"volley_drive": ["precise", "charge", "shatter", "chase"],
+ 	"thermal_drive": ["bore", "charge_heat", "cool", "vent", "charge_hot"],
+ 	"siege_drive": ["pierce", "charge_hot", "bypass", "sequence", "charge"],
+--- before/새-게임-프로젝트/redesign/build_guide.gd
++++ after/새-게임-프로젝트/redesign/build_guide.gd
+@@ -2,6 +2,7 @@
+ ## Public build relationships; suggestions are not an automatic loadout choice.
+ const Ammo = preload("res://redesign/content.gd")
+ const FAMILIES := {
++	"third_striker":"순서 보상",
+ 	"volley_drive":"화력 성장", "thermal_drive":"화력 성장", "siege_drive":"화력 성장",
+ 	"lens": "조합 보상",
+ 	"coil": "조합 보상",
+@@ -45,6 +46,10 @@
+ 	return str(FAMILIES.get(id, "빌드"))
+ 
+ static func connection(id: String, state: Dictionary) -> String:
++	if id == "third_striker": return "지원탄도 한 발 · 주력 탄을 세 번째 발사에 맞춰 ×3"
++	if int(state.get("focus_build_version",0)) == 1:
++		if id == "opening": return "첫 발 ×2 · 앞 탄을 빼내 주력 탄으로 시작"
++		if id == "afterburner": return "실제 증폭 → 마지막 단타 ×3 · 지원탄 보유만으로 발동하지 않음"
+ 	if preload("res://redesign/damage_engines.gd").IDS.has(id): return preload("res://redesign/damage_engines.gd").progress(state,id)
+ 	var counts: Dictionary = {}
+ 	for round_id in state.get("deck", []):
+--- before/새-게임-프로젝트/redesign/campaign.gd
++++ after/새-게임-프로젝트/redesign/campaign.gd
+@@ -65,6 +65,8 @@
+ 		model.s.deck = Model.MagazineBuild.start_deck(gun)
+ 		s.fire_control_version = Model.FireHeatTrial.CAMPAIGN_VERSION
+ 		Model.FireHeatTrial.activate_campaign(model.s)
++		s.focus_build_version = Model.FocusBuild.VERSION
++		model.s.focus_build_version = Model.FocusBuild.VERSION
+ 	model.begin_encounter(int(s.compressor_charges))
+ 
+ func magazine_enabled() -> bool:
+@@ -268,6 +270,7 @@
+ 
+ func boss_ammo_options() -> Array:
+ 	var result := Content.rewards(node(),int(s.seed),model.s.deck,s.equipped_parts,int(s.discovery_version))
++	if Model.FocusBuild.enabled(s): result = Model.FocusBuild.rewards(model.s, node(), result).slice(0, 2)
+ 	var pool := Content.shuffle(Content.ammo_pool(node(),int(s.discovery_version)),Content.rng(int(s.seed),int(s.node)+9713))
+ 	var fitting := Content.Discovery.fitting(pool,s.equipped_parts,int(s.discovery_version))
+ 	for id in fitting + pool:
+@@ -313,7 +316,13 @@
+ 		if can_equip(choice): s.equipped_parts.append(choice)
+ 		_sync_equipped_parts()
+ 	elif reward_options().has(choice) and can_acquire_ammo(choice, remove_id):
+-		_acquire_ammo(choice, remove_id)
++		if opening_ammo and Model.FocusBuild.enabled(s):
++			if not remove_id.is_empty(): return false
++			var replacement := Model.FocusBuild.replace_opening(model.s.deck, choice)
++			if replacement.is_empty(): return false
++			model.s.deck = replacement
++			s.message = Model.FocusBuild.package_text(choice) + " · 기본탄 3장 교체"
++		else: _acquire_ammo(choice, remove_id)
+ 	else: return false
+ 	if opening_core:
+ 		s.opening_reward_step = 1
+@@ -338,14 +347,16 @@
+ 	if modern_places() and s.phase == "supply" and not node().get("workshop", false):
+ 		return s.supply_offers.duplicate() if not s.get("supply_offers", []).is_empty() else _supply_options()
+ 	if engine_reward(): return []
+-	if first_ammo_reward(): return Content.Acquisition.first_options(int(s.seed), str(s.gun), s.parts, str(s.loadout))
++	if first_ammo_reward(): return Model.FocusBuild.opening_options(model.s) if Model.FocusBuild.enabled(s) else Content.Acquisition.first_options(int(s.seed), str(s.gun), s.parts, str(s.loadout))
+ 	if boss_loot(): return boss_ammo_options()
+ 	if node().get("elite", false): return []
+ 	var options := Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)))
++	if Model.FocusBuild.enabled(s): return Model.FocusBuild.rewards(model.s, node(), options)
+ 	return Content.Rhythm.rewards(node(), model.s.deck, options) if int(s.get("roster_version",1)) >= Content.Rhythm.VERSION else options
+ 
+ func _supply_options() -> Array:
+ 	var found := Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts, int(s.discovery_version))
++	if Model.FocusBuild.enabled(s): return Model.FocusBuild.rewards(model.s, node(), found)
+ 	var eligible: Array = []
+ 	for id in model.s.deck:
+ 		if Ammo.COMPRESSIONS.has(id) and Ammo.grade(id) <= 0 and not eligible.has(id): eligible.append(id)
+@@ -415,6 +426,7 @@
+ func workshop_ammo_options() -> Array:
+ 	if not Model.Reserve.inventory_enabled(s) or s.phase != "supply" or s.resolved or not node().get("workshop", false): return []
+ 	var offered := Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts, int(s.discovery_version))
++	if Model.FocusBuild.enabled(s): return Model.FocusBuild.rewards(model.s, node(), offered)
+ 	var families: Array = offered.map(func(id): return Ammo.source_id(str(id)))
+ 	var random := Content.rng(int(s.seed), int(s.node) + 8711)
+ 	for id in Content.shuffle(Content.ammo_pool(node(), int(s.discovery_version)), random):
+@@ -441,7 +453,7 @@
+ 	if first_ammo_reward(): return []
+ 	if not node().get("elite", false): return []
+ 	var options: Array = []
+-	for offer in Content.offers(node(), int(s.seed), 0, str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), [], [], int(s.get("discovery_version",0))):
++	for offer in Content.offers(node(), int(s.seed), 0, str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), [], [], int(s.get("discovery_version",0)), int(s.get("focus_build_version",0))):
+ 		if offer.type == "part" and not s.parts.has(offer.id): options.append(offer.id)
+ 	return options.slice(0, 2)
+ 
+@@ -572,7 +584,12 @@
+ 	return true
+ 
+ func _stock_shop(shop_node: Dictionary) -> void:
+-	s.offers = Content.offers(shop_node, int(s.seed), int(s.shop_revision), str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), s.get("shop_seen_ammo", []), s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)))
++	s.offers = Content.offers(shop_node, int(s.seed), int(s.shop_revision), str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), s.get("shop_seen_ammo", []), s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)), int(s.get("focus_build_version",0)))
++	if Model.FocusBuild.enabled(s):
++		var main := Model.FocusBuild.main_round(model.s)
++		if not main.is_empty():
++			s.offers[0].id = main
++			s.offers[0].price = 24 if Ammo.grade(main) == 1 else 12
+ 	for offer in s.offers:
+ 		if offer.type == "ammo" and not s.get("shop_seen_ammo", []).has(offer.id):
+ 			if not s.has("shop_seen_ammo"): s.shop_seen_ammo = []
+@@ -827,6 +844,8 @@
+ 	if not _whole(state.get("growth_version",0),0,Model.Engines.Growth.VERSION): return false
+ 	if not _whole(state.get("magazine_campaign_version",0),0,1): return false
+ 	if not _whole(state.get("fire_control_version",0),0,Model.FireHeatTrial.CAMPAIGN_VERSION): return false
++	if not _whole(state.get("focus_build_version",0),0,Model.FocusBuild.VERSION): return false
++	if Model.FocusBuild.enabled(state) and int(state.get("fire_control_version",0)) != Model.FireHeatTrial.CAMPAIGN_VERSION: return false
+ 	if int(state.get("fire_control_version",0))>0 and int(state.get("magazine_campaign_version",0))!=1:return false
+ 	if not _whole(state.get("magazine_build_version",0),0,Model.MagazineBuild.VERSION): return false
+ 	if int(state.get("magazine_build_version",0))>0 and int(state.get("magazine_campaign_version",0))!=1: return false
+@@ -914,6 +933,7 @@
+ 	if int(state.get("magazine_campaign_version",0))==1 and not Model.MagazineTrial.weapons_enabled(combat.s): return false
+ 	if state.get("magazine_build_version",0) != combat.s.get("magazine_build_version",0): return false
+ 	if state.get("fire_control_version",0) != combat.s.get("fire_control_version",0): return false
++	if state.get("focus_build_version",0) != combat.s.get("focus_build_version",0): return false
+ 	if state.get("combat_revision",0) != combat.s.get("combat_revision",0): return false
+ 	if state.get("sustained_version",0) != combat.s.get("sustained_version",0): return false
+ 	if state.get("growth_version",0) != combat.s.get("growth_version",0): return false
+--- before/새-게임-프로젝트/redesign/campaign_content.gd
++++ after/새-게임-프로젝트/redesign/campaign_content.gd
+@@ -324,10 +324,11 @@
+ 		6: return "전열 뒤에도 증원 · 다음 탄창과 압축 자원을 남겨두세요"
+ 	return ""
+ 
+-static func eligible_parts(gun: String, discovery_version: int = 0) -> Array:
++static func eligible_parts(gun: String, discovery_version: int = 0, focus_version: int = 0) -> Array:
+ 	var result: Array = []
+ 	for id in Ammo.PARTS:
+ 		if id == "none": continue
++		if id == "third_striker" and focus_version == 0: continue
+ 		if Ammo.accepts_part(gun, id): result.append(id)
+ 	return Discovery.parts(result) if discovery_version >= 1 else result
+ 
+@@ -352,7 +353,7 @@
+ 		if ticket <= 0: return str(pools[grade][random.randi_range(0, pools[grade].size() - 1)])
+ 	return str(candidates[0])
+ 
+-static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = [], seen_ammo: Array = [], equipped: Array = [], discovery_version: int = 0) -> Array:
++static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = [], seen_ammo: Array = [], equipped: Array = [], discovery_version: int = 0, focus_version: int = 0) -> Array:
+ 	var random := rng(seed_value, int(node.id) + 1900 + revision * 37)
+ 	var ammo_choices := shuffle(ammo_pool(node, discovery_version), random)
+ 	var seen_families := seen_ammo.map(func(id): return Ammo.source_id(str(id))) if discovery_version >= 2 else seen_ammo
+@@ -360,7 +361,7 @@
+ 	var ammo_id: String = unseen_ammo[0] if not unseen_ammo.is_empty() else ammo_choices[0]
+ 	ammo_id = advanced_offer(ammo_id, node, rng(seed_value, int(node.id) + 2900 + revision * 37))
+ 	if discovery_version >= 2: ammo_id = Ammo.Variants.offer(ammo_id, Ammo.AMMO, rng(seed_value, int(node.id) + 4700 + revision * 37), node)
+-	var parts: Array = eligible_parts(gun, discovery_version)
++	var parts: Array = eligible_parts(gun, discovery_version, focus_version)
+ 	for id in owned: parts.erase(id)
+ 	var unseen: Array = []
+ 	var repeated: Array = []
+@@ -384,6 +385,9 @@
+ 		else:
+ 			var compatible := Discovery.modules(candidates, equipped) if discovery_version >= 1 else preload("res://redesign/build_affinity.gd").candidates(candidates,equipped,true)
+ 			if not compatible.is_empty(): candidates = compatible
++		# An early public offer exposes the positional build; later shops keep the pool.
++		if focus_version == 1 and selected.is_empty() and revision == 0 and int(node.get("region", 0)) == 0 and pool.has("third_striker") and not seen.has("third_striker"):
++			candidates = ["third_striker"]
+ 		var picked: String = pick_part(candidates, node, random)
+ 		selected.append(picked)
+ 		pool.erase(picked)
+--- before/새-게임-프로젝트/redesign/campaign_ui.gd
++++ after/새-게임-프로젝트/redesign/campaign_ui.gd
+@@ -8,6 +8,7 @@
+ const COLLECTION_CARD_SIZE := Vector2(230, 164)
+ const OFFER_CARD_SIZE := Vector2(230, 196)
+ const AmmoOffer = preload("res://redesign/ammo_offer.tscn")
++const FocusOffer = preload("res://redesign/focus_ammo_offer.tscn")
+ const AcquisitionView = preload("res://redesign/ammo_acquisition_view.tscn")
+ const PartCard = preload("res://redesign/part_card_view.gd")
+ const BuildGuide = preload("res://redesign/build_guide.gd")
+@@ -271,9 +272,13 @@
+ 	ui._label(panel, campaign.route_outlook(id), 18, ui.MUTED)
+ func reward() -> void:
+ 	var first_ammo: bool = campaign.first_ammo_reward()
++	var focus: bool = campaign.Model.FocusBuild.enabled(campaign.s)
++	var package_choice: bool = focus and first_ammo
+ 	var boss_loot: bool = campaign.boss_loot()
+ 	var opening: bool = int(campaign.s.get("discovery_version",0)) >= 3 and campaign.engine_reward()
+-	_phase_intro("◆", "첫 특수탄 선택 · 2/2" if first_ammo else ("성장 코어 선택 · 1/2" if opening else str(campaign.node().name) + " 통과"), "원하는 한 장을 골라 기본탄과 교체하거나 추가하세요." if first_ammo else ("코어를 고른 다음 첫 특수탄을 선택합니다." if opening else ("이번 등반의 화력 성장 방식을 고르세요." if campaign.engine_reward() else "전투 결과를 하나의 다음 선택으로 바꾸세요.")), Color("f3cf73"))
++	_phase_intro("◆", "주력 탄 선택 · 2/2" if package_choice else "첫 특수탄 선택 · 2/2" if first_ammo else ("성장 코어 선택 · 1/2" if opening else str(campaign.node().name) + " 통과"), "키울 주력 탄과 함께 쓸 지원 탄을 고르세요." if package_choice else "원하는 한 장을 골라 기본탄과 교체하거나 추가하세요." if first_ammo else ("코어를 고른 다음 첫 특수탄을 선택합니다." if opening else ("이번 등반의 화력 성장 방식을 고르세요." if campaign.engine_reward() else "전투 결과를 하나의 다음 선택으로 바꾸세요.")), Color("f3cf73"))
++	if package_choice:
++		ui._label(ui.body, "주력 2장 + 지원 1장 · 위력이 낮은 기본탄 3장과 교체 · 총 탄약 유지", 18, ui.ACCENT)
+ 	var reward_frame := VBoxContainer.new()
+ 	reward_frame.name = "RewardFrame"
+ 	reward_frame.add_theme_constant_override("separation",14)
+@@ -294,23 +299,33 @@
+ 	var row := GridContainer.new()
+ 	row.name = "RewardGrid"
+ 	row.columns = 3
++	if focus and ui.get_tree().root.content_scale_mode == Window.CONTENT_SCALE_MODE_DISABLED:
++		row.columns = clampi(int((ui.get_tree().root.size.x - 56) / (297 if campaign.engine_reward() or not campaign.part_rewards().is_empty() else 242)),1,3)
+ 	row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+ 	row.add_theme_constant_override("h_separation", 12)
+ 	row.add_theme_constant_override("v_separation", 12)
+ 	reward_frame.add_child(row)
+ 	for id in campaign.reward_options():
+-		var take: Button = AmmoOffer.instantiate()
++		var package_panel: VBoxContainer = FocusOffer.instantiate() if package_choice else null
++		var take: Button = package_panel.get_node("Offer") if package_choice else AmmoOffer.instantiate()
+ 		take.name = "city_reward_" + id
+-		take.disabled = not can_take_ammo(id) or ui.busy
++		take.disabled = (campaign.Model.FocusBuild.replace_opening(ui.model.s.deck,id).is_empty() if package_choice else not can_take_ammo(id)) or ui.busy
+ 		take.custom_minimum_size = OFFER_CARD_SIZE
+ 		take.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+ 		take.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+ 		var face: Control = take.get_node("CardInfo")
+ 		var ownership := "새 탄종" if Insight.family_count(ui.model.s,Ammo.source_id(id))==0 else "동일 성능 %d장 보유" % ui.model.s.deck.count(id)
+-		face.setup(id,1,ui.model.s,take.disabled,false,ownership)
++		if focus: ownership = "주력 탄 2장" if package_choice else campaign.Model.FocusBuild.offer_label(ui.model.s,id)
++		face.setup(id,2 if package_choice else 1,ui.model.s,take.disabled,false,ownership)
+ 		take.pressed.connect(func(): ui.feedback.play("click"))
+-		take.pressed.connect(acquire_ammo.bind(id,"reward",id))
+-		row.add_child(take)
++		if package_choice:
++			take.tooltip_text = campaign.Model.FocusBuild.package_text(id) + " · 기본탄 3장 교체"
++			take.pressed.connect(action.bind("reward",id))
++			row.add_child(package_panel)
++			package_panel.get_node("Package").text = campaign.Model.FocusBuild.package_text(id)
++		else:
++			take.pressed.connect(acquire_ammo.bind(id,"reward",id))
++			row.add_child(take)
+ 	for id in campaign.part_rewards():
+ 		var panel = ui._panel(row)
+ 		panel.get_parent().custom_minimum_size.x = 285
+@@ -340,7 +355,7 @@
+ 		ui._label(panel, ("성장 코어 · 1개 선택\n" if campaign.engine_reward() else "정예 보상 · 파츠 1개\n") + ("빈 슬롯에 자동 장착" if campaign.can_equip_reward(id) else "획득 후 보관함에서 교체"), 17, ui.MUTED)
+ 		ui._primary_button(ui._button(panel, "파츠 가져가기", "city_reward_" + id, action.bind("reward", id)), Color("f3cf73"))
+ 	if campaign.engine_reward() or first_ammo:
+-		ui._label(reward_frame,"한 장 선택 · 다음 전투부터 사용" if first_ammo else "한 개 선택 · 이번 등반에 유지 · 코어는 동시에 하나만 장착",16,ui.MUTED)
++		ui._label(reward_frame,"한 묶음 선택 · 다음 전투부터 사용" if package_choice else "한 장 선택 · 다음 전투부터 사용" if first_ammo else "한 개 선택 · 이번 등반에 유지 · 코어는 동시에 하나만 장착",16,ui.MUTED)
+ 		var alternatives := HBoxContainer.new()
+ 		alternatives.alignment = BoxContainer.ALIGNMENT_END
+ 		reward_frame.add_child(alternatives)
+--- before/새-게임-프로젝트/redesign/content.gd
++++ after/새-게임-프로젝트/redesign/content.gd
+@@ -24,6 +24,11 @@
+ 	"afterburner": {"upside":"증폭탄이 든 탄창의 마지막 단타 ×2","text":"탄창에 증폭·배율탄이 있으면 마지막 공격탄이 1회 타격 탄일 때 직접 피해 ×2. 증폭탄이 바로 앞에 없어도 되며, 빼낸 탄은 세지 않습니다. 장갑 차감 전 적용하며 기폭·전이에는 적용하지 않습니다. 재장전 +1턴."}
+ }
+ 
++const FOCUS_PARTS := {
++	"opening": {"value":"첫 발 ×2", "upside":"탄창 첫 발 직접 피해 ×2", "text":"같은 탄창에서 실제로 발사한 첫 탄의 직접 피해 ×2. 지원탄도 순서에 포함되어 강화 기회를 사용합니다. 빼낸 탄은 세지 않습니다. 연타의 모든 직접 타격에 적용하며 화상·기폭·전이에는 적용하지 않습니다."},
++	"afterburner": {"value":"강화 마무리 ×3", "upside":"증폭된 마지막 단타 직접 피해 ×3", "text":"실제 증폭 또는 배율 효과를 받은 마지막 공격탄이 단타일 때 직접 피해 ×3. 탄창에 지원탄이 들어 있는 것만으로는 발동하지 않습니다. 뒤의 지원탄은 허용합니다. 화상·기폭·전이에는 적용하지 않으며 재장전 +1행동."}
++}
++
+ static func revised_combat(state: Dictionary) -> bool:
+ 	return int(state.get("combat_revision", 0)) >= 1
+ 
+@@ -43,10 +48,12 @@
+ 
+ static func part_spec(id: String, state: Dictionary) -> Dictionary:
+ 	var magazine_build: bool = int(state.get("magazine_build_version", 0)) >= 1 and MAGAZINE_BUILD_PARTS.has(id)
+-	if (not revised_combat(state) or not REVISED_PARTS.has(id)) and not magazine_build: return PARTS[id]
++	var focus: bool = int(state.get("focus_build_version", 0)) == 1 and FOCUS_PARTS.has(id)
++	if (not revised_combat(state) or not REVISED_PARTS.has(id)) and not magazine_build and not focus: return PARTS[id]
+ 	var result: Dictionary = PARTS[id].duplicate()
+ 	if revised_combat(state) and REVISED_PARTS.has(id): result.merge(REVISED_PARTS[id], true)
+ 	if magazine_build: result.merge(MAGAZINE_BUILD_PARTS[id], true)
++	if focus: result.merge(FOCUS_PARTS[id], true)
+ 	return result
+ 
+ static func sequencer_bonus(state: Dictionary) -> int:
+@@ -217,6 +224,7 @@
+ 	"executioner": {"grade": 0, "name": "처형 조준기", "kind": "module", "effect": "마무리", "value": "+2 피해", "role": "처치선 보정", "upside": "HP 5 이하 적 피해 +2", "downside": "", "text": "발사 직전 HP가 5 이하인 적에게 직접 피해 +2."},
+ 	"reserve": {"grade": 0, "name": "예비 급탄기", "kind": "module", "effect": "패 교환", "value": "+1회", "role": "조합 탐색", "upside": "패 교환 +1회", "downside": "", "text": "교전 시작과 재장전마다 복장의 패 교환 횟수 +1회. 운반용 외투도 1회 교환할 수 있습니다."},
+ 	"opening": {"grade": 1, "name": "선두 격발기", "kind": "module", "effect": "첫 발", "value": "+2 피해", "role": "선두 설계", "upside": "탄창 첫 발 피해 +2", "downside": "", "text": "장전한 탄창의 첫 발 직접 피해 +2. 어떤 탄을 선두에 놓을지 결정합니다."},
++	"third_striker": {"grade":1,"name":"제3 격발기","kind":"module","effect":"세 번째 발","value":"3번째 ×3","role":"주력 탄 타이밍","upside":"탄창의 세 번째 탄 직접 피해 ×3","downside":"","text":"같은 탄창에서 실제로 발사한 세 번째 탄의 직접 피해 ×3. 지원탄도 한 발로 세고 연타는 타격 수와 무관하게 한 발입니다. 빼내기는 세지 않으며 냉각은 순서를 유지하고 탄창 교체 시 초기화합니다. 화상·기폭·전이에는 적용하지 않습니다."},
+ 	"afterburner": {"grade": 1, "name": "후미 점화기", "kind": "module", "effect": "마지막 발", "value": "+3 피해", "role": "후미 결산", "upside": "탄창 마지막 발 피해 +3", "downside": "재장전 +1턴", "text": "탄창 마지막 발 직접 피해 +3. 재장전 비용이 1턴 증가합니다."},
+ 	"field_press": {"grade": 2, "name": "야전 압축기", "kind": "core", "effect": "현장 압축", "value": "+1회", "role": "압축 빌드", "upside": "교전마다 현장 압축 +1회", "downside": "탄창 −2칸", "text": "교전 시작마다 현장 압축 기회 +1. 대신 탄창 슬롯을 2칸 잃습니다."},
+ 	"overbore": {"grade": 2, "name": "과구경 총열", "kind": "core", "effect": "2칸 공격탄", "value": "피해 +3 · 관통 +2", "role": "중량 압축탄", "upside": "2칸 공격탄 피해 +3 · 관통 +2", "downside": "탄창 −1칸", "text": "2칸을 차지하고 기본 피해가 있는 탄의 타격당 피해 +3·관통 +2. 탄창 −1칸. 1칸 탄과 기본 피해 0인 예약탄 등은 강화하지 않습니다."},
+--- before/새-게임-프로젝트/redesign/damage_readout.gd
++++ after/새-게임-프로젝트/redesign/damage_readout.gd
+@@ -12,7 +12,7 @@
+ 	elif kind == "followup": label = "후속 피해"; strong = amount>0
+ 	elif kind == "heat_wave": label = "열압"; strong = amount>0
+ 	elif int(result.get("overdrive_percent",100))>100: label = "강행 ×%.2f" % (int(result.overdrive_percent)/100.0); strong = amount>0
+-	elif int(result.get("part_factor",1))>1: label = "후미 결산 ×%d" % int(result.part_factor); strong = amount>0
++	elif int(result.get("part_factor",1))>1: label = str(result.get("position_label", "후미 결산 ×%d" % int(result.part_factor))); strong = amount>0
+ 	elif int(result.get("engine_percent",100))>100: label = "화력 ×%.2f" % (int(result.engine_percent)/100.0); strong = amount>0
+ 	elif kind == "burn": label = "화상"; color = Color("e99b73")
+ 	elif kind == "arc": label = "전이"; color = Color("9acbd0")
+--- /dev/null
++++ after/새-게임-프로젝트/redesign/focus_ammo_offer.tscn
+@@ -0,0 +1,20 @@
++[gd_scene load_steps=3 format=3]
++
++[ext_resource type="PackedScene" path="res://redesign/ammo_offer.tscn" id="1"]
++[ext_resource type="FontVariation" path="res://redesign/combat_pixel_font.tres" id="2"]
++
++[node name="FocusAmmoOffer" type="VBoxContainer"]
++custom_minimum_size = Vector2(230, 224)
++theme_override_constants/separation = 8
++
++[node name="Offer" parent="." instance=ExtResource("1")]
++layout_mode = 2
++custom_minimum_size = Vector2(230, 196)
++
++[node name="Package" type="Label" parent="."]
++layout_mode = 2
++theme_override_colors/font_color = Color(0.953, 0.812, 0.451, 1)
++theme_override_fonts/font = ExtResource("2")
++theme_override_font_sizes/font_size = 16
++text = "연타탄 2장 + 증폭탄 1장"
++autowrap_mode = 2
+--- /dev/null
++++ after/새-게임-프로젝트/redesign/focus_build.gd
+@@ -0,0 +1,100 @@
++extends RefCounted
++## Run-scoped acquisition and positional payoffs. Old saves opt out.
++const Content = preload("res://redesign/content.gd")
++const VERSION := 1
++const NEW_PART := "third_striker"
++const SUPPORT := {
++	"precise":["charge", "charge_hot", "shatter"],
++	"pierce":["charge", "charge_hot", "cool"],
++	"vent":["charge_heat", "charge", "cool"],
++	"bore":["detonate", "push", "spread"],
++	"arc":["charge", "chase", "cool"],
++	"chase":["charge", "precise_p2", "cool"],
++	"bypass":["charge", "charge_hot", "cool"]
++}
++
++static func enabled(state: Dictionary) -> bool:
++	return int(state.get("focus_build_version", 0)) == VERSION
++
++static func opening_options(state: Dictionary) -> Array:
++	var options: Array = ["precise_p2", "pierce_p2", "vent"]
++	var parts := Content.equipped_parts(state)
++	var preferred := "vent" if parts.has("thermal_drive") else "pierce_p2" if parts.has("siege_drive") else "precise_p2"
++	options.erase(preferred)
++	options.push_front(preferred)
++	return options
++
++static func package(id: String) -> Array:
++	return [id, id, "charge_heat" if Content.source_id(id) == "vent" else "charge"]
++
++static func package_text(id: String) -> String:
++	return "%s 2장 + %s 1장" % [Content.AMMO[id].name, Content.AMMO[package(id)[2]].name]
++
++static func replace_opening(deck: Array, id: String) -> Array:
++	var result := deck.duplicate()
++	for incoming in package(id):
++		var weakest := -1
++		for i in range(result.size()):
++			if Content.source_id(str(result[i])) != "basic" or Content.is_compressed(str(result[i])): continue
++			if weakest < 0 or int(Content.AMMO[result[i]].dmg) < int(Content.AMMO[result[weakest]].dmg): weakest = i
++		if weakest < 0: return []
++		result[weakest] = incoming
++	return result
++
++static func main_round(state: Dictionary) -> String:
++	var counts: Dictionary = {}
++	var best: Dictionary = {}
++	for value in state.get("deck", []):
++		var id := str(value)
++		var family := Content.source_id(id)
++		if family == "basic" or not Content.is_attack(id) or Content.is_temporary(id): continue
++		counts[family] = int(counts.get(family, 0)) + 1
++		if not best.has(family) or potency(id) > potency(str(best[family])): best[family] = id
++	var families: Array = counts.keys()
++	var preferred: Array = []
++	var parts := Content.equipped_parts(state)
++	if parts.has("volley_drive"): preferred = ["precise"]
++	elif parts.has("siege_drive"): preferred = ["pierce", "vent", "chase"]
++	elif parts.has("thermal_drive"): preferred = ["vent", "bore"]
++	families.sort_custom(func(a, b):
++		if counts[a] != counts[b]: return counts[a] > counts[b]
++		if preferred.has(a) != preferred.has(b): return preferred.has(a)
++		return str(a) < str(b))
++	return str(best[families[0]]) if not families.is_empty() else ""
++
++static func potency(id: String) -> int:
++	var spec: Dictionary = Content.AMMO[id]
++	return int(spec.dmg) * int(spec.get("hits", 2 if spec.effect == "double" else 1)) + int(spec.get("value", 0)) + int(spec.pen)
++
++## A better physical copy is offered, never a silent upgrade to every owned card.
++## Existing profile/compression rules carry their normal heat and slot costs.
++static func upgrade(id: String) -> String:
++	var tuned := Content.Variants.tuned(id, Content.AMMO, "power")
++	if not tuned.is_empty(): return tuned
++	if Content.COMPRESSIONS.has(id): return Content.compressed_id(id)
++	return ""
++
++static func rewards(state: Dictionary, node: Dictionary, fallback: Array) -> Array:
++	var main := main_round(state)
++	if main.is_empty(): return fallback
++	var family := Content.source_id(main)
++	var supports: Array = SUPPORT.get(family, ["charge", "charge_hot", "cool"])
++	var offset := absi(int(node.get("id", 0)) + int(state.get("seed", 0))) % supports.size()
++	var result: Array = [main, supports[offset]]
++	var improved := upgrade(main)
++	if not improved.is_empty() and (int(node.get("region",0)) > 0 or int(node.get("floor",0)) >= 4):
++		result.append(improved)
++		return result
++	for id in fallback:
++		if not result.has(id): result.append(id); break
++	if result.size() < 3:
++		for id in ["arc", "bore", "pierce_p2", "precise_p2"]:
++			if not result.has(id): result.append(id); break
++	return result
++
++static func offer_label(state: Dictionary, id: String) -> String:
++	var main := main_round(state)
++	if not main.is_empty() and id == upgrade(main): return "주력 강화 · 새 1장"
++	if id == main: return "집중 보충 · 동일 성능 %d장 보유" % state.deck.count(id)
++	if not main.is_empty() and SUPPORT.get(Content.source_id(main), ["charge", "charge_hot", "cool"]).has(id): return "연계 · " + str(Content.AMMO[main].name)
++	return "새 조합" if not state.deck.any(func(owned): return Content.source_id(str(owned)) == Content.source_id(id)) else "다른 선택"
+--- /dev/null
++++ after/새-게임-프로젝트/redesign/focus_build.gd.uid
+@@ -0,0 +1 @@
++uid://dsxootovqgyvi
+--- before/새-게임-프로젝트/redesign/forecast.gd
++++ after/새-게임-프로젝트/redesign/forecast.gd
+@@ -72,6 +72,7 @@
+ 	key += JSON.stringify([state.get("magazine_trial_version",0), state.get("weapon_magazine_version",0), action_rounds])
+ 	key += JSON.stringify([state.get("magazine_build_version",0), state.get("magazine_loaded",[])])
+ 	key += JSON.stringify(state.get("fire_heat_trial",{}))
++	key += JSON.stringify(state.get("focus_build_version",0))
+ 	cache_lock.lock()
+ 	if key == cached_key:
+ 		var cached := cached_result.duplicate(true)
+--- before/새-게임-프로젝트/redesign/magazine_build.gd
++++ after/새-게임-프로젝트/redesign/magazine_build.gd
+@@ -118,6 +118,17 @@
+ 	var items: PackedStringArray = []
+ 	var stack: Array = state.get("magazine", [])
+ 	var parts: Array = Content.equipped_parts(state)
++	var focus := int(state.get("focus_build_version",0)) == 1
++	if focus:
++		var fired := 0
++		for i in range(state.get("history",[]).size()-1,-1,-1):
++			var event: Dictionary = state.history[i]
++			if event.get("action","") == "load": break
++			if event.get("action","") == "fire": fired += event.get("detail",{}).get("results",[]).size()
++		if parts.has("third_striker") and fired <= 2 and stack.size() > 2-fired:
++			var third := str(stack[2-fired])
++			items.append("3번째 %s ×3" % Content.AMMO[third].name if Content.is_attack(third) else "3번째 지원탄 · 강화 없음")
++		if parts.has("opening") and fired == 0 and not stack.is_empty() and Content.is_attack(str(stack[0])): items.append("첫 발 ×2")
+ 	for i in range(stack.size()):
+ 		var id := str(stack[i])
+ 		if str(Content.AMMO.get(id, {}).get("effect", "")) != "boost": continue
+@@ -126,7 +137,7 @@
+ 				items.append("%s→%s" % [Content.AMMO[id].name, Content.AMMO[str(stack[j])].name])
+ 				break
+ 	if parts.has("triad") and special_kinds(state) >= TRIAD_KINDS: items.append("삼중 %d종 +%d" % [special_kinds(state), TRIAD_BONUS])
+-	if parts.has("afterburner") and afterburner_ready(state): items.append("후미 결산 ×2")
++	if parts.has("afterburner") and afterburner_ready(state): items.append("후미: 강화 단타 ×3" if focus else "후미 결산 ×2")
+ 	if parts.has("compression_sink") and stack.any(func(id): return compression_ready(state, str(id))): items.append("압축 발열 −%d" % COMPRESSION_SAVE)
+ 	return items.slice(0, 3)
+ 
+--- before/새-게임-프로젝트/redesign/model.gd
++++ after/새-게임-프로젝트/redesign/model.gd
+@@ -13,6 +13,7 @@
+ const FireHeatTrial = preload("res://redesign/fire_heat_trial.gd")
+ # Deck-building revision for new full-climb runs (2026-11-01). See magazine_build.gd.
+ const MagazineBuild = preload("res://redesign/magazine_build.gd")
++const FocusBuild = preload("res://redesign/focus_build.gd")
+ const VERSION := 15
+ var s: Dictionary = {}
+ # Exact forecast resolves the same rules without presentation snapshots or draws
+@@ -698,13 +699,20 @@
+ 		if not minimal: part_combo.append("처형 +2")
+ 		if not minimal: part_effects.append({"id": "executioner", "label": "피해 +2"})
+ 	if active_parts.has("opening") and bool(part_context.get("first", false)):
+-		part_bonus += 2
+-		if not minimal: part_combo.append("선두 +2")
+-		if not minimal: part_effects.append({"id": "opening", "label": "피해 +2"})
+-	if Content.revised_combat(s) and active_parts.has("afterburner") and attack and int(profile.hits) == 1 and bool(part_context.get("last_attack",false)) and (dmg_buff > 0 or factor > 1 or (MagazineBuild.enabled(s) and MagazineBuild.afterburner_ready(s))):
+-		part_factor = 2
+-		if not minimal: part_combo.append("후미 결산 ×2")
+-		if not minimal: part_effects.append({"id":"afterburner","label":"강화 단타 ×2"})
++		if FocusBuild.enabled(s): part_factor *= 2
++		else: part_bonus += 2
++		var label := "첫 발 ×2" if FocusBuild.enabled(s) else "선두 +2"
++		if not minimal: part_combo.append(label)
++		if not minimal: part_effects.append({"id": "opening", "label": label})
++	if FocusBuild.enabled(s) and active_parts.has("third_striker") and int(part_context.get("fired_count", -1)) == 2:
++		part_factor *= 3
++		if not minimal: part_combo.append("3번째 ×3")
++		if not minimal: part_effects.append({"id":"third_striker", "label":"3번째 ×3"})
++	if Content.revised_combat(s) and active_parts.has("afterburner") and attack and int(profile.hits) == 1 and bool(part_context.get("last_attack",false)) and (dmg_buff > 0 or factor > 1 or (not FocusBuild.enabled(s) and MagazineBuild.enabled(s) and MagazineBuild.afterburner_ready(s))):
++		var ending_factor := 3 if FocusBuild.enabled(s) else 2
++		part_factor *= ending_factor
++		if not minimal: part_combo.append("후미 결산 ×%d" % ending_factor)
++		if not minimal: part_effects.append({"id":"afterburner","label":"강화 단타 ×%d" % ending_factor})
+ 	elif not Content.revised_combat(s) and active_parts.has("afterburner") and bool(part_context.get("last", false)):
+ 		part_bonus += 3
+ 		if not minimal: part_combo.append("후미 +3")
+@@ -720,6 +728,7 @@
+ 		if not minimal: part_combo.append("삼중 +5")
+ 		if not minimal: part_effects.append({"id": "triad", "label": "피해 +5"})
+ 	if not attack:
++		part_factor = 1
+ 		weakness_bonus = 0
+ 		part_bonus = 0
+ 		ordinary_bonus = 0
+@@ -834,7 +843,7 @@
+ 		var remaining_hits := requested_hits-hits if active_parts.has("volley_drive") else 0
+ 		# Target-dependent bonuses are recomputed; the prepared buff is paid only once.
+ 		var base_subtotal := subtotal-weakness_bonus-(2 if active_parts.has("igniter") and burn_before>0 else 0)-(2 if active_parts.has("executioner") and hp_before<=5 else 0)
+-		var relay := _engine_relay(id,remaining_hits,remainder,base_subtotal,factor,engine_percent,pen,active_parts,gate_percent,overdrive_percent)
++		var relay := _engine_relay(id,remaining_hits,remainder,base_subtotal,factor * (part_factor if FocusBuild.enabled(s) else 1),engine_percent,pen,active_parts,gate_percent,overdrive_percent)
+ 		secondary = relay.events
+ 		relay_hits = int(relay.hits)
+ 		relay_damage = int(relay.damage)
+@@ -928,6 +937,9 @@
+ 	if e.hp == 0: description += " · 요격" if Ranged.is_projectile(index) else " · 처치"
+ 	var result := {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "burn_tick": int(profile.burn_tick), "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description, "focus_before": focus_before, "focus_after": int(e.get("focus_hits", 0)), "focus_damage": focus_damage, "focus_triggers": focus_triggers, "barrier_before": barrier_before, "barrier": int(e.get("barrier", 0)), "blocked_hits": blocked_hits, "barrier_removed": barrier_removed, "boost_granted": int(profile.effect) if spec.effect == "boost" else 0}
+ 	result.engine_id = engine_id
++	if FocusBuild.enabled(s):
++		result.position_label = " · ".join(Array(part_combo).filter(func(label): return "×" in label))
++		result.magazine_ordinal = int(part_context.get("fired_count", 0)) + 1
+ 	if FireHeatTrial.enabled(s):result.math.heat_percent=heat_percent
+ 	result.gate_charge = gate_charge
+ 	result.gate_charge_after = int(s.get("gate_charge",0))
+@@ -1296,6 +1308,8 @@
+ 	if int(parsed.get("weapon_magazine_version", 0)) > 0 and (not MagazineTrial.enabled(parsed) or int(parsed.get("weapon_version", 0)) != 1): return false
+ 	if parsed.has("magazine_ejected") and (not MagazineTrial.weapons_enabled(parsed) or not _whole(parsed.magazine_ejected,0,MagazineTrial.EJECT_LIMIT)): return false
+ 	if not _whole(parsed.get("magazine_build_version", 0), 0, MagazineBuild.VERSION): return false
++	if not _whole(parsed.get("focus_build_version", 0), 0, FocusBuild.VERSION): return false
++	if FocusBuild.enabled(parsed) and int(parsed.get("fire_control_version",0)) != FireHeatTrial.CAMPAIGN_VERSION: return false
+ 	if MagazineBuild.enabled(parsed) and not MagazineTrial.weapons_enabled(parsed): return false
+ 	if parsed.has("magazine_loaded"):
+ 		if not MagazineBuild.enabled(parsed) or not parsed.magazine_loaded is Array: return false
+--- before/새-게임-프로젝트/redesign/part_card_view.gd
++++ after/새-게임-프로젝트/redesign/part_card_view.gd
+@@ -191,6 +191,9 @@
+ 			for x in [-6.0, 2.0, 10.0]: draw_rect(Rect2(x - 2, -7, 4, 14), color, true)
+ 		"opening":
+ 			draw_colored_polygon(PackedVector2Array([Vector2(-10, -8), Vector2(11, 0), Vector2(-10, 8)]), color)
++		"third_striker":
++			for x in [-9, -2, 5]: draw_rect(Rect2(x, -7, 5, 14), color if x == 5 else Color(color, 0.35))
++			draw_rect(Rect2(4, -10, 7, 20), color, false, 1)
+ 		"afterburner":
+ 			draw_line(Vector2(-11, 0), Vector2(7, 0), color, 3.0)
+ 			draw_colored_polygon(PackedVector2Array([Vector2(5, -6), Vector2(12, 0), Vector2(5, 6)]), color)
+--- before/새-게임-프로젝트/redesign/screen.gd
++++ after/새-게임-프로젝트/redesign/screen.gd
+@@ -37,6 +37,7 @@
+ var page := "menu"
+ var save_enabled := true
+ var debug_session := false
++var focus_reward_scale: Dictionary = {}
+ var body: VBoxContainer
+ var seed_input: LineEdit
+ var calculation_label: Label
+@@ -257,6 +258,29 @@
+ 	if not busy and page == "run" and model.s.phase in ["plan", "ready"] and (campaign == null or campaign.s.phase == "combat"):
+ 		redraw()
+ 
++func _sync_focus_reward_scale() -> void:
++	var window := get_window()
++	var native_reward: bool = page == "run" and campaign != null and campaign.s.get("phase","") == "reward" and Model.FocusBuild.enabled(campaign.s) and (window.size.x < 1120 or window.size.y < 600)
++	if native_reward and focus_reward_scale.is_empty():
++		focus_reward_scale = {"mode":window.content_scale_mode,"factor":window.content_scale_factor,"size":window.content_scale_size}
++		window.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
++		window.content_scale_factor = 1.0
++		window.content_scale_size = Vector2i.ZERO
++	elif not native_reward:
++		_restore_focus_reward_scale()
++
++func _restore_focus_reward_scale() -> void:
++	if focus_reward_scale.is_empty(): return
++	var window := get_window()
++	var previous := focus_reward_scale
++	focus_reward_scale = {}
++	window.content_scale_mode = previous.mode
++	window.content_scale_factor = previous.factor
++	window.content_scale_size = previous.size
++
++func _exit_tree() -> void:
++	_restore_focus_reward_scale()
++
+ func redraw() -> void:
+ 	var new_combat: bool = page == "run" and campaign != null and campaign.magazine_enabled() and campaign.s.phase == "combat"
+ 	if new_combat and is_instance_valid(campaign_hud) and campaign_hud.model == model: return
+@@ -267,6 +291,7 @@
+ 		preferences.load_preferences()
+ 		feedback.configure(preferences.data)
+ 		presentation_speed = preferences.motion_scale()
++	_sync_focus_reward_scale()
+ 	main_scroll.visible = not new_combat
+ 	if new_combat:
+ 		forecast_worker.cancel_request()
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_climb.gd
+@@ -0,0 +1,47 @@
++extends "res://tests/fire_control_climb.gd"
++func replacement(c, id: String) -> String:
++	if c.first_ammo_reward() and c.model.FocusBuild.enabled(c.s): return ""
++	return super.replacement(c,id)
++func choose_ammo(c, options: Array) -> String:
++	if options.is_empty(): return ""
++	if c.first_ammo_reward(): return str(options[0])
++	var main: String = c.model.FocusBuild.main_round(c.model.s)
++	if not main.is_empty():
++		var improved: String = c.model.FocusBuild.upgrade(main)
++		if options.has(improved): return improved
++	if not main.is_empty() and options.has(main):
++		var count: int = c.model.s.deck.filter(func(id):return Ammo.source_id(str(id)) == Ammo.source_id(main)).size()
++		if count < 7: return main
++	for id in options:
++		var source := Ammo.source_id(str(id))
++		var count: int = c.model.s.deck.filter(func(held):return Ammo.source_id(str(held)) == source).size()
++		if source in ["charge","charge_hot","charge_heat"] and count < 2: return str(id)
++		if source in ["cool","shatter","chase"] and count < 1: return str(id)
++	return ""
++func choose_parts(c) -> bool:
++	var chosen: Array = []
++	var support: Array = ["duplex","sequencer","reclaimer","chain_sink","radiator"] if preferred_core == "volley_drive" else ["afterburner","sequencer","lens","chain_sink","radiator","reclaimer"]
++	for id in [preferred_core,"third_striker"] + support + ["opening","compression_sink","lens","supply","breaker","ember_core","coil"]:
++		if c.s.parts.has(id) and Ammo.valid_part_set(run_gun,chosen+[id]): chosen.append(id)
++		if chosen.size() == 5: break
++	if chosen == c.s.equipped_parts: return true
++	if not c.s.equipped_parts.is_empty() and not command(c,{"action":"equip","id":"none"}): return false
++	for id in chosen:
++		if not command(c,{"action":"equip","id":id}): return false
++	return true
++func _run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\","/").contains("/qa_runtime/focus_build_20261103/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR")
++	solver = preload("res://tests/fire_control_solver.gd").new()
++	route_policy = "safe"; acquisition_policy = "refit"
++	for gun in OS.get_environment("QA_GUNS").split(","):
++		run_gun = gun; run_seed = int(OS.get_environment("QA_SEED")); commands = []
++		preferred_core = {"single":"siege_drive","burst":"volley_drive","scatter":"volley_drive","heavy":"thermal_drive","amplifier":"siege_drive"}[gun]
++		var c = Campaign.new(); c.start(gun,run_seed,0,"balanced",3,"carrier",true)
++		check(c.model.FocusBuild.enabled(c.s),"new campaign enables focus acquisition and parts")
++		roundtrip(c)
++		var won: bool = await play_run(c)
++		endpoints.append({"gun":gun,"seed":run_seed,"won":won,"region":int(c.s.region)+1,"phase":c.s.phase,"deck":c.model.s.deck,"parts":c.s.equipped_parts,"commands":commands.duplicate(true)})
++		check(won,"focus full climb "+gun); write_report()
++	print("FOCUS BUILD COMPLETE checks=%d failures=%d" % [checks,failures.size()])
++	quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_climb.gd.uid
+@@ -0,0 +1 @@
++uid://iw1ukv5hb223
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_replay.gd
+@@ -0,0 +1,21 @@
++extends "res://tests/focus_build_climb.gd"
++func _run() -> void:
++	output = OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/focus_build_20261103/"):quit(2);return
++	for label in ["climb_growth_primary","climb_growth_alternate"]:
++		var path: String = ProjectSettings.globalize_path("res://../qa_runtime/focus_build_20261103/")+label+"/balance.json"
++		var report: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
++		for endpoint in report.endpoints:
++			if not check(endpoint.won,"source is a completed earned route"):continue
++			var c = Campaign.new();c.start(endpoint.gun,int(endpoint.seed),0,"balanced",3,"carrier",true)
++			commands = []
++			for step in endpoint.commands:
++				var expected_turns: int = int(step.get("turns",-1))
++				if not command(c,step.duplicate(true)):break
++				if expected_turns >= 0:check(c.model.s.turns == expected_turns,"replay preserves actual action timing")
++			check(c.s.phase == "won" and c.profile.wins == 1,"replay reaches ending and awards once")
++			check(c.model.s.deck == endpoint.deck,"all selected copies and upgrades replay exactly")
++			endpoints.append({"gun":endpoint.gun,"seed":endpoint.seed,"source":label,"won":c.s.phase == "won","turns":c.model.s.turns})
++			print("REPLAY ",endpoint.gun," ",c.s.phase)
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"runs":endpoints},"  "))
++	print("FOCUS BUILD COMPLETE checks=%d failures=%d" % [checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_replay.gd.uid
+@@ -0,0 +1 @@
++uid://dj3666lgjes11
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_rules.gd
+@@ -0,0 +1,130 @@
++extends "res://tests/fire_heat_rules.gd"
++const Campaign = preload("res://redesign/campaign.gd")
++const Focus = preload("res://redesign/focus_build.gd")
++
++# Controlled combat contracts, deliberately separate from earned-climb evidence.
++func fixture(rounds: Array, parts: Array, gun: String = "single", modern: bool = true):
++	var c = Campaign.new(); c.start(gun,17,0,"balanced",3,"carrier",true)
++	var m = c.model
++	if not modern: m.s.erase("focus_build_version")
++	m.s.equipped_parts = parts; m.s.part = "none"
++	m.s.deck = rounds.duplicate()
++	while m.s.deck.size() < 8: m.s.deck.append("basic_p2")
++	m.begin_encounter()
++	m.s.magazine = rounds.duplicate(); m.s.magazine_loaded = rounds.duplicate()
++	m.s.hand = []; m.s.draw = m.s.deck.duplicate()
++	for id in rounds: m.s.draw.erase(id)
++	m.s.phase = "ready"; m.s.magazine_ejected = 0
++	m.s.enemies = [m.s.enemies[0]]
++	m.s.enemies[0].merge({"hp":10000,"max_hp":10000,"distance":1000,"def":0,"speed":1},true)
++	m.s.encounter_total = 1; m.s.deployed = 1
++	m._record("load", {"load_order":rounds.duplicate(),"whole_magazine":true})
++	m.s.fire_heat_trial.rounds = 1
++	restore_check(m)
++	return m
++
++func shot(m) -> Dictionary:
++	return verify_fire(m).results[0]
++
++func run() -> void:
++	output = OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/focus_build_20261103/"): quit(2); return
++	for gun in ["single","burst","scatter","heavy","amplifier"]:
++		var m = fixture(["basic_p2","charge","precise_p2","basic_p2"],["third_striker"],gun)
++		shot(m); shot(m)
++		check(m.cool_magazine(),"cool before the third shot")
++		var restored = Model.new();check(restored.restore_state(canonical(m.s)),"third-shot timing survives JSON resume")
++		var r := shot(restored)
++		check(int(r.get("part_factor",1)) == 3 and int(r.magazine_ordinal) == 3,"third actual round multiplies, after partial inputs/cooling/resume "+gun)
++		check(int(r.math.raw) == int(r.math.subtotal)*3,"third shot exact raw formula")
++		check(r.part_effects.any(func(p):return p.id == "third_striker"),"actual positional activation is visible")
++		check(r.hits == 2,"multi-hit round is one ordinal")
++		var fourth := shot(restored)
++		check(fourth.part_factor == 1 and fourth.magazine_ordinal == 4,"fourth round never repeats third proc")
++		check(restored.reload_magazine(),"real replacement reloads")
++		var next := shot(restored)
++		check(next.magazine_ordinal == 1 and next.part_factor == 1,"reload starts a fresh ordinal")
++	var support = fixture(["basic_p2","basic_p2","charge","precise_p2"],["third_striker"])
++	shot(support);shot(support)
++	var grant := shot(support)
++	check(grant.damage == 0 and grant.part_factor == 1 and grant.magazine_ordinal == 3,"support consumes third position without false damage")
++	check(shot(support).part_factor == 1,"third support cannot bank multiplier for later")
++	var aligned = fixture(["basic_p2","charge","basic_p2","precise_p2"],["third_striker"])
++	var unaligned = fixture(["basic_p2","charge","basic_p2","precise_p2"],["third_striker"])
++	check(aligned.eject_magazine_rounds([2]),"legal middle ejection aligns the payoff")
++	shot(aligned);shot(aligned);var payoff := shot(aligned)
++	shot(unaligned);shot(unaligned);shot(unaligned)
++	if unaligned.s.phase == "ready":unaligned.cool_magazine()
++	var plain := shot(unaligned)
++	check(payoff.damage > plain.damage and payoff.part_factor == 3 and plain.part_factor == 1,"same deck: ejection saves boost for the multiplied main round")
++	records.append({"case":"align_main","aligned":payoff,"unchanged":plain})
++	var stacked = fixture(["basic_p2","charge","pierce_p2"],["third_striker","afterburner","siege_drive"])
++	shot(stacked);shot(stacked);var hit := shot(stacked)
++	check(hit.part_factor == 9 and hit.engine_percent == 200,"third and prepared final single stack with core")
++	check(hit.math.raw == hit.math.subtotal*18,"addition before positional and core multiplication")
++	records.append({"case":"stacked_finish","shot":hit})
++	var fake = fixture(["charge","basic_p2","pierce_p2"],["afterburner"])
++	shot(fake);shot(fake)
++	check(shot(fake).part_factor == 1,"spent support in the magazine does not grant final multiplier")
++	var old = fixture(["charge","basic_p2","pierce_p2"],["afterburner"],"single",false)
++	shot(old);shot(old)
++	check(shot(old).part_factor == 2,"historical magazine retains old afterburner condition")
++	for modern in [true,false]:
++		var first = fixture(["precise_p2","basic_p2"],["opening"],"single",modern)
++		var r := shot(first)
++		check(r.part_factor == (2 if modern else 1),"opening rule is versioned")
++	var old_scatter = fixture(["pierce_p3","basic_p2"],["opening"],"scatter",false)
++	var old_preview := Forecast.analyze(old_scatter.s,true)
++	old_scatter.s.focus_build_version = 1
++	var new_preview := Forecast.analyze(old_scatter.s,true)
++	check(new_preview.shots[0].damage_max != old_preview.shots[0].damage_max,"scatter cache separates rule versions")
++	var c = Campaign.new();c.start("single",17,0,"balanced",3,"carrier",true)
++	var before: Dictionary = canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})
++	for invalid in [0.5,2,"1"]:
++		var bad := before.duplicate(true);bad.campaign.focus_build_version = invalid
++		check(not c.restore_state(bad),"malformed focus version rejected")
++	var mismatch := before.duplicate(true);mismatch.combat.erase("focus_build_version")
++	check(not c.restore_state(mismatch),"campaign/model version mismatch rejected")
++	check(canonical(c.s) == before.campaign,"invalid restore is atomic")
++	for core in ["volley_drive","siege_drive","thermal_drive"]:
++		c.s.equipped_parts = [core];c.model.s.equipped_parts = [core]
++		var id: String = Focus.opening_options(c.model.s)[0]
++		var deck := Focus.replace_opening(c.model.s.deck,id)
++		check(deck.size() == c.model.s.deck.size() and deck.count(id) == 2,"starter package replaces basics without inflation")
++		var state: Dictionary = c.model.s.duplicate(true);state.deck = deck
++		check(Focus.main_round(state) == id,"chosen core's main round remains the focus")
++		for n in range(20):
++			var offer := Focus.rewards(state,{"id":n},["arc","bore"])
++			check(offer.size() == 3 and offer[0] == id,"rewards repeat exact profile alongside support/discovery")
++	check(not Campaign.Content.eligible_parts("single",3).has("third_striker"),"old shops exclude new module")
++	check(Campaign.Content.eligible_parts("single",3,1).has("third_striker"),"new shops include new module")
++	for id in ["precise_p2", "pierce_p2", "vent"]:
++		var state: Dictionary = c.model.s.duplicate(true); state.deck = Focus.replace_opening(c.model.s.deck,id)
++		var before_deck: Array = state.deck.duplicate()
++		var upgrade := Focus.upgrade(id)
++		var offers := Focus.rewards(state,{"id":402,"floor":4,"region":0},["arc","bore"])
++		check(offers[0] == id and offers[2] == upgrade,"same-profile copy and upgraded copy are separate choices")
++		check(state.deck == before_deck and Content.AMMO.has(upgrade),"offering improvement never mutates owned cards")
++		check(Content.is_compressed(upgrade) or Content.AMMO[upgrade].dmg > Content.AMMO[id].dmg,"upgrade uses real power/compression profile")
++	var relay = fixture(["basic_p2","charge","precise_p2"],["third_striker","volley_drive"])
++	shot(relay);shot(relay)
++	relay.s.enemies[0].hp = 1
++	var second: Dictionary = relay.s.enemies[0].duplicate(true);second.hp=1000;second.max_hp=1000;second.distance+=10
++	relay.s.enemies.append(second);relay.s.encounter_total=2;relay.s.deployed=2
++	var relayed := shot(relay)
++	check(relayed.relay_hits == 1 and relayed.relay_damage == relayed.math.raw,"unused multi-hit retains positional multiplier on next enemy")
++	records.append({"case":"multiplied_relay","shot":relayed})
++	var scattered = fixture(["basic_p2","charge","precise_p2"],["third_striker"],"scatter")
++	for armor in [2,4]:
++		var target: Dictionary = scattered.s.enemies[0].duplicate(true);target.def=armor;target.distance+=armor
++		scattered.s.enemies.append(target)
++	scattered.s.encounter_total=3;scattered.s.deployed=3
++	shot(scattered);shot(scattered);shot(scattered)
++	var package_save := ProjectSettings.globalize_path("res://../qa_runtime/focus_build_20261103/ui_final/after_package.json")
++	if FileAccess.file_exists(package_save):
++		var resumed = Campaign.new()
++		check(resumed.restore_state(JSON.parse_string(FileAccess.get_file_as_string(package_save))),"fresh process restores actual UI starter choice")
++		check(Focus.enabled(resumed.model.s) and resumed.model.s.deck.count("pierce_p2") == 2,"UI package and new rules persist together")
++		check(resumed.enter(int(resumed.choices()[0].id)),"fresh-process package continues to next real room")
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"records":records},"  "))
++	print("FOCUS BUILD COMPLETE checks=%d failures=%d" % [checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_rules.gd.uid
+@@ -0,0 +1 @@
++uid://cvqxua7e8vpcm
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_ui.gd
+@@ -0,0 +1,91 @@
++extends "res://tests/fire_control_ui.gd"
++const Focus = preload("res://redesign/focus_build.gd")
++func run() -> void:
++	output = OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/focus_build_20261103/"): quit(2); return
++	Input.emulate_mouse_from_touch = true
++	var base_mode: int = root.content_scale_mode
++	var base_size: Vector2i = root.content_scale_size
++	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
++	host = load("res://redesign/main.tscn").instantiate();root.add_child(host);await settle()
++	host.preparation_seed = "731042";host._open_preparation();await settle();await tap("start_single")
++	check(Focus.enabled(host.campaign.s),"real new-run button enables focus rules")
++	host._campaign_action("departure_skip");await settle();host._campaign_action("enter",101);await settle()
++	host.campaign_hud.hud.feedback.save_setting("motion","fast")
++	var solver = preload("res://tests/fire_control_solver.gd").new()
++	var path: Array = solver.solve(host.model,4,18)
++	check(not path.is_empty(),"real starting battle has a legal route")
++	for step in path:
++		if step.action == "fire":host.campaign_hud.select_budget(int(step.get("rounds",0)) if int(step.get("rounds",0)) > 0 else host.campaign_hud.maximum_budget())
++		if step.action == "eject":
++			for i in step.indices: await tap("Select%d" % int(i))
++			await tap("EjectToggle")
++		else: await tap({"fire":"Fire","cool":"Cool","reload":"Reload","emergency":"Reload"}[step.action])
++	check(host.campaign.engine_reward(),"actual combat reaches core reward")
++	await tap("city_reward_siege_drive")
++	check(host.campaign.first_ammo_reward(),"core selection exposes starter package")
++	var choice_state: Dictionary = canonical({"campaign":host.campaign.s,"combat":host.model.s,"profile":host.campaign.profile})
++	for size in [Vector2i(740,360),Vector2i(844,390),Vector2i(1280,800)]:
++		root.size = size;host.redraw();await settle()
++		var card: Control = host.find_child("city_reward_pierce_p2",true,false)
++		check(card != null and card.is_visible_in_tree(),"package choice exists at each viewport")
++		check(card.get_node("CardInfo").count == 2,"package face discloses two main rounds")
++		if size.x < 1120:
++			check(root.content_scale_mode == Window.CONTENT_SCALE_MODE_DISABLED,"small reward uses native readable pixels")
++			check(card.get_global_transform_with_canvas().get_scale().x >= 0.99,"new reward cards are not shrunk with full-screen viewport")
++		await capture("package_%dx%d" % [size.x,size.y])
++		if size.x < 1120:
++			host.main_scroll.ensure_control_visible(card.get_parent());await settle()
++			await capture("package_cards_%dx%d" % [size.x,size.y])
++	root.size = Vector2i(844,390);host.redraw();await settle()
++	var initial_size: int = host.model.s.deck.size()
++	await tap("city_reward_pierce_p2")
++	check(host.campaign.s.phase == "map" and host.model.s.deck.count("pierce_p2") == 2 and host.model.s.deck.count("charge") == 1,"one touch grants exact package")
++	check(host.model.s.deck.size() == initial_size,"starter package preserves total ammo")
++	check(root.content_scale_mode == base_mode and root.content_scale_size == base_size,"reward exit restores map scaling")
++	var saved = Campaign.new();check(saved.restore(),"package choice is saved automatically")
++	check(canonical(saved.model.s) == canonical(host.model.s),"package save restores exact deck and RNG")
++	FileAccess.open(output.path_join("after_package.json"),FileAccess.WRITE).store_string(JSON.stringify({"campaign":saved.s,"combat":saved.model.s,"profile":saved.profile},"  "))
++	var initial = Campaign.new();check(initial.restore_state(choice_state),"package choice checkpoint restores")
++	check(initial.reward("vent") and initial.model.s.deck.count("vent") == 2 and initial.model.s.deck.has("charge_heat"),"alternate starter uses matching support")
++	root.size = Vector2i(740,360)
++	var last_choice = Campaign.new();check(last_choice.restore_state(choice_state),"third package available for touch test")
++	await mount(last_choice);await tap("city_reward_vent")
++	check(last_choice.s.phase == "map" and last_choice.model.s.deck.count("vent") == 2,"small-screen scroll reaches and selects third package")
++	root.size = Vector2i(844,390)
++	# Earned post-shop state, generated by the real whole-climb runner.
++	var report_path := ProjectSettings.globalize_path("res://../qa_runtime/focus_build_20261103/climb_primary/balance.json")
++	var report: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(report_path))
++	var chosen: Dictionary = {}
++	for battle in report.battles:
++		if battle.gun == "single" and battle.parts.has("third_striker"):chosen = battle;break
++	check(not chosen.is_empty(),"new positional part was actually acquired in campaign")
++	if not chosen.is_empty():
++		var file := report_path.get_base_dir().path_join("combat_single_731042_r%d_n%d.json" % [int(chosen.region),int(chosen.node)])
++		var c = Campaign.new();check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(file))),"earned equipped campaign restores")
++		await mount(c);hud_bounds();await capture("earned_parts_844x390")
++		await tap("Parts");await capture("parts_detail_844x390");await tap("CloseDetail")
++		# A clear controlled illustration shares the live HUD and real resolver.
++		# It is marked separately from acquired state and never saved as user progress.
++		c.model.s.deck = ["basic_p2","charge","basic_p2","pierce_p2","basic_p2","basic_p2","basic_p2","basic_p2"]
++		c.model.s.equipped_parts = ["siege_drive","third_striker"]
++		c.s.equipped_parts = c.model.s.equipped_parts.duplicate();c.s.parts = c.s.equipped_parts.duplicate()
++		c.model.begin_encounter();c.model.s.magazine = ["basic_p2","charge","basic_p2","pierce_p2"]
++		c.model.s.magazine_loaded = c.model.s.magazine.duplicate();c.model.s.hand = [];c.model.s.draw = ["basic_p2","basic_p2","basic_p2","basic_p2"]
++		c.model.s.phase = "ready";c.model.s.magazine_ejected = 0
++		c.model.s.enemies[0].hp = 400;c.model.s.enemies[0].max_hp = 400;c.model.s.enemies[0].distance = 80
++		c.model._record("load",{"load_order":c.model.s.magazine.duplicate(),"whole_magazine":true})
++		await mount(c);await tap("Select2");await tap("EjectToggle")
++		check(c.model.s.magazine == ["basic_p2","charge","pierce_p2"],"live ejection aligns the main round as third")
++		check(host.campaign_hud.combo_label.text.contains("3번째 철갑탄 ×3"),"HUD explains the aligned payoff")
++		await capture("aligned_844x390")
++		await drag_one();await tap("Fire");await tap("Fire")
++		check(c.model._recent_part_rounds().size() == 2,"two partial fire inputs retain ordinal")
++		await capture("third_ready_844x390");await tap("Fire")
++		var result: Dictionary = c.model.s.history.back().detail.results[0]
++		check(result.part_factor == 3 and result.magazine_ordinal == 3,"live third shot uses actual positional multiplier")
++		check(preload("res://redesign/damage_readout.gd").entry(result).label.contains("3번째"),"resolved damage identifies positional cause")
++		FileAccess.open(output.path_join("payoff.json"),FileAccess.WRITE).store_string(JSON.stringify(result,"  "))
++	if is_instance_valid(host):host.free();await settle()
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++	print("FOCUS BUILD COMPLETE checks=%d failures=%d" % [checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/focus_build_ui.gd.uid
+@@ -0,0 +1 @@
++uid://dl36onrxwhome

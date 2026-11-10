@@ -1,0 +1,36 @@
+--- before/새-게임-프로젝트/redesign/campaign_hud/line_readout.gd
++++ 새-게임-프로젝트/redesign/campaign_hud/line_readout.gd
+@@ -53,21 +53,12 @@
+ 		cells.append({"entry":entry,"x":x,"y":5.0+18.0*row,"width":cell_width})
+ 		x+=cell_width+6.0
+ 	var bar_y:=25.0+18.0*row
+-	var footer: Array=[]
+-	var threat: Dictionary=view.threat_readouts.get(index,{})
+-	if view.inspection_enabled and (not view.compact() or str(threat.get("tone","quiet"))!="quiet"):
+-		var label:=str(threat.get("text",""))
+-		var lost:=int(view.enemies[index].hp)-_line_remaining_hp(index)
+-		var loss: String="−%d%s"%[lost," 처치" if _line_remaining_hp(index)==0 else ""] if lost>0 else ""
+-		if not loss.is_empty():
+-			if view.FONT.get_string_size(label+" · "+loss,HORIZONTAL_ALIGNMENT_LEFT,-1,12).x<=width-14:label+=" · "+loss
+-			else:footer.append(label);label=loss
+-		if not label.is_empty():footer.append(label)
++	# Keep HP tags compact; next-action details remain in the enemy inspection.
+ 	var focus:=8.0 if str(view.display_state.get("gun",""))=="burst" else 0.0
+-	var height:=maxf(44.0,bar_y+11.0+16.0*footer.size()+focus)
++	var height:=maxf(44.0,bar_y+11.0+focus)
+ 	if view.inspection_enabled:_idle_heights[index]=height
+ 	else:height=maxf(height,float(_idle_heights.get(index,height)))
+-	return {"hp_x":hp_x,"cells":cells,"bar_y":bar_y,"footer":footer,"focus":focus,"height":height}
++	return {"hp_x":hp_x,"cells":cells,"bar_y":bar_y,"focus":focus,"height":height}
+ 
+ func plaque(index: int)->Rect2:
+ 	_place_cards()
+@@ -202,8 +193,6 @@
+ 	if info.focus>0:
+ 		for pip in range(3):
+ 			canvas.draw_rect(Rect2(p+Vector2(7+pip*6,info.bar_y+8),Vector2(4,4)),LineSkin.GOLD if pip<int(e.get("focus_hits",0)) or view.focus_flash==index else Color("123a40"))
+-	for line in range(info.footer.size()):
+-		_draw_hud_text(p+Vector2(7,info.bar_y+20+info.focus+line*16),info.footer[line],HORIZONTAL_ALIGNMENT_LEFT,rect.size.x-14,12,LineSkin.DANGER if danger else LineSkin.GOLD if info.footer[line].contains("−") else LineSkin.MUTED,canvas)
+ 
+ func _draw_line_hp(canvas: CanvasItem,bar: Rect2,index: int)->void:
+ 	var e: Dictionary=view.enemies[index]

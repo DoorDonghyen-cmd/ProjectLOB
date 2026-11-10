@@ -1,0 +1,89 @@
+{
+  "depth": 26,
+  "gun": "scatter",
+  "note": "Fixed hidden RNG and initial ejection only. Bounded search failure does not prove impossibility. Not human win rate or a UI recommendation.",
+  "order_seed": 17,
+  "role": "boss",
+  "rows": [
+    {
+      "path": [],
+      "removed": [],
+      "selection": [],
+      "turns": 0,
+      "won": false
+    },
+    {
+      "path": [
+        "fire",
+        "fire",
+        "fire",
+        "swap",
+        "fire",
+        "fire",
+        "fire",
+        "swap",
+        "fire",
+        "fire",
+        "fire"
+      ],
+      "removed": [
+        "basic_p1"
+      ],
+      "selection": [
+        0
+      ],
+      "turns": 19,
+      "won": true
+    },
+    {
+      "path": [
+        "fire",
+        "cool",
+        "fire",
+        "cool",
+        "swap",
+        "fire",
+        "cool",
+        "fire",
+        "swap",
+        "fire",
+        "fire"
+      ],
+      "removed": [
+        "basic_p1",
+        "shatter"
+      ],
+      "selection": [
+        0,
+        1
+      ],
+      "turns": 13,
+      "won": true
+    },
+    {
+      "path": [
+        "fire",
+        "cool",
+        "fire",
+        "cool",
+        "swap",
+        "fire",
+        "fire",
+        "fire",
+        "swap",
+        "fire",
+        "fire",
+        "fire"
+      ],
+      "removed": [
+        "shatter"
+      ],
+      "selection": [
+        1
+      ],
+      "turns": 20,
+      "won": true
+    }
+  ],
+  "width": 48
+}

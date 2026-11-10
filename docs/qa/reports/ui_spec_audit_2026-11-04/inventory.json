@@ -1,0 +1,7384 @@
+{
+  "scope": "Selected current runtime surfaces and shared shell; static declarations include hidden nodes and are not final runtime values or a compliance score.",
+  "files": [
+    {
+      "file": "redesign/screen.gd",
+      "sha256": "fb0070bfc560ae70eb2c051afdcea92c8e0950fb320459b21c0d1a1620ab8043",
+      "override_and_sizing_declarations": [
+        {
+          "line": 117,
+          "text": "content_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 120,
+          "text": "content_margin.add_theme_constant_override(\"margin_\" + side, 20)"
+        },
+        {
+          "line": 123,
+          "text": "body.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 125,
+          "text": "body.add_theme_constant_override(\"separation\", 10)"
+        },
+        {
+          "line": 164,
+          "text": "style.content_margin_left = 16"
+        },
+        {
+          "line": 165,
+          "text": "style.content_margin_right = 16"
+        },
+        {
+          "line": 166,
+          "text": "style.content_margin_top = 12"
+        },
+        {
+          "line": 167,
+          "text": "style.content_margin_bottom = 12"
+        },
+        {
+          "line": 178,
+          "text": "style.content_margin_left = 16"
+        },
+        {
+          "line": 179,
+          "text": "style.content_margin_right = 16"
+        },
+        {
+          "line": 180,
+          "text": "style.content_margin_top = 12"
+        },
+        {
+          "line": 181,
+          "text": "style.content_margin_bottom = 12"
+        },
+        {
+          "line": 187,
+          "text": "label.add_theme_font_size_override(\"font_size\", _font_scaled(font_size))"
+        },
+        {
+          "line": 190,
+          "text": "label.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 196,
+          "text": "row.add_theme_constant_override(\"separation\", 14)"
+        },
+        {
+          "line": 203,
+          "text": "panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 206,
+          "text": "column.add_theme_constant_override(\"separation\", 8)"
+        },
+        {
+          "line": 215,
+          "text": "button.add_theme_font_size_override(\"font_size\", _font_scaled(20))"
+        },
+        {
+          "line": 216,
+          "text": "button.custom_minimum_size.y = 52"
+        },
+        {
+          "line": 217,
+          "text": "button.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 249,
+          "text": "column.get_parent().custom_minimum_size.y = 54"
+        },
+        {
+          "line": 250,
+          "text": "column.add_theme_constant_override(\"separation\", 0)"
+        },
+        {
+          "line": 342,
+          "text": "content_margin.custom_minimum_size.y = 0"
+        },
+        {
+          "line": 346,
+          "text": "content_margin.add_theme_constant_override(\"margin_\" + side, edge_margin + ceili(edges[side]))"
+        },
+        {
+          "line": 347,
+          "text": "body.add_theme_constant_override(\"separation\", 6 if compact_combat else 10)"
+        },
+        {
+          "line": 374,
+          "text": "status_panel.custom_minimum_size.y = 56 if compact else 64"
+        },
+        {
+          "line": 376,
+          "text": "status_style.content_margin_left = 12"
+        },
+        {
+          "line": 377,
+          "text": "status_style.content_margin_right = 10"
+        },
+        {
+          "line": 378,
+          "text": "status_style.content_margin_top = 6"
+        },
+        {
+          "line": 379,
+          "text": "status_style.content_margin_bottom = 6"
+        },
+        {
+          "line": 385,
+          "text": "row.add_theme_constant_override(\"separation\", 8 if compact else 12)"
+        },
+        {
+          "line": 390,
+          "text": "location.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 391,
+          "text": "location.custom_minimum_size.x = 156 if compact else 210"
+        },
+        {
+          "line": 395,
+          "text": "identity_button.custom_minimum_size = Vector2(96, 40)"
+        },
+        {
+          "line": 397,
+          "text": "identity_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 398,
+          "text": "identity_button.add_theme_font_size_override(\"font_size\", _font_scaled(18))"
+        },
+        {
+          "line": 404,
+          "text": "header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 409,
+          "text": "parts_row.add_theme_constant_override(\"separation\", 3)"
+        },
+        {
+          "line": 413,
+          "text": "button.custom_minimum_size = Vector2(48, 44)"
+        },
+        {
+          "line": 414,
+          "text": "button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 417,
+          "text": "style.set_content_margin_all(0)"
+        },
+        {
+          "line": 428,
+          "text": "button.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 429,
+          "text": "button.custom_minimum_size = Vector2(58 if compact else 64, 40)"
+        },
+        {
+          "line": 430,
+          "text": "button.add_theme_font_size_override(\"font_size\", _font_scaled(18 if compact else 19))"
+        },
+        {
+          "line": 436,
+          "text": "button_style.content_margin_left = 4"
+        },
+        {
+          "line": 437,
+          "text": "button_style.content_margin_right = 4"
+        },
+        {
+          "line": 438,
+          "text": "button_style.content_margin_top = 3"
+        },
+        {
+          "line": 439,
+          "text": "button_style.content_margin_bottom = 3"
+        },
+        {
+          "line": 444,
+          "text": "skip_host.custom_minimum_size = Vector2(76, 40)"
+        },
+        {
+          "line": 448,
+          "text": "skip.custom_minimum_size = Vector2(76, 36)"
+        },
+        {
+          "line": 449,
+          "text": "skip.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 450,
+          "text": "skip.add_theme_font_size_override(\"font_size\", _font_scaled(16))"
+        },
+        {
+          "line": 470,
+          "text": "title.custom_minimum_size = Vector2(0,ReadableUI.available(self).size.y)"
+        },
+        {
+          "line": 494,
+          "text": "equipment.custom_minimum_size = Vector2(0, maxf(size.y, 620.0))"
+        },
+        {
+          "line": 664,
+          "text": "layout.add_theme_constant_override(\"separation\", 2)"
+        },
+        {
+          "line": 671,
+          "text": "tactical_grid.add_theme_constant_override(\"h_separation\", 8 if compact else 14)"
+        },
+        {
+          "line": 672,
+          "text": "tactical_grid.add_theme_constant_override(\"v_separation\", 0)"
+        },
+        {
+          "line": 674,
+          "text": "(layout.get_node(\"TacticalGrid/CandidatesPanel/CandidatesColumn\") as VBoxContainer).add_theme_constant_override(\"separation\", 2)"
+        },
+        {
+          "line": 675,
+          "text": "(layout.get_node(\"TacticalGrid/QueuePanel/QueueColumn\") as VBoxContainer).add_theme_constant_override(\"separation\", 4)"
+        },
+        {
+          "line": 681,
+          "text": "panel_style.content_margin_left = 12"
+        },
+        {
+          "line": 682,
+          "text": "panel_style.content_margin_right = 12"
+        },
+        {
+          "line": 683,
+          "text": "panel_style.content_margin_top = 6 if panel_path == \"%QueuePanel\" else 4"
+        },
+        {
+          "line": 684,
+          "text": "panel_style.content_margin_bottom = 4"
+        },
+        {
+          "line": 688,
+          "text": "hand_heading.get_parent().add_theme_constant_override(\"separation\", 10)"
+        },
+        {
+          "line": 693,
+          "text": "hand_heading.add_theme_font_size_override(\"font_size\", _font_scaled(20 if compact else 22))"
+        },
+        {
+          "line": 696,
+          "text": "queue_heading.add_theme_font_size_override(\"font_size\", _font_scaled(20 if compact else 22))"
+        },
+        {
+          "line": 704,
+          "text": "reservation.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 708,
+          "text": "hand_heading.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 728,
+          "text": "battle_view.custom_minimum_size.y = 280.0 + clampf(size.y - 800.0, 0.0, 140.0) * 0.65 if compact else 390.0"
+        },
+        {
+          "line": 729,
+          "text": "layout.preferred_battle_height = battle_view.custom_minimum_size.y"
+        },
+        {
+          "line": 747,
+          "text": "decision_prompt.add_theme_font_size_override(\"font_size\", _font_scaled(14 if compact else 17))"
+        },
+        {
+          "line": 754,
+          "text": "prompt_style.content_margin_left = 8 if compact else 16"
+        },
+        {
+          "line": 755,
+          "text": "prompt_style.content_margin_right = 8 if compact else 16"
+        },
+        {
+          "line": 756,
+          "text": "prompt_style.content_margin_top = 5 if compact else 8"
+        },
+        {
+          "line": 757,
+          "text": "prompt_style.content_margin_bottom = 5 if compact else 8"
+        },
+        {
+          "line": 764,
+          "text": "compressor.custom_minimum_size = Vector2(50 if compact else 58, 36 if compact else 44)"
+        },
+        {
+          "line": 765,
+          "text": "compressor.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 778,
+          "text": "exchange_button.custom_minimum_size = Vector2(116 if compact else 132, 36 if compact else 44)"
+        },
+        {
+          "line": 780,
+          "text": "exchange_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 781,
+          "text": "exchange_button.add_theme_font_size_override(\"font_size\", _font_scaled(18))"
+        },
+        {
+          "line": 786,
+          "text": "bag_button.custom_minimum_size = Vector2(116 if compact else 132, 36 if compact else 44)"
+        },
+        {
+          "line": 788,
+          "text": "bag_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 789,
+          "text": "bag_button.add_theme_font_size_override(\"font_size\", _font_scaled(18))"
+        },
+        {
+          "line": 804,
+          "text": "more.custom_minimum_size = Vector2(70, 44)"
+        },
+        {
+          "line": 823,
+          "text": "page_label.custom_minimum_size.x = 40"
+        },
+        {
+          "line": 824,
+          "text": "page_label.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 826,
+          "text": "page_button.custom_minimum_size = Vector2(40, 36)"
+        },
+        {
+          "line": 852,
+          "text": "button.custom_minimum_size.y = 132"
+        },
+        {
+          "line": 853,
+          "text": "button.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 866,
+          "text": "button.custom_minimum_size.y = 132"
+        },
+        {
+          "line": 879,
+          "text": "style.content_margin_left = 6"
+        },
+        {
+          "line": 880,
+          "text": "style.content_margin_right = 6"
+        },
+        {
+          "line": 881,
+          "text": "style.content_margin_top = 4"
+        },
+        {
+          "line": 882,
+          "text": "style.content_margin_bottom = 4"
+        },
+        {
+          "line": 899,
+          "text": "details_button.custom_minimum_size=Vector2(96,36)"
+        },
+        {
+          "line": 901,
+          "text": "details_button.add_theme_font_size_override(\"font_size\",_font_scaled(18))"
+        },
+        {
+          "line": 905,
+          "text": "ammo_inspector.add_theme_font_size_override(\"font_size\", _font_scaled(17))"
+        },
+        {
+          "line": 907,
+          "text": "ammo_inspector.custom_minimum_size.y = 0"
+        },
+        {
+          "line": 950,
+          "text": "edit.custom_minimum_size = Vector2(112, 40)"
+        },
+        {
+          "line": 952,
+          "text": "edit.add_theme_font_size_override(\"font_size\", _font_scaled(18))"
+        },
+        {
+          "line": 957,
+          "text": "preview_label.add_theme_font_size_override(\"font_size\", _font_scaled(18))"
+        },
+        {
+          "line": 959,
+          "text": "preview_label.custom_minimum_size.y = 24"
+        },
+        {
+          "line": 981,
+          "text": "primary.custom_minimum_size.y = magazine_view.custom_minimum_size.y - 6"
+        },
+        {
+          "line": 984,
+          "text": "primary.add_theme_font_size_override(\"font_size\", _font_scaled(24))"
+        },
+        {
+          "line": 1006,
+          "text": "strip.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 1012,
+          "text": "heat_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1028,
+          "text": "reload_button.custom_minimum_size = Vector2(220, 68)"
+        },
+        {
+          "line": 1029,
+          "text": "reload_button.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 1033,
+          "text": "reload_button.add_theme_font_size_override(\"font_size\", _font_scaled(18 if not consequence.is_empty() else 20))"
+        },
+        {
+          "line": 1049,
+          "text": "supply_button.custom_minimum_size = Vector2(230, 68)"
+        },
+        {
+          "line": 1050,
+          "text": "supply_button.add_theme_font_size_override(\"font_size\", _font_scaled(18))"
+        },
+        {
+          "line": 1062,
+          "text": "result_row.custom_minimum_size.y = 32"
+        },
+        {
+          "line": 1063,
+          "text": "result_row.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 1064,
+          "text": "result_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1067,
+          "text": "preview_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1074,
+          "text": "warning_host.custom_minimum_size.x = 0"
+        },
+        {
+          "line": 1075,
+          "text": "warning_host.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 1082,
+          "text": "scope.custom_minimum_size = Vector2(176, 32)"
+        },
+        {
+          "line": 1084,
+          "text": "scope.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 1085,
+          "text": "scope.add_theme_font_size_override(\"font_size\", _font_scaled(18))"
+        },
+        {
+          "line": 1099,
+          "text": "button.custom_minimum_size.y = height"
+        },
+        {
+          "line": 1102,
+          "text": "style.content_margin_top = 6"
+        },
+        {
+          "line": 1103,
+          "text": "style.content_margin_bottom = 6"
+        },
+        {
+          "line": 1104,
+          "text": "style.content_margin_left = 10"
+        },
+        {
+          "line": 1105,
+          "text": "style.content_margin_right = 10"
+        },
+        {
+          "line": 1172,
+          "text": "style.content_margin_top = 4"
+        },
+        {
+          "line": 1173,
+          "text": "style.content_margin_bottom = 4"
+        },
+        {
+          "line": 1182,
+          "text": "label.add_theme_font_size_override(\"font_size\", _font_scaled(15))"
+        },
+        {
+          "line": 1186,
+          "text": "step_style.content_margin_top = 6"
+        },
+        {
+          "line": 1187,
+          "text": "step_style.content_margin_bottom = 6"
+        },
+        {
+          "line": 1190,
+          "text": "label.custom_minimum_size.y = 32"
+        },
+        {
+          "line": 1273,
+          "text": "card_view.custom_minimum_size = Vector2(280, 104)"
+        },
+        {
+          "line": 1274,
+          "text": "card_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 1280,
+          "text": "part_view.custom_minimum_size = Vector2(280, 128)"
+        },
+        {
+          "line": 1281,
+          "text": "part_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1326,
+          "text": "reserve_style.content_margin_left = 6"
+        },
+        {
+          "line": 1327,
+          "text": "reserve_style.content_margin_right = 6"
+        },
+        {
+          "line": 1328,
+          "text": "reserve_style.content_margin_top = 3"
+        },
+        {
+          "line": 1329,
+          "text": "reserve_style.content_margin_bottom = 3"
+        },
+        {
+          "line": 1332,
+          "text": "flow.add_theme_constant_override(\"h_separation\", 4 if compact else 6)"
+        },
+        {
+          "line": 1333,
+          "text": "flow.add_theme_constant_override(\"v_separation\", 3 if compact else 5)"
+        },
+        {
+          "line": 1358,
+          "text": "chip.custom_minimum_size = Vector2(50 if is_next and compact else (64 if compact else (58 if is_next else 74)), 30 if compact else 36)"
+        },
+        {
+          "line": 1363,
+          "text": "style.content_margin_left = 5"
+        },
+        {
+          "line": 1364,
+          "text": "style.content_margin_right = 5"
+        },
+        {
+          "line": 1365,
+          "text": "style.content_margin_top = 2"
+        },
+        {
+          "line": 1366,
+          "text": "style.content_margin_bottom = 2"
+        },
+        {
+          "line": 1370,
+          "text": "row.add_theme_constant_override(\"separation\", 2)"
+        },
+        {
+          "line": 1374,
+          "text": "icon.custom_minimum_size = Vector2(20 if compact else 24, 24 if compact else 30)"
+        },
+        {
+          "line": 1504,
+          "text": "grid.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 1505,
+          "text": "grid.add_theme_constant_override(\"v_separation\", 12)"
+        },
+        {
+          "line": 1511,
+          "text": "card.custom_minimum_size = Vector2(270, 154)"
+        },
+        {
+          "line": 1720,
+          "text": "details.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 1721,
+          "text": "details.custom_minimum_size = Vector2(64, 40)"
+        },
+        {
+          "line": 1728,
+          "text": "highlights.add_theme_constant_override(\"h_separation\", 24)"
+        },
+        {
+          "line": 1734,
+          "text": "text.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 1747,
+          "text": "column.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1748,
+          "text": "column.add_theme_constant_override(\"separation\", 0)"
+        },
+        {
+          "line": 1808,
+          "text": "margin.add_theme_constant_override(\"margin_\" + side, 18 + ceili(safe_edges[side]))"
+        },
+        {
+          "line": 1811,
+          "text": "frame.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 1818,
+          "text": "header.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 1821,
+          "text": "titles.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1822,
+          "text": "titles.add_theme_constant_override(\"separation\", 2)"
+        },
+        {
+          "line": 1828,
+          "text": "close.custom_minimum_size = Vector2(112, 44)"
+        },
+        {
+          "line": 1830,
+          "text": "close.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 1835,
+          "text": "scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1838,
+          "text": "column.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1839,
+          "text": "column.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 1898,
+          "text": "badge.custom_minimum_size.x = 48"
+        },
+        {
+          "line": 1899,
+          "text": "badge.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 1901,
+          "text": "copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 1916,
+          "text": "_label(text_row, \"글자 크기\", 20).custom_minimum_size.x = 170"
+        },
+        {
+          "line": 1919,
+          "text": "scale_option.custom_minimum_size = Vector2(260, 48)"
+        },
+        {
+          "line": 1931,
+          "text": "_label(motion_row, \"전투 연출\", 20).custom_minimum_size.x = 170"
+        },
+        {
+          "line": 1934,
+          "text": "motion_option.custom_minimum_size = Vector2(260, 48)"
+        },
+        {
+          "line": 1946,
+          "text": "_label(audio_row, \"효과음\", 20).custom_minimum_size.x = 170"
+        },
+        {
+          "line": 1949,
+          "text": "audio_option.custom_minimum_size = Vector2(260, 48)"
+        },
+        {
+          "line": 1964,
+          "text": "hint_toggle.custom_minimum_size.y = 48"
+        },
+        {
+          "line": 1985,
+          "text": "grid.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 1986,
+          "text": "grid.add_theme_constant_override(\"v_separation\", 12)"
+        },
+        {
+          "line": 1991,
+          "text": "panel.get_parent().custom_minimum_size = Vector2(370, 144)"
+        },
+        {
+          "line": 1994,
+          "text": "view.custom_minimum_size = Vector2(350, 128)"
+        },
+        {
+          "line": 2166,
+          "text": "icon.custom_minimum_size = Vector2(38,52)"
+        },
+        {
+          "line": 2169,
+          "text": "info.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 2245,
+          "text": "icon.custom_minimum_size = Vector2(28, 28)"
+        },
+        {
+          "line": 2696,
+          "text": "notice.add_theme_font_size_override(\"font_size\",_font_scaled(20))"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/campaign_ui.gd",
+      "sha256": "51f281d8bf559fffb687416cc0837e5cadf5f896df7071fa8855a71f915973f9",
+      "override_and_sizing_declarations": [
+        {
+          "line": 85,
+          "text": "shell_style.content_margin_top = 8"
+        },
+        {
+          "line": 86,
+          "text": "shell_style.content_margin_bottom = 8"
+        },
+        {
+          "line": 90,
+          "text": "column.add_theme_constant_override(\"separation\", 6)"
+        },
+        {
+          "line": 98,
+          "text": "button.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 99,
+          "text": "button.custom_minimum_size = Vector2(78, 40)"
+        },
+        {
+          "line": 101,
+          "text": "button.add_theme_font_size_override(\"font_size\", ui._font_scaled(17))"
+        },
+        {
+          "line": 104,
+          "text": "stats.add_theme_constant_override(\"h_separation\", 20)"
+        },
+        {
+          "line": 105,
+          "text": "stats.add_theme_constant_override(\"v_separation\", 4)"
+        },
+        {
+          "line": 115,
+          "text": "label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 121,
+          "text": "panel.custom_minimum_size.y = ui._scaled(height)"
+        },
+        {
+          "line": 124,
+          "text": "style.set_content_margin_all(0)"
+        },
+        {
+          "line": 142,
+          "text": "for side in [\"left\", \"right\"]: margin.add_theme_constant_override(\"margin_\" + side, 20)"
+        },
+        {
+          "line": 143,
+          "text": "for side in [\"top\", \"bottom\"]: margin.add_theme_constant_override(\"margin_\" + side, 12)"
+        },
+        {
+          "line": 147,
+          "text": "badge.custom_minimum_size.x = 44"
+        },
+        {
+          "line": 148,
+          "text": "badge.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 150,
+          "text": "copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 158,
+          "text": "view.custom_minimum_size = COLLECTION_CARD_SIZE"
+        },
+        {
+          "line": 159,
+          "text": "view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 168,
+          "text": "view.custom_minimum_size = Vector2(144 if mini else (310 if compact else 260), 58 if mini else (82 if compact else 128))"
+        },
+        {
+          "line": 169,
+          "text": "view.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 180,
+          "text": "view.custom_minimum_size.y = 132"
+        },
+        {
+          "line": 200,
+          "text": "grid.add_theme_constant_override(\"h_separation\", 10)"
+        },
+        {
+          "line": 201,
+          "text": "grid.add_theme_constant_override(\"v_separation\", 10)"
+        },
+        {
+          "line": 207,
+          "text": "cell.custom_minimum_size = Vector2(190, 220)"
+        },
+        {
+          "line": 209,
+          "text": "card.custom_minimum_size = Vector2.ZERO"
+        },
+        {
+          "line": 216,
+          "text": "strip.add_theme_constant_override(\"separation\", 7)"
+        },
+        {
+          "line": 221,
+          "text": "cell.custom_minimum_size.x = 144"
+        },
+        {
+          "line": 222,
+          "text": "cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 223,
+          "text": "cell.add_theme_constant_override(\"separation\", 2)"
+        },
+        {
+          "line": 230,
+          "text": "button.custom_minimum_size.y = 118"
+        },
+        {
+          "line": 261,
+          "text": "chip.get_parent().custom_minimum_size.x = 128"
+        },
+        {
+          "line": 285,
+          "text": "reward_frame.add_theme_constant_override(\"separation\",14)"
+        },
+        {
+          "line": 289,
+          "text": "loot_header.add_theme_constant_override(\"separation\",12)"
+        },
+        {
+          "line": 292,
+          "text": "receipt.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 294,
+          "text": "continue_button.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 295,
+          "text": "continue_button.custom_minimum_size.x = 260"
+        },
+        {
+          "line": 305,
+          "text": "row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 306,
+          "text": "row.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 307,
+          "text": "row.add_theme_constant_override(\"v_separation\", 12)"
+        },
+        {
+          "line": 314,
+          "text": "take.custom_minimum_size = OFFER_CARD_SIZE"
+        },
+        {
+          "line": 315,
+          "text": "take.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 332,
+          "text": "panel.get_parent().custom_minimum_size.x = 285"
+        },
+        {
+          "line": 346,
+          "text": "actions.add_theme_constant_override(\"separation\",8)"
+        },
+        {
+          "line": 350,
+          "text": "info.add_theme_font_size_override(\"font_size\",ui._font_scaled(17))"
+        },
+        {
+          "line": 351,
+          "text": "info.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 352,
+          "text": "info.custom_minimum_size.x = 88"
+        },
+        {
+          "line": 365,
+          "text": "button.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 367,
+          "text": "button.add_theme_font_size_override(\"font_size\",ui._font_scaled(17))"
+        },
+        {
+          "line": 368,
+          "text": "button.custom_minimum_size.x = 240"
+        },
+        {
+          "line": 373,
+          "text": "wallet.get_parent().custom_minimum_size.x = 285"
+        },
+        {
+          "line": 379,
+          "text": "skip.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 380,
+          "text": "skip.custom_minimum_size.x = 190"
+        },
+        {
+          "line": 473,
+          "text": "place_body.add_theme_constant_override(\"separation\", 16)"
+        },
+        {
+          "line": 478,
+          "text": "button.custom_minimum_size = Vector2(width, 52)"
+        },
+        {
+          "line": 479,
+          "text": "button.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 481,
+          "text": "button.add_theme_font_size_override(\"font_size\", ui._font_scaled(18))"
+        },
+        {
+          "line": 489,
+          "text": "space.custom_minimum_size.y = 2"
+        },
+        {
+          "line": 493,
+          "text": "row.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 500,
+          "text": "space.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 508,
+          "text": "column.custom_minimum_size.x = minf(width, maxf(280, ui.size.x - 56))"
+        },
+        {
+          "line": 509,
+          "text": "column.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 510,
+          "text": "column.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 524,
+          "text": "heading.custom_minimum_size.y = 32"
+        },
+        {
+          "line": 539,
+          "text": "workbench.add_theme_constant_override(\"separation\", 8)"
+        },
+        {
+          "line": 547,
+          "text": "press_button.add_theme_font_size_override(\"font_size\", 16)"
+        },
+        {
+          "line": 571,
+          "text": "tile.custom_minimum_size.x = 230"
+        },
+        {
+          "line": 572,
+          "text": "tile.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 574,
+          "text": "if campaign.modern_places(): item.custom_minimum_size = Vector2(230, 164)"
+        },
+        {
+          "line": 588,
+          "text": "visual.custom_minimum_size = Vector2.ZERO"
+        },
+        {
+          "line": 603,
+          "text": "core_button.add_theme_font_size_override(\"font_size\", 16)"
+        },
+        {
+          "line": 606,
+          "text": "box.content_margin_left = 56"
+        },
+        {
+          "line": 630,
+          "text": "workbench.add_theme_constant_override(\"separation\", 4)"
+        },
+        {
+          "line": 631,
+          "text": "workbench.custom_minimum_size.x = 0"
+        },
+        {
+          "line": 632,
+          "text": "workbench.size_flags_horizontal = Control.SIZE_FILL"
+        },
+        {
+          "line": 634,
+          "text": "stock.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 637,
+          "text": "reroll.custom_minimum_size = Vector2(180, 44)"
+        },
+        {
+          "line": 638,
+          "text": "reroll.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 639,
+          "text": "reroll.add_theme_font_size_override(\"font_size\", ui._font_scaled(17))"
+        },
+        {
+          "line": 644,
+          "text": "compressor.custom_minimum_size = Vector2(320, 52)"
+        },
+        {
+          "line": 645,
+          "text": "compressor.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 647,
+          "text": "build.custom_minimum_size = Vector2(136, 52)"
+        },
+        {
+          "line": 648,
+          "text": "build.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 649,
+          "text": "build.add_theme_font_size_override(\"font_size\", ui._font_scaled(17))"
+        },
+        {
+          "line": 735,
+          "text": "detail.custom_minimum_size.y=44"
+        },
+        {
+          "line": 736,
+          "text": "detail.add_theme_font_size_override(\"font_size\",ui._font_scaled(16))"
+        },
+        {
+          "line": 744,
+          "text": "purchase.custom_minimum_size=Vector2(180,48)"
+        },
+        {
+          "line": 745,
+          "text": "purchase.add_theme_font_size_override(\"font_size\",ui._font_scaled(18))"
+        },
+        {
+          "line": 747,
+          "text": "detail.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 748,
+          "text": "detail.custom_minimum_size.x = 140"
+        },
+        {
+          "line": 749,
+          "text": "purchase.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 750,
+          "text": "purchase.custom_minimum_size.x = 280"
+        },
+        {
+          "line": 790,
+          "text": "row.add_theme_constant_override(\"h_separation\", 10)"
+        },
+        {
+          "line": 791,
+          "text": "row.add_theme_constant_override(\"v_separation\", 10)"
+        },
+        {
+          "line": 804,
+          "text": "empty.get_parent().custom_minimum_size.x = 330"
+        },
+        {
+          "line": 805,
+          "text": "empty.get_parent().size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 810,
+          "text": "column.get_parent().custom_minimum_size.x = card_min_width"
+        },
+        {
+          "line": 850,
+          "text": "if campaign.modern_places(): panel.get_parent().custom_minimum_size.x = 285"
+        },
+        {
+          "line": 900,
+          "text": "grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 902,
+          "text": "grid.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 903,
+          "text": "grid.add_theme_constant_override(\"v_separation\", 12)"
+        },
+        {
+          "line": 912,
+          "text": "cell.get_parent().custom_minimum_size.x = 282"
+        },
+        {
+          "line": 915,
+          "text": "holder.custom_minimum_size = Vector2(250, 140)"
+        },
+        {
+          "line": 946,
+          "text": "row.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 947,
+          "text": "row.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 948,
+          "text": "row.add_theme_constant_override(\"v_separation\", 12)"
+        },
+        {
+          "line": 965,
+          "text": "grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 967,
+          "text": "grid.add_theme_constant_override(\"h_separation\",12)"
+        },
+        {
+          "line": 968,
+          "text": "grid.add_theme_constant_override(\"v_separation\",12)"
+        },
+        {
+          "line": 976,
+          "text": "cell.get_parent().custom_minimum_size.x = 282"
+        },
+        {
+          "line": 989,
+          "text": "grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 991,
+          "text": "grid.add_theme_constant_override(\"h_separation\",12)"
+        },
+        {
+          "line": 996,
+          "text": "cell.get_parent().custom_minimum_size.x = 340"
+        },
+        {
+          "line": 999,
+          "text": "preview.size_flags_horizontal=Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 1002,
+          "text": "effect.custom_minimum_size.y = ui._scaled(48)"
+        },
+        {
+          "line": 1007,
+          "text": "back.custom_minimum_size.x = 240"
+        },
+        {
+          "line": 1008,
+          "text": "back.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 1017,
+          "text": "grid.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 1018,
+          "text": "grid.add_theme_constant_override(\"v_separation\", 12)"
+        },
+        {
+          "line": 1025,
+          "text": "holder.custom_minimum_size = Vector2(270, 134)"
+        },
+        {
+          "line": 1096,
+          "text": "cell.custom_minimum_size = Vector2(0, 180)"
+        },
+        {
+          "line": 1098,
+          "text": "card.custom_minimum_size = Vector2.ZERO"
+        },
+        {
+          "line": 1112,
+          "text": "cell.custom_minimum_size = Vector2(0, 72)"
+        },
+        {
+          "line": 1114,
+          "text": "card.custom_minimum_size = Vector2.ZERO"
+        },
+        {
+          "line": 1122,
+          "text": "ammo_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 1130,
+          "text": "card.custom_minimum_size = COLLECTION_CARD_SIZE"
+        },
+        {
+          "line": 1186,
+          "text": "choice.custom_minimum_size.y=44"
+        },
+        {
+          "line": 1263,
+          "text": "lore_grid.add_theme_constant_override(\"h_separation\", 8)"
+        },
+        {
+          "line": 1264,
+          "text": "lore_grid.add_theme_constant_override(\"v_separation\", 8)"
+        },
+        {
+          "line": 1284,
+          "text": "grid.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 1285,
+          "text": "grid.add_theme_constant_override(\"v_separation\", 12)"
+        },
+        {
+          "line": 1319,
+          "text": "build.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 1326,
+          "text": "cell.get_parent().custom_minimum_size.x = 262"
+        },
+        {
+          "line": 1330,
+          "text": "claim.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 1348,
+          "text": "cell.get_parent().custom_minimum_size.x = 262"
+        },
+        {
+          "line": 1351,
+          "text": "claim.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 1357,
+          "text": "row.add_theme_constant_override(\"separation\", 12)"
+        },
+        {
+          "line": 1361,
+          "text": "hint.custom_minimum_size.y = ui._scaled(56)"
+        },
+        {
+          "line": 1369,
+          "text": "grid.size_flags_horizontal = Control.SIZE_FILL"
+        },
+        {
+          "line": 1370,
+          "text": "grid.add_theme_constant_override(\"h_separation\", 12)"
+        },
+        {
+          "line": 1371,
+          "text": "grid.add_theme_constant_override(\"v_separation\", 12)"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/gate_reward_ui.gd",
+      "sha256": "3a896880d591621e7c04e6135d9e2c9d2182af23a49ef7b7019360f2d1841a45",
+      "override_and_sizing_declarations": [
+        {
+          "line": 37,
+          "text": "workspace.add_theme_constant_override(\"separation\",14)"
+        },
+        {
+          "line": 45,
+          "text": "row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 46,
+          "text": "row.add_theme_constant_override(\"h_separation\",12)"
+        },
+        {
+          "line": 47,
+          "text": "row.add_theme_constant_override(\"v_separation\",12)"
+        },
+        {
+          "line": 50,
+          "text": "row.add_theme_constant_override(\"separation\",12)"
+        },
+        {
+          "line": 56,
+          "text": "detail.custom_minimum_size.y = 52"
+        },
+        {
+          "line": 59,
+          "text": "actions.add_theme_constant_override(\"separation\",12)"
+        },
+        {
+          "line": 62,
+          "text": "skip.custom_minimum_size = Vector2(180,52)"
+        },
+        {
+          "line": 63,
+          "text": "skip.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 68,
+          "text": "apply.custom_minimum_size = Vector2(260,52)"
+        },
+        {
+          "line": 69,
+          "text": "apply.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 76,
+          "text": "button.custom_minimum_size = Vector2(card_width,card_height)"
+        },
+        {
+          "line": 77,
+          "text": "button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 84,
+          "text": "for edge in [\"left\",\"right\",\"top\",\"bottom\"]: margin.add_theme_constant_override(\"margin_\"+edge,16)"
+        },
+        {
+          "line": 86,
+          "text": "margin.minimum_size_changed.connect(func(): button.custom_minimum_size.y = maxf(card_height,margin.get_combined_minimum_size().y))"
+        },
+        {
+          "line": 89,
+          "text": "box.add_theme_constant_override(\"separation\",6 if offers.size()>3 else 10)"
+        },
+        {
+          "line": 94,
+          "text": "glyph.custom_minimum_size = Vector2(0,32 if offers.size()>3 else 60)"
+        },
+        {
+          "line": 125,
+          "text": "workspace.add_theme_constant_override(\"separation\",12)"
+        },
+        {
+          "line": 134,
+          "text": "actions.add_theme_constant_override(\"separation\",12)"
+        },
+        {
+          "line": 138,
+          "text": "button.custom_minimum_size = Vector2(0,56)"
+        },
+        {
+          "line": 139,
+          "text": "button.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 141,
+          "text": "depart.custom_minimum_size = Vector2(0,56)"
+        },
+        {
+          "line": 142,
+          "text": "depart.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 150,
+          "text": "service.add_theme_constant_override(\"separation\",8)"
+        },
+        {
+          "line": 160,
+          "text": "expand.custom_minimum_size.y=52"
+        },
+        {
+          "line": 164,
+          "text": "copy.custom_minimum_size.y=52"
+        },
+        {
+          "line": 192,
+          "text": "grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER"
+        },
+        {
+          "line": 193,
+          "text": "grid.add_theme_constant_override(\"h_separation\",12)"
+        },
+        {
+          "line": 194,
+          "text": "grid.add_theme_constant_override(\"v_separation\",12)"
+        },
+        {
+          "line": 199,
+          "text": "button.custom_minimum_size = Vector2(230,180)"
+        },
+        {
+          "line": 221,
+          "text": "rows.add_theme_constant_override(\"separation\",8)"
+        },
+        {
+          "line": 243,
+          "text": "row.add_theme_constant_override(\"separation\",10)"
+        },
+        {
+          "line": 250,
+          "text": "minus.custom_minimum_size = Vector2(52,52)"
+        },
+        {
+          "line": 251,
+          "text": "minus.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 253,
+          "text": "count.custom_minimum_size.x = 85"
+        },
+        {
+          "line": 254,
+          "text": "count.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 259,
+          "text": "plus.custom_minimum_size = Vector2(52,52)"
+        },
+        {
+          "line": 260,
+          "text": "plus.size_flags_horizontal = Control.SIZE_SHRINK_END"
+        },
+        {
+          "line": 274,
+          "text": "grid.add_theme_constant_override(\"h_separation\",12);grid.add_theme_constant_override(\"v_separation\",12)"
+        },
+        {
+          "line": 278,
+          "text": "button.name=\"gate_copy_\"+id;button.custom_minimum_size=Vector2(230,180)"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/equipment_screen.gd",
+      "sha256": "376ffec3d496453fb574ab0216949e656303463364bcfba9bca3f40999061bc8",
+      "override_and_sizing_declarations": [
+        {
+          "line": 42,
+          "text": "button.get_node(\"Copy/Name\").custom_minimum_size.x = 0"
+        },
+        {
+          "line": 50,
+          "text": "button.add_theme_font_size_override(\"font_size\", host._scaled(18))"
+        },
+        {
+          "line": 53,
+          "text": "skin.content_margin_left = 14"
+        },
+        {
+          "line": 54,
+          "text": "skin.content_margin_right = 14"
+        },
+        {
+          "line": 58,
+          "text": "label.add_theme_font_size_override(\"font_size\", host._scaled(base))"
+        },
+        {
+          "line": 61,
+          "text": "%loadout_back.custom_minimum_size.x = host._scaled(140)"
+        },
+        {
+          "line": 62,
+          "text": "%preparation_options.custom_minimum_size.x = host._scaled(150)"
+        },
+        {
+          "line": 116,
+          "text": "%Stage.custom_minimum_size.y = maxf(336.0, stage_min)"
+        },
+        {
+          "line": 118,
+          "text": "custom_minimum_size.y = maxf(host.size.y, $Margin/Layout.get_combined_minimum_size().y + 36.0)"
+        },
+        {
+          "line": 171,
+          "text": "host.difficulty_option.custom_minimum_size = Vector2(120, 52)"
+        },
+        {
+          "line": 181,
+          "text": "host.seed_input.custom_minimum_size = Vector2(180, 52)"
+        },
+        {
+          "line": 182,
+          "text": "host.seed_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "sha256": "845603463217260fb9dded167d7549a0efcb1eaa1a61206968a3659234b4f2f3",
+      "override_and_sizing_declarations": [
+        {
+          "line": 46,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 81,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 85,
+          "text": "theme_override_constants/separation = 24"
+        },
+        {
+          "line": 90,
+          "text": "custom_minimum_size = Vector2(0, 48)"
+        },
+        {
+          "line": 98,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 100,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 105,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 112,
+          "text": "custom_minimum_size = Vector2(0, 336)"
+        },
+        {
+          "line": 121,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 127,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 135,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 142,
+          "text": "custom_minimum_size = Vector2(0, 60)"
+        },
+        {
+          "line": 149,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 157,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 159,
+          "text": "custom_minimum_size = Vector2(0, 44)"
+        },
+        {
+          "line": 165,
+          "text": "theme_override_constants/h_separation = 16"
+        },
+        {
+          "line": 166,
+          "text": "theme_override_constants/v_separation = 8"
+        },
+        {
+          "line": 172,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 174,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 180,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 182,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 188,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 190,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 196,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 198,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 202,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 207,
+          "text": "custom_minimum_size = Vector2(0, 48)"
+        },
+        {
+          "line": 209,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 214,
+          "text": "custom_minimum_size = Vector2(0, 48)"
+        },
+        {
+          "line": 216,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 239,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 254,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 271,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 276,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 283,
+          "text": "custom_minimum_size = Vector2(0, 240)"
+        },
+        {
+          "line": 291,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 292,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 296,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 325,
+          "text": "theme_override_constants/separation = 7"
+        },
+        {
+          "line": 330,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 337,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 343,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 372,
+          "text": "theme_override_constants/separation = 7"
+        },
+        {
+          "line": 377,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 384,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 390,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 419,
+          "text": "theme_override_constants/separation = 7"
+        },
+        {
+          "line": 424,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 431,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 437,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 466,
+          "text": "theme_override_constants/separation = 7"
+        },
+        {
+          "line": 471,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 478,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 484,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 513,
+          "text": "theme_override_constants/separation = 7"
+        },
+        {
+          "line": 518,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 525,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 531,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 560,
+          "text": "theme_override_constants/separation = 7"
+        },
+        {
+          "line": 565,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 572,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 578,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 607,
+          "text": "theme_override_constants/separation = 7"
+        },
+        {
+          "line": 612,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 619,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 627,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 634,
+          "text": "theme_override_constants/separation = 5"
+        },
+        {
+          "line": 639,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 647,
+          "text": "theme_override_constants/h_separation = 10"
+        },
+        {
+          "line": 651,
+          "text": "custom_minimum_size = Vector2(0, 92)"
+        },
+        {
+          "line": 652,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 670,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 682,
+          "text": "custom_minimum_size = Vector2(0, 92)"
+        },
+        {
+          "line": 683,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 701,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 713,
+          "text": "custom_minimum_size = Vector2(0, 92)"
+        },
+        {
+          "line": 714,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 732,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 744,
+          "text": "custom_minimum_size = Vector2(0, 92)"
+        },
+        {
+          "line": 745,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 763,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 775,
+          "text": "custom_minimum_size = Vector2(0, 92)"
+        },
+        {
+          "line": 776,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 794,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 806,
+          "text": "theme_override_constants/separation = 22"
+        },
+        {
+          "line": 811,
+          "text": "custom_minimum_size = Vector2(0, 48)"
+        },
+        {
+          "line": 819,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 821,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 828,
+          "text": "custom_minimum_size = Vector2(0, 48)"
+        },
+        {
+          "line": 830,
+          "text": "custom_minimum_size = Vector2(250, 54)"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "loadout_back",
+          "minimum_declarations": [
+            "0, 48"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"‹ 돌아가기\""
+          ]
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "weapon_info",
+          "minimum_declarations": [
+            "0, 48"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"규칙 상세\""
+          ]
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "starting_deck",
+          "minimum_declarations": [
+            "0, 48"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"시작 탄환  ›\""
+          ]
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "outfit_select_work",
+          "minimum_declarations": [
+            "0, 78"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "outfit_select_carrier",
+          "minimum_declarations": [
+            "0, 78"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "outfit_select_scout",
+          "minimum_declarations": [
+            "0, 78"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "outfit_select_heatworker",
+          "minimum_declarations": [
+            "0, 78"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "outfit_select_hoist",
+          "minimum_declarations": [
+            "0, 78"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "outfit_select_recovery",
+          "minimum_declarations": [
+            "0, 78"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "outfit_select_expedition",
+          "minimum_declarations": [
+            "0, 78"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "weapon_select_single",
+          "minimum_declarations": [
+            "0, 92"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "weapon_select_burst",
+          "minimum_declarations": [
+            "0, 92"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "weapon_select_scatter",
+          "minimum_declarations": [
+            "0, 92"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "weapon_select_heavy",
+          "minimum_declarations": [
+            "0, 92"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "weapon_select_amplifier",
+          "minimum_declarations": [
+            "0, 92"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "preparation_options",
+          "minimum_declarations": [
+            "0, 48"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"등반 설정\""
+          ]
+        },
+        {
+          "file": "redesign/equipment_screen.tscn",
+          "node": "Launch",
+          "minimum_declarations": [
+            "0, 48",
+            "250, 54"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"등반 시작  ›\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.gd",
+      "sha256": "210ee6a0d28a20953fa068749d052b03e627417e5e3d330449dad7cd27b8db12",
+      "override_and_sizing_declarations": [
+        {
+          "line": 54,
+          "text": "if node.has_theme_font_size_override(key): node.add_theme_font_size_override(key, roundi(node.get_theme_font_size(key) * text_scale))"
+        },
+        {
+          "line": 65,
+          "text": "$Canvas/Safe.add_theme_constant_override(\"margin_\"+side,edge)"
+        },
+        {
+          "line": 70,
+          "text": "field(key).custom_minimum_size.x = 0 if narrow and key == \"Detail\" else 300 if size.x < 1280 else 352"
+        },
+        {
+          "line": 71,
+          "text": "field(\"Room\").custom_minimum_size = Vector2(180 if size.x < 1100 else 240,120)"
+        },
+        {
+          "line": 72,
+          "text": "field(\"StoryScroll\").custom_minimum_size = Vector2(180 if size.x < 1100 else 220,180)"
+        },
+        {
+          "line": 73,
+          "text": "field(\"Story\").custom_minimum_size.y = 180"
+        },
+        {
+          "line": 75,
+          "text": "field(\"Wallet\").custom_minimum_size.x = 100"
+        },
+        {
+          "line": 76,
+          "text": "field(\"Menu\").custom_minimum_size.x = 88"
+        },
+        {
+          "line": 77,
+          "text": "field(\"Settings\").custom_minimum_size.x = 80"
+        },
+        {
+          "line": 80,
+          "text": "card.find_child(\"Name\").add_theme_font_size_override(\"font_size\",16 if size.x < 1200 else 32)"
+        },
+        {
+          "line": 81,
+          "text": "card.find_child(\"Price\").add_theme_font_size_override(\"font_size\",16)"
+        },
+        {
+          "line": 83,
+          "text": "card.find_child(\"Icon\").custom_minimum_size.y = 72"
+        },
+        {
+          "line": 85,
+          "text": "for side in [\"left\",\"right\",\"top\",\"bottom\"]: margin.add_theme_constant_override(\"margin_\"+side,8)"
+        },
+        {
+          "line": 86,
+          "text": "field(\"Detail\").custom_minimum_size.y = 240 if narrow else 324"
+        },
+        {
+          "line": 88,
+          "text": "field(key).add_theme_font_size_override(\"font_size\",16)"
+        },
+        {
+          "line": 95,
+          "text": "field(\"Modal\").custom_minimum_size = Vector2(minf(720,safe.size.x-32),0)"
+        },
+        {
+          "line": 96,
+          "text": "field(\"ModalScroll\").custom_minimum_size.y = minf(560,maxf(120,safe.size.y-160))"
+        },
+        {
+          "line": 97,
+          "text": "custom_minimum_size.y = $Canvas/Safe/Layout.get_combined_minimum_size().y + edge*2"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "sha256": "47264a4980a8c9c63c7311bc2f9d75b541233b97fd13693c25192e25a0fa4974",
+      "override_and_sizing_declarations": [
+        {
+          "line": 58,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 90,
+          "text": "theme_override_constants/margin_left = 24"
+        },
+        {
+          "line": 91,
+          "text": "theme_override_constants/margin_top = 24"
+        },
+        {
+          "line": 92,
+          "text": "theme_override_constants/margin_right = 24"
+        },
+        {
+          "line": 93,
+          "text": "theme_override_constants/margin_bottom = 24"
+        },
+        {
+          "line": 97,
+          "text": "theme_override_constants/separation = 18"
+        },
+        {
+          "line": 101,
+          "text": "theme_override_constants/separation = 20"
+        },
+        {
+          "line": 102,
+          "text": "custom_minimum_size = Vector2(0, 58)"
+        },
+        {
+          "line": 108,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 115,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 117,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 123,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 132,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 134,
+          "text": "custom_minimum_size = Vector2(150, 0)"
+        },
+        {
+          "line": 140,
+          "text": "custom_minimum_size = Vector2(110, 52)"
+        },
+        {
+          "line": 142,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 146,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 151,
+          "text": "theme_override_constants/separation = 24"
+        },
+        {
+          "line": 156,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 157,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 162,
+          "text": "theme_override_constants/separation = 16"
+        },
+        {
+          "line": 163,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 165,
+          "text": "custom_minimum_size = Vector2(452, 0)"
+        },
+        {
+          "line": 169,
+          "text": "theme_override_constants/separation = 20"
+        },
+        {
+          "line": 170,
+          "text": "custom_minimum_size = Vector2(0, 212)"
+        },
+        {
+          "line": 175,
+          "text": "custom_minimum_size = Vector2(550, 190)"
+        },
+        {
+          "line": 176,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 198,
+          "text": "custom_minimum_size = Vector2(330, 212)"
+        },
+        {
+          "line": 199,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 204,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 205,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 206,
+          "text": "custom_minimum_size = Vector2(0, 0)"
+        },
+        {
+          "line": 213,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 220,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 228,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 236,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 242,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 243,
+          "text": "custom_minimum_size = Vector2(0, 44)"
+        },
+        {
+          "line": 249,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 251,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 256,
+          "text": "custom_minimum_size = Vector2(188, 44)"
+        },
+        {
+          "line": 258,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 262,
+          "text": "theme_override_constants/separation = 24"
+        },
+        {
+          "line": 263,
+          "text": "custom_minimum_size = Vector2(0, 324)"
+        },
+        {
+          "line": 267,
+          "text": "theme_override_constants/separation = 14"
+        },
+        {
+          "line": 268,
+          "text": "custom_minimum_size = Vector2(0, 324)"
+        },
+        {
+          "line": 269,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 275,
+          "text": "custom_minimum_size = Vector2(0, 324)"
+        },
+        {
+          "line": 277,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 290,
+          "text": "theme_override_constants/margin_left = 18"
+        },
+        {
+          "line": 291,
+          "text": "theme_override_constants/margin_right = 18"
+        },
+        {
+          "line": 292,
+          "text": "theme_override_constants/margin_top = 18"
+        },
+        {
+          "line": 293,
+          "text": "theme_override_constants/margin_bottom = 18"
+        },
+        {
+          "line": 297,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 302,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 309,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 311,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 317,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 323,
+          "text": "custom_minimum_size = Vector2(0, 104)"
+        },
+        {
+          "line": 332,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 344,
+          "text": "theme_override_constants/margin_left = 8"
+        },
+        {
+          "line": 345,
+          "text": "theme_override_constants/margin_top = 8"
+        },
+        {
+          "line": 346,
+          "text": "theme_override_constants/margin_right = 8"
+        },
+        {
+          "line": 347,
+          "text": "theme_override_constants/margin_bottom = 8"
+        },
+        {
+          "line": 352,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 359,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 361,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 368,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 375,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 382,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 391,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 393,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 399,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 405,
+          "text": "custom_minimum_size = Vector2(0, 324)"
+        },
+        {
+          "line": 407,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 420,
+          "text": "theme_override_constants/margin_left = 18"
+        },
+        {
+          "line": 421,
+          "text": "theme_override_constants/margin_right = 18"
+        },
+        {
+          "line": 422,
+          "text": "theme_override_constants/margin_top = 18"
+        },
+        {
+          "line": 423,
+          "text": "theme_override_constants/margin_bottom = 18"
+        },
+        {
+          "line": 427,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 432,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 439,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 441,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 447,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 453,
+          "text": "custom_minimum_size = Vector2(0, 104)"
+        },
+        {
+          "line": 462,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 474,
+          "text": "theme_override_constants/margin_left = 8"
+        },
+        {
+          "line": 475,
+          "text": "theme_override_constants/margin_top = 8"
+        },
+        {
+          "line": 476,
+          "text": "theme_override_constants/margin_right = 8"
+        },
+        {
+          "line": 477,
+          "text": "theme_override_constants/margin_bottom = 8"
+        },
+        {
+          "line": 482,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 489,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 491,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 498,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 505,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 512,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 521,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 523,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 529,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 535,
+          "text": "custom_minimum_size = Vector2(0, 324)"
+        },
+        {
+          "line": 537,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 550,
+          "text": "theme_override_constants/margin_left = 18"
+        },
+        {
+          "line": 551,
+          "text": "theme_override_constants/margin_right = 18"
+        },
+        {
+          "line": 552,
+          "text": "theme_override_constants/margin_top = 18"
+        },
+        {
+          "line": 553,
+          "text": "theme_override_constants/margin_bottom = 18"
+        },
+        {
+          "line": 557,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 562,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 569,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 571,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 577,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 583,
+          "text": "custom_minimum_size = Vector2(0, 104)"
+        },
+        {
+          "line": 592,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 604,
+          "text": "theme_override_constants/margin_left = 8"
+        },
+        {
+          "line": 605,
+          "text": "theme_override_constants/margin_top = 8"
+        },
+        {
+          "line": 606,
+          "text": "theme_override_constants/margin_right = 8"
+        },
+        {
+          "line": 607,
+          "text": "theme_override_constants/margin_bottom = 8"
+        },
+        {
+          "line": 612,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 619,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 621,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 628,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 635,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 642,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 651,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 653,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 659,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 664,
+          "text": "theme_override_constants/separation = 24"
+        },
+        {
+          "line": 668,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 669,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 674,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 675,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 677,
+          "text": "custom_minimum_size = Vector2(452, 0)"
+        },
+        {
+          "line": 682,
+          "text": "custom_minimum_size = Vector2(0, 78)"
+        },
+        {
+          "line": 686,
+          "text": "theme_override_constants/margin_left = 12"
+        },
+        {
+          "line": 687,
+          "text": "theme_override_constants/margin_top = 12"
+        },
+        {
+          "line": 688,
+          "text": "theme_override_constants/margin_right = 12"
+        },
+        {
+          "line": 689,
+          "text": "theme_override_constants/margin_bottom = 12"
+        },
+        {
+          "line": 693,
+          "text": "theme_override_constants/separation = 18"
+        },
+        {
+          "line": 699,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 706,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 708,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 715,
+          "text": "custom_minimum_size = Vector2(152, 52)"
+        },
+        {
+          "line": 717,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 721,
+          "text": "theme_override_constants/separation = 16"
+        },
+        {
+          "line": 722,
+          "text": "custom_minimum_size = Vector2(0, 58)"
+        },
+        {
+          "line": 728,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 730,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 735,
+          "text": "custom_minimum_size = Vector2(224, 56)"
+        },
+        {
+          "line": 737,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 742,
+          "text": "custom_minimum_size = Vector2(0, 176)"
+        },
+        {
+          "line": 746,
+          "text": "theme_override_constants/margin_left = 16"
+        },
+        {
+          "line": 747,
+          "text": "theme_override_constants/margin_top = 16"
+        },
+        {
+          "line": 748,
+          "text": "theme_override_constants/margin_right = 16"
+        },
+        {
+          "line": 749,
+          "text": "theme_override_constants/margin_bottom = 16"
+        },
+        {
+          "line": 753,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 757,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 763,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 765,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 771,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 776,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 777,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 782,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 784,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 814,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 820,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 822,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 852,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 858,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 860,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 890,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 896,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 898,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 928,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 934,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 936,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 966,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 973,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 982,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 990,
+          "text": "custom_minimum_size = Vector2(452, 324)"
+        },
+        {
+          "line": 991,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 996,
+          "text": "theme_override_constants/margin_left = 14"
+        },
+        {
+          "line": 997,
+          "text": "theme_override_constants/margin_top = 14"
+        },
+        {
+          "line": 998,
+          "text": "theme_override_constants/margin_right = 14"
+        },
+        {
+          "line": 999,
+          "text": "theme_override_constants/margin_bottom = 14"
+        },
+        {
+          "line": 1003,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 1009,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1015,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 1021,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 1023,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1030,
+          "text": "custom_minimum_size = Vector2(76, 48)"
+        },
+        {
+          "line": 1032,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1038,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1047,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1055,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1066,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1074,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1083,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1100,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1102,
+          "text": "custom_minimum_size = Vector2(0, 22)"
+        },
+        {
+          "line": 1108,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 1117,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1122,
+          "text": "custom_minimum_size = Vector2(0, 44)"
+        },
+        {
+          "line": 1124,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1130,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1141,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 1146,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1147,
+          "text": "custom_minimum_size = Vector2(0, 44)"
+        },
+        {
+          "line": 1148,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1153,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1154,
+          "text": "custom_minimum_size = Vector2(0, 44)"
+        },
+        {
+          "line": 1155,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1161,
+          "text": "custom_minimum_size = Vector2(0, 58)"
+        },
+        {
+          "line": 1163,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1190,
+          "text": "custom_minimum_size = Vector2(720, 500)"
+        },
+        {
+          "line": 1194,
+          "text": "theme_override_constants/margin_left = 28"
+        },
+        {
+          "line": 1195,
+          "text": "theme_override_constants/margin_top = 28"
+        },
+        {
+          "line": 1196,
+          "text": "theme_override_constants/margin_right = 28"
+        },
+        {
+          "line": 1197,
+          "text": "theme_override_constants/margin_bottom = 28"
+        },
+        {
+          "line": 1201,
+          "text": "theme_override_constants/separation = 16"
+        },
+        {
+          "line": 1208,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1210,
+          "text": "theme_override_constants/separation = 16"
+        },
+        {
+          "line": 1216,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 1223,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1229,
+          "text": "custom_minimum_size = Vector2(0, 62)"
+        },
+        {
+          "line": 1235,
+          "text": "custom_minimum_size = Vector2(0, 62)"
+        },
+        {
+          "line": 1241,
+          "text": "custom_minimum_size = Vector2(0, 62)"
+        },
+        {
+          "line": 1247,
+          "text": "custom_minimum_size = Vector2(0, 62)"
+        },
+        {
+          "line": 1252,
+          "text": "custom_minimum_size = Vector2(0, 0)"
+        },
+        {
+          "line": 1258,
+          "text": "theme_override_font_sizes/normal_font_size = 24"
+        },
+        {
+          "line": 1263,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 1267,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1269,
+          "text": "custom_minimum_size = Vector2(0, 50)"
+        },
+        {
+          "line": 1275,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1277,
+          "text": "custom_minimum_size = Vector2(0, 56)"
+        },
+        {
+          "line": 1281,
+          "text": "custom_minimum_size = Vector2(92, 44)"
+        },
+        {
+          "line": 1282,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1287,
+          "text": "custom_minimum_size = Vector2(120, 44)"
+        },
+        {
+          "line": 1288,
+          "text": "theme_override_font_sizes/font_size = 16"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Menu",
+          "minimum_declarations": [
+            "110, 52"
+          ],
+          "flags": [],
+          "font": [
+            "24"
+          ],
+          "text": [
+            "\"메뉴\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Reroll",
+          "minimum_declarations": [
+            "188, 44"
+          ],
+          "flags": [],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"새 진열 · 3 Cr\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Offer0",
+          "minimum_declarations": [
+            "0, 324"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Offer1",
+          "minimum_declarations": [
+            "0, 324"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Offer2",
+          "minimum_declarations": [
+            "0, 324"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Bag",
+          "minimum_declarations": [
+            "152, 52"
+          ],
+          "flags": [],
+          "font": [
+            "24"
+          ],
+          "text": [
+            "\"탄환 가방\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Charge",
+          "minimum_declarations": [
+            "224, 56"
+          ],
+          "flags": [],
+          "font": [
+            "24"
+          ],
+          "text": [
+            "\"1회 충전 · 18 Cr\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Slot0",
+          "minimum_declarations": [
+            "0, 56"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Slot1",
+          "minimum_declarations": [
+            "0, 56"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Slot2",
+          "minimum_declarations": [
+            "0, 56"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"+\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Slot3",
+          "minimum_declarations": [
+            "0, 56"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"+\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Slot4",
+          "minimum_declarations": [
+            "0, 56"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"+\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Details",
+          "minimum_declarations": [
+            "76, 48"
+          ],
+          "flags": [],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"상세\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Buy",
+          "minimum_declarations": [
+            "0, 56"
+          ],
+          "flags": [],
+          "font": [
+            "24"
+          ],
+          "text": [
+            "\"12 Cr · 한 장 추가\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Replace",
+          "minimum_declarations": [
+            "0, 44"
+          ],
+          "flags": [],
+          "font": [
+            "24"
+          ],
+          "text": [
+            "\"보유 탄과 교체\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "LegacyCompress",
+          "minimum_declarations": [
+            "0, 44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"영구 압축\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "LegacyTune",
+          "minimum_declarations": [
+            "0, 44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"탄환 개조\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Exit",
+          "minimum_declarations": [
+            "0, 58"
+          ],
+          "flags": [],
+          "font": [
+            "24"
+          ],
+          "text": [
+            "\"맵으로 계속  →\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "AmmoRow0",
+          "minimum_declarations": [
+            "0, 62"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "AmmoRow1",
+          "minimum_declarations": [
+            "0, 62"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "AmmoRow2",
+          "minimum_declarations": [
+            "0, 62"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "AmmoRow3",
+          "minimum_declarations": [
+            "0, 62"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "NextPage",
+          "minimum_declarations": [
+            "0, 50"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"다음 탄약 보기\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "CloseOverlay",
+          "minimum_declarations": [
+            "0, 56"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"돌아가기\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Settings",
+          "minimum_declarations": [
+            "92, 44"
+          ],
+          "flags": [],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"설정\""
+          ]
+        },
+        {
+          "file": "redesign/shop_screen.tscn",
+          "node": "Manage",
+          "minimum_declarations": [
+            "120, 44"
+          ],
+          "flags": [],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"파츠 관리\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/console_dialog.gd",
+      "sha256": "9e7392dd67a73ca6adbf44aa32b0d5debb5af0feae82020d464ad059c6040973",
+      "override_and_sizing_declarations": [
+        {
+          "line": 33,
+          "text": "%Title.add_theme_font_size_override(\"font_size\", host._font_scaled(32))"
+        },
+        {
+          "line": 39,
+          "text": "button.add_theme_font_size_override(\"font_size\", host._font_scaled(20))"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/console_dialog.tscn",
+      "sha256": "2de1c4c680335044b07407cfb7c62a6a824b03e9118af82403d0a3325f807fce",
+      "override_and_sizing_declarations": [
+        {
+          "line": 45,
+          "text": "theme_override_constants/margin_left = 20"
+        },
+        {
+          "line": 46,
+          "text": "theme_override_constants/margin_right = 20"
+        },
+        {
+          "line": 47,
+          "text": "theme_override_constants/margin_top = 16"
+        },
+        {
+          "line": 48,
+          "text": "theme_override_constants/margin_bottom = 16"
+        },
+        {
+          "line": 52,
+          "text": "theme_override_constants/separation = 14"
+        },
+        {
+          "line": 56,
+          "text": "theme_override_constants/separation = 16"
+        },
+        {
+          "line": 61,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 64,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 70,
+          "text": "custom_minimum_size = Vector2(90, 48)"
+        },
+        {
+          "line": 76,
+          "text": "custom_minimum_size = Vector2(0, 2)"
+        },
+        {
+          "line": 92,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 93,
+          "text": "theme_override_constants/separation = 16"
+        },
+        {
+          "line": 99,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 106,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 110,
+          "text": "custom_minimum_size = Vector2(0, 52)"
+        },
+        {
+          "line": 112,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 118,
+          "text": "custom_minimum_size = Vector2(0, 52)"
+        },
+        {
+          "line": 120,
+          "text": "size_flags_horizontal = 3"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/console_dialog.tscn",
+          "node": "DialogClose",
+          "minimum_declarations": [
+            "90, 48"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"닫기\""
+          ]
+        },
+        {
+          "file": "redesign/console_dialog.tscn",
+          "node": "DialogCancel",
+          "minimum_declarations": [
+            "0, 52"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"보관\""
+          ]
+        },
+        {
+          "file": "redesign/console_dialog.tscn",
+          "node": "DialogConfirm",
+          "minimum_declarations": [
+            "0, 52"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"분해 · +10Cr\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/ui_readability.gd",
+      "sha256": "a0abdd8068e9fe01e83e8d31bc1dc9dbb56be83606adf0128faa5588fd12344a",
+      "override_and_sizing_declarations": [
+        {
+          "line": 44,
+          "text": "item.add_theme_font_size_override(\"font_size\", font_size(item.get_theme_font_size(\"font_size\")))"
+        },
+        {
+          "line": 48,
+          "text": "item.add_theme_font_size_override(key + \"_font_size\", font_size(item.get_theme_font_size(key + \"_font_size\")))"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/line_skin.gd",
+      "sha256": "7bd99da25003730c77ce1b7e9fad7e342130b4b769072caec2be880dc3952157",
+      "override_and_sizing_declarations": [],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/combat_pixel_skin.gd",
+      "sha256": "09c58d70bf3075a4b6e238f4380a99e336f0da228c934e6e3d1f427bd008fceb",
+      "override_and_sizing_declarations": [],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/console_widgets.gd",
+      "sha256": "e7345bf7e7c6f8111ce4b25c9b971b845c42fc7ff740cec0d1afe6f2b345a41f",
+      "override_and_sizing_declarations": [
+        {
+          "line": 10,
+          "text": "style.content_margin_left = 6"
+        },
+        {
+          "line": 11,
+          "text": "style.content_margin_right = 6"
+        },
+        {
+          "line": 12,
+          "text": "style.content_margin_top = 6"
+        },
+        {
+          "line": 13,
+          "text": "style.content_margin_bottom = 6"
+        },
+        {
+          "line": 31,
+          "text": "box.content_margin_left = 16"
+        },
+        {
+          "line": 32,
+          "text": "box.content_margin_right = 36"
+        },
+        {
+          "line": 33,
+          "text": "box.content_margin_top = 10"
+        },
+        {
+          "line": 34,
+          "text": "box.content_margin_bottom = 10"
+        },
+        {
+          "line": 53,
+          "text": "blank.content_margin_left = 4"
+        },
+        {
+          "line": 54,
+          "text": "blank.content_margin_right = 4"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/service_location.gd",
+      "sha256": "743a9ffa949f2d617416ee3256ba45c849e2c3c69715aca3c7fee7cc43972273",
+      "override_and_sizing_declarations": [
+        {
+          "line": 20,
+          "text": "%PlaceArt.custom_minimum_size = Vector2(art_width, art_width / 3.0)"
+        },
+        {
+          "line": 21,
+          "text": "$Copy.custom_minimum_size.x = minf(320, maxf(180,width-art_width-24))"
+        },
+        {
+          "line": 22,
+          "text": "custom_minimum_size.y = maxf(144, art_width / 3.0)"
+        },
+        {
+          "line": 25,
+          "text": "custom_minimum_size.y = 168"
+        },
+        {
+          "line": 28,
+          "text": "custom_minimum_size.y = clampf((size.x - 240.0) / 3.0, 168.0, 320.0)"
+        },
+        {
+          "line": 48,
+          "text": "add_theme_constant_override(\"separation\", 24)"
+        },
+        {
+          "line": 50,
+          "text": "art.custom_minimum_size = Vector2(600, 200) if place_kind == \"shop\" else Vector2(552, 184)"
+        },
+        {
+          "line": 51,
+          "text": "art.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        },
+        {
+          "line": 54,
+          "text": "copy.custom_minimum_size.x = 320"
+        },
+        {
+          "line": 55,
+          "text": "copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL"
+        },
+        {
+          "line": 56,
+          "text": "copy.add_theme_constant_override(\"separation\", 10)"
+        },
+        {
+          "line": 57,
+          "text": "%PlaceTitle.add_theme_font_size_override(\"font_size\", preload(\"res://redesign/line_skin.gd\").font_step(roundi(28 * text_scale)))"
+        },
+        {
+          "line": 58,
+          "text": "%PlaceHint.add_theme_font_size_override(\"font_size\", preload(\"res://redesign/line_skin.gd\").font_step(roundi(19 * text_scale)))"
+        },
+        {
+          "line": 59,
+          "text": "%PlaceActions.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/service_location.tscn",
+      "sha256": "ff5062d3bf3dc9209d933c0beea05bc1487b5a059b2215ed84fa002db64fc622",
+      "override_and_sizing_declarations": [
+        {
+          "line": 12,
+          "text": "custom_minimum_size = Vector2(0, 240)"
+        },
+        {
+          "line": 13,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 15,
+          "text": "theme_override_constants/separation = 18"
+        },
+        {
+          "line": 23,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 46,
+          "text": "custom_minimum_size = Vector2(222, 0)"
+        },
+        {
+          "line": 48,
+          "text": "size_flags_horizontal = 0"
+        },
+        {
+          "line": 51,
+          "text": "theme_override_constants/separation = 14"
+        },
+        {
+          "line": 58,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 67,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 76,
+          "text": "theme_override_constants/separation = 8"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/location_workshop.tscn",
+      "sha256": "40cc6099dd83673803907c862e13873fa924fd3c2e134d4bb8afe7729c4356e1",
+      "override_and_sizing_declarations": [],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/deck_loadout.gd",
+      "sha256": "4ab80c01b677d0a9f3d734ec5d0a53e34bb34c1fc34e3225238c1e36f3551b6a",
+      "override_and_sizing_declarations": [
+        {
+          "line": 14,
+          "text": "%PartInspector.custom_minimum_size.x = 0 if %PartsWorkspace.vertical else 390"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/deck_loadout.tscn",
+      "sha256": "ece6533fe2a5bddb357a324ee890f36d4b30ee542b2f0d3aed5df827ec3aa5fb",
+      "override_and_sizing_declarations": [
+        {
+          "line": 16,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 17,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 30,
+          "text": "theme_override_font_sizes/font_size = 22"
+        },
+        {
+          "line": 37,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 42,
+          "text": "custom_minimum_size = Vector2(180, 48)"
+        },
+        {
+          "line": 49,
+          "text": "custom_minimum_size = Vector2(180, 48)"
+        },
+        {
+          "line": 56,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 57,
+          "text": "theme_override_font_sizes/font_size = 17"
+        },
+        {
+          "line": 64,
+          "text": "theme_override_constants/separation = 12"
+        },
+        {
+          "line": 69,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 71,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 82,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 87,
+          "text": "theme_override_font_sizes/font_size = 20"
+        },
+        {
+          "line": 94,
+          "text": "theme_override_constants/h_separation = 6"
+        },
+        {
+          "line": 98,
+          "text": "custom_minimum_size = Vector2(120,180)"
+        },
+        {
+          "line": 99,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 105,
+          "text": "custom_minimum_size = Vector2(120,180)"
+        },
+        {
+          "line": 106,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 112,
+          "text": "custom_minimum_size = Vector2(120,180)"
+        },
+        {
+          "line": 113,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 119,
+          "text": "custom_minimum_size = Vector2(120,180)"
+        },
+        {
+          "line": 120,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 126,
+          "text": "custom_minimum_size = Vector2(120,180)"
+        },
+        {
+          "line": 127,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 141,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 146,
+          "text": "theme_override_font_sizes/font_size = 20"
+        },
+        {
+          "line": 152,
+          "text": "custom_minimum_size = Vector2(0, 156)"
+        },
+        {
+          "line": 159,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 161,
+          "text": "theme_override_constants/h_separation = 6"
+        },
+        {
+          "line": 162,
+          "text": "theme_override_constants/v_separation = 8"
+        },
+        {
+          "line": 166,
+          "text": "custom_minimum_size = Vector2(200,72)"
+        },
+        {
+          "line": 167,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 173,
+          "text": "custom_minimum_size = Vector2(200,72)"
+        },
+        {
+          "line": 174,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 182,
+          "text": "custom_minimum_size = Vector2(390, 0)"
+        },
+        {
+          "line": 183,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 188,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 201,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 203,
+          "text": "theme_override_constants/h_separation = 10"
+        },
+        {
+          "line": 204,
+          "text": "theme_override_constants/v_separation = 10"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/deck_loadout.tscn",
+          "node": "PartsTab",
+          "minimum_declarations": [
+            "180, 48"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"파츠 구성\""
+          ]
+        },
+        {
+          "file": "redesign/deck_loadout.tscn",
+          "node": "AmmoTab",
+          "minimum_declarations": [
+            "180, 48"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"탄환 덱\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/part_card_view.gd",
+      "sha256": "509289b74c3dbac6bc7f24652c95bffa5644baaf30a340c1bf6a045559838a84",
+      "override_and_sizing_declarations": [],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/pipe_map/screen.gd",
+      "sha256": "b1d0c247b65e146cf6865623575aa1e75e7b719c2e476fca2cf81eb2b2eabbba",
+      "override_and_sizing_declarations": [
+        {
+          "line": 55,
+          "text": "node(\"RegionRail\").custom_minimum_size.x=104 if compact else 128"
+        },
+        {
+          "line": 56,
+          "text": "node(\"SideColumn\").custom_minimum_size.x=176 if compact else 216"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "sha256": "9b85a4dc8ef33d25e580e4f33a395e229ccc017f2cbba5d060ec425cb16bba46",
+      "override_and_sizing_declarations": [
+        {
+          "line": 34,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 39,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 42,
+          "text": "custom_minimum_size = Vector2(0,48)"
+        },
+        {
+          "line": 44,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 48,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 49,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 54,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 61,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 65,
+          "text": "custom_minimum_size = Vector2(60,44)"
+        },
+        {
+          "line": 67,
+          "text": "size_flags_horizontal = 0"
+        },
+        {
+          "line": 68,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 76,
+          "text": "custom_minimum_size = Vector2(60,44)"
+        },
+        {
+          "line": 78,
+          "text": "size_flags_horizontal = 0"
+        },
+        {
+          "line": 79,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 87,
+          "text": "custom_minimum_size = Vector2(60,44)"
+        },
+        {
+          "line": 89,
+          "text": "size_flags_horizontal = 0"
+        },
+        {
+          "line": 90,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 98,
+          "text": "custom_minimum_size = Vector2(60,44)"
+        },
+        {
+          "line": 100,
+          "text": "size_flags_horizontal = 0"
+        },
+        {
+          "line": 101,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 111,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 118,
+          "text": "theme_override_constants/h_separation = 12"
+        },
+        {
+          "line": 119,
+          "text": "theme_override_constants/v_separation = 0"
+        },
+        {
+          "line": 124,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 127,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 137,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 143,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 146,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 156,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 162,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 165,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 175,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 181,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 184,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 194,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 200,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 203,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 213,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 219,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 222,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 232,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 238,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 241,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 251,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 257,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 260,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 270,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 276,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 279,
+          "text": "custom_minimum_size = Vector2(128,0)"
+        },
+        {
+          "line": 284,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 289,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 292,
+          "text": "custom_minimum_size = Vector2(28,28)"
+        },
+        {
+          "line": 303,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 308,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 314,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 326,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 329,
+          "text": "custom_minimum_size = Vector2(28,28)"
+        },
+        {
+          "line": 340,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 345,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 351,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 363,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 366,
+          "text": "custom_minimum_size = Vector2(28,28)"
+        },
+        {
+          "line": 377,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 382,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 388,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 400,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 403,
+          "text": "custom_minimum_size = Vector2(28,28)"
+        },
+        {
+          "line": 414,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 419,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 425,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 437,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 440,
+          "text": "custom_minimum_size = Vector2(28,28)"
+        },
+        {
+          "line": 451,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 456,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 462,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 474,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 477,
+          "text": "custom_minimum_size = Vector2(28,28)"
+        },
+        {
+          "line": 488,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 493,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 499,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 511,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 514,
+          "text": "custom_minimum_size = Vector2(28,28)"
+        },
+        {
+          "line": 525,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 530,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 536,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 542,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 547,
+          "text": "theme_override_constants/separation = 2"
+        },
+        {
+          "line": 550,
+          "text": "custom_minimum_size = Vector2(0,48)"
+        },
+        {
+          "line": 564,
+          "text": "custom_minimum_size = Vector2(32,32)"
+        },
+        {
+          "line": 575,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 586,
+          "text": "custom_minimum_size = Vector2(260,458)"
+        },
+        {
+          "line": 588,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 616,
+          "text": "custom_minimum_size = Vector2(216,0)"
+        },
+        {
+          "line": 630,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 635,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 642,
+          "text": "custom_minimum_size = Vector2(36,36)"
+        },
+        {
+          "line": 652,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 653,
+          "text": "theme_override_constants/separation = 0"
+        },
+        {
+          "line": 658,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 665,
+          "text": "theme_override_font_sizes/font_size = 12"
+        },
+        {
+          "line": 672,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 679,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 682,
+          "text": "custom_minimum_size = Vector2(60,44)"
+        },
+        {
+          "line": 684,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 685,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 693,
+          "text": "custom_minimum_size = Vector2(60,44)"
+        },
+        {
+          "line": 695,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 696,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 704,
+          "text": "custom_minimum_size = Vector2(60,44)"
+        },
+        {
+          "line": 706,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 707,
+          "text": "theme_override_font_sizes/font_size = 16"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "city_deck",
+          "minimum_declarations": [
+            "60,44"
+          ],
+          "flags": [
+            "0"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"빌드\""
+          ]
+        },
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "city_archive",
+          "minimum_declarations": [
+            "60,44"
+          ],
+          "flags": [
+            "0"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"기록\""
+          ]
+        },
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "settings",
+          "minimum_declarations": [
+            "60,44"
+          ],
+          "flags": [
+            "0"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"설정\""
+          ]
+        },
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "menu",
+          "minimum_declarations": [
+            "60,44"
+          ],
+          "flags": [
+            "0"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"메뉴\""
+          ]
+        },
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "Gate",
+          "minimum_declarations": [
+            "0,48"
+          ],
+          "flags": [],
+          "font": [],
+          "text": []
+        },
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "MapKey",
+          "minimum_declarations": [
+            "60,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"기호\""
+          ]
+        },
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "city_map_details",
+          "minimum_declarations": [
+            "60,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"자세히\""
+          ]
+        },
+        {
+          "file": "redesign/pipe_map/screen.tscn",
+          "node": "Enter",
+          "minimum_declarations": [
+            "60,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"이동\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/campaign_hud/combat.gd",
+      "sha256": "b1bc38dc311f0c4593ea6803436801ab76b9b8b08036c2f09af771c383b0fa25",
+      "override_and_sizing_declarations": [
+        {
+          "line": 23,
+          "text": "board.custom_minimum_size=Vector2(0,80)"
+        },
+        {
+          "line": 36,
+          "text": "combo_label.size_flags_horizontal=Control.SIZE_EXPAND_FILL;combo_label.clip_text=true"
+        },
+        {
+          "line": 38,
+          "text": "combo_label.add_theme_font_size_override(\"font_size\",16);combo_label.add_theme_color_override(\"font_color\",Color(\"f3cf73\"))"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/campaign_hud/combat.tscn",
+      "sha256": "c30726410c6cf789a4d885a667df7852e8838757c24d7bd7b14c4d25bafc08c8",
+      "override_and_sizing_declarations": [
+        {
+          "line": 11,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 15,
+          "text": "custom_minimum_size = Vector2(44,44)"
+        },
+        {
+          "line": 16,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 21,
+          "text": "custom_minimum_size = Vector2(44,44)"
+        },
+        {
+          "line": 22,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 27,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 28,
+          "text": "theme_override_font_sizes/font_size = 16"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/campaign_hud/combat.tscn",
+          "node": "BudgetLess",
+          "minimum_declarations": [
+            "44,44"
+          ],
+          "flags": [],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"−\""
+          ]
+        },
+        {
+          "file": "redesign/campaign_hud/combat.tscn",
+          "node": "BudgetMore",
+          "minimum_declarations": [
+            "44,44"
+          ],
+          "flags": [],
+          "font": [
+            "16"
+          ],
+          "text": [
+            "\"+\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/campaign_hud/line_readout.gd",
+      "sha256": "68a929bb95839ea3678c6b96ed67333c4e8fb560714812605156e27824458fc7",
+      "override_and_sizing_declarations": [],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "sha256": "8462e6ae7bd768092f19a66854a57e788b715b68b61614ccb055e565d1e55036",
+      "override_and_sizing_declarations": [
+        {
+          "line": 65,
+          "text": "theme_override_constants/margin_left = 8"
+        },
+        {
+          "line": 66,
+          "text": "theme_override_constants/margin_top = 8"
+        },
+        {
+          "line": 67,
+          "text": "theme_override_constants/margin_right = 8"
+        },
+        {
+          "line": 68,
+          "text": "theme_override_constants/margin_bottom = 8"
+        },
+        {
+          "line": 72,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 74,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 84,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 85,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 92,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 93,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 96,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 97,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 105,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 113,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 118,
+          "text": "custom_minimum_size = Vector2(84,44)"
+        },
+        {
+          "line": 142,
+          "text": "custom_minimum_size = Vector2(68,44)"
+        },
+        {
+          "line": 166,
+          "text": "custom_minimum_size = Vector2(68,44)"
+        },
+        {
+          "line": 190,
+          "text": "custom_minimum_size = Vector2(0,80)"
+        },
+        {
+          "line": 203,
+          "text": "theme_override_constants/margin_top = 2"
+        },
+        {
+          "line": 207,
+          "text": "theme_override_constants/separation = 4"
+        },
+        {
+          "line": 211,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 212,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 216,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 217,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 224,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 229,
+          "text": "custom_minimum_size = Vector2(84,44)"
+        },
+        {
+          "line": 253,
+          "text": "custom_minimum_size = Vector2(104,44)"
+        },
+        {
+          "line": 277,
+          "text": "custom_minimum_size = Vector2(64,44)"
+        },
+        {
+          "line": 301,
+          "text": "custom_minimum_size = Vector2(176,0)"
+        },
+        {
+          "line": 302,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 306,
+          "text": "custom_minimum_size = Vector2(108,20)"
+        },
+        {
+          "line": 339,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 340,
+          "text": "custom_minimum_size = Vector2(60,0)"
+        },
+        {
+          "line": 348,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 353,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 357,
+          "text": "custom_minimum_size = Vector2(0,104)"
+        },
+        {
+          "line": 358,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 366,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 367,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 371,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 372,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 412,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 425,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 448,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 457,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 458,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 464,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 479,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 487,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 499,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 512,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 525,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 526,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 566,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 579,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 601,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 610,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 611,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 617,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 632,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 640,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 652,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 665,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 678,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 679,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 719,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 732,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 754,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 763,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 764,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 770,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 785,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 793,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 805,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 818,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 831,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 832,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 872,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 885,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 907,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 916,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 917,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 923,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 938,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 946,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 958,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 971,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 984,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 985,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 1025,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1038,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1060,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1069,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 1070,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 1076,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1091,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1099,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1111,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1124,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1137,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 1138,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 1178,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1191,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1213,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1222,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 1223,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 1229,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1244,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1252,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1264,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1277,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1290,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 1291,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 1331,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1344,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1366,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1375,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 1376,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 1382,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1397,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1405,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1417,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1430,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1443,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 1444,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 1485,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1498,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1520,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1529,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 1530,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 1536,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1551,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1559,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1571,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1584,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1597,
+          "text": "custom_minimum_size = Vector2(76,104)"
+        },
+        {
+          "line": 1598,
+          "text": "size_flags_horizontal = 1"
+        },
+        {
+          "line": 1639,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1652,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1674,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1683,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 1684,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 1690,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1705,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1713,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1725,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1738,
+          "text": "custom_minimum_size = Vector2(0,0)"
+        },
+        {
+          "line": 1751,
+          "text": "custom_minimum_size = Vector2(244,0)"
+        },
+        {
+          "line": 1752,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 1756,
+          "text": "theme_override_constants/separation = 6"
+        },
+        {
+          "line": 1760,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 1763,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1786,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1800,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1812,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 1815,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1838,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1852,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1864,
+          "text": "custom_minimum_size = Vector2(0,50)"
+        },
+        {
+          "line": 1867,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 1890,
+          "text": "theme_override_font_sizes/font_size = 24"
+        },
+        {
+          "line": 1900,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 1901,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 1907,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1926,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1934,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1942,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1950,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1958,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1966,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1974,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1982,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 1993,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 2019,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 2027,
+          "text": "theme_override_font_sizes/font_size = 12"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Bag",
+          "minimum_declarations": [
+            "84,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"남은 20발\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Parts",
+          "minimum_declarations": [
+            "68,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"빌드\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Menu",
+          "minimum_declarations": [
+            "68,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"메뉴\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "SelectedDetail",
+          "minimum_declarations": [
+            "84,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"1번 상세\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "EjectToggle",
+          "minimum_declarations": [
+            "104,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"빼내기 · 2\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "CancelSelection",
+          "minimum_declarations": [
+            "64,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"취소\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect0",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select0",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect1",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select1",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect2",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select2",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect3",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select3",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect4",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select4",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect5",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select5",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect6",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select6",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect7",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select7",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Inspect8",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Select8",
+          "minimum_declarations": [
+            "0,0"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Cool",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Reload",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "Fire",
+          "minimum_declarations": [
+            "0,50"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_hud.tscn",
+          "node": "EjectApply",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud_theme.tres",
+      "sha256": "33f6a78ef7b293bdf067536fd0eadc1917628c4f09500af14a32f1fb79433e7a",
+      "override_and_sizing_declarations": [
+        {
+          "line": 7,
+          "text": "content_margin_left = 12.0"
+        },
+        {
+          "line": 8,
+          "text": "content_margin_right = 12.0"
+        },
+        {
+          "line": 19,
+          "text": "content_margin_left = 6.0"
+        },
+        {
+          "line": 20,
+          "text": "content_margin_top = 6.0"
+        },
+        {
+          "line": 21,
+          "text": "content_margin_right = 6.0"
+        },
+        {
+          "line": 22,
+          "text": "content_margin_bottom = 6.0"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": []
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "sha256": "d484844894673ef05fe5cdbbe7bd0942ca1739e72f09f676e474d8eced4de810",
+      "override_and_sizing_declarations": [
+        {
+          "line": 55,
+          "text": "theme_override_constants/margin_left = 28"
+        },
+        {
+          "line": 56,
+          "text": "theme_override_constants/margin_right = 22"
+        },
+        {
+          "line": 57,
+          "text": "theme_override_constants/margin_top = 16"
+        },
+        {
+          "line": 58,
+          "text": "theme_override_constants/margin_bottom = 20"
+        },
+        {
+          "line": 63,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 70,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 71,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 83,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 84,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 86,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 87,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 91,
+          "text": "custom_minimum_size = Vector2(80,44)"
+        },
+        {
+          "line": 116,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 141,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 166,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 191,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 216,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 239,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 264,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 272,
+          "text": "theme_override_font_sizes/font_size = 16"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/samples/hud/combat_menu.tscn",
+          "node": "MenuClose",
+          "minimum_declarations": [
+            "80,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"닫기\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_menu.tscn",
+          "node": "Help",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"전투 도움말\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_menu.tscn",
+          "node": "Reset",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"재도전\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_menu.tscn",
+          "node": "Pressure",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"여정\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_menu.tscn",
+          "node": "Other",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"새 출발\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_menu.tscn",
+          "node": "EffectsVolume",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"효과음 · 50%\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_menu.tscn",
+          "node": "CombatMotion",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [],
+          "font": [],
+          "text": [
+            "\"전투 연출 · 기본\""
+          ]
+        }
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_detail.tscn",
+      "sha256": "75f299cda7d164fb45d5f436d6a4d341be043b818e09977800c8604227387f15",
+      "override_and_sizing_declarations": [
+        {
+          "line": 55,
+          "text": "theme_override_constants/margin_left = 28"
+        },
+        {
+          "line": 56,
+          "text": "theme_override_constants/margin_right = 22"
+        },
+        {
+          "line": 57,
+          "text": "theme_override_constants/margin_top = 16"
+        },
+        {
+          "line": 58,
+          "text": "theme_override_constants/margin_bottom = 20"
+        },
+        {
+          "line": 63,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 65,
+          "text": "theme_override_constants/separation = 10"
+        },
+        {
+          "line": 73,
+          "text": "theme_override_font_sizes/font_size = 32"
+        },
+        {
+          "line": 75,
+          "text": "theme_override_constants/shadow_offset_x = 0"
+        },
+        {
+          "line": 76,
+          "text": "theme_override_constants/shadow_offset_y = 2"
+        },
+        {
+          "line": 80,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 90,
+          "text": "theme_override_font_sizes/font_size = 16"
+        },
+        {
+          "line": 91,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 97,
+          "text": "theme_override_constants/separation = 8"
+        },
+        {
+          "line": 102,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 105,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 127,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 130,
+          "text": "size_flags_horizontal = 3"
+        },
+        {
+          "line": 152,
+          "text": "custom_minimum_size = Vector2(0,44)"
+        },
+        {
+          "line": 155,
+          "text": "size_flags_horizontal = 3"
+        }
+      ],
+      "theme_type_variations": [],
+      "button_nodes": [
+        {
+          "file": "redesign/samples/hud/combat_detail.tscn",
+          "node": "DetailUp",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"위로\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_detail.tscn",
+          "node": "DetailDown",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"아래로\""
+          ]
+        },
+        {
+          "file": "redesign/samples/hud/combat_detail.tscn",
+          "node": "CloseDetail",
+          "minimum_declarations": [
+            "0,44"
+          ],
+          "flags": [
+            "3"
+          ],
+          "font": [],
+          "text": [
+            "\"닫기\""
+          ]
+        }
+      ]
+    }
+  ],
+  "literal_gaps": [
+    0,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24
+  ],
+  "literal_font_requests": [
+    12,
+    16,
+    17,
+    20,
+    22,
+    24,
+    32
+  ],
+  "button_nodes": [
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "loadout_back",
+      "minimum_declarations": [
+        "0, 48"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"‹ 돌아가기\""
+      ]
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "weapon_info",
+      "minimum_declarations": [
+        "0, 48"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"규칙 상세\""
+      ]
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "starting_deck",
+      "minimum_declarations": [
+        "0, 48"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"시작 탄환  ›\""
+      ]
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "outfit_select_work",
+      "minimum_declarations": [
+        "0, 78"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "outfit_select_carrier",
+      "minimum_declarations": [
+        "0, 78"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "outfit_select_scout",
+      "minimum_declarations": [
+        "0, 78"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "outfit_select_heatworker",
+      "minimum_declarations": [
+        "0, 78"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "outfit_select_hoist",
+      "minimum_declarations": [
+        "0, 78"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "outfit_select_recovery",
+      "minimum_declarations": [
+        "0, 78"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "outfit_select_expedition",
+      "minimum_declarations": [
+        "0, 78"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "weapon_select_single",
+      "minimum_declarations": [
+        "0, 92"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "weapon_select_burst",
+      "minimum_declarations": [
+        "0, 92"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "weapon_select_scatter",
+      "minimum_declarations": [
+        "0, 92"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "weapon_select_heavy",
+      "minimum_declarations": [
+        "0, 92"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "weapon_select_amplifier",
+      "minimum_declarations": [
+        "0, 92"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "preparation_options",
+      "minimum_declarations": [
+        "0, 48"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"등반 설정\""
+      ]
+    },
+    {
+      "file": "redesign/equipment_screen.tscn",
+      "node": "Launch",
+      "minimum_declarations": [
+        "0, 48",
+        "250, 54"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"등반 시작  ›\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Menu",
+      "minimum_declarations": [
+        "110, 52"
+      ],
+      "flags": [],
+      "font": [
+        "24"
+      ],
+      "text": [
+        "\"메뉴\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Reroll",
+      "minimum_declarations": [
+        "188, 44"
+      ],
+      "flags": [],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"새 진열 · 3 Cr\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Offer0",
+      "minimum_declarations": [
+        "0, 324"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Offer1",
+      "minimum_declarations": [
+        "0, 324"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Offer2",
+      "minimum_declarations": [
+        "0, 324"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Bag",
+      "minimum_declarations": [
+        "152, 52"
+      ],
+      "flags": [],
+      "font": [
+        "24"
+      ],
+      "text": [
+        "\"탄환 가방\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Charge",
+      "minimum_declarations": [
+        "224, 56"
+      ],
+      "flags": [],
+      "font": [
+        "24"
+      ],
+      "text": [
+        "\"1회 충전 · 18 Cr\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Slot0",
+      "minimum_declarations": [
+        "0, 56"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Slot1",
+      "minimum_declarations": [
+        "0, 56"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Slot2",
+      "minimum_declarations": [
+        "0, 56"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"+\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Slot3",
+      "minimum_declarations": [
+        "0, 56"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"+\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Slot4",
+      "minimum_declarations": [
+        "0, 56"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"+\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Details",
+      "minimum_declarations": [
+        "76, 48"
+      ],
+      "flags": [],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"상세\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Buy",
+      "minimum_declarations": [
+        "0, 56"
+      ],
+      "flags": [],
+      "font": [
+        "24"
+      ],
+      "text": [
+        "\"12 Cr · 한 장 추가\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Replace",
+      "minimum_declarations": [
+        "0, 44"
+      ],
+      "flags": [],
+      "font": [
+        "24"
+      ],
+      "text": [
+        "\"보유 탄과 교체\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "LegacyCompress",
+      "minimum_declarations": [
+        "0, 44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"영구 압축\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "LegacyTune",
+      "minimum_declarations": [
+        "0, 44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"탄환 개조\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Exit",
+      "minimum_declarations": [
+        "0, 58"
+      ],
+      "flags": [],
+      "font": [
+        "24"
+      ],
+      "text": [
+        "\"맵으로 계속  →\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "AmmoRow0",
+      "minimum_declarations": [
+        "0, 62"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "AmmoRow1",
+      "minimum_declarations": [
+        "0, 62"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "AmmoRow2",
+      "minimum_declarations": [
+        "0, 62"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "AmmoRow3",
+      "minimum_declarations": [
+        "0, 62"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "NextPage",
+      "minimum_declarations": [
+        "0, 50"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"다음 탄약 보기\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "CloseOverlay",
+      "minimum_declarations": [
+        "0, 56"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"돌아가기\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Settings",
+      "minimum_declarations": [
+        "92, 44"
+      ],
+      "flags": [],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"설정\""
+      ]
+    },
+    {
+      "file": "redesign/shop_screen.tscn",
+      "node": "Manage",
+      "minimum_declarations": [
+        "120, 44"
+      ],
+      "flags": [],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"파츠 관리\""
+      ]
+    },
+    {
+      "file": "redesign/console_dialog.tscn",
+      "node": "DialogClose",
+      "minimum_declarations": [
+        "90, 48"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"닫기\""
+      ]
+    },
+    {
+      "file": "redesign/console_dialog.tscn",
+      "node": "DialogCancel",
+      "minimum_declarations": [
+        "0, 52"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"보관\""
+      ]
+    },
+    {
+      "file": "redesign/console_dialog.tscn",
+      "node": "DialogConfirm",
+      "minimum_declarations": [
+        "0, 52"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"분해 · +10Cr\""
+      ]
+    },
+    {
+      "file": "redesign/deck_loadout.tscn",
+      "node": "PartsTab",
+      "minimum_declarations": [
+        "180, 48"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"파츠 구성\""
+      ]
+    },
+    {
+      "file": "redesign/deck_loadout.tscn",
+      "node": "AmmoTab",
+      "minimum_declarations": [
+        "180, 48"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"탄환 덱\""
+      ]
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "city_deck",
+      "minimum_declarations": [
+        "60,44"
+      ],
+      "flags": [
+        "0"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"빌드\""
+      ]
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "city_archive",
+      "minimum_declarations": [
+        "60,44"
+      ],
+      "flags": [
+        "0"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"기록\""
+      ]
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "settings",
+      "minimum_declarations": [
+        "60,44"
+      ],
+      "flags": [
+        "0"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"설정\""
+      ]
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "menu",
+      "minimum_declarations": [
+        "60,44"
+      ],
+      "flags": [
+        "0"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"메뉴\""
+      ]
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "Gate",
+      "minimum_declarations": [
+        "0,48"
+      ],
+      "flags": [],
+      "font": [],
+      "text": []
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "MapKey",
+      "minimum_declarations": [
+        "60,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"기호\""
+      ]
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "city_map_details",
+      "minimum_declarations": [
+        "60,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"자세히\""
+      ]
+    },
+    {
+      "file": "redesign/pipe_map/screen.tscn",
+      "node": "Enter",
+      "minimum_declarations": [
+        "60,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"이동\""
+      ]
+    },
+    {
+      "file": "redesign/campaign_hud/combat.tscn",
+      "node": "BudgetLess",
+      "minimum_declarations": [
+        "44,44"
+      ],
+      "flags": [],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"−\""
+      ]
+    },
+    {
+      "file": "redesign/campaign_hud/combat.tscn",
+      "node": "BudgetMore",
+      "minimum_declarations": [
+        "44,44"
+      ],
+      "flags": [],
+      "font": [
+        "16"
+      ],
+      "text": [
+        "\"+\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Bag",
+      "minimum_declarations": [
+        "84,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"남은 20발\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Parts",
+      "minimum_declarations": [
+        "68,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"빌드\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Menu",
+      "minimum_declarations": [
+        "68,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"메뉴\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "SelectedDetail",
+      "minimum_declarations": [
+        "84,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"1번 상세\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "EjectToggle",
+      "minimum_declarations": [
+        "104,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"빼내기 · 2\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "CancelSelection",
+      "minimum_declarations": [
+        "64,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"취소\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect0",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select0",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect1",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select1",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect2",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select2",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect3",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select3",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect4",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select4",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect5",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select5",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect6",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select6",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect7",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select7",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Inspect8",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Select8",
+      "minimum_declarations": [
+        "0,0"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Cool",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Reload",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "Fire",
+      "minimum_declarations": [
+        "0,50"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_hud.tscn",
+      "node": "EjectApply",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "node": "MenuClose",
+      "minimum_declarations": [
+        "80,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"닫기\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "node": "Help",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"전투 도움말\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "node": "Reset",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"재도전\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "node": "Pressure",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"여정\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "node": "Other",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"새 출발\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "node": "EffectsVolume",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"효과음 · 50%\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_menu.tscn",
+      "node": "CombatMotion",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [],
+      "font": [],
+      "text": [
+        "\"전투 연출 · 기본\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_detail.tscn",
+      "node": "DetailUp",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"위로\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_detail.tscn",
+      "node": "DetailDown",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"아래로\""
+      ]
+    },
+    {
+      "file": "redesign/samples/hud/combat_detail.tscn",
+      "node": "CloseDetail",
+      "minimum_declarations": [
+        "0,44"
+      ],
+      "flags": [
+        "3"
+      ],
+      "font": [],
+      "text": [
+        "\"닫기\""
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060 Ti
+
+FAIL: combat without overflow (1008, 630)
+FAIL: screen bounds BattleView
+FAIL: screen bounds AmmoGrid
+FAIL: screen bounds QueuePanel
+FAIL: screen bounds confirm
+FAIL: input confirm
+FAIL: public confirm aims equipped weapon
+FAIL: input fire
+FAIL: firing state agrees with model
+FAIL: reload state agrees with model
+FAIL: public flow includes aim(1008, 630)
+FAIL: public flow includes recoil(1008, 630)
+FAIL: public flow includes reload_open(1008, 630)
+FAIL: public flow includes reload_seat(1008, 630)
+FAIL: public flow includes approach(1008, 630)
+FAIL: public flow includes hit(1008, 630)
+FAIL: combat without overflow (1440, 630)
+FAIL: screen bounds AmmoGrid
+FAIL: input confirm
+FAIL: public confirm aims equipped weapon
+FAIL: input fire
+FAIL: firing state agrees with model
+FAIL: public flow includes recoil(1440, 630)
+FAIL: public flow includes hit(1440, 630)
+FAIL: input confirm
+FAIL: input fire
+FAIL: complete weapon motion amplifier
+FAIL: input confirm
+FAIL: input fire
+FAIL: complete weapon motion scatter
+FAIL: input confirm
+FAIL: input fire
+FAIL: complete weapon motion heavy
+FAIL: input confirm
+FAIL: input fire
+FAIL: input confirm
+FAIL: input fire
+FAIL: input confirm
+FAIL: input fire
+FAIL: forced reload exposes additional cooling pose
+FAIL: forced reload finishes cooled and playable
+FAIL: input confirm
+FAIL: input fire
+FAIL: lethal shot renders defeat reaction
+FAIL: defeat presentation cleans up
+FAIL: input confirm
+FAIL: input without waiting fire
+FAIL: skip fixture has an active action
+FAIL: input skip_animation
+FAIL: actual firing has baseline recoil amplifier
+FAIL: actual firing has baseline recoil burst
+FAIL: actual firing has baseline recoil scatter
+FAIL: actual firing has baseline recoil heavy
+MOTION observed_frames=5031 order_errors=0 ground_errors=0
+ACTOR MOTION UI COMPLETE checks=450 failures=53

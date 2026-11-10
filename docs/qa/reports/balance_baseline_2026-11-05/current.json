@@ -1,0 +1,1725 @@
+{
+  "checks": 462,
+  "comparisons": [
+    {
+      "burn_damage": 7,
+      "case": "fire_r2",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 4,
+      "forced_turns": 12,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 23,
+      "max_direct_hit": 12,
+      "node": 20101,
+      "parts": [
+        "thermal_drive",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 8,
+      "search_ms": 20,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r2.json",
+      "swap": false,
+      "to": "inferno",
+      "turns": 18
+    },
+    {
+      "burn_damage": 59,
+      "case": "fire_r2",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 10,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 20,
+      "max_direct_hit": 6,
+      "node": 20101,
+      "parts": [
+        "inferno",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 11,
+      "search_ms": 10,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r2.json",
+      "swap": true,
+      "to": "inferno",
+      "turns": 16
+    },
+    {
+      "burn_damage": 4,
+      "case": "fire_r3",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 5,
+      "forced_turns": 8,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 31,
+      "max_direct_hit": 14,
+      "node": 30101,
+      "parts": [
+        "thermal_drive",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 13,
+      "search_ms": 47,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r3.json",
+      "swap": false,
+      "to": "inferno",
+      "turns": 15
+    },
+    {
+      "burn_damage": 51,
+      "case": "fire_r3",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 4,
+      "forced_turns": 10,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 25,
+      "max_direct_hit": 10,
+      "node": 30101,
+      "parts": [
+        "inferno",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 2,
+      "remaining": 13,
+      "search_ms": 54,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r3.json",
+      "swap": true,
+      "to": "inferno",
+      "turns": 20
+    },
+    {
+      "burn_damage": 32,
+      "case": "fire_r4",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "charge",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 5,
+      "forced_turns": 8,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 33,
+      "max_direct_hit": 21,
+      "node": 40101,
+      "parts": [
+        "thermal_drive",
+        "igniter",
+        "rammer",
+        "compression_sink",
+        "ordinary_chain"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 2,
+      "remaining": 10,
+      "search_ms": 126,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r4.json",
+      "swap": false,
+      "to": "inferno",
+      "turns": 17
+    },
+    {
+      "burn_damage": 61,
+      "case": "fire_r4",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "charge",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 6,
+      "forced_turns": 10,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 37,
+      "max_direct_hit": 20,
+      "node": 40101,
+      "parts": [
+        "inferno",
+        "igniter",
+        "rammer",
+        "compression_sink",
+        "ordinary_chain"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 10,
+      "search_ms": 110,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r4.json",
+      "swap": true,
+      "to": "inferno",
+      "turns": 19
+    },
+    {
+      "burn_damage": 32,
+      "case": "control_mismatch",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "charge",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 5,
+      "forced_turns": 8,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 33,
+      "max_direct_hit": 21,
+      "node": 40101,
+      "parts": [
+        "thermal_drive",
+        "igniter",
+        "rammer",
+        "compression_sink",
+        "ordinary_chain"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 2,
+      "remaining": 10,
+      "search_ms": 122,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r4.json",
+      "swap": false,
+      "to": "momentum",
+      "turns": 17
+    },
+    {
+      "burn_damage": 46,
+      "case": "control_mismatch",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "charge",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool_c",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 1,
+      "emergency": 3,
+      "fire": 14,
+      "forced_turns": 20,
+      "from": "thermal_drive",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 11,
+      "max_direct_hit": 10,
+      "node": 40101,
+      "parts": [
+        "momentum",
+        "igniter",
+        "rammer",
+        "compression_sink",
+        "ordinary_chain"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 3
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 5
+        },
+        {
+          "action": "fire",
+          "rounds": 2
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "fire",
+          "rounds": 5
+        },
+        {
+          "action": "fire",
+          "rounds": 2
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "fire",
+          "rounds": 2
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 5
+        },
+        {
+          "action": "fire",
+          "rounds": 2
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "eject",
+          "indices": [
+            2
+          ]
+        },
+        {
+          "action": "fire",
+          "rounds": 4
+        },
+        {
+          "action": "emergency"
+        },
+        {
+          "action": "fire",
+          "rounds": 4
+        },
+        {
+          "action": "emergency"
+        },
+        {
+          "action": "fire",
+          "rounds": 4
+        },
+        {
+          "action": "emergency"
+        },
+        {
+          "action": "fire",
+          "rounds": 4
+        }
+      ],
+      "phase": "reward",
+      "reload": 3,
+      "remaining": 1,
+      "search_ms": 24513,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_heavy_17_r4.json",
+      "swap": true,
+      "to": "momentum",
+      "turns": 52
+    },
+    {
+      "burn_damage": 0,
+      "case": "fire_mismatch",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2",
+        "precise_p2",
+        "precise_p2_power",
+        "disrupt",
+        "charge_hot",
+        "charge_hot",
+        "chase",
+        "shatter_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 2,
+      "forced_turns": 3,
+      "from": "volley_drive",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 28,
+      "max_direct_hit": 16,
+      "node": 20101,
+      "parts": [
+        "volley_drive",
+        "duplex"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 22,
+      "search_ms": 7,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_burst_17_r2.json",
+      "swap": false,
+      "to": "inferno",
+      "turns": 7
+    },
+    {
+      "burn_damage": 0,
+      "case": "fire_mismatch",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2",
+        "precise_p2",
+        "precise_p2_power",
+        "disrupt",
+        "charge_hot",
+        "charge_hot",
+        "chase",
+        "shatter_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 6,
+      "forced_turns": 16,
+      "from": "volley_drive",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 12,
+      "max_direct_hit": 16,
+      "node": 20101,
+      "parts": [
+        "inferno",
+        "duplex"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 2,
+      "remaining": 12,
+      "search_ms": 90,
+      "solved": true,
+      "source": "build_roles_20261103/climb_earned/gate_burst_17_r2.json",
+      "swap": true,
+      "to": "inferno",
+      "turns": 28
+    },
+    {
+      "burn_damage": 4,
+      "case": "coil_value",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 5,
+      "forced_turns": 8,
+      "from": "coil",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 31,
+      "max_direct_hit": 14,
+      "node": 30101,
+      "parts": [
+        "thermal_drive",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 13,
+      "search_ms": 50,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_carrier_heavy/gate_heavy_17_r3.json",
+      "swap": false,
+      "to": "",
+      "turns": 15
+    },
+    {
+      "burn_damage": 4,
+      "case": "coil_value",
+      "cool": 0,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate",
+        "charge_heat"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 5,
+      "forced_turns": 8,
+      "from": "coil",
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "margin": 31,
+      "max_direct_hit": 14,
+      "node": 30101,
+      "parts": [
+        "thermal_drive",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 13,
+      "search_ms": 50,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_carrier_heavy/gate_heavy_17_r3.json",
+      "swap": true,
+      "to": "",
+      "turns": 15
+    },
+    {
+      "burn_damage": 0,
+      "case": "duplex_value",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "precise_p2_power_c",
+        "disrupt",
+        "precise_p2_power_c",
+        "shatter",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2_power",
+        "charge",
+        "chase",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 3,
+      "from": "duplex",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 43,
+      "max_direct_hit": 16,
+      "node": 40101,
+      "parts": [
+        "volley_drive",
+        "rammer",
+        "third_striker",
+        "duplex",
+        "capacitor"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 18,
+      "search_ms": 16,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json",
+      "swap": false,
+      "to": "",
+      "turns": 8
+    },
+    {
+      "burn_damage": 0,
+      "case": "duplex_value",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "precise_p2_power_c",
+        "disrupt",
+        "precise_p2_power_c",
+        "shatter",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2_power",
+        "charge",
+        "chase",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 4,
+      "forced_turns": 3,
+      "from": "duplex",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 42,
+      "max_direct_hit": 18,
+      "node": 40101,
+      "parts": [
+        "volley_drive",
+        "rammer",
+        "third_striker",
+        "capacitor"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 2,
+      "remaining": 13,
+      "search_ms": 47,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json",
+      "swap": true,
+      "to": "",
+      "turns": 11
+    },
+    {
+      "burn_damage": 0,
+      "case": "third_value",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "precise_p2_power_c",
+        "disrupt",
+        "precise_p2_power_c",
+        "shatter",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2_power",
+        "charge",
+        "chase",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 3,
+      "from": "third_striker",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 43,
+      "max_direct_hit": 16,
+      "node": 40101,
+      "parts": [
+        "volley_drive",
+        "rammer",
+        "third_striker",
+        "duplex",
+        "capacitor"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 18,
+      "search_ms": 10,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json",
+      "swap": false,
+      "to": "",
+      "turns": 8
+    },
+    {
+      "burn_damage": 0,
+      "case": "third_value",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "precise_p2_power_c",
+        "disrupt",
+        "precise_p2_power_c",
+        "shatter",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2_power",
+        "charge",
+        "chase",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 3,
+      "from": "third_striker",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 43,
+      "max_direct_hit": 16,
+      "node": 40101,
+      "parts": [
+        "volley_drive",
+        "rammer",
+        "duplex",
+        "capacitor"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 16,
+      "search_ms": 15,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json",
+      "swap": true,
+      "to": "",
+      "turns": 8
+    },
+    {
+      "burn_damage": 0,
+      "case": "rammer_value",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "precise_p2_power_c",
+        "disrupt",
+        "precise_p2_power_c",
+        "shatter",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2_power",
+        "charge",
+        "chase",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 3,
+      "from": "rammer",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 43,
+      "max_direct_hit": 16,
+      "node": 40101,
+      "parts": [
+        "volley_drive",
+        "rammer",
+        "third_striker",
+        "duplex",
+        "capacitor"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 18,
+      "search_ms": 10,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json",
+      "swap": false,
+      "to": "",
+      "turns": 8
+    },
+    {
+      "burn_damage": 0,
+      "case": "rammer_value",
+      "cool": 0,
+      "deck": [
+        "precise_p2",
+        "precise_p2",
+        "charge",
+        "precise_p2_power_c",
+        "precise_p2_power_c",
+        "disrupt",
+        "precise_p2_power_c",
+        "shatter",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p2_power",
+        "charge",
+        "chase",
+        "cool_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 3,
+      "from": "rammer",
+      "levels": {
+        "volley_drive": 8.0
+      },
+      "margin": 43,
+      "max_direct_hit": 16,
+      "node": 40101,
+      "parts": [
+        "volley_drive",
+        "third_striker",
+        "duplex",
+        "capacitor"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 1,
+      "remaining": 18,
+      "search_ms": 12,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json",
+      "swap": true,
+      "to": "",
+      "turns": 8
+    },
+    {
+      "burn_damage": 0,
+      "case": "position_swap",
+      "cool": 0,
+      "deck": [
+        "pierce_p2",
+        "pierce_p2",
+        "charge",
+        "pierce_p2_power_c",
+        "pierce_p2_power_c",
+        "charge_hot",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "pierce_p2",
+        "pierce_p2_power",
+        "charge",
+        "pierce_p2_power_c",
+        "cool",
+        "pierce_p2_power_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 3,
+      "from": "afterburner",
+      "levels": {
+        "siege_drive": 8.0
+      },
+      "margin": 30,
+      "max_direct_hit": 20,
+      "node": 30101,
+      "parts": [
+        "siege_drive",
+        "third_striker",
+        "opening",
+        "capacitor",
+        "afterburner"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 3,
+      "remaining": 13,
+      "search_ms": 46,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_expedition_copy/gate_single_931104_r3.json",
+      "swap": false,
+      "to": "sequencer",
+      "turns": 12
+    },
+    {
+      "burn_damage": 0,
+      "case": "position_swap",
+      "cool": 0,
+      "deck": [
+        "pierce_p2",
+        "pierce_p2",
+        "charge",
+        "pierce_p2_power_c",
+        "pierce_p2_power_c",
+        "charge_hot",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "pierce_p2",
+        "pierce_p2_power",
+        "charge",
+        "pierce_p2_power_c",
+        "cool",
+        "pierce_p2_power_c"
+      ],
+      "eject": 0,
+      "emergency": 0,
+      "fire": 3,
+      "forced_turns": 2,
+      "from": "afterburner",
+      "levels": {
+        "siege_drive": 8.0
+      },
+      "margin": 30,
+      "max_direct_hit": 20,
+      "node": 30101,
+      "parts": [
+        "siege_drive",
+        "third_striker",
+        "opening",
+        "capacitor",
+        "sequencer"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "phase": "reward",
+      "reload": 3,
+      "remaining": 13,
+      "search_ms": 46,
+      "solved": true,
+      "source": "economy_roles_20261103/climb_expedition_copy/gate_single_931104_r3.json",
+      "swap": true,
+      "to": "sequencer",
+      "turns": 11
+    }
+  ],
+  "failures": [],
+  "note": "Actual owned-part branches; bounded search sees future draws and RNG. Not optimality or human win rate."
+}

@@ -1,0 +1,2800 @@
+{
+  "geometry_source": "qa_runtime\\ui_readability_20261103\\restored_geometry\\geometry.json",
+  "geometry_records": 105,
+  "geometry_sha256": "6afbe925f2957f94d34d02a94363ff2e771730d5c5dd42a131994273496019ca",
+  "source_sha256": {
+    "redesign/equipment_screen.tscn": "845603463217260fb9dded167d7549a0efcb1eaa1a61206968a3659234b4f2f3",
+    "redesign/equipment_screen.gd": "376ffec3d496453fb574ab0216949e656303463364bcfba9bca3f40999061bc8",
+    "redesign/shop_screen.tscn": "47264a4980a8c9c63c7311bc2f9d75b541233b97fd13693c25192e25a0fa4974",
+    "redesign/shop_screen.gd": "210ee6a0d28a20953fa068749d052b03e627417e5e3d330449dad7cd27b8db12",
+    "redesign/campaign_ui.gd": "51f281d8bf559fffb687416cc0837e5cadf5f896df7071fa8855a71f915973f9",
+    "redesign/combat_pixel_skin.gd": "09c58d70bf3075a4b6e238f4380a99e336f0da228c934e6e3d1f427bd008fceb",
+    "redesign/line_skin.gd": "7bd99da25003730c77ce1b7e9fad7e342130b4b769072caec2be880dc3952157",
+    "redesign/screen.gd": "fb0070bfc560ae70eb2c051afdcea92c8e0950fb320459b21c0d1a1620ab8043",
+    "redesign/ui_readability.gd": "a0abdd8068e9fe01e83e8d31bc1dc9dbb56be83606adf0128faa5588fd12344a"
+  },
+  "authored_scene_node_type_counts_including_hidden": {
+    "redesign/equipment_screen.tscn": {
+      "Control": 4,
+      "TextureRect": 9,
+      "MarginContainer": 1,
+      "VBoxContainer": 12,
+      "HBoxContainer": 3,
+      "Button": 17,
+      "Label": 35,
+      "GridContainer": 2,
+      "ScrollContainer": 1
+    },
+    "redesign/shop_screen.tscn": {
+      "Control": 13,
+      "ColorRect": 2,
+      "MarginContainer": 11,
+      "VBoxContainer": 14,
+      "HBoxContainer": 20,
+      "Label": 57,
+      "Button": 26,
+      "BoxContainer": 3,
+      "TextureRect": 1,
+      "ScrollContainer": 2,
+      "PanelContainer": 7,
+      "CanvasLayer": 1,
+      "CenterContainer": 1,
+      "RichTextLabel": 1
+    }
+  },
+  "selected_geometry_records": [
+    {
+      "label": "shop_1280x800",
+      "host_size": [
+        1280.0,
+        800.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 11,
+        "VBoxContainer": 13,
+        "Control": 9,
+        "ColorRect": 1,
+        "HBoxContainer": 18,
+        "Label": 44,
+        "Button": 17,
+        "BoxContainer": 3,
+        "TextureRect": 1,
+        "PanelContainer": 6,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "32": 10,
+        "16": 43
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@14",
+          "rect": [
+            0.0,
+            0.0,
+            1280.0,
+            800.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 854.0,
+            "overflow": 54.0,
+            "page": 800.0,
+            "y": 0
+          }
+        },
+        {
+          "name": "StoryScroll",
+          "rect": [
+            433.0,
+            92.0,
+            397.0,
+            180.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 123.0,
+            "overflow": 0.0,
+            "page": 123.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "ShopScreen",
+          "class": "Control",
+          "rect": [
+            0.0,
+            0.0,
+            1268.0,
+            854.0
+          ],
+          "minimum": [
+            0.0,
+            854.0
+          ]
+        },
+        {
+          "name": "Story",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            92.0,
+            814.0,
+            180.0
+          ],
+          "minimum": [
+            480.0,
+            180.0
+          ]
+        },
+        {
+          "name": "Room",
+          "class": "TextureRect",
+          "rect": [
+            16.0,
+            122.0,
+            397.0,
+            120.0
+          ],
+          "minimum": [
+            240.0,
+            120.0
+          ]
+        },
+        {
+          "name": "StoryScroll",
+          "class": "ScrollContainer",
+          "rect": [
+            433.0,
+            92.0,
+            397.0,
+            180.0
+          ],
+          "minimum": [
+            220.0,
+            180.0
+          ]
+        },
+        {
+          "name": "SelectionRow",
+          "class": "BoxContainer",
+          "rect": [
+            16.0,
+            340.0,
+            1236.0,
+            324.0
+          ],
+          "minimum": [
+            352.0,
+            324.0
+          ]
+        },
+        {
+          "name": "Offers",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            340.0,
+            814.0,
+            324.0
+          ],
+          "minimum": [
+            28.0,
+            324.0
+          ]
+        },
+        {
+          "name": "Offer0",
+          "class": "Button",
+          "rect": [
+            16.0,
+            340.0,
+            262.0,
+            324.0
+          ],
+          "minimum": [
+            0.0,
+            324.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "Detail",
+          "class": "PanelContainer",
+          "rect": [
+            854.0,
+            340.0,
+            398.0,
+            324.0
+          ],
+          "minimum": [
+            300.0,
+            324.0
+          ]
+        }
+      ]
+    },
+    {
+      "label": "preparation_1280x800",
+      "host_size": [
+        1280.0,
+        800.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 2,
+        "VBoxContainer": 13,
+        "Control": 4,
+        "TextureRect": 15,
+        "HBoxContainer": 3,
+        "Button": 17,
+        "Label": 33,
+        "GridContainer": 2,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "16": 37,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@158",
+          "rect": [
+            0.0,
+            0.0,
+            1280.0,
+            800.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 800.0,
+            "overflow": 0.0,
+            "page": 800.0,
+            "y": 0
+          }
+        },
+        {
+          "name": "OutfitScroll",
+          "rect": [
+            903.159973144531,
+            110.0,
+            348.0,
+            459.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 594.0,
+            "overflow": 135.0,
+            "page": 459.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "Stage",
+          "class": "Control",
+          "rect": [
+            28.0,
+            76.0,
+            1224.0,
+            519.0
+          ],
+          "minimum": [
+            0.0,
+            336.0
+          ]
+        },
+        {
+          "name": "WeaponName",
+          "class": "Label",
+          "rect": [
+            28.0,
+            106.0,
+            397.0,
+            32.0
+          ],
+          "minimum": [
+            64.0,
+            32.0
+          ],
+          "font_size": 32
+        }
+      ]
+    },
+    {
+      "label": "workshop_1280x800",
+      "host_size": [
+        1280.0,
+        800.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 1,
+        "MarginContainer": 1,
+        "VBoxContainer": 10,
+        "PanelContainer": 6,
+        "HBoxContainer": 3,
+        "Label": 18,
+        "Button": 10,
+        "HFlowContainer": 1,
+        "TextureRect": 1,
+        "Control": 3,
+        "GridContainer": 1
+      },
+      "font_sizes_node_counts": {
+        "16": 27,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@211",
+          "rect": [
+            0.0,
+            0.0,
+            1280.0,
+            800.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 791.0,
+            "overflow": 0.0,
+            "page": 791.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "RunLocation",
+          "class": "Label",
+          "rect": [
+            36.0,
+            40.0,
+            840.0,
+            16.0
+          ],
+          "minimum": [
+            122.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "PlaceArt",
+          "class": "TextureRect",
+          "rect": [
+            190.0,
+            108.0,
+            495.0,
+            165.0
+          ],
+          "minimum": [
+            495.0,
+            165.0
+          ]
+        },
+        {
+          "name": "PlaceTitle",
+          "class": "Label",
+          "rect": [
+            709.0,
+            147.0,
+            381.0,
+            32.0
+          ],
+          "minimum": [
+            1.0,
+            32.0
+          ],
+          "font_size": 32
+        },
+        {
+          "name": "WorkshopOperations",
+          "class": "GridContainer",
+          "rect": [
+            190.0,
+            289.0,
+            900.0,
+            396.0
+          ],
+          "minimum": [
+            508.0,
+            396.0
+          ]
+        }
+      ],
+      "operation_text_nodes": [
+        {
+          "name": "@Label@225",
+          "class": "Label",
+          "rect": [
+            206.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@226",
+          "class": "Label",
+          "rect": [
+            206.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_refit",
+          "class": "Button",
+          "rect": [
+            402.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@229",
+          "class": "Label",
+          "rect": [
+            662.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@230",
+          "class": "Label",
+          "rect": [
+            662.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_press",
+          "class": "Button",
+          "rect": [
+            858.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@233",
+          "class": "Label",
+          "rect": [
+            206.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@234",
+          "class": "Label",
+          "rect": [
+            206.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_tune",
+          "class": "Button",
+          "rect": [
+            402.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@237",
+          "class": "Label",
+          "rect": [
+            662.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@238",
+          "class": "Label",
+          "rect": [
+            662.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_trim",
+          "class": "Button",
+          "rect": [
+            858.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@241",
+          "class": "Label",
+          "rect": [
+            206.0,
+            573.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@242",
+          "class": "Label",
+          "rect": [
+            206.0,
+            597.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_bag",
+          "class": "Button",
+          "rect": [
+            402.0,
+            621.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        }
+      ]
+    },
+    {
+      "label": "shop_1008x630",
+      "host_size": [
+        1008.0,
+        630.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 11,
+        "VBoxContainer": 13,
+        "Control": 9,
+        "ColorRect": 1,
+        "HBoxContainer": 18,
+        "Label": 44,
+        "Button": 17,
+        "BoxContainer": 3,
+        "TextureRect": 1,
+        "PanelContainer": 6,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "32": 7,
+        "16": 46
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@534",
+          "rect": [
+            0.0,
+            0.0,
+            1008.0,
+            630.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 1118.0,
+            "overflow": 488.0,
+            "page": 630.0,
+            "y": 34
+          }
+        },
+        {
+          "name": "StoryScroll",
+          "rect": [
+            341.0,
+            58.0,
+            306.0,
+            180.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 180.0,
+            "overflow": 0.0,
+            "page": 180.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "ShopScreen",
+          "class": "Control",
+          "rect": [
+            0.0,
+            -34.0,
+            996.0,
+            1118.0
+          ],
+          "minimum": [
+            0.0,
+            1118.0
+          ]
+        },
+        {
+          "name": "Story",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            58.0,
+            631.0,
+            180.0
+          ],
+          "minimum": [
+            402.0,
+            180.0
+          ]
+        },
+        {
+          "name": "Room",
+          "class": "TextureRect",
+          "rect": [
+            16.0,
+            88.0,
+            305.0,
+            120.0
+          ],
+          "minimum": [
+            180.0,
+            120.0
+          ]
+        },
+        {
+          "name": "StoryScroll",
+          "class": "ScrollContainer",
+          "rect": [
+            341.0,
+            58.0,
+            306.0,
+            180.0
+          ],
+          "minimum": [
+            202.0,
+            180.0
+          ]
+        },
+        {
+          "name": "SelectionRow",
+          "class": "BoxContainer",
+          "rect": [
+            16.0,
+            306.0,
+            964.0,
+            588.0
+          ],
+          "minimum": [
+            249.0,
+            588.0
+          ]
+        },
+        {
+          "name": "Offers",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            306.0,
+            964.0,
+            324.0
+          ],
+          "minimum": [
+            28.0,
+            324.0
+          ]
+        },
+        {
+          "name": "Offer0",
+          "class": "Button",
+          "rect": [
+            16.0,
+            306.0,
+            312.0,
+            324.0
+          ],
+          "minimum": [
+            0.0,
+            324.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "Detail",
+          "class": "PanelContainer",
+          "rect": [
+            16.0,
+            654.0,
+            964.0,
+            240.0
+          ],
+          "minimum": [
+            249.0,
+            240.0
+          ]
+        }
+      ]
+    },
+    {
+      "label": "preparation_1008x630",
+      "host_size": [
+        1008.0,
+        630.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 2,
+        "VBoxContainer": 13,
+        "Control": 4,
+        "TextureRect": 15,
+        "HBoxContainer": 3,
+        "Button": 17,
+        "Label": 33,
+        "GridContainer": 2,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "16": 37,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@686",
+          "rect": [
+            0.0,
+            0.0,
+            1008.0,
+            630.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 630.0,
+            "overflow": 0.0,
+            "page": 630.0,
+            "y": 0
+          }
+        },
+        {
+          "name": "OutfitScroll",
+          "rect": [
+            708.679992675781,
+            110.0,
+            271.0,
+            270.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 594.0,
+            "overflow": 324.0,
+            "page": 270.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "Stage",
+          "class": "Control",
+          "rect": [
+            28.0,
+            76.0,
+            952.0,
+            349.0
+          ],
+          "minimum": [
+            0.0,
+            336.0
+          ]
+        },
+        {
+          "name": "WeaponName",
+          "class": "Label",
+          "rect": [
+            28.0,
+            106.0,
+            309.0,
+            32.0
+          ],
+          "minimum": [
+            64.0,
+            32.0
+          ],
+          "font_size": 32
+        }
+      ]
+    },
+    {
+      "label": "workshop_1008x630",
+      "host_size": [
+        1008.0,
+        630.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 1,
+        "MarginContainer": 1,
+        "VBoxContainer": 10,
+        "PanelContainer": 6,
+        "HBoxContainer": 3,
+        "Label": 18,
+        "Button": 10,
+        "HFlowContainer": 1,
+        "TextureRect": 1,
+        "Control": 3,
+        "GridContainer": 1,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "16": 27,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@759",
+          "rect": [
+            0.0,
+            0.0,
+            1008.0,
+            630.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 791.0,
+            "overflow": 161.0,
+            "page": 630.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "RunLocation",
+          "class": "Label",
+          "rect": [
+            36.0,
+            40.0,
+            556.0,
+            16.0
+          ],
+          "minimum": [
+            122.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "PlaceArt",
+          "class": "TextureRect",
+          "rect": [
+            48.0,
+            108.0,
+            495.0,
+            165.0
+          ],
+          "minimum": [
+            495.0,
+            165.0
+          ]
+        },
+        {
+          "name": "PlaceTitle",
+          "class": "Label",
+          "rect": [
+            567.0,
+            147.0,
+            381.0,
+            32.0
+          ],
+          "minimum": [
+            1.0,
+            32.0
+          ],
+          "font_size": 32
+        },
+        {
+          "name": "WorkshopOperations",
+          "class": "GridContainer",
+          "rect": [
+            48.0,
+            289.0,
+            900.0,
+            396.0
+          ],
+          "minimum": [
+            508.0,
+            396.0
+          ]
+        }
+      ],
+      "operation_text_nodes": [
+        {
+          "name": "@Label@803",
+          "class": "Label",
+          "rect": [
+            64.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@804",
+          "class": "Label",
+          "rect": [
+            64.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_refit",
+          "class": "Button",
+          "rect": [
+            260.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@807",
+          "class": "Label",
+          "rect": [
+            520.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@808",
+          "class": "Label",
+          "rect": [
+            520.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_press",
+          "class": "Button",
+          "rect": [
+            716.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@811",
+          "class": "Label",
+          "rect": [
+            64.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@812",
+          "class": "Label",
+          "rect": [
+            64.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_tune",
+          "class": "Button",
+          "rect": [
+            260.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@815",
+          "class": "Label",
+          "rect": [
+            520.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@816",
+          "class": "Label",
+          "rect": [
+            520.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_trim",
+          "class": "Button",
+          "rect": [
+            716.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@819",
+          "class": "Label",
+          "rect": [
+            64.0,
+            573.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@820",
+          "class": "Label",
+          "rect": [
+            64.0,
+            597.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_bag",
+          "class": "Button",
+          "rect": [
+            260.0,
+            621.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        }
+      ]
+    },
+    {
+      "label": "shop_844x390",
+      "host_size": [
+        844.0,
+        390.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 11,
+        "VBoxContainer": 13,
+        "Control": 9,
+        "ColorRect": 1,
+        "HBoxContainer": 18,
+        "Label": 44,
+        "Button": 17,
+        "BoxContainer": 3,
+        "TextureRect": 1,
+        "VScrollBar": 2,
+        "PanelContainer": 6
+      },
+      "font_sizes_node_counts": {
+        "32": 7,
+        "16": 46
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@1229",
+          "rect": [
+            0.0,
+            0.0,
+            844.0,
+            390.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 1212.0,
+            "overflow": 822.0,
+            "page": 390.0,
+            "y": 274
+          }
+        },
+        {
+          "name": "StoryScroll",
+          "rect": [
+            264.0,
+            -182.0,
+            228.0,
+            180.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 199.0,
+            "overflow": 19.0,
+            "page": 180.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "ShopScreen",
+          "class": "Control",
+          "rect": [
+            0.0,
+            -274.0,
+            832.0,
+            1212.0
+          ],
+          "minimum": [
+            0.0,
+            1212.0
+          ]
+        },
+        {
+          "name": "Story",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            -182.0,
+            476.0,
+            180.0
+          ],
+          "minimum": [
+            414.0,
+            180.0
+          ]
+        },
+        {
+          "name": "Room",
+          "class": "TextureRect",
+          "rect": [
+            16.0,
+            -152.0,
+            228.0,
+            120.0
+          ],
+          "minimum": [
+            180.0,
+            120.0
+          ]
+        },
+        {
+          "name": "StoryScroll",
+          "class": "ScrollContainer",
+          "rect": [
+            264.0,
+            -182.0,
+            228.0,
+            180.0
+          ],
+          "minimum": [
+            214.0,
+            180.0
+          ]
+        },
+        {
+          "name": "SelectionRow",
+          "class": "BoxContainer",
+          "rect": [
+            16.0,
+            66.0,
+            800.0,
+            588.0
+          ],
+          "minimum": [
+            249.0,
+            588.0
+          ]
+        },
+        {
+          "name": "Offers",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            66.0,
+            800.0,
+            324.0
+          ],
+          "minimum": [
+            28.0,
+            324.0
+          ]
+        },
+        {
+          "name": "Offer0",
+          "class": "Button",
+          "rect": [
+            16.0,
+            66.0,
+            257.0,
+            324.0
+          ],
+          "minimum": [
+            0.0,
+            324.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "Detail",
+          "class": "PanelContainer",
+          "rect": [
+            16.0,
+            414.0,
+            800.0,
+            240.0
+          ],
+          "minimum": [
+            249.0,
+            240.0
+          ]
+        }
+      ]
+    },
+    {
+      "label": "preparation_844x390",
+      "host_size": [
+        844.0,
+        390.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 2,
+        "VBoxContainer": 13,
+        "Control": 4,
+        "TextureRect": 15,
+        "HBoxContainer": 3,
+        "Button": 17,
+        "Label": 33,
+        "GridContainer": 2,
+        "VScrollBar": 2
+      },
+      "font_sizes_node_counts": {
+        "16": 37,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@1381",
+          "rect": [
+            0.0,
+            0.0,
+            844.0,
+            390.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 617.0,
+            "overflow": 227.0,
+            "page": 390.0,
+            "y": 0
+          }
+        },
+        {
+          "name": "OutfitScroll",
+          "rect": [
+            582.839965820313,
+            110.0,
+            221.0,
+            257.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 594.0,
+            "overflow": 337.0,
+            "page": 257.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "Stage",
+          "class": "Control",
+          "rect": [
+            28.0,
+            76.0,
+            776.0,
+            336.0
+          ],
+          "minimum": [
+            0.0,
+            336.0
+          ]
+        },
+        {
+          "name": "WeaponName",
+          "class": "Label",
+          "rect": [
+            28.0,
+            106.0,
+            266.0,
+            32.0
+          ],
+          "minimum": [
+            64.0,
+            32.0
+          ],
+          "font_size": 32
+        }
+      ]
+    },
+    {
+      "label": "workshop_844x390",
+      "host_size": [
+        844.0,
+        390.0
+      ],
+      "factor": 1.0,
+      "final_scale": [
+        1.0,
+        1.0
+      ],
+      "classes": {
+        "ScrollContainer": 1,
+        "MarginContainer": 1,
+        "VBoxContainer": 10,
+        "PanelContainer": 6,
+        "HBoxContainer": 3,
+        "Label": 18,
+        "Button": 10,
+        "HFlowContainer": 1,
+        "TextureRect": 1,
+        "Control": 3,
+        "GridContainer": 1,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "16": 27,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@1454",
+          "rect": [
+            0.0,
+            0.0,
+            844.0,
+            390.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 771.0,
+            "overflow": 381.0,
+            "page": 390.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "RunLocation",
+          "class": "Label",
+          "rect": [
+            36.0,
+            40.0,
+            392.0,
+            16.0
+          ],
+          "minimum": [
+            122.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "PlaceArt",
+          "class": "TextureRect",
+          "rect": [
+            22.0,
+            108.0,
+            433.399993896484,
+            144.466659545898
+          ],
+          "minimum": [
+            433.399993896484,
+            144.466659545898
+          ]
+        },
+        {
+          "name": "PlaceTitle",
+          "class": "Label",
+          "rect": [
+            480.0,
+            137.0,
+            330.0,
+            32.0
+          ],
+          "minimum": [
+            1.0,
+            32.0
+          ],
+          "font_size": 32
+        },
+        {
+          "name": "WorkshopOperations",
+          "class": "GridContainer",
+          "rect": [
+            22.0,
+            269.0,
+            788.0,
+            396.0
+          ],
+          "minimum": [
+            508.0,
+            396.0
+          ]
+        }
+      ],
+      "operation_text_nodes": [
+        {
+          "name": "@Label@1498",
+          "class": "Label",
+          "rect": [
+            38.0,
+            281.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1499",
+          "class": "Label",
+          "rect": [
+            38.0,
+            305.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_refit",
+          "class": "Button",
+          "rect": [
+            178.0,
+            329.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1502",
+          "class": "Label",
+          "rect": [
+            438.0,
+            281.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1503",
+          "class": "Label",
+          "rect": [
+            438.0,
+            305.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_press",
+          "class": "Button",
+          "rect": [
+            578.0,
+            329.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1506",
+          "class": "Label",
+          "rect": [
+            38.0,
+            417.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1507",
+          "class": "Label",
+          "rect": [
+            38.0,
+            441.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_tune",
+          "class": "Button",
+          "rect": [
+            178.0,
+            465.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1510",
+          "class": "Label",
+          "rect": [
+            438.0,
+            417.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1511",
+          "class": "Label",
+          "rect": [
+            438.0,
+            441.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_trim",
+          "class": "Button",
+          "rect": [
+            578.0,
+            465.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1514",
+          "class": "Label",
+          "rect": [
+            38.0,
+            553.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@1515",
+          "class": "Label",
+          "rect": [
+            38.0,
+            577.0,
+            356.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_bag",
+          "class": "Button",
+          "rect": [
+            178.0,
+            601.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        }
+      ]
+    },
+    {
+      "label": "shop_2340x1080",
+      "host_size": [
+        1170.0,
+        540.0
+      ],
+      "factor": 2.0,
+      "final_scale": [
+        2.0,
+        2.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 11,
+        "VBoxContainer": 13,
+        "Control": 9,
+        "ColorRect": 1,
+        "HBoxContainer": 18,
+        "Label": 44,
+        "Button": 17,
+        "BoxContainer": 3,
+        "TextureRect": 1,
+        "PanelContainer": 6,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "32": 7,
+        "16": 46
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@1924",
+          "rect": [
+            0.0,
+            0.0,
+            1170.0,
+            540.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 854.0,
+            "overflow": 314.0,
+            "page": 540.0,
+            "y": 124
+          }
+        },
+        {
+          "name": "StoryScroll",
+          "rect": [
+            396.0,
+            -32.0,
+            360.0,
+            180.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 180.0,
+            "overflow": 0.0,
+            "page": 180.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "ShopScreen",
+          "class": "Control",
+          "rect": [
+            0.0,
+            -124.0,
+            1158.0,
+            854.0
+          ],
+          "minimum": [
+            0.0,
+            854.0
+          ]
+        },
+        {
+          "name": "Story",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            -32.0,
+            740.0,
+            180.0
+          ],
+          "minimum": [
+            480.0,
+            180.0
+          ]
+        },
+        {
+          "name": "Room",
+          "class": "TextureRect",
+          "rect": [
+            16.0,
+            -2.0,
+            360.0,
+            120.0
+          ],
+          "minimum": [
+            240.0,
+            120.0
+          ]
+        },
+        {
+          "name": "StoryScroll",
+          "class": "ScrollContainer",
+          "rect": [
+            396.0,
+            -32.0,
+            360.0,
+            180.0
+          ],
+          "minimum": [
+            220.0,
+            180.0
+          ]
+        },
+        {
+          "name": "SelectionRow",
+          "class": "BoxContainer",
+          "rect": [
+            16.0,
+            216.0,
+            1126.0,
+            324.0
+          ],
+          "minimum": [
+            352.0,
+            324.0
+          ]
+        },
+        {
+          "name": "Offers",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            216.0,
+            740.0,
+            324.0
+          ],
+          "minimum": [
+            28.0,
+            324.0
+          ]
+        },
+        {
+          "name": "Offer0",
+          "class": "Button",
+          "rect": [
+            16.0,
+            216.0,
+            237.0,
+            324.0
+          ],
+          "minimum": [
+            0.0,
+            324.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "Detail",
+          "class": "PanelContainer",
+          "rect": [
+            780.0,
+            216.0,
+            362.0,
+            324.0
+          ],
+          "minimum": [
+            300.0,
+            324.0
+          ]
+        }
+      ]
+    },
+    {
+      "label": "preparation_2340x1080",
+      "host_size": [
+        1170.0,
+        540.0
+      ],
+      "factor": 2.0,
+      "final_scale": [
+        2.0,
+        2.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 2,
+        "VBoxContainer": 13,
+        "Control": 4,
+        "TextureRect": 15,
+        "HBoxContainer": 3,
+        "Button": 17,
+        "Label": 33,
+        "GridContainer": 2,
+        "VScrollBar": 2
+      },
+      "font_sizes_node_counts": {
+        "16": 37,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@2076",
+          "rect": [
+            0.0,
+            0.0,
+            1170.0,
+            540.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 617.0,
+            "overflow": 77.0,
+            "page": 540.0,
+            "y": 0
+          }
+        },
+        {
+          "name": "OutfitScroll",
+          "rect": [
+            815.929992675781,
+            110.0,
+            314.0,
+            276.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 594.0,
+            "overflow": 318.0,
+            "page": 276.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "Stage",
+          "class": "Control",
+          "rect": [
+            28.0,
+            76.0,
+            1102.0,
+            336.0
+          ],
+          "minimum": [
+            0.0,
+            336.0
+          ]
+        },
+        {
+          "name": "WeaponName",
+          "class": "Label",
+          "rect": [
+            28.0,
+            106.0,
+            358.0,
+            32.0
+          ],
+          "minimum": [
+            64.0,
+            32.0
+          ],
+          "font_size": 32
+        }
+      ]
+    },
+    {
+      "label": "workshop_2340x1080",
+      "host_size": [
+        1170.0,
+        540.0
+      ],
+      "factor": 2.0,
+      "final_scale": [
+        2.0,
+        2.0
+      ],
+      "classes": {
+        "ScrollContainer": 1,
+        "MarginContainer": 1,
+        "VBoxContainer": 10,
+        "PanelContainer": 6,
+        "HBoxContainer": 3,
+        "Label": 18,
+        "Button": 10,
+        "HFlowContainer": 1,
+        "TextureRect": 1,
+        "Control": 3,
+        "GridContainer": 1,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "16": 27,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@2149",
+          "rect": [
+            0.0,
+            0.0,
+            1170.0,
+            540.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 791.0,
+            "overflow": 251.0,
+            "page": 540.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "RunLocation",
+          "class": "Label",
+          "rect": [
+            36.0,
+            40.0,
+            718.0,
+            16.0
+          ],
+          "minimum": [
+            122.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "PlaceArt",
+          "class": "TextureRect",
+          "rect": [
+            129.0,
+            108.0,
+            495.0,
+            165.0
+          ],
+          "minimum": [
+            495.0,
+            165.0
+          ]
+        },
+        {
+          "name": "PlaceTitle",
+          "class": "Label",
+          "rect": [
+            648.0,
+            147.0,
+            381.0,
+            32.0
+          ],
+          "minimum": [
+            1.0,
+            32.0
+          ],
+          "font_size": 32
+        },
+        {
+          "name": "WorkshopOperations",
+          "class": "GridContainer",
+          "rect": [
+            129.0,
+            289.0,
+            900.0,
+            396.0
+          ],
+          "minimum": [
+            508.0,
+            396.0
+          ]
+        }
+      ],
+      "operation_text_nodes": [
+        {
+          "name": "@Label@2193",
+          "class": "Label",
+          "rect": [
+            145.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2194",
+          "class": "Label",
+          "rect": [
+            145.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_refit",
+          "class": "Button",
+          "rect": [
+            341.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2197",
+          "class": "Label",
+          "rect": [
+            601.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2198",
+          "class": "Label",
+          "rect": [
+            601.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_press",
+          "class": "Button",
+          "rect": [
+            797.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2201",
+          "class": "Label",
+          "rect": [
+            145.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2202",
+          "class": "Label",
+          "rect": [
+            145.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_tune",
+          "class": "Button",
+          "rect": [
+            341.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2205",
+          "class": "Label",
+          "rect": [
+            601.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2206",
+          "class": "Label",
+          "rect": [
+            601.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_trim",
+          "class": "Button",
+          "rect": [
+            797.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2209",
+          "class": "Label",
+          "rect": [
+            145.0,
+            573.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2210",
+          "class": "Label",
+          "rect": [
+            145.0,
+            597.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_bag",
+          "class": "Button",
+          "rect": [
+            341.0,
+            621.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        }
+      ]
+    },
+    {
+      "label": "shop_2160x1032",
+      "host_size": [
+        1080.0,
+        516.0
+      ],
+      "factor": 2.0,
+      "final_scale": [
+        2.0,
+        2.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 11,
+        "VBoxContainer": 13,
+        "Control": 9,
+        "ColorRect": 1,
+        "HBoxContainer": 18,
+        "Label": 44,
+        "Button": 17,
+        "BoxContainer": 3,
+        "TextureRect": 1,
+        "PanelContainer": 6,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "32": 7,
+        "16": 46
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@2619",
+          "rect": [
+            0.0,
+            0.0,
+            1080.0,
+            516.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 1118.0,
+            "overflow": 602.0,
+            "page": 516.0,
+            "y": 148
+          }
+        },
+        {
+          "name": "StoryScroll",
+          "rect": [
+            366.0,
+            -56.0,
+            330.0,
+            180.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 180.0,
+            "overflow": 0.0,
+            "page": 180.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "ShopScreen",
+          "class": "Control",
+          "rect": [
+            0.0,
+            -148.0,
+            1068.0,
+            1118.0
+          ],
+          "minimum": [
+            0.0,
+            1118.0
+          ]
+        },
+        {
+          "name": "Story",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            -56.0,
+            680.0,
+            180.0
+          ],
+          "minimum": [
+            402.0,
+            180.0
+          ]
+        },
+        {
+          "name": "Room",
+          "class": "TextureRect",
+          "rect": [
+            16.0,
+            -26.0,
+            330.0,
+            120.0
+          ],
+          "minimum": [
+            180.0,
+            120.0
+          ]
+        },
+        {
+          "name": "StoryScroll",
+          "class": "ScrollContainer",
+          "rect": [
+            366.0,
+            -56.0,
+            330.0,
+            180.0
+          ],
+          "minimum": [
+            202.0,
+            180.0
+          ]
+        },
+        {
+          "name": "SelectionRow",
+          "class": "BoxContainer",
+          "rect": [
+            16.0,
+            192.0,
+            1036.0,
+            588.0
+          ],
+          "minimum": [
+            249.0,
+            588.0
+          ]
+        },
+        {
+          "name": "Offers",
+          "class": "HBoxContainer",
+          "rect": [
+            16.0,
+            192.0,
+            1036.0,
+            324.0
+          ],
+          "minimum": [
+            28.0,
+            324.0
+          ]
+        },
+        {
+          "name": "Offer0",
+          "class": "Button",
+          "rect": [
+            16.0,
+            192.0,
+            336.0,
+            324.0
+          ],
+          "minimum": [
+            0.0,
+            324.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "Detail",
+          "class": "PanelContainer",
+          "rect": [
+            16.0,
+            540.0,
+            1036.0,
+            240.0
+          ],
+          "minimum": [
+            249.0,
+            240.0
+          ]
+        }
+      ]
+    },
+    {
+      "label": "preparation_2160x1032",
+      "host_size": [
+        1080.0,
+        516.0
+      ],
+      "factor": 2.0,
+      "final_scale": [
+        2.0,
+        2.0
+      ],
+      "classes": {
+        "ScrollContainer": 2,
+        "MarginContainer": 2,
+        "VBoxContainer": 13,
+        "Control": 4,
+        "TextureRect": 15,
+        "HBoxContainer": 3,
+        "Button": 17,
+        "Label": 33,
+        "GridContainer": 2,
+        "VScrollBar": 2
+      },
+      "font_sizes_node_counts": {
+        "16": 37,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@2771",
+          "rect": [
+            0.0,
+            0.0,
+            1080.0,
+            516.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 617.0,
+            "overflow": 101.0,
+            "page": 516.0,
+            "y": 0
+          }
+        },
+        {
+          "name": "OutfitScroll",
+          "rect": [
+            751.579956054688,
+            110.0,
+            288.0,
+            276.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 594.0,
+            "overflow": 318.0,
+            "page": 276.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "Stage",
+          "class": "Control",
+          "rect": [
+            28.0,
+            76.0,
+            1012.0,
+            336.0
+          ],
+          "minimum": [
+            0.0,
+            336.0
+          ]
+        },
+        {
+          "name": "WeaponName",
+          "class": "Label",
+          "rect": [
+            28.0,
+            106.0,
+            328.0,
+            32.0
+          ],
+          "minimum": [
+            64.0,
+            32.0
+          ],
+          "font_size": 32
+        }
+      ]
+    },
+    {
+      "label": "workshop_2160x1032",
+      "host_size": [
+        1080.0,
+        516.0
+      ],
+      "factor": 2.0,
+      "final_scale": [
+        2.0,
+        2.0
+      ],
+      "classes": {
+        "ScrollContainer": 1,
+        "MarginContainer": 1,
+        "VBoxContainer": 10,
+        "PanelContainer": 6,
+        "HBoxContainer": 3,
+        "Label": 18,
+        "Button": 10,
+        "HFlowContainer": 1,
+        "TextureRect": 1,
+        "Control": 3,
+        "GridContainer": 1,
+        "VScrollBar": 1
+      },
+      "font_sizes_node_counts": {
+        "16": 27,
+        "32": 1
+      },
+      "scrolls": [
+        {
+          "name": "@ScrollContainer@2844",
+          "rect": [
+            0.0,
+            0.0,
+            1080.0,
+            516.0
+          ],
+          "scroll": {
+            "horizontal": 0.0,
+            "max": 791.0,
+            "overflow": 275.0,
+            "page": 516.0,
+            "y": 0
+          }
+        }
+      ],
+      "key_nodes": [
+        {
+          "name": "RunLocation",
+          "class": "Label",
+          "rect": [
+            36.0,
+            40.0,
+            628.0,
+            16.0
+          ],
+          "minimum": [
+            122.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "PlaceArt",
+          "class": "TextureRect",
+          "rect": [
+            84.0,
+            108.0,
+            495.0,
+            165.0
+          ],
+          "minimum": [
+            495.0,
+            165.0
+          ]
+        },
+        {
+          "name": "PlaceTitle",
+          "class": "Label",
+          "rect": [
+            603.0,
+            147.0,
+            381.0,
+            32.0
+          ],
+          "minimum": [
+            1.0,
+            32.0
+          ],
+          "font_size": 32
+        },
+        {
+          "name": "WorkshopOperations",
+          "class": "GridContainer",
+          "rect": [
+            84.0,
+            289.0,
+            900.0,
+            396.0
+          ],
+          "minimum": [
+            508.0,
+            396.0
+          ]
+        }
+      ],
+      "operation_text_nodes": [
+        {
+          "name": "@Label@2888",
+          "class": "Label",
+          "rect": [
+            100.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2889",
+          "class": "Label",
+          "rect": [
+            100.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_refit",
+          "class": "Button",
+          "rect": [
+            296.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2892",
+          "class": "Label",
+          "rect": [
+            556.0,
+            301.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2893",
+          "class": "Label",
+          "rect": [
+            556.0,
+            325.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_press",
+          "class": "Button",
+          "rect": [
+            752.0,
+            349.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2896",
+          "class": "Label",
+          "rect": [
+            100.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2897",
+          "class": "Label",
+          "rect": [
+            100.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_tune",
+          "class": "Button",
+          "rect": [
+            296.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2900",
+          "class": "Label",
+          "rect": [
+            556.0,
+            437.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2901",
+          "class": "Label",
+          "rect": [
+            556.0,
+            461.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_trim",
+          "class": "Button",
+          "rect": [
+            752.0,
+            485.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2904",
+          "class": "Label",
+          "rect": [
+            100.0,
+            573.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "@Label@2905",
+          "class": "Label",
+          "rect": [
+            100.0,
+            597.0,
+            412.0,
+            16.0
+          ],
+          "font_size": 16
+        },
+        {
+          "name": "city_workshop_bag",
+          "class": "Button",
+          "rect": [
+            296.0,
+            621.0,
+            216.0,
+            52.0
+          ],
+          "font_size": 16
+        }
+      ]
+    }
+  ],
+  "font_quantization_default_scale": {
+    "13": 16,
+    "16": 16,
+    "17": 16,
+    "18": 16,
+    "19": 16,
+    "20": 16,
+    "21": 16,
+    "22": 16,
+    "23": 16,
+    "24": 16,
+    "26": 16,
+    "27": 16,
+    "28": 32,
+    "29": 32,
+    "30": 32,
+    "32": 32,
+    "36": 32
+  }
+}

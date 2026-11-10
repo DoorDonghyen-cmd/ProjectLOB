@@ -1,0 +1,40 @@
+--- before/equipment_screen.tscn
++++ after/equipment_screen.tscn
+@@ -1,4 +1,4 @@
+-[gd_scene load_steps=17 format=3]
++[gd_scene load_steps=18 format=3]
+ [ext_resource type="Script" path="res://redesign/equipment_screen.gd" id="1"]
+ [ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/workshop_v1.png" id="2"]
+ [ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/outfits_v1.png" id="3"]
+@@ -9,6 +9,7 @@
+ [ext_resource type="Theme" path="res://redesign/equipment/theme.tres" id="11"]
+ [ext_resource type="Script" path="res://redesign/equipment/edge.gd" id="12"]
+ [ext_resource type="Texture2D" path="res://assets/ui/equipment_20261106/editor_loadout.png" id="13"]
++[ext_resource type="StyleBox" path="res://redesign/equipment/weapon_info_panel.tres" id="14"]
+ [sub_resource type="ShaderMaterial" id="Cutout"]
+ shader = ExtResource("9")
+ [sub_resource type="AtlasTexture" id="Work"]
+@@ -117,12 +118,23 @@
+ custom_minimum_size = Vector2(0, 272)
+ size_flags_vertical = 3
+ 
++[node name="WeaponInfoBackdrop" type="Panel" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage"]
++layout_mode = 1
++anchor_right = 0.325
++anchor_bottom = 1.0
++offset_right = 24.0
++offset_bottom = 6.0
++mouse_filter = 2
++theme_override_styles/panel = ExtResource("14")
++
+ [node name="SelectedWeaponPanel" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage" ]
+ unique_name_in_owner = true
+ layout_mode = 1
+ anchor_right = 0.325
+ anchor_bottom = 1.0
++offset_left = 12.0
+ offset_top = 8.0
++offset_right = 12.0
+ theme_override_constants/separation = 6
+ 
+ [node name="WeaponRole" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]

@@ -1,0 +1,227 @@
+{
+  "date": "2026-11-03",
+  "engine": "Godot 4.7 stable",
+  "baseline": "qa_runtime/focus_build_20261103/baseline",
+  "scope": "New campaign focus_build_version=1; previous dirty changes preserved",
+  "files": [
+    {
+      "path": ".agents/skills/00-project-manager/task_tracker.md",
+      "before_sha256": "81f9007a11a328b8ff1c53722ae10f961548231d68ac9e7b6e33184cac109207",
+      "after_sha256": "80b4a783c29354a52d7e98fea39107578f956aa0a13559855bc6f1048677d4dc"
+    },
+    {
+      "path": "docs/direction/art-and-ux.md",
+      "before_sha256": "12184394e312afe263ba2728759a5416cb145e04f0017a885922a9e1399714ee",
+      "after_sha256": "f2fe62023f04a3860eb3e8c844809550327caedb6559522bfa8d45e9cc0c2c3a"
+    },
+    {
+      "path": "docs/direction/current.md",
+      "before_sha256": "6ed81dee6da7d5e4079e7beca62427f95c0805a6841dcd3f27076aca801133c3",
+      "after_sha256": "4062f555064f44f37da705bf7f7fef8811e1478fdac5bbf6a428c17ea5293b7c"
+    },
+    {
+      "path": "docs/direction/damage-growth.md",
+      "before_sha256": "4a34602d970a8ed32bd405da7e18ed6c881656a45f448611d540e943eb95a5ab",
+      "after_sha256": "a52b81b12c6ba0ff35393341772178b22b0ab0a4581bd7a028eb3d8c5bd0be1a"
+    },
+    {
+      "path": "docs/direction/focus-build.md",
+      "before_sha256": null,
+      "after_sha256": "7a5782e0c8cd2288576a043eb1b44ba484a1736052a70d0ee5d3c89065e9d61c"
+    },
+    {
+      "path": "docs/direction/game-design.md",
+      "before_sha256": "97ab1058214b6f4e6c38ca4c3183d29075ac6ab0d91888980c57cb30bbfb1821",
+      "after_sha256": "d02929b2f9cb918fa6b294924992694a934cd466fd52e29ea64b6a733330b6c4"
+    },
+    {
+      "path": "docs/direction/magazine-build.md",
+      "before_sha256": "92dbf9de9b22ab9471dc1dabbf8cc5da29ff121e8d4fe19c1226958a70d085a0",
+      "after_sha256": "0033fac32519ac6403281df56f92d91d715c5f3f8ec63f32d44ba25e001c990f"
+    },
+    {
+      "path": "docs/direction/parts-builds.md",
+      "before_sha256": "1a8ab8d1a19f41113a091d3420986957809b2600a5cd037969e436868ea2ce9e",
+      "after_sha256": "ad610fff2453b0fb7cbce646d0bf0da61e179b5b8665137a2578f9f351ddc7d7"
+    },
+    {
+      "path": "docs/direction/playtest-priorities.md",
+      "before_sha256": "b5b235425cd748abb400056215fc9d9d149be3581d31f52240a2e55dab109f7e",
+      "after_sha256": "00e2c5a683485b0a531f9e16655040d7615e20e959755a15857e80ffa6aac3ed"
+    },
+    {
+      "path": "docs/history/daily/2026-11-03.md",
+      "before_sha256": "ec671459608ad5ccbb7f9044ba0ed0e5bf7db0ea3166d2680a4de6c6683c8626",
+      "after_sha256": "8b7cb692dc6719f65aec69195a9901b82a644be9faed6a1748c1558f61b9179a"
+    },
+    {
+      "path": "docs/history/index.md",
+      "before_sha256": "2734d6bfa6584aa892f496c778656a65970a1b4cf09dce0560fc7c46c7f3c2da",
+      "after_sha256": "95dc81a8ae0b3faa42e420331faa3ab8ab71e2b415252900aa1733daaefcb7ec"
+    },
+    {
+      "path": "docs/qa/reports/focus_build_2026-11-03.md",
+      "before_sha256": null,
+      "after_sha256": "ccfa98e876a74a09f0ed8caf2f734214790e7d08c9737720225be1b4cb235c66"
+    },
+    {
+      "path": "tools/run_focus_build.ps1",
+      "before_sha256": null,
+      "after_sha256": "1f60e36574de7f80fc4b954da50795ea5ee4e943af3c57bac5b17ac1206c86ee"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_discovery.gd",
+      "before_sha256": "0b21ff6f4dbe077e9f5cc1ca23372921b8a06c955962ee912ae5bf3a5d8b4071",
+      "after_sha256": "bc2a17d398e5786e58040e5b522eefb60400af5ec463c1d17565434cac2bd2e8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/build_guide.gd",
+      "before_sha256": "4a41b684943eeaa91a6e694973d9892d7f87dc02a523704e111834551e6d6533",
+      "after_sha256": "e6b3a23dacff470a96d6c8cb0f139767140fb3be1387e9be058ef456f5c67748"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign.gd",
+      "before_sha256": "c3d98ee005182aff2d01f4d4e9e2a7c2667639539768026747b61469c697e151",
+      "after_sha256": "0fa965353efe28f58a7c69dcbc49805757ab1bc602b6746a8cc54aa9edf49f16"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_content.gd",
+      "before_sha256": "86c2c411c45570a3e921aaa95e6017c689c07739539a44bb272a16fd436361da",
+      "after_sha256": "8dae46f2cf2e0f33ddcd38bc8e281a8294347b64c1f04b406e0b73a4e4da5676"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_ui.gd",
+      "before_sha256": "1075c270f5515694bd1fd27d91b3f8a6ced69bf6b784f98891dd7578d2088764",
+      "after_sha256": "8327ddde9ad94e7954b06e86ac081504b06d4a050f271abe6b98e1373ae8e18e"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/content.gd",
+      "before_sha256": "1f7a7163817300091444033bf4f43767f9f31877f366195a61a5eeaa36c90085",
+      "after_sha256": "eb7e9fb585dbf3826a1b5b5943f487398a2f62c140502394424e360b2a37a28a"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/damage_readout.gd",
+      "before_sha256": "8a40affc87796cd65ab1bf5423bf8c77351d1dfd16c97cc8223cf54d0bad7b2b",
+      "after_sha256": "e359dc60ab65adb5006354b2645a7cb1478f589461dc47e3778a20b498572fe3"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/focus_ammo_offer.tscn",
+      "before_sha256": null,
+      "after_sha256": "95a3a265bb6ca84b7b69bb57a82f92006f698ded7f3659936cf300daee661ec1"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/focus_build.gd",
+      "before_sha256": null,
+      "after_sha256": "3a1a7a8206f402ee748b4d9ffddfe54ea5fcd4efcac0ea2ba9401ce727c2111a"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/focus_build.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "6196eb902abfd95bb44a083132a766ec66ffc24b57f855f07a84e71537ca793c"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/forecast.gd",
+      "before_sha256": "87f5cf8c3f2f999cdf6cb7aa95351079de88cfb137399fff21b720e4490d9569",
+      "after_sha256": "7af8dbed0c1c3a6ab099958486075f95c9e4ce157fd38dda9f12a54bbb5d8bba"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/magazine_build.gd",
+      "before_sha256": "893ebe75097b02e784379c5b677d8d472ca007ad8c9d34ae148beb1c1e343837",
+      "after_sha256": "65ce64d85a97f992d3a2f9d53794ef5d7cdec958f3937e649eb7b382cfe0f6f0"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/model.gd",
+      "before_sha256": "7010744a45c8d4cc71451e2ea1d49c70bfc44d6c093f1215e57666baf5f13e85",
+      "after_sha256": "8b1dd14f520c8dce5e136200e9e5b5eb21c1778588029b5e38c9ab0fd2f3a913"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/part_card_view.gd",
+      "before_sha256": "ba167d69a51b7e1a5531fecbd7a423462861ce9cdbc7088b83c2f3898f2e3a50",
+      "after_sha256": "ab8578236ba41a6e03be9d9c07a61634a5ab4ddaec64b9ef434fb9db1db872ae"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/screen.gd",
+      "before_sha256": "decb1f043ea9a3aeb33b7090c5c1829aa3948c95306b8e4bff70605a134a0f0a",
+      "after_sha256": "b82beb516804e4e3fc2ff7d386e2e676a3e54c669e54b71e005ccd9762f3b44e"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_climb.gd",
+      "before_sha256": null,
+      "after_sha256": "45db5602e132b7afe832d1f5c597810bb2e187e75c09f675e72cd0926573e35f"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_climb.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "6a94f805ee650b5fc7c86e854d7ae25e8beec4b74bc148d357a65587605662dd"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_replay.gd",
+      "before_sha256": null,
+      "after_sha256": "0936449c2aea469c22cab0217e6fe05c7f273522fabc5dec8cef4a68d4a09510"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_replay.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "f62a2d98847b67c550d5a66475e7b17a81c092c12fa170a1cdc41fb69c902052"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_rules.gd",
+      "before_sha256": null,
+      "after_sha256": "cba75bba00c4fb024c0551c1ed6d3672b25dc7362b82c56a8da6b4ba0e9b4c75"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_rules.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "3263bd704df49bf41e1a3d5fb91e03ddc231daeb5becbe6db47def6194bff8dc"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_ui.gd",
+      "before_sha256": null,
+      "after_sha256": "38c80cf74474377f034dc430a5c9f227136ff1e708624dea7d90c709091f0e44"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/focus_build_ui.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "50770991a35916d4e2950eba1ed73b35078c12ae69e934c7f66fdb86f0af8f48"
+    }
+  ],
+  "evidence": {
+    "after_package.json": "d803bf47a1b65bab310fa3660dc34831d108f4137cf7d46bd5fdedd76114fca1",
+    "aligned_844x390.png": "ecb8d5a65d05aaffecf60733fddc9a53be1793201bfe9f5886e258c5204d0c6a",
+    "change.patch": "5e7ff0728e005e119c11a4b8dc49fd2dbb7c175c8625c41f140eefc8ffa9402d",
+    "climb_alternate.json": "1e86188a389de4a71c3ee77403a23127eb37e0cc2f1269863b40353016abd3fd",
+    "climb_growth_alternate_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "climb_growth_alternate_stdout.log": "42d4a405d3a4489cb03e32db3b80cd9d6aa44e4495acf385663fff7e13ab6292",
+    "climb_growth_primary_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "climb_growth_primary_stdout.log": "88e0ac57ab08d7e01d1df2778f3fd4ae88477a06fc059c28c4e3cbf4a8643ae1",
+    "climb_primary.json": "f9967372b7500d412b38a2622c6ef163fb1d188a4a88a3a62e2b476e75a43a8d",
+    "control_rules_write_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "control_rules_write_stdout.log": "cab1010d89857f4b114f687c7137b1fc02311f8c19d52569fa1508c527d278b0",
+    "earned_parts_844x390.png": "9b54dd0f1f7046dfbf7f568da2c93991987b4fbdf0de0c12c75cd3331041e746",
+    "hud_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hud_stdout.log": "c19e68b7c19d71c0b00644a3544b4135fc3b75f193a6f337621b1c7a1bc9beb8",
+    "import_stderr.log": "240694613f60198bae5e682cb2b154fca7f2885d9b071350a08eecb46f2ac2e0",
+    "import_stdout.log": "34de577d08508ea70422e855b8ffcbc412d28b2b1e36e2ba248b3ac35481feca",
+    "initial_alternate.json": "210c64205e436582548a7475f935c30ccc58769bf4c097e2c440138416e36f57",
+    "initial_primary.json": "b57a80d0b7e9471cb18e3607f55bd49ea929815618b25638ad91953a6764bb0f",
+    "legacy_rules_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "legacy_rules_stdout.log": "c0c88980fab21aa462cd40bc90649cfffd455f6d194413244697ddfa72158d37",
+    "package_1280x800.png": "48c47847412cb12b98cd40dcb310ace14b7263a34972d36b66721ada4bf0dcbb",
+    "package_740x360.png": "2d68b8cde43739b6a9a051ee949230edbcd3f1f427b217a379ccfe929424618e",
+    "package_844x390.png": "c79f34844b2f372b2b65014da1c6aac94f43e798c723ae82a52b3b04d04b7eba",
+    "package_cards_740x360.png": "dd2a4de11ba698bae163838e3979c00d43fcaf70c69c42573c82b5a5c04e0e9f",
+    "package_cards_844x390.png": "3bbc025f990468d3792fa3ceee50800465ed377fd865211fb129d1a95d8495cc",
+    "parts_detail_844x390.png": "4928f93c97ef196004dd7985e99950d4e8ad610c4d622f1e2c0338810e46eb49",
+    "payoff_ui.json": "439e8237de0d1515fc297a260bf6a97463f5c94e70cfaad1f39ae21f1bf32020",
+    "replay.json": "4c1108a245a5b51d13264805859c1522074ee0394a55e5ebaaa4af9016507bf1",
+    "replay_final_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "replay_final_stdout.log": "8beaf94fca4d6adbb1820ea814d86c3a4e06ae534d7efa4ec8a84b1082d90b1a",
+    "rules.json": "8d41eb46bf44e76f0195ec96509b601bde027d4d7009c57965b6ddeef982f00c",
+    "rules_final_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rules_final_stdout.log": "7878083feaa8012c50a175d0c668ea2f774b08bc6098feeb3a521637db6d463b",
+    "third_ready_844x390.png": "0b76240227f7e5696c5e0a6ec30cc7818a95b66036c206117def8166190fe225",
+    "ui.json": "ad553fc55a957573862b4e8e8f5b9e01f34f99030ad5fde063fde785c2976cab",
+    "ui_final_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ui_final_stdout.log": "e191d68c1703bccc49abe87a1b5e6d78f5c475265cc79387f5af1af43b313d07"
+  }
+}

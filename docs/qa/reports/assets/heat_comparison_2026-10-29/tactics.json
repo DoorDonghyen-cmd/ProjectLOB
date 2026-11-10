@@ -1,0 +1,5202 @@
+[
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 3,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 3,
+            "heat_before": 6,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 26,
+    "cycle_phase": "plan",
+    "cycle_turns": 4,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 27,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 3
+      }
+    ],
+    "turns": 3
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 3,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 3,
+            "heat_before": 6,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 10,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 10,
+            "heat_before": 8,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 5,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 5,
+            "heat_before": 8,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 12,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 12,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 10,
+            "heat_before": 8,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 12,
+            "heat_before": 10,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 10,
+            "heat_before": 8,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 7,
+            "heat_before": 10,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "baseline",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 2,
+    "gun": "single",
+    "heat_end": 0,
+    "kills": 0,
+    "min_distance": 27,
+    "mode": "heat_plus1",
+    "overheat_events": 1,
+    "peak": 12,
+    "phase": "plan",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 2,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 3
+      }
+    ],
+    "turns": 3
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 3,
+            "id": "cool"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 9,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 6,
+            "heat_before": 9,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 26,
+    "cycle_phase": "plan",
+    "cycle_turns": 4,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 27,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 3
+      }
+    ],
+    "turns": 3
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 12,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 12,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 3,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 9,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 6,
+            "heat_before": 9,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 6,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 15,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 15,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 15,
+            "heat_before": 12,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 9,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 9,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 3,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 9,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 12,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 9,
+            "heat_before": 12,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 9,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 9,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 14,
+    "cycle_min_distance": 25,
+    "cycle_phase": "plan",
+    "cycle_turns": 5,
+    "damage": 14,
+    "failures": 0,
+    "forced_cost": 4,
+    "gun": "heavy",
+    "heat_end": 0,
+    "kills": 0,
+    "min_distance": 25,
+    "mode": "heat_plus1",
+    "overheat_events": 1,
+    "peak": 18,
+    "phase": "plan",
+    "shots": 6,
+    "spent": 6,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 4,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 15,
+            "heat_before": 12,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 4,
+            "heat_added": 3,
+            "heat_after": 18,
+            "heat_before": 15,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 5
+      }
+    ],
+    "turns": 5
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 12,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 12,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 3,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 12,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 15,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 15,
+            "heat_before": 12,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 12,
+            "heat_before": 15,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 12,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "heat_plus1",
+    "overheat_events": 0,
+    "peak": 12,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 3,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 6,
+            "heat_before": 3,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 9,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 12,
+            "heat_before": 9,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 3,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 3,
+            "heat_before": 6,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 26,
+    "cycle_phase": "plan",
+    "cycle_turns": 4,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 27,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 3
+      }
+    ],
+    "turns": 3
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 3,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 3,
+            "heat_before": 6,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 10,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 10,
+            "heat_before": 8,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 5,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 5,
+            "heat_before": 8,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 6,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 6,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 26,
+    "cycle_phase": "plan",
+    "cycle_turns": 4,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 3,
+    "gun": "heavy",
+    "heat_end": 0,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "limit_minus2",
+    "overheat_events": 1,
+    "peak": 12,
+    "phase": "plan",
+    "shots": 6,
+    "spent": 6,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 3,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 10,
+            "heat_before": 8,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 12,
+            "heat_before": 10,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 10,
+            "heat_before": 8,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 7,
+            "heat_before": 10,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "limit_minus2",
+    "overheat_events": 0,
+    "peak": 8,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 6,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 8,
+            "heat_before": 6,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 10,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 4,
+            "heat_before": 7,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 26,
+    "cycle_phase": "plan",
+    "cycle_turns": 4,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 27,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 3
+      }
+    ],
+    "turns": 3
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 10,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 4,
+            "heat_before": 7,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 14,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 14,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 4,
+            "heat_after": 14,
+            "heat_before": 10,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 7,
+            "heat_before": 10,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 14,
+    "cycle_min_distance": 25,
+    "cycle_phase": "plan",
+    "cycle_turns": 5,
+    "damage": 14,
+    "failures": 0,
+    "forced_cost": 4,
+    "gun": "heavy",
+    "heat_end": 0,
+    "kills": 0,
+    "min_distance": 25,
+    "mode": "sustained",
+    "overheat_events": 1,
+    "peak": 18,
+    "phase": "plan",
+    "shots": 6,
+    "spent": 6,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 4,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 4,
+            "heat_after": 14,
+            "heat_before": 10,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 4,
+            "heat_added": 4,
+            "heat_after": 18,
+            "heat_before": 14,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 5
+      }
+    ],
+    "turns": 5
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 10,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 2,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 11,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 14,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 4,
+            "heat_after": 14,
+            "heat_before": 10,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 11,
+            "heat_before": 14,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 10,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "sustained",
+    "overheat_events": 0,
+    "peak": 10,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 2,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 10,
+            "heat_before": 7,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 2,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 2,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 1,
+            "id": "cool"
+          },
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 9,
+    "cycle_min_distance": 28,
+    "cycle_phase": "plan",
+    "cycle_turns": 2,
+    "damage": 9,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 1,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 1,
+            "heat_before": 4,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 26,
+    "cycle_phase": "plan",
+    "cycle_turns": 4,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "single",
+    "heat_end": 2,
+    "kills": 0,
+    "min_distance": 27,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 2,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 3,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 3
+      }
+    ],
+    "turns": 3
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 2,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 2,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 1,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 1,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 6,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 1,
+            "heat_before": 4,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "burst",
+    "heat_end": 2,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 2,
+    "phase": "ready",
+    "shots": 4,
+    "spent": 4,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 6,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 11,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 11,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 4,
+            "heat_after": 11,
+            "heat_before": 7,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 1,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 8,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 8,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 4,
+            "heat_before": 7,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "scatter",
+    "heat_end": 4,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 4,
+    "phase": "ready",
+    "shots": 5,
+    "spent": 5,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 26,
+    "cycle_phase": "plan",
+    "cycle_turns": 4,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 3,
+    "gun": "heavy",
+    "heat_end": 0,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 1,
+    "peak": 16,
+    "phase": "plan",
+    "shots": 6,
+    "spent": 6,
+    "style": "full",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 3,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 4,
+            "heat_after": 11,
+            "heat_before": 7,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 5,
+            "heat_after": 16,
+            "heat_before": 11,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_early",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 0,
+            "heat_before": 1,
+            "id": "cool"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 10,
+    "cycle_min_distance": 27,
+    "cycle_phase": "plan",
+    "cycle_turns": 3,
+    "damage": 10,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 8,
+    "kills": 0,
+    "min_distance": 29,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 11,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "cool_late",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 4,
+            "heat_after": 11,
+            "heat_before": 7,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 0,
+            "heat_added": 0,
+            "heat_after": 8,
+            "heat_before": 11,
+            "id": "cool"
+          }
+        ],
+        "turns": 1
+      }
+    ],
+    "turns": 1
+  },
+  {
+    "cycle_damage": 12,
+    "cycle_min_distance": 24,
+    "cycle_phase": "plan",
+    "cycle_turns": 6,
+    "damage": 12,
+    "failures": 0,
+    "forced_cost": 0,
+    "gun": "heavy",
+    "heat_end": 7,
+    "kills": 0,
+    "min_distance": 26,
+    "mode": "sustained_rebalanced",
+    "overheat_events": 0,
+    "peak": 7,
+    "phase": "ready",
+    "shots": 6,
+    "spent": 6,
+    "style": "two_batches",
+    "trace": [
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 1
+      },
+      {
+        "fault": false,
+        "forced_cost": 0,
+        "shots": [
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 1,
+            "heat_before": 0,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 1,
+            "heat_after": 2,
+            "heat_before": 1,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 2,
+            "heat_after": 4,
+            "heat_before": 2,
+            "id": "basic_p2"
+          },
+          {
+            "damage": 2,
+            "heat_added": 3,
+            "heat_after": 7,
+            "heat_before": 4,
+            "id": "basic_p2"
+          }
+        ],
+        "turns": 4
+      }
+    ],
+    "turns": 4
+  }
+]

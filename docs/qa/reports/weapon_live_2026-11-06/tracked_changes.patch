@@ -1,0 +1,713 @@
+--- before/redesign\campaign.gd
++++ redesign\campaign.gd
+@@ -20,6 +20,9 @@
+ 	return {"cores": 0, "lore": [], "runs": 0, "wins": 0, "ascension": 0, "best_region": 0, "unlocks": ["balanced"]}
+ 
+ func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = "balanced", map_version: int = Content.RouteMap.VERSION, outfit: String = "work", magazine_mode: bool = false) -> void:
++	if gun in Model.WeaponRoles.KINDS:
++		magazine_mode=true
++		map_version=maxi(4,map_version)
+ 	if not profile.unlocks.has(loadout): loadout = "balanced"
+ 	if not Ammo.OUTFITS.has(outfit): outfit = "work"
+ 	s = {"version": 4, "seed": str(seed_value), "gun": gun, "difficulty": clampi(difficulty, 0, int(profile.ascension)), "loadout": loadout, "region": 0, "floor": 0, "node": 0, "phase": "map", "credits": Content.START_CREDITS, "pressure": 0, "slots": 0, "parts": [], "equipped_parts": [], "shop_seen_parts": [], "shop_seen_ammo": [], "visited": [], "clears": 0, "compressor_charges": 1, "shop_revision": 0, "shop_part_bought": false, "shop_compressor_bought": false, "shop_refined": false, "shop_tuned": false, "offers": [], "resolved": false, "settled": false, "log": [], "message": "다음 목적지를 선택하세요."}
+--- before/redesign\content.gd
++++ redesign\content.gd
+@@ -202,6 +202,8 @@
+ 	"scatter": {"reload_cooling": 12, "heat_limit": 16, "name": "스플린터", "role": "무작위 분산", "capacity": 5, "reload": 2, "bonus": 0, "mode": "chain", "identity": "탄환마다 무작위 표적 · 넉넉한 탄창", "recommendation": "표적별 확률 · 분산 피해와 전격", "text": "전탄 연쇄 · 생존 적 중 균등 무작위 표적 · 탄창 5칸 / 재장전 2턴"},
+ 	"heavy": {"reload_cooling": 8, "heat_limit": 14, "name": "리액터", "role": "과부하 연사", "capacity": 6, "reload": 2, "bonus": 0, "mode": "chain", "identity": "과열 후 1발 강행 · 냉각 +2턴", "recommendation": "마지막 추가탄으로 화력 또는 냉각 선택", "text": "전탄 연쇄 · 과열 후 남은 탄 1발 추가 사격 후 중단 · 강행 후에도 과열이면 기본 재장전 +냉각 2턴 · 탄창 6칸 / 기본 재장전 2턴"},
+ 	"amplifier": {"reload_cooling": 7, "heat_limit": 10, "name": "스파이크", "role": "한 발 효과 강화", "capacity": 3, "reload": 1, "bonus": 0, "mode": "single", "identity": "단발 2배 · 처치 시 연속", "recommendation": "증폭 +6 · 연타 4×2 · 충격 4m", "text": "1발 발사 · 주 표적 처치 시 계속 · 기본 피해/관통과 효과 강도 2배 · 타격 수/지속 기간 유지 · 재장전 1턴"},
++	"rewinder": {"reload_cooling":9,"heat_limit":14,"name":"리와인더","role":"순서 제어","capacity":4,"reload":2,"bonus":0,"mode":"chain","identity":"냉각 때 잔탄 역순","recommendation":"위치 파츠 · 지원탄과 주력 탄의 순서 전환","text":"탄창당 첫 수동 냉각에 고정탄을 제외한 남은 탄 순서를 뒤집습니다. 냉각은 적 1행동, 열 0. 강제 냉각·냉각탄은 반전하지 않습니다."},
++	"deadbolt": {"reload_cooling":9,"heat_limit":14,"name":"데드볼트","role":"강화탄 봉인","capacity":4,"reload":2,"bonus":0,"mode":"chain","identity":"무작위 1발 ×3·봉인","recommendation":"공개된 강화탄을 지원·위치 파츠로 연결","text":"장전 시 무작위 공격탄 1발의 이번 탄창 직접 피해 ×3. 그 탄은 빼낼 수 없고, 발사 전 탄창 교체가 잠깁니다. 냉각·다른 탄 빼내기는 유지합니다."},
+ }
+ 
+ # Equipment rules stay independent from visual outfit assets.
+--- before/redesign\equipment_screen.gd
++++ redesign\equipment_screen.gd
+@@ -30,6 +30,7 @@
+ 	for id in Content.GUNS:
+ 		var button := find_child("weapon_select_" + id, true, false) as Button
+ 		button.get_node("Name").text = Content.GUNS[id].name
++		button.disabled=host.preparation_training and id in Content.WeaponRoles.KINDS
+ 		button.pressed.connect(_select_weapon.bind(id))
+ 	for id in Content.OUTFITS:
+ 		var button := find_child("outfit_select_" + id, true, false) as Button
+@@ -62,6 +63,7 @@
+ func _select_weapon(id: String) -> void:
+ 	host.selected_weapon_id = id
+ 	refresh()
++	%WeaponScroll.ensure_control_visible.call_deferred(find_child("weapon_select_"+id,true,false))
+ 
+ func _select_outfit(id: String) -> void:
+ 	host.selected_outfit_id = id
+@@ -88,12 +90,12 @@
+ 	%OutfitName.text = outfit.name
+ 	%OutfitSummary.text = "손패 %d장 · 교환 %d회" % [outfit.hand, outfit.exchange]
+ 	if not host.preparation_training:
+-		%WeaponIdentity.text = {"single":"공격탄 피해 +1","burst":"같은 적 3회 적중 시 +4","scatter":"탄마다 무작위 표적","heavy":"과열 뒤 1발 강행","amplifier":"단발 효과 2배 · 처치 연속"}[host.selected_weapon_id]
++		%WeaponIdentity.text = {"single":"공격탄 피해 +1","burst":"같은 적 3회 적중 시 +4","scatter":"탄마다 무작위 표적","heavy":"과열 뒤 1발 강행","amplifier":"단발 효과 2배 · 처치 연속","rewinder":"냉각 때 잔탄 역순","deadbolt":"무작위 1발 ×3·봉인"}[host.selected_weapon_id]
+ 		%OutfitSummary.text = "덱 %d~%d발 · 시작 %d발 · 정비 최대 +6" % [Content.Roles.MINIMUM[outfit_id],Content.Roles.CARRY[outfit_id],preload("res://redesign/magazine_build.gd").start_deck(host.selected_weapon_id).size()]
+ 		%Reload.text = "교체  %d턴" % maxi(2,int(gun.reload))
+ 		%Cooling.text = "냉각  1턴 · 열 0"
+ 		%Heat.text = "발열 상한  %d" % gun.heat_limit
+-		%FireMode.text = {"single":"사격 1~2발","burst":"사격 1~3발","scatter":"사격 1~3발","heavy":"기본 사격 1~3발","amplifier":"사격 1발 · 처치 시 연속"}[host.selected_weapon_id]
++		%FireMode.text = {"single":"사격 1~2발","burst":"사격 1~3발","scatter":"사격 1~3발","heavy":"기본 사격 1~3발","amplifier":"사격 1발 · 처치 시 연속","rewinder":"사격 1~3발","deadbolt":"사격 1~3발"}[host.selected_weapon_id]
+ 		if host.selected_weapon_id=="amplifier":%WeaponIdentity.text="단발 피해·효과 ×2"
+ 	%OutfitHint.text = "훈련은 기본 작업복을 사용합니다." if host.preparation_training else ""
+ 	%OutfitHint.visible = host.preparation_training
+@@ -121,7 +123,7 @@
+ 	button.set_pressed_no_signal(chosen)
+ 	EquipmentSkin.apply_choice(button, chosen)
+ 	button.tooltip_text = ("선택됨 · " if chosen else "선택 · ") + button.get_meta("caption", "")
+-	if button.disabled: button.tooltip_text = "훈련은 기본 작업복을 사용합니다."
++	if button.disabled: button.tooltip_text = "탄창 사격 모드에서 사용하는 총기입니다." if str(button.name).begins_with("weapon_select_") else "훈련은 기본 작업복을 사용합니다."
+ 
+ func _start_deck() -> Array:
+ 	if host.preparation_training: return Content.cycle_start_deck(Content.COURSE_GRANTS[0])
+--- before/redesign\equipment_screen.tscn
++++ redesign\equipment_screen.tscn
+@@ -1,4 +1,4 @@
+-[gd_scene load_steps=18 format=3]
++[gd_scene load_steps=19 format=3]
+ [ext_resource type="Script" path="res://redesign/equipment_screen.gd" id="1"]
+ [ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/workshop_v1.png" id="2"]
+ [ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/outfits_v1.png" id="3"]
+@@ -10,6 +10,7 @@
+ [ext_resource type="Script" path="res://redesign/equipment/edge.gd" id="12"]
+ [ext_resource type="Texture2D" path="res://assets/ui/equipment_20261106/editor_loadout.png" id="13"]
+ [ext_resource type="StyleBox" path="res://redesign/equipment/weapon_info_panel.tres" id="14"]
++[ext_resource type="Script" path="res://redesign/equipment/weapon_rail.gd" id="15"]
+ [sub_resource type="ShaderMaterial" id="Cutout"]
+ shader = ExtResource("9")
+ [sub_resource type="AtlasTexture" id="Work"]
+@@ -663,16 +664,27 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "무기 선택"
++text = "무기 선택 · 좌우로 탐색"
+ theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1.0)
+ 
+-[node name="WeaponSelection" type="GridContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-columns = 5
+-theme_override_constants/h_separation = 10
+-
+-[node name="weapon_select_single" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++[node name="WeaponScroll" type="ScrollContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail"]
++unique_name_in_owner = true
++layout_mode = 2
++custom_minimum_size = Vector2(0,92)
++follow_focus = true
++horizontal_scroll_mode = 3
++scroll_horizontal_by_default = true
++vertical_scroll_mode = 0
++
++[node name="WeaponSelection" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll"]
++unique_name_in_owner = true
++layout_mode = 2
++size_flags_horizontal = 3
++theme_override_constants/separation = 10
++script = ExtResource("15")
++visible_cards = 5
++
++[node name="weapon_select_single" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection" ]
+ layout_mode = 2
+ theme_type_variation = &"EquipmentSelected"
+ custom_minimum_size = Vector2(0, 92)
+@@ -681,7 +693,7 @@
+ button_pressed = true
+ metadata/caption = "리벳"
+ 
+-[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_single" instance=ExtResource("8")]
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_single" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -691,7 +703,7 @@
+ offset_bottom = -34.0
+ gun_id = "single"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_single" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_single" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -704,7 +716,7 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_burst" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++[node name="weapon_select_burst" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection" ]
+ layout_mode = 2
+ theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+@@ -712,7 +724,7 @@
+ toggle_mode = true
+ metadata/caption = "래칫"
+ 
+-[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_burst" instance=ExtResource("8")]
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_burst" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -722,7 +734,7 @@
+ offset_bottom = -34.0
+ gun_id = "burst"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_burst" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_burst" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -735,7 +747,7 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_scatter" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++[node name="weapon_select_scatter" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection" ]
+ layout_mode = 2
+ theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+@@ -743,7 +755,7 @@
+ toggle_mode = true
+ metadata/caption = "스플린터"
+ 
+-[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_scatter" instance=ExtResource("8")]
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_scatter" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -753,7 +765,7 @@
+ offset_bottom = -34.0
+ gun_id = "scatter"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_scatter" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_scatter" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -766,7 +778,7 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_heavy" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++[node name="weapon_select_heavy" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection" ]
+ layout_mode = 2
+ theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+@@ -774,7 +786,7 @@
+ toggle_mode = true
+ metadata/caption = "리액터"
+ 
+-[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_heavy" instance=ExtResource("8")]
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_heavy" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -784,7 +796,7 @@
+ offset_bottom = -34.0
+ gun_id = "heavy"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_heavy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_heavy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -797,7 +809,7 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_amplifier" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++[node name="weapon_select_amplifier" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection" ]
+ layout_mode = 2
+ theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+@@ -805,7 +817,7 @@
+ toggle_mode = true
+ metadata/caption = "스파이크"
+ 
+-[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_amplifier" instance=ExtResource("8")]
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_amplifier" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -815,11 +827,73 @@
+ offset_bottom = -34.0
+ gun_id = "amplifier"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_amplifier" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_amplifier" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "스파이크"
++layout_mode = 1
++anchor_top = 1.0
++anchor_bottom = 1.0
++anchor_right = 1.0
++horizontal_alignment = 1
++offset_top = -29.0
++offset_bottom = -6.0
++
++[node name="weapon_select_rewinder" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
++custom_minimum_size = Vector2(0, 92)
++size_flags_horizontal = 3
++toggle_mode = true
++metadata/caption = "리와인더"
++
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_rewinder" instance=ExtResource("8")]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++offset_left = 28.0
++offset_right = -28.0
++offset_top = 11.0
++offset_bottom = -34.0
++gun_id = "rewinder"
++
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_rewinder" ]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "리와인더"
++layout_mode = 1
++anchor_top = 1.0
++anchor_bottom = 1.0
++anchor_right = 1.0
++horizontal_alignment = 1
++offset_top = -29.0
++offset_bottom = -6.0
++
++[node name="weapon_select_deadbolt" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
++custom_minimum_size = Vector2(0, 92)
++size_flags_horizontal = 3
++toggle_mode = true
++metadata/caption = "데드볼트"
++
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_deadbolt" instance=ExtResource("8")]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++offset_left = 28.0
++offset_right = -28.0
++offset_top = 11.0
++offset_bottom = -34.0
++gun_id = "deadbolt"
++
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_deadbolt" ]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "데드볼트"
+ layout_mode = 1
+ anchor_top = 1.0
+ anchor_bottom = 1.0
+@@ -927,35 +1001,35 @@
+ mouse_filter = 2
+ script = ExtResource("12")
+ 
+-[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_single"]
+-layout_mode = 1
+-anchor_right = 1.0
+-anchor_bottom = 1.0
+-mouse_filter = 2
+-script = ExtResource("12")
+-
+-[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_burst"]
+-layout_mode = 1
+-anchor_right = 1.0
+-anchor_bottom = 1.0
+-mouse_filter = 2
+-script = ExtResource("12")
+-
+-[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_scatter"]
+-layout_mode = 1
+-anchor_right = 1.0
+-anchor_bottom = 1.0
+-mouse_filter = 2
+-script = ExtResource("12")
+-
+-[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_heavy"]
+-layout_mode = 1
+-anchor_right = 1.0
+-anchor_bottom = 1.0
+-mouse_filter = 2
+-script = ExtResource("12")
+-
+-[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_amplifier"]
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_single"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_burst"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_scatter"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_heavy"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_amplifier"]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -975,3 +1049,17 @@
+ anchor_bottom = 1.0
+ mouse_filter = 2
+ script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_rewinder"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponScroll/WeaponSelection/weapon_select_deadbolt"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
+--- before/redesign\magazine_build.gd
++++ redesign\magazine_build.gd
+@@ -58,7 +58,7 @@
+ ## burn a magazine per one or two actions; with v2 enemy HP they emptied the
+ ## 14-card deck and leaned on emergency resupply (v2 check: 12 / 9+ / 9 uses, and
+ ## Splinter's final boss became unwinnable). They start with 6 more basics.
+-const PULSE_GUN_EXTRA := {"burst": [["basic_p2", 4], ["basic_p3", 2]], "scatter": [["basic_p2", 4], ["basic_p3", 2]], "heavy": [["basic_p2", 4], ["basic_p3", 2]]}
++const PULSE_GUN_EXTRA := {"burst": [["basic_p2", 4], ["basic_p3", 2]], "scatter": [["basic_p2", 4], ["basic_p3", 2]], "heavy": [["basic_p2", 4], ["basic_p3", 2]], "rewinder":[["basic_p2",4],["basic_p3",2]], "deadbolt":[["basic_p2",4],["basic_p3",2]]}
+ 
+ static func start_deck(gun: String = "") -> Array:
+ 	var result: Array = []
+--- before/redesign\magazine_trial.gd
++++ redesign\magazine_trial.gd
+@@ -36,7 +36,7 @@
+ 
+ # Separate opt-in keeps the original Rivet comparison and existing saves intact.
+ const WEAPON_VERSION := 1
+-const WEAPON_PULSES := {"single":2, "burst":3, "scatter":3, "heavy":3, "amplifier":99}
++const WEAPON_PULSES := {"single":2, "burst":3, "scatter":3, "heavy":3, "amplifier":99, "rewinder":3, "deadbolt":3}
+ 
+ static func weapons_enabled(state: Dictionary) -> bool:
+ 	return enabled(state) and int(state.get("weapon_magazine_version", 0)) == WEAPON_VERSION
+--- before/redesign\model.gd
++++ redesign\model.gd
+@@ -30,6 +30,16 @@
+ func start(gun_id: String, run_seed: int, course: bool = false, outfit: String = "work") -> void:
+ 	assert(Content.GUNS.has(gun_id) and Content.OUTFITS.has(outfit))
+ 	s = {"weapon_version": 1, "version": VERSION, "ammo_cycle": 1, "outfit": outfit, "bag_version": Content.BAG_VERSION, "bag_upgrades": 0, "course": course, "seed": str(run_seed), "gun": gun_id, "part": "none", "equipped_parts": [], "floor": 0, "deck": Content.cycle_start_deck(Content.COURSE_GRANTS[0]) if course else Content.start_deck(gun_id), "turns": 0, "shots": 0, "reloads": 0, "history": [], "reward_taken": false}
++	if gun_id in WeaponRoles.KINDS:
++		# New weapons have no historical insertion/heat mode. Their raw Model
++		# entry is also save-valid; Campaign adds its current roles and economy.
++		assert(not course)
++		s.phase="plan";s.magazine=[]
++		s.magazine_trial_version=MagazineTrial.VERSION;s.weapon_magazine_version=MagazineTrial.WEAPON_VERSION
++		s.reserve_version=Reserve.VERSION;s.magazine_build_version=MagazineBuild.VERSION
++		s.deck=MagazineBuild.start_deck(gun_id)
++		FireHeatTrial.activate_campaign(s)
++		WeaponRoles.activate(s,gun_id)
+ 	begin_encounter()
+ 
+ func begin_encounter(field_charges: int = 1) -> void:
+--- before/redesign\weapon_art.gd
++++ redesign\weapon_art.gd
+@@ -6,6 +6,8 @@
+ 	"scatter": {"family":"long", "image":preload("res://assets/art/weapon_redesign_20261024/scatter_splinter_v4.png"), "grip":Vector2(665,515), "support":Vector2(1640,470), "muzzle":Vector2(2035,292), "part":Rect2(1052,405,150,158), "release":Vector2(0,205), "heat":Rect2(1560,160,480,245), "bounds":Rect2(110,100,1935,556)},
+ 	"heavy": {"family":"long", "image":preload("res://assets/art/weapon_redesign_20261024/heavy_reactor_v1.png"), "grip":Vector2(665,520), "support":Vector2(1660,485), "muzzle":Vector2(2110,310), "part":Rect2(952,448,240,167), "release":Vector2(0,205), "heat":Rect2(1230,215,775,205), "bounds":Rect2(35,98,2092,571)},
+ 	"amplifier": {"family":"pistol", "image":preload("res://assets/art/weapon_redesign_20261024/amplifier_spike_v1.png"), "grip":Vector2(340,475), "muzzle":Vector2(2025,310), "scale":0.10, "part":Rect2(860,184,1173,240), "release":Vector2.ZERO, "heat":Rect2(1140,240,890,140), "bounds":Rect2(88,113,1943,553)},
++	"rewinder": {"family":"long","image":preload("res://assets/art/weapon_expansion_20261106/rewinder_v1.png"),"grip":Vector2(565,465),"support":Vector2(1545,455),"muzzle":Vector2(2060,294),"part":Rect2(805,305,535,275),"release":Vector2(0,205),"heat":Rect2(1645,240,410,80),"bounds":Rect2(115,182,1957,420)},
++	"deadbolt": {"family":"long","image":preload("res://assets/art/weapon_expansion_20261106/deadbolt_break_v4.png"),"grip":Vector2(740,430),"support":Vector2(1500,435),"muzzle":Vector2(2080,296),"part":Rect2(1110,180,985,305),"hinge":Vector2(1110,385),"release":Vector2.ZERO,"heat":Rect2(1360,235,700,100),"bounds":Rect2(85,180,2010,440)},
+ }
+ 
+ static func atlas(gun: String) -> AtlasTexture:
+--- before/redesign\weapon_role_trial.gd
++++ redesign\weapon_role_trial.gd
+@@ -1,5 +1,6 @@
+ extends RefCounted
+-## Opt-in comparison abilities. No production weapon or loaded legacy run opts in.
++## Versioned magazine abilities. Legacy burst comparisons keep their opt-in state;
++## native new weapons must carry the matching state. Other old runs never opt in.
+ ## A magazine index identifies one physical occurrence, never every copy of an ID.
+ const VERSION := 1
+ const KINDS := ["deadbolt", "rewinder"]
+@@ -16,7 +17,7 @@
+ 	return str(state.weapon_role_trial.kind) if enabled(state) else ""
+ 
+ static func activate(state: Dictionary, role: String) -> bool:
+-	if role not in KINDS or state.get("gun","") != "burst" or state.get("phase","") != "plan" or not state.get("magazine",[]).is_empty() or int(state.get("weapon_magazine_version",0)) != 1: return false
++	if role not in KINDS or state.get("gun","") not in ["burst",role] or state.get("phase","") != "plan" or not state.get("magazine",[]).is_empty() or int(state.get("weapon_magazine_version",0)) != 1: return false
+ 	state.weapon_role_trial = {"version":VERSION,"kind":role,"mark":-1,"rewound":false}
+ 	return true
+ 
+@@ -75,11 +76,11 @@
+ 	return true
+ 
+ static func valid(state: Dictionary, is_attack: Callable) -> bool:
+-	if not state.has("weapon_role_trial"): return true
++	if not state.has("weapon_role_trial"): return state.get("gun","") not in KINDS
+ 	var role: Variant = state.weapon_role_trial
+ 	if not role is Dictionary or role.size()!=4 or not enabled(state): return false
+ 	if not _whole(role.get("version"),VERSION,VERSION) or not role.get("kind") is String: return false
+-	if state.get("gun","")!="burst" or state.get("version",0)!=15 or state.get("weapon_version",0)!=1 or state.get("magazine_trial_version",0)!=1 or state.get("weapon_magazine_version",0)!=1 or state.get("fire_control_version",0)!=1: return false
++	if state.get("gun","") not in ["burst",kind(state)] or state.get("version",0)!=15 or state.get("weapon_version",0)!=1 or state.get("magazine_trial_version",0)!=1 or state.get("weapon_magazine_version",0)!=1 or state.get("fire_control_version",0)!=1: return false
+ 	if not role.get("rewound") is bool or not _whole(role.get("mark"),-1,state.magazine.size()-1): return false
+ 	if kind(state)=="deadbolt":
+ 		if role.rewound: return false
+--- before/redesign\samples\hud\combat_hud.tscn
++++ redesign\samples\hud\combat_hud.tscn
+@@ -30,6 +30,8 @@
+ [ext_resource type="Script" path="res://redesign/combat_material/frame.gd" id="line_frame"]
+ 
+ [ext_resource type="Script" path="res://redesign/line_ordinal.gd" id="ordinal"]
++
++[ext_resource type="Script" path="res://redesign/samples/weapon_roles/seal.gd" id="seal"]
+ 
+ [node name="CombatHud" type="Control"]
+ layout_mode = 1
+@@ -2111,3 +2113,183 @@
+ mouse_filter = 2
+ show_behind_parent = true
+ script = ExtResource("ordinal")
++
++[node name="Seal0" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round0/Face0" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round0/Face0/Seal0" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal1" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round1/Face1" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round1/Face1/Seal1" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal2" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round2/Face2" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round2/Face2/Seal2" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal3" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round3/Face3" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round3/Face3/Seal3" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal4" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round4/Face4" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round4/Face4/Seal4" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal5" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round5/Face5" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round5/Face5/Seal5" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal6" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round6/Face6" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round6/Face6/Seal6" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal7" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round7/Face7" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round7/Face7/Seal7" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
++
++[node name="Seal8" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round8/Face8" index="12"]
++visible = false
++layout_mode = 0
++offset_left = 4.0
++offset_top = 1.0
++offset_right = 52.0
++offset_bottom = 19.0
++mouse_filter = 2
++script = ExtResource("seal")
++
++[node name="Power" type="Label" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round8/Face8/Seal8" index="0"]
++layout_mode = 0
++offset_left = 17.0
++offset_right = 48.0
++offset_bottom = 18.0
++mouse_filter = 2
++theme_override_colors/font_color = Color(0.753,0.639,0.424,1)
++theme_override_font_sizes/font_size = 16
++text = "×3"
+--- before/redesign\samples\hud\combat_hud_feedback.gd
++++ redesign\samples\hud\combat_hud_feedback.gd
+@@ -103,6 +103,7 @@
+ 
+ func show_round(index: int,id: String)->void:
+  var occupied:=not id.is_empty()
++ ui.node("Seal%d"%index).visible=occupied and index==ui.model.WeaponRoles.mark(ui.model.s)
+  var face: Control=ui.node("Face%d"%index)
+  face.modulate=Color.WHITE;face.offset_top=8;face.offset_bottom=0
+  var carrier: NinePatchRect=ui.node("RoundArt%d"%index)
+--- before/redesign\samples\hud\combat_hud_presenter.gd
++++ redesign\samples\hud\combat_hud_presenter.gd
+@@ -137,6 +137,7 @@
+ 
+ func choose_round(index: int)->void:
+  if ui.busy or ui.overlay_open or index<0 or index>=ui.model.s.magazine.size():return
++ if index==Model.WeaponRoles.mark(ui.model.s):inspect_round(index);return
+  var remaining: int=ui.model.ejection_remaining()
+  if ui.model.s.phase=="ready" and remaining>0:
+   if ui.eject_selected.has(index):
+@@ -179,6 +180,9 @@
+  var id: String=ui.model.s.magazine[index]
+  var spec: Dictionary=Content.AMMO[id]
+  var amount:=str(spec.dmg)+(" ×%d회"%int(spec.get("hits",2)) if str(spec.effect)=="double" else "")
++ if index==Model.WeaponRoles.mark(ui.model.s):
++  ui.show_detail(spec.name+" · 봉인탄 ×3","이번 탄창의 이 한 발만 직접 피해 ×3.\n빼내기 불가 · 발사하면 탄창 교체 잠금 해제.\n냉각은 사용할 수 있습니다.\n화상·전격 전이·기폭 효과는 강화하지 않습니다.")
++  return
+  ui.show_detail(spec.name,"%d번째 탄 · %d칸 사용 · 발열 %s\n기본 피해 %s · 장갑 관통 %d\n\n%s\n\n위로 올라온 청록 테두리의 탄이 다음 발사 대상입니다. 카드의 기본 피해는 표적·총기·코어·연계 적용 전 위력입니다.\n사용한 탄은 이번 전투에 돌아오지 않으며 다음 전투에 복구됩니다."%[index+1,Content.slot_cost(id),Content.heat_label(id,ui.model.s),amount,int(spec.pen),preload("res://redesign/readability.gd").description(id,ui.model.s)])
+ 
+ func help_body(title: String,body: String)->String:
+@@ -317,6 +321,10 @@
+   n("Icon%d"%i).modulate=Color.WHITE
+   n("Select%d"%i).tooltip_text=Content.AMMO[stack[i]].name if occupied else "빈칸"
+   n("Select%d"%i).accessibility_name="%d번째 탄 · %s%s"%[i+1,n("Select%d"%i).tooltip_text," · 빼내기 선택됨" if removed else ""]
++  n("Seal%d"%i).visible=occupied and i==Model.WeaponRoles.mark(state)
++  if n("Seal%d"%i).visible:
++   n("Select%d"%i).tooltip_text+=" · 봉인탄 ×3 · 빼내기 불가"
++   n("Select%d"%i).accessibility_name+=" · 봉인탄 ×3 · 빼내기 불가"
+  for button in ui.find_children("*","Button",true,false):
+   var frame=button.get_node_or_null(str(button.name)+"Frame")
+   if frame!=null and frame.has_method("sync"):frame.sync()

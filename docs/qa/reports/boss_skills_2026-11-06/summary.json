@@ -1,0 +1,310 @@
+{
+  "earned_routes": [
+    {
+      "run": "single",
+      "checks": 2696,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "bosses": [
+        {
+          "region": 1,
+          "node": 802,
+          "turns": 8,
+          "remaining": 10
+        },
+        {
+          "region": 3,
+          "node": 20902,
+          "turns": 5,
+          "remaining": 15
+        }
+      ]
+    },
+    {
+      "run": "burst",
+      "checks": 2502,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "bosses": [
+        {
+          "region": 1,
+          "node": 802,
+          "turns": 7,
+          "remaining": 18
+        },
+        {
+          "region": 3,
+          "node": 20902,
+          "turns": 8,
+          "remaining": 20
+        }
+      ]
+    },
+    {
+      "run": "scatter",
+      "checks": 2588,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "bosses": [
+        {
+          "region": 1,
+          "node": 802,
+          "turns": 12,
+          "remaining": 13
+        },
+        {
+          "region": 3,
+          "node": 20902,
+          "turns": 6,
+          "remaining": 19
+        }
+      ]
+    },
+    {
+      "run": "heavy_elite",
+      "checks": 2480,
+      "failures": [],
+      "won": true,
+      "encounters": 31,
+      "emergency": 0,
+      "bosses": [
+        {
+          "region": 1,
+          "node": 802,
+          "turns": 19,
+          "remaining": 10
+        },
+        {
+          "region": 3,
+          "node": 20902,
+          "turns": 11,
+          "remaining": 13
+        }
+      ]
+    },
+    {
+      "run": "amplifier",
+      "checks": 3019,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "bosses": [
+        {
+          "region": 1,
+          "node": 802,
+          "turns": 6,
+          "remaining": 13
+        },
+        {
+          "region": 3,
+          "node": 20902,
+          "turns": 7,
+          "remaining": 19
+        }
+      ]
+    },
+    {
+      "run": "heavy_scout",
+      "checks": 2520,
+      "failures": [],
+      "won": true,
+      "encounters": 28,
+      "emergency": 2,
+      "bosses": [
+        {
+          "region": 1,
+          "node": 802,
+          "turns": 19,
+          "remaining": 9
+        },
+        {
+          "region": 3,
+          "node": 20902,
+          "turns": 10,
+          "remaining": 12
+        }
+      ]
+    }
+  ],
+  "paired": {
+    "1": {
+      "full_fire": {
+        "old": {
+          "cases": 6,
+          "won": 3,
+          "search_unresolved": 0,
+          "launches": 6,
+          "peak_projectiles": 1,
+          "calls": 0
+        },
+        "new": {
+          "cases": 6,
+          "won": 3,
+          "search_unresolved": 0,
+          "launches": 12,
+          "peak_projectiles": 2,
+          "calls": 0
+        }
+      },
+      "visible_heat_single": {
+        "old": {
+          "cases": 6,
+          "won": 3,
+          "search_unresolved": 0,
+          "launches": 11,
+          "peak_projectiles": 1,
+          "calls": 0
+        },
+        "new": {
+          "cases": 6,
+          "won": 2,
+          "search_unresolved": 0,
+          "launches": 13,
+          "peak_projectiles": 2,
+          "calls": 0
+        }
+      },
+      "oracle_rng_known": {
+        "old": {
+          "cases": 6,
+          "won": 6,
+          "search_unresolved": 0,
+          "launches": 6,
+          "peak_projectiles": 1,
+          "calls": 0
+        },
+        "new": {
+          "cases": 6,
+          "won": 6,
+          "search_unresolved": 0,
+          "launches": 12,
+          "peak_projectiles": 2,
+          "calls": 0
+        }
+      }
+    },
+    "3": {
+      "full_fire": {
+        "old": {
+          "cases": 6,
+          "won": 4,
+          "search_unresolved": 0,
+          "launches": 9,
+          "peak_projectiles": 1,
+          "calls": 0
+        },
+        "new": {
+          "cases": 6,
+          "won": 4,
+          "search_unresolved": 0,
+          "launches": 6,
+          "peak_projectiles": 1,
+          "calls": 3
+        }
+      },
+      "visible_heat_single": {
+        "old": {
+          "cases": 6,
+          "won": 3,
+          "search_unresolved": 0,
+          "launches": 13,
+          "peak_projectiles": 1,
+          "calls": 0
+        },
+        "new": {
+          "cases": 6,
+          "won": 3,
+          "search_unresolved": 0,
+          "launches": 10,
+          "peak_projectiles": 1,
+          "calls": 4
+        }
+      },
+      "oracle_rng_known": {
+        "old": {
+          "cases": 6,
+          "won": 6,
+          "search_unresolved": 0,
+          "launches": 5,
+          "peak_projectiles": 1,
+          "calls": 0
+        },
+        "new": {
+          "cases": 6,
+          "won": 6,
+          "search_unresolved": 0,
+          "launches": 6,
+          "peak_projectiles": 1,
+          "calls": 4
+        }
+      }
+    }
+  },
+  "functional": {
+    "ui_final": {
+      "checks": 213,
+      "failures": []
+    },
+    "restore_complete": {
+      "checks": 185,
+      "failures": []
+    },
+    "rules_accepted": {
+      "checks": 228,
+      "failures": []
+    },
+    "paired_verified": {
+      "checks": 36,
+      "failures": []
+    },
+    "replay_verified": {
+      "checks": 50,
+      "failures": [],
+      "rows": [
+        {
+          "receipt_count": 6,
+          "run": "single",
+          "same_receipts": true
+        },
+        {
+          "receipt_count": 4,
+          "run": "burst",
+          "same_receipts": true
+        },
+        {
+          "receipt_count": 9,
+          "run": "scatter",
+          "same_receipts": true
+        },
+        {
+          "receipt_count": 11,
+          "run": "heavy_elite",
+          "same_receipts": true
+        },
+        {
+          "receipt_count": 4,
+          "run": "amplifier",
+          "same_receipts": true
+        },
+        {
+          "receipt_count": 8,
+          "run": "heavy_scout",
+          "same_receipts": true
+        }
+      ]
+    }
+  },
+  "totals": {
+    "routes": 6,
+    "encounters": 179,
+    "earned_checks": 15805,
+    "paired_battles": 72
+  }
+}

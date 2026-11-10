@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ORVASK UI 프로토타입 — 공통 화면 틀</title>
+<style>
+@font-face { font-family: "Dunggeunmo"; src: url("assets/NeoDunggeunmoPro-Regular.ttf") format("truetype"); font-display: block; }
+:root {
+  --bg: #0e151b; --band: #091015; --line: #26343c; --ink: #f2eee3; --sub: #acbbc1; --dim: #6f8087;
+  --gold: #edc47a; --ivory: #e9dfc6; --dark: #25261f; --brown: #8a5a3c; --cyan: #78c9ed; --danger: #ee8777; --heat: #e08a5c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #05090c; color: var(--ink); font-family: "Dunggeunmo", "Malgun Gothic", sans-serif; overflow: hidden; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; touch-action: manipulation; }
+button:disabled { cursor: default; }
+button:focus { outline: none; }
+button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+#toolbar { height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 12px; background: #04070a; border-bottom: 1px solid #1a242b; font-size: 13px; color: var(--sub); white-space: nowrap; overflow: hidden; }
+#toolbar b { color: var(--ink); font-weight: normal; }
+#toolbar .tb { border: 1px solid #33444d; padding: 3px 8px; color: var(--ink); }
+#toolbar .tb[aria-pressed="true"] { background: var(--ivory); color: var(--dark); border-color: var(--ivory); }
+#toolbar .note { color: var(--dim); overflow: hidden; text-overflow: ellipsis; }
+#toolbar a { color: var(--gold); }
+#tabbar { height: 42px; display: flex; align-items: center; gap: 6px; padding: 0 12px; background: #070c10; border-bottom: 1px solid #1a242b; overflow-x: auto; scrollbar-width: thin; }
+#tabbar .group { font-size: 12px; color: var(--dim); margin: 0 2px 0 8px; white-space: nowrap; }
+#tabbar .group:first-child { margin-left: 0; }
+#tabbar button { flex: none; font-size: 15px; padding: 5px 12px; border: 1px solid #33444d; background: #121c22; color: var(--ink); white-space: nowrap; }
+#tabbar button:hover { border-color: var(--sub); }
+#tabbar button[aria-pressed="true"] { background: var(--ivory); color: var(--dark); border-color: var(--ivory); }
+#tabbar kbd { font: inherit; font-size: 11px; color: var(--dim); margin-left: 6px; }
+#tabbar button[aria-pressed="true"] kbd { color: #6b6450; }
+#viewport { position: absolute; top: 76px; left: 0; right: 0; bottom: 0; overflow: hidden; }
+#app { position: absolute; left: 0; top: 0; height: 800px; transform-origin: 0 0; background: var(--bg); overflow: hidden; }
+#app[data-transitioning="true"] { pointer-events: none; }
+#err { position: fixed; left: 0; right: 0; bottom: 0; background: #5a1a14; color: #fff; font: 13px monospace; padding: 6px; display: none; z-index: 99; white-space: pre-wrap; }
+
+/* --- kit frames: one steel family, nine-sliced from the game atlas --- */
+.kit { position: relative; isolation: isolate; }
+.kit::before { content: ""; position: absolute; inset: 0; z-index: -1; border-style: solid; pointer-events: none; }
+.k-fire::before, .k-cool::before, .k-reload::before, .k-slate::before { border-image-slice: 32 48 30 84 fill; border-width: 16px 24px 15px 42px; }
+.k-fire::before { border-image-source: url("assets/kit_fire.png"); }
+.k-cool::before { border-image-source: url("assets/kit_cool.png"); }
+.k-reload::before { border-image-source: url("assets/kit_reload.png"); }
+.k-slate::before { border-image-source: url("assets/kit_cool.png"); filter: grayscale(1) brightness(0.74) contrast(1.08); }
+.k-active::before, .k-standby::before { border-image-slice: 64 46 132 150 fill; border-width: 25.6px 18.4px 52.8px 60px; }
+.k-active::before { border-image-source: url("assets/kit_active.png"); }
+.k-standby::before { border-image-source: url("assets/kit_standby.png"); }
+.k-modal::before { border-image-source: url("assets/kit_modal.png"); border-image-slice: 44 60 136 84 fill; border-width: 14.7px 20px 45.3px 28px; }
+.k-heat::before { border-image-source: url("assets/kit_heat.png"); border-image-slice: 24 44 40 62 fill; border-width: 6px 11px 10px 15.5px; }
+
+.btn { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 4px 14px 6px 46px; min-height: 40px; font-size: 17px; line-height: 1.15; text-align: center; transition: transform 60ms; }
+.btn small { font-size: 13px; opacity: 0.82; }
+.btn.big { min-height: 58px; font-size: 21px; }
+.btn.mid { min-height: 50px; font-size: 19px; }
+.btn.sm { min-height: 34px; font-size: 15px; padding-left: 40px; }
+.btn:not(:disabled):active { transform: translateY(2px); }
+.btn:disabled { opacity: 0.5; color: var(--dim); }
+.panel { padding: 16px 18px 16px 28px; }
+
+/* --- shared top bar --- */
+.top { height: 56px; display: flex; align-items: center; gap: 14px; padding: 0 12px 0 18px; background: var(--band); border-bottom: 2px solid var(--line); }
+.top .place { font-size: 22px; }
+.top .prog { font-size: 15px; color: var(--sub); }
+.top .sp { flex: 1; }
+.res { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--sub); }
+.res i { width: 8px; height: 8px; display: inline-block; }
+.res b { font-weight: normal; font-size: 18px; }
+.top .btn { min-width: 84px; }
+
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.body { flex: 1; display: flex; gap: 14px; padding: 12px; min-height: 0; }
+.col { display: flex; flex-direction: column; gap: 10px; min-width: 0; min-height: 0; }
+.label { font-size: 15px; color: var(--sub); }
+.gold { color: var(--gold); }
+.dim { color: var(--dim); }
+.danger { color: var(--danger); }
+
+/* --- combat --- */
+#field { position: relative; z-index: 0; flex: 1; overflow: hidden; background: #0b1216; }
+#field .bg { position: absolute; left: 0; bottom: 0; transform-origin: 0 100%; image-rendering: auto; pointer-events: none; }
+#field .title { position: absolute; left: 18px; top: 14px; font-size: 20px; color: #cfb67e; text-shadow: 0 2px 0 #000; pointer-events: none; }
+#field .reserve { position: absolute; right: 16px; bottom: 10px; font-size: 15px; color: var(--sub); pointer-events: none; }
+.enemy { position: absolute; transition: left 420ms ease-in-out, opacity 300ms, filter 120ms; cursor: pointer; }
+.enemy img { display: block; width: 100%; height: 100%; pointer-events: none; }
+.enemy.hit { animation: hit 220ms; filter: brightness(2.2) sepia(0.4); }
+.enemy.dead { opacity: 0; pointer-events: none; }
+@keyframes hit { 0% { translate: 0 0; } 30% { translate: 6px 0; } 60% { translate: -4px 0; } 100% { translate: 0 0; } }
+.tag { position: absolute; min-width: 108px; background: rgba(9,15,19,0.88); border: 1px solid #4d6168; padding: 4px 8px 5px 11px; font-size: 13px; white-space: nowrap; transition: left 420ms ease-in-out, top 200ms; cursor: pointer; }
+.tag::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--tone, #b3c1b8); }
+.tag.named { border-color: #8a7650; }
+.tag .head { color: #d8b37b; font-size: 14px; margin: -2px 0 3px; }
+.tag .row { display: flex; align-items: baseline; gap: 6px; }
+.tag .hp { font-size: 21px; color: var(--ink); }
+.tag .st { font-size: 13px; }
+.tag .bar { position: relative; height: 5px; background: #2b3d42; margin: 3px 0 4px; }
+.tag .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: #a0b79b; transition: width 220ms; }
+.tag .bar u { position: absolute; top: 0; bottom: 0; background: rgba(237,196,122,0.75); }
+.tag .act { color: var(--tone, #b3c1b8); }
+.tag.reach { border-color: var(--danger); }
+.badge { display: inline-block; min-width: 16px; height: 16px; line-height: 16px; text-align: center; background: var(--gold); color: var(--dark); font-size: 13px; }
+.leader { position: absolute; width: 1px; background: #8fa3aa; pointer-events: none; }
+.floorbadge { position: absolute; pointer-events: none; }
+.pop { position: absolute; font-size: 28px; color: #ffe2a0; text-shadow: 0 2px 0 #000, 0 0 6px #000; pointer-events: none; animation: pop 800ms forwards; }
+.pop.kill { color: var(--danger); }
+@keyframes pop { from { transform: translate(-50%, 0); opacity: 1; } to { transform: translate(-50%, -46px); opacity: 0; } }
+.tracer { position: absolute; height: 3px; background: linear-gradient(90deg, rgba(255,226,160,0), #ffe2a0); transform-origin: 0 50%; pointer-events: none; animation: tracer 160ms forwards; }
+@keyframes tracer { from { opacity: 1; } to { opacity: 0; } }
+.flash { position: absolute; width: 18px; height: 10px; background: #ffd27a; box-shadow: 0 0 12px #ffb44a; pointer-events: none; animation: tracer 120ms forwards; }
+.say { position: absolute; font-size: 16px; color: var(--gold); text-shadow: 0 2px 0 #000; pointer-events: none; animation: pop 900ms forwards; }
+.dock { background: var(--band); border-top: 2px solid var(--line); padding: 8px 12px 10px; display: flex; flex-direction: column; gap: 8px; }
+.strip { display: flex; align-items: center; gap: 8px; height: 32px; }
+.chip { min-width: 100px; height: 30px; padding: 0 10px; border: 1px solid #33474d; background: #121c22; color: var(--dim); font-size: 14px; text-align: left; white-space: nowrap; }
+.chip.on { background: var(--ivory); border-color: #c9bd9f; color: var(--dark); }
+.chip.on:active { transform: translateY(1px); }
+.gauge { width: 240px; height: 22px; }
+.gauge .fill { position: absolute; left: 15.5px; right: 11px; top: 6px; bottom: 10px; overflow: hidden; }
+.gauge .fill i, .gauge .fill u { position: absolute; left: 0; top: 0; bottom: 0; }
+.gauge .fill u { background: rgba(237,196,122,0.38); }
+.gauge .fill i { background: var(--heat); transition: width 250ms; }
+.gauge .fill .limit { position: absolute; right: 0; top: 0; bottom: 0; width: 2px; background: var(--danger); }
+.handrow { display: flex; gap: 8px; height: 118px; }
+.card { flex: 0 1 132px; min-width: 102px; height: 118px; padding: 26px 10px 8px 24px; text-align: left; }
+.card .nm { font-size: 17px; white-space: nowrap; overflow: hidden; }
+.card .mid { display: flex; gap: 8px; align-items: center; margin-top: 2px; }
+.card .mid img { width: 24px; height: 44px; object-fit: contain; }
+.card .sl { font-size: 13px; color: var(--sub); }
+.card .sv { font-size: 25px; line-height: 1; }
+.card .ht { font-size: 13px; color: #d29b78; margin-top: 2px; white-space: nowrap; overflow: hidden; }
+.card.k-active { color: var(--dark); }
+.card.k-active .sl { color: #5d5a4c; }
+.card.k-active .ht { color: var(--brown); }
+.card .ord { position: absolute; right: 8px; top: 20px; width: 20px; height: 20px; line-height: 20px; text-align: center; background: var(--dark); color: var(--ivory); font-size: 14px; }
+.card:not(:disabled):active { transform: translateY(2px); }
+.actions { width: 248px; display: flex; flex-direction: column; gap: 6px; flex: none; margin-left: auto; }
+
+/* --- map --- */
+.mapbox { flex: 1.9; padding: 14px 18px 12px 28px; position: relative; }
+.chart { position: absolute; left: 28px; right: 18px; top: 14px; bottom: 40px; }
+.chart svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.node { position: absolute; width: 52px; height: 52px; margin: -26px 0 0 -26px; display: grid; place-items: center; }
+.node img { width: 38px; height: 38px; object-fit: contain; }
+.node.later img { opacity: 0.62; filter: grayscale(0.4); width: 32px; height: 32px; }
+.node.visited img { opacity: 0.6; filter: sepia(0.2) hue-rotate(60deg); width: 34px; height: 34px; }
+.node.reach { background: #1d2c33; outline: 2px solid var(--gold); }
+.node.current { background: #1d2c33; outline: 2px solid var(--cyan); }
+.node.sel { background: var(--ivory); outline: 2px solid var(--ivory); }
+.node.sel img { filter: brightness(0.2); }
+.node .cap { position: absolute; top: 54px; font-size: 12px; color: var(--cyan); white-space: nowrap; }
+.legend { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: center; gap: 18px; font-size: 13px; color: var(--sub); }
+.legend i { display: inline-block; width: 9px; height: 9px; margin-right: 5px; }
+.side { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.kv { display: grid; grid-template-columns: 70px 1fr; gap: 6px 10px; font-size: 16px; }
+.kv span:nth-child(odd) { color: var(--sub); font-size: 15px; }
+.mini { padding: 30px 14px 12px 26px; }
+
+/* --- place template --- */
+.scene { flex: 1; position: relative; overflow: hidden; min-width: 0; background: #0b1216; }
+.scene img.art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.scene .caption { position: absolute; left: 10px; right: 10px; bottom: 10px; }
+.scene .caption h2 { margin: 0 0 4px; font-size: 25px; font-weight: normal; color: var(--gold); }
+.scene .caption p { margin: 0; font-size: 16px; line-height: 1.4; }
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt { display: flex; align-items: center; gap: 14px; min-height: 104px; padding: 26px 18px 10px 26px; text-align: left; width: 100%; }
+.opt img { width: 30px; height: 56px; object-fit: contain; flex: none; }
+.opt .t { font-size: 21px; }
+.opt .d { font-size: 16px; color: var(--sub); }
+.opt .tag2 { margin-left: auto; font-size: 19px; color: var(--gold); white-space: nowrap; }
+.opt.k-active { color: var(--dark); }
+.opt.k-active .d { color: #5d5a4c; }
+.opt.k-active .tag2 { color: var(--brown); }
+.opt:disabled { opacity: 0.45; }
+.outcome { padding: 14px 16px 12px 28px; }
+.outcome .v { font-size: 19px; color: var(--gold); }
+.row { display: flex; gap: 8px; }
+.grow { flex: 1; }
+
+/* --- shop --- */
+.shelf { display: flex; gap: 10px; height: 250px; flex: none; }
+.prod { flex: 1; padding: 26px 14px 12px 26px; text-align: left; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.prod .top2 { display: flex; justify-content: space-between; font-size: 13px; color: var(--sub); }
+.prod .top2 b { font-weight: normal; font-size: 17px; color: var(--gold); }
+.prod .ic { height: 84px; display: grid; place-items: center; }
+.prod .ic img { max-height: 76px; max-width: 80px; }
+.prod .ic img.px { image-rendering: pixelated; height: 64px; max-height: none; max-width: none; }
+.li img.px { image-rendering: pixelated; width: 44px; height: 28px; object-fit: contain; }
+.nexts { display: flex; flex-direction: column; gap: 6px; }
+.nexts div { display: flex; align-items: center; gap: 10px; font-size: 16px; background: #111b21; border: 1px solid #23323a; padding: 6px 10px; }
+.nexts img { width: 28px; height: 28px; object-fit: contain; }
+.prod .n { font-size: 21px; }
+.prod .s { font-size: 17px; color: var(--gold); }
+.prod .o { font-size: 14px; color: var(--dim); }
+.prod.k-active { color: var(--dark); }
+.prod.k-active .top2, .prod.k-active .o { color: #5d5a4c; }
+.prod.k-active .top2 b, .prod.k-active .s { color: var(--brown); }
+.prod.sold { opacity: 0.45; }
+.slots { display: flex; gap: 6px; }
+.slots i { flex: 1; height: 30px; background: #121c22; font-style: normal; font-size: 12px; color: var(--sub); display: grid; place-items: center; overflow: hidden; white-space: nowrap; }
+.slots i.on { background: #2f3f37; color: var(--ink); }
+
+/* --- overlays --- */
+.veil { position: absolute; inset: 0; background: rgba(3,6,8,0.72); display: flex; align-items: center; justify-content: center; z-index: 20; }
+.dialog { width: 640px; max-height: 640px; padding: 22px 26px 22px 36px; display: flex; flex-direction: column; gap: 10px; }
+.dialog h2 { margin: 0; font-size: 26px; font-weight: normal; }
+.dialog p { margin: 0; font-size: 17px; line-height: 1.5; color: var(--sub); }
+.dialog .facts { display: grid; grid-template-columns: 110px 1fr; gap: 6px 12px; font-size: 17px; }
+.dialog .facts span:nth-child(odd) { color: var(--sub); font-size: 15px; }
+.drawer { position: absolute; top: 56px; right: 0; bottom: 0; width: 560px; padding: 18px 20px 18px 34px; z-index: 21; display: flex; flex-direction: column; gap: 10px; animation: slide 160ms ease-out; }
+@keyframes slide { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.tabs { display: flex; gap: 6px; }
+.tabs .chip { min-width: 90px; text-align: center; }
+.list { overflow: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
+.li { display: flex; align-items: center; gap: 12px; background: #111b21; border: 1px solid #23323a; padding: 8px 10px; font-size: 16px; }
+.li img { width: 20px; height: 36px; object-fit: contain; }
+.li .c { margin-left: auto; color: var(--gold); }
+.li small { display: block; color: var(--sub); font-size: 13px; }
+.banner { position: absolute; left: 50%; top: 40%; transform: translate(-50%, -50%); width: 520px; padding: 26px 30px 26px 40px; text-align: center; z-index: 15; display: flex; flex-direction: column; gap: 12px; }
+.banner h2 { margin: 0; font-size: 32px; font-weight: normal; }
+.toast { position: absolute; left: 50%; top: 70px; transform: translateX(-50%); background: rgba(9,16,21,0.94); border: 1px solid #4d6168; padding: 8px 16px; font-size: 16px; z-index: 30; pointer-events: none; animation: tracer 2200ms forwards; animation-timing-function: steps(1, end); }
+
+/* Magazine controls use the existing kit, with next-shot and ejection states. */
+.strip { height: 44px; }
+.strip .btn { min-width: 74px; height: 42px; }
+.strip .btn small { font-size: 12px; }
+.heat-value { min-width: 76px; font-size: 18px; }
+.magazine { display: flex; gap: 6px; flex: 1; max-width: calc(var(--capacity) * 132px); min-width: 0; }
+.magazine .card, .empty-slot { flex: var(--slots,1) 1 0; min-width: 0; }
+.magazine .card { padding-left: 20px; }
+.magazine .card .nm { font-size: 16px; }
+.magazine .card.next-round { outline: 2px solid #b18b55; outline-offset: -2px; }
+.magazine .card .ord { background: #293b3d; color: #d7b57c; min-width: 16px; }
+.magazine .card.excluded { translate: 0 -5px; outline: 2px solid #bb7160; outline-offset: -2px; }
+.magazine .card.excluded .ord { color: #efb8a2; background: #633d37; }
+.empty-slot { height: 118px; background: #101b20; border: 2px solid #283a40; color: #657b7e; font-size: 14px; }
+.actions { flex: 0 0 328px; }
+.actions .support-actions { display: flex; gap: 6px; }
+.support-actions .btn { flex: 1; min-width: 0; font-size: 18px; }
+.support-actions .btn small { font-size: 13px; }
+.combat-error { color: #efb8a2; display: flex; align-items: center; gap: 12px; font-size: 16px; }
+</style>
+<link rel="stylesheet" href="assets/responsive.css">
+<link rel="stylesheet" href="assets/theme_line.css">
+<link rel="stylesheet" href="assets/map_pipe.css">
+</head>
+<body>
+<div id="toolbar">
+  <b>ORVASK UI 프로토타입</b>
+  <span>화면 비율</span>
+  <button class="tb" data-ratio="0">화면 맞춤</button>
+  <button class="tb" data-ratio="2.2222">20:9 휴대폰</button>
+  <button class="tb" data-ratio="1.6">16:10</button>
+  <span>스타일</span>
+  <button class="tb" data-theme-set="steel">현재 강철</button>
+  <button class="tb" data-theme-set="line">라인 시안</button>
+  <span>지도</span>
+  <button class="tb" data-map-set="chart">탐사도</button>
+  <button class="tb" data-map-set="pipe">배관도</button>
+  <button class="tb" id="restart">처음부터</button>
+  <span class="note">디렉터 제안 · 사용자 미확정 · 전투: 실제 Godot 모델 연결 · 지도·경제: 목업 · <a href="../ui_frame_mockups_2026-10-31.md">목업 보고서</a></span>
+  <select id="screen-select" aria-label="목업 화면 선택"></select>
+</div>
+<nav id="tabbar" aria-label="화면 바로 가기"></nav>
+<div id="viewport"><div id="app"></div></div>
+<div id="err"></div>
+<script src="assets/game_data.js"></script>
+<script src="assets/combat_model.js"></script>
+<script>
+"use strict";
+window.addEventListener("error", (e) => { const box = document.getElementById("err"); box.style.display = "block"; box.textContent += (e.message + " @" + e.lineno + "\n"); });
+
+const D = window.GAME_DATA, MAN = window.ASSET_MANIFEST, AMMO = D.ammo, PARTS = D.parts;
+const A = "assets/";
+const H = 800;
+let ratio = 0;
+const app = document.getElementById("app");
+const $ = (s, root = app) => root.querySelector(s);
+const clone = (v) => JSON.parse(JSON.stringify(v));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const roundSrc = (id) => A + "round_" + ((AMMO[id] && AMMO[id].source) || "basic") + ".png";
+const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const W = () => Math.round(H * ratio);
+const STATUS = { armor: ["장갑", "#9abdc7"], weak_electric: ["약점", "#d9c87d"], charge: ["지휘", "#cfb67e"] };
+const WEAPON = D.combat.weapon;
+const HEAT_LIMIT = D.combat.heat_limit;
+const CAPACITY = D.combat.capacity + 3; // Baseline; combat receives actual capacity from Model.
+const AMMO_POOL = ["arc", "shatter", "chase", "pierce", "bypass", "detonate", "push", "bore", "precise", "cool", "charge", "vent"].filter((id) => AMMO[id]);
+const PART_POOL = ["reserve", "rammer", "lens", "ordinary_chain", "compression_sink", "afterburner", "supply", "opening", "chain_sink", "reclaimer"].filter((id) => PARTS[id]);
+const KIND_INFO = {
+  combat: ["승리 후 탄환 3종 중 1장 · 6 Cr", "약탈단 3기 · 빠른 도둑 포함"],
+  elite: ["탄환 1장 · 12 Cr", "두목과 호위 4기 · 증원 1기"],
+  boss: ["1구역 돌파", "방패병 · 두목 · 사수"],
+  shop: ["탄환 · 파츠 구매", "없음"],
+  workshop: ["무료 작업 1회", "없음"],
+  supply: ["탄환 1장 확보", "없음"],
+  event: ["선택에 따라 크레딧 · 탄환", "선택 후 공개"],
+  bypass: ["전투 1곳을 건너뜀", "다음 전투 접근 +"],
+};
+const NAMES = { slum_thief: "길목 도둑", slum_battery: "전지 약탈자", slum_plate: "철판 방패병", slum_gunner: "길목 사수", slum_leader: "약탈단 두목" };
+
+let G = null;      // run state
+let C = null;      // combat state
+let busy = false;
+let overlay = null; // {type, ...}
+let epoch = 0;      // invalidates work from a previous screen/run
+let transitionTimer = null;
+let returnFocus = null;
+const ABORT = Symbol("abort");
+const tick = async (my, ms) => {
+  await sleep(ms);
+  if (my !== epoch) throw ABORT;
+  // A menu/detail pauses the current action; closing resumes, restarting cancels it.
+  while (overlay && !["win", "lose", "cleared"].includes(overlay.type)) {
+    await sleep(50);
+    if (my !== epoch) throw ABORT;
+  }
+};
+const combatActive = () => G && G.screen === "combat" && C && !C.result;
+const combatReady = () => combatActive() && C.loaded && !busy;
+const emergencyAvailable = () => combatReady() && C.emergency;
+const emergencyCost = () => C.emergency_cost;
+function cancelAction() {
+  epoch++; busy = false;
+  if (press) clearTimeout(press.timer);
+  press = null;
+}
+function screenTransition() {
+  cancelAction(); returnFocus = null;
+  clearTimeout(transitionTimer);
+  app.dataset.transitioning = "true";
+  transitionTimer = setTimeout(() => { app.dataset.transitioning = "false"; }, 350);
+}
+
+/* ------------------------------------------------------------------ run */
+function newRun() {
+  screenTransition();
+  G = {
+    cr: 75, cores: 1, coreMax: 2, bag: 30,
+    deck: D.combat.deck.slice(),
+    parts: ["volley_drive", "radiator"],
+    visited: [], current: 0, available: D.map.available.slice(), selected: D.map.available[0],
+    screen: "map", place: null, shop: null, cleared: false,
+  };
+  C = null; overlay = null; busy = false;
+  render();
+}
+const nodeById = (id) => D.map.nodes.find((n) => n.id === id);
+function finishNode() {
+  screenTransition();
+  const node = nodeById(G.selected);
+  if (node) { G.visited.push(node.id); G.current = node.id; G.available = node.next.slice(); G.selected = G.available[0] || 0; }
+  G.screen = "map"; G.place = null; C = null; overlay = null;
+  render();
+}
+function enterNode() {
+  if (G.screen !== "map" || overlay || busy) return;
+  const node = nodeById(G.selected);
+  if (!node || !G.available.includes(node.id)) return;
+  if (["combat", "elite", "boss"].includes(node.kind)) return startCombat(node);
+  screenTransition();
+  if (node.kind === "shop") { G.screen = "shop"; G.shop = makeShop(); return render(); }
+  if (node.kind === "bypass") { toast("샛길로 전투 한 곳을 건너뜁니다."); return finishNode(); }
+  G.screen = "place"; G.place = makePlace(node.kind); render();
+}
+
+/* ------------------------------------------------------------- shared UI */
+function btn(kind, title, sub, action, opts = {}) {
+  const cls = opts.disabled ? "k-slate" : "k-" + kind;
+  return `<button class="kit btn ${cls} ${opts.size || ""}" data-a="${action}" ${opts.disabled ? "disabled" : ""} ${opts.attr || ""} style="${opts.style || ""}">${esc(title)}${sub ? `<small>${esc(sub)}</small>` : ""}</button>`;
+}
+function topBar(place, prog, extra = "") {
+  const inCombat = G.screen === "combat" && C;
+  const ammo = inCombat ? ["남은 탄", `${C.draw.length + C.hand.length}장`] : ["탄약", `${G.deck.length}/${G.bag}`];
+  return `<div class="top"><span class="place">${esc(place)}</span><span class="prog">${esc(prog)}</span>${extra}<span class="sp"></span>
+    <span class="res"><i style="background:var(--gold)"></i>Cr <b class="gold">${G.cr}</b></span>
+    <span class="res"><i style="background:var(--cyan)"></i>코어 <b style="color:var(--cyan)">${G.cores}/${G.coreMax}</b></span>
+    <span class="res"><i style="background:var(--sub)"></i>${ammo[0]} <b>${ammo[1]}</b></span>
+    ${btn("slate", "빌드", "", "build", { size: "sm" })}${btn("slate", "메뉴", "", "menu", { size: "sm" })}</div>`;
+}
+function progress() { return `1구역 · ${G.visited.length}/${D.map.floors}`; }
+function toast(text) { const t = document.createElement("div"); t.className = "toast"; t.textContent = text; app.appendChild(t); setTimeout(() => t.remove(), 2300); }
+
+/* ------------------------------------------------------------------ map */
+function renderMap() {
+  const nodes = D.map.nodes, floors = D.map.floors;
+  const pos = (n) => {
+    const same = nodes.filter((m) => m.floor === n.floor).length;
+    const x = same === 1 ? 50 : ((n.lane + 0.5) / 4) * 100;
+    const y = 94 - ((n.floor - 1) / Math.max(1, floors - 1)) * 88;
+    return [x, y];
+  };
+  let lines = "";
+  for (const n of nodes) for (const next of n.next) {
+    const m = nodeById(next); if (!m) continue;
+    const [x1, y1] = pos(n), [x2, y2] = pos(m);
+    const open = (G.current === n.id || (G.current === 0 && false)) && G.available.includes(next);
+    const trail = G.visited.includes(n.id) && (G.visited.includes(next));
+    lines += `<line x1="${x1}%" y1="${y1}%" x2="${x2}%" y2="${y2}%" stroke="${open ? "#edc47a" : trail ? "#7f9a96" : "#4f666d"}" stroke-width="${open ? 3 : 2}"/>`;
+  }
+  let buttons = "";
+  for (const n of nodes) {
+    const [x, y] = pos(n);
+    let st = "later";
+    if (G.visited.includes(n.id)) st = "visited";
+    if (G.available.includes(n.id)) st = "reach";
+    if (n.id === G.current) st = "current";
+    if (n.id === G.selected) st += " sel";
+    buttons += `<button class="node ${st}" data-a="node" data-id="${n.id}" style="left:${x}%;top:${y}%" aria-label="${esc(n.kind_name)}"><img src="${A}map_${n.kind}.png" alt="">${n.id === G.current ? '<span class="cap">현재</span>' : ""}</button>`;
+  }
+  const sel = nodeById(G.selected);
+  const reach = sel && G.available.includes(sel.id);
+  const info = sel ? KIND_INFO[sel.kind] || ["", ""] : ["", ""];
+  const side = sel ? `
+    <div class="label">선택한 장소</div>
+    <div class="row" style="align-items:center;gap:14px"><img src="${A}map_${sel.kind}.png" style="width:56px;height:56px;object-fit:contain"><div><div style="font-size:24px">${esc(sel.name || sel.kind_name)}</div><div class="gold" style="font-size:16px">${esc(sel.kind_name)}${reach ? "" : " · 아직 갈 수 없음"}</div></div></div>
+    <div class="kv"><span>얻는 것</span><span>${esc(info[0])}</span><span>위험</span><span>${esc(info[1])}</span><span>이후 길</span><span>갈래 ${sel.next.length}곳</span></div>
+    <div class="label" style="margin-top:6px">다음 갈래</div><div class="nexts">${sel.next.map((id) => nodeById(id)).filter(Boolean).map((n) => `<div><img src="${A}map_${n.kind}.png" alt="">${esc(n.kind_name)}<span class="dim" style="margin-left:auto;font-size:14px">${esc((KIND_INFO[n.kind] || [""])[0])}</span></div>`).join("")}</div>` : `<div class="label">갈 곳을 고르세요</div>`;
+  app.innerHTML = `<div class="screen">${topBar(D.map.region, progress())}
+    <div class="body">
+      <div class="kit k-modal mapbox"><div class="chart"><svg preserveAspectRatio="none">${lines}</svg>${buttons}</div>
+        <div class="legend"><span><i style="background:var(--ivory)"></i>선택</span><span><i style="background:var(--gold)"></i>갈 수 있음</span><span><i style="background:var(--cyan)"></i>현재</span><span><i style="background:#7f9a96"></i>지나옴</span><span><i style="background:#8a9a9c"></i>이후</span></div></div>
+      <div class="kit k-modal panel side">${side}<span class="sp" style="flex:1"></span>
+        <div class="kit k-standby mini"><div class="label">현재 빌드</div><div style="font-size:17px">${esc(WEAPON.name)} · 자동 장전 · 다음 2발 사격</div><div class="label">덱 ${G.deck.length}장 · 파츠 ${G.parts.length}/5 · 코어 ${G.cores}/${G.coreMax}</div></div>
+        <div class="row">${btn("slate", "자세히", "", "nodeinfo", { size: "mid", style: "flex:1", disabled: !sel })}${btn("fire", "이동", "", "go", { size: "mid", style: "flex:1.6", disabled: !reach })}</div>
+      </div>
+    </div></div>`;
+  const mapbox = $(".mapbox"), target = $(".node.sel") || $(".node.reach") || $(".node.current");
+  if (target) mapbox.scrollTop = target.offsetTop - mapbox.clientHeight / 2;
+}
+
+/* --------------------------------------------------------------- combat */
+
+function fieldGeom() {
+  const f = $("#field"); const w = f.clientWidth, h = f.clientHeight;
+  const s = Math.max(w / 1280, h / 520);
+  const laneStart = Math.min(186*s, w*0.3), laneWidth = Math.min(854*s, w-laneStart-44);
+  return { w, h, s, oy: h - 520 * s, x: (d) => laneStart + Math.min(Math.max(d, 0), 32) / 32 * laneWidth, feet: 450 * s + (h - 520 * s) };
+}
+
+function drawField(fc) {
+  const f = $("#field"); if (!f) return;
+  const g = fieldGeom();
+  f.dataset.short = String(g.h < 230);
+  const bg = $(".bg", f); bg.style.width = 1280 * g.s + "px"; bg.style.height = 520 * g.s + "px";
+  f.querySelectorAll(".tag,.leader,.floorbadge").forEach((n) => n.remove());
+  const living = alive(C.enemies);
+  // crowding badges: bodies closer than 40px share numbers
+  const badges = {}; let count = 0;
+  const sorted = living.slice().sort((a, b) => a.d - b.d);
+  for (let i = 0; i < sorted.length; i++) {
+    const near = sorted.filter((o) => Math.abs(g.x(o.d) - g.x(sorted[i].d)) < 46 * g.s);
+    if (near.length > 1 && !badges[sorted[i].uid]) for (const o of near) if (!badges[o.uid]) badges[o.uid] = ++count;
+  }
+  if (g.w <= 620) sorted.forEach((e,i) => { badges[e.uid] = i+1; });
+  const placed = [];
+  const named = living.filter((e) => e.rank), plain = living.filter((e) => !e.rank);
+  const ordered = g.h < 230 || g.w <= 620 ? sorted : [...named, ...plain];
+  for (const e of ordered) {
+    const m = MAN.enemies[e.species];
+    let el = f.querySelector(`.enemy[data-uid="${e.uid}"]`);
+    if (!el) {
+      el = document.createElement("div"); el.className = "enemy"; el.dataset.uid = e.uid; el.dataset.a = "enemy";
+      el.innerHTML = `<img src="${A}enemy_${e.species}.png" alt="">`;
+      el.style.width = m.w * m.scale * g.s + "px"; el.style.height = m.h * m.scale * g.s + "px";
+      el.style.left = (e.fresh ? g.w + 40 : g.x(e.d) - m.foot[0] * m.scale * g.s) + "px";
+      f.appendChild(el);
+      if (e.fresh) { e.fresh = false; requestAnimationFrame(() => requestAnimationFrame(() => drawField(fc))); }
+    }
+    el.style.top = g.feet - m.foot[1] * m.scale * g.s + "px";
+    el.style.zIndex = 5 + Math.round(40 - e.d);
+    const fx = g.x(e.d);
+    el.style.left = fx - m.foot[0] * m.scale * g.s + "px";
+    const headY = g.feet - m.foot[1] * m.scale * g.s;
+    // tag
+    const tag = document.createElement("div");
+    const reach = e.d - e.speed <= 0;
+    const tone = reach ? "#f29780" : e.rank ? "#edc47a" : "#b3c1b8";
+    tag.className = "tag" + (e.rank ? " named" : "") + (reach ? " reach" : "");
+    tag.dataset.a = "enemy"; tag.dataset.uid = e.uid; tag.style.setProperty("--tone", tone);
+    const after = fc ? fc.enemies.find((x) => x.uid === e.uid) : null;
+    const lost = after ? Math.max(0, e.hp - Math.max(0, after.hp)) : 0;
+    const st = [];
+    if (e.def) st.push(`<span class="st" style="color:${STATUS.armor[1]}">장갑 ${e.def}</span>`);
+    if (e.weak) st.push(`<span class="st" style="color:${STATUS.weak_electric[1]}">⚡약점</span>`);
+    const intent = e.chargeMax ? `지휘 ${e.chargeMax - e.charge}턴 · 호위 접근` : "";
+    tag.innerHTML = `${intent ? `<div class="head">${intent}</div>` : ""}<div class="row">${badges[e.uid] ? `<span class="badge">${badges[e.uid]}</span>` : ""}<span class="st dim">HP</span><span class="hp">${Math.max(0, e.hp)}</span>${st.join("")}${e.chargeMax ? `<span class="short-only gold">지휘 ${e.chargeMax-e.charge}</span>` : ""}${lost ? `<span class="short-only gold">−${lost}</span>` : ""}${reach ? `<span class="short-only danger">도달</span>` : ""}</div>
+      <div class="bar"><i style="width:${Math.max(0, e.hp) / e.max * 100}%"></i>${lost ? `<u style="left:${Math.max(0, e.hp - lost) / e.max * 100}%;width:${lost / e.max * 100}%"></u>` : ""}</div>
+      <div class="act">${reach ? "다음 행동에 도달" : "다음 접근"}${lost ? ` · <span class="gold">−${lost}${after.hp <= 0 ? " 처치" : ""}</span>` : ""}</div>`;
+    f.appendChild(tag);
+    const tw = tag.offsetWidth, th = tag.offsetHeight;
+    let left = Math.min(Math.max(4, fx - tw / 2), g.w - tw - 4);
+    let top = headY - 8 - th;
+    let guard = 0;
+    while (placed.some((r) => !(left + tw + 3 < r.l || r.l + r.w + 3 < left || top + th + 3 < r.t || r.t + r.h + 3 < top)) && guard++ < 8) top -= th + 6;
+    top = Math.max(4, top);
+    if (g.h < 230) {
+      left = Math.max(placed.length ? placed[placed.length-1].l+placed[placed.length-1].w+6 : 4, left);
+      top = 4;
+    }
+    if (g.w <= 620 && g.h >= 230) {
+      left = 8 + (placed.length % 2) * (g.w / 2);
+      const previousRow = (Math.floor(placed.length/2)-1)*2;
+      top = placed.length < 2 ? 36 : Math.max(...placed.slice(previousRow,previousRow+2).map(r => r.t+r.h)) + 8;
+    }
+    placed.push({ l: left, t: top, w: tw, h: th, tag });
+    tag.style.left = left + "px"; tag.style.top = top + "px"; tag.style.zIndex = 60;
+    if (g.w > 620 && g.h >= 230 && (top + th < headY - 12 || Math.abs(left + tw / 2 - fx) > 10)) {
+      const ln = document.createElement("div"); ln.className = "leader";
+      const ax = Math.min(Math.max(fx, left + 8), left + tw - 8);
+      ln.style.left = ax + "px"; ln.style.top = top + th + "px"; ln.style.height = Math.max(0, headY - 4 - top - th) + "px"; ln.style.zIndex = 59;
+      f.appendChild(ln);
+    }
+    if (badges[e.uid]) { const b = document.createElement("span"); b.className = "badge floorbadge"; b.textContent = badges[e.uid]; b.style.left = fx - 8 + "px"; b.style.top = g.feet + 6 + "px"; b.style.zIndex = 61; f.appendChild(b); }
+  }
+  if (g.h < 230) {
+    let edge = g.w - 4;
+    for (let i = placed.length - 1; i >= 0; i--) {
+      const r = placed[i];
+      r.l = Math.min(r.l, edge - r.w);
+      r.tag.style.left = r.l + "px";
+      edge = r.l - 6;
+    }
+  }
+  f.querySelectorAll(".enemy").forEach((el) => { if (!living.some((e) => String(e.uid) === el.dataset.uid)) el.classList.add("dead"); });
+}
+function enemyCenter(uid) {
+  const g = fieldGeom(); const e = C.enemies.find((x) => x.uid === uid); const m = MAN.enemies[e.species];
+  return [g.x(e.d), g.feet - m.foot[1] * m.scale * g.s * 0.55];
+}
+
+/* ---------------------------------------------------- place template */
+function pickAmmo(n, avoid = []) { return shuffle(AMMO_POOL.filter((id) => !avoid.includes(id))).slice(0, n); }
+function ammoOption(id, extra = {}) { const a = AMMO[id]; return { icon: id, title: a.name, detail: `${a.stat_label} ${a.stat_value}${a.secondary ? " · " + a.secondary : ""}`, tag: "열 " + a.heat_label, ...extra }; }
+const basicTarget = () => G.deck.find((id) => AMMO[id].source === "basic");
+function placeProblem(p, o) {
+  if (!o) return "작업을 선택하세요";
+  if (["reward", "supply"].includes(p.kind)) return G.deck.length >= G.bag ? "가방이 가득 찼습니다" : "";
+  if (p.kind === "event" || o.op === "trim") {
+    if (G.deck.length <= 8) return "덱은 최소 8장을 유지해야 합니다";
+    if (!o.id || !G.deck.includes(o.id)) return "제거할 기본탄이 없습니다";
+  }
+  if (o.op === "tune" && (!o.id || !G.deck.includes(o.id))) return "개조할 기본탄이 없습니다";
+  return "";
+}
+function makePlace(kind) {
+  if (kind === "reward") {
+    const ids = pickAmmo(3);
+    return { kind, place: "전투 승리", title: "보상", lead: "탄환 한 장을 덱에 더할 수 있습니다.", art: "combat_bg.png", prompt: "탄환 한 장을 고르세요", options: ids.map((id) => ammoOption(id, { id })), primary: "1장 확보", secondary: "건너뛰기", pick: 1 };
+  }
+  if (kind === "supply") {
+    const ids = pickAmmo(2);
+    return { kind, place: "탄약고", title: "밀수 창고", lead: "가져갈 탄환을 고르세요. 한 장을 받을 수 있습니다.", art: "supply.png", prompt: "한 장을 고르세요", options: ids.map((id) => ammoOption(id, { id })), primary: "1장 확보", secondary: "그대로 통과", pick: 0 };
+  }
+  if (kind === "workshop") {
+    const tune = G.deck.find((id) => id === "basic" || id === "basic_p2");
+    const trim = basicTarget();
+    const opts = [
+      { title: "탄환 개조", detail: tune ? `기본탄 피해 ${AMMO[tune].dmg} → ${AMMO.basic_p3.dmg}` : "개조할 기본탄이 없습니다", tag: "무료", op: "tune", icon: "basic", id: tune },
+      { title: "덱 정리", detail: trim ? `기본탄 피해 ${AMMO[trim].dmg} · 열 ${AMMO[trim].heat_label} 한 장 제거` : "제거할 기본탄이 없습니다", tag: "최소 8장", op: "trim", icon: "basic", id: trim },
+      { title: "가방 확장", detail: `휴대 상한 ${G.bag} → ${G.bag + 2}`, tag: "무료", op: "bag", icon: "" },
+    ];
+    return { kind, place: "공방", title: "정비 작업대", lead: "이번 방문에 무료 작업 한 번.", art: "workshop.png", prompt: "작업 하나를 고르세요", options: opts, primary: "작업하기", secondary: "그대로 통과", pick: 0 };
+  }
+  // event: scrap one basic for credits
+  const basics = [...new Set(G.deck.filter((id) => AMMO[id].source === "basic"))];
+  const opts = basics.map((id) => ({ icon: id, id, title: `기본탄 · 피해 ${AMMO[id].dmg} · 열 ${AMMO[id].heat_label}`, detail: `1장 분해 · 보유 ${G.deck.filter((x) => x === id).length}장`, tag: "+16 Cr", off: G.deck.length <= 8 }));
+  return { kind, place: "조우", title: "비공개 구획", lead: "부품 신호가 잡힙니다. 얻는 것과 다음 전투의 비용을 함께 확인하세요.", art: "encounter.png", prompt: "탄환을 크레딧으로 바꿀 수 있습니다", options: opts, primary: "분해하고 받기", secondary: "그대로 통과", pick: opts.findIndex((o) => !o.off) };
+}
+function placeOutcome(p) {
+  const o = p.options[p.pick]; if (!o) return "";
+  const problem = placeProblem(p, o); if (problem) return problem;
+  if (p.kind === "reward" || p.kind === "supply") return `${o.title} 1장 추가 · 덱 ${G.deck.length} → ${G.deck.length + 1}장`;
+  if (p.kind === "event") return `${o.title.split(" · ")[0]}(피해 ${AMMO[o.id].dmg}) 1장 → +16 Cr · 덱 ${G.deck.length} → ${G.deck.length - 1}장 · ${G.cr} → ${G.cr + 16} Cr`;
+  if (o.op === "tune") return `기본탄 1장 · 피해 ${AMMO[o.id].dmg} → ${AMMO.basic_p3.dmg} · 발열 ${AMMO[o.id].heat_label} → ${AMMO.basic_p3.heat_label}`;
+  if (o.op === "trim") return `기본탄(피해 ${AMMO[o.id].dmg}) 1장 제거 · 덱 ${G.deck.length} → ${G.deck.length - 1}장`;
+  return `휴대 상한 ${G.bag} → ${G.bag + 2}`;
+}
+function renderPlace() {
+  const p = G.place;
+  const opts = p.options.length ? p.options.map((o, i) => `<button class="kit opt ${i === p.pick ? "k-active" : "k-standby"}" data-a="pick" data-i="${i}" ${placeProblem(p, o) ? "disabled" : ""}>
+      ${o.icon ? `<img src="${roundSrc(o.icon)}" alt="">` : `<span style="width:30px"></span>`}<span><div class="t">${esc(o.title)}</div><div class="d">${esc(o.detail)}</div></span><span class="tag2">${esc(o.tag || "")}</span></button>`).join("")
+    : `<div class="label">고를 수 있는 것이 없습니다.</div>`;
+  const out = placeOutcome(p);
+  app.innerHTML = `<div class="screen">${topBar(D.map.region, p.place)}
+    <div class="body">
+      <div class="scene"><img class="art" src="${A}${p.art}" alt="" style="${p.kind === "reward" ? "object-position:30% 100%" : ""}"><div class="kit k-modal panel caption"><h2>${esc(p.title)}</h2><p>${esc(p.lead)}</p></div></div>
+      <div class="col" style="flex:1.05">
+        <div style="font-size:20px">${esc(p.prompt)}</div>
+        <div class="options">${opts}</div>
+        <span style="flex:1"></span>
+        ${out ? `<div class="kit k-modal outcome"><div class="label">선택하면</div><div class="v">${esc(out)}</div></div>` : ""}
+        <div class="row">${btn("slate", p.secondary, "", "skip", { size: "mid", style: "flex:1" })}${btn("fire", p.primary, "", "confirm", { size: "mid", style: "flex:1.4", disabled: !!placeProblem(p, p.options[p.pick]) })}</div>
+      </div>
+    </div></div>`;
+}
+function confirmPlace() {
+  if (G.screen !== "place" || !G.place || overlay) return;
+  const p = G.place, o = p.options[p.pick]; if (placeProblem(p, o)) return;
+  if (p.kind === "reward" || p.kind === "supply") { G.deck.push(o.id); toast(`${o.title} 1장을 덱에 넣었습니다.`); }
+  if (p.kind === "event") { G.deck.splice(G.deck.indexOf(o.id), 1); G.cr += 16; toast("+16 Cr"); }
+  if (o.op === "tune") { G.deck[G.deck.indexOf(o.id)] = "basic_p3"; toast("기본탄 개조 완료"); }
+  if (o.op === "trim") { G.deck.splice(G.deck.indexOf(o.id), 1); toast("기본탄 1장 제거"); }
+  if (o.op === "bag") { G.bag += 2; toast("휴대 상한 +2"); }
+  finishNode();
+}
+
+/* ------------------------------------------------------------------ shop */
+function makeShop() { return { items: stock(), pick: 0, reroll: 3, quote: "“안쪽 문은 열어 둬요. 거기까지 난방이 가야 해서.”" }; }
+function stock() {
+  const ammo = pickAmmo(1)[0];
+  const parts = shuffle(PART_POOL.filter((id) => !G.parts.includes(id))).slice(0, 2);
+  return [{ kind: "ammo", id: ammo, price: 12, sold: false }, ...parts.map((id) => ({ kind: "part", id, price: 30, sold: false }))];
+}
+function renderShop() {
+  const scrollSelector = ".body,.body > .col,.shelf";
+  const scrollPositions = $(".shelf") ? [...app.querySelectorAll(scrollSelector)].map(e => [e.scrollLeft,e.scrollTop]) : [];
+  const S = G.shop;
+  const cards = S.items.map((it, i) => {
+    const on = i === S.pick;
+    if (it.kind === "ammo") { const a = AMMO[it.id]; return `<button class="kit prod ${on ? "k-active" : "k-standby"} ${it.sold ? "sold" : ""}" data-a="prod" data-i="${i}"><div class="top2"><span>탄환 · ${esc(a.role)}</span><b>${it.sold ? "구매함" : it.price + " Cr"}</b></div><div class="ic"><img src="${roundSrc(it.id)}" alt=""></div><div class="n">${esc(a.name)}</div><div class="s">${esc(a.stat_label + " " + a.stat_value)}</div><div class="o">보유 ${G.deck.filter((x) => AMMO[x].source === a.source).length}장 · 열 ${esc(a.heat_label)}</div></button>`; }
+    const p = PARTS[it.id]; return `<button class="kit prod ${on ? "k-active" : "k-standby"} ${it.sold ? "sold" : ""}" data-a="prod" data-i="${i}"><div class="top2"><span>파츠 · ${esc(p.grade)}</span><b>${it.sold ? "구매함" : it.price + " Cr"}</b></div><div class="ic"><img class="px" src="${A}part_${it.id}.png" alt=""></div><div class="n">${esc(p.name)}</div><div class="s">${esc(p.value)}</div><div class="o">${G.parts.includes(it.id) ? "장착 중" : "미보유"}</div></button>`;
+  }).join("");
+  const it = S.items[S.pick];
+  const creditText = it.sold ? `현재 ${G.cr} Cr` : G.cr < it.price ? `${it.price - G.cr} Cr 부족` : `구매 후 ${G.cr - it.price} Cr`;
+  const creditChange = it.sold || G.cr < it.price ? creditText : `${G.cr} → ${G.cr - it.price} Cr`;
+  const swapTarget = basicTarget();
+  let detail;
+  if (it.kind === "ammo") {
+    const a = AMMO[it.id];
+    detail = `<div style="font-size:24px">${esc(a.name)}</div><div class="gold" style="font-size:17px">${esc(a.stat_label + " " + a.stat_value)} · 열 ${esc(a.heat_label)}</div><p style="margin:0;font-size:15px;color:var(--sub);line-height:1.45">${esc(a.text)}</p><span style="flex:1"></span>
+      <div class="label">${it.sold ? "구매 완료" : "구매 후 변화"}</div><div class="kv"><span>덱</span><span>${it.sold ? `현재 ${G.deck.length}장 · ${esc(it.receipt || "구매 완료")}` : `${G.deck.length} → ${G.deck.length + 1}장`}</span><span>크레딧</span><span>${creditChange}</span></div><span style="flex:1"></span>
+      ${btn("fire", `${it.price} Cr · 한 장 추가`, "", "buy", { size: "mid", disabled: it.sold || G.cr < it.price || G.deck.length >= G.bag })}
+      <div class="row" style="align-items:center">${btn("slate", "보유 기본탄과 교체", swapTarget ? `피해 ${AMMO[swapTarget].dmg} · 열 ${AMMO[swapTarget].heat_label} 1장` : "교체할 기본탄 없음", "swap", { size: "sm", style: "flex:1", disabled: it.sold || G.cr < it.price || !swapTarget })}<span class="label">${creditText}</span></div>`;
+  } else {
+    const p = PARTS[it.id];
+    detail = `<div style="font-size:24px">${esc(p.name)}</div><div class="gold" style="font-size:17px">${esc(p.value)}</div><p style="margin:0;font-size:15px;color:var(--sub);line-height:1.45">이득: ${esc(p.upside || "-")}<br>대가: ${esc(p.downside || "없음")}</p><span style="flex:1"></span>
+      <div class="label">${it.sold ? "구매 완료" : "구매 후 변화"}</div><div class="kv"><span>파츠</span><span>${it.sold ? `장착 완료 · ${G.parts.length}/5` : `${G.parts.length} → ${G.parts.length + 1}/5`}</span><span>크레딧</span><span>${creditChange}</span></div><span style="flex:1"></span>
+      ${btn("fire", `${it.price} Cr · 장착`, "", "buy", { size: "mid", disabled: it.sold || G.cr < it.price || G.parts.length >= 5 })}
+      <div class="row" style="align-items:center"><span class="label" style="flex:1">${it.sold ? "장착 중" : G.parts.length >= 5 ? "슬롯이 가득 찼습니다" : "빈 슬롯에 바로 장착"}</span><span class="label">${creditText}</span></div>`;
+  }
+  const slots = Array.from({ length: 5 }, (_, i) => G.parts[i] ? `<i class="on">${esc(PARTS[G.parts[i]].name)}</i>` : "<i>빈 칸</i>").join("");
+  app.innerHTML = `<div class="screen">${topBar("승강장 정비소", "상점")}
+    <div class="body shop-body">
+      <div class="col" style="flex:2">
+        <div class="scene" style="flex:1"><img class="art" src="${A}shop.png" alt=""><div class="kit k-modal panel" style="position:absolute;right:10px;bottom:10px;width:440px"><div class="gold" style="font-size:14px">정비소 주인</div><div style="font-size:16px">${esc(S.quote)}</div></div></div>
+        <div class="row" style="align-items:center"><span style="font-size:20px">오늘의 물건</span><span style="flex:1"></span>${btn("slate", `새 진열 · ${S.reroll} Cr`, "", "reroll", { size: "sm", disabled: G.cr < S.reroll })}</div>
+        <div class="shelf">${cards}</div>
+        <div class="row">${btn("slate", `탄환 가방 ${G.deck.length}/${G.bag}`, "", "bag", { size: "sm" })}${btn("slate", `압축 충전 ${G.cores}/${G.coreMax} · 18 Cr`, "", "core", { size: "sm", disabled: G.cores >= G.coreMax || G.cr < 18 })}</div>
+      </div>
+      <div class="col" style="flex:1">
+        <div class="kit k-modal panel col" style="flex:1;gap:8px">${detail}</div>
+        <div class="kit k-modal panel" style="padding:14px 16px 12px 28px"><div class="row" style="justify-content:space-between"><span class="label">장착 파츠 ${G.parts.length}/5</span><span class="label">${G.cores}/${G.coreMax} 코어</span></div><div class="slots" style="margin-top:6px">${slots}</div></div>
+        ${btn("slate", "지도로 계속", "", "leave", { size: "mid" })}
+      </div>
+    </div></div>`;
+  app.querySelectorAll(scrollSelector).forEach((e,i) => { if (scrollPositions[i]) { e.scrollLeft=scrollPositions[i][0]; e.scrollTop=scrollPositions[i][1]; } });
+}
+function shopAction(a) {
+  if (G.screen !== "shop" || !G.shop || overlay) return;
+  const S = G.shop, it = S.items[S.pick];
+  if (a === "buy" && !it.sold && G.cr >= it.price && (it.kind === "ammo" ? G.deck.length < G.bag : G.parts.length < 5 && !G.parts.includes(it.id))) {
+    G.cr -= it.price; it.sold = true;
+    if (it.kind === "ammo") { G.deck.push(it.id); it.receipt = "1장 추가됨"; toast(`${AMMO[it.id].name} 구매 · 덱 ${G.deck.length}장`); }
+    else { G.parts.push(it.id); toast(`${PARTS[it.id].name} 장착`); }
+  }
+  if (a === "swap" && it.kind === "ammo" && !it.sold && G.cr >= it.price) {
+    const i = G.deck.findIndex((id) => AMMO[id].source === "basic");
+    if (i < 0) return toast("교체할 기본탄이 없습니다.");
+    G.cr -= it.price; it.sold = true; G.deck[i] = it.id; it.receipt = "기본탄 1장과 교체됨"; toast(`기본탄 1장을 ${AMMO[it.id].name}으로 교체`);
+  }
+  if (a === "reroll" && G.cr >= S.reroll) { G.cr -= S.reroll; S.reroll = Math.min(9, S.reroll + 2); S.items = stock(); S.pick = 0; toast("새 물건이 도착했습니다."); }
+  if (a === "core" && G.cores < G.coreMax && G.cr >= 18) { G.cr -= 18; G.cores++; toast("압축 코어 충전"); }
+  render();
+}
+
+/* -------------------------------------------------------------- overlays */
+function focusKey(el) {
+  if (!el || !el.dataset) return null;
+  if (el.id) return "#" + CSS.escape(el.id);
+  if (el.dataset.a) return "#app " + ["a", "uid", "id", "tab", "i"].filter((k) => el.dataset[k] !== undefined).map((k) => `[data-${k}="${CSS.escape(el.dataset[k])}"]`).join("");
+  if (el.dataset.tab) return `#tabbar [data-tab="${CSS.escape(el.dataset.tab)}"]`;
+  return null;
+}
+const modalRoot = () => $(".dialog,.drawer,.banner");
+const focusables = (root) => [...root.querySelectorAll('button:not(:disabled),a[href],[tabindex="0"]')];
+function renderOverlay() {
+  const previous = modalRoot();
+  const focused = document.activeElement;
+  const insideFocus = previous && previous.contains(focused) ? focusKey(focused) : null;
+  if (overlay && !previous && !returnFocus) returnFocus = focusKey(focused);
+  app.querySelectorAll(".veil,.drawer,.banner").forEach((n) => n.remove());
+  const screen = $(".screen");
+  if (screen) screen.inert = !!overlay;
+  document.getElementById("toolbar").inert = !!overlay;
+  document.getElementById("tabbar").inert = !!overlay;
+  if (!overlay) {
+    if (returnFocus) { const target = document.querySelector(returnFocus); if (target && !target.disabled) target.focus({ preventScroll: true }); }
+    returnFocus = null;
+    return updateTabs();
+  }
+  const o = overlay;
+  let html = "";
+  if (o.type === "win") html = `<div class="kit k-modal banner"><h2 class="gold">승리</h2><div style="font-size:19px">+${o.gain} Cr · 진행 ${C.actions}행동</div>${btn("fire", C.kind === "boss" ? "1구역 돌파" : "보상 받기", "", "reward", { size: "mid" })}</div>`;
+  if (o.type === "lose") html = `<div class="veil"><div class="kit k-modal banner" style="position:relative;left:auto;top:auto;transform:none"><h2 class="danger">적이 도달했습니다</h2><p style="margin:0;color:var(--sub);font-size:17px">적이 0m에 닿으면 즉시 패배합니다. 같은 전투를 다시 시작하거나 처음부터 시작하세요.</p><div class="row">${btn("slate", "처음부터", "", "restart", { size: "mid", style: "flex:1" })}${btn("fire", "같은 전투 다시", "", "retry", { size: "mid", style: "flex:1.3" })}</div></div></div>`;
+  if (o.type === "cleared") html = `<div class="veil"><div class="kit k-modal banner" style="position:relative;left:auto;top:auto;transform:none"><h2 class="gold">1구역 돌파</h2><p style="margin:0;color:var(--sub);font-size:17px">프로토타입의 끝입니다. 덱 ${G.deck.length}장 · 파츠 ${G.parts.length}개 · ${G.cr} Cr</p>${btn("fire", "처음부터", "", "restart", { size: "mid" })}</div></div>`;
+  if (o.type === "menu") html = `<div class="veil" data-a="close"><div class="kit k-modal dialog" data-stop="1"><h2>메뉴</h2>
+      ${btn("slate", "도움말", "", "help", { size: "mid" })}${btn("slate", "처음부터", "", "restart", { size: "mid" })}${btn("fire", "닫기", "", "close", { size: "mid" })}</div></div>`;
+  if (o.type === "help") html = `<div class="veil" data-a="close"><div class="kit k-modal dialog" data-stop="1"><h2>조작</h2>
+      <p>· 지도: 금테 칸을 눌러 고르고 <span class="gold">이동</span>.<br>· 전투: 보유 덱에서 탄창을 자동으로 채웁니다. 왼쪽부터 최대 2발씩 사격합니다.<br>· 탄을 눌러 최대 2발 선택 → 빼내기. 이번 전투에서 소모되며 적은 행동하지 않습니다. 빈칸·취소·Escape로 선택을 취소합니다.<br>· 선택 중에는 사격·냉각·교체가 잠깐 잠깁니다. 상세를 닫아도 선택은 유지됩니다.<br>· 탄창 교체: 적 2행동, 남은 탄은 예비 맨 뒤로. 새 탄창에서 빼내기 한도가 회복됩니다.<br>· 냉각: 적 1행동, 남은 탄과 순서는 유지됩니다.<br>· 카드를 길게 누르거나 오른쪽 클릭하면 상세. 적을 누르면 적 정보.<br>· 발열이 한계에 닿으면 그 탄까지 쏘고 강제 냉각(적 2행동 추가). 미발사 탄과 순서는 보존됩니다.<br>· 비상 보급 비용은 재장전 비용 + 1 + 이전 보급 횟수입니다.<br>· 메뉴나 상세창을 열면 진행 중인 사격·적 행동이 일시 정지합니다.<br>· 적이 0m에 닿으면 패배.</p>
+      <p class="dim" style="font-size:14px">전투 계산·파츠·예측은 실제 Godot 모델을 사용합니다. 지도·경제와 적 구성은 검토 중인 목업이며, 본편 저장과 연결되지 않습니다.</p>${btn("fire", "닫기", "", "close", { size: "mid" })}</div></div>`;
+  if (o.type === "nodeinfo") { const n = nodeById(G.selected); html = `<div class="veil" data-a="close"><div class="kit k-modal dialog" data-stop="1"><h2>${esc(n.name || n.kind_name)}</h2><p>${esc(n.hint || "")}</p><div class="facts"><span>종류</span><span>${esc(n.kind_name)}</span><span>얻는 것</span><span>${esc((KIND_INFO[n.kind] || [""])[0])}</span><span>위험</span><span>${esc((KIND_INFO[n.kind] || ["", ""])[1])}</span></div>${btn("fire", "닫기", "", "close", { size: "mid" })}</div></div>`; }
+  if (o.type === "ammo") {
+    const c = C && cardOf(o.uid); if (!c) { overlay = null; return renderOverlay(); }
+    const a = ammoOf(c.id); const ord = C.hand.indexOf(c) + 1;
+    html = `<div class="veil" data-a="close"><div class="kit k-modal dialog" data-stop="1"><div class="row" style="align-items:center;gap:14px"><img src="${roundSrc(c.id)}" style="width:34px;height:62px;object-fit:contain"><div><h2>${esc(a.name)}</h2><div class="gold">${esc(a.role)}${ord ? ` · ${ord}번째 발사` : ""}</div></div></div>
+      <div class="facts"><span>${esc(a.stat_label)}</span><span>${esc(a.stat_value)}</span><span>발열</span><span>${esc(a.heat_label)}</span><span>관통</span><span>${a.pen || 0}</span>${a.secondary ? `<span>효과</span><span>${esc(a.secondary)}</span>` : ""}</div>
+      <p>${esc(a.text)}</p>
+      <div class="row">${btn("slate", "닫기", "", "close", { size: "mid", style: "flex:1" })}</div></div></div>`;
+  }
+  if (o.type === "enemy") {
+    const e = C.enemies.find((x) => x.uid === o.uid);
+    const reach = e.d - e.speed <= 0;
+    html = `<div class="veil" data-a="close"><div class="kit k-modal dialog" data-stop="1"><h2>${esc(e.name)}</h2>
+      <div class="facts"><span>HP</span><span>${Math.max(0, e.hp)} / ${e.max}</span><span>장갑</span><span>${e.def}</span><span>다음 행동</span><span class="${reach ? "danger" : ""}">접근 · 실제 접근 ${e.speed}m${reach ? " · 도달" : ""}</span>${e.chargeMax ? `<span>지휘</span><span>${e.chargeMax - e.charge}턴 뒤 호위 전체 +${e.charge_pull || 1}m</span>` : ""}${e.weak ? "<span>약점</span><span>전격탄 피해 +2</span>" : ""}</div>
+      <p>공격·밀기·지원 뒤 적이 행동합니다. 적이 0m에 닿으면 패배합니다.</p>${btn("fire", "닫기", "", "close", { size: "mid" })}</div></div>`;
+  }
+  if (o.type === "build") {
+    const tab = o.tab || "deck";
+    let list = "";
+    if (tab === "deck") {
+      const counts = {}; for (const id of G.deck) counts[id] = (counts[id] || 0) + 1;
+      list = Object.entries(counts).map(([id, n]) => `<div class="li"><img src="${roundSrc(id)}" alt=""><div>${esc(AMMO[id].name)} <small>${esc(AMMO[id].stat_label + " " + AMMO[id].stat_value)} · 열 ${esc(AMMO[id].heat_label)}</small></div><span class="c">×${n}</span></div>`).join("");
+    } else if (tab === "parts") {
+      list = Array.from({ length: 5 }, (_, i) => { const id = G.parts[i]; if (!id) return `<div class="li dim">빈 슬롯</div>`; const p = PARTS[id]; return `<div class="li"><img class="px" src="${A}part_${id}.png" alt=""><div>${esc(p.name)} <small>${esc(p.upside || p.value)}${p.downside ? " · 대가: " + esc(p.downside) : ""}</small></div><span class="c">${esc(p.grade)}</span></div>`; }).join("");
+    } else {
+      list = `<div class="li"><div>${esc(WEAPON.name)} <small>자동 장전 · 왼쪽부터 최대 2발 사격</small></div></div><div class="li"><div>${C && C.loaded ? `탄창 ${C.capacity}칸 · 열 한계 ${C.heat_limit}` : '파츠 효과를 포함한 수치는 전투에서 표시'} <small>탄창 교체와 냉각은 별도 조작 · 실행 버튼에서 현재 비용 확인</small></div></div><div class="li"><div>${esc(WEAPON.role)} <small>탄창당 최대 2발 빼내기 · 이번 전투에서 소모 · 교체 시 한도 회복</small></div></div>`;
+    }
+    html = `<div class="veil" data-a="close" style="background:rgba(3,6,8,0.45)"></div><div class="kit k-modal drawer"><div class="row" style="align-items:center"><span style="font-size:24px">빌드</span><span style="flex:1"></span>${btn("slate", "닫기", "", "close", { size: "sm" })}</div>
+      <div class="tabs">${[["deck", `덱 ${G.deck.length}`], ["parts", `파츠 ${G.parts.length}/5`], ["weapon", "무기"]].map(([k, t]) => `<button class="chip ${k === tab ? "on" : ""}" data-a="tab" data-tab="${k}">${t}</button>`).join("")}</div>
+      <div class="list">${list}</div></div>`;
+  }
+  app.insertAdjacentHTML("beforeend", html);
+  const dialog = modalRoot();
+  if (dialog) {
+    if (dialog.classList.contains("dialog")) {
+      const content = document.createElement("div"); content.className = "dialog-scroll";
+      while (dialog.firstChild) content.appendChild(dialog.firstChild);
+      dialog.appendChild(content);
+    }
+    dialog.setAttribute("role", "dialog"); dialog.setAttribute("aria-modal", "true"); dialog.tabIndex = -1;
+    dialog.setAttribute("aria-label", ({win:"승리",lose:"패배",cleared:"1구역 돌파",menu:"메뉴",help:"조작 도움말",build:"빌드",ammo:"탄환 상세",enemy:"적 상세",nodeinfo:"장소 상세"})[o.type] || "상세");
+    const keep = insideFocus && document.querySelector(insideFocus);
+    const target = keep && dialog.contains(keep) && !keep.disabled ? keep : focusables(dialog)[0] || dialog;
+    target.focus({ preventScroll: true });
+  }
+  updateTabs();
+}
+
+/* ----------------------------------------------------------------- tabs */
+const TABS = [
+  ["흐름", [["map", "지도"]]],
+  ["전투", [["combat", "일반 전투"], ["elite", "정예전"], ["boss", "관문전"], ["detail", "탄 상세"], ["win", "승리"], ["lose", "패배"]]],
+  ["장소", [["reward", "보상"], ["event", "조우"], ["supply", "탄약고"], ["workshop", "공방"], ["shop", "상점"]]],
+  ["공통", [["build", "빌드 서랍"], ["menu", "메뉴"]]],
+];
+const TAB_KEYS = TABS.flatMap(([, items]) => items.map(([key]) => key));
+function nodeOfKind(kind) { return D.map.nodes.find((n) => n.kind === kind); }
+function enterKind(kind) {
+  const n = nodeOfKind(kind);
+  G.selected = n.id;
+  if (!G.available.includes(n.id)) G.available = [...G.available, n.id];
+  return n;
+}
+async function jump(key) {
+  if (C && G.screen === "combat" && C.selected.length && !["menu","build"].includes(key)) return toast("탄환 선택을 취소한 뒤 이동하세요.");
+  if (!G) newRun();
+  if (key === "build" || key === "menu") { overlay = { type: key === "build" ? "build" : "menu", tab: "deck" }; return renderOverlay(); }
+  screenTransition();
+  overlay = null; C = null; G.place = null;
+  if (key === "map") G.screen = "map";
+  else if (["combat", "elite", "boss"].includes(key)) { if (!await startCombat(enterKind(key))) return; }
+  else if (key === "detail") { if (!await startCombat(enterKind("elite"))) return; overlay = { type: "ammo", uid: C.hand[0].uid }; }
+  else if (key === "win") { if (!await startCombat(enterKind("combat"))) return; for (const e of C.enemies) e.hp = 0; C.reserve = []; C.result = "win"; overlay = { type: "win", gain: 6 }; }
+  else if (key === "lose") { if (!await startCombat(enterKind("combat"))) return; for (const e of C.enemies) e.d = 0; C.result = "lose"; overlay = { type: "lose" }; }
+  else if (key === "reward") { enterKind("combat"); G.screen = "place"; G.place = makePlace("reward"); }
+  else if (["event", "supply", "workshop"].includes(key)) { enterKind(key); G.screen = "place"; G.place = makePlace(key); }
+  else if (key === "shop") { enterKind("shop"); G.screen = "shop"; G.shop = makeShop(); }
+  history.replaceState(null, "", "#tab=" + key);
+  render();
+}
+function currentTab() {
+  if (overlay && overlay.type === "build") return "build";
+  if (overlay && ["menu", "help"].includes(overlay.type)) return "menu";
+  if (overlay && overlay.type === "ammo") return "detail";
+  if (overlay && ["win", "lose"].includes(overlay.type)) return overlay.type;
+  if (G.screen === "combat" && C) return C.kind;
+  if (G.screen === "place" && G.place) return G.place.kind;
+  return G.screen;
+}
+function buildTabs() {
+  let n = 0;
+  document.getElementById("tabbar").innerHTML = TABS.map(([group, items]) => `<span class="group">${group}</span>` + items.map(([key, label]) => { n++; return `<button data-tab="${key}">${label}${n <= 9 ? `<kbd>${n}</kbd>` : ""}</button>`; }).join("")).join("");
+  document.getElementById("tabbar").addEventListener("click", (ev) => { const b = ev.target.closest("[data-tab]"); if (b) jump(b.dataset.tab); });
+  const select = document.getElementById("screen-select");
+  select.innerHTML = TABS.map(([group,items])=>`<optgroup label="${group}">${items.map(([key,label])=>`<option value="${key}">${label}</option>`).join("")}</optgroup>`).join("");
+  select.addEventListener("change", async()=>{ await jump(select.value); updateTabs(); });
+}
+function updateTabs() {
+  if (!G) return;
+  const now = currentTab();
+  document.getElementById("screen-select").value = now;
+  document.querySelectorAll("#tabbar [data-tab]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.tab === now)));
+}
+
+/* --------------------------------------------------------------- render */
+function render() {
+  if (G.screen === "map") renderMap();
+  else if (G.screen === "combat") return renderCombat();
+  else if (G.screen === "place") renderPlace();
+  else if (G.screen === "shop") renderShop();
+  renderOverlay();
+}
+function fit() {
+  const vp = document.getElementById("viewport");
+  // Small screens use the available area without shrinking text or hit targets.
+  const fixed = ratio > 0 && window.innerWidth > 1000 && window.innerHeight > 520;
+  const width = fixed ? Math.min(vp.clientWidth, vp.clientHeight * ratio) : vp.clientWidth;
+  const height = fixed ? width / ratio : vp.clientHeight;
+  app.style.width = Math.floor(width) + "px";
+  app.style.height = Math.floor(height) + "px";
+  app.style.transform = `translate(${Math.floor((vp.clientWidth-width)/2)}px, ${Math.floor((vp.clientHeight-height)/2)}px)`;
+  document.querySelectorAll("[data-ratio]").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.ratio) === ratio)));
+  if (G && !busy) render();
+}
+
+/* --------------------------------------------------------------- input */
+let press = null;
+app.addEventListener("pointerdown", (ev) => {
+  const card = ev.target.closest("[data-a='card']");
+  if (!card || !combatReady() || overlay || app.dataset.transitioning === "true") return;
+  if (press) clearTimeout(press.timer);
+  const held = { uid: Number(card.dataset.uid), long: false, moved: false, x: ev.clientX, y: ev.clientY };
+  press = held;
+  held.timer = setTimeout(() => { if (press !== held || !combatReady() || overlay) return; held.long = true; overlay = { type: "ammo", uid: held.uid }; renderOverlay(); }, 450);
+});
+app.addEventListener("pointermove", (ev) => {
+  if (press && Math.hypot(ev.clientX-press.x, ev.clientY-press.y)>10) { press.moved=true; clearTimeout(press.timer); }
+});
+["pointerup", "pointercancel", "pointerleave"].forEach((t) => app.addEventListener(t, () => { if (press) clearTimeout(press.timer); }));
+app.addEventListener("contextmenu", (ev) => {
+  const card = ev.target.closest("[data-a='card']");
+  if (card) { ev.preventDefault(); if (!combatReady() || overlay) return; overlay = { type: "ammo", uid: Number(card.dataset.uid) }; renderOverlay(); }
+});
+app.addEventListener("click", (ev) => {
+  const el = ev.target.closest("[data-a]");
+  if (!el || el.disabled || app.dataset.transitioning === "true" || ev.detail > 1) return;
+  if (overlay && !(modalRoot() && modalRoot().contains(el)) && !(el.classList.contains("veil") && el.dataset.a === "close")) return;
+  if (el.dataset.a === "close" && ev.target.closest("[data-stop]")) {
+    if (!ev.target.closest("button[data-a='close']")) return;
+  }
+  const a = el.dataset.a;
+  if (a === "card") {
+    if (press && (press.long || press.moved)) { press = null; return; }
+    press = null;
+    if (!combatReady() || overlay) return;
+    const uid = Number(el.dataset.uid);
+    if (!cardOf(uid)) return;
+    return selectRound(uid);
+  }
+  if (a === "clear") return clearSelection();
+  if (a === "eject") return combatCommand("eject");
+  if (a === "cool") return combatCommand("cool");
+  if (a === "round-detail" && combatReady()) { overlay = {type:"ammo",uid:Number(el.dataset.uid)}; return renderOverlay(); }
+  if (a === "reconnect") return startCombat(nodeOfKind(C.kind), C.seed);
+  if (a === "fire") return fire();
+  if (a === "reload") return reload(false);
+  if (a === "emergency") return reload(true);
+  if (a === "enemy" && !busy) { overlay = { type: "enemy", uid: Number(el.dataset.uid) }; return renderOverlay(); }
+  if (a === "node") { G.selected = Number(el.dataset.id); return render(); }
+  if (a === "go") return enterNode();
+  if (a === "nodeinfo") { overlay = { type: "nodeinfo" }; return renderOverlay(); }
+  if (a === "pick" && G.screen === "place") { const i = Number(el.dataset.i); if (!placeProblem(G.place, G.place.options[i])) G.place.pick = i; return render(); }
+  if (a === "confirm") return confirmPlace();
+  if (a === "skip" && G.screen === "place") return finishNode();
+  if (a === "prod") { G.shop.pick = Number(el.dataset.i); return render(); }
+  if (["buy", "swap", "reroll", "core"].includes(a)) return shopAction(a);
+  if (a === "bag") { overlay = { type: "build", tab: "deck" }; return renderOverlay(); }
+  if (a === "leave" && G.screen === "shop") return finishNode();
+  if (a === "build") { overlay = { type: "build", tab: "deck" }; return renderOverlay(); }
+  if (a === "weapon") { overlay = { type: "build", tab: "weapon" }; return renderOverlay(); }
+  if (a === "tab") { overlay.tab = el.dataset.tab; return renderOverlay(); }
+  if (a === "menu") { overlay = { type: "menu" }; return renderOverlay(); }
+  if (a === "help") { overlay = { type: "help" }; return renderOverlay(); }
+  if (a === "close") { overlay = null; return renderOverlay(); }
+  if (a === "restart") return newRun();
+  if (a === "retry" && C && C.result === "lose") { const node = nodeById(G.selected); overlay = null; return startCombat(node, C.seed); }
+  if (a === "reward" && C && C.result === "win") {
+    if (C.kind === "boss") { overlay = { type: "cleared" }; return renderOverlay(); }
+    screenTransition(); overlay = null; G.screen = "place"; G.place = makePlace("reward"); return render();
+  }
+});
+document.addEventListener("keydown", (ev) => {
+  if ((ev.repeat || app.dataset.transitioning === "true") && ["Enter", " "].includes(ev.key)) { ev.preventDefault(); return; }
+  if (overlay) {
+    if (ev.key === "Tab") {
+      const root = modalRoot(); if (!root) return;
+      const items = focusables(root), i = items.indexOf(document.activeElement);
+      if (i < 0 || (ev.shiftKey ? i === 0 : i === items.length - 1)) { ev.preventDefault(); (items[ev.shiftKey ? items.length - 1 : 0] || root).focus(); }
+    }
+    return;
+  }
+  if (!ev.target.closest("input,select,textarea,[contenteditable]") && /^[1-9]$/.test(ev.key) && !ev.ctrlKey && !ev.metaKey && !ev.altKey && !ev.repeat) jump(TAB_KEYS[Number(ev.key) - 1]);
+});
+document.addEventListener("keydown", (ev) => { if (ev.key !== "Escape") return; if (overlay) { if (!["win", "lose", "cleared"].includes(overlay.type)) { overlay=null; renderOverlay(); } } else clearSelection(); });
+document.querySelectorAll("[data-ratio]").forEach((b) => b.addEventListener("click", () => { ratio = Number(b.dataset.ratio); fit(); }));
+document.getElementById("restart").addEventListener("click", () => { history.replaceState(null, "", "#"); newRun(); });
+window.addEventListener("resize", fit);
+// Style trial switch: "steel" (current kit art) or "line" (reference trial). Kept across tab jumps.
+function setTheme(name) {
+  const theme = name === "line" ? "line" : "steel";
+  document.documentElement.dataset.theme = theme;
+  try { localStorage.setItem("orvask-ui-theme", theme); } catch (e) { /* file:// may block storage */ }
+  document.querySelectorAll("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === theme)));
+}
+document.querySelectorAll("[data-theme-set]").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.themeSet)));
+{
+  const hashTheme = location.hash.match(/theme=(\w+)/);
+  let saved = null;
+  try { saved = localStorage.getItem("orvask-ui-theme"); } catch (e) { saved = null; }
+  setTheme(hashTheme ? hashTheme[1] : saved || "steel");
+}
+
+
+document.fonts.load('20px "Dunggeunmo"').finally(() => {
+  buildTabs(); newRun(); fit();
+  const t = location.hash.match(/tab=(\w+)/);
+  if (t && TAB_KEYS.includes(t[1])) jump(t[1]);
+  const r = location.hash.match(/ratio=([\d.]+)/);
+  if (r) { ratio = Number(r[1]); fit(); }
+});
+</script>
+<script src="assets/map_pipe.js"></script>
+</body>
+</html>

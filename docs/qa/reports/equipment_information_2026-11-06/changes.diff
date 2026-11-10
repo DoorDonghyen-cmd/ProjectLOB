@@ -1,0 +1,298 @@
+--- before/redesign/equipment_screen.gd
++++ after/redesign/equipment_screen.gd
+@@ -42,7 +42,7 @@
+ 		button.get_node("Copy/Name").text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+ 		button.get_node("Copy/Name").custom_minimum_size.x = 0
+ 		button.get_node("Copy/Name").text = outfit.name
+-		button.get_node("Copy/Stats").text = "덱 %d~%d발" % [Content.Roles.MINIMUM[id],Content.Roles.CARRY[id]]
++		button.get_node("Copy/Stats").text = "탄약 최대 %d발" % Content.Roles.CARRY[id]
+ 		if host.preparation_training: button.get_node("Copy/Stats").text = "손패 %d · 교환 %d회" % [outfit.hand, outfit.exchange]
+ 		button.disabled = host.preparation_training and id != "work"
+ 		button.pressed.connect(_select_outfit.bind(id))
+@@ -90,16 +90,20 @@
+ 	if not host.preparation_training:
+ 		%WeaponIdentity.text = {"single":"공격탄 피해 +1","burst":"같은 적 3회 적중 시 +4","scatter":"탄마다 무작위 표적","heavy":"과열 뒤 1발 강행","amplifier":"단발 효과 2배 · 처치 연속"}[host.selected_weapon_id]
+ 		%OutfitSummary.text = "덱 %d~%d발 · 시작 %d발 · 정비 최대 +6" % [Content.Roles.MINIMUM[outfit_id],Content.Roles.CARRY[outfit_id],preload("res://redesign/magazine_build.gd").start_deck(host.selected_weapon_id).size()]
+-		%Reload.text = "탄창 교체  %d턴 · 열 유지" % maxi(2,int(gun.reload))
++		%Reload.text = "교체  %d턴" % maxi(2,int(gun.reload))
+ 		%Cooling.text = "냉각  1턴 · 열 0"
+-		%FireMode.text = {"single":"1~2발 범위 선택","burst":"1~3발 범위 선택","scatter":"1~3발 범위 선택","heavy":"1~3발 · 과열 뒤 1발 강행","amplifier":"범위 선택 · 처치하면 연속"}[host.selected_weapon_id]
++		%Heat.text = "발열 상한  %d" % gun.heat_limit
++		%FireMode.text = {"single":"사격 1~2발","burst":"사격 1~3발","scatter":"사격 1~3발","heavy":"기본 사격 1~3발","amplifier":"사격 1발 · 처치 시 연속"}[host.selected_weapon_id]
++		if host.selected_weapon_id=="amplifier":%WeaponIdentity.text="단발 피해·효과 ×2"
+ 	%OutfitHint.text = "훈련은 기본 작업복을 사용합니다." if host.preparation_training else ""
+ 	%OutfitHint.visible = host.preparation_training
+ 	%OutfitPortrait.set_loadout(outfit_id, host.selected_weapon_id)
+ 	for id in Content.GUNS:
+ 		_style_choice(find_child("weapon_select_" + id, true, false), id == host.selected_weapon_id)
+ 	for id in Content.OUTFITS:
+-		_style_choice(find_child("outfit_select_" + id, true, false), id == outfit_id)
++		var button:=find_child("outfit_select_" + id, true, false) as Button
++		_style_choice(button, id == outfit_id)
++		if not host.preparation_training:button.tooltip_text=Content.OUTFITS[id].name+"\n"+_outfit_capacity(id)
+ 	launch.name = "start_" + host.selected_weapon_id
+ 	launch.text = "훈련 시작  ›" if host.preparation_training else "등반 시작  ›"
+ 	%SelectionSummary.text = "%s  /  %s" % [gun.name, outfit.name]
+@@ -124,9 +128,16 @@
+ 	# New climbs use the leaner magazine-build start deck (magazine_build.gd).
+ 	return preload("res://redesign/magazine_build.gd").start_deck(host.selected_weapon_id)
+ 
++func _outfit_capacity(id: String) -> String:
++	var expanded:=Content.Roles.carry({"outfit":id,"bag_upgrades":Content.Roles.BAG_STEPS})
++	return "최소 유지 %d발 · 보유 상한 %d발 · 정비 후 최대 %d발" % [Content.Roles.MINIMUM[id],Content.Roles.CARRY[id],expanded]
++
+ func _deck_details() -> void:
+ 	var column: VBoxContainer = host._dialog("시작 탄환 · " + str(Content.GUNS[host.selected_weapon_id].name), false)
+ 	column.name = "StartingDeckPreview"
++	if not host.preparation_training:
++		var capacity: Label=host._label(column,Content.OUTFITS[host.selected_outfit_id].name+" · "+_outfit_capacity(host.selected_outfit_id),18,host.MUTED)
++		capacity.name="OutfitCapacityRule"
+ 	if not host.preparation_training: host._label(column,"기본탄으로 출발 · 첫 승리 후 코어와 특수탄 선택",18,host.MUTED)
+ 	if not host.preparation_training: host._label(column,"덱을 섞어 탄창을 채웁니다. 탄창 교체 시 미사용 탄은 예비 뒤로 돌아갑니다. 사용·빼낸 탄은 다음 전투에 복구됩니다.",18,host.MUTED)
+ 	if not host.preparation_training: host._label(column,"특수탄 획득 후에는 보유 특수탄 중 무작위 1장이 첫 탄창 후보에 포함됩니다. 탄환을 선택하고 빼내면 뒤 탄이 앞으로 당겨집니다.",18,host.MUTED)
+--- before/redesign/equipment_screen.tscn
++++ after/redesign/equipment_screen.tscn
+@@ -130,6 +130,7 @@
+ [node name="SelectedWeaponPanel" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage" ]
+ unique_name_in_owner = true
+ layout_mode = 1
++custom_minimum_size = Vector2(266, 0)
+ anchor_right = 0.325
+ anchor_bottom = 1.0
+ offset_left = 12.0
+@@ -153,65 +154,69 @@
+ text = "리벳"
+ 
+ 
+-[node name="WeaponArt" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" instance=ExtResource("8")]
+-unique_name_in_owner = true
+-layout_mode = 2
+-custom_minimum_size = Vector2(0, 60)
+-size_flags_vertical = 3
+-
+-[node name="FireMode" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-mouse_filter = 2
+-theme_override_font_sizes/font_size = 16
+-text = "전탄 연쇄"
+-theme_override_colors/font_color = Color(0.57, 0.68, 0.69, 1)
+-
+ [node name="WeaponIdentity" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "공격탄 피해 +1 · 재장전 1턴"
++text = "공격탄 피해 +1"
+ custom_minimum_size = Vector2(0, 0)
+ autowrap_mode = 2
+ 
+-[node name="Stats" type="GridContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
++[node name="WeaponArt" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" instance=ExtResource("8")]
++unique_name_in_owner = true
++layout_mode = 2
++custom_minimum_size = Vector2(0, 60)
++size_flags_vertical = 3
++
++[node name="WeaponStats" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel"]
++layout_mode = 2
++theme_override_constants/separation = 6
++
++[node name="FireMode" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/WeaponStats" ]
++unique_name_in_owner = true
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "사격 1~2발"
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
++
++[node name="Stats" type="GridContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/WeaponStats" ]
+ layout_mode = 2
+ columns = 2
+ theme_override_constants/h_separation = 16
+ theme_override_constants/v_separation = 8
+ 
+-[node name="Capacity" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-mouse_filter = 2
+-theme_override_font_sizes/font_size = 16
+-text = "탄창  4칸"
+-size_flags_horizontal = 3
+-
+-[node name="Reload" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-mouse_filter = 2
+-theme_override_font_sizes/font_size = 16
+-text = "재장전  1턴"
+-size_flags_horizontal = 3
+-
+-[node name="Heat" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-mouse_filter = 2
+-theme_override_font_sizes/font_size = 16
+-text = "열 한계  12"
+-size_flags_horizontal = 3
+-
+-[node name="Cooling" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-mouse_filter = 2
+-theme_override_font_sizes/font_size = 16
+-text = "냉각  8"
++[node name="Capacity" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/WeaponStats/Stats" ]
++unique_name_in_owner = true
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "탄창  7칸"
++size_flags_horizontal = 3
++
++[node name="Reload" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/WeaponStats/Stats" ]
++unique_name_in_owner = true
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "교체  2턴"
++size_flags_horizontal = 3
++
++[node name="Heat" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/WeaponStats/Stats" ]
++unique_name_in_owner = true
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "발열 상한  12"
++size_flags_horizontal = 3
++
++[node name="Cooling" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/WeaponStats/Stats" ]
++unique_name_in_owner = true
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "냉각  1턴 · 열 0"
+ size_flags_horizontal = 3
+ 
+ [node name="Details" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+@@ -293,7 +298,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "복장 선택"
++text = "복장 · 탄약 보유 한도"
+ 
+ 
+ [node name="OutfitScroll" type="ScrollContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection"]
+@@ -354,7 +359,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "가방 5장 · 교환 1회"
++text = "탄약 최대 26발"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+ [node name="outfit_select_carrier" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+@@ -402,7 +407,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "가방 6장 · 교환 없음"
++text = "탄약 최대 32발"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+ [node name="outfit_select_scout" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+@@ -449,7 +454,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "가방 4장 · 교환 2회"
++text = "탄약 최대 22발"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+ [node name="outfit_select_heatworker" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+@@ -496,7 +501,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "가방 5장 · 교환 1회"
++text = "탄약 최대 28발"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+ [node name="outfit_select_hoist" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+@@ -543,7 +548,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "가방 5장 · 교환 1회"
++text = "탄약 최대 34발"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+ [node name="outfit_select_recovery" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+@@ -590,7 +595,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "가방 5장 · 교환 1회"
++text = "탄약 최대 30발"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+ [node name="outfit_select_expedition" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+@@ -637,7 +642,7 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "가방 5장 · 교환 1회"
++text = "탄약 최대 36발"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+ [node name="OutfitHint" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection" ]
+--- before/tests/equipment_live_ui.gd
++++ after/tests/equipment_live_ui.gd
+@@ -49,6 +49,19 @@
+ 	check(view.launch.get_global_rect()==old_rect,label+" body scrolling cannot move launch")
+ 	check(body.get_global_rect().encloses(view.find_child("WeaponSelection",true,false).get_global_rect()),label+" last row reachable above actions")
+ 	frames.append({"label":label,"window":str(root.size),"scale":root.content_scale_factor,"launch":str(old_rect),"body_scroll_extent":body.get_v_scroll_bar().max_value-body.get_v_scroll_bar().page})
++	for id in ["WeaponName","FireMode","Capacity","Heat","Reload","Cooling"]:
++		var info: Label=view.find_child(id,true,false)
++		var width:=info.get_theme_font("font").get_string_size(info.text,HORIZONTAL_ALIGNMENT_LEFT,-1,info.get_theme_font_size("font_size")).x
++		check(width<=info.size.x+1,label+" information fits "+id)
++	for outfit in Content.OUTFITS:
++		var info: Label=view.find_child("outfit_select_"+outfit,true,false).get_node("Copy/Stats")
++		var width:=info.get_theme_font("font").get_string_size(info.text,HORIZONTAL_ALIGNMENT_LEFT,-1,info.get_theme_font_size("font_size")).x
++		check(width<=info.size.x+1,label+" outfit limit fits "+outfit)
++
++func last_number(text: String) -> int:
++	var pattern:=RegEx.new();pattern.compile("[0-9]+")
++	var values:=pattern.search_all(text)
++	return int(values.back().get_string()) if not values.is_empty() else -1
+ 
+ func run() -> void:
+ 	output = OS.get_environment("QA_OUTPUT_DIR")
+@@ -114,8 +127,16 @@
+ 			var view := equipment()
+ 			var portrait: Control=view.find_child("OutfitPortrait",true,false)
+ 			check(portrait.actor.gun_id==gun and portrait.actor.outfit_id==outfit,"live pair "+gun+"/"+outfit)
++			var visible: Dictionary={}
++			for id in ["Capacity","Heat","Reload","FireMode"]:visible[id]=last_number(view.find_child(id,true,false).text)
++			visible.carry=last_number(view.find_child("outfit_select_"+outfit,true,false).get_node("Copy/Stats").text)
+ 			await super.touch("start_"+gun)
+ 			check(screen.page=="run" and screen.campaign.s.gun==gun and screen.campaign.s.outfit==outfit,"launch actual pair "+gun+"/"+outfit)
++			check(visible.Capacity==screen.model.capacity(),"displayed capacity equals actual new campaign "+gun+"/"+outfit)
++			check(visible.Heat==Content.heat_limit(screen.model.s),"displayed heat limit equals actual new campaign "+gun+"/"+outfit)
++			check(visible.Reload==screen.model.reload_cost(),"displayed replacement cost equals actual new campaign "+gun+"/"+outfit)
++			check(visible.carry==screen.model.deck_limit(),"outfit label equals actual new campaign carry limit "+gun+"/"+outfit)
++			if gun!="amplifier":check(visible.FireMode==screen.model.MagazineTrial.pulse(screen.model.s),"displayed base cadence equals actual new campaign "+gun+"/"+outfit)
+ 			var expected := Campaign.new()
+ 			expected.start(gun,817263,screen.selected_difficulty,screen.selected_loadout_id,screen.CampaignContent.RouteMap.VERSION,outfit,true)
+ 			expected.normalize_for_save()
+@@ -145,6 +166,8 @@
+ 	screen.seed_input.text_changed.emit("817263")
+ 	await touch("DialogClose")
+ 	await touch("starting_deck")
++	var capacity_rule: Label=screen.find_child("OutfitCapacityRule",true,false)
++	check(capacity_rule!=null and capacity_rule.text.contains("최소 유지") and capacity_rule.text.contains("정비 후 최대"),"outfit minimum and expansion are available in details")
+ 	var seen: Array = []
+ 	for ammo in MagazineBuild.start_deck(screen.selected_weapon_id):
+ 		if seen.has(ammo): continue

@@ -1,0 +1,173 @@
+{
+  "baseline": "qa_runtime/build_roles_20261103/before",
+  "scope": "This task only; pre-existing dirty work retained. Runtime Godot UID/import caches are not production rule edits.",
+  "files": [
+    {
+      "path": "새-게임-프로젝트/redesign/combat_roles.gd",
+      "before_sha256": "1eba04d9bdaf8d12c901ecfd5519f82cec23cdb41c0dcf2fba5889b84fb4595a",
+      "after_sha256": "c48a6cd6d49b447392b1ce3915b1658e512a0596bfa60589cdeb2d91947f9912",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/build_choices.gd",
+      "before_sha256": null,
+      "after_sha256": "854d1549ec53e1f233faed3ad3436856a76387bb8468b66b7af7b038244d3249",
+      "new": true
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_content.gd",
+      "before_sha256": "8dae46f2cf2e0f33ddcd38bc8e281a8294347b64c1f04b406e0b73a4e4da5676",
+      "after_sha256": "3a9216ade27505277f74547ecbdb1f9348eb2d4dc199bfbe35262ad85be8aa2a",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign.gd",
+      "before_sha256": "02ad037aa22ebafb7440bf4d7c5e93c692dacb277b6e717fdd964a7a24a3aa4a",
+      "after_sha256": "e3f036a6801f3cc38554155e371d405ec3286bd391b16bbe5da1d2d2ec849fd9",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/gate_upgrades.gd",
+      "before_sha256": "252efb0bf8611d65d3a630de8e1572feeee1d5f607a862afc6ba1621f1dfd817",
+      "after_sha256": "951ec9ea45517d66d9e0a5d7969a8f56d200bedd4092ff9b38f1f482008401b0",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/content.gd",
+      "before_sha256": "4189d7c39cc607fc5f19384157ff341917f1902cfd0e9898d8db6d73fcb7f802",
+      "after_sha256": "a7912cc49dc9625ade43d0f871eab866b3df6cb6575677dccad4248d40d40bb8",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/model.gd",
+      "before_sha256": "edbbfc6e5d8e0f12d759e1c0eebdb703e4401b6c27c4dd793bd6dce2cf83604d",
+      "after_sha256": "b92d0c1c619234c2a6337ae812f39013fb68b82c389965953900940941e9ed3b",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/readability.gd",
+      "before_sha256": "9131e499e21a2b3cad6df0922f0df01dd3f1a4c7675eec64b8997f3e77de5cc4",
+      "after_sha256": "21bb5c34b4d50ece251612a09850e785cd5201d7ab404466117be8e0d0bb0750",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_card_view.gd",
+      "before_sha256": "404649e24cbd582bbd5a7b835ab2baf28c2b8fab3476c37fce5ab1b5f40a6d63",
+      "after_sha256": "2924f85cebea8795ecee6f0198cbde1867879657bee1da217e8583f1b2923c43",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/part_feedback.gd",
+      "before_sha256": "39b945190e7ffbec58c1c68999fd8d9288d32f4c6f7ed4a0bc9d6b68bc717cef",
+      "after_sha256": "43cbfcd41861719e69998106f5e51d8fa1c676ca9a614e4b440978eba4f08a42",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/build_guide.gd",
+      "before_sha256": "e6b3a23dacff470a96d6c8cb0f139767140fb3be1387e9be058ef456f5c67748",
+      "after_sha256": "a7940bef05ac841686ef871236ddf438d70803243707ea2b11fe3a6539afebb4",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/tests/build_roles_rules.gd",
+      "before_sha256": null,
+      "after_sha256": "5105edfb8d073226663b3bbf0bee8e7560d30d235d6143bf9f345837d739c5d4",
+      "new": true
+    },
+    {
+      "path": "새-게임-프로젝트/tests/build_roles_climb.gd",
+      "before_sha256": null,
+      "after_sha256": "93c88cf8ba0cf419e93a86a8eeab33a03f8d04c6e31ed828e9389935817b4033",
+      "new": true
+    },
+    {
+      "path": "새-게임-프로젝트/tests/build_roles_probe.gd",
+      "before_sha256": null,
+      "after_sha256": "66d91e43f819ab2a2b79a3819cefb95760d4a834621a29711c86784718394cdd",
+      "new": true
+    },
+    {
+      "path": "새-게임-프로젝트/tests/build_roles_ui.gd",
+      "before_sha256": null,
+      "after_sha256": "d5a857b99e8ab380965ad83389841ef810ab335824f28e03cf3c344e35082107",
+      "new": true
+    },
+    {
+      "path": "새-게임-프로젝트/tests/build_roles_replay.gd",
+      "before_sha256": null,
+      "after_sha256": "527cd96e40de82ff5f08f22735e6a3a7ff65897e59ad260d7b7a43678e24d12c",
+      "new": true
+    },
+    {
+      "path": "새-게임-프로젝트/tests/late_balance_rules.gd",
+      "before_sha256": "f61f21b2975a8b913a39ce612dc0669b4513fee92259c9607f87fc1b8e60b1e8",
+      "after_sha256": "49e7aeb7ca330916fc626c35d75de3df52aefe015dacbe30c4fdb47153e56190",
+      "new": false
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_rules.gd",
+      "before_sha256": "38761ce051471d032bb23a335b29c046774ba987d5d87b16690c5f674d3acd74",
+      "after_sha256": "5943073c9ec3aaac6d47d60b4f4aeaea8b111eaa667da00f0288798a291298c3",
+      "new": false
+    },
+    {
+      "path": "tools/run_build_roles.ps1",
+      "before_sha256": null,
+      "after_sha256": "b4b6c47836f8072c05ce2b60e81430521152ef1e3439c5259fa0aa5ec3848308",
+      "new": true
+    },
+    {
+      "path": "docs/direction/parts-builds.md",
+      "before_sha256": "1811f61726e23a6c210ddf290745b88d037cf04ecd803d35eb27cfc80ac29c96",
+      "after_sha256": "3a967ebed8871ca92567c901b50d41fd3a0a55c22fd25b89da7d6f3d80ed679f",
+      "new": false
+    },
+    {
+      "path": "docs/direction/combat-roles-growth.md",
+      "before_sha256": "06b63bca3cf6bbfe80c80b8e1cf7bfa6659a3cddee8c8de04c7e5341c6156286",
+      "after_sha256": "c2eeddc0842742781d213aae505741ce818e4e56e6cec1c2b6043300ab10ff9e",
+      "new": false
+    },
+    {
+      "path": "docs/direction/current.md",
+      "before_sha256": "ca3b3e4911a67cd55e8c47c0260aba59c3b9c7838366eaaedb343486e41374d5",
+      "after_sha256": "53df5f1f5426e54ff02b8c3b274ac5ceea45c8484e612820dae8c359a77ecf00",
+      "new": false
+    },
+    {
+      "path": "docs/direction/playtest-priorities.md",
+      "before_sha256": "15043d26c1396ef39196dc1ebede342aa3626d22cc450ad49bd9ee86011793cf",
+      "after_sha256": "1789a5686539b834ea8c64e2fe95600c8744c8ea5b5af0ab136e7ec70fa55ad8",
+      "new": false
+    },
+    {
+      "path": ".agents/skills/00-project-manager/task_tracker.md",
+      "before_sha256": "c7ff91463fe663fbc3b173c066b1da6f272129dbe74c26df54e04a1177e30816",
+      "after_sha256": "a41bc268f6219ba409e04b279484f98a2dcd606a7404f59f7ecbfac0edb0d056",
+      "new": false
+    },
+    {
+      "path": "docs/history/daily/2026-11-03.md",
+      "before_sha256": "79cfc3ca388fc5fb79be7ae845f0f040e6ab710b83fe3488f22575ba50f3adfe",
+      "after_sha256": "2e625865d970186af332adac5aefb2a8258b99bfbcc1d52a24e8267e852d52b0",
+      "new": false
+    },
+    {
+      "path": "docs/qa/reports/build_roles_2026-11-03.md",
+      "before_sha256": null,
+      "after_sha256": "88610dd6e4440feddae54d140b60be5e776bc557e36b6426d01c5f3d6707e4f8",
+      "new": true
+    }
+  ],
+  "checks": {
+    "rules": 3048,
+    "controlled_and_owned_branches": 442,
+    "earned_climb": 7222,
+    "final_v3_replay": 7795,
+    "ui": 68,
+    "legacy_burn": 842,
+    "legacy_roles": 319,
+    "hud": 11536,
+    "legacy_v2_replay": 2655
+  }
+}

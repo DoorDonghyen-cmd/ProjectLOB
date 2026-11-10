@@ -1,0 +1,785 @@
+[
+  {
+    "run": "single_safe",
+    "node": 10902,
+    "boss": true,
+    "elite": false,
+    "rushes": 2,
+    "recoveries": 1,
+    "positive_open_rounds": 2,
+    "positive_open_direct_damage": 48,
+    "foundry_ticks_by_command": {
+      "reload": 2,
+      "fire": 3
+    },
+    "events": [
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      }
+    ]
+  },
+  {
+    "run": "burst_safe",
+    "node": 10902,
+    "boss": true,
+    "elite": false,
+    "rushes": 1,
+    "recoveries": 0,
+    "positive_open_rounds": 3,
+    "positive_open_direct_damage": 48,
+    "foundry_ticks_by_command": {
+      "reload": 2
+    },
+    "events": [
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      }
+    ]
+  },
+  {
+    "run": "scatter_safe",
+    "node": 10902,
+    "boss": true,
+    "elite": false,
+    "rushes": 3,
+    "recoveries": 3,
+    "positive_open_rounds": 1,
+    "positive_open_direct_damage": 27,
+    "foundry_ticks_by_command": {
+      "fire": 6,
+      "reload": 4
+    },
+    "events": [
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 2,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      }
+    ]
+  },
+  {
+    "run": "heavy_elite",
+    "node": 10302,
+    "boss": false,
+    "elite": true,
+    "rushes": 1,
+    "recoveries": 1,
+    "positive_open_rounds": 5,
+    "positive_open_direct_damage": 23,
+    "foundry_ticks_by_command": {
+      "reload": 2,
+      "fire": 2
+    },
+    "events": [
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 6,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      }
+    ]
+  },
+  {
+    "run": "heavy_elite",
+    "node": 10403,
+    "boss": false,
+    "elite": true,
+    "rushes": 2,
+    "recoveries": 2,
+    "positive_open_rounds": 5,
+    "positive_open_direct_damage": 19,
+    "foundry_ticks_by_command": {
+      "fire": 6
+    },
+    "events": [
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 6,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 1,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 2,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 3,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 6,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      }
+    ]
+  },
+  {
+    "run": "heavy_elite",
+    "node": 10704,
+    "boss": false,
+    "elite": true,
+    "rushes": 1,
+    "recoveries": 0,
+    "positive_open_rounds": 4,
+    "positive_open_direct_damage": 35,
+    "foundry_ticks_by_command": {
+      "reload": 2
+    },
+    "events": [
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 6,
+        "target": 0,
+        "windup": 0
+      }
+    ]
+  },
+  {
+    "run": "heavy_elite",
+    "node": 10902,
+    "boss": true,
+    "elite": false,
+    "rushes": 1,
+    "recoveries": 0,
+    "positive_open_rounds": 5,
+    "positive_open_direct_damage": 45,
+    "foundry_ticks_by_command": {
+      "reload": 2
+    },
+    "events": [
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      }
+    ]
+  },
+  {
+    "run": "amplifier_safe",
+    "node": 10902,
+    "boss": true,
+    "elite": false,
+    "rushes": 2,
+    "recoveries": 2,
+    "positive_open_rounds": 0,
+    "positive_open_direct_damage": 0,
+    "foundry_ticks_by_command": {
+      "fire": 2,
+      "reload": 4
+    },
+    "events": [
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      }
+    ]
+  },
+  {
+    "run": "heavy_scout",
+    "node": 10301,
+    "boss": false,
+    "elite": true,
+    "rushes": 3,
+    "recoveries": 3,
+    "positive_open_rounds": 3,
+    "positive_open_direct_damage": 8,
+    "foundry_ticks_by_command": {
+      "fire": 6,
+      "reload": 4
+    },
+    "events": [
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 6,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 1,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 2,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 3,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 6,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 6,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      }
+    ]
+  },
+  {
+    "run": "heavy_scout",
+    "node": 10902,
+    "boss": true,
+    "elite": false,
+    "rushes": 3,
+    "recoveries": 3,
+    "positive_open_rounds": 2,
+    "positive_open_direct_damage": 24,
+    "foundry_ticks_by_command": {
+      "fire": 6,
+      "reload": 4
+    },
+    "events": [
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "reload",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "reload",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 0,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      },
+      {
+        "command": "fire",
+        "turn": 1,
+        "action": "surge",
+        "armor": 0,
+        "kind": "foundry_state",
+        "recovering": true,
+        "step": 7,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 2,
+        "action": "recover",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 0,
+        "target": 0,
+        "windup": 0
+      },
+      {
+        "command": "fire",
+        "turn": 3,
+        "action": "windup",
+        "armor": 3,
+        "kind": "foundry_state",
+        "recovering": false,
+        "step": 1,
+        "target": 0,
+        "windup": 1
+      }
+    ]
+  }
+]

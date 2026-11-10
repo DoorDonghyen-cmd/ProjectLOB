@@ -1,0 +1,18 @@
+test_all_modes_have_real_entry_controller_and_install_notes (test_mobile_modes.MobileModeTests.test_all_modes_have_real_entry_controller_and_install_notes) ... ok
+test_compiled_mode_validation_rejects_mislabeled_or_incomplete_packs (test_mobile_modes.MobileModeTests.test_compiled_mode_validation_rejects_mislabeled_or_incomplete_packs) ... ok
+test_existing_campaign_and_comparison_still_validate (test_mobile_modes.MobileModeTests.test_existing_campaign_and_comparison_still_validate) ... ok
+test_journey_contains_live_hud_flow_fonts_and_dynamic_line_frames (test_mobile_modes.MobileModeTests.test_journey_contains_live_hud_flow_fonts_and_dynamic_line_frames) ... ok
+test_architecture_manifest_matches_actual_payload (test_mobile_release.DeliveryTests.test_architecture_manifest_matches_actual_payload) ... ok
+test_checksum_metadata (test_mobile_release.DeliveryTests.test_checksum_metadata) ... ok
+test_connector_readback_download (test_mobile_release.DeliveryTests.test_connector_readback_download) ... ok
+test_missing_or_incorrect_checksum_fails (test_mobile_release.DeliveryTests.test_missing_or_incorrect_checksum_fails) ... ok
+test_mode_cannot_change_between_verification_and_packaging (test_mobile_release.DeliveryTests.test_mode_cannot_change_between_verification_and_packaging) ... ok
+test_modified_download_fails (test_mobile_release.DeliveryTests.test_modified_download_fails) ... ok
+test_oversized_zip_never_becomes_upload_request (test_mobile_release.DeliveryTests.test_oversized_zip_never_becomes_upload_request) ... ok
+test_package_allowlist_and_no_overwrite (test_mobile_release.DeliveryTests.test_package_allowlist_and_no_overwrite) ... ok
+test_wrong_destination_size_name_or_link_fails (test_mobile_release.DeliveryTests.test_wrong_destination_size_name_or_link_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 1.401s
+
+OK

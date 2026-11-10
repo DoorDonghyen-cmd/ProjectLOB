@@ -1,0 +1,506 @@
+{
+  "danger": {
+    "bag": "남은 18발",
+    "buttons": {
+      "Cool": {
+        "cost": "열 −6 · 적 1행동",
+        "disabled": false,
+        "name": "냉각"
+      },
+      "EjectApply": {
+        "cost": "이번 전투에서 소모",
+        "disabled": false,
+        "name": "0발 빼내기"
+      },
+      "Fire": {
+        "cost": "도달 위험 · 패배 100%",
+        "disabled": false,
+        "name": "2발 사격"
+      },
+      "Reload": {
+        "cost": "적 2행동",
+        "disabled": false,
+        "name": "탄창 교체"
+      }
+    },
+    "capacity": 6,
+    "eject_mode": false,
+    "ejection_remaining": 2,
+    "forecast": {
+      "current": 8,
+      "end_max": 0,
+      "end_min": 0,
+      "fired_max": 1,
+      "fired_min": 1,
+      "forced_cost_max": 2,
+      "forced_cost_min": 2,
+      "forced_probability": 1.0,
+      "limit": 12,
+      "overheat_probability": 1.0,
+      "peak_max": 12,
+      "peak_min": 12,
+      "turns_max": 3,
+      "turns_min": 3
+    },
+    "gun": "single",
+    "heat": 8,
+    "limit": 12,
+    "parts": "코어 · 단타 ×2.00",
+    "rounds": [
+      {
+        "active": true,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "2"
+      }
+    ],
+    "selected": [],
+    "source": "Actual campaign/model commands; separate QA save",
+    "title": "교대 방패 진지",
+    "weapon": "리벳"
+  },
+  "ejection": {
+    "bag": "남은 24발",
+    "buttons": {
+      "Cool": {
+        "cost": "열 −6 · 적 1행동",
+        "disabled": true,
+        "name": "냉각"
+      },
+      "EjectApply": {
+        "cost": "이번 전투에서 소모",
+        "disabled": false,
+        "name": "1발 빼내기"
+      },
+      "Fire": {
+        "cost": "적 1행동",
+        "disabled": true,
+        "name": "2발 사격"
+      },
+      "Reload": {
+        "cost": "적 2행동",
+        "disabled": true,
+        "name": "탄창 교체"
+      }
+    },
+    "capacity": 6,
+    "eject_mode": true,
+    "ejection_remaining": 2,
+    "forecast": {
+      "current": 0,
+      "end_max": 5,
+      "end_min": 5,
+      "fired_max": 2,
+      "fired_min": 2,
+      "forced_cost_max": 0,
+      "forced_cost_min": 0,
+      "forced_probability": 0.0,
+      "limit": 12,
+      "overheat_probability": 0.0,
+      "peak_max": 5,
+      "peak_min": 5,
+      "turns_max": 1,
+      "turns_min": 1
+    },
+    "gun": "single",
+    "heat": 0,
+    "limit": 12,
+    "parts": "코어 · 단타 ×2.15",
+    "rounds": [
+      {
+        "active": true,
+        "id": "charge",
+        "name": "증폭탄",
+        "removed": false,
+        "role": "강화",
+        "value": "+3"
+      },
+      {
+        "active": true,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": true,
+        "role": "제외",
+        "value": "제외"
+      },
+      {
+        "active": true,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "8"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p1",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "1"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      }
+    ],
+    "selected": [
+      1
+    ],
+    "source": "Actual campaign/model commands; separate QA save",
+    "title": "첫 관문 · 보스",
+    "weapon": "리벳"
+  },
+  "loaded": {
+    "bag": "덱 20발",
+    "buttons": {
+      "Cool": {
+        "cost": "열 −6 · 적 1행동",
+        "disabled": true,
+        "name": "냉각"
+      },
+      "EjectApply": {
+        "cost": "이번 전투에서 소모",
+        "disabled": false,
+        "name": "0발 빼내기"
+      },
+      "Fire": {
+        "cost": "적 1행동",
+        "disabled": false,
+        "name": "2발 사격"
+      },
+      "Reload": {
+        "cost": "적 2행동",
+        "disabled": false,
+        "name": "탄창 교체"
+      }
+    },
+    "capacity": 7,
+    "eject_mode": false,
+    "ejection_remaining": 2,
+    "forecast": {
+      "current": 0,
+      "end_max": 5,
+      "end_min": 5,
+      "fired_max": 2,
+      "fired_min": 2,
+      "forced_cost_max": 0,
+      "forced_cost_min": 0,
+      "forced_probability": 0.0,
+      "limit": 12,
+      "overheat_probability": 0.0,
+      "peak_max": 5,
+      "peak_min": 5,
+      "turns_max": 1,
+      "turns_min": 1
+    },
+    "gun": "single",
+    "heat": 0,
+    "limit": 12,
+    "parts": "코어 없음",
+    "rounds": [
+      {
+        "active": true,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "4"
+      },
+      {
+        "active": true,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "2"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p1",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "1"
+      },
+      {
+        "active": false,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "2"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p1",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "1"
+      }
+    ],
+    "selected": [],
+    "source": "Actual campaign/model commands; separate QA save",
+    "title": "1 / 5  ·  순찰 구역",
+    "weapon": "리벳"
+  },
+  "nine": {
+    "bag": "남은 24발",
+    "buttons": {
+      "Cool": {
+        "cost": "열 −6 · 적 1행동",
+        "disabled": true,
+        "name": "냉각"
+      },
+      "EjectApply": {
+        "cost": "이번 전투에서 소모",
+        "disabled": false,
+        "name": "0발 빼내기"
+      },
+      "Fire": {
+        "cost": "적 1행동",
+        "disabled": false,
+        "name": "3발 사격"
+      },
+      "Reload": {
+        "cost": "적 2행동",
+        "disabled": false,
+        "name": "탄창 교체"
+      }
+    },
+    "capacity": 9,
+    "eject_mode": false,
+    "ejection_remaining": 2,
+    "forecast": {
+      "current": 0,
+      "end_max": 4,
+      "end_min": 4,
+      "fired_max": 3,
+      "fired_min": 3,
+      "forced_cost_max": 0,
+      "forced_cost_min": 0,
+      "forced_probability": 0.0,
+      "limit": 12,
+      "overheat_probability": 0.0,
+      "peak_max": 4,
+      "peak_min": 4,
+      "turns_max": 1,
+      "turns_min": 1
+    },
+    "gun": "heavy",
+    "heat": 0,
+    "limit": 12,
+    "parts": "코어 · 고열 ×1.95",
+    "rounds": [
+      {
+        "active": true,
+        "id": "cool",
+        "name": "냉각탄",
+        "removed": false,
+        "role": "냉각",
+        "value": "0"
+      },
+      {
+        "active": true,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "2"
+      },
+      {
+        "active": true,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "2"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p1",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "1"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "cool",
+        "name": "냉각탄",
+        "removed": false,
+        "role": "냉각",
+        "value": "−3"
+      }
+    ],
+    "selected": [],
+    "source": "Actual campaign/model commands; separate QA save",
+    "title": "첫 관문 · 보스",
+    "weapon": "리액터"
+  },
+  "partial": {
+    "bag": "덱 20발",
+    "buttons": {
+      "Cool": {
+        "cost": "열 −6 · 적 1행동",
+        "disabled": false,
+        "name": "냉각"
+      },
+      "EjectApply": {
+        "cost": "이번 전투에서 소모",
+        "disabled": false,
+        "name": "0발 빼내기"
+      },
+      "Fire": {
+        "cost": "적 1행동",
+        "disabled": false,
+        "name": "2발 사격"
+      },
+      "Reload": {
+        "cost": "적 2행동",
+        "disabled": false,
+        "name": "탄창 교체"
+      }
+    },
+    "capacity": 7,
+    "eject_mode": false,
+    "ejection_remaining": 2,
+    "forecast": {
+      "current": 5,
+      "end_max": 11,
+      "end_min": 11,
+      "fired_max": 2,
+      "fired_min": 2,
+      "forced_cost_max": 0,
+      "forced_cost_min": 0,
+      "forced_probability": 0.0,
+      "limit": 12,
+      "overheat_probability": 0.0,
+      "peak_max": 11,
+      "peak_min": 11,
+      "turns_max": 1,
+      "turns_min": 1
+    },
+    "gun": "single",
+    "heat": 5,
+    "limit": 12,
+    "parts": "코어 없음",
+    "rounds": [
+      {
+        "active": true,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "4"
+      },
+      {
+        "active": true,
+        "id": "basic_p1",
+        "name": "기본탄",
+        "removed": false,
+        "role": "피해",
+        "value": "2"
+      },
+      {
+        "active": false,
+        "id": "basic_p2",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "2"
+      },
+      {
+        "active": false,
+        "id": "basic_p3",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "3"
+      },
+      {
+        "active": false,
+        "id": "basic_p1",
+        "name": "기본탄",
+        "removed": false,
+        "role": "기본",
+        "value": "1"
+      }
+    ],
+    "selected": [],
+    "source": "Actual campaign/model commands; separate QA save",
+    "title": "1 / 5  ·  순찰 구역",
+    "weapon": "리벳"
+  }
+}

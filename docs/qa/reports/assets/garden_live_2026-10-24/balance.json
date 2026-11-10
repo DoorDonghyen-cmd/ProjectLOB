@@ -1,0 +1,970 @@
+{
+  "battles": [
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge",
+        "pierce_p1",
+        "bypass"
+      ],
+      "gun": "single",
+      "kind": "elite",
+      "parts": [
+        "siege_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "pierce_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 6,
+      "turns": 3,
+      "used": 6
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge",
+        "pierce_p1",
+        "bypass"
+      ],
+      "gun": "single",
+      "kind": "boss",
+      "parts": [
+        "siege_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "charge"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "pierce_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 7,
+      "turns": 4,
+      "used": 7
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase",
+        "shatter",
+        "chase"
+      ],
+      "gun": "burst",
+      "kind": "elite",
+      "parts": [
+        "volley_drive",
+        "chain_sink"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "precise_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "chase"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 6,
+      "turns": 5,
+      "used": 7
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase",
+        "shatter",
+        "chase"
+      ],
+      "gun": "burst",
+      "kind": "boss",
+      "parts": [
+        "volley_drive",
+        "chain_sink"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "chase"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 7,
+      "turns": 4,
+      "used": 10
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase",
+        "shatter",
+        "chase"
+      ],
+      "gun": "scatter",
+      "kind": "elite",
+      "parts": [
+        "volley_drive",
+        "chain_sink"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "precise_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "chase"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 6,
+      "turns": 2,
+      "used": 6
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase",
+        "shatter",
+        "chase"
+      ],
+      "gun": "scatter",
+      "kind": "boss",
+      "parts": [
+        "volley_drive",
+        "chain_sink"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "chase"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "shatter"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 7,
+      "turns": 4,
+      "used": 12
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "cool",
+        "cool",
+        "precise_p1",
+        "cool"
+      ],
+      "gun": "heavy",
+      "kind": "elite",
+      "parts": [
+        "thermal_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "cool"
+        },
+        {
+          "action": "load",
+          "id": "cool"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 6,
+      "turns": 6,
+      "used": 13
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "cool",
+        "cool",
+        "precise_p1",
+        "cool"
+      ],
+      "gun": "heavy",
+      "kind": "boss",
+      "parts": [
+        "thermal_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "precise_p1"
+        },
+        {
+          "action": "load",
+          "id": "cool"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 7,
+      "turns": 8,
+      "used": 19
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge",
+        "pierce_p1",
+        "bypass"
+      ],
+      "gun": "amplifier",
+      "kind": "elite",
+      "parts": [
+        "siege_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "pierce_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 6,
+      "turns": 3,
+      "used": 4
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge",
+        "pierce_p1",
+        "bypass"
+      ],
+      "gun": "amplifier",
+      "kind": "boss",
+      "parts": [
+        "siege_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "charge"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "total": 7,
+      "turns": 4,
+      "used": 4
+    }
+  ],
+  "checks": 363,
+  "failures": []
+}

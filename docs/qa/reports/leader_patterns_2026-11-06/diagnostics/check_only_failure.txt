@@ -1,0 +1,11 @@
+Observed during an additional, non-runtime parser-mode check.
+Command:
+D:/ProjectLoB/.tmp/godot-4.7/Godot_v4.7-stable_win64_console.exe --headless --path . --check-only --script res://tests/leader_patterns_climb.gd
+Working directory: D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트
+Exit code: 1
+Observed stderr excerpt:
+CrashHandlerException: Program crashed with signal 11
+Engine version: Godot Engine v4.7.stable.official (5b4e0cb0fd279832bbdd69fed5354d4e5ad26f88)
+Dumping the backtrace. Please include this when reporting the bug on: https://github.com/godotengine/godot/issues
+Root cause unconfirmed. This record is an excerpt of the tool response, not a full redirected process log.
+Regular isolated headless runtime, native UI, and regression evidence is recorded separately.

@@ -1,0 +1,7763 @@
+{
+  "failures": [],
+  "rows": [
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 3,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 3
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 2,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 11,
+          "magazine": [
+            "basic_p2",
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "gun": "single",
+      "node": 101,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [],
+          "hits": 0,
+          "hot": false,
+          "levels": {},
+          "settled": true,
+          "siege": false
+        },
+        "node": 101,
+        "shots": 5,
+        "turns": 3,
+        "used": 5,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 200,
+              "id": "pierce_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 200,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 2,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "pierce_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 200,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 4,
+          "magazine": [
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2"
+      ],
+      "gun": "single",
+      "node": 201,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [],
+          "hits": 0,
+          "hot": false,
+          "levels": {},
+          "settled": true,
+          "siege": false
+        },
+        "node": 201,
+        "shots": 3,
+        "turns": 2,
+        "used": 3,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 200,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge",
+              "fire": {
+                "hp_max": 16,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 15,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge",
+            "basic_p2",
+            "basic_p1",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 3,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 3,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 7,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 200,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 8,
+              "engine_percent": 200,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 3,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p1",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "basic_p2",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 200,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 4,
+          "magazine": [
+            "basic_p3",
+            "pierce_p2",
+            "basic_p2",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge"
+      ],
+      "gun": "single",
+      "node": 401,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2",
+          "charge"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "siege_drive"
+          ],
+          "hits": 0,
+          "hot": false,
+          "levels": {
+            "siege_drive": 1
+          },
+          "settled": true,
+          "siege": true
+        },
+        "node": 401,
+        "shots": 5,
+        "turns": 5,
+        "used": 5,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge_hot",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 215,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge_hot",
+              "fire": {
+                "hp_max": 6,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 4,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 215,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 215,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 9,
+          "magazine": [
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 1
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "charge_hot",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3"
+      ],
+      "gun": "single",
+      "node": 602,
+      "result": {
+        "deck": [
+          "charge_hot",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2",
+          "charge",
+          "pierce_p3"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "siege_drive"
+          ],
+          "hits": 0,
+          "hot": false,
+          "levels": {
+            "siege_drive": 2
+          },
+          "settled": true,
+          "siege": true
+        },
+        "node": 602,
+        "shots": 4,
+        "turns": 2,
+        "used": 4,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge",
+              "overheated": false
+            },
+            {
+              "damage": 5,
+              "engine_percent": 230,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge",
+              "fire": {
+                "hp_max": 39,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 38,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "cool",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 44,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 42,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 5,
+              "engine_percent": 230,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 230,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 41,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 36,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 230,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 5,
+              "engine_percent": 230,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 28,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 33,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 25,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0,
+            "random": false,
+            "shots": 0,
+            "turns_max": 0
+          },
+          "heat": 11,
+          "magazine": [],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 230,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 9,
+              "engine_percent": 230,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 11,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 11,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 3,
+          "magazine": [
+            "basic_p3",
+            "basic_p3",
+            "bypass",
+            "basic_p2",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 6,
+              "engine_percent": 230,
+              "id": "bypass",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 2,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 3
+          },
+          "heat": 9,
+          "magazine": [
+            "bypass",
+            "basic_p2",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 230,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p2",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 2
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "charge_hot",
+        "bypass",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge"
+      ],
+      "gun": "single",
+      "node": 802,
+      "result": {
+        "deck": [
+          "charge_hot",
+          "bypass",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2",
+          "charge",
+          "pierce_p3",
+          "charge"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "siege_drive"
+          ],
+          "hits": 0,
+          "hot": false,
+          "levels": {
+            "siege_drive": 3
+          },
+          "settled": true,
+          "siege": true
+        },
+        "node": 802,
+        "shots": 10,
+        "turns": 11,
+        "used": 10,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 7,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 3,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 4,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 4
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 5,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 4
+          },
+          "heat": 9,
+          "magazine": [
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 5,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "gun": "burst",
+      "node": 101,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [],
+          "hits": 0,
+          "hot": false,
+          "levels": {},
+          "settled": true,
+          "siege": false
+        },
+        "node": 101,
+        "shots": 6,
+        "turns": 6,
+        "used": 6,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "precise_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 4,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "precise_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 9,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2"
+      ],
+      "gun": "burst",
+      "node": 201,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 1
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 201,
+        "shots": 4,
+        "turns": 2,
+        "used": 4,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge",
+              "fire": {
+                "hp_max": 12,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 16,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge",
+            "basic_p2",
+            "basic_p1",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 5,
+                "loss": 1.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 4,
+                "loss": 1.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 3,
+            "loss": 1.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 4
+          },
+          "heat": 6,
+          "magazine": [
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 8,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "precise_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "precise_p2",
+              "fire": {
+                "hp_max": 3,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "volley_drive": 1
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge"
+      ],
+      "gun": "burst",
+      "node": 401,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2",
+          "charge"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 2
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 401,
+        "shots": 6,
+        "turns": 4,
+        "used": 6,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "shatter",
+              "fire": {
+                "hp_max": 5,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 9,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "shatter",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p2",
+            "charge"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 4,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p2",
+            "charge"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "volley_drive": 2
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "shatter",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter"
+      ],
+      "gun": "burst",
+      "node": 602,
+      "result": {
+        "deck": [
+          "shatter",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2",
+          "charge",
+          "shatter"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 3
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 602,
+        "shots": 6,
+        "turns": 2,
+        "used": 6,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "chase",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 40,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "chase",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "cool",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 48,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 46,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 4
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 47,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 4
+          },
+          "heat": 8,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 5,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 43,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 1,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 39,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 9,
+          "magazine": [
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 35,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "shatter",
+            "basic_p2",
+            "basic_p2",
+            "basic_p1",
+            "charge",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "shatter",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 39,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 39,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 40,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 31,
+                "loss": 1.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 31,
+                "loss": 1.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 31,
+                "loss": 1.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 30,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 4
+          },
+          "heat": 3,
+          "magazine": [
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 26,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 12,
+              "engine_percent": 100,
+              "id": "precise_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "shatter",
+              "fire": {
+                "hp_max": 13,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 17,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "precise_p2",
+              "fire": {
+                "hp_max": 25,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 18,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "shatter",
+            "basic_p2",
+            "precise_p2",
+            "basic_p3",
+            "basic_p3",
+            "shatter",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 5,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 5,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 9,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 9,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 4
+          },
+          "heat": 8,
+          "magazine": [
+            "basic_p3",
+            "basic_p3",
+            "shatter",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 8,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "shatter",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 8,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "shatter",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "volley_drive": 3
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "shatter",
+        "shatter",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase"
+      ],
+      "gun": "burst",
+      "node": 802,
+      "result": {
+        "deck": [
+          "shatter",
+          "shatter",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2",
+          "charge",
+          "shatter",
+          "chase"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 4
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 802,
+        "shots": 19,
+        "turns": 20,
+        "used": 19,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 13,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 14,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 4,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 5,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 4,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 3,
+            "loss": 0.0,
+            "overheat": 0.5,
+            "random": true,
+            "shots": 3,
+            "turns_max": 4
+          },
+          "heat": 9,
+          "magazine": [
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "gun": "scatter",
+      "node": 101,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [],
+          "hits": 0,
+          "hot": false,
+          "levels": {},
+          "settled": true,
+          "siege": false
+        },
+        "node": 101,
+        "shots": 6,
+        "turns": 2,
+        "used": 6,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "precise_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 9,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 12,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "precise_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 9,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2"
+      ],
+      "gun": "scatter",
+      "node": 201,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 1
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 201,
+        "shots": 5,
+        "turns": 2,
+        "used": 5,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 18,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge",
+            "basic_p2",
+            "basic_p1",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 11,
+                "loss": 0.25,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 14,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 14,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 13,
+            "loss": 0.25,
+            "overheat": 1.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 4
+          },
+          "heat": 6,
+          "magazine": [
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 6,
+              "engine_percent": 100,
+              "id": "precise_p2",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "precise_p2",
+              "fire": {
+                "hp_max": 9,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 6,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 7,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "precise_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "cool",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 2,
+            "loss": 1.0,
+            "overheat": 1.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 2
+          },
+          "heat": 11,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 2,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "volley_drive": 1
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge"
+      ],
+      "gun": "scatter",
+      "node": 401,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2",
+          "charge"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 2
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 401,
+        "shots": 7,
+        "turns": 6,
+        "used": 7,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 16,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "shatter",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p2",
+            "charge",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 9,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 9,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 9,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 4,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p2",
+            "charge",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "volley_drive": 2
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "shatter",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter"
+      ],
+      "gun": "scatter",
+      "node": 602,
+      "result": {
+        "deck": [
+          "shatter",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2",
+          "charge",
+          "shatter"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 3
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 602,
+        "shots": 6,
+        "turns": 2,
+        "used": 6,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "chase",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 47,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "chase",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 38,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 4
+          },
+          "heat": 8,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 38,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "shatter",
+            "basic_p2",
+            "basic_p2",
+            "basic_p1",
+            "charge",
+            "basic_p2",
+            "shatter",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge",
+              "overheated": false
+            },
+            {
+              "damage": 7,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 48,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "basic_p1",
+            "charge",
+            "basic_p2",
+            "shatter",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "shatter",
+              "fire": {
+                "hp_max": 39,
+                "loss": 1.0,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 1,
+                "turns_max": 3
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 39,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 39,
+            "loss": 1.0,
+            "overheat": 1.0,
+            "random": true,
+            "shots": 2,
+            "turns_max": 3
+          },
+          "heat": 13,
+          "magazine": [
+            "shatter",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 5,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 39,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 1,
+          "magazine": [
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p2",
+            "shatter",
+            "basic_p2",
+            "precise_p2"
+          ],
+          "swap": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 31,
+                "loss": 0.888888888888889,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 31,
+            "loss": 0.666666666666667,
+            "overheat": 1.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 4
+          },
+          "heat": 8,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "shatter",
+            "basic_p2",
+            "precise_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 5,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 27,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 31,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "shatter",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 17,
+                "loss": 0.375,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 17,
+                "loss": 0.375,
+                "overheat": 1.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 16,
+            "loss": 0.25,
+            "overheat": 1.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 4
+          },
+          "heat": 8,
+          "magazine": [
+            "basic_p3",
+            "basic_p3",
+            "shatter",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "shatter",
+              "fire": {
+                "hp_max": 8,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 13,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 13,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "shatter",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 5,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "shatter",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 5,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 9,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p2",
+            "shatter",
+            "basic_p2",
+            "precise_p2",
+            "shatter",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 8,
+              "engine_percent": 100,
+              "id": "precise_p2",
+              "overheated": false
+            },
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "shatter",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "precise_p2",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": true,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": true,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "precise_p2",
+            "shatter",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "volley_drive": 3
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "shatter",
+        "shatter",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase"
+      ],
+      "gun": "scatter",
+      "node": 802,
+      "result": {
+        "deck": [
+          "shatter",
+          "shatter",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "precise_p2",
+          "charge",
+          "shatter",
+          "chase"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "volley_drive"
+          ],
+          "hits": 3,
+          "hot": false,
+          "levels": {
+            "volley_drive": 4
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 802,
+        "shots": 23,
+        "turns": 19,
+        "used": 23,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 7,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": true
+            },
+            {
+              "damage": 5,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 2,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 3,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 9,
+          "magazine": [
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "gun": "heavy",
+      "node": 101,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [],
+          "hits": 0,
+          "hot": false,
+          "levels": {},
+          "settled": true,
+          "siege": false
+        },
+        "node": 101,
+        "shots": 6,
+        "turns": 2,
+        "used": 6,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "bore",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "bore",
+              "fire": {
+                "hp_max": 7,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 7,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 7,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 8,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "bore",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 150,
+              "id": "basic_p3",
+              "overheated": true
+            },
+            {
+              "damage": 1,
+              "engine_percent": 150,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 5
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 8,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore"
+      ],
+      "gun": "heavy",
+      "node": 201,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "bore"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "thermal_drive"
+          ],
+          "hits": 0,
+          "hot": true,
+          "levels": {
+            "thermal_drive": 1
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 201,
+        "shots": 5,
+        "turns": 2,
+        "used": 5,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "bore",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 165,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "bore",
+              "fire": {
+                "hp_max": 16,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 14,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "bore",
+            "basic_p2",
+            "basic_p1",
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 165,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 165,
+              "id": "basic_p3",
+              "overheated": true
+            },
+            {
+              "damage": 6,
+              "engine_percent": 165,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 1,
+                "loss": 1.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 4
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 2
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 8,
+          "magazine": [
+            "basic_p1",
+            "basic_p3",
+            "basic_p2",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 1
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore"
+      ],
+      "gun": "heavy",
+      "node": 401,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "bore",
+          "bore"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "thermal_drive"
+          ],
+          "hits": 0,
+          "hot": true,
+          "levels": {
+            "thermal_drive": 2
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 401,
+        "shots": 6,
+        "turns": 2,
+        "used": 6,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge_hot",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 180,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge_hot",
+              "fire": {
+                "hp_max": 10,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 4,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 4,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 13,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2",
+            "basic_p2",
+            "bore",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 180,
+              "id": "basic_p3",
+              "overheated": true
+            },
+            {
+              "damage": 2,
+              "engine_percent": 180,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 5
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 11,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p2",
+            "bore",
+            "basic_p2",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 2
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "charge_hot",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "cool"
+      ],
+      "gun": "heavy",
+      "node": 602,
+      "result": {
+        "deck": [
+          "charge_hot",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "bore",
+          "bore",
+          "cool"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "thermal_drive"
+          ],
+          "hits": 0,
+          "hot": true,
+          "levels": {
+            "thermal_drive": 3
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 602,
+        "shots": 5,
+        "turns": 2,
+        "used": 5,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "cool",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "cool",
+              "fire": {
+                "hp_max": 42,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 42,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 42,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 43,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "cool",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "cool"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 4,
+                "turns_max": 5
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 39,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 39,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 4,
+            "turns_max": 5
+          },
+          "heat": 4,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "cool"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 38,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 50,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 39,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p2",
+            "basic_p2",
+            "basic_p1",
+            "bore",
+            "basic_p2",
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "bore",
+              "fire": {
+                "hp_max": 42,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 44,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 1
+            },
+            {
+              "ammo": "charge_hot",
+              "fire": {
+                "hp_max": 44,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 48,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 5
+          },
+          "heat": 6,
+          "magazine": [
+            "bore",
+            "basic_p2",
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 195,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 50,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 50,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 50,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 47,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p3",
+            "basic_p2",
+            "cool",
+            "basic_p2",
+            "bore",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 1,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "cool",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 195,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 195,
+              "id": "bore",
+              "overheated": true
+            },
+            {
+              "damage": 7,
+              "engine_percent": 195,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "cool",
+              "fire": {
+                "hp_max": 33,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 5
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 36,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 4,
+                "turns_max": 5
+              },
+              "index": 1
+            },
+            {
+              "ammo": "bore",
+              "fire": {
+                "hp_max": 41,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 35,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 4,
+                "turns_max": 5
+              },
+              "index": 3
+            }
+          ],
+          "fire": {
+            "hp_max": 27,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 4,
+            "turns_max": 5
+          },
+          "heat": 9,
+          "magazine": [
+            "cool",
+            "basic_p2",
+            "bore",
+            "basic_p3",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 24,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 26,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 23,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0,
+            "random": false,
+            "shots": 0,
+            "turns_max": 0
+          },
+          "heat": 4,
+          "magazine": [],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "cool",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "cool",
+              "fire": {
+                "hp_max": 17,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 20,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p3",
+            "cool",
+            "bore",
+            "basic_p2",
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": true
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "bore",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 195,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge_hot",
+              "overheated": true
+            },
+            {
+              "damage": 7,
+              "engine_percent": 195,
+              "id": "basic_p1",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "bore",
+              "fire": {
+                "hp_max": 12,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 4,
+                "turns_max": 5
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 6,
+                "loss": 0.0,
+                "overheat": 1.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 5
+              },
+              "index": 1
+            },
+            {
+              "ammo": "charge_hot",
+              "fire": {
+                "hp_max": 13,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 3,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 4,
+            "turns_max": 5
+          },
+          "heat": 3,
+          "magazine": [
+            "bore",
+            "basic_p2",
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 1,
+              "engine_percent": 100,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 2,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 1,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 2,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p1",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 3
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "charge_hot",
+        "cool",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "cool",
+        "cool"
+      ],
+      "gun": "heavy",
+      "node": 802,
+      "result": {
+        "deck": [
+          "charge_hot",
+          "cool",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "bore",
+          "bore",
+          "cool",
+          "cool"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "thermal_drive"
+          ],
+          "hits": 0,
+          "hot": true,
+          "levels": {
+            "thermal_drive": 4
+          },
+          "settled": true,
+          "siege": false
+        },
+        "node": 802,
+        "shots": 24,
+        "turns": 22,
+        "used": 24,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 6,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 10,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 2,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 4,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 4,
+              "engine_percent": 100,
+              "id": "basic_p3",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 2,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "basic_p3",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "gun": "amplifier",
+      "node": 101,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [],
+          "hits": 0,
+          "hot": false,
+          "levels": {},
+          "settled": true,
+          "siege": false
+        },
+        "node": 101,
+        "shots": 3,
+        "turns": 2,
+        "used": 3,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 2,
+              "engine_percent": 200,
+              "id": "pierce_p2",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 200,
+              "id": "basic_p1",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "pierce_p2",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2"
+      ],
+      "gun": "amplifier",
+      "node": 201,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "siege_drive"
+          ],
+          "hits": 0,
+          "hot": false,
+          "levels": {
+            "siege_drive": 1
+          },
+          "settled": true,
+          "siege": true
+        },
+        "node": 201,
+        "shots": 2,
+        "turns": 1,
+        "used": 2,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge",
+              "fire": {
+                "hp_max": 16,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 19,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge",
+            "basic_p2",
+            "basic_p1",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 16,
+              "engine_percent": 215,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 3,
+          "magazine": [
+            "basic_p2",
+            "basic_p1",
+            "basic_p1",
+            "basic_p3"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 1
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge"
+      ],
+      "gun": "amplifier",
+      "node": 401,
+      "result": {
+        "deck": [
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2",
+          "charge"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "siege_drive"
+          ],
+          "hits": 0,
+          "hot": false,
+          "levels": {
+            "siege_drive": 2
+          },
+          "settled": true,
+          "siege": true
+        },
+        "node": 401,
+        "shots": 2,
+        "turns": 2,
+        "used": 2,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge_hot",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge_hot",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 16,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 3,
+              "engine_percent": 230,
+              "id": "basic_p1",
+              "overheated": false
+            },
+            {
+              "damage": 3,
+              "engine_percent": 230,
+              "id": "basic_p2",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p1",
+              "fire": {
+                "hp_max": 0,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 5,
+          "magazine": [
+            "basic_p1",
+            "basic_p2",
+            "basic_p3",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 2
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "charge_hot",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3"
+      ],
+      "gun": "amplifier",
+      "node": 602,
+      "result": {
+        "deck": [
+          "charge_hot",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2",
+          "charge",
+          "pierce_p3"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "siege_drive"
+          ],
+          "hits": 0,
+          "hot": false,
+          "levels": {
+            "siege_drive": 3
+          },
+          "settled": true,
+          "siege": true
+        },
+        "node": 602,
+        "shots": 3,
+        "turns": 2,
+        "used": 3,
+        "won": true
+      }
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 0,
+              "engine_percent": 100,
+              "id": "charge",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "charge",
+              "fire": {
+                "hp_max": 36,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 47,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "charge",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 5,
+              "engine_percent": 245,
+              "id": "basic_p2",
+              "overheated": false
+            },
+            {
+              "damage": 4,
+              "engine_percent": 245,
+              "id": "basic_p2",
+              "overheated": false
+            }
+          ],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 36,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p2",
+              "fire": {
+                "hp_max": 36,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 2,
+                "turns_max": 1
+              },
+              "index": 1
+            }
+          ],
+          "fire": {
+            "hp_max": 39,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 2,
+            "turns_max": 1
+          },
+          "heat": 3,
+          "magazine": [
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "swap",
+          "actual_shots": [],
+          "cool": {
+            "cost": 1,
+            "legal": true,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 36,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 1,
+                "turns_max": 1
+              },
+              "index": 0
+            }
+          ],
+          "fire": {
+            "hp_max": 27,
+            "loss": 0.0,
+            "overheat": 1.0,
+            "random": false,
+            "shots": 1,
+            "turns_max": 3
+          },
+          "heat": 7,
+          "magazine": [
+            "basic_p3",
+            "basic_p1"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        },
+        {
+          "action": "fire",
+          "actual_shots": [
+            {
+              "damage": 8,
+              "engine_percent": 245,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 1,
+              "engine_percent": 245,
+              "id": "basic_p3",
+              "overheated": false
+            },
+            {
+              "damage": 14,
+              "engine_percent": 245,
+              "id": "basic_p3",
+              "overheated": true
+            }
+          ],
+          "cool": {
+            "cost": 0,
+            "legal": false,
+            "loss": false
+          },
+          "ejection_alternatives": [
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 5,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 0
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 5,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 1
+            },
+            {
+              "ammo": "basic_p3",
+              "fire": {
+                "hp_max": 5,
+                "loss": 0.0,
+                "overheat": 0.0,
+                "random": false,
+                "shots": 3,
+                "turns_max": 1
+              },
+              "index": 2
+            }
+          ],
+          "fire": {
+            "hp_max": 0,
+            "loss": 0.0,
+            "overheat": 0.0,
+            "random": false,
+            "shots": 3,
+            "turns_max": 1
+          },
+          "heat": 0,
+          "magazine": [
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bypass",
+            "basic_p2"
+          ],
+          "swap": {
+            "cost": 2,
+            "legal": true,
+            "loss": false
+          }
+        }
+      ],
+      "core_before": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 3
+        },
+        "settled": false,
+        "siege": false
+      },
+      "deck": [
+        "charge_hot",
+        "bypass",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge"
+      ],
+      "gun": "amplifier",
+      "node": 802,
+      "result": {
+        "deck": [
+          "charge_hot",
+          "bypass",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p1",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p2",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "basic_p3",
+          "pierce_p2",
+          "charge",
+          "pierce_p3",
+          "charge"
+        ],
+        "ejected": 0,
+        "growth": {
+          "gains": [
+            "siege_drive"
+          ],
+          "hits": 0,
+          "hot": false,
+          "levels": {
+            "siege_drive": 4
+          },
+          "settled": true,
+          "siege": true
+        },
+        "node": 802,
+        "shots": 6,
+        "turns": 5,
+        "used": 6,
+        "won": true
+      }
+    }
+  ],
+  "scope": "Five representative cores/reward paths, fixed seed 731042. Paths originated from hidden-RNG feasibility search; alternatives use public one-action forecasts. Neither a player strategy nor win rate."
+}

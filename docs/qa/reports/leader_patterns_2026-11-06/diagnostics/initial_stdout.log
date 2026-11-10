@@ -1,0 +1,61 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+PROBE after_single17 new=false full_fire reward rush=2 open=0 turns=16
+PROBE after_single17 new=false visible_heat_single lost rush=4 open=1 turns=12
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_single17 new=false counter_window ready rush=1 open=3 turns=4
+PROBE after_single17 new=false oracle_rng_known reward rush=1 open=0 turns=15
+PROBE after_single17 new=true full_fire lost rush=2 open=0 turns=7
+PROBE after_single17 new=true visible_heat_single lost rush=2 open=1 turns=7
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_single17 new=true counter_window ready rush=1 open=3 turns=4
+PROBE after_single17 new=true oracle_rng_known reward rush=1 open=4 turns=12
+PROBE after_burst17 new=false full_fire reward rush=3 open=3 turns=20
+PROBE after_burst17 new=false visible_heat_single lost rush=3 open=3 turns=13
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_burst17 new=false counter_window ready rush=1 open=4 turns=4
+PROBE after_burst17 new=false oracle_rng_known reward rush=1 open=3 turns=14
+PROBE after_burst17 new=true full_fire lost rush=2 open=2 turns=7
+PROBE after_burst17 new=true visible_heat_single lost rush=4 open=3 turns=11
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_burst17 new=true counter_window ready rush=1 open=4 turns=4
+PROBE after_burst17 new=true oracle_rng_known reward rush=0 open=3 turns=14
+PROBE after_scatter17 new=false full_fire lost rush=4 open=2 turns=14
+PROBE after_scatter17 new=false visible_heat_single lost rush=3 open=0 turns=13
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_scatter17 new=false counter_window ready rush=1 open=1 turns=4
+PROBE after_scatter17 new=false oracle_rng_known reward rush=4 open=0 turns=14
+PROBE after_scatter17 new=true full_fire lost rush=3 open=2 turns=11
+PROBE after_scatter17 new=true visible_heat_single lost rush=4 open=0 turns=11
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_scatter17 new=true counter_window ready rush=1 open=1 turns=4
+PROBE after_scatter17 new=true oracle_rng_known reward rush=1 open=1 turns=11
+PROBE after_heavy17 new=false full_fire reward rush=3 open=8 turns=17
+PROBE after_heavy17 new=false visible_heat_single lost rush=4 open=3 turns=12
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_heavy17 new=false counter_window ready rush=0 open=0 turns=1
+PROBE after_heavy17 new=false oracle_rng_known reward rush=3 open=8 turns=17
+PROBE after_heavy17 new=true full_fire lost rush=4 open=4 turns=11
+PROBE after_heavy17 new=true visible_heat_single lost rush=2 open=2 turns=7
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_heavy17 new=true counter_window ready rush=0 open=0 turns=1
+PROBE after_heavy17 new=true oracle_rng_known reward rush=1 open=5 turns=15
+PROBE after_amplifier17 new=false full_fire lost rush=1 open=1 turns=7
+PROBE after_amplifier17 new=false visible_heat_single reward rush=2 open=2 turns=20
+PROBE after_amplifier17 new=false counter_window reward rush=2 open=2 turns=18
+PROBE after_amplifier17 new=false oracle_rng_known reward rush=1 open=0 turns=10
+PROBE after_amplifier17 new=true full_fire lost rush=1 open=1 turns=7
+PROBE after_amplifier17 new=true visible_heat_single reward rush=1 open=1 turns=12
+PROBE after_amplifier17 new=true counter_window reward rush=2 open=2 turns=16
+PROBE after_amplifier17 new=true oracle_rng_known reward rush=1 open=0 turns=10
+PROBE after_heavy731042scout new=false full_fire reward rush=3 open=0 turns=20
+PROBE after_heavy731042scout new=false visible_heat_single lost rush=4 open=1 turns=13
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_heavy731042scout new=false counter_window ready rush=2 open=3 turns=7
+PROBE after_heavy731042scout new=false oracle_rng_known reward rush=3 open=0 turns=20
+PROBE after_heavy731042scout new=true full_fire lost rush=3 open=0 turns=11
+PROBE after_heavy731042scout new=true visible_heat_single lost rush=4 open=3 turns=11
+FAIL: policy issued illegal command counter_window { "action": "cool", "rounds": 0 }
+PROBE after_heavy731042scout new=true counter_window ready rush=2 open=5 turns=7
+PROBE after_heavy731042scout new=true oracle_rng_known reward rush=1 open=2 turns=23
+LEADER PATTERNS COMPLETE checks=28 failures=10

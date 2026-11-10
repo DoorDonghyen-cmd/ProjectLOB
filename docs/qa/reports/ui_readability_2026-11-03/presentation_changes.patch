@@ -1,0 +1,564 @@
+--- before/새-게임-프로젝트/redesign/ammo_card_face.gd
++++ after/새-게임-프로젝트/redesign/ammo_card_face.gd
+@@ -13,9 +13,13 @@
+ 
+ static func text(c: Control, value: String, at: Vector2, width: float, pixels: int, color: Color, center: bool = false) -> void:
+ 	# Clip/shrink only the individual live field, never resize the card or its parent.
+-	var font_size := pixels
+-	while font_size > 13 and FONT.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
+-		font_size -= 1
++	var font_size := preload("res://redesign/ui_readability.gd").font_size(pixels)
++	if font_size > 16 and FONT.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
++		font_size = 16
++	if FONT.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
++		while value.length() > 1 and FONT.get_string_size(value+"…",HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
++			value = value.left(-1)
++		value += "…"
+ 	c.draw_string(FONT,at.round(),value,HORIZONTAL_ALIGNMENT_CENTER if center else HORIZONTAL_ALIGNMENT_LEFT,maxf(0,width),font_size,color)
+ 
+ static func surface(c: Control, r: Rect2, selected: bool, disabled: bool) -> void:
+--- before/새-게임-프로젝트/redesign/campaign_ui.gd
++++ after/새-게임-프로젝트/redesign/campaign_ui.gd
+@@ -504,7 +504,7 @@
+ 
+ func _collection_workspace(parent: VBoxContainer, width: float) -> VBoxContainer:
+ 	var column := VBoxContainer.new()
+-	column.custom_minimum_size.x = width
++	column.custom_minimum_size.x = minf(width, maxf(280, ui.size.x - 56))
+ 	column.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+ 	column.add_theme_constant_override("separation", 12)
+ 	parent.add_child(column)
+@@ -1361,7 +1361,7 @@
+ 
+ func _service_ammo_grid(parent: Node) -> GridContainer:
+ 	var grid := GridContainer.new()
+-	grid.columns = 3
++	grid.columns = 3 if ui.size.x >= 900 else 2 if ui.size.x >= 620 else 1
+ 	grid.size_flags_horizontal = Control.SIZE_FILL
+ 	grid.add_theme_constant_override("h_separation", 12)
+ 	grid.add_theme_constant_override("v_separation", 12)
+--- before/새-게임-프로젝트/redesign/combat_pixel_font.tres
++++ after/새-게임-프로젝트/redesign/combat_pixel_font.tres
+@@ -1,6 +1,8 @@
+-[gd_resource type="FontVariation" load_steps=2 format=3]
++[gd_resource type="FontVariation" load_steps=3 format=3]
+ 
+ [ext_resource type="FontFile" path="res://assets/fonts/NeoDunggeunmoPro-Regular.ttf" id="1"]
++[ext_resource type="FontFile" path="res://assets/fonts/ORVASKPixelSymbols.ttf" id="2"]
+ 
+ [resource]
+ base_font = ExtResource("1")
++fallbacks = Array[Font]([ExtResource("2")])
+--- before/새-게임-프로젝트/redesign/console_dialog.gd
++++ after/새-게임-프로젝트/redesign/console_dialog.gd
+@@ -30,13 +30,13 @@
+ 	var previous := get_viewport().gui_get_focus_owner()
+ 	if previous != null: return_focus = weakref(previous)
+ 	%Title.text = title
+-	%Title.add_theme_font_size_override("font_size", host._scaled(26))
++	%Title.add_theme_font_size_override("font_size", host._font_scaled(32))
+ 	var skin = preload("res://redesign/combat_pixel_skin.gd")
+ 	for button in [%DialogClose, %DialogCancel, %DialogConfirm]:
+ 		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
+ 			button.add_theme_stylebox_override(state, skin.box("primary" if button == %DialogConfirm else "button", state))
+ 		button.add_theme_font_override("font", skin.FONT)
+-		button.add_theme_font_size_override("font_size", host._scaled(20))
++		button.add_theme_font_size_override("font_size", host._font_scaled(20))
+ 		button.pressed.connect(func(): host.feedback.play("click"))
+ 	%DialogContent.set_meta("dialog", self)
+ 	_fit()
+@@ -54,11 +54,13 @@
+ 	if not is_node_ready(): return
+ 	var desired: Vector2 = get_meta("preferred_size", Vector2(660, 480) if compact else Vector2(960, 660))
+ 	if confirmation: desired.y = 330
+-	var extent := desired.min((size - Vector2(32, 32)).max(Vector2(1, 1)))
+-	%Frame.offset_left = -floorf(extent.x / 2)
+-	%Frame.offset_right = ceilf(extent.x / 2)
+-	%Frame.offset_top = -floorf(extent.y / 2)
+-	%Frame.offset_bottom = ceilf(extent.y / 2)
++	var safe := preload("res://redesign/ui_readability.gd").available(self)
++	var extent := desired.min((safe.size - Vector2(32, 32)).max(Vector2(1, 1)))
++	var shift := safe.get_center() - size * 0.5
++	%Frame.offset_left = shift.x-floorf(extent.x / 2)
++	%Frame.offset_right = shift.x+ceilf(extent.x / 2)
++	%Frame.offset_top = shift.y-floorf(extent.y / 2)
++	%Frame.offset_bottom = shift.y+ceilf(extent.y / 2)
+ 
+ func _topmost() -> bool:
+ 	if not is_visible_in_tree() or is_queued_for_deletion(): return false
+--- before/새-게임-프로젝트/redesign/deck_loadout.gd
++++ after/새-게임-프로젝트/redesign/deck_loadout.gd
+@@ -3,9 +3,17 @@
+ var current_tab := "parts"
+ 
+ func _ready() -> void:
++	resized.connect(_fit)
+ 	%PartsTab.pressed.connect(show_tab.bind("parts"))
+ 	%AmmoTab.pressed.connect(show_tab.bind("ammo"))
+ 	show_tab("parts")
++	_fit.call_deferred()
++
++func _fit() -> void:
++	%PartsWorkspace.vertical = size.x < 1180
++	%PartInspector.custom_minimum_size.x = 0 if %PartsWorkspace.vertical else 390
++	%EquippedPartGrid.columns = 5 if size.x >= 820 else 3
++	%DeckGrid.columns = maxi(1,mini(3,int((size.x-24)/260)))
+ 
+ func show_tab(tab: String) -> void:
+ 	current_tab = "ammo" if tab == "ammo" else "parts"
+--- before/새-게임-프로젝트/redesign/deck_loadout.tscn
++++ after/새-게임-프로젝트/redesign/deck_loadout.tscn
+@@ -58,7 +58,7 @@
+ autowrap_mode = 2
+ vertical_alignment = 1
+ 
+-[node name="PartsWorkspace" type="HBoxContainer" parent="."]
++[node name="PartsWorkspace" type="BoxContainer" parent="."]
+ unique_name_in_owner = true
+ layout_mode = 2
+ theme_override_constants/separation = 12
+--- before/새-게임-프로젝트/redesign/line_skin.gd
++++ after/새-게임-프로젝트/redesign/line_skin.gd
+@@ -1,6 +1,6 @@
+ extends RefCounted
+ ## Shared line + dot surfaces. No commands, input, scene layout or persistent state.
+-const FONT=preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
++const FONT=preload("res://redesign/combat_pixel_font.tres")
+ const INK=Color("e4f2ee")
+ const MUTED=Color("8fb0b0")
+ const DIM=Color("56777a")
+--- before/새-게임-프로젝트/redesign/screen.gd
++++ after/새-게임-프로젝트/redesign/screen.gd
+@@ -21,6 +21,7 @@
+ const CampaignContent = preload("res://redesign/campaign_content.gd")
+ const WeaponView = preload("res://redesign/weapon_view.gd")
+ const Preferences = preload("res://redesign/preferences.gd")
++const ReadableUI = preload("res://redesign/ui_readability.gd")
+ const SAVE := "user://chain_run_v2.json"
+ const BG := Color("03141a")
+ const PANEL := Color("04181e")
+@@ -37,7 +38,8 @@
+ var page := "menu"
+ var save_enabled := true
+ var debug_session := false
+-var focus_reward_scale: Dictionary = {}
++var native_ui_scale: Dictionary = {}
++var resize_pending := false
+ var body: VBoxContainer
+ var seed_input: LineEdit
+ var calculation_label: Label
+@@ -93,6 +95,7 @@
+ 	add_child(feedback)
+ 	feedback.configure(preferences.data)
+ 	add_child(preload("res://redesign/touch_scroll_policy.gd").new())
++	add_child(ReadableUI.new())
+ 	if is_equal_approx(presentation_speed, 1.0):
+ 		presentation_speed = preferences.motion_scale()
+ 	ui_theme = Theme.new()
+@@ -107,6 +110,7 @@
+ 	preload("res://redesign/console_widgets.gd").apply_to(ui_theme)
+ 	theme = ui_theme
+ 	main_scroll = ScrollContainer.new()
++	main_scroll.follow_focus = true
+ 	main_scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ 	add_child(main_scroll)
+ 	content_margin = MarginContainer.new()
+@@ -125,8 +129,13 @@
+ 
+ func _viewport_resized() -> void:
+ 	if is_instance_valid(campaign_hud): return
+-	if is_inside_tree() and not busy:
+-		redraw.call_deferred()
++	if is_inside_tree() and not busy and not resize_pending:
++		resize_pending = true
++		_resize_ui.call_deferred()
++
++func _resize_ui() -> void:
++	resize_pending = false
++	if is_inside_tree() and not busy: redraw()
+ 
+ func _unhandled_input(event: InputEvent) -> void:
+ 	if is_instance_valid(campaign_hud): return
+@@ -162,7 +171,7 @@
+ 	return maxi(12, roundi(float(value) * float(preferences.data.get("text_scale", 1.0))))
+ 
+ func _font_scaled(value: int) -> int:
+-	return preload("res://redesign/line_skin.gd").font_step(_scaled(value))
++	return ReadableUI.font_size(_scaled(value))
+ 
+ func _console_style(kind: String, state: String = "normal") -> StyleBoxTexture:
+ 	var style := preload("res://redesign/combat_pixel_skin.gd").box(kind, state)
+@@ -258,28 +267,29 @@
+ 	if not busy and page == "run" and model.s.phase in ["plan", "ready"] and (campaign == null or campaign.s.phase == "combat"):
+ 		redraw()
+ 
+-func _sync_focus_reward_scale() -> void:
++func _sync_ui_scale() -> void:
+ 	var window := get_window()
+-	var native_reward: bool = page == "run" and campaign != null and (campaign.s.get("phase","")=="reward" or (campaign.s.get("phase","")=="gate" and Model.Roles.enabled(campaign.s))) and Model.FocusBuild.enabled(campaign.s) and (window.size.x < 1120 or window.size.y < 600)
+-	if native_reward and focus_reward_scale.is_empty():
+-		focus_reward_scale = {"mode":window.content_scale_mode,"factor":window.content_scale_factor,"size":window.content_scale_size}
++	var combat: bool = page == "run" and campaign != null and campaign.magazine_enabled() and campaign.s.phase == "combat"
++	if not combat:
++		if native_ui_scale.is_empty():
++			native_ui_scale = {"mode":window.content_scale_mode,"factor":window.content_scale_factor,"size":window.content_scale_size}
+ 		window.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
+-		window.content_scale_factor = 1.0
++		window.content_scale_factor = ReadableUI.scale_for(window.size)
+ 		window.content_scale_size = Vector2i.ZERO
+-	elif not native_reward:
+-		_restore_focus_reward_scale()
+-
+-func _restore_focus_reward_scale() -> void:
+-	if focus_reward_scale.is_empty(): return
++	else:
++		_restore_ui_scale()
++
++func _restore_ui_scale() -> void:
++	if native_ui_scale.is_empty(): return
+ 	var window := get_window()
+-	var previous := focus_reward_scale
+-	focus_reward_scale = {}
++	var previous := native_ui_scale
++	native_ui_scale = {}
+ 	window.content_scale_mode = previous.mode
+ 	window.content_scale_factor = previous.factor
+ 	window.content_scale_size = previous.size
+ 
+ func _exit_tree() -> void:
+-	_restore_focus_reward_scale()
++	_restore_ui_scale()
+ 
+ func redraw() -> void:
+ 	var new_combat: bool = page == "run" and campaign != null and campaign.magazine_enabled() and campaign.s.phase == "combat"
+@@ -291,7 +301,7 @@
+ 		preferences.load_preferences()
+ 		feedback.configure(preferences.data)
+ 		presentation_speed = preferences.motion_scale()
+-	_sync_focus_reward_scale()
++	_sync_ui_scale()
+ 	main_scroll.visible = not new_combat
+ 	if new_combat:
+ 		forecast_worker.cancel_request()
+@@ -330,8 +340,10 @@
+ 	if page == "run" and campaign != null and campaign.s.phase == "shop": edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "map": edge_margin = 8
+ 	content_margin.custom_minimum_size.y = 0
++	var safe := ReadableUI.available(self)
++	var edges := {"left":safe.position.x,"top":safe.position.y,"right":maxf(0,size.x-safe.end.x),"bottom":maxf(0,size.y-safe.end.y)}
+ 	for side in ["left", "right", "top", "bottom"]:
+-		content_margin.add_theme_constant_override("margin_" + side, edge_margin)
++		content_margin.add_theme_constant_override("margin_" + side, edge_margin + ceili(edges[side]))
+ 	body.add_theme_constant_override("separation", 6 if compact_combat else 10)
+ 	for child in body.get_children():
+ 		body.remove_child(child)
+@@ -455,7 +467,7 @@
+ 	var training_probe = Model.new()
+ 	var training_saved: bool = training_probe.restore_run(SAVE)
+ 	var title = preload("res://redesign/title_screen.tscn").instantiate()
+-	title.custom_minimum_size = size
++	title.custom_minimum_size = Vector2(0,ReadableUI.available(self).size.y)
+ 	body.add_child(title)
+ 	title.bind_screen(self, city_probe, city_saved, training_saved)
+ 
+@@ -479,7 +491,7 @@
+ 	selected_difficulty = clampi(selected_difficulty, 0, int(probe.profile.ascension))
+ 	if preparation_seed.is_empty(): preparation_seed = str(int(Time.get_unix_time_from_system()) % 1000000)
+ 	var equipment = preload("res://redesign/equipment_screen.tscn").instantiate()
+-	equipment.custom_minimum_size = Vector2(size.x, maxf(size.y, 620.0))
++	equipment.custom_minimum_size = Vector2(0, maxf(size.y, 620.0))
+ 	body.add_child(equipment)
+ 	equipment.bind_screen(self, probe.profile)
+ 
+@@ -1790,8 +1802,10 @@
+ 	add_child(overlay)
+ 	workspace_overlay = overlay
+ 	var margin := MarginContainer.new()
++	var safe := ReadableUI.available(self)
++	var safe_edges := {"left":safe.position.x,"top":safe.position.y,"right":maxf(0,size.x-safe.end.x),"bottom":maxf(0,size.y-safe.end.y)}
+ 	for side in ["left", "right", "top", "bottom"]:
+-		margin.add_theme_constant_override("margin_" + side, 18)
++		margin.add_theme_constant_override("margin_" + side, 18 + ceili(safe_edges[side]))
+ 	overlay.add_child(margin)
+ 	var frame := VBoxContainer.new()
+ 	frame.add_theme_constant_override("separation", 12)
+--- before/새-게임-프로젝트/redesign/service_location.gd
++++ after/새-게임-프로젝트/redesign/service_location.gd
+@@ -15,7 +15,11 @@
+ 
+ func _fit_height() -> void:
+ 	if decision_layout:
+-		custom_minimum_size.y = 200 if place_kind == "shop" else 184
++		var width := maxf(280, size.x)
++		var art_width := minf(552, maxf(220, width * 0.55))
++		%PlaceArt.custom_minimum_size = Vector2(art_width, art_width / 3.0)
++		$Copy.custom_minimum_size.x = minf(320, maxf(180,width-art_width-24))
++		custom_minimum_size.y = maxf(144, art_width / 3.0)
+ 		return
+ 	if compact_counter:
+ 		custom_minimum_size.y = 168
+--- before/새-게임-프로젝트/redesign/shop_screen.gd
++++ after/새-게임-프로젝트/redesign/shop_screen.gd
+@@ -14,6 +14,7 @@
+ var bag_ids: Array = []
+ var return_button := "Bag"
+ var pending := false
++var fit_queued := false
+ 
+ func configure(screen) -> void:
+ 	host = screen
+@@ -24,7 +25,9 @@
+ 	return find_child(key, true, false)
+ 
+ func _ready() -> void:
++	field("Overlay").theme = $Canvas.theme
+ 	resized.connect(_fit_canvas)
++	$Canvas/Safe/Layout.minimum_size_changed.connect(_queue_fit)
+ 	_fit_canvas()
+ 	if campaign == null: return
+ 	for i in range(3): field("Offer%d" % i).pressed.connect(select_offer.bind(i))
+@@ -53,9 +56,54 @@
+ 
+ func _fit_canvas() -> void:
+ 	if size.x <= 0 or size.y <= 0: return
+-	var factor := minf(size.x / 1600.0, size.y / 900.0)
+-	$Canvas.scale = Vector2.ONE * factor
+-	$Canvas.size = size / factor
++	# Reflow the authored composition; never shrink glyphs with the whole page.
++	$Canvas.scale = Vector2.ONE
++	$Canvas.size = size
++	var narrow := size.x < 1100
++	var edge := 16
++	for side in ["left","right","top","bottom"]:
++		$Canvas/Safe.add_theme_constant_override("margin_"+side,edge)
++	field("Overview").vertical = size.x < 720
++	field("SelectionRow").vertical = narrow
++	field("Footer").vertical = size.x < 900
++	for key in ["Inspector", "InspectorFooter", "Detail"]:
++		field(key).custom_minimum_size.x = 0 if narrow and key == "Detail" else 300 if size.x < 1280 else 352
++	field("Room").custom_minimum_size = Vector2(180 if size.x < 1100 else 240,120)
++	field("StoryScroll").custom_minimum_size = Vector2(180 if size.x < 1100 else 220,180)
++	field("Story").custom_minimum_size.y = 180
++	field("Location").text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
++	field("Wallet").custom_minimum_size.x = 100
++	field("Menu").custom_minimum_size.x = 88
++	field("Settings").custom_minimum_size.x = 80
++	for i in range(3):
++		var card: Control = field("Offer%d" % i)
++		card.find_child("Name").add_theme_font_size_override("font_size",16 if size.x < 1200 else 32)
++		card.find_child("Price").add_theme_font_size_override("font_size",16)
++		card.find_child("Price").autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
++		card.find_child("Icon").custom_minimum_size.y = 72
++		for margin in card.find_children("Inset","MarginContainer",true,false):
++			for side in ["left","right","top","bottom"]: margin.add_theme_constant_override("margin_"+side,8)
++	field("Detail").custom_minimum_size.y = 240 if narrow else 324
++	for key in ["Change", "Buy", "Replace", "ModalHint"]:
++		field(key).add_theme_font_size_override("font_size",16)
++	for key in ["Buy", "Replace", "ModalHint"]: field(key).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
++	if host != null:
++		var safe := preload("res://redesign/ui_readability.gd").available(host)
++		field("Center").set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
++		field("Center").position = safe.position
++		field("Center").size = safe.size
++		field("Modal").custom_minimum_size = Vector2(minf(720,safe.size.x-32),0)
++		field("ModalScroll").custom_minimum_size.y = minf(560,maxf(120,safe.size.y-160))
++	custom_minimum_size.y = $Canvas/Safe/Layout.get_combined_minimum_size().y + edge*2
++
++func _queue_fit() -> void:
++	if fit_queued: return
++	fit_queued = true
++	_fit_later.call_deferred()
++
++func _fit_later() -> void:
++	fit_queued = false
++	if is_inside_tree(): _fit_canvas()
+ 
+ func select_offer(index: int) -> void:
+ 	selected = index
+@@ -141,6 +189,7 @@
+ 		elif event.action == "reroll": field("Feedback").text = "새 물건이 도착했습니다."
+ 	field("RunNotice").visible = host.debug_session
+ 	show_details()
++	_queue_fit()
+ 
+ func ammo_note(id: String) -> String:
+ 	var card = Card.new()
+@@ -231,6 +280,7 @@
+ 	for i in range(4): field("AmmoRow%d" % i).hide()
+ 	field("NextPage").hide()
+ 	return_button = "Details"
++	field("ModalScroll").scroll_vertical = 0
+ 	field("Overlay").show()
+ 	field("CloseOverlay").grab_focus()
+ 
+@@ -245,6 +295,7 @@
+ 	field("ModalHint").text = "보유 탄 한 장과 교체 · 구매 %d Cr · 총 %d장 유지" % [current_item().price, campaign.model.s.deck.size()] if replacing else "등반 중 보유한 탄환과 수량"
+ 	return_button = "Replace" if replacing else "Bag"
+ 	refresh_bag()
++	field("ModalScroll").scroll_vertical = 0
+ 	field("Overlay").show()
+ 	field("CloseOverlay").grab_focus()
+ 
+--- before/새-게임-프로젝트/redesign/shop_screen.tscn
++++ after/새-게임-프로젝트/redesign/shop_screen.tscn
+@@ -146,7 +146,7 @@
+ theme_override_constants/separation = 12
+ size_flags_vertical = 3
+ 
+-[node name="Overview" type="HBoxContainer" parent="Canvas/Safe/Layout/Rows"]
++[node name="Overview" type="BoxContainer" parent="Canvas/Safe/Layout/Rows"]
+ layout_mode = 2
+ theme_override_constants/separation = 24
+ size_flags_vertical = 3
+@@ -257,7 +257,7 @@
+ mouse_default_cursor_shape = 2
+ theme_override_font_sizes/font_size = 16
+ 
+-[node name="SelectionRow" type="HBoxContainer" parent="Canvas/Safe/Layout/Rows"]
++[node name="SelectionRow" type="BoxContainer" parent="Canvas/Safe/Layout/Rows"]
+ layout_mode = 2
+ theme_override_constants/separation = 24
+ custom_minimum_size = Vector2(0, 324)
+@@ -659,7 +659,7 @@
+ theme_override_font_sizes/font_size = 16
+ theme_override_colors/font_color = Color(0.56078,0.6902,0.6902,1)
+ 
+-[node name="Footer" type="HBoxContainer" parent="Canvas/Safe/Layout/Rows"]
++[node name="Footer" type="BoxContainer" parent="Canvas/Safe/Layout/Rows"]
+ layout_mode = 2
+ theme_override_constants/separation = 24
+ 
+@@ -1162,7 +1162,10 @@
+ mouse_default_cursor_shape = 2
+ theme_override_font_sizes/font_size = 24
+ 
+-[node name="Overlay" type="ColorRect" parent="Canvas"]
++[node name="OverlayLayer" type="CanvasLayer" parent="."]
++layer = 8
++
++[node name="Overlay" type="ColorRect" parent="OverlayLayer"]
+ layout_mode = 1
+ anchors_preset = 15
+ anchor_right = 1.0
+@@ -1173,7 +1176,7 @@
+ color = Color(0.00392,0.03922,0.05098,0.74)
+ mouse_filter = 0
+ 
+-[node name="Center" type="CenterContainer" parent="Canvas/Overlay"]
++[node name="Center" type="CenterContainer" parent="OverlayLayer/Overlay"]
+ layout_mode = 1
+ anchors_preset = 15
+ anchor_right = 1.0
+@@ -1181,79 +1184,95 @@
+ grow_horizontal = 2
+ grow_vertical = 2
+ 
+-[node name="Modal" type="PanelContainer" parent="Canvas/Overlay/Center"]
++[node name="Modal" type="PanelContainer" parent="OverlayLayer/Overlay/Center"]
+ layout_mode = 2
+ theme_override_styles/panel = ExtResource("panel_normal")
+ custom_minimum_size = Vector2(720, 500)
+ 
+-[node name="Inset" type="MarginContainer" parent="Canvas/Overlay/Center/Modal"]
++[node name="Inset" type="MarginContainer" parent="OverlayLayer/Overlay/Center/Modal"]
+ layout_mode = 2
+ theme_override_constants/margin_left = 28
+ theme_override_constants/margin_top = 28
+ theme_override_constants/margin_right = 28
+ theme_override_constants/margin_bottom = 28
+ 
+-[node name="Content" type="VBoxContainer" parent="Canvas/Overlay/Center/Modal/Inset"]
++[node name="ModalStack" type="VBoxContainer" parent="OverlayLayer/Overlay/Center/Modal/Inset"]
+ layout_mode = 2
+ theme_override_constants/separation = 16
+ 
+-[node name="ModalTitle" type="Label" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
++[node name="ModalScroll" type="ScrollContainer" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack"]
++layout_mode = 2
++horizontal_scroll_mode = 0
++
++[node name="Content" type="VBoxContainer" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll"]
++size_flags_horizontal = 3
++layout_mode = 2
++theme_override_constants/separation = 16
++
++[node name="ModalTitle" type="Label" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll/Content"]
+ layout_mode = 2
+ mouse_filter = 2
+ text = "탄환 가방"
+ theme_override_font_sizes/font_size = 32
+ theme_override_colors/font_color = Color(0.89412,0.94902,0.93333,1)
+ 
+-[node name="ModalHint" type="Label" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
++[node name="ModalHint" type="Label" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll/Content"]
+ layout_mode = 2
+ mouse_filter = 2
+ text = "시안 전용 탄약 · 실제 저장에는 반영되지 않습니다."
+ theme_override_font_sizes/font_size = 24
+ theme_override_colors/font_color = Color(0.56078,0.6902,0.6902,1)
+ 
+-[node name="AmmoRow0" type="Button" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
++[node name="AmmoRow0" type="Button" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll/Content"]
+ layout_mode = 2
+ text = ""
+ custom_minimum_size = Vector2(0, 62)
+ mouse_default_cursor_shape = 2
+ 
+-[node name="AmmoRow1" type="Button" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
++[node name="AmmoRow1" type="Button" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll/Content"]
+ layout_mode = 2
+ text = ""
+ custom_minimum_size = Vector2(0, 62)
+ mouse_default_cursor_shape = 2
+ 
+-[node name="AmmoRow2" type="Button" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
++[node name="AmmoRow2" type="Button" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll/Content"]
+ layout_mode = 2
+ text = ""
+ custom_minimum_size = Vector2(0, 62)
+ mouse_default_cursor_shape = 2
+ 
+-[node name="AmmoRow3" type="Button" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
++[node name="AmmoRow3" type="Button" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll/Content"]
+ layout_mode = 2
+ text = ""
+ custom_minimum_size = Vector2(0, 62)
+ mouse_default_cursor_shape = 2
+ 
+-[node name="RulesText" type="RichTextLabel" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
+-layout_mode = 2
+-custom_minimum_size = Vector2(0, 280)
+-size_flags_vertical = 3
++[node name="RulesText" type="RichTextLabel" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/ModalScroll/Content"]
++layout_mode = 2
++custom_minimum_size = Vector2(0, 0)
++fit_content = true
++scroll_active = false
+ visible = false
+ autowrap_mode = 2
+ text = ""
+ theme_override_font_sizes/normal_font_size = 24
+ theme_override_colors/default_color = Color(0.89412,0.94902,0.93333,1)
+ 
+-[node name="NextPage" type="Button" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
+-layout_mode = 2
++[node name="Actions" type="HBoxContainer" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack"]
++layout_mode = 2
++theme_override_constants/separation = 12
++
++[node name="NextPage" type="Button" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/Actions"]
++layout_mode = 2
++size_flags_horizontal = 3
+ text = "다음 탄약 보기"
+ custom_minimum_size = Vector2(0, 50)
+ mouse_default_cursor_shape = 2
+ visible = false
+ 
+-[node name="CloseOverlay" type="Button" parent="Canvas/Overlay/Center/Modal/Inset/Content"]
+-layout_mode = 2
++[node name="CloseOverlay" type="Button" parent="OverlayLayer/Overlay/Center/Modal/Inset/ModalStack/Actions"]
++layout_mode = 2
++size_flags_horizontal = 3
+ text = "돌아가기"
+ custom_minimum_size = Vector2(0, 56)
+ mouse_default_cursor_shape = 2

@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-29",
+  "engine": "4.7.stable.official.5b4e0cb0f",
+  "qa_suites": {
+    "threat": {
+      "checks": 2035,
+      "failures": 0
+    },
+    "threat_ui": {
+      "checks": 2110,
+      "failures": 0
+    },
+    "payoff_ui": {
+      "checks": 445,
+      "failures": 0
+    },
+    "distance_ui": {
+      "checks": 1492,
+      "failures": 0
+    }
+  },
+  "total_checks": 6082,
+  "total_failures": 0,
+  "distance_animation": {
+    "observed_frames": 140,
+    "inverted_frames": 0
+  },
+  "evidence_sha256": {
+    "threat.json": "ee5de0d9fa3ff342dfb1b40e66d83c361e20a0116d42283575de53784808062e",
+    "threat_stdout.log": "47e35662a0e51ed01aba291c1f2f13dd33ec72d9fe4032106ce3b6a7188e50db",
+    "threat_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "threat_ui.json": "0e5380c41fd1b4e362325db4814b9ed361ccb91566ce54461a815ba2bbd0c6dc",
+    "threat_ui_stdout.log": "0fae236c903dd374df61c77756b8b5cb2c175c4683e4be23046220a9be061dca",
+    "threat_ui_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "payoff_ui.json": "cca16b7fedde6977d9b67bfe3d1ede8fb6cb14195cf2f5c31d0c53ca6e75d284",
+    "payoff_ui_stdout.log": "f3cff73adf7da02b7b6950c7a57dc1015d04b44385b928ece8d8ff9a3a05e4e0",
+    "payoff_ui_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ground_region_0_depth_1.png": "7cc49b9fdc6826ccb3f6506edee1f6fa5f99d9d82581b0dcd08d8bf1b03dfe1c",
+    "ground_region_0_depth_4.png": "cb0fd0b117cc45e3ed631181e7c08e0eac953010f55a8bd65d4af87bc6d0d05c",
+    "ground_region_0_depth_7.png": "e1df46fc08f72fb16c0602e3b58cc3d410bdcef64fe99494a56f8553786f5ecf",
+    "ground_region_1_depth_1.png": "38f1d237c7e6c079e5bed01d5a6149d2a647167676abfba09ca9ce67a87667c4",
+    "ground_region_1_depth_4.png": "18c580d2f39354f4e4287b9a4a35809496fe3fd631e636706bfb063a31588974",
+    "ground_region_1_depth_7.png": "cfac564b462c94943e0dc68f39b620a6872e6d3253166466e7afc0ae7d2aba0a",
+    "ground_region_2_depth_1.png": "8b8e3c95f905456f1762e3e17e55a4666d13fc4ad2bb14ac2272980ec58e473b",
+    "ground_region_2_depth_4.png": "fcc60d124a09379a3a801cf4a55612480023c79a4fe05aa1639fb5a1a8112ef1",
+    "ground_region_2_depth_7.png": "d3005c362832199945e13d43c8a7174df1ffb2d7fd74ee44cff44dc0a378b1f6",
+    "ground_region_3_depth_1.png": "2eef520e2c4fd6a938e149349b3051d5159a5b2c0e84ce9b26ed058d49cfb3ea",
+    "ground_region_3_depth_4.png": "5eae47a780d7d4ad71c47f03a5d65d43541c84509486d0491e427e1aff06e049",
+    "ground_region_3_depth_7.png": "6b0c267b0060234dd46aac488443f5d52cd2ec17cec7a9dfff3bc7a22c3d135f",
+    "ground_region_4_depth_1.png": "5c1501e8b6d893bb40478ece988e840a6d05abcff4da5687f9015c797cb3d537",
+    "ground_region_4_depth_4.png": "2afdce98a5c3c5fae3907c96d0c5776c60e539ddb011b558d6335ef32c5140c9",
+    "ground_region_4_depth_7.png": "7a80f38241b0031b5ac69a77f9eb5cc3957c436298e035c5325559ed9d5fc6f2",
+    "region_1_imminent.png": "4066ad1681397dc66996ba01d8671dc593dd57a77aba2c2b7bb567ae72482ef1",
+    "region_2_imminent.png": "4330120522b13a4f5d1661ca51dbee9bbb64ad210b93a2585f3edb529f433648",
+    "region_4_imminent.png": "c5704f68cf38c3defafbe2c5670b26109047d33a47ac0b147634cc74f8b9b459",
+    "crowd_1008_18.png": "6282c4fde543579d085176fb207de836a598392302758407ce65e11f81681991",
+    "crowd_focus_1008.png": "ddf26c4baeb53530c874d5e3e5a25dd3dc9fec2bb3a817c7a2ce9a5d20d66489",
+    "pressure_imminent.png": "42c53225d7b444cf632f12dc7476928fbd57a03c5b58bc646c205e57b03f6073",
+    "siege_1008_impact.png": "ef722e3775cdf949ff26ff379a2a59e0c4dfe4495b4e7baa0b2791d18d9a185e",
+    "volley_1008_result.png": "f779bc1f122df2410876ac07e18bd65dacf617fc9a97761e89795dfbf2334a58",
+    "distance_stdout.log": "550e369b8b470b67c9f7bdf15ee3441314dddb9c03da740e5af243a1fcd993a6",
+    "distance_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "distance_after_push.png": "7e72c483dc5f62a7687183ee901bae94d7cc9890d0a6d536a176eb55ffc115a6",
+    "distance_after_deployment.png": "bcbf807495cf18e8b7bf9fa046d92a4790676261300b7784dfdd34cc8295c893"
+  },
+  "physical_android_tested": false,
+  "human_readability_tested": false
+}

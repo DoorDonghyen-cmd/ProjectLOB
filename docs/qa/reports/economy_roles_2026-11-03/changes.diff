@@ -1,0 +1,666 @@
+--- /dev/null
++++ after/새-게임-프로젝트/redesign/run_economy.gd
+@@ -0,0 +1,22 @@
++extends RefCounted
++## Run-local acquisition support. Existing saves have no economy marker.
++const VERSION:=1
++const MODULE_PRICE:=18
++const BAG_PRICE:=18
++const Choices=preload("res://redesign/build_choices.gd")
++const Ammo=preload("res://redesign/content.gd")
++static func enabled(state: Dictionary)->bool:return int(state.get("economy_version",0))==VERSION
++static func valid(state: Dictionary)->bool:
++	var version: Variant=state.get("economy_version",0)
++	if not Ammo.Roles.whole(version,0,VERSION):return false
++	if not enabled(state):return not state.has("intro_part_bought") and not state.has("gate_bag_used") and not state.has("gate_ammo_used")
++	return Ammo.Roles.builds(state) and state.get("intro_part_bought") is bool and state.get("gate_bag_used") is bool and state.get("gate_ammo_used",false) is bool
++static func stock(state: Dictionary,combat: Dictionary,offers: Array)->void:
++	if not enabled(state) or state.intro_part_bought or offers.size()<2:return
++	var offer: Dictionary=offers[1]
++	if offer.type!="part" or Choices.modules([offer.id],combat).is_empty():return
++	offer.price=MODULE_PRICE;offer.intro_discount=true
++static func valid_price(state: Dictionary,offer: Dictionary,index: int)->bool:
++	if not offer.get("intro_discount",false) is bool:return false
++	if not offer.get("intro_discount",false):return int(offer.price)==30
++	return enabled(state) and index==1 and not Ammo.is_core_part(str(offer.id)) and int(offer.price)==MODULE_PRICE and (bool(offer.sold)==bool(state.intro_part_bought))
+--- before/새-게임-프로젝트/redesign/campaign.gd
++++ after/새-게임-프로젝트/redesign/campaign.gd
+@@ -5,6 +5,7 @@
+ const Model = preload("res://redesign/model.gd")
+ const Gates = preload("res://redesign/gate_upgrades.gd")
+ const Encounters = preload("res://redesign/encounter_scenes.gd")
++const Economy = preload("res://redesign/run_economy.gd")
+ const Lore = preload("res://redesign/city_story.gd")
+ const SAVE := "user://city_campaign_v1.json"
+ const MIN_DECK := 8
+@@ -69,6 +70,7 @@
+ 		model.s.focus_build_version = Model.FocusBuild.VERSION
+ 	if magazine_mode and map_version>=4:
+ 		s.combat_roles_version=Model.Roles.VERSION;model.s.combat_roles_version=Model.Roles.VERSION
++		s.economy_version=Economy.VERSION;s.intro_part_bought=false;s.gate_bag_used=false;s.gate_ammo_used=false
+ 	model.begin_encounter(int(s.compressor_charges))
+ 
+ func magazine_enabled() -> bool:
+@@ -532,6 +534,41 @@
+ 	_advance_region()
+ 	return true
+ 
++func can_buy_gate_bag() -> bool:
++	return Economy.enabled(s) and gate_ready() and not s.gate_bag_used and not s.get("gate_ammo_used",false) and can_grow_bag() and int(s.credits)>=Economy.BAG_PRICE
++
++func buy_gate_bag() -> bool:
++	if not can_buy_gate_bag():return false
++	s.credits-=Economy.BAG_PRICE
++	_grow_bag()
++	s.gate_bag_used=true
++	s.message="수납 +2발 · %dCr 사용 · 탄약 지급 없음"%Economy.BAG_PRICE
++	_log("gate_bag",{"price":Economy.BAG_PRICE,"limit":model.deck_limit()})
++	return true
++
++func gate_copy_options() -> Array:
++	if not Economy.enabled(s) or not gate_ready():return []
++	var result: Array=[]
++	for id in model.s.deck:
++		if Ammo.source_id(id)!="basic" and not Ammo.is_temporary(id) and not result.has(id):result.append(id)
++	return result
++
++func gate_copy_price(id: String) -> int:
++	return 24 if Ammo.grade(id)==1 else 12
++
++func can_buy_gate_copy(id: String) -> bool:
++	return gate_copy_options().has(id) and not s.gate_bag_used and not s.get("gate_ammo_used",false) and int(s.credits)>=gate_copy_price(id) and can_acquire_ammo(id)
++
++func buy_gate_copy(id: String) -> bool:
++	if not can_buy_gate_copy(id):return false
++	var price:=gate_copy_price(id)
++	s.credits-=price
++	_acquire_ammo(id,"")
++	s.gate_ammo_used=true
++	s.message="%s 1장 복제 · %dCr 사용"%[Ammo.AMMO[id].name,price]
++	_log("gate_copy",{"id":id,"price":price})
++	return true
++
+ func depart_gate() -> bool:
+ 	if not gate_ready(): return false
+ 	_log("gate_depart", {"region": int(s.region) + 1})
+@@ -539,6 +576,7 @@
+ 	return true
+ 
+ func _advance_region() -> void:
++	if Economy.enabled(s):s.gate_bag_used=false;s.gate_ammo_used=false
+ 	s.region += 1
+ 	s.floor = 0
+ 	s.node = 0
+@@ -558,6 +596,7 @@
+ 	elif offer.type != "ammo" or offer.id == "basic" or not can_acquire_ammo(str(offer.id), replace_id): return false
+ 	s.credits -= int(offer.price)
+ 	offer.sold = true
++	if Economy.enabled(s) and offer.get("intro_discount",false):s.intro_part_bought=true
+ 	if offer.type == "part":
+ 		s.parts.append(offer.id)
+ 		if can_equip(str(offer.id)):
+@@ -601,6 +640,7 @@
+ 		if not main.is_empty():
+ 			s.offers[0].id = main
+ 			s.offers[0].price = 24 if Ammo.grade(main) == 1 else 12
++	Economy.stock(s,model.s,s.offers)
+ 	for offer in s.offers:
+ 		if offer.type == "ammo" and not s.get("shop_seen_ammo", []).has(offer.id):
+ 			if not s.has("shop_seen_ammo"): s.shop_seen_ammo = []
+@@ -833,6 +873,7 @@
+ 	var state: Dictionary = data.campaign
+ 	state = state.duplicate(true)
+ 	Ammo.Merge.campaign(state)
++	if not Economy.valid(state):return false
+ 	if not Ammo.valid_bag_state(state): return false
+ 	if state.has("outfit") and (not state.outfit is String or not Ammo.OUTFITS.has(state.outfit)): return false
+ 	var legacy_v1: bool = int(state.get("version", -1)) == 1
+@@ -915,16 +956,18 @@
+ 	for id in state.shop_seen_parts:
+ 		if id == "none" or not Ammo.PARTS.has(id) or unique.has(id) or not Ammo.accepts_part(str(state.gun), str(id)): return false
+ 		unique.append(id)
+-	for offer in state.offers:
++	for offer_index in range(state.offers.size()):
++		var offer: Variant=state.offers[offer_index]
+ 		if not offer is Dictionary: return false
+ 		for key in ["id", "type", "price", "sold"]:
+ 			if not offer.has(key): return false
+ 		if not offer.sold is bool or not _whole(offer.price, 1, 100): return false
+ 		if offer.type == "ammo":
++			if offer.has("intro_discount"):return false
+ 			if not Ammo.AMMO.has(offer.id) or offer.id == "basic" or Ammo.is_temporary(str(offer.id)): return false
+ 			# Preserve already stocked legacy offers, including the old 12Cr high-output round.
+ 			if int(offer.price) != 12 and not (Ammo.grade(str(offer.id)) == 1 and int(offer.price) == 24): return false
+-		elif offer.type != "part" or offer.id == "none" or not Ammo.PARTS.has(offer.id) or int(offer.price) != 30 or not Ammo.accepts_part(str(state.gun), str(offer.id)): return false
++		elif offer.type != "part" or offer.id == "none" or not Ammo.PARTS.has(offer.id) or not Economy.valid_price(state,offer,offer_index) or not Ammo.accepts_part(str(state.gun), str(offer.id)): return false
+ 	for key in defaults():
+ 		if not progress.has(key): return false
+ 	for key in ["cores", "runs", "wins", "ascension", "best_region"]:
+--- before/새-게임-프로젝트/redesign/screen.gd
++++ after/새-게임-프로젝트/redesign/screen.gd
+@@ -2641,6 +2641,8 @@
+ 		"gate": accepted = campaign.gate(str(value), extra)
+ 		"gate_production": accepted = campaign.gate("production",extra,value if value is Array else [])
+ 		"gate_depart": accepted = campaign.depart_gate()
++		"gate_bag": accepted = campaign.buy_gate_bag()
++		"gate_copy": accepted = campaign.buy_gate_copy(str(value))
+ 		"buy": accepted = campaign.buy(int(value), extra)
+ 		"buy_compressor": accepted = campaign.buy_compressor_charge()
+ 		"reroll": accepted = campaign.reroll()
+@@ -2653,7 +2655,7 @@
+ 		"resolve": accepted = campaign.resolve(str(value), extra, replacement)
+ 		"leave": accepted = campaign.leave()
+ 	if accepted:
+-		if command in ["gate", "gate_production", "gate_depart", "reward", "buy", "buy_compressor", "shop_refine", "shop_compress", "tune", "equip", "replace_part"]:
++		if command in ["gate_copy", "gate_bag", "gate", "gate_production", "gate_depart", "reward", "buy", "buy_compressor", "shop_refine", "shop_compress", "tune", "equip", "replace_part"]:
+ 			feedback.play("confirm")
+ 		model = campaign.model
+ 		selected_slot = 0
+--- before/새-게임-프로젝트/redesign/shop_screen.gd
++++ after/새-게임-프로젝트/redesign/shop_screen.gd
+@@ -123,6 +123,7 @@
+ 		card.find_child("Heat").text = "열 %s" % Data.heat_label(id, state) if ammo else ""
+ 		card.find_child("Owned").text = "보유 %d장" % state.deck.count(id) if ammo else ("보유 중" if campaign.s.parts.has(id) else "")
+ 		card.find_child("Price").text = "구매 완료" if offer.sold else "%d Cr" % offer.price
++		if offer.get("intro_discount",false) and not offer.sold:card.find_child("Price").text="첫 연결 30 → %d Cr"%offer.price
+ 		var icon = card.find_child("Icon")
+ 		icon.is_part = not ammo
+ 		icon.item_id = id
+@@ -194,6 +195,7 @@
+ 	elif ammo and not campaign.can_acquire_ammo(id): field("Buy").text = "탄약 가득 참 · 교체 필요"
+ 	field("Buy").disabled = offer.sold or duplicate or not affordable or (ammo and not campaign.can_acquire_ammo(id))
+ 	field("Balance").text = "구매 완료" if offer.sold else "구매 후 %d Cr" % (int(campaign.s.credits) - int(offer.price)) if affordable else "보유 %d Cr" % int(campaign.s.credits)
++	if offer.get("intro_discount",false) and not offer.sold:field("Balance").text+=" · 첫 연결 할인 1회"
+ 	if offer.sold and not owned: field("Change").text = "보유 %d장" % state.deck.count(id) if ammo else ("장착 중" if campaign.is_equipped(id) else "보관 중 · 파츠 관리에서 교체")
+ 
+ func inspect_slot(index: int) -> void:
+--- before/새-게임-프로젝트/redesign/gate_reward_ui.gd
++++ after/새-게임-프로젝트/redesign/gate_reward_ui.gd
+@@ -144,6 +144,24 @@
+ 	ui._label(workspace,"%s · %s · 탄창 %d칸 · 재장전 %d턴" % [Ammo.GUNS[campaign.s.gun].name,Ammo.outfit_name(ui.model.s),ui.model.capacity(),ui.model.reload_cost()],19,ui.INK)
+ 	if campaign.magazine_enabled(): ui._label(workspace,"휴대 탄약 %d/%d발 · 다음 전투에 새 탄창 장전" % [ui.model.s.deck.size(),ui.model.deck_limit()],19,ui.INK)
+ 	else: ui._label(workspace,"휴대 탄약 %d/%d장 · 손패 %d장 · 교환 %d회" % [ui.model.s.deck.size(),ui.model.deck_limit(),Ammo.hand_capacity(ui.model.s),Ammo.exchange_capacity(ui.model.s)],19,ui.INK)
++	if campaign.Economy.enabled(campaign.s):
++		var service:=VBoxContainer.new()
++		service.name="GateBagService"
++		service.add_theme_constant_override("separation",8)
++		workspace.add_child(service)
++		var hint: String="관문당 유료 정비 1회 · 수납 확장 또는 보유 탄 복제"
++		var title: String="수납 %d → %d발 · %dCr"%[ui.model.deck_limit(),ui.model.deck_limit()+2,campaign.Economy.BAG_PRICE]
++		if campaign.s.gate_bag_used or campaign.s.get("gate_ammo_used",false):title="이번 관문 유료 정비 완료"
++		elif not campaign.can_grow_bag():title="수납 확장 한도 도달"
++		elif int(campaign.s.credits)<campaign.Economy.BAG_PRICE:title+=" · %dCr 부족"%(campaign.Economy.BAG_PRICE-int(campaign.s.credits))
++		ui._label(service,"유료 정비 · 보유 %dCr"%campaign.s.credits,19,ui.INK)
++		ui._label(service,hint,17,ui.MUTED)
++		var expand: Button=ui._button(service,title,"city_gate_bag_service",host.action.bind("gate_bag"),not campaign.can_buy_gate_bag())
++		expand.custom_minimum_size.y=52
++		ui._label(service,"수납 확장은 탄약 지급 없음 · 공방과 총 3회 상한 공유",17,ui.MUTED)
++		var copy_ready: bool=campaign.gate_copy_options().any(func(id):return campaign.can_buy_gate_copy(id))
++		var copy: Button=ui._button(service,"보유 탄 1장 복제 · 12 / 24Cr","city_gate_copy_service",copies.bind(host),not copy_ready)
++		copy.custom_minimum_size.y=52
+ 	host.equipped_strip(workspace)
+ 	ui._label(workspace,"파츠 교체는 무료 · 탄약은 다음 전투에서 보유 구성으로 복구됩니다.",17,ui.MUTED)
+ 	_focus_depart.call_deferred(depart)
+@@ -242,3 +260,23 @@
+ 		plus.size_flags_horizontal = Control.SIZE_SHRINK_END
+ 		controls.append({"id":id,"count":count,"plus":plus,"minus":minus})
+ 	refresh.call()
++
++static func copies(host) -> void:
++	var ui=host.ui
++	var campaign=host.campaign
++	var column: VBoxContainer=ui._dialog("보유 탄 1장 복제",false)
++	column.name="GateCopyOptions"
++	var dialog=column.get_meta("dialog")
++	ui._label(column,"현재 성능 그대로 1장 추가 · 관문 유료 정비 1회 사용",20,ui.INK)
++	ui._label(column,"보유 %dCr · 탄약 %d/%d발"%[campaign.s.credits,ui.model.s.deck.size(),ui.model.deck_limit()],18,ui.MUTED)
++	var grid:=GridContainer.new()
++	grid.columns=3 if ui.get_viewport_rect().size.x>=1000 else 2 if ui.get_viewport_rect().size.x>=640 else 1
++	grid.add_theme_constant_override("h_separation",12);grid.add_theme_constant_override("v_separation",12)
++	column.add_child(grid)
++	for id in campaign.gate_copy_options():
++		var button: Button=Offer.instantiate()
++		button.name="gate_copy_"+id;button.custom_minimum_size=Vector2(230,180)
++		button.disabled=not campaign.can_buy_gate_copy(id)
++		grid.add_child(button)
++		button.get_node("CardInfo").setup(id,1,ui.model.s,button.disabled,false,"%dCr · %d → %d장"%[campaign.gate_copy_price(id),ui.model.s.deck.count(id),ui.model.s.deck.count(id)+1])
++		button.pressed.connect(func():dialog.close();host.action("gate_copy",id))
+--- /dev/null
++++ after/새-게임-프로젝트/tests/economy_roles_audit.gd
+@@ -0,0 +1,34 @@
++extends SceneTree
++const Campaign=preload("res://redesign/campaign.gd")
++func _initialize()->void:run.call_deferred()
++func paths(rooms: Array)->Dictionary:
++	var values: Dictionary={}
++	for room in rooms:
++		var counts: Array=[1 if room.kind=="shop" else 0,1 if room.get("workshop",false) else 0,1 if room.kind=="supply" and not room.get("workshop",false) else 0,1 if room.kind=="combat" else 0]
++		var lo: Array=[999,999,999,999];var hi: Array=[-1,-1,-1,-1]
++		if room.floor==1:lo=counts.duplicate();hi=counts.duplicate()
++		for previous in rooms:
++			if not previous.next.has(room.id):continue
++			for i in range(4):lo[i]=mini(lo[i],values[previous.id].lo[i]+counts[i]);hi[i]=maxi(hi[i],values[previous.id].hi[i]+counts[i])
++		values[room.id]={"lo":lo,"hi":hi}
++	return values[rooms.back().id]
++func run()->void:
++	var output:=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/economy_roles_20261103/"):quit(2);return
++	var graph: Array=[];var outfits: Array=[]
++	for region in range(5):
++		var row:={"region":region+1,"seeds":200,"some_path_without_shop":0,"some_path_without_workshop":0,"no_path_with_workshop":0,"minimum_fights":99}
++		for seed_value in range(200):
++			var b:=paths(Campaign.Content.nodes(region,seed_value,4))
++			if b.lo[0]==0:row.some_path_without_shop+=1
++			if b.lo[1]==0:row.some_path_without_workshop+=1
++			if b.hi[1]==0:row.no_path_with_workshop+=1
++			row.minimum_fights=mini(row.minimum_fights,b.lo[3])
++		graph.append(row)
++	for outfit in Campaign.Ammo.OUTFITS:
++		for gun in Campaign.Ammo.GUNS:
++			var c=Campaign.new();c.start(gun,17,0,"balanced",4,outfit,true)
++			outfits.append({"outfit":outfit,"gun":gun,"start":c.model.s.deck.size(),"min":c.minimum_deck(),"max":c.model.deck_limit(),"magazine":c.model.capacity(),"exchange":Campaign.Ammo.exchange_capacity(c.model.s)})
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"graphs":graph,"outfits":outfits},"  "))
++	for row in graph:print(row)
++	print("ECONOMY ROLES COMPLETE failures=0");quit()
+--- /dev/null
++++ after/새-게임-프로젝트/tests/economy_roles_rules.gd
+@@ -0,0 +1,83 @@
++extends "res://tests/build_roles_rules.gd"
++func earned(name: String):
++	var c=Campaign.new()
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/build_roles_20261103/climb_earned/"+name+".json"))),"historical earned fixture restores")
++	return c
++func activate(c)->void:
++	c.s.economy_version=1;c.s.intro_part_bought=false;c.s.gate_bag_used=false
++func resume(c)->void:
++	c.normalize_for_save()
++	var data: Dictionary=canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})
++	var other=Campaign.new();check(other.restore_state(data),"economy state resumes "+str(c.s.outfit)+"/"+str(c.s.phase)+"/"+str(c.s.bag_upgrades))
++	check(canonical(other.s)==data.campaign and canonical(other.model.s)==data.combat,"economy and combat restore exactly")
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/economy_roles_20261103/"):quit(2);return
++	var c=earned("shop_heavy_17_r1_n503")
++	check(not Campaign.Economy.enabled(c.s),"existing v3 run is not upgraded")
++	var stock: Array=c.s.offers.duplicate(true)
++	var previous=load("res://../qa_runtime/economy_roles_20261103/before/새-게임-프로젝트/redesign/campaign.gd").new()
++	previous.s=c.s.duplicate(true);previous.model.s=c.model.s.duplicate(true)
++	c._stock_shop(c.node());previous._stock_shop(previous.node())
++	check(c.s.offers==previous.s.offers,"legacy stock and prices remain unchanged")
++	activate(c);c.s.offers=stock.duplicate(true);Campaign.Economy.stock(c.s,c.model.s,c.s.offers)
++	check(c.s.credits==30 and c.s.offers[0].price==12 and c.s.offers[1].price==18 and c.s.offers[2].price==30,"targeted support keeps initial budget and alternate price")
++	resume(c)
++	check(c.buy(0) and c.buy(1) and c.s.credits==0 and c.s.parts.has("coil"),"normal round plus fitting module fits actual starting wallet")
++	var saved: Dictionary=canonical(c.s)
++	check(not c.buy(1) and canonical(c.s)==saved,"duplicate purchase neither charges nor grants again")
++	check(c.s.intro_part_bought,"discount is consumed by actual purchase")
++	resume(c)
++	var later: Array=stock.duplicate(true);Campaign.Economy.stock(c.s,c.model.s,later)
++	check(later[1].price==30,"discount cannot repeat across rerolls or shops")
++	for value in [-1,0.5,2,"1",true]:
++		var data: Dictionary=canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile});data.campaign.economy_version=value
++		check(not Campaign.new().restore_state(data),"invalid economy version rejected")
++	for price in [17,19,30]:
++		var data: Dictionary=canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile});data.campaign.offers[1].price=price
++		check(not Campaign.new().restore_state(data),"discount provenance and price agree")
++	for outfit in Content.OUTFITS:
++		for gun in Content.GUNS:
++			var fresh=Campaign.new();fresh.start(gun,17,0,"balanced",4,outfit,true)
++			check(fresh.model.s.deck.size()>=fresh.minimum_deck() and fresh.model.s.deck.size()<=fresh.model.deck_limit(),"every outfit/weapon starts inside min/max")
++			resume(fresh)
++		var gate=earned("gate_heavy_17_r1")
++		gate.s.outfit=outfit;gate.model.s.outfit=outfit;activate(gate)
++		# Controlled outfit boundary, not a claim of an earned outfit swap.
++		gate.model.s.deck=gate.model.s.deck.slice(0,gate.model.deck_limit());gate.normalize_for_save()
++		var rounds: Array=gate.model.s.deck.duplicate();var capacity: int=gate.model.capacity();var minimum: int=gate.minimum_deck()
++		check(not gate.buy_gate_bag(),"upgrade selection precedes paid reorganization")
++		check(gate.gate("cadence"),"free gate upgrade remains available")
++		var before: int=gate.model.deck_limit();var wallet: int=gate.s.credits
++		check(gate.buy_gate_bag() and gate.model.deck_limit()==before+2 and gate.s.credits==wallet-18,"paid gate expands only capacity")
++		check(gate.model.s.deck==rounds and gate.model.capacity()==capacity and gate.minimum_deck()==minimum and gate.model.s.gate_mods.cadence==1,"no free ammo, magazine/minimum/upgrade changes")
++		resume(gate)
++		saved=canonical(gate.s)
++		check(not gate.buy_gate_bag() and canonical(gate.s)==saved,"one paid expansion per gate")
++		check(gate.depart_gate() and not gate.s.gate_bag_used,"next region clears only visit lock")
++		check(not gate.buy_gate_bag(),"map cannot purchase gate service")
++		resume(gate)
++	var poor=earned("gate_heavy_17_r1");activate(poor);poor.gate("skip");poor.s.credits=17
++	saved=canonical(poor.s);check(not poor.buy_gate_bag() and canonical(poor.s)==saved,"insufficient credits reject atomically")
++	var capped=earned("gate_heavy_17_r3");activate(capped);capped.gate("skip")
++	for i in range(3):capped._grow_bag()
++	check(not capped.buy_gate_bag() and capped.model.deck_limit()==Roles.CARRY.carrier+6,"workshop and paid gate share three upgrades")
++	resume(capped)
++	var legacy=earned("gate_heavy_17_r1");legacy.gate("skip")
++	check(not legacy.buy_gate_bag(),"historical gate has no new paid service")
++	resume(legacy)
++	var copy=earned("gate_heavy_17_r1");activate(copy);copy.gate("skip")
++	var main: String=Model.FocusBuild.main_round(copy.model.s)
++	var count: int=copy.model.s.deck.count(main);var money: int=copy.s.credits
++	check(copy.buy_gate_copy(main) and copy.model.s.deck.count(main)==count+1 and copy.s.credits==money-copy.gate_copy_price(main),"copy spends shop price and adds exact owned performance")
++	check(not copy.buy_gate_copy(main) and not copy.buy_gate_bag(),"copy and expansion share one paid service")
++	resume(copy)
++	check(copy.depart_gate() and not copy.s.gate_ammo_used,"copy lock resets on next region")
++	var full=earned("gate_heavy_17_r1");activate(full);full.gate("skip")
++	while full.model.s.deck.size()<full.model.deck_limit():full.model.s.deck.append("basic_p2")
++	full.normalize_for_save();saved=canonical(full.s)
++	check(not full.buy_gate_copy(main) and canonical(full.s)==saved,"full carry limit rejects copy without charge")
++	check(not full.buy_gate_copy("basic_p2") and not full.buy_gate_copy("not_owned"),"only owned special ammunition can be copied")
++	check(not copy.can_buy_gate_copy(main),"copy not available outside gate")
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++	print("ECONOMY ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/economy_roles_climb.gd
+@@ -0,0 +1,50 @@
++extends "res://tests/build_roles_climb.gd"
++var outfit_id:="carrier"
++var economy_version:=1
++var ledger: Array=[]
++var copy_policy:=false
++func command(c,item: Dictionary)->bool:
++	if item.action=="gate_depart" and c.can_buy_gate_bag() and c.model.s.deck.size()>=c.model.deck_limit()-2:
++		if not command(c,{"action":"gate_bag"}):return false
++	if item.action=="gate_depart" and copy_policy:
++		var main: String=c.model.FocusBuild.main_round(c.model.s)
++		if c.can_buy_gate_copy(main):
++			if not command(c,{"action":"gate_copy","id":main}):return false
++	var before: Dictionary={"node":c.s.node,"phase":c.s.phase,"action":item.action,"credits":c.s.credits,"deck":c.model.s.deck.size(),"limit":c.model.deck_limit()}
++	var accepted: bool
++	if item.action in ["gate_bag","gate_copy"]:
++		accepted=check(c.buy_gate_bag() if item.action=="gate_bag" else c.buy_gate_copy(str(item.id)),"legal paid gate expansion") and roundtrip(c)
++		if accepted:commands.append(item.duplicate(true))
++	else:accepted=super.command(c,item)
++	if accepted and item.action in ["enter","reward","buy","gate","gate_bag","gate_copy","resolve","leave","gate_depart"]:
++		before.merge({"after_credits":c.s.credits,"after_deck":c.model.s.deck.size(),"after_limit":c.model.deck_limit(),"id":item.get("id","")})
++		ledger.append(before)
++	return accepted
++func write_report()->void:
++	super.write_report()
++	# The inherited raw remaining metric omits emergency rounds; use actual reserves.
++	for battle in battles:
++		if not battle.has("raw_remaining"):battle.raw_remaining=battle.remaining
++		battle.remaining=int(battle.metrics.get("remaining",battle.remaining))
++	super.write_report()
++	FileAccess.open(output.path_join("economy.json"),FileAccess.WRITE).store_string(JSON.stringify({"outfit":outfit_id,"economy_version":economy_version,"ledger":ledger},"  "))
++func _run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/economy_roles_20261103/"):quit(2);return
++	solver=preload("res://tests/fire_control_solver.gd").new();route_policy="safe";acquisition_policy="refit";rule_version=3
++	run_gun=OS.get_environment("QA_GUN");run_seed=int(OS.get_environment("QA_SEED"));outfit_id=OS.get_environment("QA_OUTFIT")
++	if run_gun.is_empty():run_gun="heavy"
++	if outfit_id.is_empty():outfit_id="carrier"
++	if run_seed==0:run_seed=17
++	copy_policy=OS.get_environment("QA_COPY")=="1"
++	economy_version=0 if OS.get_environment("QA_ECONOMY")=="0" else 1
++	build_kind={"heavy":"fire","burst":"control","single":"direct"}[run_gun];role_build=build_kind=="fire"
++	preferred_core={"single":"siege_drive","burst":"volley_drive","heavy":"thermal_drive"}[run_gun]
++	var c=Campaign.new();c.start(run_gun,run_seed,0,"balanced",4,outfit_id,true)
++	if economy_version==0:
++		for key in ["economy_version","intro_part_bought","gate_bag_used","gate_ammo_used"]:c.s.erase(key)
++	roundtrip(c)
++	var won: bool=await play_run(c)
++	endpoints.append({"gun":run_gun,"seed":run_seed,"outfit":outfit_id,"economy_version":economy_version,"copy_policy":copy_policy,"role_version":3,"build":build_kind,"won":won,"region":int(c.s.region)+1,"phase":c.s.phase,"deck":c.model.s.deck,"parts":c.s.equipped_parts,"gate_mods":c.model.s.gate_mods,"credits":c.s.credits,"bag_upgrades":c.s.bag_upgrades,"commands":commands.duplicate(true)})
++	check(won,"earned economy climb "+run_gun+"/"+outfit_id+"/"+str(run_seed));write_report()
++	print("ECONOMY ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/economy_roles_replay.gd
+@@ -0,0 +1,29 @@
++extends "res://tests/economy_roles_climb.gd"
++func _run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/economy_roles_20261103/"):quit(2);return
++	var folder:=OS.get_environment("QA_REPLAY_FOLDER")
++	var file:="res://../qa_runtime/economy_roles_20261103/"+folder+"/balance.json"
++	if folder=="legacy":file="res://../qa_runtime/build_roles_20261103/climb_earned/balance.json"
++	var report: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(file));var runs: Array=[]
++	for endpoint in report.endpoints:
++		if folder=="legacy" and endpoint.gun!="heavy":continue
++		run_gun=endpoint.gun;run_seed=int(endpoint.seed);outfit_id=endpoint.get("outfit","carrier");copy_policy=false
++		economy_version=int(endpoint.get("economy_version",0))
++		var c=Campaign.new();c.start(run_gun,run_seed,0,"balanced",4,outfit_id,true)
++		if economy_version==0:
++			for key in ["economy_version","intro_part_bought","gate_bag_used","gate_ammo_used"]:c.s.erase(key)
++		commands=[];metrics={};var fights:=0
++		for step in endpoint.commands:
++			var phase: String=c.s.phase
++			if not command(c,step.duplicate(true)):break
++			if step.has("turns"):check(c.model.s.turns==int(step.turns),"recorded action timing")
++			if step.has("credits"):check(c.s.credits==int(step.credits),"recorded wallet after every command")
++			if phase=="combat" and c.s.phase=="reward":fights+=1
++		check(c.s.phase=="won" and c.profile.wins==1,"single earned ending")
++		check(c.model.s.deck==endpoint.deck and c.s.equipped_parts==endpoint.parts,"same final inventory")
++		check(JSON.parse_string(JSON.stringify(c.model.s.gate_mods))==endpoint.gate_mods,"same free gate investments")
++		if endpoint.has("bag_upgrades"):check(c.s.bag_upgrades==int(endpoint.bag_upgrades) and c.s.credits==int(endpoint.credits),"same paid investments and remaining money")
++		runs.append({"folder":folder,"gun":run_gun,"outfit":outfit_id,"seed":run_seed,"economy_version":economy_version,"fights":fights,"won":c.s.phase=="won"})
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"runs":runs},"  "))
++	print("ECONOMY ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/economy_roles_ui.gd
+@@ -0,0 +1,54 @@
++extends "res://tests/fire_control_ui.gd"
++func fixture(folder: String,file: String):
++	var c=Campaign.new()
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/economy_roles_20261103/"+folder+"/"+file+".json"))),"earned economy UI fixture restores")
++	return c
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR");Input.emulate_mouse_from_touch=true
++	if not output.replace("\\","/").contains("/qa_runtime/economy_roles_20261103/"):quit(2);return
++	for extent in [Vector2i(844,390),Vector2i(1280,800)]:
++		root.size=extent
++		var c=fixture("climb_carrier_heavy","shop_heavy_17_r1_n503")
++		await mount(c);await tap("Offer1")
++		check(host.find_child("Balance",true,false).text.contains("첫 연결"),"purchase panel explains one-time offer")
++		await capture("intro_offer_%dx%d"%[extent.x,extent.y])
++		var wallet: int=c.s.credits
++		await tap("Buy")
++		check(c.s.intro_part_bought and c.s.credits==wallet-18 and c.s.parts.has("coil"),"public discounted purchase grants exact owned module")
++		var resumed=Campaign.new();check(resumed.restore() and canonical(resumed.s)==canonical(c.s),"discount consumption auto-saves")
++		c=fixture("climb_scout_burst","gate_burst_731042_r1")
++		await mount(c);await tap("city_gate_cadence");await tap("city_gate_apply")
++		var limit: int=c.model.deck_limit();wallet=c.s.credits
++		var ammo: Array=c.model.s.deck.duplicate()
++		await tap("city_gate_bag_service")
++		check(c.s.gate_bag_used and c.model.deck_limit()==limit+2 and c.s.credits==wallet-18,"paid gate input increases carry capacity and charges once")
++		check(c.model.s.deck==ammo and c.model.s.gate_mods.cadence==1,"paid reorganization keeps ammo and free upgrade")
++		var button: Button=host.find_child("city_gate_bag_service",true,false)
++		check(button.disabled,"double input prevented after paid service")
++		var viewport: Rect2=Rect2(Vector2.ZERO,Vector2(extent))
++		var rect:=Rect2(button.get_global_transform_with_canvas().origin,button.size*button.get_global_transform_with_canvas().get_scale())
++		# Scroll the existing page through the same visible control used by tap().
++		var parent: Node=button.get_parent()
++		while parent!=null:
++			if parent is ScrollContainer:parent.ensure_control_visible(button)
++			parent=parent.get_parent()
++		await settle();rect.position=button.get_global_transform_with_canvas().origin
++		check(viewport.grow(1).encloses(rect),"paid service fits actual viewport after scroll")
++		await capture("gate_storage_%dx%d"%[extent.x,extent.y])
++		check(resumed.restore() and canonical(resumed.s)==canonical(c.s) and canonical(resumed.model.s)==canonical(c.model.s),"paid expansion auto-saves all state")
++		await tap("city_gate_depart")
++		check(c.s.phase=="map" and not c.s.gate_bag_used,"departure resets visit lock")
++		c=fixture("climb_expedition_single","gate_single_931104_r1")
++		await mount(c);await tap("city_gate_cadence");await tap("city_gate_apply")
++		var main: String=Model.FocusBuild.main_round(c.model.s)
++		var count: int=c.model.s.deck.count(main);wallet=c.s.credits
++		await tap("city_gate_copy_service")
++		check(host.find_child("GateCopyOptions",true,false)!=null,"copy choice opens existing dialog shell")
++		await capture("gate_copy_%dx%d"%[extent.x,extent.y])
++		await tap("gate_copy_"+main)
++		check(c.s.gate_ammo_used and c.model.s.deck.count(main)==count+1 and c.s.credits==wallet-c.gate_copy_price(main),"public copy pays exact price and grants one owned round")
++		check(host.find_child("city_gate_bag_service",true,false).disabled and host.find_child("city_gate_copy_service",true,false).disabled,"both services lock after copy")
++		check(resumed.restore() and canonical(resumed.model.s)==canonical(c.model.s),"copied ammo automatically resumes")
++	host.free();await settle()
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++	print("ECONOMY ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/tools/run_economy_roles.ps1
+@@ -0,0 +1,20 @@
++param([ValidateSet('audit','climb','rules','replay','ui')][string]$Mode='audit',[string]$Label='analysis')
++$ErrorActionPreference='Stop'
++if($Label -notmatch '^[a-zA-Z0-9_-]+$'){throw 'Invalid label'}
++$repo=Split-Path -Parent $PSScriptRoot
++$project=(Get-ChildItem -LiteralPath $repo -Directory | Where-Object {Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')} | Select-Object -First 1).FullName
++$runtime=Join-Path $repo ('qa_runtime/economy_roles_20261103/'+$Mode+'_'+$Label)
++$env:APPDATA=Join-Path $runtime 'Roaming';$env:LOCALAPPDATA=Join-Path $runtime 'Local';$env:QA_OUTPUT_DIR=$runtime
++New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
++$stdout=Join-Path $runtime 'stdout.log';$stderr=Join-Path $runtime 'stderr.log'
++$arguments=@('--path',('"'+$project+'"'),'--script',('res://tests/economy_roles_'+$Mode+'.gd'))
++if($Mode -eq 'ui'){$arguments+=@('--rendering-method','gl_compatibility','--resolution','1280x800','--position','-2000,-2000')}else{$arguments+='--headless'}
++$process=Start-Process -FilePath 'D:/ProjectLoB/.tmp/godot-4.7/Godot_v4.7-stable_win64_console.exe' -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
++$null=$process.Handle;$deadline=[DateTime]::UtcNow.AddMinutes(30)
++while(-not $process.WaitForExit(500)){
++ $errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++ if($errors -match 'ERROR:|Parse Error' -or [DateTime]::UtcNow -gt $deadline){Stop-Process -Id $process.Id;throw "Economy roles stopped: $errors"}
++}
++$process.WaitForExit();$result=Get-Content -Raw -LiteralPath $stdout -Encoding UTF8;$errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++Write-Output ($result -split "`n" | Select-Object -Last 4)
++if($process.ExitCode -ne 0 -or $errors -match 'ERROR:' -or $result -notmatch 'ECONOMY ROLES COMPLETE.*failures=0'){throw "Economy roles failed; see $stdout $errors"}
+--- before/docs/direction/outfit-bag.md
++++ after/docs/direction/outfit-bag.md
+@@ -1,4 +1,20 @@
+ # 복장과 탄환 가방 성장
++
++**현행 경제 후속 — 2026-11-03:** 새 탄창 등반에 `economy_version=1`을 기록한다. 복장별 최소/최대·총기 탄창·보상 수입·전투/지도 규칙은 유지하고, 부족했던 구매/정비 기회를 보완한다. 사용자는 순차 개편3 실행을 승인했으며 아래 가격/횟수는 디렉터 적용값이다. [검증·실제 화면·미확인 범위](../qa/reports/economy_roles_2026-11-03.md).
++
++| 선택 | 적용과 비용 |
++|---|---|
++| 첫 연결 파츠 | 실제 보유 주력/지원 탄과 연결되는 첫 번째 추천 모듈을 **등반당 한 번 18Cr**(기존30)에 구매한다. 다른 파츠/코어 가격은30. 진열/상세에 할인과1회 제한 표시. 초반 상점을 지나쳤다면 이후 상점에서도 미사용 기회를 유지한다. |
++| 관문 수납 확장 | 무료 관문 개조를 결정한 뒤 재정비에서 **18Cr에 휴대 상한+2발**. 공방 무료 확장과 전체3회·구역별 성장 한도를 공유한다. 탄약을 지급하거나 최소 덱/탄창을 바꾸지 않는다. |
++| 관문 보유 탄 복제 | 동일 재정비에서 현재 보유한 특수탄 중 하나를 **일반12Cr/고급24Cr**에 동일 성능1장 추가한다. 상점과 같은 가격이며 위력/발열 개조·압축 성능을 그대로 복제한다. 없는 탄/기본 보급탄/임시탄을 만들거나 상한을 넘길 수 없다. |
++
++**관문 유료 정비는 수납 또는 복제 중 한 번만 선택**한다. 무료 개조·무료 파츠 교체는 별도이며, 건너뛰어 다음 상점 예산을 남길 수 있다. 다음 구역에 들어가면 방문 제한만 풀고 전체 수납3회와 첫 파츠 할인 사용은 복원하지 않는다. 새 진열·파츠 해제/분해·재개로 할인 횟수를 초기화하지 않는다.
++
++질문은 ‘작은 복장은 공간, 넉넉한 복장은 조합용 탄을 위해 돈을 쓸 수 있는가’다. 200시드×5구역 모두 공방은 생성되지만 공방 없는 경로도 존재했고, 실제 원정복 등반은 상점에 늦게 도착해 돈337Cr를 남기고 비상 보급2회를 사용했다. 단순히 휴대 상한을 올리지 않고 관문의 확정된 정비 기회에 유료 대안을 추가했다.
++
++같은 원정복·시드·경로의 보유 탄 복제 정책은281→267행동, 비상 보급2→0이었다. 정찰복은22→28 수납에54Cr를 사용했고, 운반복은 수납을 사지 않고 첫 연결 코일을 구매했다. 이는 자동 탐색의 실제 획득/합법 완료 결과이며 사람의 선택 가치나 모든 복장의 최종 균형 확정이 아니다. 종료 재화 잉여는 남아 있으며 억지 소비를 목표로 가격을 올리지 않는다.
++
++이전 경제 표식 없는 v1/v2/v3 역할 저장은 기존30Cr·기존 관문을 유지한다. 기존 진행 중인 재화/덱을 변환하지 않는다. [PLAY.cmd](../../PLAY.cmd)의 새 등반에서 적용한다. 아래 과거 손패 규칙은 역사 기록이며 탄창 본편의 수납 규칙은 [역할/성장](combat-roles-growth.md)을 따른다.
+ 
+ **탄창 본편 후속 적용(2026-11-03):** 새 등반의 [복장별 최소 덱/휴대 상한·공방 확장](combat-roles-growth.md#복장별-덱-범위와-정비)이 아래 이전 손패 성장보다 우선한다. 수납 +2씩 최대3회이며 손패 용량에 묶인 확장 조건은 제거했다. 이전 저장/훈련은 기존 규칙을 유지한다.
+ 
+--- before/docs/direction/parts-builds.md
++++ after/docs/direction/parts-builds.md
+@@ -1,4 +1,6 @@
+ # 파츠 역할과 탄환 빌드
++
++**경제 후속(2026-11-03):** 새 등반 `economy_version=1`에서 현재 탄과 맞는 첫 추천 모듈을 등반당1회18Cr에 살 수 있다. 그 외 파츠 가격30Cr와 이전 저장은 유지한다. 관문의 수납/보유 탄 복제1회 선택도 [복장·탄약 경제](outfit-bag.md)에 연결했다. 아래 v3 적용 당시의 ‘가격 유지/다음 경제 검토’는 이 후속으로 갱신한다.
+ 
+ **현행 — 탄환 역할과 획득 선택 v3(2026-11-03):** 사용자가 승인한 다음 우선순위2를 새 등반 `combat_roles_version=3`에 적용했다. 기존 v1/v2 이어하기는 계산·획득을 유지한다. 아래 수치는 디렉터 구현값이며 사람 재미/최종 균형 확정과 구분한다. [실제 획득·비교·화면 검증](../qa/reports/build_roles_2026-11-03.md).
+ 
+--- before/docs/direction/current.md
++++ after/docs/direction/current.md
+@@ -1,4 +1,6 @@
+ # ORVASK — 현재 방향과 결정 상태
++
++**최신 — 복장·탄약·정비 경제 적용(2026-11-03):** [새 등반 경제v1](outfit-bag.md)에 첫 연결 모듈18Cr/등반1회, 관문 유료 정비1회(수납+2·18Cr 또는 보유 특수탄1장·12/24Cr)를 적용했다. 복장 범위·지도·전투·수입은 유지한다. [3복장3시드·비교/저장/화면](../qa/reports/economy_roles_2026-11-03.md). 이전 경제 표식 없는 이어하기 유지. 다음은 새 등반 사람 플레이의 확장/복제/보류 선택과 희귀 전용 코어 가치 확인이며, 미실행 복장 조합·다른 경로/Android·작은 상점 보조 글자는 별도다.
+ 
+ **최신 — 역할별 파츠·보상 선택 적용(2026-11-03):** 새 등반 v3에 소이/제어 전용 코어, 경직 후속·합법 처치 전이 확장 모듈, 주력 탄 기반 파츠/상점 지원 제안과 유효 관문 선택을 연결했다. 기존 직접 배율·v2 소이 성장과 v1/v2 이어하기는 유지한다. [규칙](parts-builds.md) · [90전투·화면·회귀·한계](../qa/reports/build_roles_2026-11-03.md). 다음 우선순위3은 복장·지도·성장 전체 경제이며 사람의 빌드 체감과 Android/복장 혼합은 별도 남는다.
+ 
+--- before/docs/direction/playtest-priorities.md
++++ after/docs/direction/playtest-priorities.md
+@@ -1,4 +1,6 @@
+ # 플레이 피드백 통합 우선순위
++
++**최신 — 우선순위3 경제 적용(2026-11-03):** [복장·탄약·정비](outfit-bag.md)에 첫 연결 모듈 할인과 관문 유료 정비(수납/보유 탄 복제 중1회)를 적용했다. [기능·3복장3시드·동일 경로 비교·화면](../qa/reports/economy_roles_2026-11-03.md). 수입/지도 밀도·복장 최소/최대는 유지한다. 다음 판단은 새 등반에서 ① 확장/복제/보류 이유 ② 첫 연결 파츠의 체감 ③ 희귀 소이/제어 코어 교체 가치다. 나머지 복장/경로의 장기 균형과 실기기/작은 글자는 통과로 간주하지 않는다.
+ 
+ **최신 — 우선순위2 적용(2026-11-03):** [탄환 역할별 코어·파츠/보상 선택](parts-builds.md)을 새 등반 v3에 연결했다. 실제 획득3등반90전투 및 기존 규칙/화면 검증은 [보고서](../qa/reports/build_roles_2026-11-03.md) 참조. **다음은3번 복장·지도·성장 전체 경제**: 첫 상점의 주력 탄/대표 파츠 양자택일, 복장별 탄약 소진·정비 기회, 직접 화력 후반 비상 보급을 비교한다. 값싼 탄 선택을 자동 오답으로 만들거나 강한 배율 조합을 일괄 약화하지 않는다. 사람의 선택 체감과 Android/복장 혼합은 별도다.
+ 
+--- before/docs/direction/combat-roles-growth.md
++++ after/docs/direction/combat-roles-growth.md
+@@ -38,6 +38,8 @@
+ 불길의 기본 피해는 현행 화상 피해를 사용한다. 증폭·배율·위치 파츠의 직접 피해 배율을 불길에 중복 적용하지 않는다. 경직은 일반 이동을 늦추는 선택이며 모든 적을 멈추는 기능이 아니다. 실제 전투의 불길 영역/남은 행동, 피격 문구, 적 행동 예고, 탄 상세를 계산과 연결한다.
+ 
+ 첫 주력 보상에 소이/전격을 추가했다. 이 두 시작 묶음은 주력 2장+차단탄 1장이며 기본탄 3장을 교체한다. 연타/철갑/열방출의 기존 묶음도 유지한다. 이후 지원 후보에는 차단·소이·기폭 등을 주력 계열에 맞춰 포함하고, 주력 복사/강화 경로는 유지한다. 모든 덱에 제어탄을 의무적으로 넣게 만드는 것이 목표는 아니다.
++
++경제 후속 `economy_version=1`은 [관문 유료 정비·첫 연결 파츠](outfit-bag.md)를 별도 연결한다. 무료 관문 개조는 아래 규칙을 유지한다.
+ 
+ ## 관문 운용 성장
+ 
+--- before/.agents/skills/00-project-manager/task_tracker.md
++++ after/.agents/skills/00-project-manager/task_tracker.md
+@@ -1,4 +1,6 @@
+ # ProjectLoB 현재 작업
++
++**최신 — 우선순위3 경제 적용(2026-11-03):** [현행 수납/구매 규칙](../../../docs/direction/outfit-bag.md) · [검증/화면/한계](../../../docs/qa/reports/economy_roles_2026-11-03.md). 새 등반 첫 연결 모듈18Cr/1회, 관문 유료 정비1회(확장18Cr 또는 보유 탄 복제12/24Cr) 적용. 정찰/운반/원정3복장3시드·87전투와 원정 비복제29전투 비교, 원정 비상2→0. 이전 저장 유지. 다음은 사람의 선택 가치·전용 코어 교체 체감과 미실행 복장/경로 확인; Android/복장 혼합·상점 작은 글자는 별도다.
+ 
+ **최신 — 우선순위2 파츠·획득 적용(2026-11-03):** [v3 현행 규칙](../../../docs/direction/parts-builds.md) · [90전투·획득/조작/저장·한계](../../../docs/qa/reports/build_roles_2026-11-03.md). 주력 탄 기반 파츠 제안, 소이/제어 효과·발동 표시, 실제 동시 장착 가능한 전이 모듈을 새 등반에 연결했다. v1/v2 유지. 다음은 복장별 최소/상한과 지도·보상·정비 구매 여력을 묶은 경제 검토다. 사람 재미·작은 상점 보조 글자·Android/복장 혼합은 완료로 간주하지 않는다.
+ 
+--- before/docs/history/daily/2026-11-03.md
++++ after/docs/history/daily/2026-11-03.md
+@@ -63,3 +63,13 @@
+ - [현행 규칙](../../direction/parts-builds.md) · [결과·재현·화면·한계](../../qa/reports/build_roles_2026-11-03.md).
+ 
+ - 마지막 확인: 최종 코드의 새 등반90전투 재생7,795·화면68·통제/소유 분기442검사 실패0. 기존 v2 시드17 등반30전투도 행동/획득/결산을 그대로 재생해 호환성2,655검사 실패0.
++
++
++## 우선순위3 — 복장·탄약·정비 경제
++
++- 사용자 다음 단계 실행 지시로 200시드×5구역 시설 경로와35개 복장/총기 시작 범위를 확인했다. 지도에 시설은 있지만 시설을 피하는 경로도 있으며, 상점이 늦은 원정복에서는 돈이 남고 비상 보급이 발생했다.
++- 새 등반 경제v1: 첫 연결 모듈 등반1회18Cr, 관문 유료 정비1회(수납+2·18Cr 또는 보유 특수탄1장복제·12/24Cr)를 적용했다. 공방과 총3회 수납 공유, 무료 개조/파츠 교체는 별도. 이전 경제 표식 없는 이어하기 유지. 전투 계산/복장 수치/지도/보상 수입은 그대로다.
++- 실제 획득4등반116전투 검사8,383/실패0. 대표 운반/정찰/원정3시드87전투와 비복제 비교29전투다. 같은 원정 경로 복제 보류→사용은281→267행동, 비상2→0. 정찰은54Cr로22→28, 운반은 확장 없이 첫 코일을 구매했다. 자동 검색의 결과이며 사람 승률/최적 전략 근거가 아니다.
++- 최종 대표87전투 재생7,474·이전 경제30전투2,709·규칙229·화면72·기존 역할3,048·HUD11,536검사 실패0, 임포트 통과. 잔탄은 비상 보급을 포함한 실제 Reserve 지표로 집계했다.
++- 실제 Godot 화면에서 할인/관문 비용/보유 수량과 작은 화면 스크롤·입력/자동 저장 확인. 상점 보조 글자/실기기·다른4복장 장기 균형·사람 선택·희귀 코어/복장 혼합은 별도 미확인. APK·커밋·외부 게시 없음.
++- [결정](../../direction/outfit-bag.md) · [비교·화면·변경분·재현](../../qa/reports/economy_roles_2026-11-03.md).
+--- /dev/null
++++ after/docs/qa/reports/economy_roles_2026-11-03.md
+@@ -0,0 +1,62 @@
++# 복장·탄약·정비 경제 검증
++
++2026-11-03 · 사용자 순차 개편3 실행. [현행 결정](../../direction/outfit-bag.md) · [PLAY.cmd](../../../PLAY.cmd). 새 등반 `economy_version=1`에만 적용한다. 경제 표식이 없는 기존 역할v1/v2/v3 이어하기는 원래 가격/관문을 유지한다.
++
++## 확인한 문제와 결정
++
++200시드×5구역, 1,000개 지도에서 공방이 있는 경로는 존재했지만 공방/상점을 전혀 거치지 않는 경로도 모두 존재했다. 이는 시설 생성 누락이 아니라 경로 선택의 차이다. 현재 일반 최소4/샛길 포함 최소3전투를 바꾸거나 연결을 강제하지 않았다.
++
++기존 운반·소이 시드17의 첫 상점은30Cr였다. 탄12Cr를 먼저 사면 연결 코일30Cr를 살 수 없었다. 원정·철갑 시드931104에서는 수납36 중20발만 보유하고, 상점 접근이 늦어 돈337Cr를 남기면서 최종전 비상 보급을2회 썼다. 단순히 복장 상한/수입을 올리기보다 구매와 정비 기회를 조정했다.
++
++- 현재 주력/지원 탄과 맞는 첫 추천 **모듈**을 등반당1회18Cr에 구매. 보통30Cr 파츠/코어·탄 가격은 그대로. 구매가 성공해야 사용 처리하고 미사용 혜택은 뒤 구역에서도 유지한다. 재진열 비용/미등장 우선은 그대로다.
++- 관문 무료 개조 결정 후 **유료 정비1회**: 수납+2발18Cr 또는 보유 특수탄1장복제12/24Cr 중 선택. 무료 파츠 교체/무료 관문 개조와 별도다.
++- 수납은 공방 무료 확장과 총3회/구역 한도 공유. 탄약 지급/최소 덱/탄창 변화 없음. 복제는 보유한 일반/고급/개조 성능을 그대로 한 장 추가하며 없는 탄·기본 보급탄·임시탄·상한 초과는 불가.
++- 건너뛰기와 돈 보관을 허용한다. 성장 코어·전투 계산·적 수치·기본 수입·복장 수치·지도는 그대로다. `model.gd`, `content.gd`, `combat_roles.gd`, `route_map.gd`는 작업 전과 바이트 동일하다.
++
++## 실제 획득과 장기 자원
++
++공통: 지도v4·기존 공개 보상 정책·실제 소유/구매/정비만 사용. 모든 입력의 저장/복원을 검사했다. 검색기는 미래 패/난수를 보므로 인간 승률/체감이나 최적 경로의 근거가 아니다. 안전 경로 정책은 현재 선택지에서 상점/공방을 우선하며 지도 전체를 최적화하지 않는다.
++
++| 복장·총기·시드 | 전투 | 총 행동 | 비상 보급 | 실제 최소 잔탄 | 최종 수납 투자 | 결과 |
++|---|---:|---:|---:|---:|---|---|
++| 운반·리액터·17 |30|445|0|3|0회, 상한32|최종 관문 완료|
++| 정찰·버스트·731042 |28|313|0|9|관문3회54Cr, 22→28|최종 관문 완료|
++| 원정·단발·931104, 복제 보류 비교 |29|281|2|3|0회, 상한36|최종 관문 완료|
++| 같은 원정·단발·시드, 관문 복제 사용 |29|267|0|2|확장0, 고급 탄4장96Cr|최종 관문 완료|
++
++새로4등반116전투(검사8,383/실패0)를 계산했다. 최종 대표3구성은87전투이며 보류 비교29전투를 별도 구분한다. 원정의 복제 전후 경로와 최종 장착 파츠는 같고 덱20→24, 종료 돈337→252Cr다. 각 관문에서 이미 가진 `pierce_p2_power_c`를24Cr에 복제했다. 보상 선택/처치 비용에 따라 후속 수입도 달라지므로 종료 돈 차이를 구매비96과 혼동하지 않는다. 최종 관문 보너스 등 종료 재화는 남으며 무조건 돈을 전부 쓰게 만드는 것이 목표는 아니다.
++
++운반의 기존 동일 시드·동일 경로90전투 자료 중30전투와 비교하면, 첫 연결 코일을 구매하게 되며468→445행동/비상0→0이었다. 이후 소유 파츠에 따른 추천/획득도 달라지므로 이 차이를 코일 한 개의 순수 피해 증가로 환산하지 않는다. 정찰은 수납 한계에 가까울 때만 확장했고, 운반/원정은 공간을 사지 않았다. 복장 최소/최대35개 시작 조합 검사는 별도로 통과했다.
++
++신규 리포트의 상위 검사기가 비상 보급 탄을 빼고 `deck-discard`로 산출한 음수 잔탄은 물리적 탄약 부족 수치가 아니다. 표는 실제 `Reserve.remaining`을 기록한 `metrics.remaining`을 사용한다. 후속 생성기는 옛 값을 `raw_remaining`으로 분리했다. 원정 비교의2회 비상 보급은 숨기지 않았다.
++
++## 기능·저장·표시
++
++| 검사 | 결과 | 증거 |
++|---|---:|---|
++| 새 경제 규칙 |229 / 실패0|기존 진열 비교, 할인 가격/재구매/회수, 잘못된 저장 거부, 7복장×5총기 시작 범위, 비용·한도·무료 개조 보존, 복제/확장 공통 사용 제한|
++| 실제 UI |72 / 실패0|844×390·1280×800 할인 표시/구매/자동 저장, 관문 개조→확장/복제→저장→출발, 비용·중복 차단·스크롤|
++| 최종 대표87전투 재생 |7,474 / 실패0|운반2,638·정찰2,446·원정복제2,390. 매 명령 행동 수·잔액과 최종 탄/파츠/개조/유료 투자/단일 결산 일치|
++| 이전 경제 없는 v3 등반30전투 |2,709 / 실패0|30Cr/기존 관문 그대로, 같은 행동/잔액/최종 장비. 기본 시작 후 경제 필드를 제거해 역사 버전을 명시|
++| 기존 역할 |3,048 / 실패0|소이·제어·전이/위치 화력·v1/v2 전투/획득 계약|
++| 기존 `run_prototype_hud.ps1 -Mode ui -Fast` |11,536 / 실패0|기존 HUD 회귀|
++| Godot 임포트·변경 파일 공백 검사 |통과|로컬 Android build-tools 경고만 있으며 APK 생성하지 않음|
++
++규칙 검사 중 다른 복장의25장/손패6 상태를 정찰로 바꿔 검사한 초기 fixture와 저장 정규화 누락, 이미 본 진열을 처음 진열과 직접 비교한 harness를 수정했다. 복장 경계 fixture는 제한 안의 통제 상태이며 실제 런 중 복장 교체를 구현하거나 검증한 것이 아니다. 실제 등반3복장의 출발/획득은 위 별도 경로다. 초기 `rules_first`의 실패 로그는 보존한다.
++
++![첫 연결 모듈 가격과 구매 후 잔액](economy_roles_2026-11-03/intro_offer_1280x800.png)
++
++![작은 화면의 유료 수납 정비 결과](economy_roles_2026-11-03/gate_storage_844x390.png)
++
++![작은 화면의 실제 보유 탄 복제 선택](economy_roles_2026-11-03/gate_copy_844x390.png)
++
++실제 Godot 캡처를 열어 확인했다. 관문 페이지/복제 창은 기존 스크롤을 사용하며 가격·수량·공통1회 비용을 보여 준다. 작은 화면은 모든 정비 선택이 동시에 보이지 않으므로 스크롤이 필요하다. 상점의 작은 보조 글자와 비정수 픽셀 획 문제는 기존 미해결 항목이며 이번 기능 통과를 판독성 완성으로 간주하지 않는다.
++
++## 재현과 한계
++
++- `tools/run_economy_roles.ps1 -Mode audit|rules|climb|replay|ui -Label <분리이름>`. 모든 저장은 `qa_runtime/economy_roles_20261103/`의 독립 APPDATA/LOCALAPPDATA다. `QA_GUN`, `QA_OUTFIT`, `QA_SEED`; `QA_COPY=1`은 관문에서 보유 주력 탄 복제도 사용하는 비교 정책이다. `QA_ECONOMY=0`은 경제 표식을 제거한 비교다.
++- 재생은 `QA_REPLAY_FOLDER=climb_carrier_heavy|climb_scout_burst|climb_expedition_copy|legacy`. 원래 기록된 유료 입력을 사용하며 자동 복제 정책은 끈다.
++- [지도/시작 조합](../../../qa_runtime/economy_roles_20261103/audit_baseline/result.json) · [규칙](../../../qa_runtime/economy_roles_20261103/rules_final/result.json) · [UI](../../../qa_runtime/economy_roles_20261103/ui_final/result.json) · [원정 복제 등반](../../../qa_runtime/economy_roles_20261103/climb_expedition_copy/balance.json) · [복제/돈 원장](../../../qa_runtime/economy_roles_20261103/climb_expedition_copy/economy.json).
++- [운반 재생](../../../qa_runtime/economy_roles_20261103/replay_climb_carrier_heavy/result.json) · [정찰 재생](../../../qa_runtime/economy_roles_20261103/replay_climb_scout_burst/result.json) · [원정 재생](../../../qa_runtime/economy_roles_20261103/replay_expedition_copy/result.json) · [이전 규칙 재생](../../../qa_runtime/economy_roles_20261103/replay_legacy/result.json).
++- 작업 전980개 파일·기존 변경 상태를 `qa_runtime/economy_roles_20261103/before`에 보존했다. [이번 변경만 비교](economy_roles_2026-11-03/changes.diff) · [파일 해시](economy_roles_2026-11-03/manifest.json). 사용자 작업을 초기화하지 않았다.
++- 모든 복장×총기×경로를 완주한 결과가 아니다. 다른4복장 장기 경제·경로/위험 선택·희귀 코어 교체·사람의 확장/복제/보류 가치·Android 조작/복귀/지속 발열·재장전 복장 혼합은 미확인이다. 신규 전투 밸런스나 사람 재미를 확정하지 않는다. APK·커밋·푸시·외부 게시 없음.

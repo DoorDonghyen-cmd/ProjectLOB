@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-24",
+  "scope": "Region 3 garden elite and boss; roster 9",
+  "tool": "image_gen.imagegen",
+  "registration": "새-게임-프로젝트/assets/art/garden_leaders_20261024/registration.json",
+  "measurement": "tools/measure_garden_leaders.py",
+  "postprocessing": "None. Original generated PNGs copied unchanged. Godot uses measured non-overlapping polygon UVs, shared scale per species, nearest filtering and the existing runtime alpha cutout shader.",
+  "assets": [
+    {
+      "id": "longleg_states_v1",
+      "prompt": "Use case: stylized-concept. Production transparent PIXEL ART creature key-pose atlas for ORVASK. Input1 existing foldrunner = family anatomy and extremely broad pixel clusters. Input2 rainpouch = organic material palette and simple water organ. Input3 approved hero = cluster density and selective contours only, DO NOT COPY human costume/anatomy. Input4 actual garden combat context = rendering scale and environment only, no scenery or interface in output.\nOUTPUT: one WIDE transparent 3072x1024 canvas, THREE SEPARATED cells in a single horizontal row. Each cell is 1024x1024 and contains ONE entire creature, facing LEFT in identical side view. Broad empty transparent gutters at x980-1068 and x2004-2092; all limbs fully inside their cell. No frame borders, no lettering. Same body volume and apparent scale in all three poses, same species and anatomy. Feet baseline y900 in cells1/2; third pose is extended stride with one foot reaching baseline y900. Keep body within cell x70..954 and y140..900. Absolutely no overlap of creatures.\nThree key poses, left to right: (1) resting/neutral, hindlegs folded with front body raised slightly. (2) deep crouch preparing a leap: lowered head and body, hind knee visibly pulled high and tightly doubled, same body volume, compressed silhouette. (3) launch/long reaching step: long rear leg extends toward right, head and small forelimbs reach LEFT, body stretched horizontally, not flying up and not disappearing. Strong clearly different silhouette.\nSTYLE CRITICAL: match the very coarse enlarged pixel blocks of input1/2, broad quiet blue-gray and muted moss-green planes, grouped dark plum shadows, small desaturated rusty membrane areas. Main anatomical shapes only, chunky stepped edges, NO dense tiny pixels or thin lines, NO black perimeter. It will display around120-150px high in-game; each major surface should remain a flat mass. Organic unfamiliar caretaker escapee, not sci-fi armored soldier. NO surface texture, scales, veins, pores, wires, mechanical parts, gold accessories, gloss, white highlights, glow, blur, dither, noise, visible ground or cast shadow. Preserve full alpha transparency; do not paint a black background.\n\nSUBJECT: LONGLEG FOLDRUNNER, an elite relative of input1. Keep its small low beaked forebody and narrow flexible neck; one immense asymmetrically long folded hind leg is the defining feature, with a high broad angular knee. A second shorter rear leg supports it. One tiny amber eye. Small desaturated rust-red fold under knee, large slate-blue back. No water bag, no armored back shell. Longer angular silhouette than normal foldrunner, not simply enlarged identical normal enemy. Same creature in all three cells.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/foldrunner_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/rainpouch_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_upper_foliage_2026-10-23/stage2_1280.png"
+      ],
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-da06af83-a2a8-4125-a060-8aa81a834af8.png",
+      "asset": "새-게임-프로젝트/assets/art/garden_leaders_20261024/longleg_states_v1.png",
+      "status": "Integrated and rendered in production at 3 viewport ratios. User preference and Galaxy device validation pending.",
+      "sha256": "1e4a47eea3a8da7bcb33be445a760cd5cf32244b975124d00a821766619ebf94",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/foldrunner_v1.png": "61c0a00817f4504ca90fe02aa3322c8b07f9e3518bb0d3d1290d575f1eda3663",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/rainpouch_v1.png": "a747636c8839f47c66b820cd6780c0b8d5fc1a5e4a1235a8263a47b09cbd70df",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_upper_foliage_2026-10-23/stage2_1280.png": "e0ff2268101a1a8d47bcd46f267c32ca4440bd856f0abfab029aeba860d3da3f"
+      }
+    },
+    {
+      "id": "watermother_states_v1",
+      "prompt": "Use case: stylized-concept. Production transparent PIXEL ART creature key-pose atlas for ORVASK. Input1 existing foldrunner = family anatomy and extremely broad pixel clusters. Input2 rainpouch = organic material palette and simple water organ. Input3 approved hero = cluster density and selective contours only, DO NOT COPY human costume/anatomy. Input4 actual garden combat context = rendering scale and environment only, no scenery or interface in output.\nOUTPUT: one WIDE transparent 3072x1024 canvas, THREE SEPARATED cells in a single horizontal row. Each cell is 1024x1024 and contains ONE entire creature, facing LEFT in identical side view. Broad empty transparent gutters at x980-1068 and x2004-2092; all limbs fully inside their cell. No frame borders, no lettering. Same body volume and apparent scale in all three poses, same species and anatomy. Feet baseline y900 in cells1/2; third pose is extended stride with one foot reaching baseline y900. Keep body within cell x70..954 and y140..900. Absolutely no overlap of creatures.\nThree key poses, left to right: (1) resting/neutral, hindlegs folded with front body raised slightly. (2) deep crouch preparing a leap: lowered head and body, hind knee visibly pulled high and tightly doubled, same body volume, compressed silhouette. (3) launch/long reaching step: long rear leg extends toward right, head and small forelimbs reach LEFT, body stretched horizontally, not flying up and not disappearing. Strong clearly different silhouette.\nSTYLE CRITICAL: match the very coarse enlarged pixel blocks of input1/2, broad quiet blue-gray and muted moss-green planes, grouped dark plum shadows, small desaturated rusty membrane areas. Main anatomical shapes only, chunky stepped edges, NO dense tiny pixels or thin lines, NO black perimeter. It will display around120-150px high in-game; each major surface should remain a flat mass. Organic unfamiliar caretaker escapee, not sci-fi armored soldier. NO surface texture, scales, veins, pores, wires, mechanical parts, gold accessories, gloss, white highlights, glow, blur, dither, noise, visible ground or cast shadow. Preserve full alpha transparency; do not paint a black background.\n\nSUBJECT: WATERWAY MOTHER, a new large garden boss. Four tall angular supporting limbs, two huge folded powerful rear legs with readable knees. A small hooded forebody with a short low neck points LEFT. A single enormous rounded pear-shaped opaque gray-green WATER-CATCHING ORGAN hangs under the back between the legs. This organ dominates the silhouette, held off the ground, and has one broad pale desaturated jade plane, not shiny glass. Body and pouch are asymmetrical and distinctly organic. Tiny amber eye, muted russet tissue only inside folds. No crown, babies, wings or armor. Maintain the organ volume in all three poses: hanging in rest, tucked slightly forward in crouch, stretched backward beneath body during launch. Tall-legged and stately, not a fat generic frog. Same creature in all three cells.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/foldrunner_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/rainpouch_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_upper_foliage_2026-10-23/stage2_1280.png"
+      ],
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-07300661-f1e5-4e79-be2c-c03c3119b046.png",
+      "asset": "새-게임-프로젝트/assets/art/garden_leaders_20261024/watermother_states_v1.png",
+      "status": "Integrated and rendered in production at 3 viewport ratios. User preference and Galaxy device validation pending.",
+      "sha256": "f83807918f50c6964582c48cf686e9293fe942b086e25bf59109d2fffddaa59d",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/foldrunner_v1.png": "61c0a00817f4504ca90fe02aa3322c8b07f9e3518bb0d3d1290d575f1eda3663",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/rainpouch_v1.png": "a747636c8839f47c66b820cd6780c0b8d5fc1a5e4a1235a8263a47b09cbd70df",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_upper_foliage_2026-10-23/stage2_1280.png": "e0ff2268101a1a8d47bcd46f267c32ca4440bd856f0abfab029aeba860d3da3f"
+      }
+    }
+  ]
+}

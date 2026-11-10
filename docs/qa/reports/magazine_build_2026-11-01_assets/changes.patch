@@ -1,0 +1,680 @@
+# 덱 빌딩 보강(magazine_build_version 1~2) — 이 작업이 바꾼 부분만. 2026-11-01.
+# 기준: 작업 직전(22:00) 작업 트리 사본. 다른 작업자의 미커밋 변경은 포함하지 않는다. 줄 끝 CR 차이는 무시.
+--- a/새-게임-프로젝트/redesign/model.gd
++++ b/새-게임-프로젝트/redesign/model.gd
+@@ -10,6 +10,8 @@
+ const Gates = preload("res://redesign/gate_upgrades.gd")
+ const Reserve = preload("res://redesign/ammo_reserve.gd")
+ const MagazineTrial = preload("res://redesign/magazine_trial.gd")
++# Deck-building revision for new full-climb runs (2026-11-01). See magazine_build.gd.
++const MagazineBuild = preload("res://redesign/magazine_build.gd")
+ const VERSION := 15
+ var s: Dictionary = {}
+ # Exact forecast resolves the same rules without presentation snapshots or draws
+@@ -41,6 +43,7 @@
+ 	s.draw = s.deck.duplicate()
+ 	s.discard = []
+ 	s.magazine = []
++	if MagazineBuild.enabled(s): s.magazine_loaded = []
+ 	s.plan = []
+ 	s.plan_load_order = []
+ 	s.buff = {}
+@@ -252,6 +255,7 @@
+ 	var picked := MagazineTrial.take(s.hand + s.draw, capacity(), Content.slot_cost, Content.anchor)
+ 	if picked.selected.is_empty(): return false
+ 	s.magazine = picked.selected
++	MagazineBuild.on_load(s)
+ 	if MagazineTrial.weapons_enabled(s): s.magazine_ejected = 0
+ 	s.draw = picked.remaining
+ 	s.hand = []
+@@ -278,6 +282,7 @@
+ 	for index in positions: removed.append(s.magazine[index])
+ 	for i in range(positions.size()-1,-1,-1): s.magazine.remove_at(positions[i])
+ 	for id in removed: _discard_fired_round(str(id))
++	MagazineBuild.on_eject(s, removed)
+ 	s.magazine_ejected = int(s.get("magazine_ejected",0)) + removed.size()
+ 	# No shot/heat/time/RNG or reload effects. Terminal exhaustion alone keeps
+ 	# the existing cleanup, emergency-resupply and burning-enemy rules.
+@@ -630,7 +635,8 @@
+ 	if profile.is_empty(): profile = shot_profile(id, s)
+ 	var active_parts: Array = profile.parts
+ 	var previous_round := str(part_context.get("previous_round", ""))
+-	var relay_saved := mini(2, Content.heat_cost(id)) if active_parts.has("compression_sink") and Content.compression_link(previous_round, id) else 0
++	var relay_ready := MagazineBuild.compression_ready(s, id) if MagazineBuild.enabled(s) else Content.compression_link(previous_round, id)
++	var relay_saved := mini(MagazineBuild.COMPRESSION_SAVE, Content.heat_cost(id)) if active_parts.has("compression_sink") and relay_ready else 0
+ 	var heat_added := Content.heat_cost(id) - relay_saved
+ 	var heat_before := int(s.get("heat", 0))
+ 	var attack := Content.is_attack(id)
+@@ -691,7 +697,7 @@
+ 		part_bonus += 2
+ 		if not minimal: part_combo.append("선두 +2")
+ 		if not minimal: part_effects.append({"id": "opening", "label": "피해 +2"})
+-	if Content.revised_combat(s) and active_parts.has("afterburner") and attack and int(profile.hits) == 1 and bool(part_context.get("last_attack",false)) and (dmg_buff > 0 or factor > 1):
++	if Content.revised_combat(s) and active_parts.has("afterburner") and attack and int(profile.hits) == 1 and bool(part_context.get("last_attack",false)) and (dmg_buff > 0 or factor > 1 or (MagazineBuild.enabled(s) and MagazineBuild.afterburner_ready(s))):
+ 		part_factor = 2
+ 		if not minimal: part_combo.append("후미 결산 ×2")
+ 		if not minimal: part_effects.append({"id":"afterburner","label":"강화 단타 ×2"})
+@@ -699,7 +705,13 @@
+ 		part_bonus += 3
+ 		if not minimal: part_combo.append("후미 +3")
+ 		if not minimal: part_effects.append({"id": "afterburner", "label": "피해 +3"})
+-	if active_parts.has("triad") and bool(part_context.get("triad", false)):
++	if MagazineBuild.enabled(s):
++		var triad_bonus := MagazineBuild.triad_bonus(s, id) if active_parts.has("triad") else 0
++		if triad_bonus > 0:
++			part_bonus += triad_bonus
++			if not minimal: part_combo.append("삼중 +%d" % triad_bonus)
++			if not minimal: part_effects.append({"id": "triad", "label": "피해 +%d" % triad_bonus})
++	elif active_parts.has("triad") and bool(part_context.get("triad", false)):
+ 		part_bonus += 5
+ 		if not minimal: part_combo.append("삼중 +5")
+ 		if not minimal: part_effects.append({"id": "triad", "label": "피해 +5"})
+@@ -1271,6 +1283,12 @@
+ 	if not _whole(parsed.get("weapon_magazine_version", 0), 0, MagazineTrial.WEAPON_VERSION): return false
+ 	if int(parsed.get("weapon_magazine_version", 0)) > 0 and (not MagazineTrial.enabled(parsed) or int(parsed.get("weapon_version", 0)) != 1): return false
+ 	if parsed.has("magazine_ejected") and (not MagazineTrial.weapons_enabled(parsed) or not _whole(parsed.magazine_ejected,0,MagazineTrial.EJECT_LIMIT)): return false
++	if not _whole(parsed.get("magazine_build_version", 0), 0, MagazineBuild.VERSION): return false
++	if MagazineBuild.enabled(parsed) and not MagazineTrial.weapons_enabled(parsed): return false
++	if parsed.has("magazine_loaded"):
++		if not MagazineBuild.enabled(parsed) or not parsed.magazine_loaded is Array: return false
++		for id in parsed.magazine_loaded:
++			if not id is String or not Content.AMMO.has(id): return false
+ 	if MagazineTrial.enabled(parsed):
+ 		if (parsed.get("gun", "") != "single" and not MagazineTrial.weapons_enabled(parsed)) or not Reserve.enabled(parsed) or parsed.get("course", false) or not parsed.get("field_compression", {}) is Dictionary or not parsed.get("field_compression", {}).is_empty(): return false
+ 	Content.Merge.combat(parsed)
+--- a/새-게임-프로젝트/redesign/content.gd
++++ b/새-게임-프로젝트/redesign/content.gd
+@@ -15,6 +15,15 @@
+ 	"afterburner": {"effect":"강화 단타 결산","value":"마지막 단타 ×2","role":"증폭 후 마무리","upside":"증폭된 마지막 단타 피해 ×2","text":"탄창의 마지막 공격탄이 증폭 또는 배율 강화를 받은 1회 타격 탄이면 직접 피해 ×2. 뒤에 냉각 등 지원탄이 있어도 발동합니다. 장갑 차감 전 적용하며 기폭·전이에는 적용하지 않습니다. 재장전 +1턴."}
+ }
+ 
++# New full-climb runs (`magazine_build_version` 1) load magazines automatically, so
++# these parts read the loaded magazine instead of a hand-built order. See magazine_build.gd.
++const MAGAZINE_BUILD_PARTS := {
++	"opening": {"text":"탄창의 첫 발 직접 피해 +2. 탄창은 자동으로 채워지며, 쏘기 전에 앞 탄을 빼내면 다음 탄이 첫 발이 됩니다."},
++	"triad": {"effect":"3종 탄창","value":"+3 피해","role":"혼합 탄창","upside":"특수탄 3종 이상 탄창 · 특수 공격탄 피해 +3","text":"장전된 탄창에 서로 다른 특수 탄종이 3종 이상이면 그 탄창의 특수 공격탄 직접 피해 +3. 순서는 상관없고 빼낸 탄은 세지 않습니다. 기본탄 직접 피해 −1."},
++	"compression_sink": {"effect":"일반탄과 압축","upside":"일반 전술탄이 든 탄창의 압축탄 발열 −2","text":"장전된 탄창에 일반 전술탄(기본탄 제외)이 1장 이상 있으면 그 탄창의 압축탄 발생 열 −2(최소 0). 순서는 상관없고 빼낸 탄은 세지 않습니다. 열 한계 −1, 점유 칸·첫/마지막 발 제약은 유지합니다."},
++	"afterburner": {"upside":"증폭탄이 든 탄창의 마지막 단타 ×2","text":"탄창에 증폭·배율탄이 있으면 마지막 공격탄이 1회 타격 탄일 때 직접 피해 ×2. 증폭탄이 바로 앞에 없어도 되며, 빼낸 탄은 세지 않습니다. 장갑 차감 전 적용하며 기폭·전이에는 적용하지 않습니다. 재장전 +1턴."}
++}
++
+ static func revised_combat(state: Dictionary) -> bool:
+ 	return int(state.get("combat_revision", 0)) >= 1
+ 
+@@ -33,9 +42,11 @@
+ 	return 200 if pressure_combat(state) and reactor_enabled(state) else 100
+ 
+ static func part_spec(id: String, state: Dictionary) -> Dictionary:
+-	if not revised_combat(state) or not REVISED_PARTS.has(id): return PARTS[id]
++	var magazine_build: bool = int(state.get("magazine_build_version", 0)) >= 1 and MAGAZINE_BUILD_PARTS.has(id)
++	if (not revised_combat(state) or not REVISED_PARTS.has(id)) and not magazine_build: return PARTS[id]
+ 	var result: Dictionary = PARTS[id].duplicate()
+-	result.merge(REVISED_PARTS[id], true)
++	if revised_combat(state) and REVISED_PARTS.has(id): result.merge(REVISED_PARTS[id], true)
++	if magazine_build: result.merge(MAGAZINE_BUILD_PARTS[id], true)
+ 	return result
+ 
+ static func sequencer_bonus(state: Dictionary) -> int:
+--- a/새-게임-프로젝트/redesign/campaign.gd
++++ b/새-게임-프로젝트/redesign/campaign.gd
+@@ -59,6 +59,10 @@
+ 		s.magazine_campaign_version = 1
+ 		model.s.magazine_trial_version = Model.MagazineTrial.VERSION
+ 		model.s.weapon_magazine_version = Model.MagazineTrial.WEAPON_VERSION
++		# Deck-building revision (2026-11-01): leaner start deck and magazine-composition parts.
++		s.magazine_build_version = Model.MagazineBuild.VERSION
++		model.s.magazine_build_version = Model.MagazineBuild.VERSION
++		model.s.deck = Model.MagazineBuild.start_deck(gun)
+ 	model.begin_encounter(int(s.compressor_charges))
+ 
+ func magazine_enabled() -> bool:
+@@ -215,6 +219,8 @@
+ 		var approach = preload("res://redesign/combat_approach_trial.gd")
+ 		for role in approach.NODES:
+ 			if int(selected.id) == int(approach.NODES[role]): approach.apply_opening(model.s,role)
++		# Deck-building revision v2: tougher enemies so a fight spans several magazines.
++		Model.MagazineBuild.strengthen(model.s, "boss" if str(selected.get("kind", "")) == "boss" else "elite" if selected.get("elite", false) else "normal")
+ 		model.trial_load_magazine()
+ 
+ func sync_combat() -> void:
+@@ -767,6 +773,7 @@
+ 		model.s.draw = model.s.deck.slice(Ammo.hand_capacity(model.s))
+ 		model.s.discard = []
+ 		model.s.magazine = []
++		if Model.MagazineBuild.enabled(model.s): model.s.magazine_loaded = []
+ 		model.s.plan = []
+ 		model.s.plan_load_order = []
+ 		model.s.prepared = []
+@@ -817,6 +824,8 @@
+ 	if not _whole(state.get("sustained_version",0),0,Ammo.Sustained.VERSION): return false
+ 	if not _whole(state.get("growth_version",0),0,Model.Engines.Growth.VERSION): return false
+ 	if not _whole(state.get("magazine_campaign_version",0),0,1): return false
++	if not _whole(state.get("magazine_build_version",0),0,Model.MagazineBuild.VERSION): return false
++	if int(state.get("magazine_build_version",0))>0 and int(state.get("magazine_campaign_version",0))!=1: return false
+ 	if not _whole(state.get("inventory_version",0),0,Model.Reserve.INVENTORY_VERSION): return false
+ 	if not _whole(state.get("emergency_version",0),0,Model.Reserve.EMERGENCY_VERSION): return false
+ 	if not state.has("discovery_version"): state.discovery_version = 0
+@@ -899,6 +908,7 @@
+ 	var combat = Model.new()
+ 	if not combat.restore_state(data.combat): return false
+ 	if int(state.get("magazine_campaign_version",0))==1 and not Model.MagazineTrial.weapons_enabled(combat.s): return false
++	if state.get("magazine_build_version",0) != combat.s.get("magazine_build_version",0): return false
+ 	if state.get("combat_revision",0) != combat.s.get("combat_revision",0): return false
+ 	if state.get("sustained_version",0) != combat.s.get("sustained_version",0): return false
+ 	if state.get("growth_version",0) != combat.s.get("growth_version",0): return false
+--- a/새-게임-프로젝트/redesign/forecast.gd
++++ b/새-게임-프로젝트/redesign/forecast.gd
+@@ -70,6 +70,7 @@
+ 	key += JSON.stringify([state.get("gate_mods",{}),state.get("gate_charge",0),state.get("gate_chain",0),state.get("growth_version",0)])
+ 	key += JSON.stringify([state.get("sustained_version",0),state.get("sustained_attacks",0)])
+ 	key += JSON.stringify([state.get("magazine_trial_version",0), state.get("weapon_magazine_version",0), action_rounds])
++	key += JSON.stringify([state.get("magazine_build_version",0), state.get("magazine_loaded",[])])
+ 	cache_lock.lock()
+ 	if key == cached_key:
+ 		var cached := cached_result.duplicate(true)
+--- a/새-게임-프로젝트/redesign/equipment_screen.gd
++++ b/새-게임-프로젝트/redesign/equipment_screen.gd
+@@ -122,7 +122,8 @@
+ 
+ func _start_deck() -> Array:
+ 	if host.preparation_training: return Content.cycle_start_deck(Content.COURSE_GRANTS[0])
+-	return preload("res://redesign/ammo_reserve.gd").start_deck()
++	# New climbs use the leaner magazine-build start deck (magazine_build.gd).
++	return preload("res://redesign/magazine_build.gd").start_deck(host.selected_weapon_id)
+ 
+ func _deck_details() -> void:
+ 	var column: VBoxContainer = host._dialog("시작 탄환 · " + str(Content.GUNS[host.selected_weapon_id].name), false)
+--- a/새-게임-프로젝트/redesign/screen.gd
++++ b/새-게임-프로젝트/redesign/screen.gd
+@@ -2017,7 +2017,7 @@
+ 	elif id == "amplifier":
+ 		_label(column, "기본 피해/관통 2배 · 증폭 +4 · 충격 4m · 화상 턴당 4 · 전이 4. 타격 수와 지속 기간은 유지합니다. 주 표적 처치 시 다음 탄도 이어 쏘며, 생존 표적에서 멈춘 뒤 적이 전진합니다.", 18)
+ 	var loadout := selected_loadout_id if page == "loadout" else (str(campaign.s.loadout) if campaign != null else "balanced")
+-	var deck: Array = Model.Reserve.start_deck()
++	var deck: Array = Model.MagazineBuild.start_deck(id) if page == "loadout" or (campaign != null and Model.MagazineBuild.enabled(campaign.s)) else Model.Reserve.start_deck()
+ 	_label(column, "출발 탄환 · 기본탄 %d장" % deck.size(), 20, ACCENT)
+ 	_label(column, RunInsight.deck_summary(deck), 18)
+ 	_label(column, "기본탄으로 출발 · 첫 승리 후 코어와 특수탄 선택", 18, MUTED)
+--- a/새-게임-프로젝트/redesign/campaign_hud/combat.gd
++++ b/새-게임-프로젝트/redesign/campaign_hud/combat.gd
+@@ -8,6 +8,7 @@
+  preload("res://redesign/campaign_hud/central_view.gd")
+ ]
+ var host: Control
++var combo_label: Label
+ 
+ func _ready()->void:
+  var parent: Node=board.get_parent()
+@@ -30,6 +31,12 @@
+   var slot: Node=node("Round8").duplicate()
+   rename_slot(slot,i)
+   node("Round8").get_parent().add_child(slot)
++ combo_label=Label.new();combo_label.name="ComboLine";combo_label.mouse_filter=Control.MOUSE_FILTER_IGNORE
++ combo_label.size_flags_horizontal=Control.SIZE_EXPAND_FILL;combo_label.clip_text=true
++ combo_label.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS;combo_label.vertical_alignment=VERTICAL_ALIGNMENT_CENTER
++ combo_label.add_theme_font_size_override("font_size",16);combo_label.add_theme_color_override("font_color",Color("f3cf73"))
++ combo_label.visible=false
++ node("MagazineTitle").get_parent().add_child(combo_label)
+  hud=Hud.new(self);hud.bind()
+  node("Fire").pressed.connect(fire)
+  node("Reload").pressed.connect(reload_magazine)
+@@ -77,6 +84,14 @@
+  node("Pressure").text="등반 현황"
+  node("Other").text="시작 화면"
+  node("Reset").hide()
++ # Deck-building revision: name what the auto-loaded magazine forms (boost pairs,
++ # magazine-composition parts) beside the magazine count. Hidden while ejecting.
++ var combo_line: String=""
++ if Model.MagazineBuild.enabled(model.s) and model.s.phase=="ready" and not eject_mode:combo_line=Model.MagazineBuild.combo_line(model.s)
++ if combo_label!=null:
++  combo_label.text=combo_line
++  combo_label.visible=not combo_line.is_empty()
++  combo_label.tooltip_text=combo_line
+  hud.cycle_focus(["MenuClose","Help","Pressure","Other","EffectsVolume","CombatMotion"])
+ 
+ func show_help()->void:
+--- a/새-게임-프로젝트/tests/campaign_magazine_solver.gd
++++ b/새-게임-프로젝트/tests/campaign_magazine_solver.gd
+@@ -5,6 +5,14 @@
+ func clone(model):
+  var result=Model.new();result.s=Model.simulation_state(model.s);return result
+ func solve(model,width:=4,depth_limit:=18)->Array:
++ var path:=_solve_once(model,width,depth_limit)
++ # Magazine build v2 fights span several magazines; give shallow searches one deeper retry.
++ if path.is_empty() and width<DEEP_WIDTH:path=_solve_once(model,DEEP_WIDTH,DEEP_DEPTH)
++ return path
++
++const DEEP_WIDTH:=24
++const DEEP_DEPTH:=40
++func _solve_once(model,width:int,depth_limit:int)->Array:
+  var path:=Search.solve(model.s,maxi(32,width*8),maxi(48,depth_limit*2))
+  if path.is_empty():return solve_with_ejection(model.s,maxi(48,width*8),maxi(48,depth_limit*2))
+  return path.map(func(action):return {"action":"reload" if action=="swap" else action})
+--- /dev/null
++++ b/새-게임-프로젝트/redesign/magazine_build.gd (new)
+@@ -0,0 +1,135 @@
++extends RefCounted
++## Deck-building revision for the full-climb magazine (2026-11-01).
++## Applies only to new runs that record `magazine_build_version = 1` (campaign and
++## combat state). Older saves, training and comparison fixtures keep their rules.
++##
++## 1. Leaner start deck: 14 basics (power 2 x8, power 3 x6) instead of 20, so earned
++##    rounds show up more often in each automatically loaded magazine.
++## 2. The player no longer orders rounds, so three parts that paid off a hand-built
++##    firing order now read the loaded magazine's composition (`magazine_loaded`):
++##    triad, compression_sink and afterburner. Rejected rounds (ejection) leave it.
++## 3. combos(): a short readout of what the current magazine forms, for the HUD.
++## 4. Version 2 (user playtest 2026-11-01: "fights end before one magazine is empty"):
++##    enemy HP x2.0 normal / x1.6 elite at combat entry, so a fight spends several
++##    magazines and the deck actually cycles. Bosses keep authored HP: they already
++##    spanned 1.8-2.8 magazines, and x1.2 already made Splinter's final boss
++##    unwinnable. Moving enemies start farther by half the HP increase (x1.5 / x1.3): the extra work gets
++##    some extra time, but the net pressure still rises. Stationary shooters keep
++##    their position and shot clock. Armoured enemies (def or guard armour > 0) get
++##    half the HP increase, because percentage armour already multiplies their
++##    effective HP (a doubled 16 HP / armour 6 shield could not be beaten in time).
++##    Version 1 runs keep HP and distance.
++## Design record: docs/direction/magazine-build.md
++const Content = preload("res://redesign/content.gd")
++const VERSION := 2
++const VITALITY_VERSION := 2
++const HP_SCALE := {"normal": 2.0, "elite": 1.6, "boss": 1.0}
++## Share of the HP increase given back as starting distance for moving enemies.
++const DISTANCE_SHARE := 0.5
++## Share of the HP increase applied to armoured enemies.
++const ARMOUR_SHARE := 0.5
++const TRIAD_KINDS := 3
++const TRIAD_BONUS := 3
++const COMPRESSION_SAVE := 2
++
++static func enabled(state: Dictionary) -> bool:
++	return int(state.get("magazine_build_version", 0)) >= 1
++
++static func vitality(state: Dictionary) -> bool:
++	return int(state.get("magazine_build_version", 0)) >= VITALITY_VERSION
++
++## Scale every enemy of the encounter (active and reinforcements) once, at entry.
++static func strengthen(state: Dictionary, rank: String) -> void:
++	if not vitality(state): return
++	var factor: float = float(HP_SCALE.get(rank, HP_SCALE.normal))
++	for group in [state.get("enemies", []), state.get("reinforcements", [])]:
++		for enemy in group:
++			var hp_factor: float = hp_scale(enemy, factor)
++			enemy.max_hp = ceili(int(enemy.max_hp) * hp_factor)
++			enemy.hp = mini(int(enemy.max_hp), ceili(int(enemy.hp) * hp_factor))
++			if int(enemy.get("speed", 0)) > 0:
++				enemy.distance = ceili(int(enemy.distance) * (1.0 + (factor - 1.0) * DISTANCE_SHARE))
++
++static func hp_scale(enemy: Dictionary, factor: float) -> float:
++	var armoured: bool = maxi(int(enemy.get("def", 0)), int(enemy.get("guard_armor", 0))) > 0
++	return 1.0 + (factor - 1.0) * ARMOUR_SHARE if armoured else factor
++
++## Three-round pulse guns (Ratchet, Splinter, Reactor; MagazineTrial.WEAPON_PULSES 3)
++## burn a magazine per one or two actions; with v2 enemy HP they emptied the
++## 14-card deck and leaned on emergency resupply (v2 check: 12 / 9+ / 9 uses, and
++## Splinter's final boss became unwinnable). They start with 6 more basics.
++const PULSE_GUN_EXTRA := {"burst": [["basic_p2", 4], ["basic_p3", 2]], "scatter": [["basic_p2", 4], ["basic_p3", 2]], "heavy": [["basic_p2", 4], ["basic_p3", 2]]}
++
++static func start_deck(gun: String = "") -> Array:
++	var result: Array = []
++	for row in [["basic_p2", 8], ["basic_p3", 6]] + PULSE_GUN_EXTRA.get(gun, []):
++		for unused in range(int(row[1])): result.append(row[0])
++	result.sort()
++	return result
++
++## Rounds of the current magazine as loaded, minus ejected rounds. Fired rounds stay.
++static func loaded(state: Dictionary) -> Array:
++	return state.get("magazine_loaded", [])
++
++static func on_load(state: Dictionary) -> void:
++	if enabled(state): state.magazine_loaded = state.magazine.duplicate()
++
++static func on_eject(state: Dictionary, removed: Array) -> void:
++	if not enabled(state): return
++	var rounds: Array = loaded(state).duplicate()
++	for id in removed: rounds.erase(id)
++	state.magazine_loaded = rounds
++
++static func special_kinds(state: Dictionary) -> int:
++	var kinds: Array = []
++	for id in loaded(state):
++		var family := Content.source_id(str(id))
++		if family != "basic" and not kinds.has(family): kinds.append(family)
++	return kinds.size()
++
++static func is_special(id: String) -> bool:
++	return Content.source_id(id) != "basic"
++
++static func has_boost(state: Dictionary) -> bool:
++	return loaded(state).any(func(id): return str(Content.AMMO.get(str(id), {}).get("effect", "")) == "boost")
++
++static func has_ordinary_tactical(state: Dictionary) -> bool:
++	return loaded(state).any(func(id): return Content.AMMO.has(str(id)) and Content.grade(str(id)) == 0)
++
++# --- part conditions used by Model._shot -------------------------------------------
++
++## Triad: 3+ special kinds in the magazine -> each special attack round +3.
++static func triad_bonus(state: Dictionary, id: String) -> int:
++	return TRIAD_BONUS if is_special(id) and Content.is_attack(id) and special_kinds(state) >= TRIAD_KINDS else 0
++
++## Compression stabiliser: any ordinary tactical round in the magazine -> compressed rounds heat -2.
++static func compression_ready(state: Dictionary, id: String) -> bool:
++	return Content.is_compressed(id) and has_ordinary_tactical(state)
++
++## Afterburner: a boost round in the magazine is enough; it no longer has to sit
++## directly before the last single-hit attack.
++static func afterburner_ready(state: Dictionary) -> bool:
++	return has_boost(state)
++
++# --- HUD readout -------------------------------------------------------------------
++
++## What the current magazine forms, in firing order. At most three short items.
++static func combos(state: Dictionary) -> PackedStringArray:
++	var items: PackedStringArray = []
++	var stack: Array = state.get("magazine", [])
++	var parts: Array = Content.equipped_parts(state)
++	for i in range(stack.size()):
++		var id := str(stack[i])
++		if str(Content.AMMO.get(id, {}).get("effect", "")) != "boost": continue
++		for j in range(i + 1, stack.size()):
++			if Content.is_attack(str(stack[j])):
++				items.append("%s→%s" % [Content.AMMO[id].name, Content.AMMO[str(stack[j])].name])
++				break
++	if parts.has("triad") and special_kinds(state) >= TRIAD_KINDS: items.append("삼중 %d종 +%d" % [special_kinds(state), TRIAD_BONUS])
++	if parts.has("afterburner") and afterburner_ready(state): items.append("후미 결산 ×2")
++	if parts.has("compression_sink") and stack.any(func(id): return compression_ready(state, str(id))): items.append("압축 발열 −%d" % COMPRESSION_SAVE)
++	return items.slice(0, 3)
++
++static func combo_line(state: Dictionary) -> String:
++	var items := combos(state)
++	return "연계  " + " · ".join(items) if not items.is_empty() else ""
+--- /dev/null
++++ b/새-게임-프로젝트/tests/magazine_build_rules.gd (new)
+@@ -0,0 +1,183 @@
++extends SceneTree
++## Deck-building revision (magazine_build.gd, 2026-11-01): start deck, magazine-
++## composition parts, combo readout, save compatibility. Runs on isolated user://.
++const Campaign = preload("res://redesign/campaign.gd")
++const Model = preload("res://redesign/model.gd")
++const Content = preload("res://redesign/content.gd")
++const Build = preload("res://redesign/magazine_build.gd")
++var checks := 0
++var failures: Array = []
++
++func check(ok: bool, label: String) -> bool:
++	checks += 1
++	if not ok:
++		failures.append(label)
++		print("FAIL ", label)
++	return ok
++
++func _initialize() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"):
++		print("refusing to run outside qa_runtime user://"); quit(2); return
++	start_deck_checks()
++	part_checks()
++	save_checks()
++	print("MAGAZINE BUILD RULES checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)
++
++func new_run(magazine: bool):
++	var c = Campaign.new()
++	c.start("single", 731042, 0, "balanced", 3, "carrier", magazine)
++	return c
++
++func start_deck_checks() -> void:
++	var c = new_run(true)
++	check(Build.enabled(c.s) and Build.enabled(c.model.s), "new climb records build version on campaign and combat")
++	check(c.model.s.deck.size() == 14 and c.model.s.deck.count("basic_p2") == 8 and c.model.s.deck.count("basic_p3") == 6, "new climb starts with 14 basics (p2 x8, p3 x6)")
++	for gun in ["burst", "scatter", "heavy"]:
++		var pulse = Campaign.new(); pulse.start(gun, 731042, 0, "balanced", 3, "carrier", true)
++		check(pulse.model.s.deck.size() == 20 and pulse.model.s.deck.count("basic_p2") == 12 and pulse.model.s.deck.count("basic_p3") == 8, gun + " starts with 20 basics")
++	for gun in ["amplifier"]:
++		var other = Campaign.new(); other.start(gun, 731042, 0, "balanced", 3, "carrier", true)
++		check(other.model.s.deck.size() == 14, gun + " starts with 14 basics")
++	var legacy = new_run(false)
++	check(not Build.enabled(legacy.s) and not Build.enabled(legacy.model.s), "legacy fixture has no build version")
++	check(legacy.model.s.deck == Model.Reserve.start_deck() and legacy.model.s.deck.size() == 20, "legacy fixture keeps the 20-card deck")
++	check(c.enter(int(c.choices()[0].id)), "first combat entry")
++	check(c.model.s.phase == "ready" and c.model.s.magazine_loaded == c.model.s.magazine, "auto-loaded magazine is recorded")
++	var before: Array = c.model.s.magazine.duplicate()
++	check(c.model.eject_magazine_rounds([0]), "eject one round")
++	var expected: Array = before.duplicate(); expected.erase(before[0])
++	check(c.model.s.magazine_loaded == expected, "ejected round leaves the loaded record")
++	vitality_checks()
++
++## Version 2: enemy HP scaled once at combat entry; version 1 runs keep authored HP.
++func vitality_checks() -> void:
++	var tough = new_run(true)
++	check(int(tough.s.magazine_build_version) == Build.VERSION and Build.vitality(tough.model.s), "new climb records vitality version")
++	var plain = new_run(true)
++	plain.s.magazine_build_version = 1; plain.model.s.magazine_build_version = 1
++	var node_id := int(tough.choices()[0].id)
++	tough.enter(node_id); plain.enter(node_id)
++	var scale: float = Build.HP_SCALE.normal
++	var pairs: Array = []
++	for group in ["enemies", "reinforcements"]:
++		for i in range(plain.model.s[group].size()):
++			pairs.append([plain.model.s[group][i], tough.model.s[group][i]])
++	check(not pairs.is_empty(), "encounter has enemies")
++	for pair in pairs:
++		var hp_factor: float = Build.hp_scale(pair[0], scale)
++		check(int(pair[1].max_hp) == ceili(int(pair[0].max_hp) * hp_factor) and int(pair[1].hp) == int(pair[1].max_hp), "normal enemy HP x%.2f: %d -> %d" % [hp_factor, pair[0].max_hp, pair[1].max_hp])
++		var far: int = ceili(int(pair[0].distance) * (1.0 + (scale - 1.0) * Build.DISTANCE_SHARE)) if int(pair[0].speed) > 0 else int(pair[0].distance)
++		check(int(pair[1].distance) == far and int(pair[1].speed) == int(pair[0].speed), "moving enemy starts farther, speed unchanged: %d -> %d" % [pair[0].distance, pair[1].distance])
++	check(not Build.vitality(plain.model.s), "version 1 run keeps authored HP")
++	check(is_equal_approx(Build.hp_scale({"def": 6}, 2.0), 1.5) and is_equal_approx(Build.hp_scale({"def": 0, "guard_armor": 5}, 1.4), 1.2) and is_equal_approx(Build.hp_scale({"def": 0}, 2.0), 2.0), "armoured enemies get half the HP increase")
++	var data: Dictionary = JSON.parse_string(JSON.stringify({"campaign": tough.s, "combat": JSON.parse_string(tough.model.serialized_state()), "profile": tough.profile}))
++	var copy = Campaign.new()
++	check(copy.restore_state(data) and JSON.stringify(copy.model.s.enemies) == JSON.stringify(JSON.parse_string(JSON.stringify(tough.model.s.enemies))), "scaled HP survives save without rescaling")
++
++## A combat model in the new mode with a crafted magazine and sturdy, distant enemies.
++func rig(parts: Array, magazine: Array, build: bool = true):
++	var c = new_run(true)
++	c.enter(int(c.choices()[0].id))
++	var m = Model.new()
++	m.s = c.model.s.duplicate(true)
++	if not build:
++		# Same automatic magazine, original order-based part rules.
++		m.s.erase("magazine_build_version")
++		m.s.erase("magazine_loaded")
++	m.s.equipped_parts = parts.duplicate()
++	m.s.part = "none"
++	m.s.heat = 0
++	m.s.buff = {}
++	for e in m.s.enemies:
++		e.hp = 999; e.max_hp = 999; e.distance = 99
++	m.s.reinforcements = []
++	m.s.magazine = magazine.duplicate()
++	Build.on_load(m.s)
++	m.s.history.append({"action": "load", "detail": {}})
++	return m
++
++## Part effects of the most recent fire action. Fails loudly if none was recorded.
++func effects(m) -> Array:
++	var result: Array = []
++	for i in range(m.s.history.size() - 1, -1, -1):
++		var event: Dictionary = m.s.history[i]
++		if str(event.get("action", "")) != "fire": continue
++		check(event.get("detail", {}).has("results"), "fire record has shot results")
++		for shot in event.detail.get("results", []):
++			for effect in shot.get("part_effects", []): result.append({"id": str(shot.id), "part": str(effect.id)})
++		check(not event.detail.get("results", []).is_empty(), "fire record is not empty")
++		return result
++	check(false, "a fire action was recorded %s phase=%s mag=%s" % [m.s.equipped_parts, m.s.phase, m.s.magazine])
++	return result
++
++func has_effect(list: Array, part: String, id: String = "") -> bool:
++	return list.any(func(e): return e.part == part and (id.is_empty() or e.id == id))
++
++func part_checks() -> void:
++	var pierce := "pierce_p3"; var precise := "precise_p2"; var arc := "arc"
++	for id in [pierce, precise, arc, "charge", "basic_p2"]: check(Content.AMMO.has(id), "fixture round exists " + id)
++	# Triad: three special kinds anywhere in the magazine. Basic sits between them.
++	var m = rig(["triad"], [pierce, "basic_p2", precise, arc])
++	check(Build.special_kinds(m.s) == 3, "three special kinds counted")
++	m.fire()
++	var first: Array = effects(m)
++	check(has_effect(first, "triad", pierce), "triad pays the first special attack regardless of order")
++	check(not has_effect(first, "triad", "basic_p2"), "triad never pays basic rounds")
++	var legacy = rig(["triad"], [pierce, "basic_p2", precise, arc], false)
++	legacy.fire()
++	check(not has_effect(effects(legacy), "triad"), "legacy order rule needs three different consecutive rounds")
++	var two = rig(["triad"], [pierce, "basic_p2", precise, "basic_p3"])
++	two.fire()
++	check(not has_effect(effects(two), "triad"), "two special kinds do not form the triad")
++	var ejected = rig(["triad"], [pierce, "basic_p2", precise, arc])
++	check(ejected.eject_magazine_rounds([3]) and Build.special_kinds(ejected.s) == 2, "ejecting a kind breaks the triad")
++	ejected.fire()
++	check(not has_effect(effects(ejected), "triad"), "broken triad pays nothing")
++	# Afterburner: a boost anywhere in the magazine readies the last single-hit attack.
++	var after = rig(["afterburner"], ["charge", "basic_p2", pierce])
++	after.fire(); after.fire()
++	check(has_effect(effects(after), "afterburner", pierce), "afterburner fires with a non-adjacent boost")
++	var after_legacy = rig(["afterburner"], ["charge", "basic_p2", pierce], false)
++	after_legacy.fire(); after_legacy.fire()
++	check(not has_effect(effects(after_legacy), "afterburner"), "legacy afterburner still needs the boost on that shot")
++	# Compression stabiliser: an ordinary tactical round anywhere in the magazine.
++	var compressed := ""
++	for id in Content.AMMO:
++		if Content.is_compressed(str(id)) and Content.is_attack(str(id)) and Content.heat_cost(str(id)) >= 2 and not Content.anchor(str(id)) in ["first", "last"]:
++			compressed = str(id); break
++	check(not compressed.is_empty(), "fixture compressed round found")
++	if not compressed.is_empty():
++		var sink = rig(["compression_sink"], [compressed, "basic_p2", precise])
++		sink.fire()
++		check(has_effect(effects(sink), "compression_sink", compressed), "compressed round cooled by a later ordinary round")
++		var none = rig(["compression_sink"], [compressed, "basic_p2", "basic_p3"])
++		none.fire()
++		check(not has_effect(effects(none), "compression_sink"), "no ordinary round, no cooling")
++	# HUD readout.
++	var combo = rig(["triad"], ["charge", "basic_p2", pierce, precise, arc])
++	var line := Build.combo_line(combo.s)
++	check(line.contains("증폭탄→기본탄") and line.contains("삼중 4종"), "combo line names boost target and triad: " + line)
++	check(Build.combo_line(rig([], ["basic_p2", "basic_p3"]).s).is_empty(), "plain magazine shows no combo")
++	# Part text switches only in the new mode.
++	var c = new_run(true)
++	check(Content.part_spec("triad", c.s).text.contains("3종 이상") and Content.part_spec("triad", c.model.s).text.contains("3종 이상"), "triad text describes composition in new climbs")
++	check(Content.part_spec("triad", new_run(false).s).text.contains("직전 두 발"), "legacy triad text unchanged")
++	check(not Content.part_spec("opening", c.s).text.contains("결정합니다"), "opening text no longer promises manual order")
++
++func save_checks() -> void:
++	var c = new_run(true)
++	c.enter(int(c.choices()[0].id))
++	var data: Dictionary = JSON.parse_string(JSON.stringify({"campaign": c.s, "combat": JSON.parse_string(c.model.serialized_state()), "profile": c.profile}))
++	var copy = Campaign.new()
++	check(copy.restore_state(data.duplicate(true)), "new climb save restores")
++	check(copy.model.s.magazine_loaded == c.model.s.magazine_loaded and Build.enabled(copy.s), "loaded record and version survive restore")
++	var mismatch: Dictionary = data.duplicate(true); mismatch.campaign.erase("magazine_build_version")
++	check(not Campaign.new().restore_state(mismatch), "campaign/combat build version mismatch rejected")
++	var bad: Dictionary = data.duplicate(true); bad.combat.magazine_loaded = ["no_such_round"]
++	check(not Campaign.new().restore_state(bad), "unknown loaded round rejected")
++	var legacy = new_run(false)
++	legacy.enter(int(legacy.choices()[0].id))
++	var old: Dictionary = JSON.parse_string(JSON.stringify({"campaign": legacy.s, "combat": JSON.parse_string(legacy.model.serialized_state()), "profile": legacy.profile}))
++	var restored = Campaign.new()
++	check(restored.restore_state(old) and not Build.enabled(restored.model.s), "save without build version still restores unchanged")
+--- /dev/null
++++ b/새-게임-프로젝트/tests/magazine_build_visual.gd (new)
+@@ -0,0 +1,82 @@
++extends SceneTree
++## Magazine combo readout on the real campaign HUD (magazine_build.gd, 2026-11-01).
++## Uses earned encounters saved by `run_campaign_magazine.ps1 -Mode rules -RunTag build_density`.
++const Campaign = preload("res://redesign/campaign.gd")
++const Build = preload("res://redesign/magazine_build.gd")
++var host
++var checks := 0
++var failures: Array = []
++var output: String
++
++func _initialize() -> void: run.call_deferred()
++
++func check(ok: bool, label: String) -> bool:
++	checks += 1
++	if not ok:
++		failures.append(label); print("FAIL: " + label)
++	return ok
++
++func settle() -> void:
++	for i in range(6): await process_frame
++
++func capture(label: String) -> void:
++	await RenderingServer.frame_post_draw
++	root.get_texture().get_image().save_png(output.path_join(label + ".png"))
++
++func mount(c) -> void:
++	if is_instance_valid(host): host.free()
++	host = load("res://redesign/main.tscn").instantiate()
++	root.add_child(host)
++	host.campaign = c; host.model = c.model; host.page = "run"; host.redraw()
++	await settle()
++
++## First earned encounter (in save order) whose opening magazine forms a combo.
++func earned_with_combo(gun: String) -> String:
++	var rules := OS.get_environment("QA_RULES_DIR")
++	var files: Array = Array(DirAccess.get_files_at(rules)).filter(func(f): return f.begins_with("combat_%s_731042_r" % gun))
++	files.sort_custom(func(a, b): return int(a.get_slice("_n", 1).to_int()) < int(b.get_slice("_n", 1).to_int()))
++	for file in files:
++		var c = Campaign.new()
++		if c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(rules.path_join(file)))) and not Build.combo_line(c.model.s).is_empty():
++			return rules.path_join(file)
++	return ""
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
++	var covered := 0
++	for gun in ["single", "heavy"]:
++		# A rules folder may hold one gun only (per-gun runs); skip guns it lacks.
++		if not Array(DirAccess.get_files_at(OS.get_environment("QA_RULES_DIR"))).any(func(f): return f.begins_with("combat_%s_" % gun)): continue
++		var file := earned_with_combo(gun)
++		if not check(not file.is_empty(), "earned encounter with a combo exists for " + gun): continue
++		covered += 1
++		print("COMBO FIXTURE ", file)
++		for extent in [Vector2i(1280, 800), Vector2i(844, 390)]:
++			var c = Campaign.new()
++			check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(file))), "restore earned encounter")
++			root.size = extent; await mount(c)
++			var hud: Control = host.campaign_hud
++			if not check(is_instance_valid(hud), "campaign HUD mounted"): continue
++			var label: Label = hud.find_child("ComboLine", true, false)
++			check(label != null and label.is_visible_in_tree(), "combo line visible %s %dx%d" % [gun, extent.x, extent.y])
++			if label != null:
++				check(label.text == Build.combo_line(c.model.s), "combo line matches rules: " + label.text)
++				check(hud.get_global_rect().encloses(label.get_global_rect()), "combo line inside HUD")
++				for id in ["MagazineTitle", "SelectedDetail", "EjectToggle", "HeatLabel"]:
++					var other: Control = hud.node(id)
++					check(not other.is_visible_in_tree() or not other.get_global_rect().intersects(label.get_global_rect().grow(-1)), "combo line does not cover " + id)
++			await capture("combo_%s_%dx%d" % [gun, extent.x, extent.y])
++			hud.select_ejection(0); await settle()
++			check(label == null or not label.is_visible_in_tree(), "combo line hidden while choosing rounds to eject")
++			await capture("combo_%s_%dx%d_eject" % [gun, extent.x, extent.y])
++	check(covered > 0, "at least one gun's earned encounters were checked")
++	# A legacy-rule run never shows the readout.
++	var legacy = Campaign.new(); legacy.start("single", 731042, 0, "balanced", 3, "carrier", true)
++	legacy.s.erase("magazine_build_version"); legacy.model.s.erase("magazine_build_version"); legacy.model.s.erase("magazine_loaded")
++	legacy.enter(int(legacy.choices()[0].id))
++	root.size = Vector2i(1280, 800); await mount(legacy)
++	var none: Label = host.campaign_hud.find_child("ComboLine", true, false)
++	check(none == null or not none.is_visible_in_tree(), "no readout without the build version")
++	print("MAGAZINE BUILD VISUAL checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/magazine_build_scatter_probe.gd (new)
+@@ -0,0 +1,17 @@
++extends SceneTree
++## Wider bounded search on the saved scatter final-boss entry (diagnostic only).
++const Campaign = preload("res://redesign/campaign.gd")
++func _initialize() -> void:
++	var file := OS.get_environment("QA_STATE_FILE")
++	var c = Campaign.new()
++	if not c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(file))): print("restore failed"); quit(1); return
++	var s: Dictionary = c.model.s
++	print("deck=", s.deck.size(), " parts=", s.equipped_parts, " enemies=", s.enemies.map(func(e): return [e.name, e.hp, e.distance]), " reserve=", s.reinforcements.size())
++	var solver = preload("res://tests/campaign_magazine_solver.gd").new()
++	for pair in [[24, 40], [48, 60]]:
++		var started := Time.get_ticks_msec()
++		var path: Array = solver.solve(c.model, pair[0], pair[1])
++		print("width=", pair[0], " depth=", pair[1], " solved=", not path.is_empty(), " steps=", path.size(), " ms=", Time.get_ticks_msec() - started)
++		if not path.is_empty():
++			print("PATH ", JSON.stringify(path)); break
++	quit(0)

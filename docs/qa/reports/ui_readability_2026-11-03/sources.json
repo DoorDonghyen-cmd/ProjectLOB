@@ -1,0 +1,120 @@
+{
+  "existing_presentation_changes": [
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_card_face.gd",
+      "before_sha256": "db9d5a3a1904f46c61153d13d9e77ea8075eaf5712e747034ace77757290be10",
+      "after_sha256": "e09d6485023648b57cd42390c24369e727f59a09617cb16b08674a3f6e15e558"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_ui.gd",
+      "before_sha256": "864053fed3a40d8d99d14ee2d2d91a81b1f4551355209361ba053805e4b41dfa",
+      "after_sha256": "bddac9155a7a2fcc0e8f4430bb249500c2c6cbe12b1296d77fe3d361b05c932f"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_pixel_font.tres",
+      "before_sha256": "9326a3743d28ddbf6940e9df99d8ef7440421e3128c447c4a780dc97190b8d9c",
+      "after_sha256": "8dc3d9958cdfb7f7259b707a536e8df7408e448ab5245535b3fbc972be629d65"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/console_dialog.gd",
+      "before_sha256": "adfcf7eb576ed0d63ba0766c24ba97fdc0c6cbaf4a007462ba148584db6455eb",
+      "after_sha256": "9e7392dd67a73ca6adbf44aa32b0d5debb5af0feae82020d464ad059c6040973"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/deck_loadout.gd",
+      "before_sha256": "d33137f20da5de47d2aafbe357a8d9b48c237b4761d26302dd9d4e04dd6cc9c6",
+      "after_sha256": "4ab80c01b677d0a9f3d734ec5d0a53e34bb34c1fc34e3225238c1e36f3551b6a"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/deck_loadout.tscn",
+      "before_sha256": "c0c995c73464190c9b996427ccf592905016f9922064ca8fd71bc77f79f9137d",
+      "after_sha256": "ece6533fe2a5bddb357a324ee890f36d4b30ee542b2f0d3aed5df827ec3aa5fb"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/line_skin.gd",
+      "before_sha256": "131d337b798ac0174fceed8b3a4b608fff23669958382ee6f168f57f9d6c29b6",
+      "after_sha256": "7bd99da25003730c77ce1b7e9fad7e342130b4b769072caec2be880dc3952157"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/screen.gd",
+      "before_sha256": "8ef12864728b59e867a389f2b02fa258a6b76d5f143746b27784b0932ec0b8cb",
+      "after_sha256": "fb0070bfc560ae70eb2c051afdcea92c8e0950fb320459b21c0d1a1620ab8043"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/service_location.gd",
+      "before_sha256": "a8df7da84b15b0f871f9b174cc8a7c0b27cf0e4767c35faa23abc8b01d883657",
+      "after_sha256": "743a9ffa949f2d617416ee3256ba45c849e2c3c69715aca3c7fee7cc43972273"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/shop_screen.gd",
+      "before_sha256": "104ee7c3088bb062f0eba55f6522e7145155660db596d1d97e554e21ccb94018",
+      "after_sha256": "210ee6a0d28a20953fa068749d052b03e627417e5e3d330449dad7cd27b8db12"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/shop_screen.tscn",
+      "before_sha256": "3a7e6cb70b58d8e0c9fa69fffbcd943ce2f0900db7e005d1bfe8576a81e6e651",
+      "after_sha256": "47264a4980a8c9c63c7311bc2f9d75b541233b97fd13693c25192e25a0fa4974"
+    }
+  ],
+  "new_files": [
+    {
+      "path": "새-게임-프로젝트/redesign/ui_readability.gd",
+      "sha256": "a0abdd8068e9fe01e83e8d31bc1dc9dbb56be83606adf0128faa5588fd12344a"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/fonts/ORVASKPixelSymbols.ttf",
+      "sha256": "af5ce1b544e01258210d091e7e8883893018ee39eb5c42a047c72910057f8f49"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/fonts/ORVASKPixelSymbols.ttf.import",
+      "sha256": "03a9dd603b6c32ebc645363d61882e3777ac07b0881b54d7e78003476608fb5f"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/fonts/ORVASKPixelSymbols.txt",
+      "sha256": "2da1c0a34ed498162f2d3ac39860692cd4cb5b9808a97cb25fbb9d678257940c"
+    },
+    {
+      "path": "tools/build_ui_symbol_font.py",
+      "sha256": "8c6fd0e811d295ab62b49fbaca675987055be47b20f5afe9e907cd2cd0650a6e"
+    },
+    {
+      "path": "tools/run_ui_readability.ps1",
+      "sha256": "c6556f05d68dca92a28d3a347d4729833386a8ec2b50afe1608cecb9852022a8"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/ui_readability_ui.gd",
+      "sha256": "41b730cf0db1c006c675fc9514d69dd473d31aa655abf4f92a63d0bd8442d34b"
+    }
+  ],
+  "unchanged_rules": {
+    "model.gd": "b92d0c1c619234c2a6337ae812f39013fb68b82c389965953900940941e9ed3b",
+    "campaign.gd": "6887b316021670cb3ade4c90a5ff46ef8ce8f461c77396b18c813a41419be7d1",
+    "content.gd": "a7912cc49dc9625ade43d0f871eab866b3df6cb6575677dccad4248d40d40bb8",
+    "campaign_content.gd": "3a9216ade27505277f74547ecbdb1f9348eb2d4dc199bfbe35262ad85be8aa2a",
+    "route_map.gd": "e13408487bb565c59b059d1ec13a6d6d0283cfbb195edd396eda7a10f5bd007a"
+  },
+  "window_sizes": [
+    [
+      1280,
+      800
+    ],
+    [
+      1008,
+      630
+    ],
+    [
+      844,
+      390
+    ],
+    [
+      2340,
+      1080
+    ],
+    [
+      2160,
+      1032
+    ]
+  ],
+  "screens": 105,
+  "real_android_device": false
+}

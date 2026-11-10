@@ -1,0 +1,32 @@
+--- before/weapon_actor.gd
++++ after/weapon_actor.gd
+@@ -79,8 +79,13 @@
+ static func family(gun: String) -> String:
+ 	return str(WEAPONS.get(gun, WEAPONS.single).family)
+ 
++static func body_action(gun: String, action: String) -> String:
++	# Spike keeps its long barrel on the aiming arm. The shared pistol recoil
++	# cell lifts the wrist abruptly; weapon kick still plays around the held grip.
++	return "aim" if gun == "amplifier" and action == "recoil" else action
++
+ static func pose(gun: String, action: String) -> Dictionary:
+-	return POSES[family(gun)].get(action, POSES[family(gun)].idle)
++	return POSES[family(gun)].get(body_action(gun, action), POSES[family(gun)].idle)
+ 
+ static func weapon_transform(gun: String, action: String, recoil: float = 0.0) -> Transform2D:
+ 	var weapon: Dictionary = WEAPONS.get(gun, WEAPONS.single)
+@@ -129,12 +134,14 @@
+ 
+ static func body_for(outfit: String, gun: String, action: String = "idle") -> Texture2D:
+ 	var id := outfit if OutfitArt.BODIES.has(outfit) else "work"
++	action = body_action(gun, action)
+ 	if action == "idle" and not (id == "work" and family(gun) == "pistol"):
+ 		return OutfitArt.IDLES[id]
+ 	return OutfitArt.BODIES[id][family(gun)]
+ 
+ static func frame_for(outfit: String, gun: String, action: String) -> Dictionary:
+ 	var id := outfit if OutfitArt.FRAMES.has(outfit) else "work"
++	action = body_action(gun, action)
+ 	var frames: Dictionary = OutfitArt.FRAMES[id][family(gun)]
+ 	var frame: Dictionary = frames.get(action, frames.idle)
+ 	if id == "work" and family(gun) == "pistol":

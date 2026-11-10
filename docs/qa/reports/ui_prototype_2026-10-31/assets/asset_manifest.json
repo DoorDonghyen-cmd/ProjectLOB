@@ -1,0 +1,148 @@
+{
+  "enemies": {
+    "slum_thief": {
+      "w": 450,
+      "h": 640,
+      "scale": 0.135,
+      "foot": [
+        273,
+        636
+      ]
+    },
+    "slum_plate": {
+      "w": 488,
+      "h": 658,
+      "scale": 0.15,
+      "foot": [
+        320,
+        651
+      ]
+    },
+    "slum_battery": {
+      "w": 384,
+      "h": 642,
+      "scale": 0.14,
+      "foot": [
+        227,
+        634
+      ]
+    },
+    "slum_gunner": {
+      "w": 429,
+      "h": 591,
+      "scale": 0.15,
+      "foot": [
+        309,
+        588
+      ]
+    },
+    "slum_leader": {
+      "w": 360,
+      "h": 639,
+      "scale": 0.15,
+      "foot": [
+        192,
+        638
+      ]
+    }
+  },
+  "rounds": [
+    "basic",
+    "pierce",
+    "precise",
+    "charge",
+    "cool",
+    "arc",
+    "push",
+    "bore",
+    "shatter",
+    "detonate",
+    "chase",
+    "bypass",
+    "thermal",
+    "vent",
+    "spread",
+    "charge_heat",
+    "charge_hot",
+    "sequence",
+    "prepare",
+    "disrupt"
+  ],
+  "map": [
+    "combat",
+    "boss",
+    "shop",
+    "workshop",
+    "supply",
+    "event",
+    "bypass",
+    "elite"
+  ],
+  "kit": {
+    "tray": [
+      442,
+      141
+    ],
+    "active": [
+      261,
+      225
+    ],
+    "fire": [
+      356,
+      141
+    ],
+    "cool": [
+      355,
+      141
+    ],
+    "reload": [
+      372,
+      139
+    ],
+    "heat": [
+      365,
+      92
+    ],
+    "standby": [
+      262,
+      225
+    ],
+    "modal": [
+      365,
+      224
+    ]
+  },
+  "parts": [
+    "afterburner",
+    "arc_splitter",
+    "breaker",
+    "capacitor",
+    "chain_sink",
+    "coil",
+    "compression_sink",
+    "cooling_breech",
+    "duplex",
+    "ember_core",
+    "executioner",
+    "field_press",
+    "igniter",
+    "indexer",
+    "inferno",
+    "lens",
+    "loader",
+    "momentum",
+    "opening",
+    "ordinary_chain",
+    "overbore",
+    "radiator",
+    "rammer",
+    "reclaimer",
+    "reserve",
+    "sequencer",
+    "siege_drive",
+    "supply",
+    "thermal_drive",
+    "triad",
+    "volley_drive"
+  ]
+}

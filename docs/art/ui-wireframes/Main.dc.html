@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>승강장 정비소 상점 개선안</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+button{font-family:inherit;cursor:pointer}
+button:disabled{cursor:not-allowed}
+button:focus-visible{outline:2px solid #c9dbb0;outline-offset:3px}
+a{color:#c9dbb0}a:hover{color:#e4efd2}
+</style>
+</helmet>
+<div style="width: 1920px; height: 1080px; box-sizing: border-box; background: #11181d; color: #dfe7e4; font-family: 'IBM Plex Sans KR', 'Noto Sans KR', sans-serif; display: flex; flex-direction: column; font-variant-numeric: tabular-nums">
+
+  <header style="height: 92px; box-sizing: border-box; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2f414b; background: #151f25">
+    <div style="display: flex; align-items: center; gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 26px; font-weight: 600; color: #e9c98f">승강장·주거 통로</div>
+        <div style="font-size: 13px; color: #f08f7a">개발자 연습 · 실제 진행 저장 보존</div>
+      </div>
+      <div style="display: flex; gap: 10px">
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 16px; border: 1px solid #2f414b; border-radius: 6px; background: #18232a">
+          <span style="font-size: 12px; color: #a3b4b6">탄약</span>
+          <span style="font-size: 18px; font-weight: 600">{{ammoText}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 16px; border: 1px solid #2f414b; border-radius: 6px; background: #18232a">
+          <span style="font-size: 12px; color: #a3b4b6">탄창</span>
+          <span style="font-size: 18px; font-weight: 600">{{magText}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 16px; border: 1px solid #2f414b; border-radius: 6px; background: #18232a">
+          <span style="font-size: 12px; color: #a3b4b6">◆ 압축 충전</span>
+          <span style="font-size: 18px; font-weight: 600; color: #8fd3e0">1/2</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2px; padding: 8px 16px; border: 1px solid #2f414b; border-radius: 6px; background: #18232a">
+          <span style="font-size: 12px; color: #a3b4b6">난도</span>
+          <span style="font-size: 18px; font-weight: 600">0</span>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 24px">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 10px 20px; border: 1px solid #5b5236; border-radius: 6px; background: #1e1d17">
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="#e9c98f"></circle></svg>
+        <span style="font-size: 22px; font-weight: 700; color: #e9c98f">{{creditText}}</span>
+      </div>
+      <div style="display: flex; gap: 8px">
+        <button type="button" style="height: 48px; padding: 0 20px; border: 1px solid #2f414b; border-radius: 6px; background: #1f2c34; color: #dfe7e4; font-size: 16px">빌드</button>
+        <button type="button" style="height: 48px; padding: 0 20px; border: 1px solid #2f414b; border-radius: 6px; background: #1f2c34; color: #dfe7e4; font-size: 16px">기록</button>
+        <button type="button" style="height: 48px; padding: 0 20px; border: 1px solid #2f414b; border-radius: 6px; background: #1f2c34; color: #dfe7e4; font-size: 16px">설정</button>
+        <button type="button" style="height: 48px; padding: 0 20px; border: 1px solid #2f414b; border-radius: 6px; background: #1f2c34; color: #dfe7e4; font-size: 16px">메뉴</button>
+      </div>
+    </div>
+  </header>
+
+  <div style="flex-grow: 1; display: grid; grid-template-columns: minmax(0, 1fr) 560px; gap: 32px; padding: 28px 40px 32px; box-sizing: border-box; min-height: 0">
+
+    <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+
+      <div style="display: flex; gap: 32px; align-items: stretch; flex-grow: 1; min-height: 0">
+        <div style="width: 440px; flex-shrink: 0; border: 1px dashed #3d5560; border-radius: 8px; background: #1a252c; display: flex; align-items: center; justify-content: center; color: #a3b4b6; font-size: 15px">[NPC 일러스트]</div>
+        <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center">
+          <div style="font-size: 28px; font-weight: 600; color: #e9c98f">승강장 정비소</div>
+          <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #dfe7e4">“안쪽 문은 열어 둬요. 거기까지 난방이 가야 해서.”</p>
+          <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #a3b4b6">주소표가 묶인 코일 세 개가 수리대 위에 놓여 있다.</p>
+          <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #dfe7e4">“네 동네도 다시 닫혔어? 여기서 아무리 고쳐도 중앙에서 잠가 버리더라. 올라갈 거면 쓸 만한 걸 가져가.”</p>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <h2 style="margin: 0; font-size: 22px; font-weight: 600; color: #c9dbb0">오늘의 물건</h2>
+        <button type="button" style="height: 44px; padding: 0 18px; display: flex; align-items: center; gap: 8px; border: 1px solid #2f414b; border-radius: 6px; background: #18232a; color: #dfe7e4; font-size: 15px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9dbb0" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.6"></path><path d="M20 4v5h-5"></path></svg>
+          새 진열 · 3 Cr
+        </button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
+        <sc-for list="{{cards}}" as="c" hint-placeholder-count="3">
+          <button type="button" onClick="{{c.pick}}" aria-pressed="{{c.pressed}}" style="text-align: left; padding: 18px; border-radius: 10px; border: 2px solid {{c.border}}; background: {{c.bg}}; opacity: {{c.opacity}}; color: #dfe7e4; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box">
+            <div style="display: flex; gap: 8px; align-items: center">
+              <span style="font-size: 13px; padding: 3px 10px; border-radius: 4px; background: #2a3a43; color: #dfe7e4">{{c.type}}</span>
+              <span style="font-size: 13px; padding: 2px 10px; border-radius: 4px; border: 1px solid {{c.rarityColor}}; color: {{c.rarityColor}}">{{c.rarity}}</span>
+              <sc-if value="{{c.sold}}" hint-placeholder-val="{{false}}">
+                <span style="margin-left: auto; font-size: 13px; color: #c9dbb0">구매 완료</span>
+              </sc-if>
+            </div>
+            <div style="height: 96px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: #141d22">
+              <sc-if value="{{c.isBullet}}" hint-placeholder-val="{{true}}">
+                <svg width="80" height="80" viewBox="0 0 64 64" fill="none" stroke="#a3b4b6" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M16 50V28c0-7 4-14 6-14s6 7 6 14v22z"></path><path d="M36 50V28c0-7 4-14 6-14s6 7 6 14v22z"></path><path d="M12 50h40"></path></svg>
+              </sc-if>
+              <sc-if value="{{c.isMag}}" hint-placeholder-val="{{false}}">
+                <svg width="80" height="80" viewBox="0 0 64 64" fill="none" stroke="#a3b4b6" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><rect x="18" y="10" width="28" height="44" rx="3"></rect><path d="M24 22h16M24 30h16M24 38h16M24 46h16"></path></svg>
+              </sc-if>
+              <sc-if value="{{c.isBarrel}}" hint-placeholder-val="{{false}}">
+                <svg width="90" height="80" viewBox="0 0 72 64" fill="none" stroke="#a3b4b6" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="26" width="60" height="12" rx="2"></rect><path d="M20 22v20M30 22v20M40 22v20"></path></svg>
+              </sc-if>
+            </div>
+            <div style="font-size: 22px; font-weight: 600">{{c.name}}</div>
+            <div style="padding: 10px 14px; border-radius: 6px; background: #d9dfc9; color: #11181d; display: flex; flex-direction: column; gap: 2px">
+              <span style="font-size: 24px; font-weight: 700">{{c.main}}</span>
+              <span style="font-size: 13px; color: #3a4448">{{c.sub}}<sc-if value="{{c.hasHeat}}" hint-placeholder-val="{{false}}"><span style="color: #8a4208; font-weight: 600"> · {{c.heat}}</span></sc-if></span>
+            </div>
+            <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #2f414b; display: flex; align-items: baseline; justify-content: space-between">
+              <span style="font-size: 22px; font-weight: 700; color: #e9c98f">{{c.priceText}}</span>
+              <span style="font-size: 13px; color: #a3b4b6">{{c.foot}}</span>
+            </div>
+          </button>
+        </sc-for>
+      </div>
+
+      <section style="padding: 16px 18px; border: 1px solid #2f414b; border-radius: 10px; background: #151f25; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 16px">
+          <h2 style="margin: 0; font-size: 17px; font-weight: 600">현재 탄약 구성 <span style="color: #c9dbb0">{{ammoText}}</span></h2>
+          <span style="font-size: 14px; color: #c9dbb0">{{ammoPreviewText}}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(32, minmax(0, 1fr)); gap: 4px">
+          <sc-for list="{{ammoCells}}" as="a" hint-placeholder-count="32">
+            <div style="height: 26px; box-sizing: border-box; border-radius: 3px; border: 1px {{a.border}}; background: {{a.bg}}"></div>
+          </sc-for>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <sc-for list="{{ammoChips}}" as="t" hint-placeholder-count="2">
+            <span style="display: flex; align-items: center; gap: 8px; padding: 4px 12px; border-radius: 4px; background: #1f2c34; font-size: 14px"><span style="width: 10px; height: 10px; border-radius: 2px; background: {{t.color}}"></span>{{t.name}} <span style="color: #c9dbb0; font-weight: 600">×{{t.count}}</span></span>
+          </sc-for>
+        </div>
+      </section>
+
+      <div style="display: grid; grid-template-columns: 112px repeat(3, minmax(0, 1fr)); gap: 12px; align-items: center">
+        <div style="font-size: 15px; color: #a3b4b6">정비소 서비스</div>
+          <button type="button" style="height: 64px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #2f414b; border-radius: 6px; background: #18232a; color: #dfe7e4; font-size: 16px"><span>영구 압축</span><span style="color: #e9c98f">18 Cr</span></button>
+          <button type="button" style="height: 64px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #2f414b; border-radius: 6px; background: #18232a; color: #dfe7e4; font-size: 16px"><span>탄환 개조</span><span style="color: #e9c98f">12 Cr</span></button>
+          <button type="button" style="height: 64px; padding: 0 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #2f414b; border-radius: 6px; background: #18232a; color: #dfe7e4; font-size: 16px"><span>◆ 압축 충전 <span style="color: #a3b4b6">1/2</span></span><span style="color: #e9c98f">18 Cr</span></button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 20px; min-height: 0">
+
+      <section style="padding: 20px; border: 1px solid #2f414b; border-radius: 10px; background: #18232a; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: baseline; justify-content: space-between">
+          <h2 style="margin: 0; font-size: 20px; font-weight: 600">장착 파츠 <span style="color: #c9dbb0">{{equippedText}}</span></h2>
+          <span style="font-size: 13px; color: #a3b4b6">보관함 {{storageCount}}</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <sc-for list="{{slots}}" as="s" hint-placeholder-count="7">
+            <button type="button" onMouseEnter="{{s.show}}" onFocus="{{s.show}}" onMouseLeave="{{hideSlot}}" onBlur="{{hideSlot}}" style="height: 40px; width: 100%; box-sizing: border-box; padding: 0 14px; display: flex; align-items: center; gap: 14px; border-radius: 6px; border: 1px {{s.border}}; background: {{s.bg}}; text-align: left">
+              <span style="width: 18px; flex-shrink: 0; font-size: 13px; color: #a3b4b6">{{s.n}}</span>
+              <span style="font-size: 15px; color: {{s.nameColor}}; flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{s.name}}</span>
+              <span style="flex-shrink: 0; font-size: 14px; color: {{s.effColor}}">{{s.eff}}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="height: 58px; box-sizing: border-box; padding-top: 10px; border-top: 1px solid #2f414b; font-size: 14px; line-height: 1.5; color: #a3b4b6; overflow: hidden">
+          <sc-if value="{{slotInfoOn}}" hint-placeholder-val="{{false}}">
+            <div><span style="color: #c9dbb0; font-weight: 600">{{slotInfo.name}}</span> <span style="color: #dfe7e4">{{slotInfo.desc}}</span></div>
+          </sc-if>
+          <sc-if value="{{slotInfoOff}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; gap: 20px">
+              <span>쇄도 탄창 <span style="color: #dfe7e4">{{magCount}}칸</span></span>
+              <span>파츠 관통 보너스 <span style="color: #dfe7e4">+{{pierce}}</span></span>
+            </div>
+            <div style="font-size: 13px; color: #7f9294">슬롯에 포커스하면 효과 전문이 여기 표시된다</div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section style="flex-grow: 1; padding: 22px; border: 1px solid #2f414b; border-radius: 10px; background: #18232a; display: flex; flex-direction: column; gap: 14px; min-height: 0">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <h2 style="margin: 0; font-size: 24px; font-weight: 600">{{sel.name}}</h2>
+          <span style="font-size: 13px; padding: 3px 10px; border-radius: 4px; background: #2a3a43">{{sel.type}}</span>
+          <span style="font-size: 13px; padding: 2px 10px; border-radius: 4px; border: 1px solid {{selRarityColor}}; color: {{selRarityColor}}">{{sel.rarity}}</span>
+        </div>
+        <div style="display: flex; gap: 14px; font-size: 16px">
+          <span style="font-weight: 600">{{sel.main}}</span>
+          <span style="color: #a3b4b6">{{sel.line1}}</span>
+          <sc-if value="{{selHasHeat}}" hint-placeholder-val="{{true}}">
+            <span style="color: #f0a35e">{{sel.heat}}</span>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{selNotSold}}" hint-placeholder-val="{{true}}">
+          <div style="padding: 14px 16px; border-radius: 8px; background: #141d22; display: flex; flex-direction: column; gap: 8px">
+            <div style="font-size: 13px; color: #a3b4b6">구매 시 변화</div>
+            <sc-for list="{{deltas}}" as="d" hint-placeholder-count="2">
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 16px">
+                <span style="color: #a3b4b6; flex-grow: 1">{{d.label}}</span>
+                <span style="color: #a3b4b6">{{d.from}}</span>
+                <span style="color: #a3b4b6">→</span>
+                <span style="color: #c9dbb0; font-weight: 600">{{d.to}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{selSold}}" hint-placeholder-val="{{false}}">
+          <div style="padding: 14px 16px; border-radius: 8px; background: #141d22; font-size: 15px; color: #a3b4b6">이미 구매한 물건이다.</div>
+        </sc-if>
+
+        <sc-if value="{{storageWarn}}" hint-placeholder-val="{{false}}">
+          <div style="font-size: 14px; color: #f0a35e">슬롯이 가득 차 있어 구매 시 보관함으로 이동한다.</div>
+        </sc-if>
+
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+          <sc-if value="{{showBulletBuy}}" hint-placeholder-val="{{true}}">
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+              <button type="button" onClick="{{buyReplace}}" disabled="{{noAfford}}" style="height: 56px; border-radius: 6px; border: 1px solid {{ctaBorder}}; background: #1f2c34; color: {{ctaAltColor}}; font-size: 16px; font-weight: 600">기본탄과 교체</button>
+              <button type="button" onClick="{{buyAdd}}" disabled="{{noAfford}}" style="height: 56px; border-radius: 6px; border: none; background: {{ctaBg}}; color: {{ctaColor}}; font-size: 16px; font-weight: 600">한 장 추가</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{showPartBuy}}" hint-placeholder-val="{{false}}">
+            <button type="button" onClick="{{buyPart}}" disabled="{{noAfford}}" style="height: 56px; border-radius: 6px; border: none; background: {{ctaBg}}; color: {{ctaColor}}; font-size: 17px; font-weight: 600">구매 후 장착</button>
+          </sc-if>
+          <div style="display: flex; justify-content: space-between; font-size: 14px; color: #a3b4b6">
+            <span>{{balanceText}}</span>
+            <a href="#rules" style="font-size: 14px">상세 규칙</a>
+          </div>
+        </div>
+      </section>
+
+      <button type="button" style="height: 64px; border-radius: 8px; border: 2px solid #c9dbb0; background: transparent; color: #c9dbb0; font-size: 19px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px">
+        맵으로 계속
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9dbb0" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"samplePartCount":{"editor":"int","default":0,"min":0,"max":7,"section":"테스트"},"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  items() {
+    return [
+      { id: 'rapid', kind: 'bullet', type: '탄환', name: '연타탄', rarity: '일반', price: 12, main: '피해 1×2', sub: '같은 적 연타', line1: '같은 적 연타', heat: '발열 +3', foot: '동일 성능 0장 보유', desc: '피해 1×2 · 같은 적 연타 · 발열 +3' },
+      { id: 'ext', kind: 'mag', type: '파츠', name: '확장 탄창', rarity: '고급', price: 30, main: '탄창 +1칸', sub: '탄창 칸 수 증가', line1: '탄창 칸 수 증가', heat: '', foot: '동일 파츠 0개 보유', desc: '쇄도 탄창 칸 수 +1' },
+      { id: 'barrel', kind: 'barrel', type: '파츠', name: '가속 총열', rarity: '일반', price: 30, main: '관통 +2', sub: '관통탄 강화', line1: '관통 수치 증가', heat: '', foot: '동일 파츠 0개 보유', desc: '관통 +2 · 관통탄 강화' }
+    ];
+  }
+  renderVals() {
+    const s = Object.assign({ selected: 'rapid', credits: 75, equipped: [], sold: {}, ammo: 20, mag: 4, pierce: 0 }, this.state || {});
+    const pre = Math.max(0, Math.min(7, this.props.samplePartCount ?? 0));
+    const sample = [];
+    for (let q = 0; q < pre; q++) sample.push({ name: '[샘플 파츠 ' + (q + 1) + ']', main: '[효과]', desc: '[효과 설명 전문]' });
+    const equipped = sample.concat(s.equipped);
+    const list = this.items();
+    const sel = list.find((i) => i.id === s.selected) || list[0];
+    const selSold = !!s.sold[sel.id];
+    const isBullet = sel.kind === 'bullet';
+    const afford = s.credits >= sel.price;
+    const comp = Object.assign({ basic: 20, rapid: 0 }, s.comp || {});
+    const ammoTypes = [{ id: 'basic', name: '기본탄', color: '#7d9aa3' }, { id: 'rapid', name: '연타탄', color: '#e0a25c' }];
+
+    const cards = list.map((i) => {
+      const on = i.id === sel.id;
+      const sold = !!s.sold[i.id];
+      return Object.assign({}, i, {
+        isBullet: i.kind === 'bullet', isMag: i.kind === 'mag', isBarrel: i.kind === 'barrel',
+        sold: sold, hasHeat: !!i.heat,
+        border: on ? '#c9dbb0' : '#2f414b',
+        bg: on ? '#22323b' : '#18232a',
+        opacity: sold ? '0.55' : '1',
+        rarityColor: i.rarity === '고급' ? '#8fb8e6' : '#a3b4b6',
+        pressed: on ? 'true' : 'false',
+        priceText: i.price + ' Cr',
+        pick: () => this.setState({ selected: i.id })
+      });
+    });
+
+    const showPreview = !isBullet && !selSold && equipped.length < 7;
+    const slots = [];
+    for (let k = 0; k < 7; k++) {
+      const e = equipped[k];
+      const show = () => this.setState({ hoverSlot: k });
+      if (e) {
+        slots.push({ n: k + 1, name: e.name, eff: e.main, border: 'solid #3d5560', bg: '#1f2c34', nameColor: '#dfe7e4', effColor: '#c9dbb0', show: show, info: { name: e.name, desc: e.desc } });
+      } else if (showPreview && k === equipped.length) {
+        slots.push({ n: k + 1, name: sel.name + ' · 구매 시 장착', eff: sel.main, border: 'dashed #c9dbb0', bg: '#1b2924', nameColor: '#c9dbb0', effColor: '#c9dbb0', show: show, info: { name: sel.name + ' (구매 시)', desc: sel.desc } });
+      } else {
+        slots.push({ n: k + 1, name: '빈 슬롯', eff: '', border: 'solid #2a3940', bg: '#151f25', nameColor: '#7f9294', effColor: '#7f9294', show: show, info: null });
+      }
+    }
+    const hovered = (s.hoverSlot !== undefined && s.hoverSlot !== null && slots[s.hoverSlot]) ? slots[s.hoverSlot].info : null;
+
+    const n = equipped.length;
+    let deltas = [];
+    if (sel.kind === 'bullet') {
+      deltas = [
+        { label: '한 장 추가 시 탄약', from: s.ammo + '장', to: (s.ammo + 1) + '장' },
+        { label: '기본탄과 교체 시 탄약', from: s.ammo + '장', to: s.ammo + '장 유지' }
+      ];
+    } else if (sel.kind === 'mag') {
+      deltas = [
+        { label: '쇄도 탄창', from: s.mag + '칸', to: (s.mag + 1) + '칸' },
+        { label: '장착 파츠', from: n + '/7', to: Math.min(n + 1, 7) + '/7' }
+      ];
+    } else {
+      deltas = [
+        { label: '파츠 관통 보너스', from: '+' + s.pierce, to: '+' + (s.pierce + 2) },
+        { label: '장착 파츠', from: n + '/7', to: Math.min(n + 1, 7) + '/7' }
+      ];
+    }
+
+    const markSold = () => Object.assign({}, s.sold, { [sel.id]: true });
+    const buyPart = () => {
+      if (!afford || selSold) return;
+      const patch = { credits: s.credits - sel.price, sold: markSold() };
+      if (equipped.length < 7) patch.equipped = s.equipped.concat([{ name: sel.name, main: sel.main, desc: sel.desc }]);
+      else patch.storage = (s.storage || 0) + 1;
+      if (sel.kind === 'mag') patch.mag = s.mag + 1;
+      if (sel.kind === 'barrel') patch.pierce = s.pierce + 2;
+      this.setState(patch);
+    };
+    const buyAdd = () => {
+      if (!afford || selSold) return;
+      this.setState({ credits: s.credits - sel.price, sold: markSold(), ammo: s.ammo + 1, comp: { basic: comp.basic, rapid: comp.rapid + 1 } });
+    };
+    const buyReplace = () => {
+      if (!afford || selSold) return;
+      this.setState({ credits: s.credits - sel.price, sold: markSold(), comp: { basic: Math.max(0, comp.basic - 1), rapid: comp.rapid + 1 } });
+    };
+
+    const total = comp.basic + comp.rapid;
+    const ammoCells = [];
+    ammoTypes.forEach((t) => { for (let q = 0; q < comp[t.id]; q++) ammoCells.push({ border: 'solid ' + t.color, bg: t.color }); });
+    const bulletPreview = isBullet && !selSold && total < 32;
+    while (ammoCells.length < 32) {
+      if (bulletPreview && ammoCells.length === total) ammoCells.push({ border: 'dashed #c9dbb0', bg: '#1b2924' });
+      else ammoCells.push({ border: 'solid #2a3940', bg: '#151f25' });
+    }
+    const ammoChips = ammoTypes.filter((t) => comp[t.id] > 0).map((t) => ({ name: t.name, color: t.color, count: comp[t.id] }));
+    const ammoPreviewText = bulletPreview ? '추가 시 ' + (total + 1) + '/32 · 교체 시 기본탄 ' + (comp.basic - 1) + ' + 연타탄 ' + (comp.rapid + 1) : '';
+
+    let balanceText = '구매 후 잔액 ' + (s.credits - sel.price) + ' Cr';
+    if (selSold) balanceText = '보유 ' + s.credits + ' Cr';
+    else if (!afford) balanceText = (sel.price - s.credits) + ' Cr 부족';
+
+    return {
+      cards: cards, slots: slots, deltas: deltas, sel: sel, ammoCells: ammoCells, ammoChips: ammoChips, ammoPreviewText: ammoPreviewText,
+      selRarityColor: sel.rarity === '고급' ? '#8fb8e6' : '#a3b4b6',
+      selHasHeat: !!sel.heat, selSold: selSold, selNotSold: !selSold,
+      showBulletBuy: isBullet && !selSold, showPartBuy: !isBullet && !selSold,
+      storageWarn: !isBullet && !selSold && equipped.length >= 7,
+      hideSlot: () => this.setState({ hoverSlot: null }),
+      slotInfo: hovered || { name: '', desc: '' }, slotInfoOn: !!hovered, slotInfoOff: !hovered,
+      storageCount: s.storage || 0,
+      noAfford: !afford,
+      ctaBg: afford ? '#c9dbb0' : '#2a3a43', ctaColor: afford ? '#11181d' : '#7f9294',
+      ctaBorder: afford ? '#c9dbb0' : '#2f414b', ctaAltColor: afford ? '#c9dbb0' : '#7f9294',
+      balanceText: balanceText,
+      buyPart: buyPart, buyAdd: buyAdd, buyReplace: buyReplace,
+      creditText: s.credits + ' Cr', ammoText: s.ammo + '/32', magText: '쇄도 · ' + s.mag + '칸',
+      magCount: s.mag, pierce: s.pierce, equippedText: n + '/7'
+    };
+  }
+}
+</script>
+</body>
+</html>

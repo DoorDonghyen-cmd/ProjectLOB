@@ -1,0 +1,732 @@
+{
+  "actual": {
+    "ammo_cycle": 1.0,
+    "bag_upgrades": 0.0,
+    "bag_version": 2.0,
+    "buff": {},
+    "combat_revision": 2.0,
+    "combat_roles_version": 3.0,
+    "course": false,
+    "deck": [
+      "bore",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2"
+    ],
+    "deployed": 3.0,
+    "discard": [
+      "bore"
+    ],
+    "draw": [
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2"
+    ],
+    "emergency_uses": 0.0,
+    "emergency_version": 1.0,
+    "encounter_total": 3.0,
+    "enemies": [
+      {
+        "burn": 0.0,
+        "def": 0.0,
+        "distance": 1000,
+        "hp": 1000.0,
+        "kind": "runner",
+        "lane": 0.0,
+        "max_hp": 10000.0,
+        "name": "운반 사족체",
+        "speed": 0.0
+      },
+      {
+        "burn": 0,
+        "def": 0.0,
+        "distance": 1003,
+        "hp": 996,
+        "kind": "runner",
+        "lane": 1.0,
+        "max_hp": 10000.0,
+        "name": "운반 사족체",
+        "speed": 0.0
+      },
+      {
+        "burn": 4,
+        "def": 0.0,
+        "distance": 1006,
+        "hp": 995,
+        "kind": "runner",
+        "lane": 2.0,
+        "max_hp": 10000.0,
+        "name": "운반 사족체",
+        "speed": 0.0
+      }
+    ],
+    "engine": {
+      "gains": [],
+      "hits": 0.0,
+      "hot": false,
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "settled": false,
+      "siege": false
+    },
+    "equipped_parts": [
+      "inferno"
+    ],
+    "exchange_left": 0.0,
+    "field_compression": {},
+    "field_compression_left": 1.0,
+    "fire_control_version": 1.0,
+    "fire_heat_trial": {
+      "damage": false,
+      "input": "range",
+      "reload": "none",
+      "rounds": 1.0,
+      "version": 1.0
+    },
+    "fire_zones": [
+      {
+        "center": 1006,
+        "damage": 4,
+        "left": 3,
+        "radius": 3
+      }
+    ],
+    "floor": 0.0,
+    "focus_build_version": 1.0,
+    "gate_chain": 0.0,
+    "gate_charge": 0,
+    "gate_mods": {},
+    "growth_version": 1.0,
+    "gun": "scatter",
+    "hand": [],
+    "heat": 4,
+    "history": [
+      {
+        "action": "encounter",
+        "detail": {
+          "index": 0.0
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      },
+      {
+        "action": "encounter",
+        "detail": {
+          "index": 0.0
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      },
+      {
+        "action": "encounter",
+        "detail": {
+          "index": 0.0
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      },
+      {
+        "action": "load",
+        "detail": {
+          "load_order": [
+            "bore"
+          ],
+          "whole_magazine": true
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      },
+      {
+        "action": "fire",
+        "detail": {
+          "advance_events": [
+            {
+              "burn": 0,
+              "damage": 4,
+              "ground": true,
+              "hp": 996,
+              "kind": "burn",
+              "target": 1,
+              "turn": 0
+            },
+            {
+              "burn": 4,
+              "damage": 4,
+              "ground": true,
+              "hp": 995,
+              "kind": "burn",
+              "target": 2,
+              "turn": 0
+            },
+            {
+              "kind": "fire_zone_tick",
+              "turn": 0,
+              "zones": [
+                {
+                  "center": 1006,
+                  "damage": 4,
+                  "left": 3,
+                  "radius": 3
+                }
+              ]
+            },
+            {
+              "from": 1000,
+              "kind": "move",
+              "slow_left": 0,
+              "target": 0,
+              "to": 1000,
+              "turn": 0
+            },
+            {
+              "from": 1003,
+              "kind": "move",
+              "slow_left": 0,
+              "target": 1,
+              "to": 1003,
+              "turn": 0
+            },
+            {
+              "from": 1006,
+              "kind": "move",
+              "slow_left": 0,
+              "target": 2,
+              "to": 1006,
+              "turn": 0
+            }
+          ],
+          "deployments": [],
+          "firing_enemies": [
+            {
+              "burn": 0.0,
+              "def": 0.0,
+              "distance": 1000,
+              "hp": 1000.0,
+              "kind": "runner",
+              "lane": 0.0,
+              "max_hp": 10000.0,
+              "name": "운반 사족체",
+              "speed": 0.0
+            },
+            {
+              "burn": 0,
+              "def": 0.0,
+              "distance": 1003,
+              "hp": 996,
+              "kind": "runner",
+              "lane": 1.0,
+              "max_hp": 10000.0,
+              "name": "운반 사족체",
+              "speed": 0.0
+            },
+            {
+              "burn": 4,
+              "def": 0.0,
+              "distance": 1006,
+              "hp": 995,
+              "kind": "runner",
+              "lane": 2.0,
+              "max_hp": 10000.0,
+              "name": "운반 사족체",
+              "speed": 0.0
+            }
+          ],
+          "firing_projectiles": [],
+          "firing_reinforcements": [],
+          "forced_cooling": {},
+          "forced_reload": {},
+          "heat_peak": 4,
+          "overdrive": false,
+          "overheated": false,
+          "phase": "ready",
+          "results": [
+            {
+              "armor": 0,
+              "armor_removed": 0,
+              "barrier": 0,
+              "barrier_before": 0,
+              "barrier_removed": 0,
+              "blocked_hits": 0,
+              "boost_factor_granted": 1,
+              "boost_granted": 0,
+              "boost_heat": 0,
+              "boost_heat_paid": 0,
+              "boost_hot": false,
+              "boost_hot_failed": false,
+              "boost_replaced": false,
+              "boost_rounds": 0,
+              "burn": 5,
+              "burn_added": 5,
+              "burn_tick": 4,
+              "chain_cooled": 0,
+              "chase_bonus": 0,
+              "combo": [
+                "열 +4",
+                "화상 5 · 턴당 4"
+              ],
+              "cooled": 0,
+              "damage": 1,
+              "detonation": 0,
+              "engine_id": "",
+              "engine_percent": 100,
+              "fire_zones": [
+                {
+                  "center": 1006,
+                  "damage": 4,
+                  "left": 4,
+                  "radius": 3
+                }
+              ],
+              "focus_after": 0,
+              "focus_before": 0,
+              "focus_damage": 0,
+              "focus_triggers": 0,
+              "gate_chain_earned": false,
+              "gate_charge": 0,
+              "gate_charge_after": 0,
+              "gate_next_percent": 100,
+              "gate_percent": 100,
+              "heat_added": 4,
+              "heat_after": 4,
+              "heat_before": 0,
+              "hit": true,
+              "hits": 1,
+              "hp": 999,
+              "id": "bore",
+              "interrupted": 0,
+              "kill_cooled": 0,
+              "magazine_ordinal": 1,
+              "math": {
+                "armor": 0,
+                "armor_before": 0,
+                "armor_percent": 0,
+                "barrier_before": 0,
+                "barrier_removed": 0,
+                "base": 1,
+                "blocked_hits": 0,
+                "boost": 0,
+                "chase": 0,
+                "engine_percent": 100,
+                "factor": 1,
+                "first_hit": 1,
+                "focus": 0,
+                "gate_charge": 0,
+                "gate_percent": 100,
+                "heat_percent": 100,
+                "hits": 1,
+                "hp_before": 1000,
+                "overdrive_percent": 100,
+                "part_bonus": 0,
+                "part_factor": 1,
+                "per_hit": 1,
+                "raw": 1,
+                "sequence": 0,
+                "subtotal": 1,
+                "thermal": 0,
+                "vent": 0,
+                "weakness": 0
+              },
+              "ordinary_bonus": 0,
+              "overdrive": false,
+              "overdrive_percent": 100,
+              "overheated": false,
+              "part_effects": [
+                {
+                  "id": "inferno",
+                  "label": "불길 4행동 · 앞뒤 3m"
+                }
+              ],
+              "part_factor": 1,
+              "pen": 1,
+              "pending_boost": {},
+              "position_label": "",
+              "prepared_rounds": [],
+              "push": 0,
+              "relay_damage": 0,
+              "relay_hits": 0,
+              "relay_saved": 0,
+              "secondary": [],
+              "sequence_bonus": 0,
+              "shock_damage": 0,
+              "slow_left": 0,
+              "slow_used": false,
+              "slowed": 0,
+              "stance_def": 0,
+              "sustained_active": true,
+              "sustained_after": 1,
+              "sustained_before": 0,
+              "sustained_heat": 0,
+              "target": 2,
+              "text": "소이탄 → 운반 사족체: 1피해 · 열 +4 / 화상 5 · 턴당 4",
+              "thermal_bonus": 0,
+              "transferred": 0,
+              "vent_bonus": 0,
+              "vented": 0
+            }
+          ]
+        },
+        "floor": 0.0,
+        "turn": 1.0
+      }
+    ],
+    "inventory_version": 1.0,
+    "legacy_reload_penalty": 0.0,
+    "loss_reason": "",
+    "magazine": [],
+    "magazine_build_version": 2.0,
+    "magazine_ejected": 0.0,
+    "magazine_loaded": [
+      "bore"
+    ],
+    "magazine_trial_version": 1.0,
+    "message": "소이탄 → 운반 사족체: 1피해 · 열 +4 / 화상 5 · 턴당 4",
+    "outfit": "carrier",
+    "part": "none",
+    "phase": "ready",
+    "plan": [],
+    "plan_load_order": [],
+    "prepared": [],
+    "previous_kill": false,
+    "projectile_serial": 0.0,
+    "projectiles": [],
+    "push_left": 2.0,
+    "reinforcements": [],
+    "reloads": 0.0,
+    "reserve_version": 1.0,
+    "reward_taken": false,
+    "rng": 1,
+    "rng_state": "6257067436470635224",
+    "seed": "17",
+    "shots": 1.0,
+    "supply": 0.0,
+    "sustained_attacks": 1,
+    "sustained_version": 1.0,
+    "target_rng_state": "-2187087875606112785",
+    "turns": 1.0,
+    "version": 15.0,
+    "wave": 1.0,
+    "weapon_magazine_version": 1.0,
+    "weapon_version": 1.0
+  },
+  "before": {
+    "ammo_cycle": 1.0,
+    "bag_upgrades": 0.0,
+    "bag_version": 2.0,
+    "buff": {},
+    "combat_revision": 2.0,
+    "combat_roles_version": 3.0,
+    "course": false,
+    "deck": [
+      "bore",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2"
+    ],
+    "deployed": 3.0,
+    "discard": [],
+    "draw": [
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2"
+    ],
+    "emergency_uses": 0.0,
+    "emergency_version": 1.0,
+    "encounter_total": 3.0,
+    "enemies": [
+      {
+        "burn": 0.0,
+        "def": 0.0,
+        "distance": 1000.0,
+        "hp": 1000.0,
+        "kind": "runner",
+        "lane": 0.0,
+        "max_hp": 10000.0,
+        "name": "운반 사족체",
+        "speed": 0.0
+      },
+      {
+        "burn": 0.0,
+        "def": 0.0,
+        "distance": 1003.0,
+        "hp": 1000.0,
+        "kind": "runner",
+        "lane": 1.0,
+        "max_hp": 10000.0,
+        "name": "운반 사족체",
+        "speed": 0.0
+      },
+      {
+        "burn": 0.0,
+        "def": 0.0,
+        "distance": 1006.0,
+        "hp": 1000.0,
+        "kind": "runner",
+        "lane": 2.0,
+        "max_hp": 10000.0,
+        "name": "운반 사족체",
+        "speed": 0.0
+      }
+    ],
+    "engine": {
+      "gains": [],
+      "hits": 0.0,
+      "hot": false,
+      "levels": {
+        "thermal_drive": 8.0
+      },
+      "settled": false,
+      "siege": false
+    },
+    "equipped_parts": [
+      "inferno"
+    ],
+    "exchange_left": 0.0,
+    "field_compression": {},
+    "field_compression_left": 1.0,
+    "fire_control_version": 1.0,
+    "fire_heat_trial": {
+      "damage": false,
+      "input": "range",
+      "reload": "none",
+      "rounds": 1.0,
+      "version": 1.0
+    },
+    "fire_zones": [],
+    "floor": 0.0,
+    "focus_build_version": 1.0,
+    "gate_chain": 0.0,
+    "gate_charge": 0.0,
+    "gate_mods": {},
+    "growth_version": 1.0,
+    "gun": "scatter",
+    "hand": [],
+    "heat": 0.0,
+    "history": [
+      {
+        "action": "encounter",
+        "detail": {
+          "index": 0.0
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      },
+      {
+        "action": "encounter",
+        "detail": {
+          "index": 0.0
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      },
+      {
+        "action": "encounter",
+        "detail": {
+          "index": 0.0
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      },
+      {
+        "action": "load",
+        "detail": {
+          "load_order": [
+            "bore"
+          ],
+          "whole_magazine": true
+        },
+        "floor": 0.0,
+        "turn": 0.0
+      }
+    ],
+    "inventory_version": 1.0,
+    "legacy_reload_penalty": 0.0,
+    "loss_reason": "",
+    "magazine": [
+      "bore"
+    ],
+    "magazine_build_version": 2.0,
+    "magazine_ejected": 0.0,
+    "magazine_loaded": [
+      "bore"
+    ],
+    "magazine_trial_version": 1.0,
+    "message": "마지막에 넣은 탄부터 발사 · 발사 순서는 왼쪽부터 · 확정 전 자유롭게 설계",
+    "outfit": "carrier",
+    "part": "none",
+    "phase": "ready",
+    "plan": [],
+    "plan_load_order": [],
+    "prepared": [],
+    "previous_kill": false,
+    "projectile_serial": 0.0,
+    "projectiles": [],
+    "push_left": 2.0,
+    "reinforcements": [],
+    "reloads": 0.0,
+    "reserve_version": 1.0,
+    "reward_taken": false,
+    "rng_state": "6257067436470635224",
+    "seed": "17",
+    "shots": 0.0,
+    "supply": 0.0,
+    "sustained_attacks": 0.0,
+    "sustained_version": 1.0,
+    "target_rng_state": "8283043054622929552",
+    "turns": 0.0,
+    "version": 15.0,
+    "wave": 1.0,
+    "weapon_magazine_version": 1.0,
+    "weapon_version": 1.0
+  },
+  "prediction": {
+    "advance_events": [],
+    "branches": 3,
+    "deployment_max": 0,
+    "deployment_min": 0,
+    "deployments": [],
+    "enemies": [
+      {
+        "burn": 0,
+        "def": 0,
+        "distance": 1000,
+        "distance_max": 1000,
+        "distance_min": 1000,
+        "hp": 1000,
+        "hp_max": 996,
+        "hp_min": 995,
+        "kill_probability": 0.0,
+        "kind": "runner",
+        "lane": 0,
+        "max_hp": 10000,
+        "name": "운반 사족체",
+        "speed": 0
+      },
+      {
+        "burn": 0,
+        "def": 0,
+        "distance": 1003,
+        "distance_max": 1003,
+        "distance_min": 1003,
+        "hp": 1000,
+        "hp_max": 996,
+        "hp_min": 995,
+        "kill_probability": 0.0,
+        "kind": "runner",
+        "lane": 1,
+        "max_hp": 10000,
+        "name": "운반 사족체",
+        "speed": 0
+      },
+      {
+        "burn": 0,
+        "def": 0,
+        "distance": 1006,
+        "distance_max": 1006,
+        "distance_min": 1006,
+        "hp": 1000,
+        "hp_max": 996,
+        "hp_min": 995,
+        "kill_probability": 0.0,
+        "kind": "runner",
+        "lane": 2,
+        "max_hp": 10000,
+        "name": "운반 사족체",
+        "speed": 0
+      }
+    ],
+    "expected_deployments": 0.0,
+    "heat": {
+      "current": 0,
+      "end_max": 4,
+      "end_min": 4,
+      "fired_max": 1,
+      "fired_min": 1,
+      "forced_cost_max": 0,
+      "forced_cost_min": 0,
+      "forced_probability": 0.0,
+      "limit": 16,
+      "overheat_probability": 0.0,
+      "peak_max": 4,
+      "peak_min": 4,
+      "turns_max": 1,
+      "turns_min": 1
+    },
+    "lost_probability": 0.0,
+    "phase": "uncertain",
+    "projectiles": [],
+    "random": true,
+    "remaining": [],
+    "reserve": [],
+    "scope": "next_action",
+    "shots": [
+      {
+        "burn_duration": 5,
+        "burn_tick": 4,
+        "damage": 1,
+        "damage_max": 1,
+        "damage_min": 1,
+        "effect_probability": 0.0,
+        "expected_damage": 1.0,
+        "heat_max": 4,
+        "heat_min": 4,
+        "hits": 1,
+        "hp": -1,
+        "id": "bore",
+        "intercept_probability": 0.0,
+        "overheat_probability": 0.0,
+        "part_probabilities": {
+          "ember_core": 0.0,
+          "reclaimer": 0.0
+        },
+        "prepared_rounds": [],
+        "random": true,
+        "secondary": [],
+        "sustained_active": true,
+        "sustained_after": 1,
+        "sustained_before": 0,
+        "sustained_heat": 0,
+        "target": -1,
+        "targets": [
+          {
+            "damage_max": 1,
+            "damage_min": 1,
+            "probability": 0.333333333333333,
+            "target": 0
+          },
+          {
+            "damage_max": 1,
+            "damage_min": 1,
+            "probability": 0.333333333333333,
+            "target": 1
+          },
+          {
+            "damage_max": 1,
+            "damage_min": 1,
+            "probability": 0.333333333333333,
+            "target": 2
+          }
+        ],
+        "used_probability": 1.0
+      }
+    ],
+    "turns": 1,
+    "win_probability": 0.0
+  }
+}

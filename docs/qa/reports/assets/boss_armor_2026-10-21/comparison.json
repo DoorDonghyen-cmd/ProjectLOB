@@ -1,0 +1,3729 @@
+{
+  "checks": 3207,
+  "damage": [
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 5,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 7,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 7,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 8,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 8,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 12,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 10,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 10,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 10,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 4,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 10,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 10,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 2,
+      "direct": 12,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 2,
+      "direct": 16,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 16,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 2,
+      "direct": 20,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 20,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 2,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 2,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 2,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 7,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 7,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 12,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 10,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 10,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 10,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 8,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 4,
+      "direct": 12,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 4,
+      "direct": 12,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 12,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 4,
+      "direct": 20,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 20,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 4,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 4,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 4,
+      "direct": 1,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 4,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 7,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 7,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 12,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 10,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 10,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 10,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 7,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 7,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 5,
+      "direct": 12,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 5,
+      "direct": 10,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 5,
+      "direct": 20,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 20,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 5,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 5,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 5,
+      "direct": 1,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 5,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "single",
+      "heat": 3,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 7,
+      "gun": "single",
+      "heat": 6,
+      "hp_lost": 7,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 12,
+      "gun": "single",
+      "heat": 7,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "single",
+      "heat": 5,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "single",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 3,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "burst",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 10,
+      "gun": "burst",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "burst",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "burst",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 3,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "scatter",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 10,
+      "gun": "scatter",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "scatter",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "scatter",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 3,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 3,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 3,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "heavy",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 10,
+      "gun": "heavy",
+      "heat": 7,
+      "hp_lost": 10,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 4,
+      "gun": "heavy",
+      "heat": 5,
+      "hp_lost": 4,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "heavy",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 1,
+      "opened": false,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 3,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "basic_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "pierce_p3"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 2,
+      "opened": false,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "precise_p2"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 6,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 6,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 6,
+      "direct": 12,
+      "gun": "amplifier",
+      "heat": 6,
+      "hp_lost": 12,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "basic_p3"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 6,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 8,
+      "opened": false,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 6,
+      "direct": 20,
+      "gun": "amplifier",
+      "heat": 7,
+      "hp_lost": 20,
+      "opened": true,
+      "sequence": [
+        "charge",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 6,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": false,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 6,
+      "direct": 8,
+      "gun": "amplifier",
+      "heat": 5,
+      "hp_lost": 8,
+      "opened": true,
+      "sequence": [
+        "shatter",
+        "precise_p2"
+      ],
+      "turns": 2
+    },
+    {
+      "armor": 6,
+      "direct": 1,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 5,
+      "opened": false,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    },
+    {
+      "armor": 6,
+      "direct": 2,
+      "gun": "amplifier",
+      "heat": 4,
+      "hp_lost": 6,
+      "opened": true,
+      "sequence": [
+        "bore"
+      ],
+      "turns": 1
+    }
+  ],
+  "failures": 0,
+  "note": "Prepared comparative builds; bounded search sees future draws and RNG. No human win-rate claim.",
+  "runs": [
+    {
+      "armor": 2,
+      "core": "siege_drive",
+      "gun": "single",
+      "margin": 18,
+      "opened_shots": 2,
+      "remaining": 15,
+      "seed": 17,
+      "solved": true,
+      "turns": 8,
+      "used": 11
+    },
+    {
+      "armor": 2,
+      "core": "siege_drive",
+      "gun": "single",
+      "margin": 18,
+      "opened_shots": 2,
+      "remaining": 15,
+      "seed": 731042,
+      "solved": true,
+      "turns": 8,
+      "used": 11
+    },
+    {
+      "armor": 2,
+      "core": "volley_drive",
+      "gun": "burst",
+      "margin": 9,
+      "opened_shots": 2,
+      "remaining": 11,
+      "seed": 17,
+      "solved": true,
+      "turns": 11,
+      "used": 15
+    },
+    {
+      "armor": 2,
+      "core": "volley_drive",
+      "gun": "burst",
+      "margin": 9,
+      "opened_shots": 2,
+      "remaining": 12,
+      "seed": 731042,
+      "solved": true,
+      "turns": 10,
+      "used": 14
+    },
+    {
+      "armor": 2,
+      "core": "volley_drive",
+      "gun": "scatter",
+      "margin": 9,
+      "opened_shots": 2,
+      "remaining": 11,
+      "seed": 17,
+      "solved": true,
+      "turns": 9,
+      "used": 15
+    },
+    {
+      "armor": 2,
+      "core": "volley_drive",
+      "gun": "scatter",
+      "margin": 9,
+      "opened_shots": 2,
+      "remaining": 10,
+      "seed": 731042,
+      "solved": true,
+      "turns": 10,
+      "used": 16
+    },
+    {
+      "armor": 2,
+      "core": "thermal_drive",
+      "gun": "heavy",
+      "margin": 15,
+      "opened_shots": 4,
+      "remaining": 6,
+      "seed": 17,
+      "solved": true,
+      "turns": 11,
+      "used": 20
+    },
+    {
+      "armor": 2,
+      "core": "thermal_drive",
+      "gun": "heavy",
+      "margin": 15,
+      "opened_shots": 3,
+      "remaining": 12,
+      "seed": 731042,
+      "solved": true,
+      "turns": 8,
+      "used": 14
+    },
+    {
+      "armor": 2,
+      "core": "siege_drive",
+      "gun": "amplifier",
+      "margin": 15,
+      "opened_shots": 2,
+      "remaining": 20,
+      "seed": 17,
+      "solved": true,
+      "turns": 7,
+      "used": 6
+    },
+    {
+      "armor": 2,
+      "core": "siege_drive",
+      "gun": "amplifier",
+      "margin": 15,
+      "opened_shots": 2,
+      "remaining": 20,
+      "seed": 731042,
+      "solved": true,
+      "turns": 6,
+      "used": 6
+    },
+    {
+      "armor": 5,
+      "core": "siege_drive",
+      "gun": "single",
+      "margin": 18,
+      "opened_shots": 2,
+      "remaining": 15,
+      "seed": 17,
+      "solved": true,
+      "turns": 7,
+      "used": 11
+    },
+    {
+      "armor": 5,
+      "core": "siege_drive",
+      "gun": "single",
+      "margin": 18,
+      "opened_shots": 2,
+      "remaining": 14,
+      "seed": 731042,
+      "solved": true,
+      "turns": 7,
+      "used": 12
+    },
+    {
+      "armor": 5,
+      "core": "volley_drive",
+      "gun": "burst",
+      "margin": 9,
+      "opened_shots": 3,
+      "remaining": 8,
+      "seed": 17,
+      "solved": true,
+      "turns": 14,
+      "used": 18
+    },
+    {
+      "armor": 5,
+      "core": "volley_drive",
+      "gun": "burst",
+      "margin": 9,
+      "opened_shots": 2,
+      "remaining": 10,
+      "seed": 731042,
+      "solved": true,
+      "turns": 10,
+      "used": 16
+    },
+    {
+      "armor": 5,
+      "core": "volley_drive",
+      "gun": "scatter",
+      "margin": 9,
+      "opened_shots": 2,
+      "remaining": 8,
+      "seed": 17,
+      "solved": true,
+      "turns": 11,
+      "used": 18
+    },
+    {
+      "armor": 5,
+      "core": "volley_drive",
+      "gun": "scatter",
+      "margin": 9,
+      "opened_shots": 2,
+      "remaining": 8,
+      "seed": 731042,
+      "solved": true,
+      "turns": 10,
+      "used": 18
+    },
+    {
+      "armor": 5,
+      "core": "thermal_drive",
+      "gun": "heavy",
+      "margin": 15,
+      "opened_shots": 4,
+      "remaining": 6,
+      "seed": 17,
+      "solved": true,
+      "turns": 11,
+      "used": 20
+    },
+    {
+      "armor": 5,
+      "core": "thermal_drive",
+      "gun": "heavy",
+      "margin": 15,
+      "opened_shots": 3,
+      "remaining": 12,
+      "seed": 731042,
+      "solved": true,
+      "turns": 8,
+      "used": 14
+    },
+    {
+      "armor": 5,
+      "core": "siege_drive",
+      "gun": "amplifier",
+      "margin": 15,
+      "opened_shots": 3,
+      "remaining": 18,
+      "seed": 17,
+      "solved": true,
+      "turns": 9,
+      "used": 8
+    },
+    {
+      "armor": 5,
+      "core": "siege_drive",
+      "gun": "amplifier",
+      "margin": 15,
+      "opened_shots": 2,
+      "remaining": 19,
+      "seed": 731042,
+      "solved": true,
+      "turns": 8,
+      "used": 7
+    }
+  ]
+}

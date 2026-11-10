@@ -1,0 +1,5096 @@
+[
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_1280x800",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (864.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1026.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (1184.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 466.0), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (936.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (936.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (936.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (936.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (936.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (936.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (936.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1015.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (1120.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (16.0, 660.0), S: (1248.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (24.0, 726.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (24.0, 746.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 726.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 746.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1280.0, 800.0)]",
+    "window": "(1280, 800)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_1280x800",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (864.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1026.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (1184.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 466.0), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (936.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (936.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (936.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (936.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (936.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (936.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (936.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1015.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (1120.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (16.0, 660.0), S: (1248.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (24.0, 726.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (24.0, 746.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 726.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 746.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1280.0, 800.0)]",
+    "window": "(1280, 800)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_1280x800",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (864.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1026.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (1184.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 466.0), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (936.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (936.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (936.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (936.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (936.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (936.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1017.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (936.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1015.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (1120.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (16.0, 660.0), S: (1248.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (24.0, 726.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (24.0, 746.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 726.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 746.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1280.0, 800.0)]",
+    "window": "(1280, 800)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_1008x630",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (592.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (754.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (912.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 370.8), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (664.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (664.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (664.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (745.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (664.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (745.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (664.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (745.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (664.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (745.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (664.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (743.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (848.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (16.0, 490.0), S: (976.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (24.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (24.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1008.0, 630.0)]",
+    "window": "(1008, 630)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_1008x630",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (592.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (754.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (912.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 370.8), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (664.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (664.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (664.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (745.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (664.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (745.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (664.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (745.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (664.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (745.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (664.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (743.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (848.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (16.0, 490.0), S: (976.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (24.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (24.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1008.0, 630.0)]",
+    "window": "(1008, 630)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_1008x630",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (592.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (754.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (912.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 370.8), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (664.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (664.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (664.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (745.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (664.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (745.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (664.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (745.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (664.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (745.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (664.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (743.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (848.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (16.0, 490.0), S: (976.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (24.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (24.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1008.0, 630.0)]",
+    "window": "(1008, 630)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_844x390",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (416.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (578.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (736.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 320.4), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (488.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (488.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (488.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (569.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (488.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (569.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (488.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (569.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (488.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (569.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (488.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (567.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (672.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": false,
+        "rect": "[P: (16.0, 400.0), S: (800.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (24.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (24.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (164.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (164.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (844.0, 390.0)]",
+    "window": "(844, 390)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_844x390",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (416.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (578.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (736.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 320.4), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (488.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (488.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (488.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (569.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (488.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (569.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (488.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (569.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (488.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (569.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (488.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (567.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (672.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": false,
+        "rect": "[P: (16.0, 400.0), S: (800.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (24.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (24.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (164.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (164.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (844.0, 390.0)]",
+    "window": "(844, 390)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_844x390",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (416.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (578.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (736.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 320.4), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (488.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (488.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (488.0, 204.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (569.0, 204.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (488.0, 228.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (569.0, 228.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (488.0, 252.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (569.0, 252.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (488.0, 276.0), S: (69.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (569.0, 276.0), S: (223.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (488.0, 300.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (567.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (672.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": false,
+        "rect": "[P: (16.0, 400.0), S: (800.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (24.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (24.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (164.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (164.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (844.0, 390.0)]",
+    "window": "(844, 390)"
+  },
+  {
+    "final": "[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]",
+    "label": "workbench_2340x1080",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 36.0), S: (276.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (1508.0, 52.0), S: (300.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1832.0, 24.0), S: (292.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (2148.0, 24.0), S: (144.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (48.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (304.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (560.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (816.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (1072.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (280.0, 640.8), S: (520.0, 48.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 280.0), S: (608.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 360.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 408.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 408.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 456.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 456.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 504.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 504.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 552.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 552.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 600.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1810.0, 656.0), S: (186.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (2020.0, 656.0), S: (240.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (32.0, 800.0), S: (2276.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (48.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (48.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1170.0, 540.0)]",
+    "window": "(2340, 1080)"
+  },
+  {
+    "final": "[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]",
+    "label": "workbench_2340x1080",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 36.0), S: (276.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (1508.0, 52.0), S: (300.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1832.0, 24.0), S: (292.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (2148.0, 24.0), S: (144.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (48.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (304.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (560.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (816.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (1072.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (280.0, 640.8), S: (520.0, 48.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 280.0), S: (608.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 360.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 408.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 408.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 456.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 456.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 504.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 504.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 552.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 552.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 600.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1810.0, 656.0), S: (186.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (2020.0, 656.0), S: (240.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (32.0, 800.0), S: (2276.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (48.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (48.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1170.0, 540.0)]",
+    "window": "(2340, 1080)"
+  },
+  {
+    "final": "[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]",
+    "label": "workbench_2340x1080",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 36.0), S: (276.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (1508.0, 52.0), S: (300.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1832.0, 24.0), S: (292.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (2148.0, 24.0), S: (144.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (48.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (304.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (560.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (816.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (1072.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (280.0, 640.8), S: (520.0, 48.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 280.0), S: (608.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 360.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 408.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 408.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 456.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 456.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 504.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 504.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 552.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1814.0, 552.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 600.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1810.0, 656.0), S: (186.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (2020.0, 656.0), S: (240.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (32.0, 800.0), S: (2276.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (48.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (48.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1170.0, 540.0)]",
+    "window": "(2340, 1080)"
+  },
+  {
+    "final": "[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]",
+    "label": "workbench_2160x1032",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 36.0), S: (276.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (1304.0, 52.0), S: (300.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1628.0, 24.0), S: (292.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (1944.0, 24.0), S: (144.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (48.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (304.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (560.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (816.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (1072.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (280.0, 640.8), S: (520.0, 48.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 280.0), S: (608.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 360.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 408.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 408.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 456.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 456.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 504.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 504.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 552.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 552.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 600.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1606.0, 656.0), S: (186.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (1816.0, 656.0), S: (240.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (32.0, 800.0), S: (2072.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (48.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (48.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1080.0, 516.0)]",
+    "window": "(2160, 1032)"
+  },
+  {
+    "final": "[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]",
+    "label": "workbench_2160x1032",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 36.0), S: (276.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (1304.0, 52.0), S: (300.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1628.0, 24.0), S: (292.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (1944.0, 24.0), S: (144.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (48.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (304.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (560.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (816.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (1072.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (280.0, 640.8), S: (520.0, 48.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 280.0), S: (608.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 360.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 408.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 408.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 456.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 456.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 504.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 504.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 552.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 552.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 600.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1606.0, 656.0), S: (186.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (1816.0, 656.0), S: (240.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (32.0, 800.0), S: (2072.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (48.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (48.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1080.0, 516.0)]",
+    "window": "(2160, 1032)"
+  },
+  {
+    "final": "[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]",
+    "label": "workbench_2160x1032",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 36.0), S: (276.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (1304.0, 52.0), S: (300.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1628.0, 24.0), S: (292.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (1944.0, 24.0), S: (144.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (48.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (304.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (560.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (816.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (1072.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (280.0, 640.8), S: (520.0, 48.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄 2발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 280.0), S: (608.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 360.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key0",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 408.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value0",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 408.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 → 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key1",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 456.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value1",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 456.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2 → 5"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key2",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 504.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "발열"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value2",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 504.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "+2 → +3"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Key3",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 552.0), S: (138.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Value3",
+        "onscreen": true,
+        "rect": "[P: (1610.0, 552.0), S: (446.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "20 → 19발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Detail",
+        "onscreen": true,
+        "rect": "[P: (1448.0, 600.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄창 1 → 2칸"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1606.0, 656.0), S: (186.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (1816.0, 656.0), S: (240.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "2발 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (32.0, 800.0), S: (2072.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (48.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (48.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 8발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1080.0, 516.0)]",
+    "window": "(2160, 1032)"
+  },
+  {
+    "final": "[X: (2.0, 0.0), Y: (0.0, 2.0), O: (0.0, 0.0)]",
+    "label": "workbench_2340x1080",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 36.0), S: (276.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (1508.0, 52.0), S: (300.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (1832.0, 24.0), S: (292.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (2148.0, 24.0), S: (144.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (48.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (304.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (560.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (816.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (1072.0, 136.0), S: (232.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (280.0, 640.8), S: (520.0, 48.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄 1발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 280.0), S: (608.0, 64.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 64.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 360.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Condition",
+        "onscreen": true,
+        "rect": "[P: (1652.0, 424.0), S: (608.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "서로 다른 탄환을 선택하세요."
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (1810.0, 656.0), S: (186.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (2020.0, 656.0), S: (240.0, 88.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (32.0, 800.0), S: (2276.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "내보낼 탄 · 보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (48.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (48.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 932.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 972.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 8발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (48.0, 256.0), S: (1540.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "받을 탄환"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (64.0, 340.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (64.0, 380.0), S: (224.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "피해 3 · 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (328.0, 340.0), S: (256.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "잔열 증폭탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (328.0, 380.0), S: (256.0, 32.0)]",
+        "scale": "(2.0, 2.0)",
+        "screen_px": 32.0,
+        "text": "고열 공격 +6 · 1발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1170.0, 540.0)]",
+    "window": "(2340, 1080)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_844x390",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (416.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (578.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (736.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 320.4), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 1발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (488.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (488.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Condition",
+        "onscreen": true,
+        "rect": "[P: (488.0, 212.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "서로 다른 탄환을 선택하세요."
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (567.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (672.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": false,
+        "rect": "[P: (16.0, 400.0), S: (800.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "내보낼 탄 · 보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (24.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (24.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": false,
+        "rect": "[P: (164.0, 466.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": false,
+        "rect": "[P: (164.0, 486.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 128.0), S: (432.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "받을 탄환"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (32.0, 170.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (32.0, 190.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 170.0), S: (128.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "잔열 증폭탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 190.0), S: (128.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "고열 공격 +6 · 1발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (844.0, 390.0)]",
+    "window": "(844, 390)"
+  },
+  {
+    "final": "[X: (1.0, 0.0), Y: (0.0, 1.0), O: (0.0, 0.0)]",
+    "label": "workbench_1008x630",
+    "texts": [
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 18.0), S: (138.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "정비 공방"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Budget",
+        "onscreen": true,
+        "rect": "[P: (592.0, 26.0), S: (150.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "무료 정비 1회 · 70 Cr"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Exit",
+        "onscreen": true,
+        "rect": "[P: (754.0, 12.0), S: (146.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "작업 없이 나가기"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Menu",
+        "onscreen": true,
+        "rect": "[P: (912.0, 12.0), S: (72.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "메뉴"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab0",
+        "onscreen": true,
+        "rect": "[P: (24.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab1",
+        "onscreen": true,
+        "rect": "[P: (152.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 압축"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab2",
+        "onscreen": true,
+        "rect": "[P: (280.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄환 개조"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab3",
+        "onscreen": true,
+        "rect": "[P: (408.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "덱 정리"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Tab4",
+        "onscreen": true,
+        "rect": "[P: (536.0, 68.0), S: (116.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "가방 확장"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Caption",
+        "onscreen": true,
+        "rect": "[P: (140.0, 370.8), S: (260.0, 24.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄 1발"
+      },
+      {
+        "font_size": 32,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (664.0, 140.0), S: (304.0, 32.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 32.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (664.0, 180.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Condition",
+        "onscreen": true,
+        "rect": "[P: (664.0, 212.0), S: (304.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "서로 다른 탄환을 선택하세요."
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Cancel",
+        "onscreen": true,
+        "rect": "[P: (743.0, 328.0), S: (93.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "선택 취소"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Apply",
+        "onscreen": true,
+        "rect": "[P: (848.0, 328.0), S: (120.0, 44.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "탄종 교체"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (16.0, 490.0), S: (976.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "내보낼 탄 · 보유 탄약 20 / 32"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (24.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (24.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 2 · 12발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 556.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 576.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 8발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Title",
+        "onscreen": true,
+        "rect": "[P: (24.0, 128.0), S: (608.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "받을 탄환"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (32.0, 170.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "기본탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (32.0, 190.0), S: (112.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "피해 3 · 1발"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Name",
+        "onscreen": true,
+        "rect": "[P: (164.0, 170.0), S: (128.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "잔열 증폭탄"
+      },
+      {
+        "font_size": 16,
+        "missing": "",
+        "name": "Count",
+        "onscreen": true,
+        "rect": "[P: (164.0, 190.0), S: (128.0, 16.0)]",
+        "scale": "(1.0, 1.0)",
+        "screen_px": 16.0,
+        "text": "고열 공격 +6 · 1발"
+      }
+    ],
+    "viewport": "[P: (0.0, 0.0), S: (1008.0, 630.0)]",
+    "window": "(1008, 630)"
+  }
+]

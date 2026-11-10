@@ -1,0 +1,145 @@
+{
+  "checks": 198,
+  "failures": 0,
+  "success_frames": 7,
+  "movie": {
+    "checks": 7,
+    "credits_after": 63,
+    "credits_before": 75.0,
+    "failures": 0,
+    "frames": 17,
+    "region": "[P: (965, 237), S: (224, 224)]",
+    "timestamps_ms": [
+      1,
+      51,
+      101,
+      151,
+      201,
+      251,
+      301,
+      351,
+      401,
+      451,
+      501,
+      551,
+      601,
+      651,
+      701,
+      751,
+      801
+    ]
+  },
+  "main_entry": {
+    "entry": "res://redesign/main.tscn",
+    "static_dependencies": 641,
+    "interaction_resources": [
+      "res://redesign/ui/interaction_feedback.gd",
+      "res://redesign/ui/interaction_response.gd"
+    ]
+  },
+  "source_audit": {
+    "screen.gd": {
+      "before": "e684c661cb17a7f3e5cbc1778f151f9d5696d4ccdfd599c9c1a3b333f1cd063d",
+      "after": "5be8ad66e17bfb4c27cbbefc89a6996b07a1cb9496896d0f5a4b762a18a93e0c",
+      "unchanged": false
+    },
+    "shop_terminal_live.gd": {
+      "before": "4108e05bb2194ca2c0173f8c88df259bc46e1a67fb0426bb5bcb71389c0da76e",
+      "after": "d29d0fdd6822f6a838c3254e96ae6b90dff43054f5fe5d1e4503883bf5f3028c",
+      "unchanged": false
+    },
+    "workbench/screen.gd": {
+      "before": "31be116c0c15fd6058763a1d06440a7b930249eea0082b8ec72f8dbb1ed456da",
+      "after": "3d76db8d043785378aaf80190bdae3c4a7cb3dca44c9ce8eca305a9f80369045",
+      "unchanged": false
+    },
+    "samples/shop_terminal_review/part_mount.gd": {
+      "before": "3ab56aa18c18f93ae7e9f6506f7bf9677d49d45d6b23f70ef9014c0b16eeffbe",
+      "after": "214d40f9abf8f33f080a894ddef38321b4ffebc94a0589403d236140480c267e",
+      "unchanged": false
+    },
+    "pipe_map/screen.gd": {
+      "before": "b1d0c247b65e146cf6865623575aa1e75e7b719c2e476fca2cf81eb2b2eabbba",
+      "after": "bb4fcddf94cf12573b889198bd328f90a1c7bbd216be1d7e12f2308cc467940f",
+      "unchanged": false
+    },
+    "presentation_feedback.gd": {
+      "before": "1b6e8885508ab7236fe9882d8d5f8ea8070f54d8fb7d2d6e227580fc6d96a9be",
+      "after": "1b6e8885508ab7236fe9882d8d5f8ea8070f54d8fb7d2d6e227580fc6d96a9be",
+      "unchanged": true
+    },
+    "campaign.gd": {
+      "before": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+      "after": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+      "unchanged": true
+    },
+    "model.gd": {
+      "before": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+      "after": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+      "unchanged": true
+    },
+    "forecast.gd": {
+      "before": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+      "after": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+      "unchanged": true
+    },
+    "content.gd": {
+      "before": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+      "after": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+      "unchanged": true
+    },
+    "preferences.gd": {
+      "before": "21bcc5348b01ac7be7203ea18f58310235537730ce98ded3767eb57e1e48b003",
+      "after": "21bcc5348b01ac7be7203ea18f58310235537730ce98ded3767eb57e1e48b003",
+      "unchanged": true
+    },
+    "part_feedback.gd": {
+      "before": "e35e22f1114907bb58386aa578dfd3a6bd9e825f965b97006b38b96748fb963b",
+      "after": "e35e22f1114907bb58386aa578dfd3a6bd9e825f965b97006b38b96748fb963b",
+      "unchanged": true
+    }
+  },
+  "protected_files": [
+    "campaign.gd",
+    "model.gd",
+    "forecast.gd",
+    "content.gd",
+    "preferences.gd",
+    "part_feedback.gd",
+    "presentation_feedback.gd"
+  ],
+  "logs": {
+    "interaction": {
+      "path": "qa_runtime/interaction_fx_20261106/ui/stdout.log",
+      "result": "INTERACTION FX UI COMPLETE checks=198 failures=0 frames=7"
+    },
+    "movie": {
+      "path": "qa_runtime/interaction_fx_20261106/movie/stdout.log",
+      "result": "INTERACTION FX MOVIE COMPLETE checks=7 failures=0 frames=17"
+    },
+    "shop": {
+      "path": "docs/qa/reports/interaction_shop_final_2026-11-06/stdout.log",
+      "result": "SHOP TERMINAL LIVE COMPLETE checks=216 failures=0"
+    },
+    "upgrade": {
+      "path": "qa_runtime/ammo_upgrade_single_20261106/interaction_complete/stdout.log",
+      "result": "AMMO UPGRADE LIVE COMPLETE checks=2015 failures=0"
+    },
+    "reward": {
+      "path": "qa_runtime/reward_live_20261105/stdout.log",
+      "result": "REWARD LIVE COMPLETE checks=104 failures=0"
+    },
+    "hud": {
+      "path": "qa_runtime/combat_hud_20261031/prototype_20261101/ui/stdout.log",
+      "result": "COMBAT HUD UI COMPLETE checks=11558 failures=0"
+    }
+  },
+  "sha256": {
+    "docs/qa/reports/interaction_fx_2026-11-06/installed.png": "30f25e502b6f7c9aefd920920bcb66002596666889b265540e1e6129f645e12e",
+    "docs/qa/reports/interaction_fx_2026-11-06/purchase_full.png": "23cb479c485f974416deca42155769a2b65665fa3fbd2a2fbe95d071cbeef585",
+    "docs/qa/reports/interaction_fx_2026-11-06/upgrade.png": "b5b6ae90999e5105705e8179714db64caad23dacf25d62e8ec2fce2c0e1d0831",
+    "docs/qa/reports/interaction_fx_2026-11-06/purchase_response.gif": "7ae7c95881bf36989a481aae5dcf02ee5987962c3f23baa86841b8b8e736d25a",
+    "새-게임-프로젝트/redesign/ui/interaction_response.gd": "0cb4525624cd19e0aa36a34c191f1538c08befaea59f2eba683217794b15811a",
+    "새-게임-프로젝트/redesign/ui/interaction_feedback.gd": "e1d98da453eb73bcdf436882d930eea37b351372d8f8370c976fbed6b282660f"
+  }
+}

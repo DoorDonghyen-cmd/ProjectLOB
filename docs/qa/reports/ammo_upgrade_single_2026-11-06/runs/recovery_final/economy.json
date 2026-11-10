@@ -1,0 +1,30 @@
+{
+  "economy_version": 1,
+  "ledger": [
+    {
+      "action": "enter",
+      "after_credits": 59.0,
+      "after_deck": 25,
+      "after_limit": 32,
+      "credits": 59.0,
+      "deck": 25,
+      "id": 41002,
+      "limit": 32,
+      "node": 40901.0,
+      "phase": "map"
+    },
+    {
+      "action": "reward",
+      "after_credits": 109.0,
+      "after_deck": 25,
+      "after_limit": 32,
+      "credits": 109.0,
+      "deck": 25,
+      "id": "skip",
+      "limit": 32,
+      "node": 41002,
+      "phase": "reward"
+    }
+  ],
+  "outfit": "carrier"
+}

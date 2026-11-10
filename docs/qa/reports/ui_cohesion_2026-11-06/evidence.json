@@ -1,0 +1,612 @@
+{
+  "scope": "Independent B detector, static native tokens, capture provenance, map/equipment border finish and supplementary combat comparison; no game/source edits; no numeric taste score",
+  "review_date": "2026-11-06",
+  "repo_head": "197c6941fb8134349083de1e187bbe82571c5413",
+  "working_tree": "preexisting dirty working tree preserved; source hashes define inspected version",
+  "detector": {
+    "invocation": "detector_invocation.json",
+    "raw_output": "detector_output.json",
+    "raw_result": [],
+    "limitation": "All seven requested targets are Godot .tscn/.tres. Shipped native audit says detector does not apply; documented built-in extension list omits these. Output has no scanned count. Empty findings demonstrate no native validation and must not be called a clean Godot audit."
+  },
+  "sources": [
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/screen.tscn",
+      "sha256": "3cb25d784614c3395fedac6ccf3f0a1b7aabe07f227118fa8c4a2452dcfd974d",
+      "modified_local": "2026-11-06T17:36:36.233618",
+      "bytes": 24745,
+      "style_types": [],
+      "font_sizes": [
+        16,
+        32
+      ],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/theme.tres",
+      "sha256": "873a12040dbb2e1ca51938d25a0955792f27dc340908a4c578434dea3caafc44",
+      "modified_local": "2026-11-06T17:32:32.285044",
+      "bytes": 2958,
+      "style_types": [],
+      "font_sizes": [
+        16
+      ],
+      "corner_radii": [],
+      "font_resources": [
+        "res://redesign/combat_pixel_font.tres"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/material.gd",
+      "sha256": "65c2bf22c3956457c36bc97d11f2494f785f48d08372a8af0282b8ce268da4a3",
+      "modified_local": "2026-11-06T17:36:34.695646",
+      "bytes": 2577,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/panel.tres",
+      "sha256": "23d45b61fbfa8000267c0eee111903a47ee1ca496c8586fee62ba0bc297ad32b",
+      "modified_local": "2026-11-06T17:32:31.986827",
+      "bytes": 538,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [],
+      "corner_radii": [
+        4
+      ],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/button.tres",
+      "sha256": "7a9f7da34b40301461834d2db4aa74f4357a8955ea6af10c4b98340a489d4c85",
+      "modified_local": "2026-11-06T17:32:31.987827",
+      "bytes": 538,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [],
+      "corner_radii": [
+        4
+      ],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/primary.tres",
+      "sha256": "b15892b63de095860d41044b750b6bf846c07e306cf9445af3259cbf125618b0",
+      "modified_local": "2026-11-06T17:32:32.229036",
+      "bytes": 534,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [],
+      "corner_radii": [
+        4
+      ],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/selection.tres",
+      "sha256": "52cd5671dd03b05e8c0bd81ecf27a9c9dccfbdb17cc08dd2419c291c41f45914",
+      "modified_local": "2026-11-06T17:32:32.284043",
+      "bytes": 532,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [],
+      "corner_radii": [
+        4
+      ],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/pipe_map/art.gd",
+      "sha256": "048088558d2aadcee135319605a44b0db5f0527e1bf9587b700ab587498f41d2",
+      "modified_local": "2026-11-01T21:38:06.028554",
+      "bytes": 744,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/equipment_screen.tscn",
+      "sha256": "dc3df851e834a267d5e50ba5b95580ff0ccbd6c97b7e7a520b89f975dfd01806",
+      "modified_local": "2026-11-06T17:05:12.420500",
+      "bytes": 34100,
+      "style_types": [],
+      "font_sizes": [
+        16,
+        24,
+        32
+      ],
+      "corner_radii": [],
+      "font_resources": [
+        "res://redesign/combat_pixel_font.tres"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/equipment_screen.gd",
+      "sha256": "4f9c37dff7c806644e11d28ee58f6e6128ab561973bcfbb47e8bae389f058542",
+      "modified_local": "2026-11-06T17:05:12.859970",
+      "bytes": 11116,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/equipment/theme.tres",
+      "sha256": "78c9e93b8437d9e6c68874898100ddefa171fd4140578d382f43845ce4c85deb",
+      "modified_local": "2026-11-06T16:27:59.039793",
+      "bytes": 9847,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [
+        16
+      ],
+      "corner_radii": [
+        4
+      ],
+      "font_resources": [
+        "res://redesign/combat_pixel_font.tres"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/equipment/skin.gd",
+      "sha256": "24691aeeee40d97ea7f2283b44b16f3f3c8efb54cfaf606a236dc297c1eb8c3b",
+      "modified_local": "2026-11-06T16:27:17.159268",
+      "bytes": 683,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/equipment/edge.gd",
+      "sha256": "9df05bf04297606290a55fc6e23a4574e216c59ed5712de1cde8e242c23517ad",
+      "modified_local": "2026-11-06T16:27:17.431291",
+      "bytes": 1199,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/workbench/theme.tres",
+      "sha256": "6a6d965a674d383d00ca326870c31ecea8cf77016e1100fa3288f321600b4716",
+      "modified_local": "2026-11-04T09:20:49.545852",
+      "bytes": 4087,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [
+        16,
+        32
+      ],
+      "corner_radii": [],
+      "font_resources": [
+        "res://redesign/combat_pixel_font.tres"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/workbench/screen.tscn",
+      "sha256": "38fddd7d4dc620b58bf8c31be5525761ce8c1d9cefe6467fa85fa02263f41dfc",
+      "modified_local": "2026-11-06T07:46:59.374426",
+      "bytes": 10240,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/workbench/screen.gd",
+      "sha256": "3d76db8d043785378aaf80190bdae3c4a7cb3dca44c9ce8eca305a9f80369045",
+      "modified_local": "2026-11-06T13:09:19.066858",
+      "bytes": 14351,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/shop_terminal_review/theme.tres",
+      "sha256": "d30aaba6a650d252ce1d8784c98024481439b5fa882c7a4f71ced8cb1875f74a",
+      "modified_local": "2026-11-05T23:52:23.167114",
+      "bytes": 5817,
+      "style_types": [
+        "StyleBoxEmpty",
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [
+        16
+      ],
+      "corner_radii": [],
+      "font_resources": [
+        "res://redesign/combat_pixel_font.tres"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/shop_terminal_review/preview.tscn",
+      "sha256": "ff4b1781a4fcbd713feacbf0b8c0f3d75432f3416ce85dfb8cfa90bbfa7b86ba",
+      "modified_local": "2026-11-05T23:52:22.635808",
+      "bytes": 17355,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [
+        32
+      ],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/shop_terminal_review/console_preview.tscn",
+      "sha256": "a2718be8bcc9565b7c22ccee5c309a49118e3b1e387b70ad6fd36be505b33b60",
+      "modified_local": "2026-11-05T23:52:22.903066",
+      "bytes": 3187,
+      "style_types": [],
+      "font_sizes": [
+        32
+      ],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/shop_terminal_review/console_chassis.gd",
+      "sha256": "7fed9d38476899453b520bfadd1180e268b9e37f3baf073fd052b64175eeb2ef",
+      "modified_local": "2026-11-05T23:33:02.905966",
+      "bytes": 3262,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/shop_terminal_review/chassis.gd",
+      "sha256": "477f3cba28932c1be0aa4072191161cd5c5300f13059ceb243e67f78c8a0a517",
+      "modified_local": "2026-11-05T23:33:02.905966",
+      "bytes": 3294,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/shop_terminal_live.tscn",
+      "sha256": "3bbd51379cfb4293fcdf71545a23535c8c83d1b00522de87d9feeae6ce1a9f81",
+      "modified_local": "2026-11-05T23:32:21.451988",
+      "bytes": 1221,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/shop_terminal_live.gd",
+      "sha256": "d29d0fdd6822f6a838c3254e96ae6b90dff43054f5fe5d1e4503883bf5f3028c",
+      "modified_local": "2026-11-06T13:09:18.527968",
+      "bytes": 4771,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/rewards/screen.tscn",
+      "sha256": "21ef1cbcb0aae4a18555c8ba14026ad0a4d87292aa35d758cc7badff372abf23",
+      "modified_local": "2026-11-05T00:09:41.462261",
+      "bytes": 16783,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [
+        16,
+        32,
+        48
+      ],
+      "corner_radii": [],
+      "font_resources": [
+        "res://redesign/combat_pixel_font.tres"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/rewards/screen.gd",
+      "sha256": "9dff4a76ee73a2264e8e6896900e9440889dbfb88aef261f0974b785a7b11664",
+      "modified_local": "2026-11-05T00:11:19.574459",
+      "bytes": 8573,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/results/theme.tres",
+      "sha256": "cce2d0ae8c1af573407e207cdc60d052abbcbddec230098cbb65871d27c71208",
+      "modified_local": "2026-11-04T21:49:19.282364",
+      "bytes": 2134,
+      "style_types": [
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [
+        16
+      ],
+      "corner_radii": [],
+      "font_resources": [
+        "res://redesign/combat_pixel_font.tres"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/results/screen.tscn",
+      "sha256": "460545f9991b33e526fa729f7f38308f4638a9dcdb19431bc0626f6b46646611",
+      "modified_local": "2026-11-04T22:11:59.551565",
+      "bytes": 10935,
+      "style_types": [
+        "StyleBoxEmpty"
+      ],
+      "font_sizes": [
+        32,
+        64
+      ],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/results/screen.gd",
+      "sha256": "74f7e0d2f7ddc6c0918354744d5dbfc9f061e6fb42ef7d01055ce4e3561a9c17",
+      "modified_local": "2026-11-04T22:13:25.270256",
+      "bytes": 4593,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_pixel_font.tres",
+      "sha256": "8dc3d9958cdfb7f7259b707a536e8df7408e448ab5245535b3fbc972be629d65",
+      "modified_local": "2026-11-03T23:41:27.250977",
+      "bytes": 331,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": [
+        "res://assets/fonts/NeoDunggeunmoPro-Regular.ttf",
+        "res://assets/fonts/ORVASKPixelSymbols.ttf"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_pixel_skin.gd",
+      "sha256": "09c58d70bf3075a4b6e238f4380a99e336f0da228c934e6e3d1f427bd008fceb",
+      "modified_local": "2026-11-01T18:00:18.334346",
+      "bytes": 1466,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/hud/combat_hud_theme.tres",
+      "sha256": "33f6a78ef7b293bdf067536fd0eadc1917628c4f09500af14a32f1fb79433e7a",
+      "modified_local": "2026-11-01T18:08:36.897575",
+      "bytes": 2870,
+      "style_types": [
+        "StyleBoxEmpty",
+        "StyleBoxFlat"
+      ],
+      "font_sizes": [
+        16
+      ],
+      "corner_radii": [],
+      "font_resources": [
+        "res://assets/fonts/NeoDunggeunmoPro-Regular.ttf"
+      ]
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/hud/combat_hud.tscn",
+      "sha256": "c5aabed29f0498de08f66cf208239f6098dff3da85a4ff9c2547efef2adae316",
+      "modified_local": "2026-11-05T23:32:20.824767",
+      "bytes": 67068,
+      "style_types": [],
+      "font_sizes": [
+        12,
+        16,
+        24
+      ],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/hud/combat_hud_presenter.gd",
+      "sha256": "a479e6336e6d4907816c58dcf095072571f75b5e53c066e91bbfa1ec62b78e56",
+      "modified_local": "2026-11-06T15:42:48.743857",
+      "bytes": 21684,
+      "style_types": [],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/assets/ui/line_theme_20261101/console_button_normal.tres",
+      "sha256": "d4487bd2434f4898058de3d944b1df2caaff8f08604de0eaecaed95cec3d3ecd",
+      "modified_local": "2026-11-01T17:58:53.188363",
+      "bytes": 467,
+      "style_types": [
+        "StyleBoxTexture"
+      ],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    },
+    {
+      "path": "새-게임-프로젝트/assets/ui/line_theme_20261101/active.tres",
+      "sha256": "b6688ea3adffbef46bcfdf32e7ccce32b1f1c75d90ecfe26cace6506696eb0b2",
+      "modified_local": "2026-11-01T17:58:53.159851",
+      "bytes": 470,
+      "style_types": [
+        "StyleBoxTexture"
+      ],
+      "font_sizes": [],
+      "corner_radii": [],
+      "font_resources": []
+    }
+  ],
+  "captures": [
+    {
+      "path": "docs/qa/reports/map_material_2026-11-06/current/region_1_1280x800.png",
+      "sha256": "a6dd577a303677f41ddfe808e523301473755d875aba9c535a7b933b93f016d8",
+      "modified_local": "2026-11-06T17:39:24.373630",
+      "bytes": 31053,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/map_material_2026-11-06/current/region_1_740x360.png",
+      "sha256": "852485c354bf7dcb9aeb9c279bef000160aabd6d375f4a76fc76d2a0871a8d54",
+      "modified_local": "2026-11-06T17:39:26.881491",
+      "bytes": 18099,
+      "dimensions": [
+        740,
+        360
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/equipment_navigation_2026-11-06/1280x800.png",
+      "sha256": "a92360f5f8a50c9e530fd9d453136f50f925dfbe1ee9bd6919ea26a6e021c048",
+      "modified_local": "2026-11-06T17:05:22.257818",
+      "bytes": 567012,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/equipment_navigation_2026-11-06/1170x540.png",
+      "sha256": "fe560b951968a900696949d0fe333397597920853a11a7c079d1672d2a307f3e",
+      "modified_local": "2026-11-06T17:05:22.667195",
+      "bytes": 349921,
+      "dimensions": [
+        1170,
+        540
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/presentation_integration_2026-11-06/shop.png",
+      "sha256": "c653d2f1b94d4f215e0653b7948b64e088fa704af22f7f9695deca5d2876cdd8",
+      "modified_local": "2026-11-06T15:48:45.101313",
+      "bytes": 80595,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/presentation_integration_2026-11-06/workshop.png",
+      "sha256": "81b51dfbfdb8fa265f1562a4dfdf570648acd6329c448b1f81a8bf7ef443fa6f",
+      "modified_local": "2026-11-06T15:48:45.102315",
+      "bytes": 371836,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/presentation_integration_2026-11-06/after.png",
+      "sha256": "e17e661d5248f665f93c079da2764576ca7dc7346d8616712230e918afe2e26e",
+      "modified_local": "2026-11-06T15:48:45.099313",
+      "bytes": 587127,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/interaction_fx_2026-11-06/installed.png",
+      "sha256": "30f25e502b6f7c9aefd920920bcb66002596666889b265540e1e6129f645e12e",
+      "modified_local": "2026-11-06T13:43:27.063936",
+      "bytes": 65132,
+      "dimensions": [
+        1170,
+        540
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/interaction_fx_2026-11-06/upgrade.png",
+      "sha256": "b5b6ae90999e5105705e8179714db64caad23dacf25d62e8ec2fce2c0e1d0831",
+      "modified_local": "2026-11-06T13:43:27.064936",
+      "bytes": 211785,
+      "dimensions": [
+        1170,
+        540
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/interaction_fx_2026-11-06/purchase_full.png",
+      "sha256": "23cb479c485f974416deca42155769a2b65665fa3fbd2a2fbe95d071cbeef585",
+      "modified_local": "2026-11-06T13:43:27.062935",
+      "bytes": 78958,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "qa_runtime/presentation_integration_20261106/flow-final/flow_reward.png",
+      "sha256": "255cc4bd80b6357283669ad3faadb941d4ba5c2d82410a38b9d3c10befc67cd7",
+      "modified_local": "2026-11-06T15:44:52.196943",
+      "bytes": 470288,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "docs/qa/reports/results_live_2026-11-04/lost_1280x800.png",
+      "sha256": "9d2966e68e04a0772fe75e48baeaa89308881d94de6078e31a0a6153167480cb",
+      "modified_local": "2026-11-04T22:13:36.747509",
+      "bytes": 515380,
+      "dimensions": [
+        1280,
+        800
+      ],
+      "visually_inspected": true
+    },
+    {
+      "path": "qa_runtime/presentation_integration_20261106/flow-final/flow_won.png",
+      "sha256": "fd14713be3aca60ca5a9ce4bf5769287bbf1c250b66c06b33435f50a697920b9",
+      "modified_local": "2026-11-06T15:46:24.080310",
+      "bytes": 149026,
+      "dimensions": [
+        1170,
+        540
+      ],
+      "visually_inspected": true,
+      "use": "excluded from results evidence: normal recovery pre-result screen"
+    }
+  ],
+  "freshness": "See freshness_evidence.json and freshness_additional.json. Complete source or dependency manifests absent for some secondary screens; timestamps are corroboration, not full hash proof.",
+  "observations": [
+    "Map and equipment share exact INK e1dccc and BRASS bea36b, common pixel font and 4px chamfer StyleBoxFlat materials.",
+    "Map and equipment share base StyleBox border values, but final finish differs: equipment/edge.gd adds independent 2px highlight and shadow lines to authored buttons; map uses its 1px top/side and 2px bottom style border without this extra finish.",
+    "Workshop/shop/rewards/results use the same font family and flat controls with surface-specific neutral tint, border depth and outcome/acquisition accents; a single raster art look is not used for all controls.",
+    "Supplementary current combat HUD retains cyan neutral frame/button texture and dither in StyleBoxTexture resources, while newest map/equipment controls use quiet flat frames; this is a real residual material difference.",
+    "Combat heat, cooling, danger, fire and next-shot selection are functional colors. They should not be counted as arbitrary palette errors or recolored wholesale."
+  ]
+}

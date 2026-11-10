@@ -1,0 +1,47 @@
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/rivet_twohand_20261106/rivet_carbine_v1.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] weapon_texture (res://redesign/samples/rivet_carbine_actor.gd:27)
+       [2] draw_weapon_layers (res://redesign/samples/rivet_carbine_actor.gd:48)
+       [3] _draw (res://redesign/weapon_pixel_layer.gd:9)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/style_pilot_20261106/rivet_quiet.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] weapon_texture (res://redesign/samples/rivet_carbine_actor.gd:27)
+       [2] draw_weapon_layers (res://redesign/samples/rivet_carbine_actor.gd:48)
+       [3] _draw (res://redesign/weapon_pixel_layer.gd:9)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/style_pilot_20261106/background_quiet.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] apply_style (res://redesign/samples/rivet_carbine_preview.gd:56)
+       [2] run (res://tests/rivet_art_ui.gd:51)
+       [3] capture (res://tests/campaign_magazine_ui.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/style_pilot_20261106/hero_quiet.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] body_texture (res://redesign/samples/rivet_carbine_actor.gd:31)
+       [2] _draw (res://redesign/weapon_actor.gd:196)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/style_pilot_20261106/background_coarse.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] apply_style (res://redesign/samples/rivet_carbine_preview.gd:56)
+       [2] run (res://tests/rivet_art_ui.gd:51)
+       [3] capture (res://tests/campaign_magazine_ui.gd:18)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/style_pilot_20261106/hero_coarse.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] body_texture (res://redesign/samples/rivet_carbine_actor.gd:31)
+       [2] _draw (res://redesign/weapon_actor.gd:196)
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/style_pilot_20261106/rivet_coarse.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] weapon_texture (res://redesign/samples/rivet_carbine_actor.gd:27)
+       [2] draw_weapon_layers (res://redesign/samples/rivet_carbine_actor.gd:48)
+       [3] _draw (res://redesign/weapon_pixel_layer.gd:9)

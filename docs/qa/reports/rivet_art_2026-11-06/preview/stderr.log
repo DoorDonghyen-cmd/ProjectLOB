@@ -1,0 +1,7 @@
+WARNING: Loaded resource as image file, this will not work on export: 'res://assets/art/style_pilot_20261106/rivet_quiet.png'. Instead, import the image file as an Image resource and load it normally as a resource.
+   at: load_from_file (core/io/image.cpp:2780)
+   GDScript backtrace (most recent call first):
+       [0] texture (res://redesign/samples/rivet_carbine_actor.gd:11)
+       [1] weapon_texture (res://redesign/samples/rivet_carbine_actor.gd:27)
+       [2] draw_weapon_layers (res://redesign/samples/rivet_carbine_actor.gd:48)
+       [3] _draw (res://redesign/weapon_pixel_layer.gd:9)

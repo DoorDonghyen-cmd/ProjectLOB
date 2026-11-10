@@ -1,0 +1,136 @@
+{
+  "date": "2026-10-25",
+  "tool": "built-in image_gen",
+  "scope": "preview_only_not_integrated",
+  "edit_target": "새-게임-프로젝트\\assets\\art\\weapon_motion_20261011\\pistol_body_v2.png",
+  "context_reference": "docs/qa/reports/assets/style_audit_2026-10-25/battle_work.png",
+  "prompt_file": "prompt.txt",
+  "generated_source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-05f014ea-303b-41c6-9d41-7abe7bed62e1.png",
+  "file": "pistol_body_outline_v1.png",
+  "dimensions": [
+    1536,
+    1024
+  ],
+  "mode": "RGBA",
+  "sha256": "e84575aa3f98d3cdf48baafc2333547557bcf8ebcdadb7f6552aaaeb136a47ea",
+  "source_sha256": "f7dfec1dcb162cf65675a03ed17df5d3e5455a4182f6a8b06563b80d9c00010f",
+  "review": "Same six-cell canvas and current grip registration retained for preview; generated edit is not pixel-identical. Occupied source bounds drift up to five pixels, so all-pose contact and silhouette validation remain required before production. Alpha is retained and uses current cutout shader in preview. Quarter-width reduction is prompt intent, not a measured result.",
+  "selected_preview": "pistol_body_outline_v4.png",
+  "comparison": "comparison_v4.png",
+  "iterations": [
+    {
+      "file": "pistol_body_outline_v1.png",
+      "prompt": "prompt.txt",
+      "review": "Too subtle at combat size; retained as conservative alternate.",
+      "sha256": "e84575aa3f98d3cdf48baafc2333547557bcf8ebcdadb7f6552aaaeb136a47ea",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ]
+    },
+    {
+      "file": "pistol_body_outline_v2.png",
+      "prompt": "prompt_v2.txt",
+      "generated_source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-98a0b6f0-1469-49d4-b322-2f5a1a6b55c4.png",
+      "review": "Rejected for thin but higher-contrast continuous black edges.",
+      "sha256": "7c896e0d96f87c4aa5c4657e9ab4394fe1dec6ae8775293b3b7f8a3517ae2f8f",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ]
+    },
+    {
+      "file": "pistol_body_outline_v3.png",
+      "prompt": "prompt_v3.txt",
+      "edit_target": "pistol_body_outline_v1.png",
+      "generated_source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-ae774697-d728-4378-88a4-5a03d6d8ae80.png",
+      "review": "Softened contour direction; superseded by v4 scarf color correction. Not production-ready or pixel-identical.",
+      "sha256": "7288f0284cd7948ecaf99f9103e42d452fc8fe6d0e3aac91f462164ef782e698",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "file": "pistol_body_outline_v4.png",
+      "prompt": "prompt_v4.txt",
+      "edit_target": "pistol_body_outline_v3.png",
+      "palette_reference": "새-게임-프로젝트\\assets\\art\\weapon_motion_20261011\\pistol_body_v2.png",
+      "generated_source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-5d6746b3-c04d-4be7-aa5a-a870374b9f35.png",
+      "review": "Selected preview: softened blue outer coat and sleeve contour, muted scarf restored. Existing black hand/torso overlap remains. Generative edit has minor color and silhouette drift; approval of art direction is separate from animation/contact validation.",
+      "sha256": "0c536a95fbb49a7912ce93b68fe0afb6079c88a59e6f2a19cfe0b3dcc17dc0da",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ]
+    },
+    {
+      "file": "pistol_body_outline_v5.png",
+      "prompt": "prompt_v5.txt",
+      "edit_target": "pistol_body_outline_v4.png",
+      "generated_source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-45299ad0-61dd-4844-ba40-7240170cd837.png",
+      "tool": "built-in image_gen",
+      "review": "Additional user-requested alternative. Stronger removal of outer near-black masses on backpack, sleeve, coat and boot sides. Internal overlap darks retained. Color and silhouette drift from generative edit remain; no production integration or full motion certification. Compare B=v4 vs C=v5 at identical current weapon, grip and displayed size.",
+      "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ]
+    }
+  ],
+  "runtime_review": {
+    "engine": "Godot 4.7 Compatibility",
+    "isolated_user_path": "qa_runtime/outline_preview_20261025",
+    "checks": "Godot 4.7 Compatibility isolated preview. Current Rivet and grip composition retained; comparison board and actual combat-size context visually reviewed. Model hash unchanged; exit0; stderr empty. Preview actor loads external body only in QA scene; no production asset or code replaced. Six poses supplied but complete animation/contact and other outfits not certified.",
+    "comparison": "comparison_v4.png",
+    "battle_capture": "battle_preview_v4.png",
+    "log": "capture-v4.log"
+  },
+  "comparison_candidates": [
+    "pistol_body_outline_v4.png",
+    "pistol_body_outline_v5.png"
+  ],
+  "latest_comparison": "comparison_threeway.png",
+  "user_selection": "C / pistol_body_outline_v5.png approved 2026-10-25",
+  "threeway_runtime_review": {
+    "comparison": "comparison_threeway.png",
+    "log": "capture-threeway.log",
+    "engine": "Godot 4.7 Compatibility",
+    "isolated_user_path": "qa_runtime/outline_preview_20261025",
+    "exit_code": 0,
+    "stderr_bytes": 0,
+    "gameplay_state": "hash unchanged",
+    "production": "unchanged",
+    "visual_review": "Three equal-scale actor composites and native combat-size crops reviewed. Candidate comparison only, user preference pending."
+  },
+  "adoption": {
+    "body": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+    "equipment": "same actual combat actor and current held weapon; separate portrait edit unused",
+    "report": "docs/qa/reports/hero_contour_live_2026-10-25.md"
+  }
+}

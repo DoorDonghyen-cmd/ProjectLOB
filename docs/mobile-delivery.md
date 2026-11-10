@@ -1,6 +1,10 @@
 # APK 요청 → ZIP → Google Drive 전달
 
+전체 본편 테스트는 `-PlayMode campaign -Architecture arm64`로 `res://redesign/main.tscn`을 전달한다. 아래의 `magazine-journey`와 `weapon-magazine`는 목적을 명시한 별도 비교판이다. [2026-11-06 전체 본편 전달·기본 내보내기 차이](qa/reports/mobile_delivery_2026-11-06.md)를 참고한다.
+
 사용자가 APK를 요청하면 아래 전체 흐름을 실행한다. 별도 업로드 요청을 반복해서 받지 않는다. 요청 없이 APK를 만들거나 배포하는 예약 작업은 아니다.
+
+내부 테스트 전달에서는 **정확한 플레이 모드·빌드 무결성·저장 보호·확인하지 못한 항목**을 전달한다. 아래 포장/리소스 검증과 [실기기 지속 플레이·앱 복귀](qa/protocols/mobile-sustained.md)는 별개다. 실기기 테스트용 APK 자체를 요청받은 경우 아직 측정하지 못했다는 사실을 안내하고 전달하며, 정식 출시의 모든 절차를 전제하지 않는다. 지원 모드는 `campaign`/`weapon-magazine`/`magazine-journey`이다. 첫 관문까지의 최신 HUD 연속 플레이는 `magazine-journey`이며 독립 비교 APK와 구분한다. 진입 씬·설치 안내·모드 설명은 `tools/mobile_play_modes.json`을 따른다.
 
 빌드는 로컬 스크립트, 업로드와 읽기 검증은 연결된 Google Drive 앱을 사용하는 에이전트가 담당한다. `BUILD_MOBILE.cmd` 단독 실행은 검증된 ZIP 생성까지 수행한다. OAuth 키·토큰을 저장소나 스크립트에 넣지 않는다.
 
@@ -15,6 +19,10 @@
    ```
 
    이후 빌드는 날짜에 맞는 노트를 사용하거나 옵션을 생략한다. `BUILD_MOBILE.cmd`도 같은 진입점이다. 64비트 Galaxy용으로 용량을 줄일 때는 `-Architecture arm64`를 지정한다. 기본 `universal`은 ARM64와 ARMv7을 모두 포함한다. SDK 자동 경로가 격리 환경으로 바뀌면 `-AndroidSdk <실제 SDK 경로>`를 지정할 수 있다.
+
+   최신 탄창·선택 빼내기의 독립 비교를 전달할 때는 `-PlayMode weapon-magazine -Architecture arm64 -NotesFile docs/releases/2026-10-31-magazine-ejection-mobile.md`를 지정한다. 기본값 `campaign`은 본편이다. 비교 모드는 빌드 중에만 시작 씬을 바꾸고 원래 `project.godot`와 export preset의 바이트를 복구한다. 비교 상태만 별도 파일로 저장하며 본편 등반을 활성화하지 않는다.
+
+   현재 **라인 + 도트 HUD의 첫 관문 연속 여정**을 전달할 때는 `-PlayMode magazine-journey -Architecture arm64`를 지정하고 이번 변경 내역을 `NotesFile`로 전달한다. 실제 시작 씬은 `res://redesign/samples/hud/combat_journey_hud.tscn`이며, 본편·독립 비교와 다른 `magazine_journey_v1.json`에 저장한다. 이전 독립 비교 APK를 업데이트하면 여정에 처음 진입하고, 여정 저장이 이미 있으면 이어간다. 다른 모드 저장을 삭제하거나 변환하지 않는다.
 4. `builds/mobile/latest.json`의 `zip_path`, `file_name`, `parent_folder_id`로 `google_drive_upload_file`을 호출한다. MIME은 `application/zip`, `file_uri`는 런타임 도구 스키마에 따라 로컬 ZIP 절대 경로를 사용한다. 공개 공유를 켜지 않는다.
 5. 응답 ID로 `google_drive_get_file_metadata`를 다시 호출한다. 파일명·크기·MIME·부모 폴더·URL·체크섬을 요청한다. 메타데이터를 해당 release 폴더의 `drive_metadata.json`에 보존한다.
 6. 연결 도구가 체크섬을 생략하면 `google_drive_fetch(download_raw_file=true, include_base64=false)`로 해당 파일을 내려받아 SHA-256을 비교한다. 메타데이터를 읽기 전에 원본 파일 다운로드를 시작하지 않는다.
@@ -32,6 +40,8 @@
 - Godot 4.7·Android 템플릿·SDK·JDK와 기존 서명을 검사한다. 동일 패키지 ID와 인증서를 유지하고 버전 코드는 이전 로컬 빌드보다 올린다.
 - export preset은 임시 추가 후 원본 바이트로 복구한다. 프로세스 강제 종료 시에는 preset을 확인하고 임시 항목만 복구한다. 동시 빌드는 잠금으로 막는다.
 - APK 서명·정렬·패키지·ABI, 전체 ZIP CRC와 필수 리소스를 검사한다. APK에 든 컴파일 리소스로 실제 메인 씬과 전투 기본 규칙을 격리 저장에서 실행한다. 이는 Android 기기 실행 검사와 구별한다.
+- 비교 빌드는 `mobile_comparison_resources.py`로 씬·코드의 실제 참조와 동적 이미지 폴더를 포함하고, 파일로 읽는20개 전투 상태를 명시적으로 넣는다. 원본 이미지를 지우거나 바꾸지 않는다. APK의 시작 씬·20전투 장전/중간 빼내기/저장 재개/실제 사격을 검사하며, 독립 비교에 없는 본편 상점 흐름을 실행하지 않는다. `comparison_resources.json`과 build manifest에 포함 목록을 보존한다.
+- 여정 빌드도 같은 선택 도구를 쓰되 `class_name`으로 참조하는 공통 클래스와 최신 HUD·보상/정비/경로·동적 라인 틀을 포함한다. 정해진 비교 전투 JSON을 주입하지 않고 실제 Campaign으로 시작한다. 컴파일된 리소스 검사에서5총기 새 출발/직접 빼내기/사격,5전투·2정비·코어 성장, 별도 프로세스 저장 재개와 본편/비교 저장 불변을 확인한다. APK에 여정 시작 씬이나 필수 HUD 리소스가 없거나, 검증 후 manifest의 모드가 바뀌면 포장을 거부한다.
 - 배포 ZIP에는 APK·설치 안내·변경 내역·빌드/검증 manifest·SHA-256 목록만 들어간다. 소스, 저장 데이터, QA 프로필, 에디터 설정, 서명 키는 넣지 않는다.
 - 빌드별 고유 폴더와 ZIP을 유지한다. 업로드 실패 시 같은 `delivery_request.json`과 ZIP으로 재시도하고 APK를 다시 만들지 않는다.
 - 연결 도구의 파일당 업로드 상한은 100MiB(`104857600`바이트)이며 포장 단계에서 검사한다. 사용되지 않는 리소스만 배포에서 제외하며 기존 아트 원본은 보존한다. 제외 목록은 `tools/mobile_export_exclusions.json`의 명시적 경로로 관리한다. 목록을 바꾸면 코드·씬·리소스 참조와 동적 로드 경로를 확인한다. 현행 아트 및 동적으로 사용하는 `production_20261002`, `pixel_20261003`는 유지한다. ARM64 전용 빌드는 32비트 Android에서 실행되지 않으므로 전달 시 명시한다. 서명과 패키지 ID는 동일하게 유지한다.
@@ -40,7 +50,11 @@
 
 ## 로컬 경로
 
+전체 ZIP이100MiB를 넘고 브라우저 업로드를 사용할 수 없다면, 화질/플레이 자료를 임의로 줄이지 않고 검증된 ZIP을 각각 한도 미만의 `.zip.001`, `.zip.002` 바이트 조각으로 전달할 수 있다. 재결합 SHA-256/ZIP CRC와 PC 합치기 파일을 검증하고 설치 안내를 함께 제공한다. 각 원격 파일의 메타데이터와 내려받은 해시를 확인한 뒤 `multipart_delivery_request.json` / `upload_receipt.json` / `latest.json`에 `delivery_mode: split-zip` 및 실제 ID/URL/크기/해시를 기록한다. 단일 ZIP이 원격에 존재하는 것처럼 표현하지 않는다. 검증된2026-11-06 전달이 예시이며 기본 `package` 명령의 크기 제한은 유지한다.
+
 - `builds/mobile/releases/<build-id>/`: APK·ZIP·로그·검증·업로드 영수증
 - `builds/mobile/latest.json`: 최신 패키지 경로와 전달 상태
 - `tools/mobile_delivery.json`: 고정 폴더 ID와 서명 지문. 인증정보는 없음.
 - `python -m unittest discover -s tools -p test_mobile_release.py`: ZIP 허용 목록과 잘못된 업로드/체크섬 거부 검사
+- `python -m unittest discover -s tools -p "test_mobile*.py"`: 기존 전달 검사와 모드/필수 리소스 누락·잘못된 진입 거부 검사. 실행 환경의 임시 폴더에 쓸 수 없으면 `TEMP`/`TMP`를 저장소의 `qa_runtime/` 아래로 지정한다.
+- `python tools/check_mobile_journey.py`: 원본 설정을 수정하지 않고 별도 복사본에서 Android용 리소스 ZIP을 컴파일하고 저장 재개까지 검사한다. 결과는 `qa_runtime/mobile_journey_20261101/latest_check.json`에 연결한다. APK·서명·기기 설치·Drive 업로드·최신 배포 기록을 생성/갱신하는 명령이 아니다. APK를 실제 요청받으면 위의 빌드·검증·전달 절차를 별도로 수행한다.

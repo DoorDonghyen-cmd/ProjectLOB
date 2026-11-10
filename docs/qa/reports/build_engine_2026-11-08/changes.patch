@@ -1,0 +1,689 @@
+--- a/redesign/content.gd
++++ b/redesign/content.gd
+@@ -55,6 +55,14 @@
+ 	"capacitor":{"effect":"전이 확장","value":"전이 +1 · 대상 +1","role":"전이 모듈","upside":"전격 전이 피해 +1 · 처치 전이 대상 +1","text":"전격탄 전이 피해 +1. 연쇄·돌파 코어의 처치 후 전이 대상도 추가 1기 늘립니다. 모듈이므로 해당 코어와 함께 장착할 수 있습니다. 처치 전이의 직접 피해 배율은 바꾸지 않습니다."},
+ 	"arc_splitter":{"text":"전격탄 전이 피해 +2, 전격 전이 대상 +1. 모든 직접 피해 −1. 전격의 광역 전이를 위한 코어이며 연쇄·돌파 코어와 동시 장착할 수 없습니다.","upside":"전격 전이 피해 +2 · 대상 +1"}}
+ static func part_spec(id: String, state: Dictionary) -> Dictionary:
++	if id == "tally" and int(state.get("build_engine_version", 0)) == 1:
++		# Build engine growth (build_engine.gd): show the current record on the part.
++		var kills := int(state.get("part_growth", {}).get("tally", 0))
++		var tally: Dictionary = PARTS[id].duplicate()
++		var bonus := mini(6, kills / 3)
++		tally.value = "현재 +%d / 최대 +6" % bonus
++		tally.text += "\n기록: 처치 %d회 · 연타 타격당 +%d" % [kills, bonus]
++		return tally
+ 	var magazine_build: bool = int(state.get("magazine_build_version", 0)) >= 1 and MAGAZINE_BUILD_PARTS.has(id)
+ 	var focus: bool = int(state.get("focus_build_version", 0)) == 1 and FOCUS_PARTS.has(id)
+ 	var role_part: bool=(Roles.enabled(state) and id in ["volley_drive","siege_drive","arc_splitter","inferno","coil","thermal_drive"]) or (Roles.builds(state) and BUILD_ROLE_PARTS.has(id))
+@@ -258,6 +266,9 @@
+ 	"reserve": {"grade": 0, "name": "예비 급탄기", "kind": "module", "effect": "패 교환", "value": "+1회", "role": "조합 탐색", "upside": "패 교환 +1회", "downside": "", "text": "교전 시작과 재장전마다 복장의 패 교환 횟수 +1회. 운반용 외투도 1회 교환할 수 있습니다."},
+ 	"opening": {"grade": 1, "name": "선두 격발기", "kind": "module", "effect": "첫 발", "value": "+2 피해", "role": "선두 설계", "upside": "탄창 첫 발 피해 +2", "downside": "", "text": "장전한 탄창의 첫 발 직접 피해 +2. 어떤 탄을 선두에 놓을지 결정합니다."},
+ 	"third_striker": {"grade":1,"name":"제3 격발기","kind":"module","effect":"세 번째 발","value":"3번째 ×3","role":"주력 탄 타이밍","upside":"탄창의 세 번째 탄 직접 피해 ×3","downside":"","text":"같은 탄창에서 실제로 발사한 세 번째 탄의 직접 피해 ×3. 지원탄도 한 발로 세고 연타는 타격 수와 무관하게 한 발입니다. 빼내기는 세지 않으며 냉각은 순서를 유지하고 탄창 교체 시 초기화합니다. 화상·기폭·전이에는 적용하지 않습니다."},
++	# Build engine trial (2026-11-08, build_engine.gd): offered only in runs with build_engine_version.
++	"resonator": {"grade": 2, "name": "연타 공명기", "kind": "module", "effect": "연타 공명", "value": "타격마다 ×1·×2·×3", "role": "연타 결정타", "upside": "연타탄의 n번째 타격 피해 ×n", "downside": "연타탄 열 +1", "text": "연타탄이 같은 적을 때리는 동안 타격마다 배율이 커집니다. 1타 ×1, 2타 ×2, 3타 ×3. 증폭·기록·위치 배율이 모두 곱해집니다. 연타탄 열 +1."},
++	"tally": {"grade": 1, "name": "타격 기록기", "kind": "module", "effect": "처치 기록", "value": "최대 +6", "role": "등반 성장", "upside": "연타 처치 3회마다 연타 타격당 +1", "downside": "분해하면 기록 소멸", "text": "장착한 동안 연타탄으로 적을 3번 처치할 때마다 이번 등반에서 연타탄 타격당 피해 +1(최대 +6). 해제해도 기록은 남고, 분해하면 사라집니다."},
+ 	"afterburner": {"grade": 1, "name": "후미 점화기", "kind": "module", "effect": "마지막 발", "value": "+3 피해", "role": "후미 결산", "upside": "탄창 마지막 발 피해 +3", "downside": "재장전 +1턴", "text": "탄창 마지막 발 직접 피해 +3. 재장전 비용이 1턴 증가합니다."},
+ 	"field_press": {"grade": 2, "name": "야전 압축기", "kind": "core", "effect": "현장 압축", "value": "+1회", "role": "압축 빌드", "upside": "교전마다 현장 압축 +1회", "downside": "탄창 −2칸", "text": "교전 시작마다 현장 압축 기회 +1. 대신 탄창 슬롯을 2칸 잃습니다."},
+ 	"overbore": {"grade": 2, "name": "과구경 총열", "kind": "core", "effect": "2칸 공격탄", "value": "피해 +3 · 관통 +2", "role": "중량 압축탄", "upside": "2칸 공격탄 피해 +3 · 관통 +2", "downside": "탄창 −1칸", "text": "2칸을 차지하고 기본 피해가 있는 탄의 타격당 피해 +3·관통 +2. 탄창 −1칸. 1칸 탄과 기본 피해 0인 예약탄 등은 강화하지 않습니다."},
+@@ -628,6 +639,7 @@
+ static func part_heat_bonus(id: String, state: Dictionary) -> int:
+ 	var bonus := 1 if is_attack(id) and has_part(state,"volley_drive") and hit_count(id,state)>1 else 0
+ 	if revised_combat(state) and source_id(id) == "precise" and has_part(state,"duplex"): bonus += 1
++	if int(state.get("build_engine_version", 0)) == 1 and str(AMMO[id].effect) == "double" and has_part(state, "resonator"): bonus += 1
+ 	return bonus
+ 
+ static func field_compression_bonus(state: Dictionary) -> int:
+--- a/redesign/model.gd
++++ b/redesign/model.gd
+@@ -17,6 +17,7 @@
+ # Deck-building revision for new full-climb runs (2026-11-01). See magazine_build.gd.
+ const MagazineBuild = preload("res://redesign/magazine_build.gd")
+ const FocusBuild = preload("res://redesign/focus_build.gd")
++const BuildEngine = preload("res://redesign/build_engine.gd")
+ const Roles = preload("res://redesign/combat_roles.gd")
+ const Balance = preload("res://redesign/run_balance.gd")
+ const VERSION := 15
+@@ -768,6 +769,12 @@
+ 		part_bonus += 3
+ 		if not minimal: part_combo.append("후미 +3")
+ 		if not minimal: part_effects.append({"id": "afterburner", "label": "피해 +3"})
++	var tally_bonus := BuildEngine.tally_bonus(s) if BuildEngine.enabled(s) and active_parts.has("tally") and BuildEngine.is_volley_round(id) else 0
++	if tally_bonus > 0:
++		part_bonus += tally_bonus
++		if not minimal: part_combo.append("기록 +%d" % tally_bonus)
++		if not minimal: part_effects.append({"id": "tally", "label": "기록 +%d" % tally_bonus})
++	var resonant := attack and BuildEngine.resonance(s, id, active_parts)
+ 	if MagazineBuild.enabled(s):
+ 		var triad_bonus := MagazineBuild.triad_bonus(s, id) if active_parts.has("triad") else 0
+ 		if triad_bonus > 0:
+@@ -835,7 +842,8 @@
+ 			blocked_hits += 1
+ 			blocked = true
+ 		else:
+-			e.hp = maxi(0, int(e.hp) - (first_hit if hit_index==0 else per_hit))
++			var hit_damage := first_hit if hit_index==0 else (Content.armored_damage(raw * (hit_index + 1), armor, s) if resonant else per_hit)
++			e.hp = maxi(0, int(e.hp) - hit_damage)
+ 		if s.gun == "burst" and not WeaponRoles.enabled(s):
+ 			e.focus_hits = int(e.get("focus_hits", 0)) + 1
+ 			if int(e.focus_hits) == 3:
+@@ -845,6 +853,10 @@
+ 				e.hp -= extra
+ 				focus_damage += extra
+ 	var primary_direct_kill := attack and hp_before>0 and int(e.hp)==0 and not Ranged.is_projectile(index)
++	if primary_direct_kill: BuildEngine.record_kill(s, id, active_parts)
++	if resonant and hits > 1 and not minimal:
++		combo.append("공명 ×1~×%d" % hits)
++		part_effects.append({"id": "resonator", "label": "공명 ×1~×%d" % hits})
+ 	var detonation := 0
+ 	if spec.effect == "detonate" and not Ranged.is_projectile(index):
+ 		detonation = mini(int(e.hp), burn_before * int(profile.burn_tick) * int(spec.get("detonate_scale", 1)))
+@@ -1387,6 +1399,7 @@
+ 	if not _whole(parsed.get("magazine_build_version", 0), 0, MagazineBuild.VERSION): return false
+ 	if not Roles.valid(parsed):return false
+ 	if not _whole(parsed.get("focus_build_version", 0), 0, FocusBuild.VERSION): return false
++	if not BuildEngine.valid(parsed): return false
+ 	if not Balance.valid(parsed): return false
+ 	if not Patterns.valid(parsed): return false
+ 	if FocusBuild.enabled(parsed) and int(parsed.get("fire_control_version",0)) != FireHeatTrial.CAMPAIGN_VERSION: return false
+--- a/redesign/campaign.gd
++++ b/redesign/campaign.gd
+@@ -71,6 +71,8 @@
+ 		Model.FireHeatTrial.activate_campaign(model.s)
+ 		s.focus_build_version = Model.FocusBuild.VERSION
+ 		model.s.focus_build_version = Model.FocusBuild.VERSION
++		# Build engine trial (2026-11-08): 연타 공명기·타격 기록기 for new runs.
++		model.s.build_engine_version = Model.BuildEngine.VERSION
+ 	if magazine_mode and map_version>=4:
+ 		s.combat_roles_version=Model.Roles.VERSION;model.s.combat_roles_version=Model.Roles.VERSION
+ 		s.specialist_core_version=Model.Roles.SPECIALIST_VERSION;model.s.specialist_core_version=Model.Roles.SPECIALIST_VERSION
+@@ -748,6 +750,7 @@
+ 	if not s.phase in ["shop", "supply"] or not s.parts.has(id) or is_equipped(id): return false
+ 	s.parts.erase(id)
+ 	s.credits += 10
++	Model.BuildEngine.forget(model.s, id)
+ 	_log("dismantle", {"id": id})
+ 	return true
+ 
+--- a/redesign/campaign_content.gd
++++ b/redesign/campaign_content.gd
+@@ -368,6 +368,8 @@
+ 	ammo_id = advanced_offer(ammo_id, node, rng(seed_value, int(node.id) + 2900 + revision * 37))
+ 	if discovery_version >= 2: ammo_id = Ammo.Variants.offer(ammo_id, Ammo.AMMO, rng(seed_value, int(node.id) + 4700 + revision * 37), node)
+ 	var parts: Array = eligible_parts(gun, discovery_version, focus_version)
++	# Build engine parts appear only in runs started with it (build_engine.gd).
++	if not preload("res://redesign/build_engine.gd").enabled(state): parts = parts.filter(func(id): return not preload("res://redesign/build_engine.gd").NEW_PARTS.has(id))
+ 	for id in owned: parts.erase(id)
+ 	var unseen: Array = []
+ 	var repeated: Array = []
+--- a/redesign/build_choices.gd
++++ b/redesign/build_choices.gd
+@@ -5,7 +5,7 @@
+ const MODULES:={
+ 	"bore":["coil","igniter","rammer","compression_sink","radiator"],
+ 	"arc":["capacitor","reclaimer","rammer","chain_sink"],
+-	"precise":["duplex","sequencer","third_striker","breaker","reclaimer"],
++	"precise":["duplex","sequencer","third_striker","breaker","reclaimer","resonator","tally"],
+ 	"pierce":["lens","third_striker","afterburner","opening","sequencer"],
+ 	"vent":["chain_sink","afterburner","ember_core","compression_sink"],
+ 	"push":["rammer","coil","igniter","radiator"]}
+@@ -21,7 +21,8 @@
+ 	if id in ["coil","inferno","igniter"]:return "불길"
+ 	if id in ["momentum","rammer"]:return "제어"
+ 	if id in ["arc_splitter","capacitor","reclaimer"]:return "전이"
+-	if id in ["third_striker","opening","afterburner","sequencer","duplex","lens"]:return "직접 화력"
++	if id in ["third_striker","opening","afterburner","sequencer","duplex","lens","resonator"]:return "직접 화력"
++	if id=="tally":return "성장"
+ 	return "운용"
+ static func shop_ammo(state: Dictionary,node: Dictionary,revision: int)->String:
+ 	var main:=Focus.main_round(state)
+--- a/redesign/build_guide.gd
++++ b/redesign/build_guide.gd
+@@ -3,6 +3,8 @@
+ const Ammo = preload("res://redesign/content.gd")
+ const FAMILIES := {
+ 	"third_striker":"순서 보상",
++	"resonator":"연타 배율",
++	"tally":"등반 성장",
+ 	"volley_drive":"화력 성장", "thermal_drive":"화력 성장", "siege_drive":"화력 성장",
+ 	"lens": "조합 보상",
+ 	"coil": "조합 보상",
+@@ -46,6 +48,8 @@
+ 	return str(FAMILIES.get(id, "빌드"))
+ 
+ static func connection(id: String, state: Dictionary) -> String:
++	if id == "resonator": return "증폭 → 연타 · 복열로 타격이 늘수록 ×n이 커짐 · 제3 격발기와 곱해짐"
++	if id == "tally": return "연타 처치로 성장 · 공명기의 모든 타격에 더해져 함께 곱해짐"
+ 	if Ammo.Roles.builds(state):
+ 		match id:
+ 			"inferno":return "화상 +%d · 넓은 불길 4행동 · 냉각/교체 중에도 피해"%Ammo.Roles.burn_growth(state,[id])
+--- a/redesign/ammo_discovery.gd
++++ b/redesign/ammo_discovery.gd
+@@ -5,6 +5,8 @@
+ const PAUSED_PARTS := ["indexer"]
+ const LINKS := {
+ 	"third_striker": ["charge", "charge_hot", "precise", "pierce", "vent"],
++	"resonator": ["precise", "charge"],
++	"tally": ["precise", "charge"],
+ 	"volley_drive": ["precise", "charge", "shatter", "chase"],
+ 	"thermal_drive": ["bore", "charge_heat", "cool", "vent", "charge_hot"],
+ 	"siege_drive": ["pierce", "charge_hot", "bypass", "sequence", "charge"],
+--- a/redesign/part_icon_art.gd
++++ b/redesign/part_icon_art.gd
+@@ -9,7 +9,7 @@
+ const RUST := Color("615343")
+ const INSET := Color("35464b")
+ const SIZE := Vector2(32, 24)
+-const IDS := ["volley_drive", "thermal_drive", "siege_drive", "ordinary_chain", "compression_sink", "cooling_breech", "chain_sink", "indexer", "radiator", "reclaimer", "ember_core", "lens", "loader", "supply", "coil", "capacitor", "rammer", "sequencer", "duplex", "igniter", "breaker", "executioner", "reserve", "opening", "afterburner", "field_press", "overbore", "inferno", "arc_splitter", "momentum", "triad", "third_striker"]
++const IDS := ["volley_drive", "thermal_drive", "siege_drive", "ordinary_chain", "compression_sink", "cooling_breech", "chain_sink", "indexer", "radiator", "reclaimer", "ember_core", "lens", "loader", "supply", "coil", "capacitor", "rammer", "sequencer", "duplex", "igniter", "breaker", "executioner", "reserve", "opening", "afterburner", "field_press", "overbore", "inferno", "arc_splitter", "momentum", "triad", "third_striker", "resonator", "tally"]
+ 
+ static func rect(c: CanvasItem, x: float, y: float, w: float, h: float, color: Color) -> void:
+ 	c.draw_rect(Rect2(x, y, w, h), color)
+@@ -263,6 +263,21 @@
+ 			metal(c, 17, 1, 10, 5)
+ 			rect(c, 20, 6, 3, 2, RUST)
+ 			rect(c, 25, 2, 2, 2, accent_metal)
++		"resonator":
++			# 2026-11-08 build engine: a receiver with three rising strike bars.
++			metal(c, 3, 16, 26, 6)
++			for i in range(3):
++				var h := 4 + i * 4
++				rect(c, 6 + i * 8, 15 - h, 5, h, COPPER if i == 2 else accent_metal)
++				rect(c, 6 + i * 8, 15 - h, 5, 1, LIGHT)
++			rect(c, 4, 18, 24, 1, RUST)
++		"tally":
++			# 2026-11-08 build engine: a counter plate with tick marks and a dial.
++			metal(c, 4, 4, 24, 17)
++			rect(c, 6, 6, 12, 13, INSET)
++			for i in range(3): rect(c, 8 + i * 3, 8, 1, 9, LIGHT if i < 2 else COPPER)
++			disc(c, 23, 12, 4, SHADE)
++			rect(c, 23, 9, 1, 4, COPPER)
+ 		"none":
+ 			rect(c, 14, 6, 3, 12, SHADE)
+ 			rect(c, 9, 11, 13, 3, SHADE)
+--- a/redesign/part_card_view.gd
++++ b/redesign/part_card_view.gd
+@@ -194,6 +194,12 @@
+ 		"third_striker":
+ 			for x in [-9, -2, 5]: draw_rect(Rect2(x, -7, 5, 14), color if x == 5 else Color(color, 0.35))
+ 			draw_rect(Rect2(4, -10, 7, 20), color, false, 1)
++		"resonator":
++			for i in range(3): draw_rect(Rect2(-9 + i * 7, 6 - 4 * (i + 1), 5, 4 * (i + 1)), color if i == 2 else Color(color, 0.5))
++		"tally":
++			draw_rect(Rect2(-10, -8, 20, 16), color, false, 1)
++			for x in [-6, -3, 0]: draw_line(Vector2(x, -5), Vector2(x, 5), color, 1.0)
++			draw_line(Vector2(-7, 3), Vector2(2, -3), color, 1.0)
+ 		"afterburner":
+ 			draw_line(Vector2(-11, 0), Vector2(7, 0), color, 3.0)
+ 			draw_colored_polygon(PackedVector2Array([Vector2(5, -6), Vector2(12, 0), Vector2(5, 6)]), color)
+--- a/redesign/damage_readout.gd
++++ b/redesign/damage_readout.gd
+@@ -67,4 +67,35 @@
+ 		color=style.color
+ 		if int(result.get("burn_added",0))<=0 and not result.get("ground",false):label_color=color
+ 	# Kill/large-damage importance changes size/marks, retaining effect hue.
+-	return {"target":int(result.get("target",-1)),"amount":amount,"number":number,"label":label,"color":color,"label_color":label_color,"style":style,"strong":strong,"kill":kill,"kind":kind,"emphasis":emphasis}
++	return {"target":int(result.get("target",-1)),"amount":amount,"number":number,"label":label,"color":color,"label_color":label_color,"style":style,"strong":strong,"kill":kill,"kind":kind,"emphasis":emphasis,"ledger":ledger_text(result) if kind == "shot" and amount > 0 else ""}
++
++## Calculation line (2026-11-08): per-hit base + additions, then each multiplier, e.g.
++## "2+7 ×3 · 공명×1~3". Empty for a plain shot with nothing added or multiplied.
++## Built from the shot's existing math record, so nothing new is stored in saves.
++static func ledger_text(result: Dictionary) -> String:
++	var math: Dictionary = result.get("math", {})
++	if not math.has("subtotal") or int(math.get("raw", 0)) <= 0: return ""
++	var base := int(math.get("base", 0))
++	var add := int(math.subtotal) - base
++	var mults: Array = []
++	for key in ["factor", "part_factor", "weapon_factor"]:
++		if int(math.get(key, 1)) > 1: mults.append(float(math[key]))
++	for key in ["engine_percent", "gate_percent", "overdrive_percent"]:
++		var percent := int(math.get(key, 100))
++		if percent != 100: mults.append(percent / 100.0)
++	var resonant := false
++	for effect in result.get("part_effects", []):
++		if str(effect.get("id", "")) == "resonator": resonant = true
++	if add == 0 and mults.is_empty() and not resonant: return ""
++	var text := str(base)
++	if add != 0: text += ("+%d" if add > 0 else "%d") % add
++	for value in mults:
++		var factor := ("%.2f" % float(value)).rstrip("0").rstrip(".")
++		text += " ×" + factor
++	var hits := maxi(1, int(result.get("hits", 1)))
++	if resonant: text += " 공명×1~%d" % hits
++	elif hits > 1: text += " ×%d타" % hits
++	# The full calculated total (before armor), so overkill is visible too.
++	var total := int(math.raw) * (hits * (hits + 1) / 2 if resonant else hits)
++	if total > 0: text += " = %d" % total
++	return text
+--- a/redesign/battle_view.gd
++++ b/redesign/battle_view.gd
+@@ -542,10 +542,10 @@
+ 		while font_size > 24 and FONT.get_height(font_size)+22 > available: font_size -= 2
+ 		while font_size > 24 and FONT.get_string_size(entry.number,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width: font_size -= 2
+ 		var rise := 0.0 if not actor_motion_enabled() else roundf(4.0*(1.0-pulse)*(1.0-pulse))
+-		var height:=FONT.get_height(font_size)+rise+18
++		var height:=FONT.get_height(font_size)+rise+18+(16 if not str(entry.get("ledger","")).is_empty() else 0)
+ 		var top:=clampf(point.y-height*0.5,4,maxf(4,size.y-height-4))
+ 		var baseline := Vector2(left,top+rise+FONT.get_ascent(font_size))
+-		var bounds := Rect2(left,top, width, FONT.get_height(font_size)+rise+18)
++		var bounds := Rect2(left,top, width, height-rise)
+ 		output.append({"entry":entry,"baseline":baseline.round(),"font_size":font_size,"bounds":bounds})
+ 	return output
+ 
+@@ -570,6 +570,16 @@
+ 			while label_size>12 and FONT.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,label_size).x>width: label_size-=1
+ 			canvas.draw_string_outline(FONT,label_at,label,HORIZONTAL_ALIGNMENT_CENTER,width,label_size,3,Color("11222a",alpha))
+ 			canvas.draw_string(FONT,label_at,label,HORIZONTAL_ALIGNMENT_CENTER,width,label_size,Color(entry.get("label_color",entry.color),alpha))
++		var ledger := str(entry.get("ledger",""))
++		if not ledger.is_empty():
++			# Calculation line under the label: base + additions, then multipliers.
++			# Pixel font at 16; the line may be wider than the number, centred on it.
++			var ledger_size := 16
++			var ledger_width := minf(maxf(width, FONT.get_string_size(ledger,HORIZONTAL_ALIGNMENT_LEFT,-1,ledger_size).x+8), size.x-8)
++			var ledger_left := clampf(at.x+width*0.5-ledger_width*0.5, 4, size.x-ledger_width-4)
++			var ledger_at := Vector2(ledger_left, at.y+18+(16 if not str(entry.label).is_empty() else 0))
++			canvas.draw_string_outline(FONT,ledger_at,ledger,HORIZONTAL_ALIGNMENT_CENTER,ledger_width,ledger_size,5,Color("11222a",alpha))
++			canvas.draw_string(FONT,ledger_at,ledger,HORIZONTAL_ALIGNMENT_CENTER,ledger_width,ledger_size,Color("f1cf8a",alpha))
+ 		if entry.kill and pulse < 0.45 and actor_motion_enabled():
+ 			var center := Vector2(at.x+width*0.5,at.y-12)
+ 			var spread := 26+roundf(pulse*18)
+--- /dev/null
++++ b/redesign/build_engine.gd
+@@ -0,0 +1,60 @@
++extends RefCounted
++## Build engine trial (2026-11-08, user-approved direction; parts and numbers are director
++## values before human play). First build: 연타·결정타.
++## - 연타 공명기 (resonator): rule change. Each hit of a 연타 round on the same target
++##   multiplies that hit: hit 1 ×1, hit 2 ×2, hit 3 ×3. Cost: 연타 rounds heat +1.
++## - 타격 기록기 (tally): grows during the climb. Every 3 kills by a 연타 round while it is
++##   equipped add +1 damage per 연타 hit, up to +6. The record stays with the part when it
++##   is unequipped and is lost when the part is dismantled.
++## Only runs started with build_engine_version (model.s) use these parts; older saves
++## never see them offered and keep their rules.
++const VERSION := 1
++const NEW_PARTS := ["resonator", "tally"]
++const TALLY_STEP := 3
++const TALLY_LIMIT := 6
++const RESONATOR_HEAT := 1
++
++static func enabled(state: Dictionary) -> bool:
++	return int(state.get("build_engine_version", 0)) == VERSION
++
++static func is_volley_round(id: String) -> bool:
++	return str(preload("res://redesign/content.gd").AMMO.get(id, {}).get("effect", "")) == "double"
++
++static func tally_kills(state: Dictionary) -> int:
++	return int(state.get("part_growth", {}).get("tally", 0))
++
++static func tally_bonus(state: Dictionary) -> int:
++	return mini(TALLY_LIMIT, tally_kills(state) / TALLY_STEP)
++
++## Called once per primary direct kill. Counts only while the tally is equipped.
++static func record_kill(state: Dictionary, id: String, parts: Array) -> void:
++	if not enabled(state) or not parts.has("tally") or not is_volley_round(id): return
++	if not state.has("part_growth"): state.part_growth = {}
++	state.part_growth.tally = mini(TALLY_STEP * TALLY_LIMIT, tally_kills(state) + 1)
++
++static func forget(state: Dictionary, id: String) -> void:
++	if state.has("part_growth"): state.part_growth.erase(id)
++
++static func resonance(state: Dictionary, id: String, parts: Array) -> bool:
++	return enabled(state) and parts.has("resonator") and is_volley_round(id)
++
++static func heat_bonus(state: Dictionary, id: String) -> int:
++	var parts: Array = preload("res://redesign/content.gd").equipped_parts(state)
++	return RESONATOR_HEAT if resonance(state, id, parts) else 0
++
++static func progress_text(state: Dictionary) -> String:
++	var bonus := tally_bonus(state)
++	if bonus >= TALLY_LIMIT: return "기록 완료 · 연타 타격당 +%d" % bonus
++	return "기록 %d / %d처치 · 현재 +%d" % [tally_kills(state) % TALLY_STEP, TALLY_STEP, bonus]
++
++static func valid(state: Dictionary) -> bool:
++	var version = state.get("build_engine_version", 0)
++	if not (version is int or version is float) or int(version) != version or int(version) < 0 or int(version) > VERSION: return false
++	if not state.has("part_growth"): return true
++	var growth = state.part_growth
++	if not growth is Dictionary or int(version) == 0: return false
++	for key in growth:
++		if not key in NEW_PARTS: return false
++		var value = growth[key]
++		if not (value is int or value is float) or int(value) != value or int(value) < 0 or int(value) > TALLY_STEP * TALLY_LIMIT: return false
++	return true
+--- /dev/null
++++ b/tests/build_engine_rules.gd
+@@ -0,0 +1,155 @@
++extends SceneTree
++## Build engine trial rules (2026-11-08): 연타 공명기·타격 기록기, calculation line,
++## offers, saves. Shots run on the real Model against an earned region-3 combat state
++## (QA_BUILD_DIR) with its enemies made into plain dummies, so numbers are controlled.
++const Campaign = preload("res://redesign/campaign.gd")
++const Model = preload("res://redesign/model.gd")
++const Content = preload("res://redesign/content.gd")
++const Data = preload("res://redesign/campaign_content.gd")
++const BuildEngine = preload("res://redesign/build_engine.gd")
++const Readout = preload("res://redesign/damage_readout.gd")
++const Engines = preload("res://redesign/damage_engines.gd")
++var checks := 0
++var failures: Array = []
++var rows: Array = []
++var base_state: Dictionary
++
++func _initialize() -> void: run.call_deferred()
++
++func check(ok: bool, label: String) -> bool:
++	checks += 1
++	if not ok:
++		failures.append(label); print("FAIL: " + label)
++	return ok
++
++func dummy_model(parts: Array, growth: int = 0) -> Model:
++	var m := Model.new()
++	m.s = Model.simulation_state(base_state)
++	m.s.build_engine_version = BuildEngine.VERSION
++	m.s.equipped_parts = parts.duplicate()
++	m.s.engine = Engines.fresh()
++	m.s.heat = 0
++	m.s.buff = {}
++	m.s.erase("part_growth")
++	if growth > 0: m.s.part_growth = {"tally": growth}
++	for e in m.s.enemies:
++		e.hp = 9999; e.max_hp = 9999; e.def = 0; e.barrier = 0
++	return m
++
++## One 연타 shot, optionally after a 증폭 round, optionally as the third shot.
++func volley(parts: Array, boosted: bool, third: bool, growth: int = 0) -> Dictionary:
++	var m := dummy_model(parts, growth)
++	if boosted: m._shot("charge", -1, {"fired_count": 1})
++	return m._shot("precise", -1, {"fired_count": 2 if third else 0})
++
++func row(label: String, parts: Array, boosted: bool, third: bool, growth: int = 0) -> int:
++	var result := volley(parts, boosted, third, growth)
++	var damage := int(result.get("damage", 0))
++	rows.append({"label": label, "damage": damage, "hits": int(result.get("hits", 0)), "ledger": Readout.ledger_text(result)})
++	print("ROW %-34s %4d  %s" % [label, damage, Readout.ledger_text(result)])
++	return damage
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	var c = Campaign.new()
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_BUILD_DIR").path_join("combat_single_17_r3_n20101.json")))), "earned combat restores")
++	base_state = c.model.s
++	# Multiples on a plain dummy (no armor). Rivet adds +1 to attack rounds.
++	var plain := row("연타 · 파츠 없음", [], false, false)
++	var core := row("연쇄 구동핵", ["volley_drive"], false, false)
++	var duplex := row("구동핵+복열", ["volley_drive", "duplex"], false, false)
++	var resonant := row("구동핵+복열+공명기", ["volley_drive", "duplex", "resonator"], false, false)
++	check(plain > 0 and core > plain and duplex > core, "existing parts still add damage")
++	# Hit n is ×n, so h hits deal h(h+1)/2 hit-units instead of h.
++	var hits := int(volley(["volley_drive", "duplex"], false, false).hits)
++	check(hits >= 3 and resonant * hits == duplex * hits * (hits + 1) / 2, "공명기 turns %d hits into ×1..×%d: %d vs %d" % [hits, hits, resonant, duplex])
++	var boosted := row("구동핵+복열+증폭", ["volley_drive", "duplex"], true, false)
++	var boosted_res := row("구동핵+복열+공명기+증폭", ["volley_drive", "duplex", "resonator"], true, false)
++	check(boosted_res * 2 == boosted * (hits + 1), "공명기 multiplies boosted hits too")
++	var third := row("…+제3 격발기(3번째 발)", ["volley_drive", "duplex", "third_striker"], true, true)
++	var third_res := row("…+공명기+제3 격발기(3번째 발)", ["volley_drive", "duplex", "resonator", "third_striker"], true, true)
++	check(third == boosted * 3 and third_res == boosted_res * 3, "제3 격발기 still ×3 on top")
++	var tally0 := row("…+기록기 +0", ["volley_drive", "duplex", "resonator", "third_striker", "tally"], true, true, 0)
++	var tally3 := row("…+기록기 +3(9처치)", ["volley_drive", "duplex", "resonator", "third_striker", "tally"], true, true, 9)
++	var tally6 := row("…+기록기 +6(18처치)", ["volley_drive", "duplex", "resonator", "third_striker", "tally"], true, true, 18)
++	check(tally0 == third_res and tally3 > tally0 and tally6 > tally3, "기록기 grows with the record")
++	check(row("기록 18처치 · 기록기 미장착", ["volley_drive", "duplex", "resonator", "third_striker"], true, true, 18) == third_res, "the record does nothing while unequipped")
++	# Only volley rounds resonate.
++	var pierce_plain: int = dummy_model(["volley_drive"])._shot("pierce", -1, {}).damage
++	var pierce_res: int = dummy_model(["volley_drive", "resonator"])._shot("pierce", -1, {}).damage
++	check(pierce_plain == pierce_res, "공명기 leaves single-hit rounds alone")
++	# Heat cost +1 for volley rounds with the resonator.
++	var cool := dummy_model(["duplex"])
++	var hot := dummy_model(["duplex", "resonator"])
++	check(Content.part_heat_bonus("precise", hot.s) == Content.part_heat_bonus("precise", cool.s) + 1, "공명기 adds 1 heat to 연타")
++	# Old runs (no build_engine_version) ignore the parts.
++	var old := dummy_model(["volley_drive", "duplex", "resonator", "tally"], 18)
++	old.s.erase("build_engine_version"); old.s.erase("part_growth")
++	check(int(old._shot("precise", -1, {}).damage) == duplex, "old runs ignore 공명기·기록기")
++	# Calculation line.
++	var shot := volley(["volley_drive", "duplex", "resonator", "third_striker"], true, true)
++	var text := Readout.ledger_text(shot)
++	check(text.contains("×3") and text.contains("공명×1~%d" % hits) and text.contains("+"), "calculation line shows additions, ×3 and 공명: " + text)
++	check(Readout.entry(shot).ledger == text, "damage readout carries the calculation line")
++	check(text.ends_with("= %d" % int(shot.damage)), "with no armor the line's total equals the damage dealt: " + text)
++	check(Readout.ledger_text(dummy_model([])._shot("charge", -1, {})).is_empty(), "no calculation line for a support round")
++	# Kill record: only 연타 kills while the 기록기 is equipped.
++	var killer := dummy_model(["tally"])
++	for i in range(3):
++		killer.s.enemies[0].hp = 1
++		killer._shot("precise", 0, {})
++	check(BuildEngine.tally_kills(killer.s) == 3 and BuildEngine.tally_bonus(killer.s) == 1, "three 연타 kills give +1")
++	killer.s.enemies[0].hp = 1
++	killer._shot("pierce", 0, {})
++	check(BuildEngine.tally_kills(killer.s) == 3, "a 철갑 kill does not count")
++	var idle := dummy_model([])
++	idle.s.enemies[0].hp = 1
++	idle._shot("precise", 0, {})
++	check(BuildEngine.tally_kills(idle.s) == 0, "no record without the 기록기")
++	# Saves.
++	# Save checks use the unmodified earned state (the dummies above are not save-valid).
++	var saved := Model.new()
++	saved.s = Model.simulation_state(base_state)
++	saved.s.build_engine_version = BuildEngine.VERSION
++	saved.s.part_growth = {"tally": 3}
++	var round_trip := Model.new()
++	check(round_trip.restore_state(JSON.parse_string(saved.serialized_state())) and BuildEngine.tally_kills(round_trip.s) == 3, "record survives save and load")
++	var broken: Dictionary = JSON.parse_string(saved.serialized_state())
++	broken.part_growth = {"tally": 999}
++	check(not Model.new().restore_state(broken), "out-of-range record rejected")
++	broken.part_growth = {"lens": 1}
++	check(not Model.new().restore_state(broken), "unknown growth part rejected")
++	broken.part_growth = {"tally": 3}; broken.build_engine_version = 0
++	check(not Model.new().restore_state(broken), "growth without the trial flag rejected")
++	# Campaign: new runs get the flag; dismantle forgets the record.
++	var fresh = Campaign.new()
++	fresh.start("single", 251107, 0, "balanced", Campaign.Content.RouteMap.VERSION, "work", true)
++	check(BuildEngine.enabled(fresh.model.s), "new magazine runs use the build engine")
++	var legacy = Campaign.new()
++	legacy.start("single", 251107)
++	check(not BuildEngine.enabled(legacy.model.s), "older run kinds do not")
++	fresh.s.phase = "shop"; fresh.s.parts.append("tally"); fresh.model.s.part_growth = {"tally": 6}
++	check(fresh.dismantle("tally") and BuildEngine.tally_kills(fresh.model.s) == 0, "dismantling the 기록기 loses its record")
++	# Offers: 연타 runs see the new parts; runs without the flag never do.
++	var deck_state: Dictionary = Model.simulation_state(c.model.s)
++	deck_state.build_engine_version = BuildEngine.VERSION
++	deck_state.deck = ["precise_p2", "precise_p2", "precise_p2", "precise", "charge", "charge", "basic", "basic"]
++	deck_state.equipped_parts = ["volley_drive"]
++	var seen_new := 0
++	var seen_old := 0
++	var old_state := deck_state.duplicate(true)
++	old_state.erase("build_engine_version")
++	for region in range(1, 5):
++		for k in range(12):
++			var node := {"id": region * 10000 + 400 + k, "region": region, "floor": 4, "elite": k % 3 == 0, "kind": "shop"}
++			for offer in Data.offers(node, 731042 + k, 0, "single", ["volley_drive"], [], [], ["volley_drive"], 3, 1, deck_state):
++				if offer.type == "part" and BuildEngine.NEW_PARTS.has(offer.id): seen_new += 1
++			for offer in Data.offers(node, 731042 + k, 0, "single", ["volley_drive"], [], [], ["volley_drive"], 3, 1, old_state):
++				if offer.type == "part" and BuildEngine.NEW_PARTS.has(offer.id): seen_old += 1
++	print("OFFERS new-part appearances in 48 연타 offers: %d (old runs: %d)" % [seen_new, seen_old])
++	check(seen_new > 0 and seen_old == 0, "new parts are offered only to build-engine runs")
++	var report := FileAccess.open(OS.get_environment("QA_OUTPUT_DIR").path_join("build_engine_rows.json"), FileAccess.WRITE)
++	report.store_string(JSON.stringify({"rows": rows, "offers_new": seen_new, "checks": checks, "failures": failures}, "\t"))
++	report.close()
++	print("BUILD ENGINE RULES checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/tests/build_engine_fights.gd
+@@ -0,0 +1,78 @@
++extends SceneTree
++## Build engine trial: the same earned 래칫 fights (2026-11-06 full climb, regions 3-5)
++## with the recorded parts versus the 연타·결정타 trial set. Two policies: the beam
++## solver's best line, and 'keep firing' (fire when ready, otherwise swap/cool).
++## Outputs QA_OUTPUT_DIR/build_engine_fights.json for the design report.
++const Campaign = preload("res://redesign/campaign.gd")
++const Model = preload("res://redesign/model.gd")
++const Search = preload("res://tests/weapon_magazine_solver.gd")
++const Solver = preload("res://tests/campaign_magazine_solver.gd")
++const BuildEngine = preload("res://redesign/build_engine.gd")
++const FIGHTS := ["combat_burst_17_r3_n20502.json", "combat_burst_17_r3_n20902.json", "combat_burst_17_r4_n30501.json", "combat_burst_17_r4_n30701.json", "combat_burst_17_r5_n40201.json", "combat_burst_17_r5_n41002.json"]
++var solver = Solver.new()
++
++func _initialize() -> void: run.call_deferred()
++
++func variant(state: Dictionary, label: String) -> Model:
++	var m := Model.new()
++	m.s = Model.simulation_state(state)
++	match label:
++		"trial":
++			# Keep the core, duplex and third striker; swap the two side parts.
++			m.s.build_engine_version = BuildEngine.VERSION
++			m.s.equipped_parts = ["volley_drive", "third_striker", "duplex", "resonator", "tally"]
++			m.s.part_growth = {"tally": 0}
++		"trial_grown":
++			m.s.build_engine_version = BuildEngine.VERSION
++			m.s.equipped_parts = ["volley_drive", "third_striker", "duplex", "resonator", "tally"]
++			m.s.part_growth = {"tally": 9}
++	return m
++
++func summary(m: Model, steps: int) -> Dictionary:
++	var nearest := 999
++	for e in m.s.enemies:
++		if int(e.hp) > 0: nearest = mini(nearest, int(e.distance))
++	return {"won": m.s.phase in ["reward", "won"], "turns": int(m.s.get("turns", 0)), "steps": steps, "phase": str(m.s.phase), "alive": m.s.enemies.filter(func(e): return int(e.hp) > 0).size()}
++
++func keep_firing(m: Model) -> Dictionary:
++	var steps := 0
++	while m.s.phase in ["plan", "ready"] and steps < 80:
++		var options: Array = Search.actions(m)
++		if options.is_empty(): break
++		var action: String = "fire" if options.has("fire") else ("swap" if options.has("swap") else options[0])
++		if not Search.command(m, action): break
++		steps += 1
++	return summary(m, steps)
++
++func best_line(m: Model) -> Dictionary:
++	var path: Array = solver.solve(m, 4, 18)
++	var steps := 0
++	for step in path:
++		var ok := false
++		if step.action == "eject": ok = m.eject_magazine_rounds(step.indices)
++		else: ok = Search.command(m, "swap" if step.action == "reload" else str(step.action))
++		if not ok: break
++		steps += 1
++	var result := summary(m, steps)
++	result.found = not path.is_empty()
++	return result
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	var rows: Array = []
++	for file in FIGHTS:
++		var c = Campaign.new()
++		if not c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_BUILD_DIR").path_join(file)))):
++			print("SKIP ", file); continue
++		var hp: Array = c.model.s.enemies.map(func(e): return int(e.hp))
++		for label in ["recorded", "trial", "trial_grown"]:
++			var fire := keep_firing(variant(c.model.s, label))
++			var best := best_line(variant(c.model.s, label))
++			var row := {"fight": file, "enemy_hp": hp, "parts": label, "keep_firing": fire, "best": best}
++			rows.append(row)
++			print("FIGHT %s %-12s fire:%s t%d  best:%s t%d" % [file.get_slice("_", 3) + "_" + file.get_slice("_", 4).get_basename(), label, "W" if fire.won else "L", fire.turns, "W" if best.won else "L", best.turns])
++	var out := FileAccess.open(OS.get_environment("QA_OUTPUT_DIR").path_join("build_engine_fights.json"), FileAccess.WRITE)
++	out.store_string(JSON.stringify(rows, "\t"))
++	out.close()
++	print("BUILD ENGINE FIGHTS COMPLETE rows=%d" % rows.size())
++	quit(0)
+--- /dev/null
++++ b/tests/build_engine_ui.gd
+@@ -0,0 +1,96 @@
++extends "res://tests/supply_live_ui.gd"
++## Build engine trial on screen (2026-11-08): the calculation line under the damage number
++## in a real 래칫 fight (earned region-3 state, trial parts), and the new parts in the build
++## workshop (icon, details with the 기록 progress).
++const BuildEngine = preload("res://redesign/build_engine.gd")
++const CommonWindow = preload("res://redesign/common/window.gd")
++const TRIAL := ["volley_drive", "third_striker", "duplex", "resonator", "tally"]
++
++func find(id: String) -> Control:
++	for child in host.get_children():
++		if child.get_script() == CommonWindow and not child.is_queued_for_deletion():
++			var inside: Node = child.find_child(id, true, false)
++			if inside != null: return inside as Control
++	var overlay: Node = host.find_child("WorkspaceOverlay", true, false)
++	if overlay != null and id != "WorkspaceOverlay":
++		var in_overlay: Node = overlay.find_child(id, true, false)
++		if in_overlay != null: return in_overlay as Control
++	return host.find_child(id, true, false) as Control
++
++func earned(file: String, parts: Array):
++	var c = Campaign.new()
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_BUILD_DIR").path_join(file)))), "earned state restores " + file)
++	for id in parts:
++		if not c.s.parts.has(id): c.s.parts.append(id)
++	c.model.s.build_engine_version = BuildEngine.VERSION
++	c.model.s.part_growth = {"tally": 9}
++	return c
++
++func press(control: Control) -> void:
++	var point: Vector2 = control.get_global_transform_with_canvas() * (control.size * 0.5)
++	for pressed in [true, false]:
++		var event := InputEventScreenTouch.new()
++		event.index = 0; event.position = point; event.pressed = pressed
++		root.push_input(event, true)
++		await process_frame
++
++## Fire until a damage number with a calculation line is on screen; capture that frame.
++func catch_ledger(label: String) -> String:
++	var hud = host.campaign_hud
++	for attempt in range(8):
++		if not is_instance_valid(hud) or not host.campaign.s.phase == "combat": return ""
++		var fire: Control = hud.node("Fire")
++		if fire == null or fire.disabled or not fire.is_visible_in_tree():
++			var reload: Control = hud.node("Reload")
++			if reload != null and not reload.disabled: await press(reload)
++			await settle()
++			var started := Time.get_ticks_msec()
++			while host.busy and Time.get_ticks_msec() - started < 20000: await process_frame
++			continue
++		await press(fire)
++		var started := Time.get_ticks_msec()
++		while Time.get_ticks_msec() - started < 20000:
++			await process_frame
++			if not is_instance_valid(hud) or not is_instance_valid(hud.board): break
++			for entry in hud.board.damage_popups:
++				if not str(entry.get("ledger", "")).is_empty():
++					await RenderingServer.frame_post_draw
++					root.get_texture().get_image().save_png(output.path_join(label + ".png"))
++					return str(entry.ledger)
++			if not host.busy and Time.get_ticks_msec() - started > 400: break
++		await settle()
++	return ""
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
++	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
++	for extent in [Vector2i(1280, 800), Vector2i(844, 390)]:
++		root.size = extent
++		var suffix := "%dx%d" % [extent.x, extent.y]
++		var fight = earned("combat_burst_17_r3_n20502.json", TRIAL)
++		fight.s.equipped_parts = TRIAL.duplicate()
++		fight._sync_equipped_parts()
++		await mount(fight)
++		check(is_instance_valid(host.campaign_hud), "combat HUD mounted " + suffix)
++		var ledger := await catch_ledger("ledger_" + suffix)
++		print("LEDGER ", suffix, " ", ledger)
++		check(not ledger.is_empty() and (ledger.contains("×") or ledger.contains("+")), "a shot shows its calculation line " + suffix)
++	# Build workshop: icons and the 기록 progress in the part details.
++	root.size = Vector2i(1280, 800)
++	var map = earned("entry_burst_17_r5.json", ["resonator", "tally"])
++	await mount(map)
++	await tap("city_deck")
++	check(find("Stored_resonator") != null and find("Stored_tally") != null, "new parts listed in storage")
++	await tap("Stored_resonator")
++	await capture("workshop_resonator_1280x800")
++	await tap("Stored_tally")
++	await tap("PartRules")
++	var details := find("PartDetails")
++	var text := ""
++	if details != null:
++		for label in details.find_children("*", "Label", true, false): text += (label as Label).text + "\n"
++	check(text.contains("기록: 처치 9회") and text.contains("+3"), "tally details show the record")
++	await capture("tally_details_1280x800")
++	print("BUILD ENGINE UI checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)

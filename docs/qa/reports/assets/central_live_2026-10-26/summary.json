@@ -1,0 +1,60 @@
+{
+  "baseline_wins": 14,
+  "baseline_cases": 15,
+  "alternative_heavy_won": true,
+  "campaign_checks": 56710,
+  "campaign_failures": [
+    {
+      "tag": "final_731042",
+      "messages": [
+        "fresh earned route heavy_731042_r2_n10902",
+        "full five-region route heavy/731042"
+      ]
+    }
+  ],
+  "attempted_battles": 446,
+  "solved_battles": 445,
+  "rules": {
+    "checks": 1775,
+    "failures": 0
+  },
+  "ui": {
+    "captures": [
+      "normal_1008.png",
+      "elite_1008.png",
+      "boss_1008.png",
+      "normal_1280.png",
+      "elite_1280.png",
+      "boss_1280.png",
+      "normal_1440.png",
+      "elite_1440.png",
+      "boss_1440.png",
+      "artillery_1008.png",
+      "artillery_1280.png",
+      "artillery_1440.png",
+      "boss_payoff.png",
+      "boss_advance_warning.png",
+      "boss_advance_release.png",
+      "boss_advance_after.png",
+      "boss_shield_warning.png",
+      "boss_shield_release.png",
+      "boss_shield_after.png",
+      "final_reward.png",
+      "ending.png"
+    ],
+    "checks": 1079,
+    "failures": 0,
+    "galaxy": "not_verified",
+    "human_preference": "not_verified"
+  },
+  "source_sha256": {
+    "새-게임-프로젝트/redesign/central_guard.gd": "7ab8a5910d0b81a9adbc589be2392b4c8adb6915625f6b2996ce7ad2329b689d",
+    "새-게임-프로젝트/redesign/central_art.gd": "5fae1db46bd1d3dbdc0e90d5387b27020b1029f3047d62193f0ec8a9b99566c5",
+    "새-게임-프로젝트/redesign/central_battle_view.gd": "f0b7bc35a82a6a3e5a9fa929d8e2e2f4b4d90251042fcc7d1c6f225a8b5bb14a",
+    "새-게임-프로젝트/redesign/provisional_balance.gd": "1391b8d459dd14d6eacd0bbce0177e650496788e6ae7bc7397c2a3168b51c89c",
+    "새-게임-프로젝트/redesign/model.gd": "3776ab9be5bf56c172da84e149298368e77e1c205bfb7b190052f6c97f0f118a",
+    "새-게임-프로젝트/redesign/campaign_content.gd": "0cb48ee3c7c99bffb568cec30633a942fca2dc136e077564b8a3cd027f9cc937",
+    "새-게임-프로젝트/redesign/campaign.gd": "47506c5dd610f54f3fb78e0839428c43736650dc1dbd90cf7c422265e92f405a"
+  },
+  "interpretation": "Bounded future-RNG search and current-model replay; not human win rate. One first-option acquisition policy may remain unsuccessful."
+}

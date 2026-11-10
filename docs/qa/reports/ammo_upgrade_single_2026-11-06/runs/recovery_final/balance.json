@@ -1,0 +1,177 @@
+{
+  "battles": [
+    {
+      "acquisition": "refit",
+      "boss": true,
+      "deck": [
+        "charge",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "pierce_p2_power",
+        "pierce_p2_c",
+        "disrupt",
+        "pierce_p2_power_c",
+        "pierce_p2_power_c",
+        "charge",
+        "charge_hot",
+        "cool",
+        "charge_hot",
+        "pierce_p2_c",
+        "pierce_p2_power_c",
+        "chase"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 8.0
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 10,
+      "gate_mods": {
+        "chain": 1.0,
+        "conduction": 1.0,
+        "efficiency": 2.0
+      },
+      "gun": "amplifier",
+      "margin": 7,
+      "metrics": {
+        "burn_damage": 0,
+        "cool": 2,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 11,
+        "forced_turns": 3,
+        "reload": 4,
+        "remaining": 9,
+        "turns": 24
+      },
+      "node": 41002,
+      "parts": [
+        "siege_drive",
+        "third_striker",
+        "opening",
+        "capacitor",
+        "afterburner"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "pressure_metrics": {
+        "event_kinds": {
+          "central_command": 10,
+          "central_shield": 4,
+          "move": 34,
+          "pull": 9
+        },
+        "forced_burn": 0,
+        "greedy": {
+          "commands": 16,
+          "phase": "lost",
+          "remaining": 10,
+          "turns": 25,
+          "won": false
+        },
+        "nearest_during_action": 11,
+        "reload_burn": 0
+      },
+      "raw_remaining": 9,
+      "region": 5,
+      "remaining": 9,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 5260,
+      "seed": 17,
+      "solved": true,
+      "total": 8,
+      "turns": 24,
+      "used": 16,
+      "wider_search": false
+    }
+  ],
+  "checks": 163,
+  "endpoints": [],
+  "failures": [],
+  "note": "Bounded search sees future draw/RNG. Reachability and resource margins, not human win rate."
+}

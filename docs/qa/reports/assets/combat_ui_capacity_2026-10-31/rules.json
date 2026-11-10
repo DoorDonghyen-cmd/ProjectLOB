@@ -1,0 +1,361 @@
+{
+  "checks": 105,
+  "failures": [],
+  "note": "Single-gun controlled capacity comparison, not human fun or full-run balance.",
+  "rows": [
+    {
+      "capacity": 3,
+      "damage": 12,
+      "discarded": 2,
+      "enemy_action_turns": 0,
+      "fired": 2,
+      "forced_reload": {},
+      "node": 201,
+      "order": [
+        "basic_p3",
+        "pierce_p2",
+        "basic_p2"
+      ],
+      "original_capacity": 3,
+      "overheated": false,
+      "peak_heat": 6,
+      "phase": "reward",
+      "save_compatible": true,
+      "unfired": 1
+    },
+    {
+      "capacity": 4,
+      "damage": 12,
+      "discarded": 2,
+      "enemy_action_turns": 0,
+      "fired": 2,
+      "forced_reload": {},
+      "node": 201,
+      "order": [
+        "basic_p3",
+        "pierce_p2",
+        "basic_p2",
+        "basic_p2"
+      ],
+      "original_capacity": 3,
+      "overheated": false,
+      "peak_heat": 6,
+      "phase": "reward",
+      "save_compatible": true,
+      "unfired": 2
+    },
+    {
+      "capacity": 6,
+      "damage": 12,
+      "discarded": 2,
+      "enemy_action_turns": 0,
+      "fired": 2,
+      "forced_reload": {},
+      "node": 201,
+      "order": [
+        "basic_p3",
+        "pierce_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p1",
+        "basic_p1"
+      ],
+      "original_capacity": 3,
+      "overheated": false,
+      "peak_heat": 6,
+      "phase": "reward",
+      "save_compatible": false,
+      "unfired": 4
+    },
+    {
+      "capacity": 3,
+      "damage": 19,
+      "discarded": 3,
+      "enemy_action_turns": 0,
+      "fired": 3,
+      "forced_reload": {},
+      "node": 401,
+      "order": [
+        "charge",
+        "basic_p3",
+        "basic_p2"
+      ],
+      "original_capacity": 3,
+      "overheated": false,
+      "peak_heat": 8,
+      "phase": "reward",
+      "save_compatible": true,
+      "unfired": 0
+    },
+    {
+      "capacity": 4,
+      "damage": 19,
+      "discarded": 3,
+      "enemy_action_turns": 0,
+      "fired": 3,
+      "forced_reload": {},
+      "node": 401,
+      "order": [
+        "charge",
+        "basic_p3",
+        "basic_p2",
+        "basic_p2"
+      ],
+      "original_capacity": 3,
+      "overheated": false,
+      "peak_heat": 8,
+      "phase": "reward",
+      "save_compatible": true,
+      "unfired": 1
+    },
+    {
+      "capacity": 6,
+      "damage": 19,
+      "discarded": 3,
+      "enemy_action_turns": 0,
+      "fired": 3,
+      "forced_reload": {},
+      "node": 401,
+      "order": [
+        "charge",
+        "basic_p3",
+        "basic_p2",
+        "basic_p2",
+        "basic_p1",
+        "basic_p1"
+      ],
+      "original_capacity": 3,
+      "overheated": false,
+      "peak_heat": 8,
+      "phase": "reward",
+      "save_compatible": false,
+      "unfired": 3
+    },
+    {
+      "capacity": 3,
+      "damage": 11,
+      "discarded": 3,
+      "enemy_action_turns": 1,
+      "fired": 3,
+      "forced_reload": {},
+      "node": 802,
+      "order": [
+        "charge",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "original_capacity": 3,
+      "overheated": false,
+      "peak_heat": 9,
+      "phase": "ready",
+      "save_compatible": true,
+      "unfired": 0
+    },
+    {
+      "capacity": 4,
+      "damage": 14,
+      "discarded": 4,
+      "enemy_action_turns": 3,
+      "fired": 4,
+      "forced_reload": {
+        "advance_events": [
+          {
+            "from": 21,
+            "kind": "move",
+            "target": 0,
+            "to": 21,
+            "turn": 0
+          },
+          {
+            "from": 21,
+            "kind": "move",
+            "target": 1,
+            "to": 19,
+            "turn": 0
+          },
+          {
+            "from": 24,
+            "kind": "move",
+            "target": 2,
+            "to": 22,
+            "turn": 0
+          },
+          {
+            "from": 27,
+            "kind": "move",
+            "target": 3,
+            "to": 26,
+            "turn": 0
+          },
+          {
+            "def": 0,
+            "kind": "gatekeeper_state",
+            "left": 2,
+            "phase": "prepare",
+            "target": 0,
+            "turn": 0
+          },
+          {
+            "from": 21,
+            "kind": "move",
+            "target": 0,
+            "to": 21,
+            "turn": 1
+          },
+          {
+            "from": 19,
+            "kind": "move",
+            "target": 1,
+            "to": 17,
+            "turn": 1
+          },
+          {
+            "from": 22,
+            "kind": "move",
+            "target": 2,
+            "to": 20,
+            "turn": 1
+          },
+          {
+            "from": 26,
+            "kind": "move",
+            "target": 3,
+            "to": 25,
+            "turn": 1
+          },
+          {
+            "def": 0,
+            "kind": "gatekeeper_state",
+            "left": 1,
+            "phase": "prepare",
+            "target": 0,
+            "turn": 1
+          }
+        ],
+        "cost": 2,
+        "deployments": [],
+        "heat_after": 0,
+        "heat_before": 12,
+        "heat_paid": 1,
+        "phase": "plan"
+      },
+      "node": 802,
+      "order": [
+        "charge",
+        "basic_p3",
+        "basic_p3",
+        "basic_p2"
+      ],
+      "original_capacity": 3,
+      "overheated": true,
+      "peak_heat": 12,
+      "phase": "plan",
+      "save_compatible": true,
+      "unfired": 0
+    },
+    {
+      "capacity": 6,
+      "damage": 14,
+      "discarded": 6,
+      "enemy_action_turns": 3,
+      "fired": 4,
+      "forced_reload": {
+        "advance_events": [
+          {
+            "from": 21,
+            "kind": "move",
+            "target": 0,
+            "to": 21,
+            "turn": 0
+          },
+          {
+            "from": 21,
+            "kind": "move",
+            "target": 1,
+            "to": 19,
+            "turn": 0
+          },
+          {
+            "from": 24,
+            "kind": "move",
+            "target": 2,
+            "to": 22,
+            "turn": 0
+          },
+          {
+            "from": 27,
+            "kind": "move",
+            "target": 3,
+            "to": 26,
+            "turn": 0
+          },
+          {
+            "def": 0,
+            "kind": "gatekeeper_state",
+            "left": 2,
+            "phase": "prepare",
+            "target": 0,
+            "turn": 0
+          },
+          {
+            "from": 21,
+            "kind": "move",
+            "target": 0,
+            "to": 21,
+            "turn": 1
+          },
+          {
+            "from": 19,
+            "kind": "move",
+            "target": 1,
+            "to": 17,
+            "turn": 1
+          },
+          {
+            "from": 22,
+            "kind": "move",
+            "target": 2,
+            "to": 20,
+            "turn": 1
+          },
+          {
+            "from": 26,
+            "kind": "move",
+            "target": 3,
+            "to": 25,
+            "turn": 1
+          },
+          {
+            "def": 0,
+            "kind": "gatekeeper_state",
+            "left": 1,
+            "phase": "prepare",
+            "target": 0,
+            "turn": 1
+          }
+        ],
+        "cost": 2,
+        "deployments": [],
+        "heat_after": 0,
+        "heat_before": 12,
+        "heat_paid": 1,
+        "phase": "plan"
+      },
+      "node": 802,
+      "order": [
+        "charge",
+        "basic_p3",
+        "basic_p3",
+        "basic_p2",
+        "basic_p2",
+        "basic_p1"
+      ],
+      "original_capacity": 3,
+      "overheated": true,
+      "peak_heat": 12,
+      "phase": "plan",
+      "save_compatible": false,
+      "unfired": 2
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ORVASK 관문 레퍼런스</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#181613;color:#ebe2d1;font:16px/1.65 "Malgun Gothic",sans-serif}
+  main{max-width:1320px;margin:auto;padding:30px clamp(18px,4vw,52px) 56px}
+  h1{font-size:clamp(28px,5vw,49px);line-height:1.15;margin:8px 0 12px}
+  h2{font-size:23px;border-bottom:1px solid #4a4032;padding-bottom:7px;margin:36px 0 18px}
+  h3{font-size:17px;line-height:1.35;margin:0 0 8px}
+  p{margin:0 0 10px}
+  small,.eyebrow{color:#c8b18b}
+  a{color:#efca8e;text-underline-offset:3px}
+  .lede{max-width:700px;color:#d0c7b7}
+  .grid,.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+  figure{margin:0;min-width:0;background:#211e19;border:1px solid #3d352a}
+  figure> a{display:block;background:#0d0c0a}
+  img{display:block;width:100%;height:auto}
+  figcaption,.caption{padding:14px 16px}
+  .wide{grid-column:1/-1}
+  .wide .pair{gap:1px}
+  .wide small{display:block;padding:6px 12px 0}
+  .strip{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center}
+  .decision{padding:16px 19px;border-left:3px solid #b48b53;background:#242019}
+  .decision p:last-child{margin:0}
+  @media(max-width:720px){.grid,.pair,.strip{grid-template-columns:1fr}.wide,.strip{grid-column:auto}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="eyebrow">ORVASK / 장소 UI</div>
+  <h1>관문 레퍼런스</h1>
+  <p class="lede">정비소에서 가져올 화면의 구성과, 관문에서 더 분명하게 보여 줄 조작·이동을 나누어 비교했다.</p>
+</header>
+
+<h2>설비와 행동이 같은 화면에 있는 사례</h2>
+<section class="grid">
+  <figure>
+    <a href="metro-workbench.jpg"><img src="metro-workbench.jpg" width="1920" height="1080" alt="작업대에 산탄과 공구가 놓인 Metro Exodus 제작 화면"></a>
+    <figcaption>
+      <h3>Metro Exodus · 작업물과 비용</h3>
+      <p>산탄과 공구가 장면 중심에 있다. 제작 비용과 명령은 주변에 놓여 지금 무엇을 다루는지 먼저 보인다.</p>
+      <p><strong>관문에 적용</strong> · 개조할 때 캐릭터의 시선과 손이 조작대를 향하고, 전후 수치는 그 옆에서 읽힌다.</p>
+      <a href="https://www.pcgamer.com/metro-exodus-crafting-guide/">PC Gamer 캡처 출처</a>
+    </figcaption>
+  </figure>
+  <figure>
+    <a href="signalis-room.jpg"><img src="signalis-room.jpg" width="1920" height="1080" alt="번호와 작은 주황 상태 표시등이 붙은 SIGNALIS 승강기 복도"></a>
+    <figcaption>
+      <h3>SIGNALIS · 문 옆에서 읽는 상태</h3>
+      <p>큰 층 번호와 문 옆 작은 표시등이 어두운 복도에서 먼저 눈에 들어온다.</p>
+      <p><strong>관문에 적용</strong> · 차단문 프레임에 작은 상태등과 상태 문구를 함께 둔다. 개조 중과 출발 가능 상태를 같은 자리에서 읽는다.</p>
+      <a href="https://news.qoo-app.com/en/post/130889/qoo-app-signalis-review-giveaway">QooApp 캡처 출처</a>
+    </figcaption>
+  </figure>
+  <figure class="wide">
+    <div class="pair">
+      <div><a href="alien-call.jpg"><img src="alien-call.jpg" width="1280" height="720" alt="Alien Isolation 환승장 문 옆에 붙은 호출 버튼"></a><small>문 옆의 호출 버튼</small></div>
+      <div><a href="alien-depart.jpg"><img src="alien-depart.jpg" width="1280" height="720" alt="Alien Isolation 환승차 내부에 목적지를 표시한 조작기"></a><small>탑승 뒤 표시되는 목적지</small></div>
+    </div>
+    <figcaption>
+      <h3>Alien: Isolation · 호출과 이동</h3>
+      <p>환승장 호출은 문 옆 버튼에서 시작하고, 탑승하면 같은 이동을 이어가는 목적지가 조작기 옆에 보인다.</p>
+      <p><strong>관문에 적용</strong> · 출발은 개조 목록과 떨어진 문 쪽 행동으로 둔다. 출발 직후에는 비교창이 물러나고 문이 열린다.</p>
+      <a href="https://www.supersoluce.com/soluce/alien-isolation/chapitre-2-bienvenue-sebastopol">SuperSoluce 캡처 출처</a>
+    </figcaption>
+  </figure>
+  <figure class="strip">
+    <a href="dead-cells-exit.jpg"><img src="dead-cells-exit.jpg" width="2560" height="1440" alt="Dead Cells에서 Ramparts라는 목적지명이 출구 위에 표시된 화면"></a>
+    <figcaption>
+      <h3>Dead Cells · 목적지를 출구에 붙이기</h3>
+      <p>다음 구역 이름이 빛나는 출구 바로 위에 있어, 어느 곳으로 가는지 장면 안에서 읽힌다.</p>
+      <p><strong>관문에 적용</strong> · 다음 구역 이름을 문 가까이에 놓고, 열린 문 너머에 다음 구역의 빛이나 실루엣을 짧게 보여 주는 안을 비교한다.</p>
+      <a href="https://www.pcgamer.com/dead-cells-review/">PC Gamer 캡처 출처</a>
+    </figcaption>
+  </figure>
+</section>
+
+<h2>우리 화면에 대조</h2>
+<section class="grid">
+  <figure>
+    <a href="../../../qa/reports/workbench_remove_display_2026-11-04/compression.png"><img src="../../../qa/reports/workbench_remove_display_2026-11-04/compression.png" width="1280" height="800" alt="ORVASK 본편 정비소 작업대 장면"></a>
+    <figcaption><h3>본편 정비소</h3><p>인물이 작업대를 향하고 있고, 작업 대상과 실행 버튼을 서로 가까운 곳에서 읽는다.</p></figcaption>
+  </figure>
+  <figure>
+    <a href="../../../qa/reports/gate_workstation_2026-11-05/upgrade_1280x800.png"><img src="../../../qa/reports/gate_workstation_2026-11-05/upgrade_1280x800.png" width="1280" height="800" alt="ORVASK 최신 관문 시안의 차단문과 오른쪽 조작대"></a>
+    <figcaption><h3>현 관문 시안</h3><p>문과 조작대가 같은 장면에 있다. 조작대가 반응하는 시점과 다음 목적지를 보여 주는 위치는 더 구체화할 수 있다.</p></figcaption>
+  </figure>
+</section>
+
+<h2>다음 시안에 가져갈 조합</h2>
+<div class="decision">
+  <p><strong>작업할 때</strong> · 정비소처럼 캐릭터와 조작대에 시선을 모으고, 개조 전후와 비용을 작은 패널에서 확인한다.</p>
+  <p><strong>출발할 때</strong> · 문 옆에 출발 동작을 두고, 확인 패널이 물러난 뒤 문과 다음 구역 이름이 중심이 된다.</p>
+</div>
+<p style="margin-top:16px"><small>게임 캡처 5장은 레퍼런스 비교용이다. 실제 게임 플레이 영상의 입력 타이밍이나 전환 길이는 이 자료에서 판단하지 않았다.</small></p>
+</main>
+</body>
+</html>

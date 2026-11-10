@@ -1,0 +1,491 @@
+--- a/새-게임-프로젝트/redesign/campaign_ui.gd
++++ b/새-게임-프로젝트/redesign/campaign_ui.gd
+@@ -23,6 +23,7 @@
+ const DeckLoadout = preload("res://redesign/deck_loadout.tscn")
+ const GateScreen = preload("res://redesign/samples/gate_review/threshold_preview.tscn")
+ const DepotScreen = preload("res://redesign/samples/supply_review/preview.tscn")
++const EventScreen = preload("res://redesign/samples/event_review/preview.tscn")
+ const Insight = preload("res://redesign/run_insight.gd")
+ const Lore = preload("res://redesign/city_story.gd")
+ const CompressorGlyph = preload("res://redesign/field_compressor_view.gd")
+@@ -84,6 +85,9 @@
+ 	if state.phase == "supply" and campaign.modern_places() and not campaign.node().get("workshop", false):
+ 		modern_depot()
+ 		return
++	if state.phase == "event" and campaign.modern_places():
++		modern_event()
++		return
+ 	_run_shell(state)
+ 	if ui.debug_session: ui._label(ui.body, "개발자 연습 · 실제 진행 저장 보존", 18, ui.DANGER)
+ 	if not ui.save_error.is_empty(): ui._label(ui.body, ui.save_error, 18, ui.DANGER)
+@@ -1326,6 +1330,16 @@
+ 	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
+ 	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+ 	view.configure(ui, self)
++	ui.body.add_child(view)
++
++## Event scene (approved 2026-11-08): corridor art, story panel with clue choices,
++## result plus one action; found rounds add or swap on the bottom shelf.
++func modern_event() -> void:
++	var view := EventScreen.instantiate()
++	view.name = "EventScreen"
++	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
++	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
++	view.configure(ui, self)
+ 	ui.body.add_child(view)
+ 
+ func modern_workshop() -> void:
+--- a/새-게임-프로젝트/redesign/screen.gd
++++ b/새-게임-프로젝트/redesign/screen.gd
+@@ -355,7 +355,7 @@
+ 	if page == "run" and campaign != null and (campaign.s.phase == "shop" or (campaign.s.phase == "reward" and campaign.modern_places()) or city_ui.shows_results(campaign)): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "supply" and campaign.modern_places() and campaign.node().get("workshop", false): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "gate" and campaign.modern_gates(): edge_margin = 0
+-	if page == "run" and campaign != null and campaign.s.phase == "supply" and campaign.modern_places(): edge_margin = 0
++	if page == "run" and campaign != null and campaign.s.phase in ["supply", "event"] and campaign.modern_places(): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "map": edge_margin = 8
+ 	content_margin.custom_minimum_size.y = 0
+ 	_apply_content_margins(edge_margin)
+--- a/새-게임-프로젝트/redesign/samples/event_review/preview.gd
++++ b/새-게임-프로젝트/redesign/samples/event_review/preview.gd
+@@ -53,11 +53,33 @@
+ var shelf: ColorRect
+ var shelf_heading: Label
+ var offers_box: HBoxContainer
++var offers_scroll: ScrollContainer
++var stacks_scroll: ScrollContainer
++var stacks_box: HBoxContainer
++var stack_buttons: Dictionary = {}
++var stack_group := ButtonGroup.new()
++var menu_button: Button
++## Found rounds can be added, or swapped like the depot (shelf turns into owned stacks).
++var swapping := false
++var outgoing := ""
++## Main-game link (2026-11-08). configure() hands over the live campaign; choices,
++## found rounds and passing by go through screen.gd::_campaign_action (autosave,
++## no redraw). "전투 준비" and "지도로 계속" go through it with a redraw.
++var live_host = null
++var live_presenter = null
++
++func configure(screen, presenter) -> void:
++	live_host = screen
++	live_presenter = presenter
++	run = screen.campaign
+ 
+ func _ready() -> void:
+ 	build()
+-	get_window().size_changed.connect(fit_window)
+ 	resized.connect(arrange)
++	if live_host != null:
++		enter_live()
++		return
++	get_window().size_changed.connect(fit_window)
+ 	fit_window()
+ 	Input.emulate_mouse_from_touch = true
+ 	load_event("siphon", "")
+@@ -65,6 +87,56 @@
+ 	if not output.is_empty():
+ 		capture_review.call_deferred(output)
+ 
++func enter_live() -> void:
++	kind = str(run.node().get("event", "siphon"))
++	picked = ""
++	setup_scene()
++	menu_button.tooltip_text = ""
++	add_live_menu()
++	refresh()
++
++func add_live_menu() -> void:
++	var menu_panel := PanelContainer.new()
++	menu_panel.name = "UtilityMenu"
++	menu_panel.visible = false
++	menu_panel.theme_type_variation = &"Inspector"
++	menu_panel.anchor_left = 1.0
++	menu_panel.anchor_right = 1.0
++	menu_panel.offset_left = -240.0
++	menu_panel.offset_top = 64.0
++	menu_panel.offset_right = -24.0
++	add_child(menu_panel)
++	var actions := VBoxContainer.new()
++	actions.name = "Actions"
++	menu_panel.add_child(actions)
++	for entry in [["Build", "내 빌드", live_presenter.deck], ["Archive", "기록", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
++		var button := Button.new()
++		button.name = entry[0]
++		button.text = entry[1]
++		button.custom_minimum_size = Vector2(0, 44)
++		actions.add_child(button)
++		button.pressed.connect(use_utility.bind(menu_panel, entry[2]))
++	menu_button.pressed.connect(func(): menu_panel.visible = not menu_panel.visible)
++
++func use_utility(menu_panel: Control, target: Callable) -> void:
++	menu_panel.hide()
++	if target.is_valid():
++		target.call()
++
++## Review fixture calls the rules directly; the live event uses the main handler.
++func command(value: String, extra: String = "", replacement: String = "", redraw: bool = false) -> bool:
++	if live_host != null:
++		return live_host._campaign_action("resolve", value, extra, replacement, redraw)
++	return run.resolve(value, extra, replacement)
++
++## Corridor art of this region and depth (the place an ambush is fought).
++func setup_scene() -> void:
++	var depth := int(run.node().get("floor", 1))
++	var profile := Backgrounds.profile(int(run.s.region), depth, int(run.region_info().floors))
++	backdrop = Backgrounds.texture(profile)
++	floor_ratio = float(profile.floor_y) / float(backdrop.get_height())
++	region_label.text = "%s · %s" % [run.region_info().name, str(run.node().name)]
++
+ func fit_window() -> void:
+ 	var window := get_window()
+ 	window.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
+@@ -72,6 +144,11 @@
+ 
+ func _unhandled_key_input(event: InputEvent) -> void:
+ 	if not event.pressed or event.echo: return
++	if event.keycode == KEY_ESCAPE and swapping:
++		swapping = false
++		refresh()
++		return
++	if live_host != null: return
+ 	match event.keycode:
+ 		KEY_F1: load_event("siphon", "")
+ 		KEY_F2: load_event("archive", "")
+@@ -101,11 +178,9 @@
+ 		break
+ 	kind = wanted_kind
+ 	picked = ""
+-	var depth := int(run.node().get("floor", 1))
+-	var profile := Backgrounds.profile(int(run.s.region), depth, int(run.region_info().floors))
+-	backdrop = Backgrounds.texture(profile)
+-	floor_ratio = float(profile.floor_y) / float(backdrop.get_height())
+-	region_label.text = "%s · %s" % [run.region_info().name, str(run.node().name)]
++	swapping = false
++	outgoing = ""
++	setup_scene()
+ 	refresh()
+ 
+ # --- layout --------------------------------------------------------------------------
+@@ -154,12 +229,12 @@
+ 	pass_button.custom_minimum_size = Vector2(0, 44)
+ 	pass_button.pressed.connect(pass_by)
+ 	header.add_child(pass_button)
+-	var menu := Button.new()
+-	menu.name = "Menu"
+-	menu.text = "메뉴"
+-	menu.custom_minimum_size = Vector2(72, 44)
+-	menu.tooltip_text = "시안에서는 동작하지 않습니다 · 본편에서는 정비소와 같은 메뉴"
+-	header.add_child(menu)
++	menu_button = Button.new()
++	menu_button.name = "Menu"
++	menu_button.text = "메뉴"
++	menu_button.custom_minimum_size = Vector2(72, 44)
++	menu_button.tooltip_text = "시안에서는 동작하지 않습니다 · 본편에서는 정비소와 같은 메뉴"
++	header.add_child(menu_button)
+ 
+ 	panel = PanelContainer.new()
+ 	panel.name = "Story"
+@@ -215,6 +290,16 @@
+ 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+ 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+ 	shelf_column.add_child(scroll)
++	offers_scroll = scroll
++	stacks_scroll = ScrollContainer.new()
++	stacks_scroll.name = "StacksScroll"
++	stacks_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
++	stacks_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
++	shelf_column.add_child(stacks_scroll)
++	stacks_box = HBoxContainer.new()
++	stacks_box.name = "Stacks"
++	stacks_box.add_theme_constant_override("separation", 6)
++	stacks_scroll.add_child(stacks_box)
+ 	offers_box = HBoxContainer.new()
+ 	offers_box.name = "Offers"
+ 	offers_box.add_theme_constant_override("separation", 8)
+@@ -282,7 +367,8 @@
+ 	var current := encounter_stage()
+ 	credits_label.text = "보유 %d Cr" % int(run.s.credits)
+ 	title_label.text = str(scene.title)
+-	pass_button.visible = current.is_empty()
++	pass_button.visible = current.is_empty() or (current == "loot" and not swapping)
++	pass_button.text = "탄환을 남기고 계속" if current == "loot" else "관여하지 않고 지나간다"
+ 	for child in choices_box.get_children():
+ 		choices_box.remove_child(child)
+ 		child.queue_free()
+@@ -305,16 +391,31 @@
+ 				var bonus := int(Encounters.outcome(kind, str(run.s.encounter.choice), int(run.s.seed), int(run.s.node)).get("bonus", 0))
+ 				result_detail.text = "이 자리에서 바로 싸웁니다. 이기면 일반 보상과 현장 물자 +%d Cr." % bonus
+ 				primary.text = "전투 준비"
++				primary.disabled = false
+ 			"loot":
+ 				result_tag.text = "발견 · 탄환 1장"
+ 				result_tag.add_theme_color_override("font_color", GOLD)
+-				shelf_heading.text = "발견한 탄환 · 1장 선택"
+ 				rebuild_offers()
++				rebuild_stacks()
++				offers_scroll.visible = not swapping
++				stacks_scroll.visible = swapping
+ 				result_detail.text = loot_detail()
+ 				secondary.visible = true
+-				secondary.text = "탄환을 남기고 계속"
+-				primary.text = "1장 확보"
+-				primary.disabled = picked.is_empty() or not run.can_acquire_ammo(picked, "")
++				if swapping:
++					shelf_heading.text = "내보낼 탄 선택 · 받을 탄 %s" % Ammo.AMMO[picked].name
++					secondary.text = "취소"
++					secondary.disabled = false
++					secondary.theme_type_variation = &""
++					primary.text = "교체 확정"
++					primary.disabled = outgoing.is_empty()
++				else:
++					shelf_heading.text = "발견한 탄환 · 1장 선택"
++					var full: bool = not picked.is_empty() and not run.can_acquire_ammo(picked, "")
++					secondary.text = "교체해서 확보"
++					secondary.disabled = picked.is_empty()
++					secondary.theme_type_variation = &"PrimaryButton" if full else &""
++					primary.text = "추가 불가" if full else "추가로 확보"
++					primary.disabled = picked.is_empty() or full
+ 			"combat":
+ 				result_tag.text = "전투 시작"
+ 				result_detail.text = ""
+@@ -397,36 +498,78 @@
+ 		offers_box.add_child(item)
+ 		offer_buttons[str(id)] = item
+ 
++func rebuild_stacks() -> void:
++	for child in stacks_box.get_children():
++		stacks_box.remove_child(child)
++		child.queue_free()
++	stack_buttons.clear()
++	if not swapping: return
++	var counts: Dictionary = {}
++	for id in run.model.s.deck: counts[id] = int(counts.get(id, 0)) + 1
++	for id in counts:
++		var item: Button = Item.instantiate()
++		item.name = "Stack_" + str(id)
++		item.button_group = stack_group
++		item.get_node("Content/Icon").item_id = id
++		item.get_node("Content/Name").text = Ammo.AMMO[id].name
++		item.get_node("Content/Count").text = "%s · %d발" % [Comparison.power(str(id), run.model.s), int(counts[id])]
++		item.get_node("Content/Count").text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
++		item.custom_minimum_size = Vector2(108, 50) if compact() else Vector2(136, 80)
++		item.get_node("Content/Icon").visible = not compact()
++		item.set_pressed_no_signal(str(id) == outgoing)
++		item.disabled = not run.can_acquire_ammo(picked, str(id))
++		item.pressed.connect(pick_stack.bind(str(id)))
++		stacks_box.add_child(item)
++		stack_buttons[str(id)] = item
++
++func pick_stack(id: String) -> void:
++	outgoing = id
++	refresh()
++
+ func loot_detail() -> String:
+ 	var count: int = run.model.s.deck.size()
+ 	var limit: int = run.model.deck_limit()
++	if swapping:
++		if outgoing.is_empty(): return "아래에서 내보낼 탄을 고르세요. 휴대 %d / %d발 유지" % [count, limit]
++		return "%s %d → %d장 · %s 받음 · 휴대 %d / %d발 유지" % [Ammo.AMMO[outgoing].name, run.model.s.deck.count(outgoing), run.model.s.deck.count(outgoing) - 1, Ammo.AMMO[picked].name, count, limit]
+ 	if picked.is_empty(): return "아래에서 가져갈 탄을 고르세요. 휴대 %d / %d발" % [count, limit]
+ 	if not run.can_acquire_ammo(picked, ""): return "가방이 가득 찼습니다. 휴대 %d / %d발" % [count, limit]
+ 	return "%s %s · 휴대 %d → %d / %d발" % [Ammo.AMMO[picked].name, Comparison.power(picked, run.model.s), count, count + 1, limit]
+ 
+ func choose(id: String) -> void:
+-	if run.resolve("encounter", id): refresh()
++	if command("encounter", id): refresh()
+ 
+ func pick(id: String) -> void:
+ 	picked = id
+ 	refresh()
+ 
+ func pass_by() -> void:
+-	if run.resolve("skip"): refresh()
++	swapping = false
++	if command("skip"): refresh()
+ 
+ func on_secondary() -> void:
+-	if encounter_stage() == "loot" and run.resolve("skip"): refresh()
++	if encounter_stage() != "loot": return
++	swapping = not swapping and not picked.is_empty()
++	outgoing = ""
++	refresh()
+ 
+ func on_primary() -> void:
+ 	match encounter_stage():
+ 		"ambush":
+-			if run.resolve("fight"): refresh()
++			# Live: the main handler starts the combat and redraws into the battle HUD.
++			if command("fight", "", "", true) and live_host == null: refresh()
+ 		"loot":
+-			if not picked.is_empty() and run.resolve("ammo", picked, ""): refresh()
++			if picked.is_empty(): return
++			var replace := outgoing if swapping else ""
++			if command("ammo", picked, replace):
++				swapping = false
++				outgoing = ""
++				refresh()
+ 		"combat":
+-			load_event(kind, "")
++			if live_host == null: load_event(kind, "")
+ 		_:
+-			load_event(kind, "")
++			if live_host != null: live_host._campaign_action("leave")
++			else: load_event(kind, "")
+ 
+ # --- verification --------------------------------------------------------------------
+ 
+--- /dev/null
++++ b/새-게임-프로젝트/tests/event_live_ui.gd (new)
+@@ -0,0 +1,151 @@
++extends "res://tests/supply_live_ui.gd"
++## Event (조우) scene in the main game (2026-11-08). Fresh runs walk to the first
++## region-1 event through real combats and rewards (save-valid states). Seeds are
++## scanned until a result choice (credits/lore), an ambush and a found-rounds choice
++## are all available; every event input is a touch on the real screen.
++const Encounters = preload("res://redesign/encounter_scenes.gd")
++const EventView = preload("res://redesign/samples/event_review/preview.gd")
++
++func find(id: String) -> Control:
++	var scene: Node = host.find_child("EventScreen", true, false)
++	if scene != null and id != "EventScreen":
++		var inside: Node = scene.find_child(id, true, false)
++		if inside != null: return inside as Control
++	return host.find_child(id, true, false) as Control
++
++func reach_event(seed_value: int):
++	var c = Campaign.new()
++	c.start("single", seed_value, 0, "balanced", Campaign.Content.RouteMap.VERSION, "carrier", true)
++	while c.departure_pending(): c.advance_departure(true)
++	var nodes: Array = c.current_nodes()
++	var events: Array = nodes.filter(func(n): return n.kind == "event")
++	if events.is_empty(): return null
++	var target: int = int(events[0].id)
++	for step in range(60):
++		if c.s.phase == "event" and int(c.s.node) == target: return c
++		match str(c.s.phase):
++			"map":
++				var next: Array = c.choices().filter(func(n): return reaches(nodes, int(n.id), target))
++				if next.is_empty() or not c.enter(int(next[0].id)): return null
++			"combat":
++				var path: Array = solver.solve(c.model, 4, 18)
++				if path.is_empty(): return null
++				for item in path:
++					match str(item.action):
++						"fire": c.model.fire()
++						"reload": c.model.reload_magazine()
++						"cool": c.model.cool_magazine()
++						"eject": c.model.eject_magazine_rounds(item.indices)
++						"emergency": c.model.emergency_resupply()
++					c.sync_combat()
++			"reward":
++				var parts: Array = c.part_rewards()
++				var ammo: Array = c.reward_options()
++				var taken := false
++				if not parts.is_empty(): taken = c.reward(str(parts[0]), "")
++				elif not ammo.is_empty() and c.first_ammo_reward(): taken = c.reward(str(ammo[0]), "")
++				if not taken: taken = c.reward("credits", "")
++				if not taken: return null
++			_:
++				if c.s.phase in ["supply", "event"] and not c.s.resolved: c.resolve("skip")
++				if not c.leave(): return null
++	return null
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
++	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
++	# case name -> {data, choice}
++	var cases: Dictionary = {}
++	for seed_value in range(251107, 251147):
++		if cases.has("result") and cases.has("combat") and cases.has("ammo"): break
++		var c = reach_event(seed_value)
++		if c == null: continue
++		var kind := str(c.node().event)
++		for option in Encounters.scene(kind).choices:
++			if int(c.s.credits) < int(option.cost): continue
++			var type := str(Encounters.outcome(kind, str(option.id), int(c.s.seed), int(c.s.node)).get("type", ""))
++			var case_name := "result" if type in ["credits", "lore"] else type
++			if case_name in ["result", "combat", "ammo"] and not cases.has(case_name):
++				cases[case_name] = {"data": snapshot(c), "choice": str(option.id), "kind": kind, "seed": seed_value}
++	print("EVENT CASES ", cases.keys(), " ", cases.values().map(func(v): return [v.kind, v.choice, v.seed]))
++	for case_name in ["result", "combat", "ammo"]: check(cases.has(case_name), "found a walked event with a %s choice" % case_name)
++	if cases.has("result"):
++		var data: Dictionary = cases.result.data
++		check(Campaign.new().restore_state(data.duplicate(true)), "walked event state is save-valid")
++		for extent in [Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454)]:
++			root.size = extent
++			var suffix := "%dx%d" % [extent.x, extent.y]
++			var c = restored(data)
++			await mount(c)
++			var scene := find("EventScreen")
++			check(scene != null and scene.is_visible_in_tree(), "event scene replaces the old event screen " + suffix)
++			check(find("CampaignShellHeader") == null, "old shell header is gone")
++			check(scene != null and root.get_visible_rect().grow(1).encloses(scene.get_global_rect()), "event fits the screen " + suffix)
++			check(find("Choices").get_child_count() == 2, "two real choices")
++			await capture("choose_" + suffix)
++			await tap("Choice_" + cases.result.choice)
++			check(c.s.resolved and find("Primary").text == "지도로 계속", "result shows one way on")
++			check(saved().s.resolved, "choice is autosaved")
++			await capture("result_" + suffix)
++			await tap("Primary")
++			check(c.s.phase == "map" and find("PipeMapScreen") != null, "leaving returns to the map " + suffix)
++		root.size = Vector2i(1280, 800)
++		var passing = restored(data)
++		await mount(passing)
++		await tap("Pass")
++		check(passing.s.resolved and passing.s.encounter.choice == "skip", "passing by resolves")
++		var menu = restored(data)
++		await mount(menu)
++		await tap("Menu")
++		check(find("UtilityMenu").is_visible_in_tree(), "utility menu opens")
++		await tap("Build")
++		check(find("WorkspaceOverlay") != null, "build workspace opens over the event")
++		host._close_workspace(); await settle()
++		check(find("EventScreen") != null, "event stays after closing build")
++	root.size = Vector2i(1280, 800)
++	if cases.has("combat"):
++		var ambush = restored(cases.combat.data)
++		await mount(ambush)
++		await tap("Choice_" + cases.combat.choice)
++		check(ambush.s.encounter.stage == "ambush" and find("Primary").text == "전투 준비", "risky choice reveals an ambush")
++		await capture("ambush_1280x800")
++		check(saved().s.encounter.stage == "ambush", "ambush is autosaved")
++		var resumed = saved()
++		await mount(resumed)
++		check(find("EventScreen").encounter_stage() == "ambush" and find("Primary").text == "전투 준비", "resume opens on the ambush")
++		await tap("Primary")
++		check(resumed.s.phase == "combat" and is_instance_valid(host.campaign_hud), "fight starts the real battle HUD")
++		await capture("ambush_battle_1280x800")
++	if cases.has("ammo"):
++		var loot = restored(cases.ammo.data)
++		await mount(loot)
++		await tap("Choice_" + cases.ammo.choice)
++		check(loot.s.encounter.stage == "loot" and find("Shelf").is_visible_in_tree(), "found rounds on the shelf")
++		var offer: String = str(loot.reward_options()[0])
++		var count: int = loot.model.s.deck.size()
++		await tap("Offer_" + offer)
++		await capture("loot_1280x800")
++		await tap("Primary")
++		check(loot.s.resolved and loot.model.s.deck.size() == count + 1, "found round added once")
++		check(saved().model.s.deck.size() == count + 1, "found round is autosaved")
++		# Swap with a full bag.
++		var filler = restored(cases.ammo.data)
++		check(filler.resolve("encounter", cases.ammo.choice), "stage the loot")
++		while filler.model.s.deck.size() < filler.model.deck_limit(): filler.model.s.deck.append("basic_p2")
++		filler.normalize_for_save()
++		var full = Campaign.new()
++		if check(full.restore_state(snapshot(filler)), "full-bag loot restores"):
++			await mount(full)
++			var pick: String = str(full.reward_options()[0])
++			var total: int = full.model.s.deck.size()
++			var basics: int = full.model.s.deck.count("basic_p2")
++			await tap("Offer_" + pick)
++			check(find("Primary").disabled and find("Secondary").text == "교체해서 확보", "full bag offers swap only")
++			await tap("Secondary")
++			await tap("Stack_basic_p2")
++			await capture("loot_swap_1280x800")
++			await tap("Primary")
++			check(full.s.resolved and full.model.s.deck.size() == total and full.model.s.deck.count("basic_p2") == basics - 1, "swap keeps the total")
++	print("EVENT LIVE UI checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)

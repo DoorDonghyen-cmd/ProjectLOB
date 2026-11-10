@@ -1,0 +1,2276 @@
+{
+	"checks": 2400,
+	"contexts": 2,
+	"endpoints": [
+		{
+			"commands": [
+				{
+					"action": "enter",
+					"id": 101
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 1
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 5
+				},
+				{
+					"action": "reload",
+					"credits": 30,
+					"node": 101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 7
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 8
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 12
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 101,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 13
+				},
+				{
+					"action": "reward",
+					"credits": 30,
+					"id": "volley_drive",
+					"node": 101,
+					"phase": "reward",
+					"replace": "",
+					"turns": 13
+				},
+				{
+					"action": "reward",
+					"credits": 30,
+					"id": "precise_p2",
+					"node": 101,
+					"phase": "map",
+					"replace": "",
+					"turns": 13
+				},
+				{
+					"action": "enter",
+					"id": 201
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 14
+				},
+				{
+					"action": "reload",
+					"credits": 30,
+					"node": 201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 16
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 20
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 201,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 21
+				},
+				{
+					"action": "reward",
+					"credits": 30,
+					"id": "precise_p2",
+					"node": 201,
+					"phase": "map",
+					"replace": "",
+					"turns": 21
+				},
+				{
+					"action": "enter",
+					"id": 301
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 22
+				},
+				{
+					"action": "reload",
+					"credits": 30,
+					"node": 301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 24
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 28
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 29
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 301,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 30
+				},
+				{
+					"action": "reward",
+					"credits": 30,
+					"id": "precise_p2",
+					"node": 301,
+					"phase": "map",
+					"replace": "",
+					"turns": 30
+				},
+				{
+					"action": "enter",
+					"id": 402
+				},
+				{
+					"action": "resolve",
+					"credits": 30,
+					"id": "skip",
+					"node": 402,
+					"phase": "event",
+					"turns": 30
+				},
+				{
+					"action": "leave",
+					"credits": 30,
+					"node": 402,
+					"phase": "map",
+					"turns": 30
+				},
+				{
+					"action": "enter",
+					"id": 503
+				},
+				{
+					"action": "buy",
+					"credits": 18,
+					"id": 0,
+					"node": 503,
+					"phase": "shop",
+					"replace": "",
+					"turns": 30
+				},
+				{
+					"action": "buy",
+					"credits": 0,
+					"id": 1,
+					"node": 503,
+					"phase": "shop",
+					"replace": "",
+					"turns": 30
+				},
+				{
+					"action": "leave",
+					"credits": 0,
+					"node": 503,
+					"phase": "map",
+					"turns": 30
+				},
+				{
+					"action": "enter",
+					"id": 603
+				},
+				{
+					"action": "fire",
+					"credits": 0,
+					"node": 603,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 31
+				},
+				{
+					"action": "fire",
+					"credits": 0,
+					"node": 603,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 35
+				},
+				{
+					"action": "fire",
+					"credits": 0,
+					"node": 603,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 36
+				},
+				{
+					"action": "reward",
+					"credits": 0,
+					"id": "precise_p2_power",
+					"node": 603,
+					"phase": "map",
+					"replace": "",
+					"turns": 36
+				},
+				{
+					"action": "enter",
+					"id": 703
+				},
+				{
+					"action": "resolve",
+					"ammo": "precise_p2",
+					"credits": 0,
+					"id": "compress",
+					"node": 703,
+					"phase": "supply",
+					"replace": "",
+					"turns": 36
+				},
+				{
+					"action": "leave",
+					"credits": 0,
+					"node": 703,
+					"phase": "map",
+					"turns": 36
+				},
+				{
+					"action": "enter",
+					"id": 802
+				},
+				{
+					"action": "fire",
+					"credits": 0,
+					"node": 802,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 37
+				},
+				{
+					"action": "cool",
+					"rounds": 0.0
+				},
+				{
+					"action": "fire",
+					"credits": 0,
+					"node": 802,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 39
+				},
+				{
+					"action": "cool",
+					"rounds": 0.0
+				},
+				{
+					"action": "fire",
+					"credits": 0,
+					"node": 802,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 41
+				},
+				{
+					"action": "reload",
+					"credits": 0,
+					"node": 802,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 43
+				},
+				{
+					"action": "fire",
+					"credits": 0,
+					"node": 802,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 44
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 802,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 45
+				},
+				{
+					"action": "reward",
+					"credits": 30,
+					"id": "disrupt",
+					"node": 802,
+					"phase": "gate",
+					"replace": "",
+					"turns": 45
+				},
+				{
+					"action": "gate",
+					"credits": 30,
+					"id": "cadence",
+					"node": 802,
+					"phase": "gate",
+					"turns": 45
+				},
+				{
+					"action": "gate_depart",
+					"credits": 30,
+					"node": 0,
+					"phase": "map",
+					"turns": 45
+				},
+				{
+					"action": "enter",
+					"id": 10101
+				},
+				{
+					"action": "reload",
+					"credits": 30,
+					"node": 10101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 47
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 51
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 52
+				},
+				{
+					"action": "reload",
+					"credits": 30,
+					"node": 10101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 54
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 58
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10101,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 59
+				},
+				{
+					"action": "reward",
+					"credits": 30,
+					"id": "precise_p2_power_c",
+					"node": 10101,
+					"phase": "map",
+					"replace": "",
+					"turns": 59
+				},
+				{
+					"action": "enter",
+					"id": 10201
+				},
+				{
+					"action": "reload",
+					"credits": 30,
+					"node": 10201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 61
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 65
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 69
+				},
+				{
+					"action": "reload",
+					"credits": 30,
+					"node": 10201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 71
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 72
+				},
+				{
+					"action": "fire",
+					"credits": 30,
+					"node": 10201,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 73
+				},
+				{
+					"action": "reward",
+					"credits": 38,
+					"id": "credits",
+					"node": 10201,
+					"phase": "map",
+					"replace": "",
+					"turns": 73
+				},
+				{
+					"action": "enter",
+					"id": 10301
+				},
+				{
+					"action": "reload",
+					"credits": 38,
+					"node": 10301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 75
+				},
+				{
+					"action": "fire",
+					"credits": 38,
+					"node": 10301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 79
+				},
+				{
+					"action": "reload",
+					"credits": 38,
+					"node": 10301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 81
+				},
+				{
+					"action": "fire",
+					"credits": 38,
+					"node": 10301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 85
+				},
+				{
+					"action": "fire",
+					"credits": 38,
+					"node": 10301,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 86
+				},
+				{
+					"action": "reward",
+					"credits": 38,
+					"id": "precise_p2_power_c",
+					"node": 10301,
+					"phase": "map",
+					"replace": "",
+					"turns": 86
+				},
+				{
+					"action": "enter",
+					"id": 10401
+				},
+				{
+					"action": "fire",
+					"credits": 38,
+					"node": 10401,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 87
+				},
+				{
+					"action": "cool",
+					"rounds": 0.0
+				},
+				{
+					"action": "reload",
+					"credits": 38,
+					"node": 10401,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 90
+				},
+				{
+					"action": "fire",
+					"credits": 38,
+					"node": 10401,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 94
+				},
+				{
+					"action": "reload",
+					"credits": 38,
+					"node": 10401,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 96
+				},
+				{
+					"action": "fire",
+					"credits": 38,
+					"node": 10401,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 100
+				},
+				{
+					"action": "fire",
+					"credits": 38,
+					"node": 10401,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 101
+				},
+				{
+					"action": "reward",
+					"credits": 46,
+					"id": "credits",
+					"node": 10401,
+					"phase": "map",
+					"replace": "",
+					"turns": 101
+				},
+				{
+					"action": "enter",
+					"id": 10502
+				},
+				{
+					"action": "buy",
+					"credits": 16,
+					"id": 1,
+					"node": 10502,
+					"phase": "shop",
+					"replace": "",
+					"turns": 101
+				},
+				{
+					"action": "leave",
+					"credits": 16,
+					"node": 10502,
+					"phase": "map",
+					"turns": 101
+				},
+				{
+					"action": "enter",
+					"id": 10602
+				},
+				{
+					"action": "resolve",
+					"credits": 16,
+					"id": "skip",
+					"node": 10602,
+					"phase": "event",
+					"turns": 101
+				},
+				{
+					"action": "leave",
+					"credits": 16,
+					"node": 10602,
+					"phase": "map",
+					"turns": 101
+				},
+				{
+					"action": "enter",
+					"id": 10702
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10702,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 102
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10702,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 106
+				},
+				{
+					"action": "reload",
+					"credits": 16,
+					"node": 10702,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 108
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10702,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 109
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10702,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 113
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10702,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 114
+				},
+				{
+					"action": "reward",
+					"credits": 16,
+					"id": "chase",
+					"node": 10702,
+					"phase": "map",
+					"replace": "",
+					"turns": 114
+				},
+				{
+					"action": "enter",
+					"id": 10801
+				},
+				{
+					"action": "resolve",
+					"credits": 16,
+					"id": "skip",
+					"node": 10801,
+					"phase": "event",
+					"turns": 114
+				},
+				{
+					"action": "leave",
+					"credits": 16,
+					"node": 10801,
+					"phase": "map",
+					"turns": 114
+				},
+				{
+					"action": "enter",
+					"id": 10902
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 118
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 119
+				},
+				{
+					"action": "reload",
+					"credits": 16,
+					"node": 10902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 121
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 125
+				},
+				{
+					"action": "fire",
+					"credits": 16,
+					"node": 10902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 126
+				},
+				{
+					"action": "fire",
+					"credits": 51,
+					"node": 10902,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 127
+				},
+				{
+					"action": "reward",
+					"credits": 51,
+					"id": "skip",
+					"node": 10902,
+					"phase": "gate",
+					"replace": "",
+					"turns": 127
+				},
+				{
+					"action": "gate",
+					"credits": 51,
+					"id": "efficiency",
+					"node": 10902,
+					"phase": "gate",
+					"turns": 127
+				},
+				{
+					"action": "gate_depart",
+					"credits": 51,
+					"node": 0,
+					"phase": "map",
+					"turns": 127
+				},
+				{
+					"action": "enter",
+					"id": 20101
+				},
+				{
+					"action": "fire",
+					"credits": 51,
+					"node": 20101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 128
+				},
+				{
+					"action": "reload",
+					"credits": 51,
+					"node": 20101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 130
+				},
+				{
+					"action": "fire",
+					"credits": 51,
+					"node": 20101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 134
+				},
+				{
+					"action": "fire",
+					"credits": 51,
+					"node": 20101,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 135
+				},
+				{
+					"action": "reward",
+					"credits": 51,
+					"id": "charge_hot",
+					"node": 20101,
+					"phase": "map",
+					"replace": "",
+					"turns": 135
+				},
+				{
+					"action": "enter",
+					"id": 20201
+				},
+				{
+					"action": "fire",
+					"credits": 51,
+					"node": 20201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 136
+				},
+				{
+					"action": "reload",
+					"credits": 51,
+					"node": 20201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 138
+				},
+				{
+					"action": "fire",
+					"credits": 51,
+					"node": 20201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 139
+				},
+				{
+					"action": "fire",
+					"credits": 51,
+					"node": 20201,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 140
+				},
+				{
+					"action": "reward",
+					"credits": 51,
+					"id": "rammer",
+					"node": 20201,
+					"phase": "map",
+					"replace": "",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 51,
+					"id": "none",
+					"node": 20201,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 51,
+					"id": "volley_drive",
+					"node": 20201,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 51,
+					"id": "rammer",
+					"node": 20201,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 51,
+					"id": "third_striker",
+					"node": 20201,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 51,
+					"id": "reclaimer",
+					"node": 20201,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "enter",
+					"id": 20402
+				},
+				{
+					"action": "buy",
+					"credits": 39,
+					"id": 0,
+					"node": 20402,
+					"phase": "shop",
+					"replace": "",
+					"turns": 140
+				},
+				{
+					"action": "buy",
+					"credits": 9,
+					"id": 1,
+					"node": 20402,
+					"phase": "shop",
+					"replace": "",
+					"turns": 140
+				},
+				{
+					"action": "leave",
+					"credits": 9,
+					"node": 20402,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 9,
+					"id": "none",
+					"node": 20402,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 9,
+					"id": "volley_drive",
+					"node": 20402,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 9,
+					"id": "rammer",
+					"node": 20402,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 9,
+					"id": "third_striker",
+					"node": 20402,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 9,
+					"id": "sequencer",
+					"node": 20402,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "equip",
+					"credits": 9,
+					"id": "reclaimer",
+					"node": 20402,
+					"phase": "map",
+					"turns": 140
+				},
+				{
+					"action": "enter",
+					"id": 20502
+				},
+				{
+					"action": "fire",
+					"credits": 9,
+					"node": 20502,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 141
+				},
+				{
+					"action": "reload",
+					"credits": 9,
+					"node": 20502,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 143
+				},
+				{
+					"action": "fire",
+					"credits": 9,
+					"node": 20502,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 147
+				},
+				{
+					"action": "fire",
+					"credits": 9,
+					"node": 20502,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 148
+				},
+				{
+					"action": "fire",
+					"credits": 9,
+					"node": 20502,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 149
+				},
+				{
+					"action": "reward",
+					"credits": 17,
+					"id": "credits",
+					"node": 20502,
+					"phase": "map",
+					"replace": "",
+					"turns": 149
+				},
+				{
+					"action": "enter",
+					"id": 20602
+				},
+				{
+					"action": "fire",
+					"credits": 17,
+					"node": 20602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 150
+				},
+				{
+					"action": "reload",
+					"credits": 17,
+					"node": 20602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 152
+				},
+				{
+					"action": "fire",
+					"credits": 17,
+					"node": 20602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 156
+				},
+				{
+					"action": "fire",
+					"credits": 17,
+					"node": 20602,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 157
+				},
+				{
+					"action": "reward",
+					"credits": 25,
+					"id": "credits",
+					"node": 20602,
+					"phase": "map",
+					"replace": "",
+					"turns": 157
+				},
+				{
+					"action": "enter",
+					"id": 20702
+				},
+				{
+					"action": "resolve",
+					"credits": 25,
+					"id": "skip",
+					"node": 20702,
+					"phase": "event",
+					"turns": 157
+				},
+				{
+					"action": "leave",
+					"credits": 25,
+					"node": 20702,
+					"phase": "map",
+					"turns": 157
+				},
+				{
+					"action": "enter",
+					"id": 20802
+				},
+				{
+					"action": "resolve",
+					"credits": 25,
+					"id": "skip",
+					"node": 20802,
+					"phase": "event",
+					"turns": 157
+				},
+				{
+					"action": "leave",
+					"credits": 25,
+					"node": 20802,
+					"phase": "map",
+					"turns": 157
+				},
+				{
+					"action": "enter",
+					"id": 20902
+				},
+				{
+					"action": "reload",
+					"credits": 25,
+					"node": 20902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 159
+				},
+				{
+					"action": "reload",
+					"credits": 25,
+					"node": 20902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 161
+				},
+				{
+					"action": "fire",
+					"credits": 25,
+					"node": 20902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 162
+				},
+				{
+					"action": "fire",
+					"credits": 25,
+					"node": 20902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 166
+				},
+				{
+					"action": "fire",
+					"credits": 65,
+					"node": 20902,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 167
+				},
+				{
+					"action": "reward",
+					"credits": 65,
+					"id": "skip",
+					"node": 20902,
+					"phase": "gate",
+					"replace": "",
+					"turns": 167
+				},
+				{
+					"action": "gate",
+					"credits": 65,
+					"id": "conduction",
+					"node": 20902,
+					"phase": "gate",
+					"turns": 167
+				},
+				{
+					"action": "gate_depart",
+					"credits": 65,
+					"node": 0,
+					"phase": "map",
+					"turns": 167
+				},
+				{
+					"action": "enter",
+					"id": 30101
+				},
+				{
+					"action": "fire",
+					"credits": 65,
+					"node": 30101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 168
+				},
+				{
+					"action": "fire",
+					"credits": 65,
+					"node": 30101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 172
+				},
+				{
+					"action": "reload",
+					"credits": 65,
+					"node": 30101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 174
+				},
+				{
+					"action": "fire",
+					"credits": 65,
+					"node": 30101,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 175
+				},
+				{
+					"action": "reward",
+					"credits": 74,
+					"id": "credits",
+					"node": 30101,
+					"phase": "map",
+					"replace": "",
+					"turns": 175
+				},
+				{
+					"action": "enter",
+					"id": 30202
+				},
+				{
+					"action": "reload",
+					"credits": 74,
+					"node": 30202,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 177
+				},
+				{
+					"action": "reload",
+					"credits": 74,
+					"node": 30202,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 179
+				},
+				{
+					"action": "fire",
+					"credits": 74,
+					"node": 30202,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 183
+				},
+				{
+					"action": "fire",
+					"credits": 74,
+					"node": 30202,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 184
+				},
+				{
+					"action": "reload",
+					"credits": 74,
+					"node": 30202,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 186
+				},
+				{
+					"action": "fire",
+					"credits": 74,
+					"node": 30202,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 190
+				},
+				{
+					"action": "fire",
+					"credits": 74,
+					"node": 30202,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 191
+				},
+				{
+					"action": "fire",
+					"credits": 74,
+					"node": 30202,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 192
+				},
+				{
+					"action": "reward",
+					"credits": 74,
+					"id": "charge",
+					"node": 30202,
+					"phase": "map",
+					"replace": "",
+					"turns": 192
+				},
+				{
+					"action": "enter",
+					"id": 30301
+				},
+				{
+					"action": "resolve",
+					"credits": 74,
+					"id": "skip",
+					"node": 30301,
+					"phase": "event",
+					"turns": 192
+				},
+				{
+					"action": "leave",
+					"credits": 74,
+					"node": 30301,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "enter",
+					"id": 30401
+				},
+				{
+					"action": "buy",
+					"credits": 44,
+					"id": 1,
+					"node": 30401,
+					"phase": "shop",
+					"replace": "",
+					"turns": 192
+				},
+				{
+					"action": "buy",
+					"credits": 14,
+					"id": 2,
+					"node": 30401,
+					"phase": "shop",
+					"replace": "",
+					"turns": 192
+				},
+				{
+					"action": "leave",
+					"credits": 14,
+					"node": 30401,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "none",
+					"node": 30401,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "volley_drive",
+					"node": 30401,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "rammer",
+					"node": 30401,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "third_striker",
+					"node": 30401,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "duplex",
+					"node": 30401,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "sequencer",
+					"node": 30401,
+					"phase": "map",
+					"turns": 192
+				},
+				{
+					"action": "enter",
+					"id": 30501
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30501,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 194
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30501,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 198
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30501,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 200
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30501,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 202
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30501,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 203
+				},
+				{
+					"action": "reward",
+					"credits": 14,
+					"id": "capacitor",
+					"node": 30501,
+					"phase": "map",
+					"replace": "",
+					"turns": 203
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "none",
+					"node": 30501,
+					"phase": "map",
+					"turns": 203
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "volley_drive",
+					"node": 30501,
+					"phase": "map",
+					"turns": 203
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "rammer",
+					"node": 30501,
+					"phase": "map",
+					"turns": 203
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "third_striker",
+					"node": 30501,
+					"phase": "map",
+					"turns": 203
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "duplex",
+					"node": 30501,
+					"phase": "map",
+					"turns": 203
+				},
+				{
+					"action": "equip",
+					"credits": 14,
+					"id": "capacitor",
+					"node": 30501,
+					"phase": "map",
+					"turns": 203
+				},
+				{
+					"action": "enter",
+					"id": 30601
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30601,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 205
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30601,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 206
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30601,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 210
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30601,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 212
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30601,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 216
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30601,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 217
+				},
+				{
+					"action": "reward",
+					"credits": 14,
+					"id": "charge_hot",
+					"node": 30601,
+					"phase": "map",
+					"replace": "",
+					"turns": 217
+				},
+				{
+					"action": "enter",
+					"id": 30701
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 221
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 223
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 227
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 229
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30701,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 230
+				},
+				{
+					"action": "reward",
+					"credits": 14,
+					"id": "breaker",
+					"node": 30701,
+					"phase": "map",
+					"replace": "",
+					"turns": 230
+				},
+				{
+					"action": "enter",
+					"id": 30801
+				},
+				{
+					"action": "resolve",
+					"ammo": "precise_p2",
+					"credits": 14,
+					"id": "compress",
+					"node": 30801,
+					"phase": "supply",
+					"replace": "",
+					"turns": 230
+				},
+				{
+					"action": "leave",
+					"credits": 14,
+					"node": 30801,
+					"phase": "map",
+					"turns": 230
+				},
+				{
+					"action": "enter",
+					"id": 30902
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 234
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 235
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 237
+				},
+				{
+					"action": "fire",
+					"credits": 14,
+					"node": 30902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 241
+				},
+				{
+					"action": "reload",
+					"credits": 14,
+					"node": 30902,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 243
+				},
+				{
+					"action": "fire",
+					"credits": 59,
+					"node": 30902,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 244
+				},
+				{
+					"action": "reward",
+					"credits": 59,
+					"id": "precise_p2_power_c",
+					"node": 30902,
+					"phase": "gate",
+					"replace": "",
+					"turns": 244
+				},
+				{
+					"action": "gate",
+					"credits": 59,
+					"id": "cadence",
+					"node": 30902,
+					"phase": "gate",
+					"turns": 244
+				},
+				{
+					"action": "gate_bag"
+				},
+				{
+					"action": "gate_depart",
+					"credits": 41,
+					"node": 0,
+					"phase": "map",
+					"turns": 244
+				},
+				{
+					"action": "enter",
+					"id": 40101
+				},
+				{
+					"action": "fire",
+					"credits": 41,
+					"node": 40101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 248
+				},
+				{
+					"action": "fire",
+					"credits": 41,
+					"node": 40101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 249
+				},
+				{
+					"action": "reload",
+					"credits": 41,
+					"node": 40101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 251
+				},
+				{
+					"action": "fire",
+					"credits": 41,
+					"node": 40101,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 255
+				},
+				{
+					"action": "fire",
+					"credits": 41,
+					"node": 40101,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 256
+				},
+				{
+					"action": "reward",
+					"credits": 49,
+					"id": "credits",
+					"node": 40101,
+					"phase": "map",
+					"replace": "",
+					"turns": 256
+				},
+				{
+					"action": "enter",
+					"id": 40201
+				},
+				{
+					"action": "fire",
+					"credits": 49,
+					"node": 40201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 260
+				},
+				{
+					"action": "reload",
+					"credits": 49,
+					"node": 40201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 262
+				},
+				{
+					"action": "fire",
+					"credits": 49,
+					"node": 40201,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 266
+				},
+				{
+					"action": "fire",
+					"credits": 49,
+					"node": 40201,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 267
+				},
+				{
+					"action": "reward",
+					"credits": 49,
+					"id": "cooling_breech",
+					"node": 40201,
+					"phase": "map",
+					"replace": "",
+					"turns": 267
+				},
+				{
+					"action": "enter",
+					"id": 40301
+				},
+				{
+					"action": "reload",
+					"credits": 49,
+					"node": 40301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 269
+				},
+				{
+					"action": "reload",
+					"credits": 49,
+					"node": 40301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 271
+				},
+				{
+					"action": "fire",
+					"credits": 49,
+					"node": 40301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 275
+				},
+				{
+					"action": "reload",
+					"credits": 49,
+					"node": 40301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 277
+				},
+				{
+					"action": "fire",
+					"credits": 49,
+					"node": 40301,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 281
+				},
+				{
+					"action": "fire",
+					"credits": 49,
+					"node": 40301,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 282
+				},
+				{
+					"action": "reward",
+					"credits": 57,
+					"id": "credits",
+					"node": 40301,
+					"phase": "map",
+					"replace": "",
+					"turns": 282
+				},
+				{
+					"action": "enter",
+					"id": 40401
+				},
+				{
+					"action": "buy",
+					"credits": 27,
+					"id": 1,
+					"node": 40401,
+					"phase": "shop",
+					"replace": "",
+					"turns": 282
+				},
+				{
+					"action": "leave",
+					"credits": 27,
+					"node": 40401,
+					"phase": "map",
+					"turns": 282
+				},
+				{
+					"action": "enter",
+					"id": 40501
+				},
+				{
+					"action": "fire",
+					"credits": 27,
+					"node": 40501,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 286
+				},
+				{
+					"action": "reload",
+					"credits": 27,
+					"node": 40501,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 288
+				},
+				{
+					"action": "fire",
+					"credits": 27,
+					"node": 40501,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 289
+				},
+				{
+					"action": "reward",
+					"credits": 39,
+					"id": "credits",
+					"node": 40501,
+					"phase": "map",
+					"replace": "",
+					"turns": 289
+				},
+				{
+					"action": "enter",
+					"id": 40602
+				},
+				{
+					"action": "fire",
+					"credits": 39,
+					"node": 40602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 290
+				},
+				{
+					"action": "reload",
+					"credits": 39,
+					"node": 40602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 292
+				},
+				{
+					"action": "fire",
+					"credits": 39,
+					"node": 40602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 296
+				},
+				{
+					"action": "reload",
+					"credits": 39,
+					"node": 40602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 298
+				},
+				{
+					"action": "fire",
+					"credits": 39,
+					"node": 40602,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 302
+				},
+				{
+					"action": "fire",
+					"credits": 39,
+					"node": 40602,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 303
+				},
+				{
+					"action": "reward",
+					"credits": 39,
+					"id": "igniter",
+					"node": 40602,
+					"phase": "map",
+					"replace": "",
+					"turns": 303
+				},
+				{
+					"action": "enter",
+					"id": 40701
+				},
+				{
+					"action": "reload",
+					"credits": 39,
+					"node": 40701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 305
+				},
+				{
+					"action": "fire",
+					"credits": 39,
+					"node": 40701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 309
+				},
+				{
+					"action": "reload",
+					"credits": 39,
+					"node": 40701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 311
+				},
+				{
+					"action": "fire",
+					"credits": 39,
+					"node": 40701,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 315
+				},
+				{
+					"action": "fire",
+					"credits": 39,
+					"node": 40701,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 316
+				},
+				{
+					"action": "reward",
+					"credits": 54,
+					"id": "credits",
+					"node": 40701,
+					"phase": "map",
+					"replace": "",
+					"turns": 316
+				},
+				{
+					"action": "enter",
+					"id": 40801
+				},
+				{
+					"action": "fire",
+					"credits": 54,
+					"node": 40801,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 320
+				},
+				{
+					"action": "reload",
+					"credits": 54,
+					"node": 40801,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 322
+				},
+				{
+					"action": "fire",
+					"credits": 54,
+					"node": 40801,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 326
+				},
+				{
+					"action": "reload",
+					"credits": 54,
+					"node": 40801,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 328
+				},
+				{
+					"action": "fire",
+					"credits": 54,
+					"node": 40801,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 329
+				},
+				{
+					"action": "fire",
+					"credits": 54,
+					"node": 40801,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 333
+				},
+				{
+					"action": "fire",
+					"credits": 54,
+					"node": 40801,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 334
+				},
+				{
+					"action": "reward",
+					"credits": 68,
+					"id": "credits",
+					"node": 40801,
+					"phase": "map",
+					"replace": "",
+					"turns": 334
+				},
+				{
+					"action": "enter",
+					"id": 40901
+				},
+				{
+					"action": "resolve",
+					"ammo": "charge",
+					"credits": 68,
+					"id": "compress",
+					"node": 40901,
+					"phase": "supply",
+					"replace": "",
+					"turns": 334
+				},
+				{
+					"action": "leave",
+					"credits": 68,
+					"node": 40901,
+					"phase": "map",
+					"turns": 334
+				},
+				{
+					"action": "enter",
+					"id": 41002
+				},
+				{
+					"action": "fire",
+					"credits": 68,
+					"node": 41002,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 338
+				},
+				{
+					"action": "reload",
+					"credits": 68,
+					"node": 41002,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 340
+				},
+				{
+					"action": "fire",
+					"credits": 68,
+					"node": 41002,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 344
+				},
+				{
+					"action": "reload",
+					"credits": 68,
+					"node": 41002,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 346
+				},
+				{
+					"action": "fire",
+					"credits": 68,
+					"node": 41002,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 350
+				},
+				{
+					"action": "reload",
+					"credits": 68,
+					"node": 41002,
+					"phase": "combat",
+					"rounds": 0.0,
+					"turns": 352
+				},
+				{
+					"action": "fire",
+					"credits": 118,
+					"node": 41002,
+					"phase": "reward",
+					"rounds": 0.0,
+					"turns": 353
+				},
+				{
+					"action": "reward",
+					"credits": 118,
+					"id": "skip",
+					"node": 41002,
+					"phase": "won",
+					"replace": "",
+					"turns": 353
+				}
+			],
+			"deck": [
+				"basic_p2",
+				"basic_p2",
+				"basic_p2",
+				"basic_p2",
+				"basic_p2",
+				"basic_p2",
+				"basic_p2",
+				"basic_p2",
+				"basic_p2",
+				"basic_p3",
+				"basic_p3",
+				"basic_p3",
+				"basic_p3",
+				"basic_p3",
+				"basic_p3",
+				"basic_p3",
+				"basic_p3",
+				"precise_p2",
+				"precise_p2_power",
+				"precise_p2_c",
+				"disrupt",
+				"precise_p2_power_c",
+				"precise_p2_power_c",
+				"chase",
+				"charge_hot",
+				"shatter",
+				"charge_hot",
+				"precise_p2_c",
+				"precise_p2_power_c",
+				"charge_c"
+			],
+			"gun": "scatter",
+			"outfit": "carrier",
+			"phase": "won",
+			"seed": 17,
+			"won": true,
+			"workshop_policy": "upgrade"
+		}
+	],
+	"failures": [],
+	"policy_observations": []
+}

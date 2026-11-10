@@ -1,0 +1,490 @@
+--- a/redesign/story_ui.gd
++++ b/redesign/story_ui.gd
+@@ -1,6 +1,7 @@
+ extends RefCounted
+ const Scene = preload("res://redesign/story_scene.gd")
+ const Story = preload("res://redesign/city_story.gd")
++const SceneView = preload("res://redesign/story/scene_view.gd")
+ 
+ static func heading(ui, title: String) -> HBoxContainer:
+ 	var top: HBoxContainer = ui._row(ui.body)
+@@ -26,27 +27,29 @@
+ 	var home: Label = ui._label(labels, "우리 동네 · 공급 중" if supplied else "우리 동네 · 공급 중단", 17, ui.ACCENT if supplied else ui.DANGER)
+ 	home.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+ 
++## Story scenes (2026-11-08): full-screen residential art with the supply diagram and a
++## story panel (story/scene_view.gd). heading()/scene() above are the pre-rework layout.
++static func open_scene(ui, place: String, step: String, title: String, text: String, supplied: bool, released: bool, actions: Array) -> void:
++	var view := SceneView.new()
++	view.name = "StoryScreen"
++	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
++	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
++	view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
++	view.configure(ui, place, step, title, text, supplied, released, actions)
++	ui.body.add_child(view)
++
+ static func departure(ui) -> void:
+ 	var step := int(ui.campaign.s.get("departure_step", 0))
+-	var top := heading(ui, "출발 전 · 우리 동네 정비소")
+-	var skip: Button = ui._button(top, "도입 건너뛰기", "story_skip", ui._campaign_action.bind("departure_skip"))
+-	skip.size_flags_horizontal = Control.SIZE_SHRINK_END
+-	skip.custom_minimum_size.x = 185
+-	skip.add_theme_font_size_override("font_size", ui._scaled(17))
+-	scene(ui, step == 1, false)
+ 	var beat: Dictionary = Story.DEPARTURE[step]
+-	ui._label(ui.body, beat.title, 34)
+-	ui._label(ui.body, beat.text, 20, ui.MUTED)
+-	var next: Button = ui._primary_button(ui._button(ui.body, beat.action, "story_next", ui._campaign_action.bind("departure_next")))
+-	ui._focus_control.call_deferred(next)
++	open_scene(ui, "출발 전 · 우리 동네 정비소", "%d / %d" % [step + 1, Story.DEPARTURE.size()], beat.title, beat.text, step == 1, false, [
++		["story_next", beat.action, ui._campaign_action.bind("departure_next"), true],
++		["story_skip", "도입 건너뛰기", ui._campaign_action.bind("departure_skip"), false],
++	])
+ 
+ static func restoration(ui) -> void:
+-	heading(ui, "정상 · 수동제어실")
+-	scene(ui, false, false)
+-	ui._label(ui.body, "아직, 저 아래에 사람들이 산다.", 34)
+-	ui._label(ui.body, "기상 설비는 다시 돌릴 수 있다. 하지만 예전 공급 목록을 그대로 복원하면 같은 집들이 또 꺼진다.\n차단 명령을 지우고, 각 구역에서도 밸브를 제어할 수 있게 하자.", 20, ui.MUTED)
+-	var next: Button = ui._primary_button(ui._button(ui.body, "공급 복구 · 현장 제어권 열기", "story_restore", ui._campaign_action.bind("restore_supply")))
+-	ui._focus_control.call_deferred(next)
++	open_scene(ui, "정상 · 수동제어실", "", "아직, 저 아래에 사람들이 산다.", "기상 설비는 다시 돌릴 수 있다. 하지만 예전 공급 목록을 그대로 복원하면 같은 집들이 또 꺼진다.\n차단 명령을 지우고, 각 구역에서도 밸브를 제어할 수 있게 하자.", false, false, [
++		["story_restore", "공급 복구 · 현장 제어권 열기", ui._campaign_action.bind("restore_supply"), true],
++	])
+ 
+ static func shop_inline(ui, place: Control, region: int) -> void:
+ 	var shop: Dictionary = Story.SHOPS[region]
+@@ -65,9 +68,6 @@
+ 	ui._primary_button(ui._button(panel, "거래로 돌아가기", "story_shop_close", ui._close_workspace))
+ 
+ static func homecoming(ui, show_results: Callable) -> void:
+-	heading(ui, "귀환 · 우리 동네 정비소")
+-	scene(ui, true, true)
+-	ui._label(ui.body, "돌아갈 곳에 불이 켜졌다.", 34)
+-	ui._label(ui.body, "기상 설비가 다시 돌고, 각 구역의 밸브가 사람들의 손으로 돌아왔다.\n정비소 동료가 그릇을 하나 더 놓는다. “왔네. 손부터 녹여.”", 20, ui.MUTED)
+-	var next: Button = ui._primary_button(ui._button(ui.body, "등반 결과 보기", "story_results", show_results))
+-	ui._focus_control.call_deferred(next)
++	open_scene(ui, "귀환 · 우리 동네 정비소", "", "돌아갈 곳에 불이 켜졌다.", "기상 설비가 다시 돌고, 각 구역의 밸브가 사람들의 손으로 돌아왔다.\n정비소 동료가 그릇을 하나 더 놓는다. “왔네. 손부터 녹여.”", true, true, [
++		["story_results", "등반 결과 보기", show_results, true],
++	])
+--- a/redesign/story_scene.gd
++++ b/redesign/story_scene.gd
+@@ -4,6 +4,8 @@
+ const BACKGROUND = preload("res://assets/art/tower_sample_20261003/residential_tower.png")
+ var supplied := false
+ var released := false
++## The story scene (2026-11-08) draws the art full screen and places this diagram on top.
++var backdrop := true
+ 
+ func _ready() -> void:
+ 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+@@ -12,8 +14,9 @@
+ 	resized.connect(queue_redraw)
+ 
+ func _draw() -> void:
+-	Art.cover(self, BACKGROUND, Rect2(Vector2.ZERO, size))
+-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.045, 0.06, 0.45))
++	if backdrop:
++		Art.cover(self, BACKGROUND, Rect2(Vector2.ZERO, size))
++		draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.045, 0.06, 0.45))
+ 	var warm := Color("e4bd72")
+ 	var cold := Color("607787")
+ 	var feed := warm if supplied else cold
+--- a/redesign/screen.gd
++++ b/redesign/screen.gd
+@@ -358,6 +358,8 @@
+ 	if page == "run" and campaign != null and campaign.s.phase == "gate" and campaign.modern_gates(): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase in ["supply", "event"] and campaign.modern_places(): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "map": edge_margin = 8
++	# Story scenes (2026-11-08) fill the screen like the depot and event scenes.
++	if page == "run" and campaign != null and (campaign.departure_pending() or (campaign.s.phase == "won" and not city_ui.shows_results(campaign))): edge_margin = 0
+ 	content_margin.custom_minimum_size.y = 0
+ 	_apply_content_margins(edge_margin)
+ 	body.add_theme_constant_override("separation", 6 if compact_combat else 10)
+@@ -1799,6 +1801,8 @@
+ 	return dialog.setup(self, title, compact)
+ 
+ func _confirmation(title: String, message: String, key: String, accept_text: String, cancel_text: String, callback: Callable) -> Control:
++	# Common window (2026-11-08); the equipment page keeps its approved dialog material.
++	if page != "loadout": return CommonWindows.confirm(self, title, message, key, accept_text, cancel_text, callback)
+ 	var column := _dialog(title, true)
+ 	var dialog: Control = column.get_meta("dialog")
+ 	dialog.name = key
+--- a/redesign/campaign_ui.gd
++++ b/redesign/campaign_ui.gd
+@@ -213,16 +213,33 @@
+ 	parent.add_child(view)
+ 	return view
+ 
++## Part details (2026-11-08): common window, opened from the build workshop, rewards and
++## the shop terminal. Same content as before.
+ func part_details(id: String) -> void:
+-	var panel = ui._dialog(str(Ammo.PARTS[id].name))
++	var panel: VBoxContainer = ui.CommonWindows.open(ui, str(Ammo.PARTS[id].name), Ammo.part_grade_summary(id), Vector2(780, 600))
+ 	panel.name = "PartDetails"
+-	ui._label(panel, Ammo.part_grade_summary(id), 18, Ammo.part_grade_color(id))
+-	ui._label(panel, "등급 막대 1 / 2 / 3개: 일반 / 고급 / 희귀 · 코어는 별도 장착 제한", 15, ui.MUTED)
+-	var view := part_card(panel, id, false, campaign.is_equipped(id))
+-	view.custom_minimum_size.y = 132
+-	ui._label(panel, "장착 효과 · " + Insight.reward_impact(id, ui.model.s, []), 20, ui.INK)
+-	ui._label(panel, BuildGuide.connection(id, ui.model.s), 18, ui.ACCENT)
+-	ui._label(panel, str(Ammo.part_spec(id,ui.model.s).text), 17, ui.MUTED)
++	panel.get_meta("dialog").get_node("%Subtitle").add_theme_color_override("font_color", Ammo.part_grade_color(id))
++	# The part's pixel icon (as on the mount) beside its effect, instead of the old teal card.
++	var top := HBoxContainer.new()
++	top.add_theme_constant_override("separation", 16)
++	panel.add_child(top)
++	var plate := PanelContainer.new()
++	plate.theme_type_variation = &"Inspector"
++	top.add_child(plate)
++	var icon := preload("res://redesign/results/core_icon.gd").new()
++	icon.name = "PartDetailIcon"
++	icon.part_id = id
++	icon.custom_minimum_size = Vector2(96, 72)
++	plate.add_child(icon)
++	var copy := VBoxContainer.new()
++	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
++	copy.alignment = BoxContainer.ALIGNMENT_CENTER
++	top.add_child(copy)
++	ui.CommonWindows.text(copy, ("장착 중" if campaign.is_equipped(id) else "보관 중") if campaign.s.parts.has(id) else "미보유", &"Caption")
++	ui.CommonWindows.text(copy, "장착 효과 · " + Insight.reward_impact(id, ui.model.s, []), &"", ui.CommonWindows.IVORY)
++	ui.CommonWindows.text(copy, BuildGuide.connection(id, ui.model.s), &"", ui.CommonWindows.GOLD)
++	ui.CommonWindows.text(panel, str(Ammo.part_spec(id,ui.model.s).text), &"", ui.CommonWindows.MUTED)
++	ui.CommonWindows.text(panel, "등급 막대 1 / 2 / 3개: 일반 / 고급 / 희귀 · 코어는 별도 장착 제한", &"Caption")
+ 
+ func _purchase_will_equip(id: String) -> bool:
+ 	var proposed: Array = campaign.equipped_parts()
+--- /dev/null
++++ b/redesign/story/scene_view.gd
+@@ -0,0 +1,154 @@
++extends Control
++## Story scenes (2026-11-08): 출발 3장면, 공급 복구, 귀환. Same language as the approved
++## event and depot scenes: the residential art fills the screen, the existing supply
++## diagram (story_scene.gd) sits over it, and a story panel on the right holds the beat,
++## the prose and one action. Text is unchanged from story_ui.gd before the rework.
++## Node names (menu, story_skip, story_next, story_restore, story_results, SupplyScene)
++## are kept for the existing flow and tests.
++const Art = preload("res://redesign/world_art.gd")
++const Diagram = preload("res://redesign/story_scene.gd")
++const BACKGROUND = preload("res://assets/art/tower_sample_20261003/residential_tower.png")
++const GOLD := Color("e9c27f")
++const IVORY := Color("ebe2d1")
++const MUTED := Color("a59c8b")
++const COLD := Color("9fb3bd")
++const ALERT := Color("f2a38d")
++
++var host
++var place := ""
++var step_text := ""
++var title := ""
++var prose := ""
++var supplied := false
++var released := false
++var actions: Array = []
++var diagram: Control
++var panel: PanelContainer
++var status_row: HBoxContainer
++var primary: Button
++
++## actions: [[node name, label, callable, primary?], ...]
++func configure(screen, place_name: String, step: String, beat_title: String, beat_text: String, is_supplied: bool, is_released: bool, buttons: Array) -> void:
++	host = screen
++	place = place_name
++	step_text = step
++	title = beat_title
++	prose = beat_text
++	supplied = is_supplied
++	released = is_released
++	actions = buttons
++
++func _ready() -> void:
++	theme = preload("res://redesign/workbench/theme.tres")
++	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
++	clip_contents = true
++	build()
++	resized.connect(layout)
++	layout.call_deferred()
++	if primary != null: host._focus_control.call_deferred(primary)
++
++func _draw() -> void:
++	Art.cover(self, BACKGROUND, Rect2(Vector2.ZERO, size))
++	draw_rect(Rect2(Vector2.ZERO, size), Color(0.03, 0.025, 0.02, 0.42))
++
++func compact() -> bool:
++	return size.y < 560
++
++func build() -> void:
++	diagram = Diagram.new()
++	diagram.name = "SupplyScene"
++	diagram.backdrop = false
++	diagram.supplied = supplied
++	diagram.released = released
++	add_child(diagram)
++
++	status_row = HBoxContainer.new()
++	status_row.name = "SupplyStatus"
++	add_child(status_row)
++	status(status_row, "정상 · 중앙 제어", MUTED, HORIZONTAL_ALIGNMENT_LEFT)
++	status(status_row, "현장 제어 가능" if released else "수동 밸브", GOLD if released else MUTED, HORIZONTAL_ALIGNMENT_CENTER)
++	status(status_row, "우리 동네 · 공급 중" if supplied else "우리 동네 · 공급 중단", GOLD if supplied else ALERT, HORIZONTAL_ALIGNMENT_RIGHT)
++
++	var menu := Button.new()
++	menu.name = "menu"
++	menu.text = "메뉴"
++	menu.custom_minimum_size = Vector2(88, 44)
++	menu.position = Vector2(16, 14)
++	menu.pressed.connect(press.bind(Callable(host, "_to_menu")))
++	add_child(menu)
++
++	panel = PanelContainer.new()
++	panel.name = "StoryPanel"
++	panel.theme_type_variation = &"Inspector"
++	var style := StyleBoxFlat.new()
++	style.bg_color = Color(0.06, 0.052, 0.043, 0.94)
++	style.border_width_top = 2
++	style.border_color = Color(0.36, 0.31, 0.23, 1)
++	style.content_margin_left = 20
++	style.content_margin_right = 20
++	style.content_margin_top = 16
++	style.content_margin_bottom = 16
++	style.anti_aliasing = false
++	panel.add_theme_stylebox_override("panel", style)
++	add_child(panel)
++	var column := VBoxContainer.new()
++	column.add_theme_constant_override("separation", 8)
++	panel.add_child(column)
++	var kicker := label(column, "StoryPlace", place + ("" if step_text.is_empty() else "  ·  " + step_text), GOLD)
++	kicker.theme_type_variation = &"Caption"
++	kicker.add_theme_color_override("font_color", GOLD)
++	var heading := label(column, "StoryTitle", title, IVORY)
++	heading.theme_type_variation = &"SectionTitle"
++	label(column, "StoryText", prose, IVORY)
++	var spacer := Control.new()
++	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
++	column.add_child(spacer)
++	for entry in actions:
++		var button := Button.new()
++		button.name = str(entry[0])
++		button.text = str(entry[1])
++		button.custom_minimum_size = Vector2(0, 52 if bool(entry[3]) else 44)
++		if bool(entry[3]):
++			button.theme_type_variation = &"PrimaryButton"
++			primary = button
++		button.pressed.connect(press.bind(entry[2]))
++		column.add_child(button)
++
++func press(callback: Callable) -> void:
++	host.feedback.play("click")
++	callback.call()
++
++func status(parent: HBoxContainer, value: String, color: Color, align: HorizontalAlignment) -> void:
++	var item := Label.new()
++	item.text = value
++	item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
++	item.horizontal_alignment = align
++	item.add_theme_color_override("font_color", color)
++	item.add_theme_color_override("font_outline_color", Color(0.02, 0.016, 0.012, 1))
++	item.add_theme_constant_override("outline_size", 4)
++	parent.add_child(item)
++
++func label(parent: Control, id: String, value: String, color: Color) -> Label:
++	var item := Label.new()
++	item.name = id
++	item.text = value
++	item.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
++	item.add_theme_color_override("font_color", color)
++	parent.add_child(item)
++	return item
++
++## Panel on the right (a third of the width, 340..480), the diagram fills the rest.
++func layout() -> void:
++	var margin := 12.0 if compact() else 20.0
++	var panel_width := clampf(size.x * 0.36, 340.0, 480.0)
++	panel.position = Vector2(size.x - panel_width - margin, margin)
++	panel.size = Vector2(panel_width, size.y - margin * 2)
++	var left := margin
++	var right := panel.position.x - margin
++	var top := 66.0 if compact() else 84.0
++	var status_height := 28.0
++	diagram.position = Vector2(left, top)
++	diagram.size = Vector2(maxf(1.0, right - left), maxf(1.0, size.y - top - margin - status_height - 8.0))
++	status_row.position = Vector2(left + 8.0, diagram.position.y + diagram.size.y + 4.0)
++	status_row.size = Vector2(maxf(1.0, right - left - 16.0), status_height)
++	queue_redraw()
+--- /dev/null
++++ b/tests/story_scenes_ui.gd
+@@ -0,0 +1,124 @@
++extends "res://tests/supply_live_ui.gd"
++## Story scenes, confirmation and part details (2026-11-08). Departure uses fresh runs;
++## the ending uses the earned won state of the 2026-11-06 full climb (QA_BUILD_DIR/
++## won_single_17.json, restoration pending); confirmation uses the region-5 shop state.
++const CommonWindow = preload("res://redesign/common/window.gd")
++const SceneView = preload("res://redesign/story/scene_view.gd")
++
++func find(id: String) -> Control:
++	for child in host.get_children():
++		if child.get_script() == CommonWindow and not child.is_queued_for_deletion():
++			var inside: Node = child.find_child(id, true, false)
++			if inside != null: return inside as Control
++	var overlay: Node = host.find_child("WorkspaceOverlay", true, false)
++	if overlay != null and id != "WorkspaceOverlay":
++		var in_overlay: Node = overlay.find_child(id, true, false)
++		if in_overlay != null: return in_overlay as Control
++	return host.find_child(id, true, false) as Control
++
++func window() -> Control:
++	for child in host.get_children():
++		if child.get_script() == CommonWindow and not child.is_queued_for_deletion(): return child
++	return null
++
++func on_screen(control: Control) -> bool:
++	return control != null and control.is_visible_in_tree() and root.get_visible_rect().grow(1).encloses(control.get_global_rect())
++
++func earned(file: String):
++	var c = Campaign.new()
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_BUILD_DIR").path_join(file)))), "earned state restores " + file)
++	return c
++
++func fresh():
++	var c = Campaign.new()
++	c.start("single", SEED, 0, "balanced", Campaign.Content.RouteMap.VERSION, "work", true)
++	return c
++
++func escape() -> void:
++	var event := InputEventAction.new()
++	event.action = "ui_cancel"; event.pressed = true
++	root.push_input(event)
++	await settle()
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
++	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
++	for extent in [Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454)]:
++		root.size = extent
++		var suffix := "%dx%d" % [extent.x, extent.y]
++		# 출발: three beats, each autosaved, ending on the map.
++		var c = fresh()
++		await mount(c)
++		var view := find("StoryScreen")
++		check(view != null and view.get_script() == SceneView, "departure opens the story scene " + suffix)
++		check(on_screen(find("StoryPanel")) and on_screen(find("story_next")) and on_screen(find("story_skip")) and on_screen(find("menu")), "panel and actions on screen " + suffix)
++		check(find("StoryPlace").text.contains("1 / 3") and find("StoryTitle").text == "우리 동네의 열이 끊겼다.", "first beat " + suffix)
++		check(find("SupplyScene").get_global_rect().size.x > 300 and not find("SupplyScene").get_global_rect().intersects(find("StoryPanel").get_global_rect()), "diagram beside the panel " + suffix)
++		await capture("departure1_" + suffix)
++		await tap("story_next")
++		check(int(c.s.departure_step) == 1 and int(saved().s.departure_step) == 1 and find("StoryPlace").text.contains("2 / 3"), "next beat advances and saves")
++		check(find("SupplyScene").supplied, "second beat shows warm supply")
++		if extent == Vector2i(1280, 800): await capture("departure2_" + suffix)
++		await tap("story_next")
++		check(find("StoryPlace").text.contains("3 / 3"), "third beat")
++		if extent == Vector2i(1280, 800): await capture("departure3_" + suffix)
++		await tap("story_next")
++		check(not c.departure_pending() and find("StoryScreen") == null and find("PipeMapScreen") != null, "last beat starts the climb on the map " + suffix)
++		# Skip.
++		c = fresh()
++		await mount(c)
++		await tap("story_skip")
++		check(not c.departure_pending() and find("PipeMapScreen") != null and not saved().departure_pending(), "skip goes to the map and saves")
++		# Ending: restoration then homecoming then results.
++		var won = earned("won_single_17.json")
++		check(won.restoration_pending(), "earned win waits for restoration")
++		await mount(won)
++		check(find("StoryTitle") != null and find("StoryTitle").text == "아직, 저 아래에 사람들이 산다." and on_screen(find("story_restore")), "restoration scene " + suffix)
++		await capture("restoration_" + suffix)
++		await tap("story_restore")
++		check(not won.restoration_pending() and not saved().restoration_pending(), "restoring supply saves")
++		check(find("StoryTitle") != null and find("StoryTitle").text == "돌아갈 곳에 불이 켜졌다." and find("SupplyScene").released, "homecoming scene " + suffix)
++		await capture("homecoming_" + suffix)
++		await tap("story_results")
++		check(find("StoryScreen") == null and host.city_ui.shows_results(won), "results follow " + suffix)
++	# Menu from the story returns to the title.
++	root.size = Vector2i(1280, 800)
++	await mount(fresh())
++	await tap("menu")
++	check(host.page == "menu" and find("StoryScreen") == null, "menu returns to the title")
++	# Part details from the build workshop: common window over the workshop.
++	var map = earned("entry_single_17_r5.json")
++	await mount(map)
++	await tap("city_deck")
++	var stored: Array = map.s.parts.filter(func(id): return not map.is_equipped(id))
++	if check(not stored.is_empty(), "a stored part to inspect"):
++		await tap("Stored_" + str(stored[0]))
++		await tap("PartRules")
++		var details := window()
++		check(details != null and find("PartDetails") != null and on_screen(details.get_node("%Frame")), "part details open in the common window")
++		await capture("part_details_1280x800")
++		await escape()
++		check(window() == null and find("WorkspaceOverlay") != null, "Esc closes details and keeps the workshop")
++	# Confirmation: dismantle in the shop, cancel then confirm.
++	var shop = earned("shop_single_17_r5_n40401.json")
++	await mount(shop)
++	var spare: Array = shop.s.parts.filter(func(id): return not shop.is_equipped(id))
++	if check(shop.s.phase == "shop" and not spare.is_empty(), "shop with a stored part"):
++		var part := str(spare[0])
++		var credits := int(shop.s.credits)
++		host.city_ui.ui = host; host.city_ui.campaign = shop
++		host.city_ui._confirm_part_dismantle(part)
++		await settle()
++		var ask := window()
++		check(ask != null and ask.name == "PartDismantleConfirmation" and find("DialogConfirm").text == "분해 · +10Cr" and find("DialogCancel").text == "보관", "dismantle asks in the common window")
++		check(ask != null and on_screen(ask.get_node("%Frame")), "confirmation on screen")
++		await capture("confirm_dismantle_1280x800")
++		await tap("DialogCancel")
++		check(window() == null and shop.s.parts.has(part), "cancel keeps the part")
++		host.city_ui._confirm_part_dismantle(part)
++		await settle()
++		await tap("DialogConfirm")
++		check(not shop.s.parts.has(part) and int(shop.s.credits) == credits + 10 and not saved().s.parts.has(part), "confirm dismantles, pays 10Cr and saves")
++	print("STORY SCENES UI checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/tests/story_scenes_capture.gd
+@@ -0,0 +1,46 @@
++extends SceneTree
++## Captures the story scenes (출발 3장면, 공급 복구, 귀환) at three sizes. Used before and
++## after the story scene rework (2026-11-08). States are set directly for viewing only.
++const Campaign = preload("res://redesign/campaign.gd")
++var host
++var output: String
++
++func _initialize() -> void: run.call_deferred()
++
++func settle() -> void:
++	for i in range(8): await process_frame
++	await RenderingServer.frame_post_draw
++
++func capture(label: String) -> void:
++	await settle()
++	root.get_texture().get_image().save_png(output.path_join(label + ".png"))
++
++func mount(c) -> void:
++	if is_instance_valid(host): host.free()
++	host = load("res://redesign/main.tscn").instantiate()
++	host.save_enabled = false
++	root.add_child(host)
++	host.campaign = c; host.model = c.model; host.page = "run"; host.redraw()
++	await settle()
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR")
++	for extent in [Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454)]:
++		root.size = extent
++		var suffix := "%dx%d" % [extent.x, extent.y]
++		var c = Campaign.new()
++		c.start("single", 251107, 0, "balanced", Campaign.Content.RouteMap.VERSION, "work", true)
++		for step in range(3):
++			await mount(c)
++			await capture("departure%d_%s" % [step + 1, suffix])
++			c.advance_departure()
++		c.s.phase = "won"
++		c.s.restoration_done = false
++		await mount(c)
++		await capture("restoration_" + suffix)
++		c.restore_supply()
++		await mount(c)
++		await capture("homecoming_" + suffix)
++	print("STORY SCENES CAPTURED")
++	quit(0)
+# common/window.gd and common/windows.gd: see the 2026-11-08 common window patch; this step added windows.gd::confirm() and window.gd::_fit()

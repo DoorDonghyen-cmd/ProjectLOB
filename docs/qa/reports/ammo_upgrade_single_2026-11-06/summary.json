@@ -1,0 +1,144 @@
+{
+  "contexts": 11,
+  "trial_fights": 138,
+  "earned_encounters_recorded": 178,
+  "earned_solved": 177,
+  "first_encounter_results": {
+    "full_fire": {
+      "keep": {
+        "won": 6,
+        "lost": 5,
+        "unresolved": 0
+      },
+      "upgrade": {
+        "won": 7,
+        "lost": 4,
+        "unresolved": 0
+      },
+      "other_work": {
+        "won": 6,
+        "lost": 5,
+        "unresolved": 0
+      }
+    },
+    "visible_heat_single": {
+      "keep": {
+        "won": 4,
+        "lost": 7,
+        "unresolved": 0
+      },
+      "upgrade": {
+        "won": 5,
+        "lost": 6,
+        "unresolved": 0
+      },
+      "other_work": {
+        "won": 4,
+        "lost": 7,
+        "unresolved": 0
+      }
+    },
+    "oracle_rng_known": {
+      "keep": {
+        "won": 11,
+        "lost": 0,
+        "unresolved": 0
+      },
+      "upgrade": {
+        "won": 10,
+        "lost": 0,
+        "unresolved": 1
+      },
+      "other_work": {
+        "won": 11,
+        "lost": 0,
+        "unresolved": 0
+      }
+    }
+  },
+  "runs": [
+    {
+      "label": "balance_final",
+      "checks": 7752,
+      "observations": 0
+    },
+    {
+      "label": "scatter_final",
+      "checks": 2400,
+      "observations": 0
+    },
+    {
+      "label": "amplifier_observed",
+      "checks": 2771,
+      "observations": 2
+    },
+    {
+      "label": "scout_final",
+      "checks": 2239,
+      "observations": 0
+    },
+    {
+      "label": "recovery_final",
+      "checks": 163,
+      "observations": 0
+    }
+  ],
+  "routes": [
+    {
+      "gun": "single",
+      "seed": 17,
+      "outfit": "carrier",
+      "policy": "refit",
+      "won": true
+    },
+    {
+      "gun": "burst",
+      "seed": 17,
+      "outfit": "carrier",
+      "policy": "refit",
+      "won": true
+    },
+    {
+      "gun": "heavy",
+      "seed": 17,
+      "outfit": "carrier",
+      "policy": "refit",
+      "won": true
+    },
+    {
+      "gun": "scatter",
+      "seed": 17,
+      "outfit": "carrier",
+      "policy": "upgrade",
+      "won": true
+    },
+    {
+      "gun": "amplifier",
+      "seed": 17,
+      "outfit": "carrier",
+      "policy": "upgrade",
+      "won": false
+    },
+    {
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "scout",
+      "policy": "upgrade",
+      "won": true
+    }
+  ],
+  "fired_rounds": 1661,
+  "part_events": {
+    "siege_drive": 342,
+    "third_striker": 139,
+    "afterburner": 5,
+    "opening": 17,
+    "volley_drive": 394,
+    "duplex": 77,
+    "rammer": 5,
+    "coil": 92,
+    "thermal_drive": 282,
+    "compression_sink": 19,
+    "igniter": 38
+  }
+}

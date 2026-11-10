@@ -1,0 +1,73 @@
+--- before/equipment_screen.tscn
++++ after/equipment_screen.tscn
+@@ -76,13 +76,6 @@
+ layout_mode = 2
+ theme_override_constants/separation = 24
+ 
+-[node name="loadout_back" type="Button" parent="Margin/Layout/Header" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-custom_minimum_size = Vector2(0, 48)
+-text = "‹ 돌아가기"
+-
+-
+ [node name="Heading" type="Label" parent="Margin/Layout/Header" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+@@ -97,6 +90,13 @@
+ theme_override_font_sizes/font_size = 16
+ text = "오르바스크 · 출발 정비실"
+ theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1.0)
++
++[node name="preparation_options" type="Button" parent="Margin/Layout/Header" ]
++unique_name_in_owner = true
++layout_mode = 2
++custom_minimum_size = Vector2(0, 48)
++text = "등반 설정"
++
+ 
+ [node name="SelectionScroll" type="ScrollContainer" parent="Margin/Layout"]
+ unique_name_in_owner = true
+@@ -827,11 +827,11 @@
+ layout_mode = 2
+ theme_override_constants/separation = 22
+ 
+-[node name="preparation_options" type="Button" parent="Margin/Layout/Footer" ]
++[node name="loadout_back" type="Button" parent="Margin/Layout/Footer" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ custom_minimum_size = Vector2(0, 48)
+-text = "등반 설정"
++text = "‹ 돌아가기"
+ 
+ 
+ [node name="SelectionSummary" type="Label" parent="Margin/Layout/Footer" ]
+@@ -852,7 +852,7 @@
+ text = "등반 시작  ›"
+ custom_minimum_size = Vector2(250, 54)
+ 
+-[node name="Edge" type="Control" parent="Margin/Layout/Header/loadout_back"]
++[node name="Edge" type="Control" parent="Margin/Layout/Footer/loadout_back"]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -957,7 +957,7 @@
+ mouse_filter = 2
+ script = ExtResource("12")
+ 
+-[node name="Edge" type="Control" parent="Margin/Layout/Footer/preparation_options"]
++[node name="Edge" type="Control" parent="Margin/Layout/Header/preparation_options"]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+--- before/equipment_screen.gd
++++ after/equipment_screen.gd
+@@ -54,7 +54,7 @@
+ 		label.add_theme_font_size_override("font_size", host._scaled(base))
+ 	refresh()
+ 	%OutfitScroll.ensure_control_visible.call_deferred(find_child("outfit_select_" + host.selected_outfit_id, true, false))
+-	%loadout_back.custom_minimum_size.x = host._scaled(140)
++	%loadout_back.custom_minimum_size.x = host._scaled(150)
+ 	%preparation_options.custom_minimum_size.x = host._scaled(150)
+ 	_fit_layout.call_deferred()
+ 	host._focus_control.call_deferred(find_child("weapon_select_" + host.selected_weapon_id, true, false))

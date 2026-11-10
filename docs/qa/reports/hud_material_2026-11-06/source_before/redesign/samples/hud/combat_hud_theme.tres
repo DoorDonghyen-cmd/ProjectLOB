@@ -1,0 +1,59 @@
+[gd_resource type="Theme" format=3]
+[ext_resource type="Font" path="res://assets/fonts/NeoDunggeunmoPro-Regular.ttf" id="font"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/active.tres" id="active"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/active_hover.tres" id="active_hover"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/rule_bottom.tres" id="rule_bottom"]
+[sub_resource type="StyleBoxEmpty" id="clear"]
+content_margin_left = 12.0
+content_margin_right = 12.0
+[sub_resource type="StyleBoxFlat" id="focus"]
+bg_color = Color(0,0,0,0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.36078,0.86667,0.86275,1)
+anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="track"]
+bg_color = Color(0.01569,0.09412,0.11765,1)
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+[sub_resource type="StyleBoxFlat" id="grab"]
+bg_color = Color(0.17255,0.47843,0.50196,1)
+[resource]
+default_font = ExtResource("font")
+default_font_size = 16
+Label/colors/font_color = Color(0.89412,0.94902,0.93333,1)
+Button/colors/font_color = Color(0.89412,0.94902,0.93333,1)
+Button/colors/font_hover_color = Color(0.89412,0.94902,0.93333,1)
+Button/colors/font_pressed_color = Color(0.89412,0.94902,0.93333,1)
+Button/colors/font_focus_color = Color(0.89412,0.94902,0.93333,1)
+Button/colors/font_disabled_color = Color(0.33725,0.46667,0.47843,1)
+Button/styles/normal = SubResource("clear")
+Button/styles/hover = SubResource("clear")
+Button/styles/pressed = SubResource("clear")
+Button/styles/disabled = SubResource("clear")
+Button/styles/focus = SubResource("focus")
+Panel/styles/clear = SubResource("clear")
+Panel/styles/focus = SubResource("focus")
+Panel/styles/ammo_active = SubResource("clear")
+Panel/styles/ammo_removed = SubResource("clear")
+ProgressBar/styles/background = SubResource("track")
+ProgressBar/styles/fill = SubResource("grab")
+HScrollBar/styles/scroll = SubResource("track")
+HScrollBar/styles/scroll_focus = SubResource("track")
+HScrollBar/styles/grabber = SubResource("grab")
+HScrollBar/styles/grabber_highlight = SubResource("grab")
+HScrollBar/styles/grabber_pressed = SubResource("grab")
+VScrollBar/styles/scroll = SubResource("track")
+VScrollBar/styles/scroll_focus = SubResource("track")
+VScrollBar/styles/grabber = SubResource("grab")
+VScrollBar/styles/grabber_highlight = SubResource("grab")
+VScrollBar/styles/grabber_pressed = SubResource("grab")
+LineRouteRow/base_type = &"Button"
+LineRouteRow/styles/normal = ExtResource("rule_bottom")
+LineRouteRow/styles/hover = ExtResource("rule_bottom")
+LineRouteRow/styles/pressed = ExtResource("active")
+LineRouteRow/styles/hover_pressed = ExtResource("active_hover")

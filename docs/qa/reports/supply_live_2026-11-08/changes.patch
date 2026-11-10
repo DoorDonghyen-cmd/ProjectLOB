@@ -1,0 +1,405 @@
+--- a/새-게임-프로젝트/redesign/campaign_ui.gd
++++ b/새-게임-프로젝트/redesign/campaign_ui.gd
+@@ -22,6 +22,7 @@
+ const TerminalShopScreen = preload("res://redesign/shop_terminal_live.tscn")
+ const DeckLoadout = preload("res://redesign/deck_loadout.tscn")
+ const GateScreen = preload("res://redesign/samples/gate_review/threshold_preview.tscn")
++const DepotScreen = preload("res://redesign/samples/supply_review/preview.tscn")
+ const Insight = preload("res://redesign/run_insight.gd")
+ const Lore = preload("res://redesign/city_story.gd")
+ const CompressorGlyph = preload("res://redesign/field_compressor_view.gd")
+@@ -80,6 +81,9 @@
+ 	if state.phase == "gate" and campaign.modern_gates():
+ 		modern_gate()
+ 		return
++	if state.phase == "supply" and campaign.modern_places() and not campaign.node().get("workshop", false):
++		modern_depot()
++		return
+ 	_run_shell(state)
+ 	if ui.debug_session: ui._label(ui.body, "개발자 연습 · 실제 진행 저장 보존", 18, ui.DANGER)
+ 	if not ui.save_error.is_empty(): ui._label(ui.body, ui.save_error, 18, ui.DANGER)
+@@ -1312,6 +1316,16 @@
+ 	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
+ 	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+ 	view.configure(ui, self)
++	ui.body.add_child(view)
++
++## Depot scene (3rd draft, approved 2026-11-08): offers on the bottom shelf, swap
++## switches the shelf to owned stacks. Saves without the place revision keep service().
++func modern_depot() -> void:
++	var view := DepotScreen.instantiate()
++	view.name = "DepotScreen"
++	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
++	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
++	view.configure(ui, self)
+ 	ui.body.add_child(view)
+ 
+ func modern_workshop() -> void:
+--- a/새-게임-프로젝트/redesign/screen.gd
++++ b/새-게임-프로젝트/redesign/screen.gd
+@@ -355,6 +355,7 @@
+ 	if page == "run" and campaign != null and (campaign.s.phase == "shop" or (campaign.s.phase == "reward" and campaign.modern_places()) or city_ui.shows_results(campaign)): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "supply" and campaign.modern_places() and campaign.node().get("workshop", false): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "gate" and campaign.modern_gates(): edge_margin = 0
++	if page == "run" and campaign != null and campaign.s.phase == "supply" and campaign.modern_places(): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "map": edge_margin = 8
+ 	content_margin.custom_minimum_size.y = 0
+ 	_apply_content_margins(edge_margin)
+--- a/새-게임-프로젝트/redesign/samples/supply_review/preview.gd
++++ b/새-게임-프로젝트/redesign/samples/supply_review/preview.gd
+@@ -75,11 +75,26 @@
+ var stacks_box: HBoxContainer
+ var region_label: Label
+ var leave_button: Button
++var menu_button: Button
++## Main-game link (2026-11-08). configure() hands over the live campaign; take,
++## swap and skip go through screen.gd::_campaign_action (autosave), "지도로 계속"
++## leaves through it with a redraw. Without it the scene is the review fixture.
++var live_host = null
++var live_presenter = null
++
++func configure(screen, presenter) -> void:
++	live_host = screen
++	live_presenter = presenter
++	run = screen.campaign
+ 
+ func _ready() -> void:
+ 	build()
+-	get_window().size_changed.connect(fit_window)
+ 	resized.connect(arrange)
++	if live_host != null:
++		apply_layout()
++		enter_live()
++		return
++	get_window().size_changed.connect(fit_window)
+ 	fit_window()
+ 	Input.emulate_mouse_from_touch = true
+ 	if OS.get_environment("LOB_SUPPLY_LAYOUT") == "column": layout = "column"
+@@ -89,6 +104,58 @@
+ 	if not output.is_empty():
+ 		capture_review.call_deferred(output)
+ 
++## The live depot: real offers, the run's outfit, the workbench utility menu. A
++## resumed save that already took (or skipped) its round opens on the result.
++func enter_live() -> void:
++	region_label.text = "%s · %s" % [run.region_info().name, str(run.node().name)]
++	var offers: Array = run.reward_options()
++	incoming = str(offers[0]) if not offers.is_empty() else ""
++	outgoing = ""
++	mode = Mode.DONE if run.s.resolved else Mode.PICK
++	receipt = str(run.s.message) if run.s.resolved else ""
++	menu_button.tooltip_text = ""
++	add_live_menu()
++	rebuild_offers()
++	rebuild_stacks()
++	refresh()
++
++func add_live_menu() -> void:
++	var panel := PanelContainer.new()
++	panel.name = "UtilityMenu"
++	panel.visible = false
++	panel.theme_type_variation = &"Inspector"
++	panel.anchor_left = 1.0
++	panel.anchor_right = 1.0
++	panel.offset_left = -240.0
++	panel.offset_top = 64.0
++	panel.offset_right = -24.0
++	add_child(panel)
++	var actions := VBoxContainer.new()
++	actions.name = "Actions"
++	panel.add_child(actions)
++	for entry in [["Build", "내 빌드", live_presenter.deck], ["Archive", "기록", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
++		var button := Button.new()
++		button.name = entry[0]
++		button.text = entry[1]
++		button.custom_minimum_size = Vector2(0, 44)
++		actions.add_child(button)
++		button.pressed.connect(use_utility.bind(panel, entry[2]))
++	menu_button.pressed.connect(func(): panel.visible = not panel.visible)
++
++func use_utility(panel: Control, target: Callable) -> void:
++	panel.hide()
++	if target.is_valid():
++		target.call()
++
++## Review fixture calls the rules directly; the live depot uses the main handler
++## without a redraw so this scene stays until "지도로 계속".
++func command(name: String, value: Variant = "", extra: String = "", replacement: String = "") -> bool:
++	if live_host != null:
++		return live_host._campaign_action(name, value, extra, replacement, false)
++	if name == "resolve":
++		return run.resolve(str(value), extra, replacement)
++	return false
++
+ func fit_window() -> void:
+ 	var window := get_window()
+ 	window.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
+@@ -96,6 +163,9 @@
+ 
+ func _unhandled_key_input(event: InputEvent) -> void:
+ 	if not event.pressed or event.echo: return
++	if live_host != null:
++		if event.keycode == KEY_ESCAPE: cancel()
++		return
+ 	match event.keycode:
+ 		KEY_F1: load_supply(false)
+ 		KEY_F2: load_supply(true)
+@@ -182,12 +252,12 @@
+ 	leave_button.custom_minimum_size = Vector2(0, 44)
+ 	leave_button.pressed.connect(skip)
+ 	header.add_child(leave_button)
+-	var menu := Button.new()
+-	menu.name = "Menu"
+-	menu.text = "메뉴"
+-	menu.custom_minimum_size = Vector2(72, 44)
+-	menu.tooltip_text = "시안에서는 동작하지 않습니다 · 본편 연결 시 정비소와 같은 메뉴"
+-	header.add_child(menu)
++	menu_button = Button.new()
++	menu_button.name = "Menu"
++	menu_button.text = "메뉴"
++	menu_button.custom_minimum_size = Vector2(72, 44)
++	menu_button.tooltip_text = "시안에서는 동작하지 않습니다 · 본편에서는 정비소와 같은 메뉴"
++	header.add_child(menu_button)
+ 
+ 	right_column = VBoxContainer.new()
+ 	right_column.name = "RightColumn"
+@@ -449,7 +519,8 @@
+ 		Mode.REPLACE:
+ 			if not outgoing.is_empty(): commit(outgoing)
+ 		Mode.DONE:
+-			load_supply(false)
++			if live_host != null: live_host._campaign_action("leave")
++			else: load_supply(false)
+ 
+ func on_secondary() -> void:
+ 	match mode:
+@@ -468,18 +539,19 @@
+ 
+ func commit(replace: String) -> void:
+ 	var before: int = deck().count(incoming)
+-	if not run.resolve("ammo", incoming, replace):
++	if not command("resolve", "ammo", incoming, replace):
+ 		return
+ 	receipt = "%s 1장 확보 · %s" % [Ammo.AMMO[incoming].name, ("%s 1장 내보냄" % Ammo.AMMO[replace].name) if not replace.is_empty() else "휴대 %d → %d발" % [deck().size() - 1, deck().size()]]
+ 	mode = Mode.DONE
+ 	outgoing = ""
+ 	verify(deck().count(incoming) == before + 1, "incoming round counted once")
++	rebuild_offers()
+ 	rebuild_stacks()
+ 	refresh()
+ 
+ func skip() -> void:
+ 	if mode == Mode.DONE: return
+-	if run.resolve("skip"):
++	if command("resolve", "skip"):
+ 		receipt = "보급 없이 출발 · 휴대 %d / %d발 유지" % [deck().size(), limit()]
+ 		mode = Mode.DONE
+ 		refresh()
+--- /dev/null
++++ b/새-게임-프로젝트/tests/supply_live_ui.gd (new)
+@@ -0,0 +1,205 @@
++extends SceneTree
++## Depot (탄약고) scene in the main game (2026-11-08). A fresh run walks to the first
++## depot through real combats (solved by the magazine solver) and real rewards, so
++## every state is save-valid; all depot inputs are touches on the real screen.
++const Campaign = preload("res://redesign/campaign.gd")
++const Actors = preload("res://redesign/service_actor_catalog.gd")
++const DepotView = preload("res://redesign/samples/supply_review/preview.gd")
++const Solver = preload("res://tests/campaign_magazine_solver.gd")
++const SEED := 251107
++var host
++var checks := 0
++var failures: Array = []
++var output: String
++var solver = Solver.new()
++
++func _initialize() -> void: run.call_deferred()
++
++func check(ok: bool, label: String) -> bool:
++	checks += 1
++	if not ok:
++		failures.append(label); print("FAIL: " + label)
++	return ok
++
++func settle() -> void:
++	for i in range(8): await process_frame
++	await RenderingServer.frame_post_draw
++
++func capture(label: String) -> void:
++	await settle()
++	root.get_texture().get_image().save_png(output.path_join(label + ".png"))
++
++## Names like Menu/Primary are generic: search the depot scene first.
++func find(id: String) -> Control:
++	var depot: Node = host.find_child("DepotScreen", true, false)
++	if depot != null and id != "DepotScreen":
++		var inside: Node = depot.find_child(id, true, false)
++		if inside != null: return inside as Control
++	return host.find_child(id, true, false) as Control
++
++func tap(id: String) -> void:
++	var button := find(id) as Button
++	if not check(button != null and button.is_visible_in_tree() and not button.disabled, "available " + id): return
++	var scroll: Node = button.get_parent()
++	while scroll != null:
++		if scroll is ScrollContainer: scroll.ensure_control_visible(button)
++		scroll = scroll.get_parent()
++	await settle()
++	var point: Vector2 = button.get_global_transform_with_canvas() * (button.size * 0.5)
++	for pressed in [true, false]:
++		var event := InputEventScreenTouch.new()
++		event.index = 0; event.position = point; event.pressed = pressed
++		root.push_input(event, true)
++		await process_frame
++	await settle()
++
++func reaches(nodes: Array, from_id: int, target: int) -> bool:
++	var queue: Array = [from_id]
++	var seen: Dictionary = {}
++	while not queue.is_empty():
++		var id: int = queue.pop_front()
++		if id == target: return true
++		if seen.has(id): continue
++		seen[id] = true
++		for node in nodes:
++			if int(node.id) == id: queue.append_array(node.next)
++	return false
++
++## Walk to the first depot of region 1 with real entries, combats and rewards.
++func reach_depot(outfit: String = "carrier"):
++	var c = Campaign.new()
++	c.start("single", SEED, 0, "balanced", Campaign.Content.RouteMap.VERSION, outfit, true)
++	while c.departure_pending(): c.advance_departure(true)
++	var nodes: Array = c.current_nodes()
++	var target: int = int(nodes.filter(func(n): return n.kind == "supply" and not n.get("workshop", false))[0].id)
++	for step in range(60):
++		if c.s.phase == "supply" and int(c.s.node) == target: return c
++		match str(c.s.phase):
++			"map":
++				var next: Array = c.choices().filter(func(n): return reaches(nodes, int(n.id), target))
++				if not check(not next.is_empty() and c.enter(int(next[0].id)), "walk toward the depot"): return null
++			"combat":
++				var path: Array = solver.solve(c.model, 4, 18)
++				if not check(not path.is_empty(), "combat on the way is winnable"): return null
++				for item in path:
++					match str(item.action):
++						"fire": c.model.fire()
++						"reload": c.model.reload_magazine()
++						"cool": c.model.cool_magazine()
++						"eject": c.model.eject_magazine_rounds(item.indices)
++						"emergency": c.model.emergency_resupply()
++					c.sync_combat()
++			"reward":
++				var parts: Array = c.part_rewards()
++				var ammo: Array = c.reward_options()
++				var taken := false
++				if not parts.is_empty(): taken = c.reward(str(parts[0]), "")
++				elif not ammo.is_empty() and c.first_ammo_reward(): taken = c.reward(str(ammo[0]), "")
++				if not taken: taken = c.reward("credits", "")
++				if not check(taken, "reward on the way"): return null
++			_:
++				if not check(c.leave(), "leave a place on the way"): return null
++	check(false, "depot reached")
++	return null
++
++func snapshot(c) -> Dictionary:
++	return JSON.parse_string(JSON.stringify({"campaign": c.s, "combat": JSON.parse_string(c.model.serialized_state()), "profile": c.profile}))
++
++func restored(data: Dictionary):
++	var c = Campaign.new()
++	check(c.restore_state(data.duplicate(true)), "depot state restores")
++	return c
++
++func mount(c) -> void:
++	if is_instance_valid(host): host.free()
++	host = load("res://redesign/main.tscn").instantiate()
++	root.add_child(host)
++	host.campaign = c; host.model = c.model; host.page = "run"; host.redraw()
++	await settle()
++
++func saved():
++	var copy = Campaign.new()
++	check(copy.restore(), "autosave restores")
++	return copy
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
++	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
++	var base = reach_depot()
++	if base == null:
++		print("SUPPLY LIVE UI checks=%d failures=%d" % [checks, failures.size()]); quit(1); return
++	var data := snapshot(base)
++	check(Campaign.new().restore_state(data.duplicate(true)), "walked depot state is save-valid")
++	for extent in [Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454)]:
++		root.size = extent
++		var suffix := "%dx%d" % [extent.x, extent.y]
++		# Take the first offer as an extra round.
++		var c = restored(data)
++		await mount(c)
++		var depot := find("DepotScreen")
++		check(depot != null and depot.is_visible_in_tree(), "depot scene replaces the old supply screen " + suffix)
++		check(find("CampaignShellHeader") == null, "old shell header is gone")
++		check(depot != null and root.get_visible_rect().grow(1).encloses(depot.get_global_rect()), "depot fits the screen " + suffix)
++		var offers: Array = c.reward_options()
++		for id in offers: check(find("Offer_" + str(id)) != null, "real offer shown " + str(id))
++		await capture("pick_" + suffix)
++		var size_before: int = c.model.s.deck.size()
++		var first: String = str(offers[0])
++		var owned: int = c.model.s.deck.count(first)
++		await tap("Offer_" + first)
++		check(c.model.s.deck.size() == size_before and not c.s.resolved, "picking only previews")
++		await tap("Primary")
++		check(c.s.resolved and c.model.s.deck.size() == size_before + 1 and c.model.s.deck.count(first) == owned + 1, "take adds one real round")
++		check(saved().model.s.deck.size() == size_before + 1, "taking is autosaved")
++		check(find("Offer_" + first).get_node("Content/Count").text.ends_with("보유 %d" % (owned + 1)), "offer count updates after taking")
++		await capture("done_" + suffix)
++		await tap("Primary")
++		check(c.s.phase == "map" and find("PipeMapScreen") != null and find("DepotScreen") == null, "leaving returns to the map " + suffix)
++		check(saved().s.phase == "map", "leaving is autosaved")
++	root.size = Vector2i(1280, 800)
++	# Swap: the shelf turns into owned stacks and the total stays.
++	var swap = restored(data)
++	await mount(swap)
++	var offer: String = str(swap.reward_options()[1] if swap.reward_options().size() > 1 else swap.reward_options()[0])
++	var total: int = swap.model.s.deck.size()
++	var basics: int = swap.model.s.deck.count("basic_p2")
++	await tap("Offer_" + offer)
++	await tap("Secondary")
++	check(find("StacksScroll").is_visible_in_tree() and not find("OffersScroll").is_visible_in_tree(), "swap switches the shelf to owned stacks")
++	await tap("Stack_basic_p2")
++	await capture("replace_1280x800")
++	await tap("Primary")
++	check(swap.s.resolved and swap.model.s.deck.size() == total and swap.model.s.deck.count("basic_p2") == basics - 1, "swap keeps the total and removes the chosen round")
++	# Resume after taking: the result opens with the way out.
++	check(swap.save() == OK, "save for resume")
++	var resumed = Campaign.new(); check(resumed.restore(), "resume restores")
++	await mount(resumed)
++	check(find("DepotScreen").mode == DepotView.Mode.DONE and find("Primary").text == "지도로 계속", "resume opens on the result")
++	# Skip.
++	var skip = restored(data)
++	await mount(skip)
++	var before: int = skip.model.s.deck.size()
++	await tap("Leave")
++	check(skip.s.resolved and skip.model.s.deck.size() == before, "skip keeps the bag")
++	# Utility menu.
++	var menu = restored(data)
++	await mount(menu)
++	await tap("Menu")
++	check(find("UtilityMenu").is_visible_in_tree(), "utility menu opens")
++	await capture("menu_1280x800")
++	await tap("Build")
++	check(find("WorkspaceOverlay") != null, "build workspace opens over the depot")
++	host._close_workspace(); await settle()
++	check(find("DepotScreen") != null, "depot stays after closing build")
++	# Full bag: adding is off, swapping is the main action.
++	var filler = restored(data)
++	while filler.model.s.deck.size() < filler.model.deck_limit(): filler.model.s.deck.append("basic_p2")
++	filler.normalize_for_save()
++	var full = Campaign.new()
++	if check(full.restore_state(snapshot(filler)), "full-bag depot restores"):
++		await mount(full)
++		check(find("Primary").disabled and find("Secondary").text == "교체해서 확보", "full bag offers swap only")
++		await capture("full_1280x800")
++	print("SUPPLY LIVE UI checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)

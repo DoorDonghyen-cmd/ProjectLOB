@@ -1,0 +1,162 @@
+{
+  "checks": 5016,
+  "failures": [],
+  "combats": 45,
+  "solved": 45,
+  "wider_searches": 0,
+  "runs": [
+    {
+      "gun": "single",
+      "seed": 731042,
+      "core": "siege_drive",
+      "cleared": 4,
+      "phase": "gate",
+      "turns": 14,
+      "boss_turns": 9,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "burst",
+      "seed": 731042,
+      "core": "volley_drive",
+      "cleared": 4,
+      "phase": "gate",
+      "turns": 25,
+      "boss_turns": 13,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "scatter",
+      "seed": 731042,
+      "core": "volley_drive",
+      "cleared": 4,
+      "phase": "gate",
+      "turns": 28,
+      "boss_turns": 18,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "heavy",
+      "seed": 731042,
+      "core": "thermal_drive",
+      "cleared": 4,
+      "phase": "gate",
+      "turns": 19,
+      "boss_turns": 11,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "amplifier",
+      "seed": 731042,
+      "core": "siege_drive",
+      "cleared": 4,
+      "phase": "gate",
+      "turns": 14,
+      "boss_turns": 8,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "single",
+      "seed": 17,
+      "core": "siege_drive",
+      "cleared": 5,
+      "phase": "reward",
+      "turns": 15,
+      "boss_turns": 7,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "burst",
+      "seed": 17,
+      "core": "volley_drive",
+      "cleared": 5,
+      "phase": "reward",
+      "turns": 30,
+      "boss_turns": 14,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "scatter",
+      "seed": 17,
+      "core": "volley_drive",
+      "cleared": 5,
+      "phase": "reward",
+      "turns": 30,
+      "boss_turns": 15,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "heavy",
+      "seed": 17,
+      "core": "thermal_drive",
+      "cleared": 5,
+      "phase": "reward",
+      "turns": 24,
+      "boss_turns": 11,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    },
+    {
+      "gun": "amplifier",
+      "seed": 17,
+      "core": "siege_drive",
+      "cleared": 5,
+      "phase": "reward",
+      "turns": 20,
+      "boss_turns": 9,
+      "boss_species": [
+        "closure_watch",
+        "slum_thief",
+        "slum_thief",
+        "slum_battery"
+      ]
+    }
+  ],
+  "raw_sha256": "5f264aaafb10222b9663ef5c991854bc2de59cb1d08fdbc36efe8adfab0bd6a8",
+  "note": "Real fresh campaigns; first route option; legal core rewards only, other rewards credits, services skipped; no cooling acquired. Bounded search reads hidden draws/RNG, so these are reachability checks, not player win rates.",
+  "end_state_note": "Outside-combat Campaign.save reconciles piles. Reward endpoint piles are not an ammo-consumption metric."
+}

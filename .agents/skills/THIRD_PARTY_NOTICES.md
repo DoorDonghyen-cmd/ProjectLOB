@@ -2,6 +2,16 @@
 
 프로젝트 개발 절차에 사용하는 외부 스킬 문서와 도구의 출처다. 게임 실행 파일에는 포함되지 않는다.
 
+## Claude Code Game Studios — selective adaptation
+
+- Source: https://github.com/Donchitos/Claude-Code-Game-Studios
+- Reviewed snapshot: `05ad7c8a5b8aa2aa86bbd3439ae7cf7295cac418`, framework 1.2.0.
+- Adapted: 2026-10-31. License: MIT; original copyright and terms in `CCGS_LICENSE`.
+- Referenced skills: `prototype`/spike mode, `vertical-slice`, `propagate-design-change`, `playtest-report`, `balance-check`, `perf-profile`, `soak-test`, `team-audio`, `test-evidence-review`, `regression-suite`, `release-checklist`, `asset-spec`, `asset-audit`; role guidance from `level-designer`, `systems-designer`, `economy-designer`, `analytics-engineer`.
+- Local destinations: existing `00-project-manager`, `08-art-resource-manager`, `09-creative-director`, `10-balance-designer`, `12-combat-simulator`, `14-localization-text-manager`, `15-gameplay-qa-lead`, `16-gameplay-experience-tester`. Active-project procedures are in `docs/direction/development-workflow.md`, `docs/direction/magazine-journey.md` and `docs/qa/protocols/`.
+- The active worktree is the source; the workspace discovery mirror receives the same adapted skill files. These are LoB-specific procedures, not an installation of the upstream Claude framework or its 49-agent organization.
+- No upstream hooks, Claude tool/model settings, automatic delegation, per-file approvals, new GDD/ADR registries, production-code isolation/rewrite requirements, assertion-count quality gates or full-launch gates for internal test APKs were imported. Real combat models, canonical direction documents, existing delivery authorization and separate human/device evidence remain authoritative.
+
 ## awesome-gamedev-agent-skills
 
 - Source: https://github.com/gamedev-skills/awesome-gamedev-agent-skills

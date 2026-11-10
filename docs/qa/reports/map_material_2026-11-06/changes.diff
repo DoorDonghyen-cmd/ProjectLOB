@@ -1,0 +1,739 @@
+--- before/redesign/pipe_map/gate.gd
++++ after/redesign/pipe_map/gate.gd
+@@ -2,6 +2,7 @@
+ extends Button
+ ## Decorative coupling handles inside the existing gate target; no input or layout changes.
+ const Art = preload("res://redesign/pipe_map/art.gd")
++const MapMaterial = preload("res://redesign/pipe_map/material.gd")
+ var available := false
+ 
+ func set_available(value: bool) -> void:
+@@ -10,7 +11,7 @@
+ 	queue_redraw()
+ 
+ func _draw() -> void:
+-	var ink := Color("6e765e") if not available else Color("5cdddc")
++	var ink := MapMaterial.FUTURE if not available else MapMaterial.OPEN
+ 	var mark := Art.texture("valve_open" if available else "valve_closed")
+ 	var y := floorf((size.y - 28) * 0.25) * 2
+ 	for x in [16.0, size.x - 44.0]:
+--- before/redesign/pipe_map/graph.gd
++++ after/redesign/pipe_map/graph.gd
+@@ -2,6 +2,7 @@
+ extends Control
+ const Data = preload("res://redesign/campaign_content.gd")
+ const Place = preload("res://redesign/pipe_map/place.tscn")
++const MapMaterial = preload("res://redesign/pipe_map/material.gd")
+ signal selected(id: int)
+ signal inspected(id: int)
+ var nodes: Array = []
+@@ -149,20 +150,20 @@
+ 	if tick>=0.125: tick=0; flow_step=(flow_step+1)%4; queue_redraw()
+ 
+ func _draw() -> void:
+-	for x in range(0,int(size.x),64): draw_line(Vector2(x,0),Vector2(x,size.y),Color("1d4f561f"),2,false)
+-	for y in range(0,int(size.y),64): draw_line(Vector2(0,y),Vector2(size.x,y),Color("1d4f561f"),2,false)
++	for x in range(0,int(size.x),64): draw_line(Vector2(x,0),Vector2(x,size.y),Color("5b61571f"),1,false)
++	for y in range(0,int(size.y),64): draw_line(Vector2(0,y),Vector2(size.x,y),Color("5b61571f"),1,false)
+ 	for path in paths:
+-		var color := Color({"off":"15363c","later":"24585e","preview":"3d7f86","open":"5cdddc","trail":"f3cf73","pick":"5cdddc"}[path.state])
++		var color: Color = MapMaterial.PATHS[path.state]
+ 		var width := 6.0 if path.state in ["trail","pick"] else 4.0 if path.state=="open" else 2.0
+ 		var points: PackedVector2Array = path.points
+-		if path.state in ["trail","pick","open"]: draw_polyline(points,Color("3a2c10") if path.state=="trail" else Color("0d3a40"),width+4,false)
++		if path.state in ["trail","pick","open"]: draw_polyline(points,Color("30291a") if path.state=="trail" else Color("24271c"),width+4,false)
+ 		for i in range(points.size()-1):
+ 			if path.shortcut or path.state=="off": draw_dashed_line(points[i],points[i+1],color,width,4,false)
+ 			else: draw_line(points[i],points[i+1],color,width,false)
+ 			if path.state=="pick" and feedback_scale>0:
+ 				var length := points[i].distance_to(points[i+1])
+ 				for step in range(flow_step*2,int(length),8):
+-					draw_rect(Rect2((points[i].move_toward(points[i+1],step)-Vector2.ONE).round(),Vector2(2,2)),Color("e4fffd"))
++						draw_rect(Rect2((points[i].move_toward(points[i+1],step)-Vector2.ONE).round(),Vector2(2,2)),MapMaterial.INK)
+ 		# One upward chevron on the longest vertical leg makes direction readable
+ 		# without adding arrows to every future branch.
+ 		if path.state in ["trail","pick","open"]:
+@@ -174,19 +175,19 @@
+ 					longest=length;arrow=((points[i]+points[i+1])*0.5).round()
+ 			if longest>=20:
+ 				var chevron:=PackedVector2Array([arrow+Vector2(-6,3),arrow+Vector2(0,-3),arrow+Vector2(6,3)])
+-				draw_polyline(chevron,Color("03141a"),6,false)
++				draw_polyline(chevron,MapMaterial.BACKGROUND,6,false)
+ 				draw_polyline(chevron,color,2,false)
+ 		if path.shortcut:
+ 			var mark := (points[2]+points[3])*0.5
+-			draw_rect(Rect2(mark-Vector2(38,12),Vector2(76,24)),Color("03141a"))
++			draw_rect(Rect2(mark-Vector2(38,12),Vector2(76,24)),MapMaterial.BACKGROUND)
+ 			draw_string(preload("res://redesign/combat_pixel_font.tres"),mark+Vector2(-38,6),"전투 생략",HORIZONTAL_ALIGNMENT_CENTER,76,16,color)
+ 	# Two small collars belong to each location, not each edge: merging paths stay quiet.
+ 	for item in nodes:
+ 		var id := int(item.id)
+ 		if not positions.has(id): continue
+-		var color := Color("15363c") if place_state(id)=="off" else Color("345b60")
+-		if id==selection: color=Color("5cdddc")
+-		elif id==current: color=Color("f3cf73")
++		var color := MapMaterial.OFF if place_state(id)=="off" else MapMaterial.METAL
++		if id==selection: color=MapMaterial.PICK
++		elif id==current: color=MapMaterial.BRASS
+ 		var p: Vector2=positions[id]
+ 		for sign_y in [-1,1]:
+ 			draw_line(p+Vector2(-4,sign_y*_half(item)),p+Vector2(4,sign_y*_half(item)),color,2,false)
+--- before/redesign/pipe_map/key.tscn
++++ after/redesign/pipe_map/key.tscn
+@@ -1,5 +1,5 @@
+ [gd_scene format=3]
+-[ext_resource type="Theme" path="res://redesign/samples/hud/combat_hud_theme.tres" id="theme"]
++[ext_resource type="Theme" path="res://redesign/pipe_map/theme.tres" id="theme"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/combat.png" id="combat"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/elite.png" id="elite"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/gate_detail_closed.png" id="boss"]
+@@ -179,28 +179,28 @@
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "금색 관 · 지나온 길"
++text = "황동 실선 · 지나온 길"
+ autowrap_mode = 3
+ 
+ [node name="Line1" type="Label" parent="."]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "밝은 청록 관 · 지금 갈 수 있는 길"
++text = "밝은 황동 선 · 선택한 길"
+ autowrap_mode = 3
+ 
+ [node name="Line2" type="Label" parent="."]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "옅은 청록 관 · 고른 후보 뒤의 갈래"
++text = "아이보리 모서리 · 지금 갈 수 있는 장소"
+ autowrap_mode = 3
+ 
+ [node name="Line3" type="Label" parent="."]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "흐린 점선 · 이제 갈 수 없는 길"
++text = "옅은 실선 · 후속 갈래 / 점선 · 막힌 갈래"
+ autowrap_mode = 3
+ 
+ [node name="Line4" type="Label" parent="."]
+--- before/redesign/pipe_map/place.gd
++++ after/redesign/pipe_map/place.gd
+@@ -1,6 +1,6 @@
+ @tool
+ extends Button
+-const LineSkin = preload("res://redesign/line_skin.gd")
++const MapMaterial = preload("res://redesign/pipe_map/material.gd")
+ const Art = preload("res://redesign/pipe_map/art.gd")
+ var state := "later"
+ var preview := false
+@@ -25,8 +25,8 @@
+ func refresh(selected: bool) -> void:
+ 	var changed := selected and not button_pressed
+ 	set_pressed_no_signal(selected)
+-	var color := Color("e4f2ee") if state == "reach" else Color("f3cf73") if state == "current" else Color("d5b970") if state == "visited" else Color("24464c") if state == "off" else Color("83afb0") if preview else Color("4f7c80")
+-	if selected: color = Color("e4fffd")
++	var color := MapMaterial.OPEN if state == "reach" else MapMaterial.PICK if state == "current" else MapMaterial.TRAIL if state == "visited" else MapMaterial.OFF if state == "off" else MapMaterial.PREVIEW if preview else MapMaterial.FUTURE
++	if selected: color = MapMaterial.INK
+ 	if selection_feedback != null and selection_feedback.is_valid(): selection_feedback.kill()
+ 	selection_feedback = null
+ 	$Picture.modulate = color
+@@ -38,19 +38,19 @@
+ 
+ func _draw() -> void:
+ 	var rect := Rect2(Vector2.ZERO, size)
+-	if button_pressed: draw_style_box(LineSkin.surface("active"), rect)
++	if button_pressed: draw_style_box(MapMaterial.SELECTION, rect)
+ 	elif state == "reach":
+ 		for p in [Vector2.ZERO, Vector2(size.x,0), size, Vector2(0,size.y)]:
+ 			var dx: float = 1 if p.x == 0 else -1
+ 			var dy: float = 1 if p.y == 0 else -1
+-			draw_line(p + Vector2(dx,dy), p + Vector2(dx*10,dy), LineSkin.GOLD, 2, false)
+-			draw_line(p + Vector2(dx,dy), p + Vector2(dx,dy*10), LineSkin.GOLD, 2, false)
++			draw_line(p + Vector2(dx,dy), p + Vector2(dx*10,dy), MapMaterial.OPEN, 2, false)
++			draw_line(p + Vector2(dx,dy), p + Vector2(dx,dy*10), MapMaterial.OPEN, 2, false)
+ 	if state == "current":
+-		draw_rect(rect.grow(-2),LineSkin.GOLD,false,4)
++		draw_rect(rect.grow(-2),MapMaterial.PICK,false,4)
+ 	elif state == "visited":
+ 		var corner:=size-Vector2(13,9)
+-		draw_polyline(PackedVector2Array([corner+Vector2(-4,0),corner+Vector2(0,4),corner+Vector2(8,-4)]),LineSkin.GOLD,2,false)
+-	if has_focus(): draw_rect(rect.grow(-2), LineSkin.GOLD, false, 2)
++		draw_polyline(PackedVector2Array([corner+Vector2(-4,0),corner+Vector2(0,4),corner+Vector2(8,-4)]),MapMaterial.TRAIL,2,false)
++	if has_focus(): draw_rect(rect.grow(-2), MapMaterial.INK, false, 2)
+ 
+ func _ready() -> void:
+ 	focus_entered.connect(queue_redraw)
+--- before/redesign/pipe_map/place.tscn
++++ after/redesign/pipe_map/place.tscn
+@@ -40,8 +40,8 @@
+ offset_top = -4.0
+ offset_bottom = 12.0
+ mouse_filter = 2
+-theme_override_colors/font_color = Color(1,0.435,0.38,1)
+-theme_override_font_sizes/font_size = 12
++theme_override_colors/font_color = Color(0.78,0.43,0.32,1)
++theme_override_font_sizes/font_size = 16
+ text = "+"
+ 
+ [node name="Status" type="Label" parent="."]
+--- before/redesign/pipe_map/rail.gd
++++ after/redesign/pipe_map/rail.gd
+@@ -1,6 +1,7 @@
+ @tool
+ extends VBoxContainer
+ const Art = preload("res://redesign/pipe_map/art.gd")
++const MapMaterial = preload("res://redesign/pipe_map/material.gd")
+ var region := 0
+ var progress := 0.0
+ func configure(current_region: int, depth: float) -> void:
+@@ -10,23 +11,23 @@
+ 		var row := get_node("Zone"+str(i))
+ 		row.get_node("Icon").texture = Art.region_mark(i, "open" if i<region else "current" if i==region else "closed")
+ 		row.get_node("Copy/State").text = "공급 연결" if i<region else "지금 여기" if i==region else "닫힘"
+-		row.get_node("Icon").modulate = Color("f3cf73") if i<region else Color("5cdddc") if i==region else Color("3f7076")
+-		row.get_node("Copy/Name").modulate = Color("5cdddc") if i==region else Color("8fb0b0")
++		row.get_node("Icon").modulate = MapMaterial.TRAIL if i<region else MapMaterial.PICK if i==region else MapMaterial.FUTURE
++		row.get_node("Copy/Name").modulate = MapMaterial.INK if i==region else MapMaterial.MUTED
+ 	queue_redraw()
+ func _draw() -> void:
+ 	if not has_node("Home"): return
+ 	var top: float = $ControlRoom.position.y+14
+ 	var bottom: float = $Home.position.y+14
+-	draw_dashed_line(Vector2(14,top),Vector2(14,bottom),Color("1d4f56"),2,4,false)
++	draw_dashed_line(Vector2(14,top),Vector2(14,bottom),MapMaterial.OFF,2,4,false)
+ 	var here: float = get_node("Zone"+str(region)).position.y+14
+ 	var next: float = get_node("Zone"+str(region+1)).position.y+14 if region<4 else top
+ 	var end: float = lerpf(here,next,progress)
+-	draw_line(Vector2(14,bottom),Vector2(14,end),Color("f3cf73"),4,false)
+-	draw_rect(Rect2(8,end-2,12,4),Color("5cdddc"))
++	draw_line(Vector2(14,bottom),Vector2(14,end),MapMaterial.TRAIL,4,false)
++	draw_rect(Rect2(8,end-2,12,4),MapMaterial.PICK)
+ 	# Keep the supply line out of each stencil's negative space; the open coupling
+ 	# supplies its own short shaft at the bottom of the mark.
+ 	for stop in ["ControlRoom","Zone4","Zone3","Zone2","Zone1","Zone0","Home"]:
+ 		var row: Control=get_node(stop)
+ 		var icon: Control=row.get_node("Icon")
+-		draw_rect(Rect2(row.position+icon.position,icon.size),Color("03141a"))
++		draw_rect(Rect2(row.position+icon.position,icon.size),MapMaterial.BACKGROUND)
+ func _ready() -> void: resized.connect(queue_redraw); sort_children.connect(queue_redraw)
+--- before/redesign/pipe_map/screen.gd
++++ after/redesign/pipe_map/screen.gd
+@@ -2,7 +2,7 @@
+ extends VBoxContainer
+ const Data = preload("res://redesign/campaign_content.gd")
+ const Place = preload("res://redesign/pipe_map/place.gd")
+-const LineSkin = preload("res://redesign/line_skin.gd")
++const MapMaterial = preload("res://redesign/pipe_map/material.gd")
+ var host
+ var director
+ var campaign
+@@ -14,6 +14,7 @@
+ 
+ func _feedback_transaction(event: Dictionary, effects) -> void:
+ 	effects.pulse(node("RunStatusBar"),"complete")
++	if event.before.credits!=event.after.credits: effects.pulse(node("RunCredits"),"complete")
+ 	if event.before.deck!=event.after.deck or event.before.parts!=event.after.parts or event.before.equipped!=event.after.equipped:
+ 		effects.pulse(node("city_deck"),"acquired")
+ 
+@@ -21,13 +22,15 @@
+ 
+ func _ready() -> void:
+ 	resized.connect(_responsive)
++	node("Spacer").resized.connect(_fit_state_key)
+ 	_responsive()
+ 
+ func bind(screen, presenter) -> void:
+ 	host=screen; director=presenter; campaign=host.campaign
+ 	memory_key = "%d:%d:%d" % [campaign.get_instance_id(),campaign.s.region,campaign.s.node]
+ 	node("RunLocation").text = str(campaign.region_info().name)
+-	node("RunStatusBar").text = "%d Cr · 탄약 %d/%d · 난도 %d" % [campaign.s.credits,host.model.s.deck.size(),host.model.deck_limit(),campaign.s.difficulty]
++	node("RunCredits").text = "%d Cr" % int(campaign.s.credits)
++	node("RunStatusBar").text = "탄약 %d/%d · 난도 %d" % [host.model.s.deck.size(),host.model.deck_limit(),campaign.s.difficulty]
+ 	for entry in [["city_deck",director.deck],["city_archive",director.archive],["settings",host._settings],["menu",host._to_menu]]:
+ 		node(entry[0]).pressed.connect(entry[1])
+ 	node("Notice").text = host.save_error if not host.save_error.is_empty() else "개발자 연습 · 실제 진행 저장 보존" if host.debug_session else ""
+@@ -41,7 +44,9 @@
+ 	node("map_node_"+str(gate_id)).pressed.connect(_select.bind(gate_id))
+ 	graph.selected.connect(_select)
+ 	graph.inspected.connect(_select)
+-	node("city_map_details").pressed.connect(func(): director.inspect_node(selected_id))
++	node("city_map_details").pressed.connect(func():
++		director.inspect_node(selected_id)
++		MapMaterial.style_workspace(host.workspace_overlay))
+ 	node("MapKey").pressed.connect(_open_key)
+ 	enter_button=node("Enter")
+ 	enter_button.pressed.connect(func():
+@@ -62,7 +67,13 @@
+ 	node("SideColumn").custom_minimum_size.x=176 if compact else 216
+ 	node("CityMap").viewport_height=node("MapScroll").size.y
+ 	node("CityMap")._layout()
++	_fit_state_key()
+ 	queue_redraw()
++
++func _fit_state_key() -> void:
++	# Decorative children do not set this spacer's minimum size. A long selection
++	# retains its fixed actions; the same state key remains in the legend modal.
++	if node("StateKey")!=null:node("StateKey").visible=node("Spacer").size.y>=112.0
+ 
+ func _restore_view() -> void:
+ 	if not is_inside_tree(): return
+@@ -89,7 +100,7 @@
+ 	var shortcut: bool=campaign.is_shortcut(id)
+ 	var role: String=Data.room_kind(item)
+ 	node("CityMap").select_room(id)
+-	node("SelectionMode").text="선택한 장소" if can_enter else "미리보기"
++	node("SelectionMode").text="이동할 장소" if can_enter else "미리보기"
+ 	node("MapSelectionPrompt").text=("샛길 → " if shortcut else "")+str(item.name)
+ 	node("SelectionIcon").texture=Place.icon(role, true)
+ 	node("SelectionKind").text=Data.kind_name(role)
+@@ -111,8 +122,8 @@
+ 	enter.text="전투 건너뛰기" if shortcut else "이동"
+ 	var gate: Button=node("map_node_"+str(gate_id))
+ 	gate.set_available(node("CityMap").available.has(gate_id))
+-	gate.add_theme_stylebox_override("normal",LineSkin.surface("active" if id==gate_id else "reload"))
+-	gate.modulate=Color.WHITE if id==gate_id or node("CityMap").available.has(gate_id) else Color("8f917a")
++	gate.add_theme_stylebox_override("normal",MapMaterial.SELECTION if id==gate_id else MapMaterial.GATE)
++	gate.modulate=Color.WHITE if id==gate_id or node("CityMap").available.has(gate_id) else MapMaterial.MUTED
+ 	if reveal: _reveal.call_deferred(false)
+ 	_remember()
+ 
+@@ -141,10 +152,11 @@
+ 	director.map_memory={"key":memory_key,"selected":selected_id,"scroll":node("MapScroll").scroll_vertical}
+ 
+ func _open_key() -> void:
+-	var body: VBoxContainer=host._workspace("지도 기호","지금 갈 수 있는 곳과 이어지는 갈래를 확인하세요.")
++	var body: VBoxContainer=host._workspace("지도 범례","")
+ 	body.add_child(preload("res://redesign/pipe_map/key.tscn").instantiate())
++	MapMaterial.style_workspace(host.workspace_overlay)
+ 
+ func _draw() -> void:
+-	draw_rect(Rect2(Vector2.ZERO,size),Color("03141a"))
++	draw_rect(Rect2(Vector2.ZERO,size),MapMaterial.BACKGROUND)
+ 	if has_node("Header"):
+-		draw_dashed_line(Vector2(0,$Header.size.y),Vector2(size.x,$Header.size.y),Color("2c7a80"),2,4,false)
++		draw_line(Vector2(0,$Header.size.y),Vector2(size.x,$Header.size.y),MapMaterial.METAL,1,false)
+--- before/redesign/pipe_map/screen.tscn
++++ after/redesign/pipe_map/screen.tscn
+@@ -1,5 +1,5 @@
+ [gd_scene format=3]
+-[ext_resource type="Theme" path="res://redesign/samples/hud/combat_hud_theme.tres" id="theme"]
++[ext_resource type="Theme" path="res://redesign/pipe_map/theme.tres" id="theme"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/combat.png" id="combat"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/elite.png" id="elite"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/gate_detail_closed.png" id="boss"]
+@@ -18,16 +18,17 @@
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_garden_closed.png" id="region2"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_noble_closed.png" id="region3"]
+ [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_central_closed.png" id="region4"]
+-[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/panel.tres" id="panel"]
+-[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/slate.tres" id="slate"]
+-[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/fire.tres" id="fire"]
+-[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/reload.tres" id="reload"]
++[ext_resource type="StyleBox" path="res://redesign/pipe_map/panel.tres" id="panel"]
++[ext_resource type="StyleBox" path="res://redesign/pipe_map/button.tres" id="slate"]
++[ext_resource type="StyleBox" path="res://redesign/pipe_map/primary.tres" id="fire"]
++[ext_resource type="StyleBox" path="res://redesign/pipe_map/gate.tres" id="reload"]
+ [ext_resource type="Script" path="res://redesign/pipe_map/screen.gd" id="logic"]
+ [ext_resource type="Script" path="res://redesign/pipe_map/graph.gd" id="graph"]
+ [ext_resource type="Script" path="res://redesign/pipe_map/rail.gd" id="rail"]
+ [ext_resource type="Script" path="res://redesign/pipe_map/gate.gd" id="gate"]
+-[ext_resource type="StyleBox" path="res://assets/ui/pipe_map_art_20261101/board.tres" id="board"]
++[ext_resource type="StyleBox" path="res://redesign/pipe_map/board.tres" id="board"]
+ [ext_resource type="PackedScene" path="res://redesign/pipe_map/place.tscn" id="place"]
++[ext_resource type="Script" path="res://redesign/pipe_map/state_key.gd" id="state_key"]
+ [node name="PipeMapScreen" type="VBoxContainer"]
+ offset_right = 1280.0
+ offset_bottom = 800.0
+@@ -51,25 +52,30 @@
+ [node name="RunLocation" type="Label" parent="Header/Location"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 16
++theme_override_font_sizes/font_size = 32
+ text = "주거 통로"
+-theme_override_colors/font_color = Color(0.36,0.867,0.863,1)
+-
++theme_override_colors/font_color = Color(0.882353, 0.862745, 0.8, 1)
++
++text_overrun_behavior = 3
+ [node name="RunStatusBar" type="Label" parent="Header/Location"]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+-text = "75 Cr · 탄약 10/30 · 난도 0"
++text = "탄약 10/30 · 난도 0"
++
++[node name="RunCredits" type="Label" parent="Header"]
++layout_mode = 2
++mouse_filter = 2
++size_flags_vertical = 4
++theme_override_font_sizes/font_size = 32
++theme_override_colors/font_color = Color(0.745098, 0.639216, 0.419608, 1)
++text = "75 Cr"
+ 
+ [node name="city_deck" type="Button" parent="Header"]
+ custom_minimum_size = Vector2(60,44)
+ layout_mode = 2
+ size_flags_horizontal = 0
+ theme_override_font_sizes/font_size = 16
+-theme_override_styles/normal = ExtResource("slate")
+-theme_override_styles/hover = ExtResource("slate")
+-theme_override_styles/pressed = ExtResource("slate")
+-theme_override_styles/focus = ExtResource("slate")
+ text = "빌드"
+ 
+ [node name="city_archive" type="Button" parent="Header"]
+@@ -77,10 +83,6 @@
+ layout_mode = 2
+ size_flags_horizontal = 0
+ theme_override_font_sizes/font_size = 16
+-theme_override_styles/normal = ExtResource("slate")
+-theme_override_styles/hover = ExtResource("slate")
+-theme_override_styles/pressed = ExtResource("slate")
+-theme_override_styles/focus = ExtResource("slate")
+ text = "기록"
+ 
+ [node name="settings" type="Button" parent="Header"]
+@@ -88,10 +90,6 @@
+ layout_mode = 2
+ size_flags_horizontal = 0
+ theme_override_font_sizes/font_size = 16
+-theme_override_styles/normal = ExtResource("slate")
+-theme_override_styles/hover = ExtResource("slate")
+-theme_override_styles/pressed = ExtResource("slate")
+-theme_override_styles/focus = ExtResource("slate")
+ text = "설정"
+ 
+ [node name="menu" type="Button" parent="Header"]
+@@ -99,16 +97,12 @@
+ layout_mode = 2
+ size_flags_horizontal = 0
+ theme_override_font_sizes/font_size = 16
+-theme_override_styles/normal = ExtResource("slate")
+-theme_override_styles/hover = ExtResource("slate")
+-theme_override_styles/pressed = ExtResource("slate")
+-theme_override_styles/focus = ExtResource("slate")
+ text = "메뉴"
+ 
+ [node name="Notice" type="Label" parent="."]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = ""
+ visible = false
+ 
+@@ -131,6 +125,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendCombat"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -150,6 +145,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendElite"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -169,6 +165,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendShop"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -188,6 +185,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendWorkshop"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -207,6 +205,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendSupply"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -226,6 +225,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendEvent"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -245,6 +245,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendGate"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -264,6 +265,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
++modulate = Color(0.647059, 0.635294, 0.580392, 1)
+ [node name="Text" type="Label" parent="MapLegend/LegendBypass"]
+ layout_mode = 2
+ mouse_filter = 2
+@@ -305,15 +307,15 @@
+ [node name="Name" type="Label" parent="MapWorkspace/RegionRail/ControlRoom/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "중앙 제어실"
+ 
+ [node name="State" type="Label" parent="MapWorkspace/RegionRail/ControlRoom/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "차단 명령"
+-theme_override_colors/font_color = Color(0.337,0.467,0.478,1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+ 
+ [node name="Space0" type="Control" parent="MapWorkspace/RegionRail"]
+ layout_mode = 2
+@@ -342,15 +344,15 @@
+ [node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone4/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "중앙 통제구"
+ 
+ [node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone4/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "닫힘"
+-theme_override_colors/font_color = Color(0.337,0.467,0.478,1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+ 
+ [node name="Space1" type="Control" parent="MapWorkspace/RegionRail"]
+ layout_mode = 2
+@@ -379,15 +381,15 @@
+ [node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone3/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "귀족 거주구"
+ 
+ [node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone3/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "닫힘"
+-theme_override_colors/font_color = Color(0.337,0.467,0.478,1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+ 
+ [node name="Space2" type="Control" parent="MapWorkspace/RegionRail"]
+ layout_mode = 2
+@@ -416,15 +418,15 @@
+ [node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone2/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "우수 정원"
+ 
+ [node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone2/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "닫힘"
+-theme_override_colors/font_color = Color(0.337,0.467,0.478,1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+ 
+ [node name="Space3" type="Control" parent="MapWorkspace/RegionRail"]
+ layout_mode = 2
+@@ -453,15 +455,15 @@
+ [node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone1/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "축열 주조장"
+ 
+ [node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone1/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "닫힘"
+-theme_override_colors/font_color = Color(0.337,0.467,0.478,1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+ 
+ [node name="Space4" type="Control" parent="MapWorkspace/RegionRail"]
+ layout_mode = 2
+@@ -490,15 +492,15 @@
+ [node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone0/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "주거 통로"
+ 
+ [node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone0/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "지금 여기"
+-theme_override_colors/font_color = Color(0.337,0.467,0.478,1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+ 
+ [node name="Space5" type="Control" parent="MapWorkspace/RegionRail"]
+ layout_mode = 2
+@@ -527,15 +529,15 @@
+ [node name="Name" type="Label" parent="MapWorkspace/RegionRail/Home/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "우리 동네"
+ 
+ [node name="State" type="Label" parent="MapWorkspace/RegionRail/Home/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "공급 차단"
+-theme_override_colors/font_color = Color(0.337,0.467,0.478,1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+ 
+ [node name="MapBoard" type="PanelContainer" parent="MapWorkspace"]
+ layout_mode = 2
+@@ -621,6 +623,54 @@
+ size_flags_vertical = 3
+ mouse_filter = 2
+ 
++[node name="StateKey" type="Control" parent="MapWorkspace/SideColumn/Spacer"]
++layout_mode = 1
++anchor_right = 1.0
++offset_top = 8.0
++offset_bottom = 104.0
++mouse_filter = 2
++script = ExtResource("state_key")
++
++[node name="State0" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
++layout_mode = 1
++anchor_right = 1.0
++offset_left = 36.0
++offset_top = 4.0
++offset_bottom = 20.0
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "현재 위치"
++
++[node name="State1" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
++layout_mode = 1
++anchor_right = 1.0
++offset_left = 36.0
++offset_top = 28.0
++offset_bottom = 44.0
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "지나온 길"
++
++[node name="State2" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
++layout_mode = 1
++anchor_right = 1.0
++offset_left = 36.0
++offset_top = 52.0
++offset_bottom = 68.0
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "선택한 장소"
++
++[node name="State3" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
++layout_mode = 1
++anchor_right = 1.0
++offset_left = 36.0
++offset_top = 76.0
++offset_bottom = 92.0
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "이동 가능"
++
+ [node name="MapRouteSheet" type="PanelContainer" parent="MapWorkspace/SideColumn"]
+ layout_mode = 2
+ theme_override_styles/panel = ExtResource("panel")
+@@ -632,8 +682,8 @@
+ [node name="SelectionMode" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
+-text = "선택한 장소"
++theme_override_font_sizes/font_size = 16
++text = "이동할 장소"
+ 
+ [node name="SelectedPlace" type="HBoxContainer" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+ layout_mode = 2
+@@ -662,9 +712,9 @@
+ [node name="SelectionKind" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/SelectedPlace/Text"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "전투"
+-theme_override_colors/font_color = Color(0.953,0.812,0.451,1)
++theme_override_colors/font_color = Color(0.745098, 0.639216, 0.419608, 1)
+ 
+ [node name="MapRouteDetail" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+ layout_mode = 2
+@@ -683,32 +733,20 @@
+ layout_mode = 2
+ size_flags_horizontal = 3
+ theme_override_font_sizes/font_size = 16
+-theme_override_styles/normal = ExtResource("slate")
+-theme_override_styles/hover = ExtResource("slate")
+-theme_override_styles/pressed = ExtResource("slate")
+-theme_override_styles/focus = ExtResource("slate")
+-text = "기호"
++text = "범례"
+ 
+ [node name="city_map_details" type="Button" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions"]
+ custom_minimum_size = Vector2(60,44)
+ layout_mode = 2
+ size_flags_horizontal = 3
+ theme_override_font_sizes/font_size = 16
+-theme_override_styles/normal = ExtResource("slate")
+-theme_override_styles/hover = ExtResource("slate")
+-theme_override_styles/pressed = ExtResource("slate")
+-theme_override_styles/focus = ExtResource("slate")
+ text = "자세히"
+ 
+ [node name="Enter" type="Button" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+ custom_minimum_size = Vector2(60,44)
+ layout_mode = 2
++theme_type_variation = &"MapPrimary"
+ size_flags_horizontal = 3
+ theme_override_font_sizes/font_size = 16
+-theme_override_colors/font_color = Color(0.11,0.035,0.012,1)
+-theme_override_styles/normal = ExtResource("fire")
+-theme_override_styles/hover = ExtResource("fire")
+-theme_override_styles/pressed = ExtResource("fire")
+-theme_override_styles/focus = ExtResource("fire")
+ text = "이동"
+ 

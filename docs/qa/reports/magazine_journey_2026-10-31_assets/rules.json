@@ -1,0 +1,6998 @@
+{
+  "checks": 4361,
+  "failures": [],
+  "natural_ejection_options": [
+    {
+      "after_damage": 10,
+      "before_damage": 12,
+      "gun": "single",
+      "magazine": [
+        "charge",
+        "basic_p2",
+        "push",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2"
+      ],
+      "node": 802,
+      "note": "Natural earned order; next-shot comparison, not a winning or optimal policy.",
+      "removed": 1
+    },
+    {
+      "after_damage": 1,
+      "before_damage": 2,
+      "gun": "heavy",
+      "magazine": [
+        "charge",
+        "basic_p2",
+        "basic_p1",
+        "basic_p1",
+        "basic_p3",
+        "basic_p2",
+        "basic_p1",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "node": 401,
+      "note": "Natural earned order; next-shot comparison, not a winning or optimal policy.",
+      "removed": 1
+    },
+    {
+      "after_damage": 15,
+      "before_damage": 19,
+      "gun": "heavy",
+      "magazine": [
+        "charge",
+        "basic_p2",
+        "push",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2"
+      ],
+      "node": 802,
+      "note": "Natural earned order; next-shot comparison, not a winning or optimal policy.",
+      "removed": 1
+    }
+  ],
+  "note": "Fixed route seed 731042. Bounded hidden-RNG search shows feasibility, not human win rate or balanced reward choices.",
+  "runs": [
+    {
+      "acquisitions": [
+        {
+          "id": "siege_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "pierce_p2",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "pierce_p3",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge_hot",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "charge",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bypass",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "pierce_p4",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2"
+          ],
+          "node": 201,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3"
+          ],
+          "node": 602,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "bypass",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "node": 802,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "cool",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "siege_drive"
+        ],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 3
+        },
+        "settled": true,
+        "siege": true
+      },
+      "gun": "single",
+      "policy": 0,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 5,
+          "turns": 3,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 3,
+          "turns": 2,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 1
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 401,
+          "shots": 5,
+          "turns": 5,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 2
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 602,
+          "shots": 4,
+          "turns": 2,
+          "used": 4,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "bypass",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 3
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 802,
+          "shots": 10,
+          "turns": 11,
+          "used": 10,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "siege_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "detonate",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "chase",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "bore",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "node": 201,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "detonate",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter"
+          ],
+          "node": 602,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "detonate",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "node": 802,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "cool",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "siege_drive"
+        ],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 3
+        },
+        "settled": true,
+        "siege": true
+      },
+      "gun": "single",
+      "policy": 1,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 5,
+          "turns": 3,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 1
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 201,
+          "shots": 3,
+          "turns": 2,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 2
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 401,
+          "shots": 5,
+          "turns": 5,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "detonate",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 4,
+          "turns": 2,
+          "used": 4,
+          "won": true
+        },
+        {
+          "deck": [
+            "detonate",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 3
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 802,
+          "shots": 11,
+          "turns": 11,
+          "used": 11,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "siege_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bore",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "pierce_p3",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "charge",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "arc",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "bypass_c",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "node": 201,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3"
+          ],
+          "node": 602,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "node": 802,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "siege_drive"
+        ],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 2
+        },
+        "settled": true,
+        "siege": true
+      },
+      "gun": "single",
+      "policy": 2,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 5,
+          "turns": 3,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 3,
+          "turns": 2,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 1
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 401,
+          "shots": 5,
+          "turns": 5,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 4,
+          "turns": 2,
+          "used": 4,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 2
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 802,
+          "shots": 11,
+          "turns": 12,
+          "used": 11,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "volley_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "precise_p2",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "chase",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "precise_p4",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2"
+          ],
+          "node": 201,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter"
+          ],
+          "node": 602,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "shatter",
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "node": 802,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "cool",
+            "fire",
+            "swap",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "volley_drive"
+        ],
+        "hits": 3,
+        "hot": false,
+        "levels": {
+          "volley_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "burst",
+      "policy": 0,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 4,
+          "turns": 2,
+          "used": 4,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 6,
+          "turns": 4,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "shatter",
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 19,
+          "turns": 20,
+          "used": 19,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "volley_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "precise_p3",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge_hot",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "cool",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "bore",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "node": 201,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "precise_p3"
+          ],
+          "node": 602,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "precise_p3",
+            "cool"
+          ],
+          "node": 802,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "cool",
+            "fire",
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "volley_drive"
+        ],
+        "hits": 3,
+        "hot": false,
+        "levels": {
+          "volley_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "burst",
+      "policy": 1,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 8,
+          "turns": 5,
+          "used": 8,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "precise_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "precise_p3",
+            "cool"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 19,
+          "turns": 22,
+          "used": 19,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "volley_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bore",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "chase",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "arc",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "charge_c",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "node": 201,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "shatter"
+          ],
+          "node": 602,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "node": 802,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "volley_drive"
+        ],
+        "hits": 3,
+        "hot": false,
+        "levels": {
+          "volley_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "burst",
+      "policy": 2,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 7,
+          "turns": 5,
+          "used": 7,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "shatter"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 17,
+          "turns": 15,
+          "used": 17,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "volley_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "precise_p2",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "chase",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "precise_p4",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2"
+          ],
+          "node": 201,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "cool",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter"
+          ],
+          "node": 602,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "shatter",
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "node": 802,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "volley_drive"
+        ],
+        "hits": 3,
+        "hot": false,
+        "levels": {
+          "volley_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "scatter",
+      "policy": 0,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 5,
+          "turns": 2,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 7,
+          "turns": 6,
+          "used": 7,
+          "won": true
+        },
+        {
+          "deck": [
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "shatter",
+            "shatter",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 23,
+          "turns": 19,
+          "used": 23,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "volley_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "arc",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bore",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "precise_p3",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge_hot",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "cool",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "pierce_p5",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc"
+          ],
+          "node": 201,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore"
+          ],
+          "node": 401,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "precise_p3"
+          ],
+          "node": 602,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "precise_p3",
+            "cool"
+          ],
+          "node": 802,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "volley_drive"
+        ],
+        "hits": 3,
+        "hot": false,
+        "levels": {
+          "volley_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "scatter",
+      "policy": 1,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 5,
+          "turns": 2,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 8,
+          "turns": 6,
+          "used": 8,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "precise_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 5,
+          "turns": 2,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "precise_p3",
+            "cool"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 19,
+          "turns": 16,
+          "used": 19,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "volley_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "precise_p2",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "chase",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "arc",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "charge_c",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "node": 201,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "precise_p2"
+          ],
+          "node": 401,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "cool",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "precise_p2",
+            "shatter"
+          ],
+          "node": 602,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "precise_p2",
+            "shatter",
+            "chase"
+          ],
+          "node": 802,
+          "parts": [
+            "volley_drive"
+          ],
+          "path": [
+            "fire",
+            "cool",
+            "fire",
+            "cool",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "volley_drive"
+        ],
+        "hits": 3,
+        "hot": false,
+        "levels": {
+          "volley_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "scatter",
+      "policy": 2,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "precise_p2"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 8,
+          "turns": 6,
+          "used": 8,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "precise_p2",
+            "shatter"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "precise_p2",
+            "shatter",
+            "chase"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "volley_drive"
+            ],
+            "hits": 3,
+            "hot": false,
+            "levels": {
+              "volley_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 18,
+          "turns": 16,
+          "used": 18,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "thermal_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bore",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bore",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "cool",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge_hot",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "cool",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "cool",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "bore",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "node": 201,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "bore"
+          ],
+          "node": 401,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "bore",
+            "cool"
+          ],
+          "node": 602,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "cool",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "bore",
+            "cool",
+            "cool"
+          ],
+          "node": 802,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "thermal_drive"
+        ],
+        "hits": 0,
+        "hot": true,
+        "levels": {
+          "thermal_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "heavy",
+      "policy": 0,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 5,
+          "turns": 2,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "bore"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "bore",
+            "cool"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 5,
+          "turns": 2,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "cool",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "bore",
+            "cool",
+            "cool"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 24,
+          "turns": 22,
+          "used": 24,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "thermal_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "arc",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bore",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "detonate",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "chase",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "pierce_p4",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc"
+          ],
+          "node": 201,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore"
+          ],
+          "node": 401,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "detonate",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "shatter"
+          ],
+          "node": 602,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "detonate",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "shatter",
+            "chase"
+          ],
+          "node": 802,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "thermal_drive"
+        ],
+        "hits": 0,
+        "hot": true,
+        "levels": {
+          "thermal_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "heavy",
+      "policy": 1,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "detonate",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "shatter"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 7,
+          "turns": 7,
+          "used": 7,
+          "won": true
+        },
+        {
+          "deck": [
+            "detonate",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "arc",
+            "bore",
+            "shatter",
+            "chase"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 17,
+          "turns": 20,
+          "used": 17,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "thermal_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "precise_p2",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "cool",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "cool",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "arc",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "cool_c",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2"
+          ],
+          "node": 201,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "swap",
+            "swap",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "cool"
+          ],
+          "node": 602,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "cool",
+            "cool"
+          ],
+          "node": 802,
+          "parts": [
+            "thermal_drive"
+          ],
+          "path": [
+            "fire",
+            "swap",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "swap",
+            "fire",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "thermal_drive"
+        ],
+        "hits": 0,
+        "hot": true,
+        "levels": {
+          "thermal_drive": 4
+        },
+        "settled": true,
+        "siege": false
+      },
+      "gun": "heavy",
+      "policy": 2,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 6,
+          "turns": 2,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 1
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 5,
+          "turns": 2,
+          "used": 5,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 2
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 401,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "cool"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 3
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 602,
+          "shots": 8,
+          "turns": 7,
+          "used": 8,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "precise_p2",
+            "charge",
+            "cool",
+            "cool"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "thermal_drive"
+            ],
+            "hits": 0,
+            "hot": true,
+            "levels": {
+              "thermal_drive": 4
+            },
+            "settled": true,
+            "siege": false
+          },
+          "node": 802,
+          "shots": 19,
+          "turns": 21,
+          "used": 19,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "siege_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "pierce_p2",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "pierce_p3",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge_hot",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "charge",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bypass",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "pierce_p4",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2"
+          ],
+          "node": 201,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3"
+          ],
+          "node": 602,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "bypass",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "node": 802,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire",
+            "swap",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "siege_drive"
+        ],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 4
+        },
+        "settled": true,
+        "siege": true
+      },
+      "gun": "amplifier",
+      "policy": 0,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 3,
+          "turns": 2,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 1
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 201,
+          "shots": 2,
+          "turns": 1,
+          "used": 2,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 2
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 401,
+          "shots": 2,
+          "turns": 2,
+          "used": 2,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 3
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 602,
+          "shots": 3,
+          "turns": 2,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "charge_hot",
+            "bypass",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "pierce_p2",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 4
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 802,
+          "shots": 6,
+          "turns": 5,
+          "used": 6,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "siege_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "shatter",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "detonate",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "chase",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "bore",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "node": 201,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "detonate",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter"
+          ],
+          "node": 602,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "detonate",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "node": 802,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "cool",
+            "fire",
+            "swap",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "siege_drive"
+        ],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 4
+        },
+        "settled": true,
+        "siege": true
+      },
+      "gun": "amplifier",
+      "policy": 1,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 3,
+          "turns": 2,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 1
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 201,
+          "shots": 2,
+          "turns": 2,
+          "used": 2,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 2
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 401,
+          "shots": 2,
+          "turns": 2,
+          "used": 2,
+          "won": true
+        },
+        {
+          "deck": [
+            "detonate",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 3
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 602,
+          "shots": 4,
+          "turns": 2,
+          "used": 4,
+          "won": true
+        },
+        {
+          "deck": [
+            "detonate",
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "charge",
+            "charge",
+            "shatter",
+            "chase"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 4
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 802,
+          "shots": 6,
+          "turns": 6,
+          "used": 6,
+          "won": true
+        }
+      ]
+    },
+    {
+      "acquisitions": [
+        {
+          "id": "siege_drive",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "bore",
+          "node": 101,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "charge",
+          "node": 201,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "pierce_p3",
+          "node": 401,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "push",
+          "node": 501,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "charge",
+          "node": 602,
+          "replaced": "",
+          "source": "reward"
+        },
+        {
+          "id": "arc",
+          "node": 702,
+          "replaced": "basic_p1",
+          "source": "supply"
+        },
+        {
+          "id": "bypass_c",
+          "node": 802,
+          "replaced": "",
+          "source": "reward"
+        }
+      ],
+      "battles": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "node": 101,
+          "parts": [],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "node": 201,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge"
+          ],
+          "node": 401,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire",
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3"
+          ],
+          "node": 602,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "fire"
+          ]
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "node": 802,
+          "parts": [
+            "siege_drive"
+          ],
+          "path": [
+            "swap",
+            "fire",
+            "fire"
+          ]
+        }
+      ],
+      "complete": true,
+      "growth": {
+        "gains": [
+          "siege_drive"
+        ],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "siege_drive": 3
+        },
+        "settled": true,
+        "siege": true
+      },
+      "gun": "amplifier",
+      "policy": 2,
+      "results": [
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 101,
+          "shots": 3,
+          "turns": 2,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [],
+            "hits": 0,
+            "hot": false,
+            "levels": {},
+            "settled": true,
+            "siege": false
+          },
+          "node": 201,
+          "shots": 3,
+          "turns": 1,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 1
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 401,
+          "shots": 2,
+          "turns": 2,
+          "used": 2,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 2
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 602,
+          "shots": 3,
+          "turns": 1,
+          "used": 3,
+          "won": true
+        },
+        {
+          "deck": [
+            "push",
+            "arc",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p1",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p2",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "basic_p3",
+            "bore",
+            "charge",
+            "pierce_p3",
+            "charge"
+          ],
+          "ejected": 0,
+          "growth": {
+            "gains": [
+              "siege_drive"
+            ],
+            "hits": 0,
+            "hot": false,
+            "levels": {
+              "siege_drive": 3
+            },
+            "settled": true,
+            "siege": true
+          },
+          "node": 802,
+          "shots": 5,
+          "turns": 6,
+          "used": 5,
+          "won": true
+        }
+      ]
+    }
+  ]
+}

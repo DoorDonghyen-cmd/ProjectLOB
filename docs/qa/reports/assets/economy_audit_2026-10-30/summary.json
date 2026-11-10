@@ -1,0 +1,1385 @@
+{
+  "note": "31 fresh runs. Failed bounded searches are not defeats or proof of impossibility. Validated followups preserve the earned prefix and use recorded legal commands. Turn totals are found routes, not optimal/human win rates. Compare full runs only.",
+  "fresh_runs": 31,
+  "direct_completed": 25,
+  "completed_after_followups": 29,
+  "integrated_solved_combats": 846,
+  "checks": 125231,
+  "failures": 0,
+  "runs": [
+    {
+      "tag": "b1_heavy_carrier",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 228,
+      "forced_turns": 122,
+      "forced_reloads": 34,
+      "emergency_packs": 0,
+      "min_remaining": 4,
+      "final_remaining": 4,
+      "final_turns": 19,
+      "max_hand": 6,
+      "final_parts": [
+        "thermal_drive",
+        "chain_sink",
+        "compression_sink",
+        "radiator",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_heavy_carrier",
+      "gun": "heavy",
+      "seed": 17,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 30,
+      "turns": 260,
+      "forced_turns": 160,
+      "forced_reloads": 43,
+      "emergency_packs": 0,
+      "min_remaining": 8,
+      "final_remaining": 9,
+      "final_turns": 19,
+      "max_hand": 6,
+      "final_parts": [
+        "thermal_drive",
+        "supply",
+        "executioner",
+        "chain_sink",
+        "opening"
+      ]
+    },
+    {
+      "tag": "b1_single_burst_carrier",
+      "gun": "single",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 116,
+      "forced_turns": 26,
+      "forced_reloads": 13,
+      "emergency_packs": 0,
+      "min_remaining": 12,
+      "final_remaining": 17,
+      "final_turns": 9,
+      "max_hand": 6,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_single_burst_carrier",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 233,
+      "forced_turns": 27,
+      "forced_reloads": 9,
+      "emergency_packs": 0,
+      "min_remaining": 6,
+      "final_remaining": 11,
+      "final_turns": 18,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "b1_single_burst_carrier",
+      "gun": "single",
+      "seed": 17,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 30,
+      "turns": 121,
+      "forced_turns": 12,
+      "forced_reloads": 6,
+      "emergency_packs": 0,
+      "min_remaining": 13,
+      "final_remaining": 21,
+      "final_turns": 5,
+      "max_hand": 6,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "executioner",
+        "opening",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_single_burst_carrier",
+      "gun": "burst",
+      "seed": 17,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": false,
+      "after_followup_won": true,
+      "followup": "burst_17_prepared",
+      "preparation": "without_afterburner",
+      "solved_combats": 30,
+      "turns": 266,
+      "forced_turns": 58,
+      "forced_reloads": 18,
+      "emergency_packs": 0,
+      "min_remaining": 6,
+      "final_remaining": 10,
+      "final_turns": 17,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "coil",
+        "duplex",
+        "reclaimer",
+        "reserve"
+      ]
+    },
+    {
+      "tag": "b1_scatter_spike_carrier",
+      "gun": "scatter",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 213,
+      "forced_turns": 75,
+      "forced_reloads": 25,
+      "emergency_packs": 0,
+      "min_remaining": 6,
+      "final_remaining": 10,
+      "final_turns": 16,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "b1_scatter_spike_carrier",
+      "gun": "amplifier",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 137,
+      "forced_turns": 18,
+      "forced_reloads": 9,
+      "emergency_packs": 0,
+      "min_remaining": 16,
+      "final_remaining": 22,
+      "final_turns": 11,
+      "max_hand": 6,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_scatter_spike_carrier",
+      "gun": "scatter",
+      "seed": 17,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": false,
+      "after_followup_won": true,
+      "followup": "scatter_17_prepared",
+      "preparation": "without_afterburner",
+      "solved_combats": 30,
+      "turns": 221,
+      "forced_turns": 53,
+      "forced_reloads": 17,
+      "emergency_packs": 0,
+      "min_remaining": 2,
+      "final_remaining": 2,
+      "final_turns": 21,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "coil",
+        "duplex",
+        "reclaimer",
+        "reserve"
+      ]
+    },
+    {
+      "tag": "b1_scatter_spike_carrier",
+      "gun": "amplifier",
+      "seed": 17,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 30,
+      "turns": 147,
+      "forced_turns": 16,
+      "forced_reloads": 8,
+      "emergency_packs": 0,
+      "min_remaining": 15,
+      "final_remaining": 21,
+      "final_turns": 10,
+      "max_hand": 6,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "executioner",
+        "opening",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_scout",
+      "gun": "single",
+      "seed": 731042,
+      "outfit": "scout",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 135,
+      "forced_turns": 34,
+      "forced_reloads": 17,
+      "emergency_packs": 0,
+      "min_remaining": 11,
+      "final_remaining": 11,
+      "final_turns": 13,
+      "max_hand": 4,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_scout",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "scout",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": false,
+      "after_followup_won": true,
+      "followup": "scout_burst_adaptive",
+      "preparation": "current_wide",
+      "solved_combats": 27,
+      "turns": 322,
+      "forced_turns": 36,
+      "forced_reloads": 12,
+      "emergency_packs": 1,
+      "min_remaining": 2,
+      "final_remaining": 2,
+      "final_turns": 22,
+      "max_hand": 4,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "b1_scout",
+      "gun": "scatter",
+      "seed": 731042,
+      "outfit": "scout",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": false,
+      "after_followup_won": true,
+      "followup": "scout_scatter_final",
+      "preparation": "preparation_options",
+      "solved_combats": 27,
+      "turns": 282,
+      "forced_turns": 21,
+      "forced_reloads": 7,
+      "emergency_packs": 1,
+      "min_remaining": 3,
+      "final_remaining": 3,
+      "final_turns": 25,
+      "max_hand": 4,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "b1_scout",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "scout",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": false,
+      "after_followup_won": false,
+      "followup": "scout_heavy_prepared_v2",
+      "preparation": "preparation_options",
+      "solved_combats": 26,
+      "turns": 335,
+      "forced_turns": 72,
+      "forced_reloads": 21,
+      "emergency_packs": 1,
+      "min_remaining": 2,
+      "final_remaining": null,
+      "final_turns": null,
+      "max_hand": 4,
+      "final_parts": [
+        "thermal_drive",
+        "chain_sink",
+        "compression_sink",
+        "radiator",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_scout",
+      "gun": "amplifier",
+      "seed": 731042,
+      "outfit": "scout",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 151,
+      "forced_turns": 18,
+      "forced_reloads": 9,
+      "emergency_packs": 0,
+      "min_remaining": 16,
+      "final_remaining": 17,
+      "final_turns": 14,
+      "max_hand": 4,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_expedition",
+      "gun": "single",
+      "seed": 731042,
+      "outfit": "expedition",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 117,
+      "forced_turns": 30,
+      "forced_reloads": 15,
+      "emergency_packs": 0,
+      "min_remaining": 12,
+      "final_remaining": 16,
+      "final_turns": 12,
+      "max_hand": 10,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_expedition",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "expedition",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 217,
+      "forced_turns": 63,
+      "forced_reloads": 21,
+      "emergency_packs": 0,
+      "min_remaining": 10,
+      "final_remaining": 16,
+      "final_turns": 16,
+      "max_hand": 10,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "b1_expedition",
+      "gun": "scatter",
+      "seed": 731042,
+      "outfit": "expedition",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 193,
+      "forced_turns": 93,
+      "forced_reloads": 31,
+      "emergency_packs": 0,
+      "min_remaining": 9,
+      "final_remaining": 10,
+      "final_turns": 18,
+      "max_hand": 10,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "b1_expedition",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "expedition",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 227,
+      "forced_turns": 149,
+      "forced_reloads": 39,
+      "emergency_packs": 0,
+      "min_remaining": 2,
+      "final_remaining": 2,
+      "final_turns": 22,
+      "max_hand": 10,
+      "final_parts": [
+        "thermal_drive",
+        "chain_sink",
+        "compression_sink",
+        "radiator",
+        "supply"
+      ]
+    },
+    {
+      "tag": "b1_expedition",
+      "gun": "amplifier",
+      "seed": 731042,
+      "outfit": "expedition",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 120,
+      "forced_turns": 20,
+      "forced_reloads": 10,
+      "emergency_packs": 0,
+      "min_remaining": 17,
+      "final_remaining": 22,
+      "final_turns": 11,
+      "max_hand": 10,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "prior_heat_carrier",
+      "gun": "single",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 0,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 111,
+      "forced_turns": 16,
+      "forced_reloads": 8,
+      "emergency_packs": 0,
+      "min_remaining": 12,
+      "final_remaining": 17,
+      "final_turns": 9,
+      "max_hand": 6,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "prior_heat_carrier",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 0,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 231,
+      "forced_turns": 21,
+      "forced_reloads": 7,
+      "emergency_packs": 0,
+      "min_remaining": 6,
+      "final_remaining": 9,
+      "final_turns": 17,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "prior_heat_carrier",
+      "gun": "scatter",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 0,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 180,
+      "forced_turns": 27,
+      "forced_reloads": 9,
+      "emergency_packs": 0,
+      "min_remaining": 6,
+      "final_remaining": 16,
+      "final_turns": 12,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "prior_heat_carrier",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 0,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 228,
+      "forced_turns": 109,
+      "forced_reloads": 30,
+      "emergency_packs": 0,
+      "min_remaining": 0,
+      "final_remaining": 2,
+      "final_turns": 20,
+      "max_hand": 6,
+      "final_parts": [
+        "thermal_drive",
+        "chain_sink",
+        "compression_sink",
+        "radiator",
+        "supply"
+      ]
+    },
+    {
+      "tag": "prior_heat_carrier",
+      "gun": "amplifier",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 0,
+      "route": "elite",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 138,
+      "forced_turns": 18,
+      "forced_reloads": 9,
+      "emergency_packs": 0,
+      "min_remaining": 16,
+      "final_remaining": 22,
+      "final_turns": 11,
+      "max_hand": 6,
+      "final_parts": [
+        "siege_drive",
+        "breaker",
+        "lens",
+        "sequencer",
+        "supply"
+      ]
+    },
+    {
+      "tag": "workshop_bag",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "bag",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 224,
+      "forced_turns": 152,
+      "forced_reloads": 42,
+      "emergency_packs": 0,
+      "min_remaining": 1,
+      "final_remaining": 1,
+      "final_turns": 19,
+      "max_hand": 7,
+      "final_parts": [
+        "thermal_drive",
+        "chain_sink",
+        "compression_sink",
+        "radiator",
+        "supply"
+      ]
+    },
+    {
+      "tag": "workshop_bag",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "bag",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 219,
+      "forced_turns": 24,
+      "forced_reloads": 8,
+      "emergency_packs": 0,
+      "min_remaining": 6,
+      "final_remaining": 14,
+      "final_turns": 15,
+      "max_hand": 7,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "workshop_compress",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "compress",
+      "direct_won": false,
+      "after_followup_won": false,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 26,
+      "turns": 209,
+      "forced_turns": 117,
+      "forced_reloads": 32,
+      "emergency_packs": 0,
+      "min_remaining": 2,
+      "final_remaining": null,
+      "final_turns": null,
+      "max_hand": 6,
+      "final_parts": [
+        "thermal_drive",
+        "chain_sink",
+        "compression_sink",
+        "radiator",
+        "supply"
+      ]
+    },
+    {
+      "tag": "workshop_compress",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "elite",
+      "workshop": "compress",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 27,
+      "turns": 245,
+      "forced_turns": 30,
+      "forced_reloads": 10,
+      "emergency_packs": 0,
+      "min_remaining": 5,
+      "final_remaining": 10,
+      "final_turns": 17,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "chain_sink",
+        "compression_sink",
+        "duplex",
+        "ordinary_chain"
+      ]
+    },
+    {
+      "tag": "supply_route",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "supply",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 25,
+      "turns": 229,
+      "forced_turns": 116,
+      "forced_reloads": 31,
+      "emergency_packs": 1,
+      "min_remaining": 5,
+      "final_remaining": 5,
+      "final_turns": 19,
+      "max_hand": 6,
+      "final_parts": [
+        "thermal_drive",
+        "radiator",
+        "rammer",
+        "reserve",
+        "chain_sink"
+      ]
+    },
+    {
+      "tag": "supply_route",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "carrier",
+      "heat_rule": 1,
+      "route": "supply",
+      "workshop": "refit",
+      "direct_won": true,
+      "after_followup_won": true,
+      "followup": "",
+      "preparation": "",
+      "solved_combats": 25,
+      "turns": 229,
+      "forced_turns": 66,
+      "forced_reloads": 22,
+      "emergency_packs": 0,
+      "min_remaining": 5,
+      "final_remaining": 5,
+      "final_turns": 24,
+      "max_hand": 6,
+      "final_parts": [
+        "volley_drive",
+        "breaker",
+        "reserve",
+        "lens",
+        "rammer"
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "tag": "scatter_17_diagnosis",
+      "mode": "current_wide",
+      "solved": true,
+      "turns": 18,
+      "remaining": 9,
+      "preparation": []
+    },
+    {
+      "tag": "scatter_17_diagnosis",
+      "mode": "prior_heat",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scatter_17_diagnosis",
+      "mode": "without_afterburner",
+      "solved": true,
+      "turns": 13,
+      "remaining": 9,
+      "preparation": []
+    },
+    {
+      "tag": "scatter_17_diagnosis",
+      "mode": "lens_for_afterburner",
+      "solved": true,
+      "turns": 13,
+      "remaining": 9,
+      "preparation": []
+    },
+    {
+      "tag": "scatter_17_diagnosis",
+      "mode": "capacitor_for_afterburner",
+      "solved": true,
+      "turns": 13,
+      "remaining": 9,
+      "preparation": []
+    },
+    {
+      "tag": "burst_17_diagnosis",
+      "mode": "current_wide",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "burst_17_diagnosis",
+      "mode": "prior_heat",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "burst_17_diagnosis",
+      "mode": "without_afterburner",
+      "solved": true,
+      "turns": 15,
+      "remaining": 12,
+      "preparation": []
+    },
+    {
+      "tag": "burst_17_diagnosis",
+      "mode": "lens_for_afterburner",
+      "solved": true,
+      "turns": 15,
+      "remaining": 12,
+      "preparation": []
+    },
+    {
+      "tag": "burst_17_diagnosis",
+      "mode": "capacitor_for_afterburner",
+      "solved": true,
+      "turns": 15,
+      "remaining": 12,
+      "preparation": []
+    },
+    {
+      "tag": "scout_burst_diagnosis",
+      "mode": "current_wide",
+      "solved": true,
+      "turns": 10,
+      "remaining": 17,
+      "preparation": []
+    },
+    {
+      "tag": "scout_burst_diagnosis",
+      "mode": "prior_heat",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scout_burst_diagnosis",
+      "mode": "preparation_options",
+      "solved": true,
+      "turns": 12,
+      "remaining": 17,
+      "preparation": [
+        {
+          "action": "exchange",
+          "id": "push"
+        }
+      ]
+    },
+    {
+      "tag": "scout_heavy_diagnosis",
+      "mode": "current_wide",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scout_heavy_diagnosis",
+      "mode": "prior_heat",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scout_heavy_diagnosis",
+      "mode": "preparation_options",
+      "solved": true,
+      "turns": 20,
+      "remaining": 2,
+      "preparation": [
+        {
+          "action": "exchange",
+          "id": "charge_heat"
+        },
+        {
+          "action": "exchange",
+          "id": "charge_heat"
+        }
+      ]
+    },
+    {
+      "tag": "scout_scatter_diagnosis",
+      "mode": "current_wide",
+      "solved": true,
+      "turns": 27,
+      "remaining": 1,
+      "preparation": []
+    },
+    {
+      "tag": "scout_scatter_diagnosis",
+      "mode": "prior_heat",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scout_scatter_diagnosis",
+      "mode": "preparation_options",
+      "solved": true,
+      "turns": 25,
+      "remaining": 3,
+      "preparation": [
+        {
+          "action": "exchange",
+          "id": "charge"
+        }
+      ]
+    },
+    {
+      "tag": "compressed_heavy_diagnosis",
+      "mode": "current_wide",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "compressed_heavy_diagnosis",
+      "mode": "prior_heat",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "compressed_heavy_diagnosis",
+      "mode": "preparation_options",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scout_heavy_final_diagnosis",
+      "mode": "current_wide",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scout_heavy_final_diagnosis",
+      "mode": "prior_heat",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    },
+    {
+      "tag": "scout_heavy_final_diagnosis",
+      "mode": "preparation_options",
+      "solved": false,
+      "turns": null,
+      "remaining": null,
+      "preparation": []
+    }
+  ],
+  "core_cap_reached": [
+    {
+      "gun": "heavy",
+      "seed": 731042,
+      "region": 2,
+      "floor": 6
+    },
+    {
+      "gun": "heavy",
+      "seed": 17,
+      "region": 2,
+      "floor": 4
+    },
+    {
+      "gun": "single",
+      "seed": 731042,
+      "region": 2,
+      "floor": 7
+    },
+    {
+      "gun": "burst",
+      "seed": 731042,
+      "region": 2,
+      "floor": 6
+    },
+    {
+      "gun": "single",
+      "seed": 17,
+      "region": 2,
+      "floor": 9
+    },
+    {
+      "gun": "burst",
+      "seed": 17,
+      "region": 2,
+      "floor": 4
+    },
+    {
+      "gun": "scatter",
+      "seed": 731042,
+      "region": 2,
+      "floor": 6
+    },
+    {
+      "gun": "amplifier",
+      "seed": 731042,
+      "region": 2,
+      "floor": 6
+    },
+    {
+      "gun": "scatter",
+      "seed": 17,
+      "region": 2,
+      "floor": 4
+    },
+    {
+      "gun": "amplifier",
+      "seed": 17,
+      "region": 2,
+      "floor": 4
+    }
+  ],
+  "resupplies": [
+    {
+      "tag": "b1_scout",
+      "gun": "burst",
+      "seed": 731042,
+      "region": 2,
+      "node": 10902,
+      "generated": 4,
+      "cost": 3,
+      "remaining": 4,
+      "shots_after_resupply": [
+        {
+          "id": "basic_p2",
+          "damage": 1,
+          "target": 10012
+        },
+        {
+          "id": "basic_p2",
+          "damage": 7,
+          "target": 3
+        },
+        {
+          "id": "basic_p2",
+          "damage": 1,
+          "target": 3
+        }
+      ]
+    },
+    {
+      "tag": "b1_scout",
+      "gun": "scatter",
+      "seed": 731042,
+      "region": 5,
+      "node": 41002.0,
+      "generated": 4,
+      "cost": 3,
+      "remaining": 3,
+      "shots_after_resupply": [
+        {
+          "id": "basic_p2",
+          "damage": 9,
+          "target": 7
+        }
+      ]
+    },
+    {
+      "tag": "b1_scout",
+      "gun": "heavy",
+      "seed": 731042,
+      "region": 5,
+      "node": 40201,
+      "generated": 4,
+      "cost": 3,
+      "remaining": 3,
+      "shots_after_resupply": [
+        {
+          "id": "basic_p2",
+          "damage": 9,
+          "target": 6
+        }
+      ]
+    },
+    {
+      "tag": "supply_route",
+      "gun": "heavy",
+      "seed": 731042,
+      "region": 4,
+      "node": 30902,
+      "generated": 4,
+      "cost": 3,
+      "remaining": 5,
+      "shots_after_resupply": [
+        {
+          "id": "basic_p2",
+          "damage": 0,
+          "target": 5
+        },
+        {
+          "id": "basic_p2",
+          "damage": 1,
+          "target": 5
+        }
+      ]
+    }
+  ],
+  "artifacts": [
+    {
+      "tag": "b1_heavy_carrier",
+      "checks": 8397,
+      "failures": 0
+    },
+    {
+      "tag": "b1_single_burst_carrier",
+      "checks": 13477,
+      "failures": 0
+    },
+    {
+      "tag": "b1_scatter_spike_carrier",
+      "checks": 12453,
+      "failures": 0
+    },
+    {
+      "tag": "b1_scout",
+      "checks": 18537,
+      "failures": 0
+    },
+    {
+      "tag": "b1_expedition",
+      "checks": 17287,
+      "failures": 0
+    },
+    {
+      "tag": "prior_heat_carrier",
+      "checks": 18487,
+      "failures": 0
+    },
+    {
+      "tag": "workshop_bag",
+      "checks": 8290,
+      "failures": 0
+    },
+    {
+      "tag": "workshop_compress",
+      "checks": 8161,
+      "failures": 0
+    },
+    {
+      "tag": "supply_route",
+      "checks": 8126,
+      "failures": 0
+    },
+    {
+      "tag": "burst_17_prepared",
+      "checks": 4491,
+      "failures": 0
+    },
+    {
+      "tag": "scatter_17_prepared",
+      "checks": 4387,
+      "failures": 0
+    },
+    {
+      "tag": "scout_burst_adaptive",
+      "checks": 814,
+      "failures": 0
+    },
+    {
+      "tag": "scout_heavy_prepared_v2",
+      "checks": 1474,
+      "failures": 0
+    },
+    {
+      "tag": "scout_scatter_final",
+      "checks": 311,
+      "failures": 0
+    },
+    {
+      "tag": "scatter_17_diagnosis",
+      "checks": 163,
+      "failures": 0
+    },
+    {
+      "tag": "burst_17_diagnosis",
+      "checks": 112,
+      "failures": 0
+    },
+    {
+      "tag": "scout_burst_diagnosis",
+      "checks": 59,
+      "failures": 0
+    },
+    {
+      "tag": "scout_heavy_diagnosis",
+      "checks": 60,
+      "failures": 0
+    },
+    {
+      "tag": "scout_scatter_diagnosis",
+      "checks": 119,
+      "failures": 0
+    },
+    {
+      "tag": "compressed_heavy_diagnosis",
+      "checks": 13,
+      "failures": 0
+    },
+    {
+      "tag": "scout_heavy_final_diagnosis",
+      "checks": 13,
+      "failures": 0
+    }
+  ]
+}

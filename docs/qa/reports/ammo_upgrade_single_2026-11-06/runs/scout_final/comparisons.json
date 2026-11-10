@@ -1,0 +1,430 @@
+[
+	{
+		"branches": [
+			{
+				"choice": "keep",
+				"deck_count": 22,
+				"deck_limit": 22,
+				"operation": "keep",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 26,
+							"node": 601,
+							"part_events": {
+								"thermal_drive": 5
+							},
+							"phase": "reward",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 0,
+							"remaining": 14,
+							"turns": 7,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 9,
+							"forced_turns": 7,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"thermal_drive": 5
+							},
+							"phase": "lost",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 0,
+							"remaining": 13,
+							"turns": 11,
+							"won": false
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 26,
+							"node": 601,
+							"part_events": {
+								"thermal_drive": 5
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 0,
+							"remaining": 14,
+							"turns": 7,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 10,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 7,
+							"node": 802,
+							"part_events": {
+								"thermal_drive": 9
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 2,
+							"remaining": 12,
+							"turns": 12,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 4,
+							"emergency": 0,
+							"fire": 10,
+							"fired_rounds": 10,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 20,
+							"node": 601,
+							"part_events": {},
+							"phase": "reward",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 1,
+							"remaining": 12,
+							"turns": 16,
+							"won": true
+						},
+						{
+							"cool": 3,
+							"emergency": 0,
+							"fire": 9,
+							"fired_rounds": 9,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 1,
+							"remaining": 13,
+							"turns": 13,
+							"won": false
+						}
+					]
+				}
+			},
+			{
+				"choice": "upgrade",
+				"deck_count": 21,
+				"deck_limit": 22,
+				"operation": "upgrade",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 28,
+							"node": 601,
+							"part_events": {
+								"thermal_drive": 4
+							},
+							"phase": "reward",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 0,
+							"remaining": 13,
+							"turns": 7,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 15,
+							"forced_turns": 8,
+							"limit_hit": false,
+							"nearest_after_action": 7,
+							"node": 802,
+							"part_events": {
+								"thermal_drive": 10
+							},
+							"phase": "reward",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 1,
+							"remaining": 6,
+							"turns": 15,
+							"won": true
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 28,
+							"node": 601,
+							"part_events": {
+								"thermal_drive": 4
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 0,
+							"remaining": 13,
+							"turns": 7,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 15,
+							"forced_turns": 8,
+							"limit_hit": false,
+							"nearest_after_action": 7,
+							"node": 802,
+							"part_events": {
+								"thermal_drive": 10
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 1,
+							"remaining": 6,
+							"turns": 15,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 5,
+							"emergency": 0,
+							"fire": 14,
+							"fired_rounds": 14,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 8,
+							"node": 601,
+							"part_events": {},
+							"phase": "reward",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 1,
+							"remaining": 7,
+							"turns": 21,
+							"won": true
+						},
+						{
+							"cool": 3,
+							"emergency": 0,
+							"fire": 9,
+							"fired_rounds": 9,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 0,
+							"remaining": 12,
+							"turns": 12,
+							"won": false
+						}
+					]
+				}
+			},
+			{
+				"choice": "other_work",
+				"deck_count": 22,
+				"deck_limit": 24,
+				"operation": "bag",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 26,
+							"node": 601,
+							"part_events": {
+								"thermal_drive": 5
+							},
+							"phase": "reward",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 0,
+							"remaining": 14,
+							"turns": 7,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 9,
+							"forced_turns": 7,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"thermal_drive": 5
+							},
+							"phase": "lost",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 0,
+							"remaining": 13,
+							"turns": 11,
+							"won": false
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 26,
+							"node": 601,
+							"part_events": {
+								"thermal_drive": 5
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 0,
+							"remaining": 14,
+							"turns": 7,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 10,
+							"forced_turns": 4,
+							"limit_hit": false,
+							"nearest_after_action": 7,
+							"node": 802,
+							"part_events": {
+								"thermal_drive": 9
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 2,
+							"remaining": 12,
+							"turns": 12,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 4,
+							"emergency": 0,
+							"fire": 10,
+							"fired_rounds": 10,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 20,
+							"node": 601,
+							"part_events": {},
+							"phase": "reward",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 1,
+							"remaining": 12,
+							"turns": 16,
+							"won": true
+						},
+						{
+							"cool": 3,
+							"emergency": 0,
+							"fire": 9,
+							"fired_rounds": 9,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 1,
+							"remaining": 13,
+							"turns": 13,
+							"won": false
+						}
+					]
+				}
+			}
+		],
+		"deck_before": [
+			"bore",
+			"bore",
+			"disrupt",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"bore",
+			"bore_c"
+		],
+		"gun": "heavy",
+		"node": 501,
+		"outfit": "scout",
+		"parts": [
+			"thermal_drive"
+		],
+		"region": 1,
+		"seed": 731042,
+		"source": "bore",
+		"target": "bore_c"
+	}
+]

@@ -1,0 +1,4292 @@
+{
+  "battles": [
+    {
+      "boss": false,
+      "checkpoint": "combat_single_731042_v12_carrier_n101.json",
+      "enemy_action_turns": 0,
+      "gun": "single",
+      "inputs": 6,
+      "nearest_observed": 20,
+      "node": 101.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 20,
+          "phase": "reward",
+          "shot_count": 4,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_single_731042_v12_carrier_n201.json",
+      "enemy_action_turns": 0,
+      "gun": "single",
+      "inputs": 5,
+      "nearest_observed": 16,
+      "node": 201.0,
+      "role": "sweep",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "pierce_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 16,
+          "phase": "reward",
+          "shot_count": 3,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_single_731042_v12_carrier_n401.json",
+      "enemy_action_turns": 4,
+      "gun": "single",
+      "inputs": 16,
+      "nearest_observed": 18,
+      "node": 401.0,
+      "role": "breach",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 8,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 3,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 0,
+          "heat_before": 8,
+          "nearest_after": 20,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 9,
+          "heat_before": 0,
+          "nearest_after": 19,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 3,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 1,
+          "heat_before": 9,
+          "nearest_after": 18,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 1,
+          "nearest_after": 999,
+          "nearest_before": 18,
+          "phase": "reward",
+          "shot_count": 2,
+          "turns": 1
+        }
+      ],
+      "turns": 5
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_single_731042_v12_carrier_n602.json",
+      "enemy_action_turns": 0,
+      "gun": "single",
+      "inputs": 5,
+      "nearest_observed": 17,
+      "node": 602.0,
+      "role": "payoff",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge_hot"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 17,
+          "phase": "reward",
+          "shot_count": 3,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": true,
+      "checkpoint": "combat_single_731042_v12_carrier_n802.json",
+      "enemy_action_turns": 6,
+      "gun": "single",
+      "inputs": 23,
+      "nearest_observed": 18,
+      "node": 802.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 9,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 3,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 1,
+          "heat_before": 9,
+          "nearest_after": 19,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "bypass"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 10,
+          "heat_before": 1,
+          "nearest_after": 21,
+          "nearest_before": 19,
+          "phase": "ready",
+          "shot_count": 3,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 2,
+          "heat_before": 10,
+          "nearest_after": 20,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 2,
+          "heat_before": 2,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 2,
+          "heat_before": 2,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 2,
+          "heat_before": 2,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 2,
+          "heat_before": 2,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 9,
+          "heat_before": 2,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 3,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 1,
+          "heat_before": 9,
+          "nearest_after": 18,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 1,
+          "nearest_after": 999,
+          "nearest_before": 18,
+          "phase": "reward",
+          "shot_count": 2,
+          "turns": 1
+        }
+      ],
+      "turns": 7
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_burst_731042_v12_carrier_n101.json",
+      "enemy_action_turns": 3,
+      "gun": "burst",
+      "inputs": 10,
+      "nearest_observed": 18,
+      "node": 101.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 13,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 4,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 4,
+          "heat_before": 13,
+          "nearest_after": 18,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 4,
+          "heat_before": 4,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 4,
+          "heat_before": 4,
+          "nearest_after": 18,
+          "nearest_before": 18,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 4,
+          "nearest_after": 999,
+          "nearest_before": 18,
+          "phase": "reward",
+          "shot_count": 1,
+          "turns": 1
+        }
+      ],
+      "turns": 4
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_burst_731042_v12_carrier_n201.json",
+      "enemy_action_turns": 0,
+      "gun": "burst",
+      "inputs": 6,
+      "nearest_observed": 16,
+      "node": 201.0,
+      "role": "sweep",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "precise_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 16,
+          "phase": "reward",
+          "shot_count": 4,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_burst_731042_v12_carrier_n401.json",
+      "enemy_action_turns": 3,
+      "gun": "burst",
+      "inputs": 13,
+      "nearest_observed": 19,
+      "node": 401.0,
+      "role": "breach",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 9,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 4,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 0,
+          "heat_before": 9,
+          "nearest_after": 19,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 19,
+          "phase": "reward",
+          "shot_count": 3,
+          "turns": 1
+        }
+      ],
+      "turns": 4
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_burst_731042_v12_carrier_n602.json",
+      "enemy_action_turns": 0,
+      "gun": "burst",
+      "inputs": 6,
+      "nearest_observed": 17,
+      "node": 602.0,
+      "role": "payoff",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 17,
+          "phase": "reward",
+          "shot_count": 4,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": true,
+      "checkpoint": "combat_burst_731042_v12_carrier_n802.json",
+      "enemy_action_turns": 13,
+      "gun": "burst",
+      "inputs": 33,
+      "nearest_observed": 3,
+      "node": 802.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 12,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 4,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 3,
+          "heat_before": 12,
+          "nearest_after": 17,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "chase"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 4,
+          "heat_after": 0,
+          "heat_before": 3,
+          "nearest_after": 3,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 4,
+          "turns": 4
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 8,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 3,
+          "phase": "ready",
+          "shot_count": 4,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 0,
+          "heat_before": 8,
+          "nearest_after": 12,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 12,
+          "nearest_before": 12,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 12,
+          "nearest_before": 12,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 12,
+          "nearest_before": 12,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 12,
+          "nearest_before": 12,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 12,
+          "nearest_before": 12,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 8,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 12,
+          "phase": "ready",
+          "shot_count": 4,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 0,
+          "heat_before": 8,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "shatter"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "shatter"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "shatter"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 21,
+          "phase": "reward",
+          "shot_count": 1,
+          "turns": 1
+        }
+      ],
+      "turns": 14
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_scatter_731042_v12_carrier_n101.json",
+      "enemy_action_turns": 4,
+      "gun": "scatter",
+      "inputs": 10,
+      "nearest_observed": 16,
+      "node": 101.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 4,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 5,
+          "turns": 4
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 16,
+          "phase": "reward",
+          "shot_count": 1,
+          "turns": 1
+        }
+      ],
+      "turns": 5
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_scatter_731042_v12_carrier_n201.json",
+      "enemy_action_turns": 0,
+      "gun": "scatter",
+      "inputs": 6,
+      "nearest_observed": 16,
+      "node": 201.0,
+      "role": "sweep",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "precise_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 16,
+          "phase": "reward",
+          "shot_count": 4,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_scatter_731042_v12_carrier_n401.json",
+      "enemy_action_turns": 3,
+      "gun": "scatter",
+      "inputs": 15,
+      "nearest_observed": 19,
+      "node": 401.0,
+      "role": "breach",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 13,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 5,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 1,
+          "heat_before": 13,
+          "nearest_after": 19,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "precise_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 1,
+          "heat_before": 1,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 1,
+          "nearest_after": 999,
+          "nearest_before": 19,
+          "phase": "reward",
+          "shot_count": 3,
+          "turns": 1
+        }
+      ],
+      "turns": 4
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_scatter_731042_v12_carrier_n602.json",
+      "enemy_action_turns": 0,
+      "gun": "scatter",
+      "inputs": 7,
+      "nearest_observed": 17,
+      "node": 602.0,
+      "role": "payoff",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "shatter"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 17,
+          "phase": "reward",
+          "shot_count": 4,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": true,
+      "checkpoint": "combat_scatter_731042_v12_carrier_n802.json",
+      "enemy_action_turns": 10,
+      "gun": "scatter",
+      "inputs": 30,
+      "nearest_observed": 3,
+      "node": 802.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "chase"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 15,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 5,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 3,
+          "heat_before": 15,
+          "nearest_after": 19,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 3,
+          "heat_before": 3,
+          "nearest_after": 19,
+          "nearest_before": 19,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 4,
+          "heat_after": 0,
+          "heat_before": 3,
+          "nearest_after": 3,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 5,
+          "turns": 4
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "shatter"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 9,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 3,
+          "phase": "ready",
+          "shot_count": 5,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 2,
+          "heat_after": 0,
+          "heat_before": 9,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 2
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "shatter"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 21,
+          "phase": "reward",
+          "shot_count": 5,
+          "turns": 1
+        }
+      ],
+      "turns": 11
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_heavy_731042_v12_carrier_n101.json",
+      "enemy_action_turns": 0,
+      "gun": "heavy",
+      "inputs": 8,
+      "nearest_observed": 20,
+      "node": 101.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 20,
+          "phase": "reward",
+          "shot_count": 6,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_heavy_731042_v12_carrier_n201.json",
+      "enemy_action_turns": 0,
+      "gun": "heavy",
+      "inputs": 8,
+      "nearest_observed": 16,
+      "node": 201.0,
+      "role": "sweep",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "bore"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 16,
+          "phase": "reward",
+          "shot_count": 6,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_heavy_731042_v12_carrier_n401.json",
+      "enemy_action_turns": 6,
+      "gun": "heavy",
+      "inputs": 11,
+      "nearest_observed": 17,
+      "node": 401.0,
+      "role": "breach",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "bore"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 5,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 6,
+          "turns": 5
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "bore"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 17,
+          "phase": "reward",
+          "shot_count": 1,
+          "turns": 1
+        }
+      ],
+      "turns": 6
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_heavy_731042_v12_carrier_n602.json",
+      "enemy_action_turns": 0,
+      "gun": "heavy",
+      "inputs": 8,
+      "nearest_observed": 17,
+      "node": 602.0,
+      "role": "payoff",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge_hot"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 17,
+          "phase": "reward",
+          "shot_count": 5,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": true,
+      "checkpoint": "combat_heavy_731042_v12_carrier_n802.json",
+      "enemy_action_turns": 16,
+      "gun": "heavy",
+      "inputs": 30,
+      "nearest_observed": 3,
+      "node": 802.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "cool"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 5,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 5,
+          "turns": 5
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "cool"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 13,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 13,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 13,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 13,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 13,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 13,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 13,
+          "nearest_before": 13,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 5,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 13,
+          "phase": "plan",
+          "shot_count": 6,
+          "turns": 5
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge_hot"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "bore"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 5,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 6,
+          "turns": 5
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "bore"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 3,
+          "nearest_before": 3,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 3,
+          "phase": "reward",
+          "shot_count": 4,
+          "turns": 1
+        }
+      ],
+      "turns": 16
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_amplifier_731042_v12_carrier_n101.json",
+      "enemy_action_turns": 1,
+      "gun": "amplifier",
+      "inputs": 6,
+      "nearest_observed": 20,
+      "node": 101.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 6,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 2,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 6,
+          "nearest_after": 999,
+          "nearest_before": 22,
+          "phase": "reward",
+          "shot_count": 1,
+          "turns": 1
+        }
+      ],
+      "turns": 2
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_amplifier_731042_v12_carrier_n201.json",
+      "enemy_action_turns": 0,
+      "gun": "amplifier",
+      "inputs": 4,
+      "nearest_observed": 16,
+      "node": 201.0,
+      "role": "sweep",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "pierce_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 16,
+          "nearest_before": 16,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 16,
+          "phase": "reward",
+          "shot_count": 2,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_amplifier_731042_v12_carrier_n401.json",
+      "enemy_action_turns": 1,
+      "gun": "amplifier",
+      "inputs": 5,
+      "nearest_observed": 21,
+      "node": 401.0,
+      "role": "breach",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 22,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 3,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 22,
+          "phase": "ready",
+          "shot_count": 1,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 3,
+          "nearest_after": 999,
+          "nearest_before": 21,
+          "phase": "reward",
+          "shot_count": 1,
+          "turns": 1
+        }
+      ],
+      "turns": 2
+    },
+    {
+      "boss": false,
+      "checkpoint": "combat_amplifier_731042_v12_carrier_n602.json",
+      "enemy_action_turns": 0,
+      "gun": "amplifier",
+      "inputs": 4,
+      "nearest_observed": 17,
+      "node": 602.0,
+      "role": "payoff",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p1"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 999,
+          "nearest_before": 17,
+          "phase": "reward",
+          "shot_count": 2,
+          "turns": 1
+        }
+      ],
+      "turns": 1
+    },
+    {
+      "boss": true,
+      "checkpoint": "combat_amplifier_731042_v12_carrier_n802.json",
+      "enemy_action_turns": 6,
+      "gun": "amplifier",
+      "inputs": 16,
+      "nearest_observed": 17,
+      "node": 802.0,
+      "role": "",
+      "steps": [
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 3,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 1,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 6,
+          "heat_before": 3,
+          "nearest_after": 19,
+          "nearest_before": 21,
+          "phase": "ready",
+          "shot_count": 1,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 0,
+          "heat_before": 6,
+          "nearest_after": 17,
+          "nearest_before": 19,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p3"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 17,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 6,
+          "heat_before": 0,
+          "nearest_after": 21,
+          "nearest_before": 17,
+          "phase": "ready",
+          "shot_count": 2,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "reload"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 0,
+          "heat_before": 6,
+          "nearest_after": 20,
+          "nearest_before": 21,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "basic_p2"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "load",
+            "id": "charge"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "plan",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "confirm"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 0,
+          "nearest_after": 20,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 0,
+          "turns": 0
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 1,
+          "heat_after": 3,
+          "heat_before": 0,
+          "nearest_after": 19,
+          "nearest_before": 20,
+          "phase": "ready",
+          "shot_count": 1,
+          "turns": 1
+        },
+        {
+          "action": {
+            "action": "fire"
+          },
+          "enemy_action_turns": 0,
+          "heat_after": 0,
+          "heat_before": 3,
+          "nearest_after": 999,
+          "nearest_before": 19,
+          "phase": "reward",
+          "shot_count": 1,
+          "turns": 1
+        }
+      ],
+      "turns": 7
+    }
+  ],
+  "failures": [],
+  "note": "Replay of bounded solver routes with earned decks; not human play, typical difficulty, or optimal strategy."
+}

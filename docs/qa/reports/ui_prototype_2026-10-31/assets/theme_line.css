@@ -1,0 +1,157 @@
+/* Line theme (2026-11-01, direction picked by the user): pixel line frames, translucent fills, one cyan accent.
+   Draws on the user's SANABI / Dave the Diver references. Applies only while html[data-theme="line"]
+   is set; the default steel kit theme is left untouched. Pixel details are a director pass awaiting user review. */
+html[data-theme="line"] {
+  --bg: #03141a; --band: #041b22; --line: #1d4f56; --ink: #e4f2ee; --sub: #8fb0b0; --dim: #56777a;
+  --gold: #f3cf73; --ivory: #5cdddc; --dark: #021015; --brown: #f3cf73; --cyan: #e4f2ee; --danger: #ff6f61; --heat: #ff8a4c;
+  --hi: #5cdddc; --hi-soft: rgba(92, 221, 220, 0.16); --fill: rgba(4, 26, 32, 0.84); --cut: 8px;
+}
+
+/* --- one pixel frame family: px_*.png nine-slices (tools/build_line_theme_assets.py), drawn 2x
+       with nearest-neighbour scaling so every art pixel is a crisp 2x2 block --- */
+html[data-theme="line"] .kit::before {
+  inset: 0; filter: none !important; image-rendering: pixelated;
+  border-style: solid !important; border-color: transparent !important;
+  border-width: 12px !important; border-image-slice: 6 fill !important; border-image-width: 12px !important;
+  border-image-repeat: repeat !important; border-image-source: url("px_standby.png") !important;
+}
+html[data-theme="line"] .k-modal::before { border-image-source: url("px_panel.png") !important; }
+html[data-theme="line"] .k-active::before { border-image-source: url("px_active.png") !important; }
+html[data-theme="line"] .k-slate::before { border-image-source: url("px_slate.png") !important; }
+html[data-theme="line"] .k-cool::before { border-image-source: url("px_cool.png") !important; }
+html[data-theme="line"] .k-reload::before { border-image-source: url("px_reload.png") !important; }
+html[data-theme="line"] .k-fire::before { border-image-source: url("px_fire.png") !important; }
+html[data-theme="line"] .kit:disabled::before { border-image-source: url("px_disabled.png") !important; }
+html[data-theme="line"] .k-heat::before {
+  border-width: 8px !important; border-image-slice: 4 fill !important; border-image-width: 8px !important;
+  border-image-source: url("px_heat.png") !important;
+}
+html[data-theme="line"] .kit:not(:disabled):hover::before { filter: brightness(1.25) !important; }
+html[data-theme="line"] .k-cool { color: #bff3f1; }
+html[data-theme="line"] .k-reload { color: #f2dcaa; }
+/* The single strong action: solid hot orange, dark text, 2px press. */
+html[data-theme="line"] .k-fire { color: #1c0903; text-shadow: 0 2px 0 rgba(255, 210, 186, 0.5); }
+html[data-theme="line"] .k-fire small { opacity: 0.8; }
+html[data-theme="line"] .kit:disabled { color: var(--dim); opacity: 1; text-shadow: none; }
+html[data-theme="line"] .btn:not(:disabled):active { transform: translateY(2px); }
+
+/* Small frames painted straight onto plain elements: the 2px border keeps layout, the image draws 8px. */
+html[data-theme="line"] .chip, html[data-theme="line"] .empty-slot, html[data-theme="line"] .slots i, html[data-theme="line"] .tag {
+  image-rendering: pixelated; border: 2px solid transparent !important; background: transparent !important;
+  border-image: url("px_chip.png") 4 fill / 8px / 0 repeat !important;
+}
+html[data-theme="line"] .chip.on, html[data-theme="line"] .slots i.on { border-image-source: url("px_chip_on.png") !important; }
+html[data-theme="line"] .tag { border-image-source: url("px_tag.png") !important; }
+html[data-theme="line"] .tag.named { border-image-source: url("px_tag_named.png") !important; }
+html[data-theme="line"] .tag.reach { border-image-source: url("px_tag_reach.png") !important; }
+
+/* --- frame paddings no longer reserve room for the steel clamp art --- */
+html[data-theme="line"] .kit.btn { padding-left: 12px !important; padding-right: 12px !important; }
+html[data-theme="line"] .kit.card { padding: 8px 8px 6px 12px !important; }
+html[data-theme="line"] .card .ord { top: 6px; right: 6px; }
+html[data-theme="line"] .kit.opt { padding: 14px 16px !important; }
+html[data-theme="line"] .kit.prod { padding: 12px 14px !important; }
+html[data-theme="line"] .kit.panel { padding: 14px 16px !important; }
+html[data-theme="line"] .kit.dialog { padding: 22px 26px !important; }
+html[data-theme="line"] .kit.drawer { padding: 18px 20px !important; }
+html[data-theme="line"] .kit.banner { padding: 24px 28px !important; }
+html[data-theme="line"] .kit.mini { padding: 12px 14px !important; }
+html[data-theme="line"] .kit.outcome { padding: 12px 16px !important; }
+html[data-theme="line"] .kit.mapbox { padding: 14px 18px !important; background: transparent; }
+html[data-theme="line"] .chart { left: 18px; }
+
+/* --- pixel font on its own grid: NeoDunggeunmo is crisp at 12 / 16 / 32px (24px for mid numbers) --- */
+html[data-theme="line"] #app { font-size: 16px; line-height: 20px; }
+html[data-theme="line"] .btn small, html[data-theme="line"] .strip .btn small, html[data-theme="line"] .support-actions .btn small,
+html[data-theme="line"] .actions > .btn small, html[data-theme="line"] .card .ht, html[data-theme="line"] .magazine .card .ht,
+html[data-theme="line"] .card .sl, html[data-theme="line"] .card .ord, html[data-theme="line"] .prod .top2,
+html[data-theme="line"] .prod .o, html[data-theme="line"] .tag .st, html[data-theme="line"] .tag .head, html[data-theme="line"] .tag .act,
+html[data-theme="line"] .legend, html[data-theme="line"] .res, html[data-theme="line"] .li small, html[data-theme="line"] .node .cap,
+html[data-theme="line"] .top .prog, html[data-theme="line"] .badge, html[data-theme="line"] .slots i, html[data-theme="line"] .empty-slot,
+html[data-theme="line"] .prod .top2 span { font-size: 12px !important; line-height: 16px; }
+html[data-theme="line"] .btn, html[data-theme="line"] .btn.sm, html[data-theme="line"] .btn.mid, html[data-theme="line"] .strip .btn,
+html[data-theme="line"] .support-actions .btn, html[data-theme="line"] .top .btn, html[data-theme="line"] .chip,
+html[data-theme="line"] .card .nm, html[data-theme="line"] .magazine .card .nm, html[data-theme="line"] .label,
+html[data-theme="line"] .li, html[data-theme="line"] .opt .d, html[data-theme="line"] .opt .tag2, html[data-theme="line"] .dialog p,
+html[data-theme="line"] .kv, html[data-theme="line"] .nexts div, html[data-theme="line"] .prod .s, html[data-theme="line"] .prod .top2 b,
+html[data-theme="line"] .heat-value, html[data-theme="line"] .res b, html[data-theme="line"] .scene .caption p,
+html[data-theme="line"] .top .place, html[data-theme="line"] .outcome .v, html[data-theme="line"] #field .title,
+html[data-theme="line"] .toast, html[data-theme="line"] .tag .hp, html[data-theme="line"] .dialog .facts,
+html[data-theme="line"] #field .reserve, html[data-theme="line"] .combat-error { font-size: 16px !important; line-height: 20px; }
+html[data-theme="line"] .card .sv, html[data-theme="line"] .magazine .card .sv, html[data-theme="line"] .opt .t,
+html[data-theme="line"] .prod .n, html[data-theme="line"] .actions > .btn, html[data-theme="line"] .btn.big { font-size: 24px !important; line-height: 28px; }
+html[data-theme="line"] .dialog h2, html[data-theme="line"] .banner h2, html[data-theme="line"] .scene .caption h2 { font-size: 32px !important; line-height: 36px; }
+/* Hard one-step drop shadow under headings and big numbers, as in pixel games. */
+html[data-theme="line"] .top .place, html[data-theme="line"] #field .title, html[data-theme="line"] h2,
+html[data-theme="line"] .opt .t, html[data-theme="line"] .prod .n, html[data-theme="line"] .card .sv,
+html[data-theme="line"] .tag .hp, html[data-theme="line"] .pop { text-shadow: 0 2px 0 #01080a; }
+
+/* --- selected faces keep light text; numbers stay gold --- */
+html[data-theme="line"] .k-active,
+html[data-theme="line"] .card.k-active, html[data-theme="line"] .opt.k-active, html[data-theme="line"] .prod.k-active { color: var(--ink); }
+html[data-theme="line"] .k-active .sl, html[data-theme="line"] .k-active .d,
+html[data-theme="line"] .k-active .top2, html[data-theme="line"] .k-active .o { color: var(--sub); }
+html[data-theme="line"] .k-active .ht, html[data-theme="line"] .k-active .tag2,
+html[data-theme="line"] .k-active .top2 b, html[data-theme="line"] .k-active .s { color: var(--gold); }
+html[data-theme="line"] .card .ht { color: #ff9a6a; }
+html[data-theme="line"] .card .ord, html[data-theme="line"] .magazine .card .ord { background: var(--hi); color: var(--dark); box-shadow: 0 2px 0 #0b5a5c; }
+html[data-theme="line"] .magazine .card.next-round, html[data-theme="line"] .magazine .card.excluded { outline: 0; }
+html[data-theme="line"] .magazine .card.next-round::before { border-image-source: url("px_active.png") !important; }
+html[data-theme="line"] .magazine .card.excluded::before { border-image-source: url("px_danger.png") !important; }
+html[data-theme="line"] .magazine .card.excluded .ord { background: var(--danger); color: var(--dark); box-shadow: 0 2px 0 #8a2d24; }
+html[data-theme="line"] .empty-slot { color: #3f6266; }
+
+/* --- bands and rows: pixel dash rules instead of boxes --- */
+html[data-theme="line"] #app { background: var(--bg); }
+html[data-theme="line"] .top {
+  border-bottom: 0;
+  background: repeating-linear-gradient(90deg, #2c7a80 0 4px, transparent 4px 8px) left bottom / 100% 2px no-repeat, #04191f;
+}
+html[data-theme="line"] .top .place { color: var(--hi); }
+html[data-theme="line"] .res i { width: 6px; height: 6px; }
+html[data-theme="line"] .dock {
+  border-top: 0;
+  background: repeating-linear-gradient(90deg, #2c7a80 0 4px, transparent 4px 8px) left top / 100% 2px no-repeat, #03151b;
+}
+html[data-theme="line"] .li, html[data-theme="line"] .nexts div {
+  border: 0; padding-left: 4px;
+  background: repeating-linear-gradient(90deg, #1d4f56 0 2px, transparent 2px 4px) left bottom / 100% 2px no-repeat;
+}
+html[data-theme="line"] .chip { color: var(--dim); }
+html[data-theme="line"] .chip.on { color: var(--ink); }
+html[data-theme="line"] .slots i { color: var(--dim); }
+html[data-theme="line"] .slots i.on { color: var(--ink); }
+html[data-theme="line"] .label { color: var(--sub); }
+html[data-theme="line"] .dialog-scroll > .row:last-child, html[data-theme="line"] .legend { background: #04181e; }
+html[data-theme="line"] .veil { background: rgba(1, 10, 13, 0.74); }
+html[data-theme="line"] .toast { background: #04181e; border: 2px solid var(--hi); }
+
+/* --- heat gauge and HP: counted cells, not smooth bars --- */
+html[data-theme="line"] .gauge .fill { left: 4px; right: 4px; top: 4px; bottom: 4px; }
+html[data-theme="line"] .gauge .fill::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(90deg, transparent 0 calc(100% / 15 - 2px), #02100f calc(100% / 15 - 2px) calc(100% / 15));
+}
+html[data-theme="line"] .tag::before { display: none; }
+html[data-theme="line"] .tag .head { color: var(--gold); }
+html[data-theme="line"] .tag .bar { height: 4px; background: repeating-linear-gradient(90deg, #123a40 0 4px, transparent 4px 6px); }
+html[data-theme="line"] .tag .bar i { background: repeating-linear-gradient(90deg, var(--hi) 0 4px, transparent 4px 6px); }
+html[data-theme="line"] .tag .bar u { background: repeating-linear-gradient(90deg, var(--gold) 0 4px, transparent 4px 6px); }
+
+/* --- battlefield and map --- */
+html[data-theme="line"] #field .title { color: var(--hi); }
+html[data-theme="line"] .leader { background: #2c7a80; width: 2px; }
+html[data-theme="line"] .badge { background: var(--hi); color: var(--dark); }
+html[data-theme="line"] .chart svg * { shape-rendering: crispEdges; }
+html[data-theme="line"] .node.reach { background: #04181e; outline: 2px solid var(--gold); }
+html[data-theme="line"] .node.current { background: #04181e; outline: 2px dashed var(--cyan); }
+html[data-theme="line"] .node.sel { background: #0d3a40; outline: 2px solid var(--hi); }
+html[data-theme="line"] .node.sel img { filter: none; }
+html[data-theme="line"] .node img, html[data-theme="line"] .prod .ic img.px, html[data-theme="line"] .li img.px { image-rendering: pixelated; }
+
+/* Toolbar switch (outside #app). */
+#toolbar .tb[data-theme-set] { min-width: 0; }
+
+/* Legend fits the 30px strip under the chart; scrollbars match the frame colours. */
+html[data-theme="line"] .legend { padding-top: 6px !important; padding-bottom: 6px !important; }
+html[data-theme="line"] #app, html[data-theme="line"] #app * { scrollbar-color: #2c7a80 #04181e; scrollbar-width: thin; }

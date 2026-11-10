@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-01",
+  "scope": "in-game journey/comparison HUD; no APK or upload",
+  "godot": "4.7.stable.official.5b4e0cb0f",
+  "feedback": {
+    "checks": 169,
+    "failures": [],
+    "mixed_frames": 1443328,
+    "mixed_peak": 0.187481299042702
+  },
+  "hud": {
+    "checks": 11536,
+    "failures": 0
+  },
+  "flow": {
+    "checks": 4274,
+    "failures": 0
+  },
+  "fresh_process_resume": {
+    "write_checks": 5,
+    "read_checks": 6,
+    "failures": 0
+  },
+  "resource_unit_tests": 14,
+  "legacy_main": {
+    "checks": 252,
+    "failures": 8,
+    "same_failures_before_change": true
+  },
+  "unchanged_gameplay": {
+    "model.gd": true,
+    "campaign.gd": true,
+    "magazine_journey.gd": true,
+    "project.godot": true
+  },
+  "source_sha256": {
+    "새-게임-프로젝트/redesign/samples/hud/combat_hud_feedback.gd": "76ba8231f46e981afe4d88390c6ecfbb19dc28ac00938e5c9bb8cc2e2d68bb64",
+    "새-게임-프로젝트/redesign/samples/hud/combat_hud_presenter.gd": "3b97b67d18352259a5a63d23f20a8778f66fa025ac026bc96dd56635029ae4c8",
+    "새-게임-프로젝트/redesign/samples/hud/combat_menu.tscn": "d484844894673ef05fe5cdbbe7bd0942ca1739e72f09f676e474d8eced4de810",
+    "새-게임-프로젝트/redesign/samples/combat_magazine_loop.gd": "0895b1304ca3b0059eacd63f12c0587031d489355f7fdcee9491e8a13a7f0a1a",
+    "새-게임-프로젝트/redesign/samples/risk_battle_view.gd": "15cb11c210319a4f2cddd9237ce46833d2bf319cec1f6f473d58890fbdd0a5de",
+    "새-게임-프로젝트/redesign/presentation_feedback.gd": "1b6e8885508ab7236fe9882d8d5f8ea8070f54d8fb7d2d6e227580fc6d96a9be",
+    "새-게임-프로젝트/tests/journey_feedback_ui.gd": "22691b3b89293e688a5ec76894bdf6e195f915e5e9f7e27b51b408c781f2ddca",
+    "새-게임-프로젝트/tests/combat_hud_ui.gd": "e85de489ebb1442b51892976a7ef4f89773629fd821bb7fef8af3c5b3f9d16b3",
+    "tools/run_prototype_hud.ps1": "89fcf5a1ab0854b153556132614e89e1b9de54ebaacb5e877cc85313485a1960",
+    "tools/test_mobile_modes.py": "d149ff43897f71315edfa9bfa6a47f1643d137987eccd7670ed8248c6c637954"
+  },
+  "human_listening_tested": false,
+  "mobile_device_tested": false
+}

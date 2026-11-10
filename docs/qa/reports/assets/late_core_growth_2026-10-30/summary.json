@@ -1,0 +1,492 @@
+{
+  "note": "Bounded search knows future draws and RNG. Neither human win rates nor optimal routes. Preparation uses actual campaign commands; repeated prefixes are not counted twice as battles.",
+  "fresh_runs": 10,
+  "direct_endings": 7,
+  "endings_after_preparation": 9,
+  "integrated_battles": 275,
+  "early_battles": 112,
+  "early_changes": [],
+  "checks": 51292,
+  "failures": 0,
+  "runs": [
+    {
+      "tag": "carrier_731042",
+      "gun": "single",
+      "seed": 731042,
+      "outfit": "carrier",
+      "direct_won": true,
+      "after_preparation_won": true,
+      "followup": "",
+      "battles": 27,
+      "turns": 110,
+      "min_remaining": 12,
+      "final_remaining": 17,
+      "forced_turns": 24,
+      "final_core_levels": {
+        "siege_drive": 14
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "burst",
+      "seed": 731042,
+      "outfit": "carrier",
+      "direct_won": true,
+      "after_preparation_won": true,
+      "followup": "",
+      "battles": 27,
+      "turns": 230,
+      "min_remaining": 6,
+      "final_remaining": 14,
+      "forced_turns": 27,
+      "final_core_levels": {
+        "volley_drive": 14
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "scatter",
+      "seed": 731042,
+      "outfit": "carrier",
+      "direct_won": true,
+      "after_preparation_won": true,
+      "followup": "",
+      "battles": 27,
+      "turns": 203,
+      "min_remaining": 6,
+      "final_remaining": 17,
+      "forced_turns": 75,
+      "final_core_levels": {
+        "volley_drive": 14
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "carrier",
+      "direct_won": true,
+      "after_preparation_won": true,
+      "followup": "",
+      "battles": 27,
+      "turns": 228,
+      "min_remaining": 4,
+      "final_remaining": 4,
+      "forced_turns": 122,
+      "final_core_levels": {
+        "thermal_drive": 14
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "amplifier",
+      "seed": 731042,
+      "outfit": "carrier",
+      "direct_won": true,
+      "after_preparation_won": true,
+      "followup": "",
+      "battles": 27,
+      "turns": 137,
+      "min_remaining": 16,
+      "final_remaining": 22,
+      "forced_turns": 18,
+      "final_core_levels": {
+        "siege_drive": 14
+      }
+    },
+    {
+      "tag": "carrier_17",
+      "gun": "burst",
+      "seed": 17,
+      "outfit": "carrier",
+      "direct_won": false,
+      "after_preparation_won": true,
+      "followup": "burst_17_prepared",
+      "battles": 30,
+      "turns": 257,
+      "min_remaining": 6,
+      "final_remaining": 12,
+      "forced_turns": 52,
+      "final_core_levels": {
+        "volley_drive": 14
+      }
+    },
+    {
+      "tag": "carrier_17",
+      "gun": "scatter",
+      "seed": 17,
+      "outfit": "carrier",
+      "direct_won": false,
+      "after_preparation_won": true,
+      "followup": "scatter_17_prepared",
+      "battles": 30,
+      "turns": 221,
+      "min_remaining": 5,
+      "final_remaining": 12,
+      "forced_turns": 44,
+      "final_core_levels": {
+        "volley_drive": 14
+      }
+    },
+    {
+      "tag": "scout_731042",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "scout",
+      "direct_won": false,
+      "after_preparation_won": false,
+      "followup": "scout_heavy_prepared",
+      "battles": 26,
+      "turns": 361,
+      "min_remaining": 4,
+      "final_remaining": null,
+      "forced_turns": 83,
+      "final_core_levels": {
+        "thermal_drive": 14
+      }
+    },
+    {
+      "tag": "scout_731042",
+      "gun": "scatter",
+      "seed": 731042,
+      "outfit": "scout",
+      "direct_won": true,
+      "after_preparation_won": true,
+      "followup": "",
+      "battles": 27,
+      "turns": 278,
+      "min_remaining": 1,
+      "final_remaining": 1,
+      "forced_turns": 21,
+      "final_core_levels": {
+        "volley_drive": 14
+      }
+    },
+    {
+      "tag": "compression_heavy",
+      "gun": "heavy",
+      "seed": 731042,
+      "outfit": "carrier",
+      "direct_won": true,
+      "after_preparation_won": true,
+      "followup": "",
+      "battles": 27,
+      "turns": 227,
+      "min_remaining": 1,
+      "final_remaining": 1,
+      "forced_turns": 127,
+      "final_core_levels": {
+        "thermal_drive": 14
+      }
+    }
+  ],
+  "growth": [
+    {
+      "tag": "carrier_731042",
+      "gun": "single",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 7
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "burst",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 6
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "scatter",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 6
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "heavy",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 6
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "carrier_731042",
+      "gun": "amplifier",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 6
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "carrier_17",
+      "gun": "burst",
+      "seed": 17,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 4
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "carrier_17",
+      "gun": "scatter",
+      "seed": 17,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 4
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "scout_731042",
+      "gun": "heavy",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 6
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "scout_731042",
+      "gun": "scatter",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 6
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    },
+    {
+      "tag": "compression_heavy",
+      "gun": "heavy",
+      "seed": 731042,
+      "reached": {
+        "8": {
+          "region": 2,
+          "floor": 6
+        },
+        "10": {
+          "region": 3,
+          "floor": 2
+        },
+        "12": {
+          "region": 4,
+          "floor": 2
+        },
+        "14": {
+          "region": 5,
+          "floor": 2
+        }
+      }
+    }
+  ],
+  "executions": [
+    {
+      "path": "qa_runtime/late_growth_20261030/carrier_731042/stdout.log",
+      "checks": 18115,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/carrier_17/stdout.log",
+      "checks": 6894,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/scout_731042/stdout.log",
+      "checks": 8435,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/compression_heavy/stdout.log",
+      "checks": 4061,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/burst_17_prepared/stdout.log",
+      "checks": 4413,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/scatter_17_prepared/stdout.log",
+      "checks": 4111,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/scout_heavy_prepared/stdout.log",
+      "checks": 1522,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/burst_17_probe/stdout.log",
+      "checks": 42,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/scatter_17_probe/stdout.log",
+      "checks": 42,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/rules_release/stdout.log",
+      "checks": 785,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/late_growth_20261030/ui_release_final/stdout.log",
+      "checks": 142,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/gate/rules/stdout.log",
+      "checks": 835,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/gate/ui/stdout.log",
+      "checks": 151,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/damage_engines/rules/stdout.log",
+      "checks": 657,
+      "failures": 0
+    },
+    {
+      "path": "qa_runtime/playtest_revision_20261026/sustained/late_growth_20261030/stdout.log",
+      "checks": 1087,
+      "failures": 0
+    }
+  ]
+}

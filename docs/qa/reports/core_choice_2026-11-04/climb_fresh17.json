@@ -1,0 +1,5163 @@
+{
+  "battles": [
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "floor": 1,
+      "gate_mods": {},
+      "gun": "heavy",
+      "margin": 18,
+      "metrics": {
+        "burn_damage": 0,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 4,
+        "reload": 1,
+        "remaining": 10,
+        "turns": 10
+      },
+      "node": 101,
+      "parts": [],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 1,
+      "remaining": 10,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 74,
+      "seed": 17,
+      "solved": true,
+      "total": 2,
+      "turns": 10,
+      "used": 10,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {},
+        "settled": false,
+        "siege": false
+      },
+      "floor": 2,
+      "gate_mods": {},
+      "gun": "heavy",
+      "margin": 24,
+      "metrics": {
+        "burn_damage": 0,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 4,
+        "reload": 0,
+        "remaining": 13,
+        "turns": 7
+      },
+      "node": 201,
+      "parts": [
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 1,
+      "remaining": 13,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 51,
+      "seed": 17,
+      "solved": true,
+      "total": 4,
+      "turns": 7,
+      "used": 7,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 1
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 3,
+      "gate_mods": {},
+      "gun": "heavy",
+      "margin": 2,
+      "metrics": {
+        "burn_damage": 0,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 4,
+        "reload": 1,
+        "remaining": 14,
+        "turns": 9
+      },
+      "node": 301,
+      "parts": [
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 1,
+      "remaining": 14,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 137,
+      "seed": 17,
+      "solved": true,
+      "total": 3,
+      "turns": 9,
+      "used": 7,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 2
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 6,
+      "gate_mods": {},
+      "gun": "heavy",
+      "margin": 22,
+      "metrics": {
+        "burn_damage": 0,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 4,
+        "reload": 1,
+        "remaining": 15,
+        "turns": 9
+      },
+      "node": 603,
+      "parts": [
+        "coil",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 1,
+      "remaining": 15,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 184,
+      "seed": 17,
+      "solved": true,
+      "total": 4,
+      "turns": 9,
+      "used": 8,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": true,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 3
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 8,
+      "gate_mods": {},
+      "gun": "heavy",
+      "margin": 3,
+      "metrics": {
+        "burn_damage": 35,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 5,
+        "forced_turns": 8,
+        "reload": 2,
+        "remaining": 13,
+        "turns": 17
+      },
+      "node": 802,
+      "parts": [
+        "coil",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 1,
+      "remaining": 13,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 614,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 17,
+      "used": 11,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 4
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 1,
+      "gate_mods": {
+        "cadence": 1
+      },
+      "gun": "heavy",
+      "margin": 18,
+      "metrics": {
+        "burn_damage": 8,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 2,
+        "forced_turns": 5,
+        "reload": 1,
+        "remaining": 15,
+        "turns": 9
+      },
+      "node": 10101,
+      "parts": [
+        "coil",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 2,
+      "remaining": 15,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 180,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 9,
+      "used": 9,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 5
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 2,
+      "gate_mods": {
+        "cadence": 1
+      },
+      "gun": "heavy",
+      "margin": 28,
+      "metrics": {
+        "burn_damage": 24,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 7,
+        "reload": 1,
+        "remaining": 11,
+        "turns": 12
+      },
+      "node": 10201,
+      "parts": [
+        "coil",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 2,
+      "remaining": 11,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 274,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 12,
+      "used": 13,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 6
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 3,
+      "gate_mods": {
+        "cadence": 1
+      },
+      "gun": "heavy",
+      "margin": 24,
+      "metrics": {
+        "burn_damage": 20,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 2,
+        "forced_turns": 5,
+        "reload": 1,
+        "remaining": 14,
+        "turns": 9
+      },
+      "node": 10301,
+      "parts": [
+        "coil",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 2,
+      "remaining": 14,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 227,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 9,
+      "used": 10,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 7
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 4,
+      "gate_mods": {
+        "cadence": 1
+      },
+      "gun": "heavy",
+      "margin": 28,
+      "metrics": {
+        "burn_damage": 26,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 12,
+        "reload": 1,
+        "remaining": 7,
+        "turns": 18
+      },
+      "node": 10401,
+      "parts": [
+        "coil",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 2,
+      "remaining": 7,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 536,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 18,
+      "used": 18,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 7,
+      "gate_mods": {
+        "cadence": 1
+      },
+      "gun": "heavy",
+      "margin": 28,
+      "metrics": {
+        "burn_damage": 65,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 5,
+        "forced_turns": 8,
+        "reload": 1,
+        "remaining": 12,
+        "turns": 15
+      },
+      "node": 10702,
+      "parts": [
+        "coil",
+        "compression_sink",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 2,
+      "remaining": 12,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 672,
+      "seed": 17,
+      "solved": true,
+      "total": 8,
+      "turns": 15,
+      "used": 13,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": true,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 9,
+      "gate_mods": {
+        "cadence": 1
+      },
+      "gun": "heavy",
+      "margin": 2,
+      "metrics": {
+        "burn_damage": 30,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 11,
+        "reload": 1,
+        "remaining": 7,
+        "turns": 17
+      },
+      "node": 10902,
+      "parts": [
+        "coil",
+        "compression_sink",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 2,
+      "remaining": 7,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 459,
+      "seed": 17,
+      "solved": true,
+      "total": 8,
+      "turns": 17,
+      "used": 18,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 1,
+      "gate_mods": {
+        "cadence": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 26,
+      "metrics": {
+        "burn_damage": 19,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 8,
+        "reload": 2,
+        "remaining": 11,
+        "turns": 16
+      },
+      "node": 20101,
+      "parts": [
+        "coil",
+        "compression_sink",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 3,
+      "remaining": 11,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 965,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 16,
+      "used": 14,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot"
+      ],
+      "elite": true,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 2,
+      "gate_mods": {
+        "cadence": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 5,
+      "metrics": {
+        "burn_damage": 21,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 4,
+        "reload": 1,
+        "remaining": 11,
+        "turns": 10
+      },
+      "node": 20201,
+      "parts": [
+        "coil",
+        "compression_sink",
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 3,
+      "remaining": 11,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 909,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 10,
+      "used": 15,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 5,
+      "gate_mods": {
+        "cadence": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 24,
+      "metrics": {
+        "burn_damage": 69,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 5,
+        "reload": 2,
+        "remaining": 14,
+        "turns": 14
+      },
+      "node": 20502,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 3,
+      "remaining": 14,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 939,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 14,
+      "used": 13,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 6,
+      "gate_mods": {
+        "cadence": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 34,
+      "metrics": {
+        "burn_damage": 76,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 5,
+        "reload": 1,
+        "remaining": 18,
+        "turns": 10
+      },
+      "node": 20602,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "region": 3,
+      "remaining": 18,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 752,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 10,
+      "used": 9,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": true,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 9,
+      "gate_mods": {
+        "cadence": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 22,
+      "metrics": {
+        "burn_damage": 23,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 2,
+        "forced_turns": 0,
+        "reload": 1,
+        "remaining": 22,
+        "turns": 5
+      },
+      "node": 20902,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 3,
+      "remaining": 22,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 605,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 5,
+      "used": 5,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 1,
+      "gate_mods": {
+        "cadence": 1,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 31,
+      "metrics": {
+        "burn_damage": 52,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 8,
+        "reload": 1,
+        "remaining": 15,
+        "turns": 14
+      },
+      "node": 30101,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 4,
+      "remaining": 15,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 834,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 14,
+      "used": 12,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 2,
+      "gate_mods": {
+        "cadence": 1,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 31,
+      "metrics": {
+        "burn_damage": 42,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 5,
+        "reload": 1,
+        "remaining": 13,
+        "turns": 11
+      },
+      "node": 30202,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 4,
+      "remaining": 13,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 1187,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 11,
+      "used": 14,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": true,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 5,
+      "gate_mods": {
+        "cadence": 1,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 29,
+      "metrics": {
+        "burn_damage": 82,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 5,
+        "reload": 2,
+        "remaining": 14,
+        "turns": 14
+      },
+      "node": 30501,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 4,
+      "remaining": 14,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 1375,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 14,
+      "used": 13,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 6,
+      "gate_mods": {
+        "cadence": 1,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 32,
+      "metrics": {
+        "burn_damage": 30,
+        "cool": 1,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 0,
+        "reload": 1,
+        "remaining": 14,
+        "turns": 8
+      },
+      "node": 30601,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 4,
+      "remaining": 14,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 1582,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 8,
+      "used": 13,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": true,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 7,
+      "gate_mods": {
+        "cadence": 1,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 26,
+      "metrics": {
+        "burn_damage": 88,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 5,
+        "reload": 1,
+        "remaining": 14,
+        "turns": 12
+      },
+      "node": 30701,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 4,
+      "remaining": 14,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 1439,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 12,
+      "used": 13,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": true,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 9,
+      "gate_mods": {
+        "cadence": 1,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 15,
+      "metrics": {
+        "burn_damage": 57,
+        "cool": 1,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 5,
+        "forced_turns": 10,
+        "reload": 2,
+        "remaining": 8,
+        "turns": 22
+      },
+      "node": 30902,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 4,
+      "remaining": 8,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 2447,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 22,
+      "used": 19,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 1,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 40,
+      "metrics": {
+        "burn_damage": 45,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 5,
+        "reload": 1,
+        "remaining": 13,
+        "turns": 11
+      },
+      "node": 40101,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 13,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 1290,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 11,
+      "used": 14,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": true,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 2,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 30,
+      "metrics": {
+        "burn_damage": 101,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 8,
+        "reload": 2,
+        "remaining": 13,
+        "turns": 17
+      },
+      "node": 40201,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 13,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 1567,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 17,
+      "used": 14,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 3,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 37,
+      "metrics": {
+        "burn_damage": 51,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 10,
+        "reload": 2,
+        "remaining": 9,
+        "turns": 20
+      },
+      "node": 40301,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 9,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 2267,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 20,
+      "used": 18,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 5,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 37,
+      "metrics": {
+        "burn_damage": 80,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 10,
+        "reload": 2,
+        "remaining": 9,
+        "turns": 20
+      },
+      "node": 40501,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 9,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 2335,
+      "seed": 17,
+      "solved": true,
+      "total": 6,
+      "turns": 20,
+      "used": 18,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": true,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 6,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 28,
+      "metrics": {
+        "burn_damage": 81,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 3,
+        "forced_turns": 7,
+        "reload": 2,
+        "remaining": 14,
+        "turns": 16
+      },
+      "node": 40602,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 14,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 1986,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 16,
+      "used": 13,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 7,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 39,
+      "metrics": {
+        "burn_damage": 118,
+        "cool": 1,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 7,
+        "reload": 1,
+        "remaining": 12,
+        "turns": 15
+      },
+      "node": 40701,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 12,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 2584,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 15,
+      "used": 15,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": false,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 8,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 32,
+      "metrics": {
+        "burn_damage": 112,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 5,
+        "forced_turns": 10,
+        "reload": 2,
+        "remaining": 8,
+        "turns": 21
+      },
+      "node": 40801,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 8,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 2787,
+      "seed": 17,
+      "solved": true,
+      "total": 7,
+      "turns": 21,
+      "used": 19,
+      "wider_search": false
+    },
+    {
+      "acquisition": "refit",
+      "boss": true,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "elite": false,
+      "engine": {
+        "gains": [],
+        "hits": 0,
+        "hot": false,
+        "levels": {
+          "thermal_drive": 8
+        },
+        "settled": false,
+        "siege": false
+      },
+      "floor": 10,
+      "gate_mods": {
+        "cadence": 2,
+        "chain": 1,
+        "efficiency": 1
+      },
+      "gun": "heavy",
+      "margin": 8,
+      "metrics": {
+        "burn_damage": 143,
+        "cool": 0,
+        "eject": 0,
+        "emergency": 0,
+        "fire": 4,
+        "forced_turns": 11,
+        "reload": 2,
+        "remaining": 9,
+        "turns": 21
+      },
+      "node": 41002,
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "path": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "region": 5,
+      "remaining": 9,
+      "replayed": false,
+      "route": "safe",
+      "search_ms": 3412,
+      "seed": 17,
+      "solved": true,
+      "total": 8,
+      "turns": 21,
+      "used": 18,
+      "wider_search": false
+    }
+  ],
+  "checks": 2123,
+  "endpoints": [
+    {
+      "commands": [
+        {
+          "action": "enter",
+          "id": 101
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 1
+        },
+        {
+          "action": "reload",
+          "credits": 30,
+          "node": 101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 3
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 8
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 9
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 101,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 10
+        },
+        {
+          "action": "reward",
+          "credits": 30,
+          "id": "thermal_drive",
+          "node": 101,
+          "phase": "reward",
+          "replace": "",
+          "turns": 10
+        },
+        {
+          "action": "reward",
+          "credits": 30,
+          "id": "bore",
+          "node": 101,
+          "phase": "map",
+          "replace": "",
+          "turns": 10
+        },
+        {
+          "action": "enter",
+          "id": 201
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 11
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 16
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 201,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 17
+        },
+        {
+          "action": "reward",
+          "credits": 30,
+          "id": "bore",
+          "node": 201,
+          "phase": "map",
+          "replace": "",
+          "turns": 17
+        },
+        {
+          "action": "enter",
+          "id": 301
+        },
+        {
+          "action": "reload",
+          "credits": 30,
+          "node": 301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 19
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 20
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 25
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 301,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 26
+        },
+        {
+          "action": "reward",
+          "credits": 30,
+          "id": "bore",
+          "node": 301,
+          "phase": "map",
+          "replace": "",
+          "turns": 26
+        },
+        {
+          "action": "enter",
+          "id": 402
+        },
+        {
+          "action": "resolve",
+          "credits": 30,
+          "id": "skip",
+          "node": 402,
+          "phase": "event",
+          "turns": 26
+        },
+        {
+          "action": "leave",
+          "credits": 30,
+          "node": 402,
+          "phase": "map",
+          "turns": 26
+        },
+        {
+          "action": "enter",
+          "id": 503
+        },
+        {
+          "action": "buy",
+          "credits": 18,
+          "id": 0,
+          "node": 503,
+          "phase": "shop",
+          "replace": "",
+          "turns": 26
+        },
+        {
+          "action": "buy",
+          "credits": 0,
+          "id": 1,
+          "node": 503,
+          "phase": "shop",
+          "replace": "",
+          "turns": 26
+        },
+        {
+          "action": "leave",
+          "credits": 0,
+          "node": 503,
+          "phase": "map",
+          "turns": 26
+        },
+        {
+          "action": "equip",
+          "credits": 0,
+          "id": "none",
+          "node": 503,
+          "phase": "map",
+          "turns": 26
+        },
+        {
+          "action": "equip",
+          "credits": 0,
+          "id": "coil",
+          "node": 503,
+          "phase": "map",
+          "turns": 26
+        },
+        {
+          "action": "equip",
+          "credits": 0,
+          "id": "thermal_drive",
+          "node": 503,
+          "phase": "map",
+          "turns": 26
+        },
+        {
+          "action": "enter",
+          "id": 603
+        },
+        {
+          "action": "reload",
+          "credits": 0,
+          "node": 603,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 28
+        },
+        {
+          "action": "fire",
+          "credits": 0,
+          "node": 603,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 29
+        },
+        {
+          "action": "fire",
+          "credits": 0,
+          "node": 603,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 34
+        },
+        {
+          "action": "fire",
+          "credits": 0,
+          "node": 603,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 35
+        },
+        {
+          "action": "reward",
+          "credits": 0,
+          "id": "bore_c",
+          "node": 603,
+          "phase": "map",
+          "replace": "",
+          "turns": 35
+        },
+        {
+          "action": "enter",
+          "id": 703
+        },
+        {
+          "action": "resolve",
+          "ammo": "bore_c",
+          "credits": 0,
+          "id": "refit",
+          "node": 703,
+          "phase": "supply",
+          "replace": "basic_p2",
+          "turns": 35
+        },
+        {
+          "action": "leave",
+          "credits": 0,
+          "node": 703,
+          "phase": "map",
+          "turns": 35
+        },
+        {
+          "action": "enter",
+          "id": 802
+        },
+        {
+          "action": "reload",
+          "credits": 0,
+          "node": 802,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 37
+        },
+        {
+          "action": "fire",
+          "credits": 0,
+          "node": 802,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 38
+        },
+        {
+          "action": "reload",
+          "credits": 0,
+          "node": 802,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 40
+        },
+        {
+          "action": "fire",
+          "credits": 0,
+          "node": 802,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 45
+        },
+        {
+          "action": "fire",
+          "credits": 0,
+          "node": 802,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 46
+        },
+        {
+          "action": "fire",
+          "credits": 0,
+          "node": 802,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 51
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 802,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 52
+        },
+        {
+          "action": "reward",
+          "credits": 30,
+          "id": "skip",
+          "node": 802,
+          "phase": "gate",
+          "replace": "",
+          "turns": 52
+        },
+        {
+          "action": "gate",
+          "credits": 30,
+          "id": "cadence",
+          "node": 802,
+          "phase": "gate",
+          "turns": 52
+        },
+        {
+          "action": "gate_depart",
+          "credits": 30,
+          "node": 0,
+          "phase": "map",
+          "turns": 52
+        },
+        {
+          "action": "enter",
+          "id": 10101
+        },
+        {
+          "action": "reload",
+          "credits": 30,
+          "node": 10101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 54
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 10101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 59
+        },
+        {
+          "action": "fire",
+          "credits": 30,
+          "node": 10101,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 61
+        },
+        {
+          "action": "reward",
+          "credits": 38,
+          "id": "credits",
+          "node": 10101,
+          "phase": "map",
+          "replace": "",
+          "turns": 61
+        },
+        {
+          "action": "enter",
+          "id": 10201
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 10201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 66
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 10201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 70
+        },
+        {
+          "action": "reload",
+          "credits": 38,
+          "node": 10201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 72
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 10201,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 73
+        },
+        {
+          "action": "reward",
+          "credits": 46,
+          "id": "credits",
+          "node": 10201,
+          "phase": "map",
+          "replace": "",
+          "turns": 73
+        },
+        {
+          "action": "enter",
+          "id": 10301
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 10301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 78
+        },
+        {
+          "action": "reload",
+          "credits": 46,
+          "node": 10301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 80
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 10301,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 82
+        },
+        {
+          "action": "reward",
+          "credits": 46,
+          "id": "cool",
+          "node": 10301,
+          "phase": "map",
+          "replace": "",
+          "turns": 82
+        },
+        {
+          "action": "enter",
+          "id": 10401
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 10401,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 87
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 10401,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 92
+        },
+        {
+          "action": "reload",
+          "credits": 46,
+          "node": 10401,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 94
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 10401,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 99
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 10401,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 100
+        },
+        {
+          "action": "reward",
+          "credits": 54,
+          "id": "credits",
+          "node": 10401,
+          "phase": "map",
+          "replace": "",
+          "turns": 100
+        },
+        {
+          "action": "enter",
+          "id": 10502
+        },
+        {
+          "action": "buy",
+          "credits": 24,
+          "id": 1,
+          "node": 10502,
+          "phase": "shop",
+          "replace": "",
+          "turns": 100
+        },
+        {
+          "action": "leave",
+          "credits": 24,
+          "node": 10502,
+          "phase": "map",
+          "turns": 100
+        },
+        {
+          "action": "equip",
+          "credits": 24,
+          "id": "none",
+          "node": 10502,
+          "phase": "map",
+          "turns": 100
+        },
+        {
+          "action": "equip",
+          "credits": 24,
+          "id": "coil",
+          "node": 10502,
+          "phase": "map",
+          "turns": 100
+        },
+        {
+          "action": "equip",
+          "credits": 24,
+          "id": "compression_sink",
+          "node": 10502,
+          "phase": "map",
+          "turns": 100
+        },
+        {
+          "action": "equip",
+          "credits": 24,
+          "id": "thermal_drive",
+          "node": 10502,
+          "phase": "map",
+          "turns": 100
+        },
+        {
+          "action": "enter",
+          "id": 10602
+        },
+        {
+          "action": "resolve",
+          "credits": 24,
+          "id": "skip",
+          "node": 10602,
+          "phase": "event",
+          "turns": 100
+        },
+        {
+          "action": "leave",
+          "credits": 24,
+          "node": 10602,
+          "phase": "map",
+          "turns": 100
+        },
+        {
+          "action": "enter",
+          "id": 10702
+        },
+        {
+          "action": "fire",
+          "credits": 24,
+          "node": 10702,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 105
+        },
+        {
+          "action": "fire",
+          "credits": 24,
+          "node": 10702,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 106
+        },
+        {
+          "action": "fire",
+          "credits": 24,
+          "node": 10702,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 107
+        },
+        {
+          "action": "reload",
+          "credits": 24,
+          "node": 10702,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 109
+        },
+        {
+          "action": "fire",
+          "credits": 24,
+          "node": 10702,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 114
+        },
+        {
+          "action": "fire",
+          "credits": 24,
+          "node": 10702,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 115
+        },
+        {
+          "action": "reward",
+          "credits": 32,
+          "id": "credits",
+          "node": 10702,
+          "phase": "map",
+          "replace": "",
+          "turns": 115
+        },
+        {
+          "action": "enter",
+          "id": 10801
+        },
+        {
+          "action": "resolve",
+          "credits": 32,
+          "id": "skip",
+          "node": 10801,
+          "phase": "event",
+          "turns": 115
+        },
+        {
+          "action": "leave",
+          "credits": 32,
+          "node": 10801,
+          "phase": "map",
+          "turns": 115
+        },
+        {
+          "action": "enter",
+          "id": 10902
+        },
+        {
+          "action": "fire",
+          "credits": 32,
+          "node": 10902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 120
+        },
+        {
+          "action": "fire",
+          "credits": 32,
+          "node": 10902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 124
+        },
+        {
+          "action": "reload",
+          "credits": 32,
+          "node": 10902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 126
+        },
+        {
+          "action": "fire",
+          "credits": 32,
+          "node": 10902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 131
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 10902,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 132
+        },
+        {
+          "action": "reward",
+          "credits": 67,
+          "id": "skip",
+          "node": 10902,
+          "phase": "gate",
+          "replace": "",
+          "turns": 132
+        },
+        {
+          "action": "gate",
+          "credits": 67,
+          "id": "efficiency",
+          "node": 10902,
+          "phase": "gate",
+          "turns": 132
+        },
+        {
+          "action": "gate_depart",
+          "credits": 67,
+          "node": 0,
+          "phase": "map",
+          "turns": 132
+        },
+        {
+          "action": "enter",
+          "id": 20101
+        },
+        {
+          "action": "reload",
+          "credits": 67,
+          "node": 20101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 134
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 139
+        },
+        {
+          "action": "reload",
+          "credits": 67,
+          "node": 20101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 141
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 142
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 147
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20101,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 148
+        },
+        {
+          "action": "reward",
+          "credits": 67,
+          "id": "charge_hot",
+          "node": 20101,
+          "phase": "map",
+          "replace": "",
+          "turns": 148
+        },
+        {
+          "action": "enter",
+          "id": 20201
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 149
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 154
+        },
+        {
+          "action": "reload",
+          "credits": 67,
+          "node": 20201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 156
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 157
+        },
+        {
+          "action": "fire",
+          "credits": 67,
+          "node": 20201,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 158
+        },
+        {
+          "action": "reward",
+          "credits": 67,
+          "id": "inferno",
+          "node": 20201,
+          "phase": "map",
+          "replace": "",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 67,
+          "id": "none",
+          "node": 20201,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 67,
+          "id": "inferno",
+          "node": 20201,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 67,
+          "id": "coil",
+          "node": 20201,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 67,
+          "id": "compression_sink",
+          "node": 20201,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "enter",
+          "id": 20402
+        },
+        {
+          "action": "buy",
+          "credits": 55,
+          "id": 0,
+          "node": 20402,
+          "phase": "shop",
+          "replace": "",
+          "turns": 158
+        },
+        {
+          "action": "buy",
+          "credits": 25,
+          "id": 1,
+          "node": 20402,
+          "phase": "shop",
+          "replace": "",
+          "turns": 158
+        },
+        {
+          "action": "leave",
+          "credits": 25,
+          "node": 20402,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 25,
+          "id": "none",
+          "node": 20402,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 25,
+          "id": "inferno",
+          "node": 20402,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 25,
+          "id": "coil",
+          "node": 20402,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 25,
+          "id": "igniter",
+          "node": 20402,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "equip",
+          "credits": 25,
+          "id": "compression_sink",
+          "node": 20402,
+          "phase": "map",
+          "turns": 158
+        },
+        {
+          "action": "enter",
+          "id": 20502
+        },
+        {
+          "action": "reload",
+          "credits": 25,
+          "node": 20502,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 161
+        },
+        {
+          "action": "fire",
+          "credits": 25,
+          "node": 20502,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 162
+        },
+        {
+          "action": "reload",
+          "credits": 25,
+          "node": 20502,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 165
+        },
+        {
+          "action": "fire",
+          "credits": 25,
+          "node": 20502,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 171
+        },
+        {
+          "action": "fire",
+          "credits": 25,
+          "node": 20502,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 172
+        },
+        {
+          "action": "reward",
+          "credits": 33,
+          "id": "credits",
+          "node": 20502,
+          "phase": "map",
+          "replace": "",
+          "turns": 172
+        },
+        {
+          "action": "enter",
+          "id": 20602
+        },
+        {
+          "action": "fire",
+          "credits": 33,
+          "node": 20602,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 173
+        },
+        {
+          "action": "fire",
+          "credits": 33,
+          "node": 20602,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 179
+        },
+        {
+          "action": "fire",
+          "credits": 33,
+          "node": 20602,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 180
+        },
+        {
+          "action": "reload",
+          "credits": 33,
+          "node": 20602,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 182
+        },
+        {
+          "action": "reward",
+          "credits": 42,
+          "id": "credits",
+          "node": 20602,
+          "phase": "map",
+          "replace": "",
+          "turns": 182
+        },
+        {
+          "action": "enter",
+          "id": 20702
+        },
+        {
+          "action": "resolve",
+          "credits": 42,
+          "id": "skip",
+          "node": 20702,
+          "phase": "event",
+          "turns": 182
+        },
+        {
+          "action": "leave",
+          "credits": 42,
+          "node": 20702,
+          "phase": "map",
+          "turns": 182
+        },
+        {
+          "action": "enter",
+          "id": 20802
+        },
+        {
+          "action": "resolve",
+          "credits": 42,
+          "id": "skip",
+          "node": 20802,
+          "phase": "event",
+          "turns": 182
+        },
+        {
+          "action": "leave",
+          "credits": 42,
+          "node": 20802,
+          "phase": "map",
+          "turns": 182
+        },
+        {
+          "action": "enter",
+          "id": 20902
+        },
+        {
+          "action": "fire",
+          "credits": 42,
+          "node": 20902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 183
+        },
+        {
+          "action": "reload",
+          "credits": 42,
+          "node": 20902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 186
+        },
+        {
+          "action": "fire",
+          "credits": 82,
+          "node": 20902,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 187
+        },
+        {
+          "action": "reward",
+          "credits": 82,
+          "id": "skip",
+          "node": 20902,
+          "phase": "gate",
+          "replace": "",
+          "turns": 187
+        },
+        {
+          "action": "gate",
+          "credits": 82,
+          "id": "chain",
+          "node": 20902,
+          "phase": "gate",
+          "turns": 187
+        },
+        {
+          "action": "gate_depart",
+          "credits": 82,
+          "node": 0,
+          "phase": "map",
+          "turns": 187
+        },
+        {
+          "action": "enter",
+          "id": 30101
+        },
+        {
+          "action": "fire",
+          "credits": 82,
+          "node": 30101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 188
+        },
+        {
+          "action": "reload",
+          "credits": 82,
+          "node": 30101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 191
+        },
+        {
+          "action": "fire",
+          "credits": 82,
+          "node": 30101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 197
+        },
+        {
+          "action": "fire",
+          "credits": 82,
+          "node": 30101,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 201
+        },
+        {
+          "action": "reward",
+          "credits": 90,
+          "id": "credits",
+          "node": 30101,
+          "phase": "map",
+          "replace": "",
+          "turns": 201
+        },
+        {
+          "action": "enter",
+          "id": 30202
+        },
+        {
+          "action": "fire",
+          "credits": 90,
+          "node": 30202,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 202
+        },
+        {
+          "action": "reload",
+          "credits": 90,
+          "node": 30202,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 205
+        },
+        {
+          "action": "fire",
+          "credits": 90,
+          "node": 30202,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 211
+        },
+        {
+          "action": "fire",
+          "credits": 90,
+          "node": 30202,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 212
+        },
+        {
+          "action": "reward",
+          "credits": 98,
+          "id": "credits",
+          "node": 30202,
+          "phase": "map",
+          "replace": "",
+          "turns": 212
+        },
+        {
+          "action": "enter",
+          "id": 30301
+        },
+        {
+          "action": "resolve",
+          "credits": 98,
+          "id": "skip",
+          "node": 30301,
+          "phase": "event",
+          "turns": 212
+        },
+        {
+          "action": "leave",
+          "credits": 98,
+          "node": 30301,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "enter",
+          "id": 30401
+        },
+        {
+          "action": "buy",
+          "credits": 68,
+          "id": 1,
+          "node": 30401,
+          "phase": "shop",
+          "replace": "",
+          "turns": 212
+        },
+        {
+          "action": "buy",
+          "credits": 38,
+          "id": 2,
+          "node": 30401,
+          "phase": "shop",
+          "replace": "",
+          "turns": 212
+        },
+        {
+          "action": "leave",
+          "credits": 38,
+          "node": 30401,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "equip",
+          "credits": 38,
+          "id": "none",
+          "node": 30401,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "equip",
+          "credits": 38,
+          "id": "inferno",
+          "node": 30401,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "equip",
+          "credits": 38,
+          "id": "coil",
+          "node": 30401,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "equip",
+          "credits": 38,
+          "id": "igniter",
+          "node": 30401,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "equip",
+          "credits": 38,
+          "id": "rammer",
+          "node": 30401,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "equip",
+          "credits": 38,
+          "id": "compression_sink",
+          "node": 30401,
+          "phase": "map",
+          "turns": 212
+        },
+        {
+          "action": "enter",
+          "id": 30501
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 30501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 213
+        },
+        {
+          "action": "reload",
+          "credits": 38,
+          "node": 30501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 216
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 30501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 222
+        },
+        {
+          "action": "reload",
+          "credits": 38,
+          "node": 30501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 225
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 30501,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 226
+        },
+        {
+          "action": "reward",
+          "credits": 38,
+          "id": "ordinary_chain",
+          "node": 30501,
+          "phase": "map",
+          "replace": "",
+          "turns": 226
+        },
+        {
+          "action": "enter",
+          "id": 30601
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 30601,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 227
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 30601,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 229
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 30601,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 230
+        },
+        {
+          "action": "reload",
+          "credits": 38,
+          "node": 30601,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 233
+        },
+        {
+          "action": "fire",
+          "credits": 38,
+          "node": 30601,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 234
+        },
+        {
+          "action": "reward",
+          "credits": 46,
+          "id": "credits",
+          "node": 30601,
+          "phase": "map",
+          "replace": "",
+          "turns": 234
+        },
+        {
+          "action": "enter",
+          "id": 30701
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 235
+        },
+        {
+          "action": "reload",
+          "credits": 46,
+          "node": 30701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 238
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 244
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 245
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30701,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 246
+        },
+        {
+          "action": "reward",
+          "credits": 46,
+          "id": "momentum",
+          "node": 30701,
+          "phase": "map",
+          "replace": "",
+          "turns": 246
+        },
+        {
+          "action": "enter",
+          "id": 30801
+        },
+        {
+          "action": "resolve",
+          "credits": 46,
+          "id": "skip",
+          "node": 30801,
+          "phase": "supply",
+          "turns": 246
+        },
+        {
+          "action": "leave",
+          "credits": 46,
+          "node": 30801,
+          "phase": "map",
+          "turns": 246
+        },
+        {
+          "action": "enter",
+          "id": 30902
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 247
+        },
+        {
+          "action": "reload",
+          "credits": 46,
+          "node": 30902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 250
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 256
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 257
+        },
+        {
+          "action": "reload",
+          "credits": 46,
+          "node": 30902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 260
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "credits": 46,
+          "node": 30902,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 267
+        },
+        {
+          "action": "fire",
+          "credits": 91,
+          "node": 30902,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 268
+        },
+        {
+          "action": "reward",
+          "credits": 91,
+          "id": "skip",
+          "node": 30902,
+          "phase": "gate",
+          "replace": "",
+          "turns": 268
+        },
+        {
+          "action": "gate",
+          "credits": 91,
+          "id": "cadence",
+          "node": 30902,
+          "phase": "gate",
+          "turns": 268
+        },
+        {
+          "action": "gate_depart",
+          "credits": 91,
+          "node": 0,
+          "phase": "map",
+          "turns": 268
+        },
+        {
+          "action": "enter",
+          "id": 40101
+        },
+        {
+          "action": "fire",
+          "credits": 91,
+          "node": 40101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 274
+        },
+        {
+          "action": "fire",
+          "credits": 91,
+          "node": 40101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 275
+        },
+        {
+          "action": "reload",
+          "credits": 91,
+          "node": 40101,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 278
+        },
+        {
+          "action": "fire",
+          "credits": 91,
+          "node": 40101,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 279
+        },
+        {
+          "action": "reward",
+          "credits": 99,
+          "id": "credits",
+          "node": 40101,
+          "phase": "map",
+          "replace": "",
+          "turns": 279
+        },
+        {
+          "action": "enter",
+          "id": 40201
+        },
+        {
+          "action": "fire",
+          "credits": 99,
+          "node": 40201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 285
+        },
+        {
+          "action": "reload",
+          "credits": 99,
+          "node": 40201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 288
+        },
+        {
+          "action": "fire",
+          "credits": 99,
+          "node": 40201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 289
+        },
+        {
+          "action": "reload",
+          "credits": 99,
+          "node": 40201,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 292
+        },
+        {
+          "action": "fire",
+          "credits": 99,
+          "node": 40201,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 296
+        },
+        {
+          "action": "reward",
+          "credits": 99,
+          "id": "cooling_breech",
+          "node": 40201,
+          "phase": "map",
+          "replace": "",
+          "turns": 296
+        },
+        {
+          "action": "enter",
+          "id": 40301
+        },
+        {
+          "action": "fire",
+          "credits": 99,
+          "node": 40301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 297
+        },
+        {
+          "action": "reload",
+          "credits": 99,
+          "node": 40301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 300
+        },
+        {
+          "action": "fire",
+          "credits": 99,
+          "node": 40301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 306
+        },
+        {
+          "action": "fire",
+          "credits": 99,
+          "node": 40301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 312
+        },
+        {
+          "action": "reload",
+          "credits": 99,
+          "node": 40301,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 315
+        },
+        {
+          "action": "fire",
+          "credits": 99,
+          "node": 40301,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 316
+        },
+        {
+          "action": "reward",
+          "credits": 107,
+          "id": "credits",
+          "node": 40301,
+          "phase": "map",
+          "replace": "",
+          "turns": 316
+        },
+        {
+          "action": "enter",
+          "id": 40401
+        },
+        {
+          "action": "buy",
+          "credits": 77,
+          "id": 1,
+          "node": 40401,
+          "phase": "shop",
+          "replace": "",
+          "turns": 316
+        },
+        {
+          "action": "buy",
+          "credits": 47,
+          "id": 2,
+          "node": 40401,
+          "phase": "shop",
+          "replace": "",
+          "turns": 316
+        },
+        {
+          "action": "leave",
+          "credits": 47,
+          "node": 40401,
+          "phase": "map",
+          "turns": 316
+        },
+        {
+          "action": "enter",
+          "id": 40501
+        },
+        {
+          "action": "reload",
+          "credits": 47,
+          "node": 40501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 319
+        },
+        {
+          "action": "fire",
+          "credits": 47,
+          "node": 40501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 325
+        },
+        {
+          "action": "fire",
+          "credits": 47,
+          "node": 40501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 326
+        },
+        {
+          "action": "reload",
+          "credits": 47,
+          "node": 40501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 329
+        },
+        {
+          "action": "fire",
+          "credits": 47,
+          "node": 40501,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 335
+        },
+        {
+          "action": "fire",
+          "credits": 47,
+          "node": 40501,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 336
+        },
+        {
+          "action": "reward",
+          "credits": 55,
+          "id": "credits",
+          "node": 40501,
+          "phase": "map",
+          "replace": "",
+          "turns": 336
+        },
+        {
+          "action": "enter",
+          "id": 40602
+        },
+        {
+          "action": "fire",
+          "credits": 55,
+          "node": 40602,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 342
+        },
+        {
+          "action": "fire",
+          "credits": 55,
+          "node": 40602,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 343
+        },
+        {
+          "action": "reload",
+          "credits": 55,
+          "node": 40602,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 346
+        },
+        {
+          "action": "reload",
+          "credits": 55,
+          "node": 40602,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 349
+        },
+        {
+          "action": "fire",
+          "credits": 55,
+          "node": 40602,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 352
+        },
+        {
+          "action": "reward",
+          "credits": 55,
+          "id": "capacitor",
+          "node": 40602,
+          "phase": "map",
+          "replace": "",
+          "turns": 352
+        },
+        {
+          "action": "enter",
+          "id": 40701
+        },
+        {
+          "action": "fire",
+          "credits": 55,
+          "node": 40701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 353
+        },
+        {
+          "action": "fire",
+          "credits": 55,
+          "node": 40701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 359
+        },
+        {
+          "action": "fire",
+          "credits": 55,
+          "node": 40701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 360
+        },
+        {
+          "action": "reload",
+          "credits": 55,
+          "node": 40701,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 363
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "credits": 55,
+          "node": 40701,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 367
+        },
+        {
+          "action": "reward",
+          "credits": 69,
+          "id": "credits",
+          "node": 40701,
+          "phase": "map",
+          "replace": "",
+          "turns": 367
+        },
+        {
+          "action": "enter",
+          "id": 40801
+        },
+        {
+          "action": "fire",
+          "credits": 69,
+          "node": 40801,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 373
+        },
+        {
+          "action": "reload",
+          "credits": 69,
+          "node": 40801,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 376
+        },
+        {
+          "action": "fire",
+          "credits": 69,
+          "node": 40801,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 377
+        },
+        {
+          "action": "reload",
+          "credits": 69,
+          "node": 40801,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 380
+        },
+        {
+          "action": "fire",
+          "credits": 69,
+          "node": 40801,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 386
+        },
+        {
+          "action": "fire",
+          "credits": 69,
+          "node": 40801,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 387
+        },
+        {
+          "action": "fire",
+          "credits": 69,
+          "node": 40801,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 388
+        },
+        {
+          "action": "reward",
+          "credits": 83,
+          "id": "credits",
+          "node": 40801,
+          "phase": "map",
+          "replace": "",
+          "turns": 388
+        },
+        {
+          "action": "enter",
+          "id": 40901
+        },
+        {
+          "action": "resolve",
+          "credits": 83,
+          "id": "skip",
+          "node": 40901,
+          "phase": "supply",
+          "turns": 388
+        },
+        {
+          "action": "leave",
+          "credits": 83,
+          "node": 40901,
+          "phase": "map",
+          "turns": 388
+        },
+        {
+          "action": "enter",
+          "id": 41002
+        },
+        {
+          "action": "reload",
+          "credits": 83,
+          "node": 41002,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 391
+        },
+        {
+          "action": "fire",
+          "credits": 83,
+          "node": 41002,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 397
+        },
+        {
+          "action": "fire",
+          "credits": 83,
+          "node": 41002,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 398
+        },
+        {
+          "action": "reload",
+          "credits": 83,
+          "node": 41002,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 401
+        },
+        {
+          "action": "fire",
+          "credits": 83,
+          "node": 41002,
+          "phase": "combat",
+          "rounds": 0,
+          "turns": 407
+        },
+        {
+          "action": "fire",
+          "credits": 133,
+          "node": 41002,
+          "phase": "reward",
+          "rounds": 0,
+          "turns": 409
+        },
+        {
+          "action": "reward",
+          "credits": 133,
+          "id": "skip",
+          "node": 41002,
+          "phase": "won",
+          "replace": "",
+          "turns": 409
+        }
+      ],
+      "core": "inferno",
+      "credits": 133,
+      "deck": [
+        "bore",
+        "bore",
+        "disrupt",
+        "bore_c",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "bore_c",
+        "cool",
+        "charge_hot",
+        "detonate"
+      ],
+      "parts": [
+        "inferno",
+        "coil",
+        "igniter",
+        "rammer",
+        "compression_sink"
+      ],
+      "phase": "won",
+      "region": 5,
+      "won": true
+    }
+  ],
+  "failures": [],
+  "note": "Bounded search sees future draw/RNG. Reachability and resource margins, not human win rate."
+}

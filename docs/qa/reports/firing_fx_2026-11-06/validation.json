@@ -1,0 +1,104 @@
+{
+  "native_checks": 9979,
+  "native_failures": [],
+  "contexts": 25,
+  "native_frames": 96,
+  "attachment_samples": 175,
+  "capture_speed": {
+    "large_controlled": 3,
+    "small_and_acquired": 1
+  },
+  "qa_runtime": "qa_runtime/firing_fx_20261106",
+  "source_audit": {
+    "files": {
+      "battle_view.gd": {
+        "before": "3a90f1f943b035bef0a188709445a06c64636e25976c084d15d9b857092ffdff",
+        "after": "079c8124353d92270edaa14d8a08d163f3cde91100a2479643d5b13b58e92dce",
+        "unchanged": false
+      },
+      "samples/risk_battle_view.gd": {
+        "before": "d7c52aa765b35b211f67b6a431679d3dfbd76cb0f26d27be2bfd538e5e4df9a1",
+        "after": "e6e053ecb42420b5707233fd01f843eded801c7a35f281fc0b7996ab18514860",
+        "unchanged": false
+      },
+      "impact_style.gd": {
+        "before": "89a8868c4eb1ba2eb1ba3cdda8da9855a46eab6618e57eb972efcb695652ee8a",
+        "after": "b410a9e9a4991f3fde1c2e977448b5bf32632956630b7f269708595986589b05",
+        "unchanged": false
+      },
+      "weapon_actor.gd": {
+        "before": "3b34e859ea59037a98dedaf4d935fddee41baced2510b98575e77e802b58e1ef",
+        "after": "3b34e859ea59037a98dedaf4d935fddee41baced2510b98575e77e802b58e1ef",
+        "unchanged": true
+      },
+      "weapon_art.gd": {
+        "before": "43b236114bf89564f6118e2ac3a4a3978cf4a3eae104d6fdc73a3298dd069e93",
+        "after": "43b236114bf89564f6118e2ac3a4a3978cf4a3eae104d6fdc73a3298dd069e93",
+        "unchanged": true
+      },
+      "model.gd": {
+        "before": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+        "after": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+        "unchanged": true
+      },
+      "campaign.gd": {
+        "before": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+        "after": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+        "unchanged": true
+      },
+      "forecast.gd": {
+        "before": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+        "after": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+        "unchanged": true
+      },
+      "content.gd": {
+        "before": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+        "after": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+        "unchanged": true
+      },
+      "part_feedback.gd": {
+        "before": "e35e22f1114907bb58386aa578dfd3a6bd9e825f965b97006b38b96748fb963b",
+        "after": "e35e22f1114907bb58386aa578dfd3a6bd9e825f965b97006b38b96748fb963b",
+        "unchanged": true
+      }
+    },
+    "selected_resources": 360,
+    "firing_resources": [
+      "res://assets/art/firing_fx_20261106/muzzle.png",
+      "res://redesign/firing_vfx.gd"
+    ]
+  },
+  "logs": {
+    "rules": {
+      "path": "qa_runtime/firing_fx_20261106/rules/stdout.log",
+      "result": "FIRING FX RULES COMPLETE checks=777 failures=0"
+    },
+    "ui": {
+      "path": "qa_runtime/firing_fx_20261106/ui/stdout.log",
+      "result": "FIRING FX UI COMPLETE checks=9979 failures=0 frames=96 poses=175"
+    },
+    "gallery": {
+      "path": "qa_runtime/firing_fx_20261106/gallery/stdout.log",
+      "result": "FIRING FX GALLERY COMPLETE failures=0"
+    },
+    "impact_rules": {
+      "path": "qa_runtime/impact_parts_20261106/rules/stdout.log",
+      "result": "IMPACT PARTS RULES COMPLETE checks=172 failures=0"
+    },
+    "impact_ui": {
+      "path": "qa_runtime/impact_parts_20261106/ui/stdout.log",
+      "result": "IMPACT PARTS UI COMPLETE checks=291 failures=0 frames=49"
+    },
+    "hud": {
+      "path": "qa_runtime/combat_hud_20261031/prototype_20261101/ui/stdout.log",
+      "result": "COMBAT HUD UI COMPLETE checks=11558 failures=0"
+    }
+  },
+  "sha256": {
+    "firing_comparison.png": "d73aad4b2266efff547a7ecd07f293d0a4772ce370ac02c341c5c1cf4d000dca",
+    "overdrive.png": "59fd9467d57ba607a43b9d43b183c785fa8dbc300fc96e473b21e2e8266944d3",
+    "reduced.png": "fcdde576b5875e278897a93ee4275b28e8dca79dd9f8c29a7394ce14aa9140c9",
+    "small_window.png": "d405f858fa69656bfea819d06473358b37bbeaf4047d48cda7410816aaf462fb"
+  },
+  "flight_function_unchanged": true
+}

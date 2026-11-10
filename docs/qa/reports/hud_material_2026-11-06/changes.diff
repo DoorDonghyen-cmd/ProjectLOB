@@ -1,0 +1,749 @@
+--- before/redesign\equipment\edge.gd
++++ after/redesign\equipment\edge.gd
+@@ -2,6 +2,7 @@
+ extends Control
+ ## Decorative edge catches only. No hit area, minimum size or movement.
+ var surface: Button
++@export var primary_variation: StringName = &"EquipmentPrimary"
+ 
+ func _ready() -> void:
+ 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+@@ -16,7 +17,7 @@
+ 	var extent := surface.size
+ 	if extent.x < 16 or extent.y < 16: return
+ 	var choice := surface.theme_type_variation in [&"EquipmentChoice", &"EquipmentSelected"]
+-	var primary := surface.theme_type_variation == &"EquipmentPrimary"
++	var primary := surface.theme_type_variation == primary_variation
+ 	var light := Color("bca571") if surface.button_pressed else Color("606557")
+ 	var shadow := Color("0c110d")
+ 	if primary:
+--- before/redesign\pipe_map\screen.tscn
++++ after/redesign\pipe_map\screen.tscn
+@@ -29,6 +29,7 @@
+ [ext_resource type="StyleBox" path="res://redesign/pipe_map/board.tres" id="board"]
+ [ext_resource type="PackedScene" path="res://redesign/pipe_map/place.tscn" id="place"]
+ [ext_resource type="Script" path="res://redesign/pipe_map/state_key.gd" id="state_key"]
++[ext_resource type="Script" path="res://redesign/equipment/edge.gd" id="button_edge"]
+ [node name="PipeMapScreen" type="VBoxContainer"]
+ offset_right = 1280.0
+ offset_bottom = 800.0
+@@ -750,3 +751,59 @@
+ theme_override_font_sizes/font_size = 16
+ text = "이동"
+ 
++
++[node name="MaterialEdge" type="Control" parent="Header/city_deck"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("button_edge")
++primary_variation = &"MapPrimary"
++
++[node name="MaterialEdge" type="Control" parent="Header/city_archive"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("button_edge")
++primary_variation = &"MapPrimary"
++
++[node name="MaterialEdge" type="Control" parent="Header/settings"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("button_edge")
++primary_variation = &"MapPrimary"
++
++[node name="MaterialEdge" type="Control" parent="Header/menu"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("button_edge")
++primary_variation = &"MapPrimary"
++
++[node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions/MapKey"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("button_edge")
++primary_variation = &"MapPrimary"
++
++[node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions/city_map_details"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("button_edge")
++primary_variation = &"MapPrimary"
++
++[node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Enter"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("button_edge")
++primary_variation = &"MapPrimary"
+--- before/redesign\samples\hud\combat_detail.tscn
++++ after/redesign\samples\hud\combat_detail.tscn
+@@ -2,13 +2,11 @@
+ 
+ [ext_resource type="StyleBox" path="res://assets/ui/combat_pixel_20261101/clear.tres" id="clear"]
+ 
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_slate.png" id="cool"]
+ 
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_panel.png" id="modal"]
+ 
+ [ext_resource type="Theme" path="res://redesign/samples/hud/combat_hud_theme.tres" id="theme"]
+ 
+-[ext_resource type="Script" path="res://redesign/line_frame.gd" id="line_frame"]
++[ext_resource type="Script" path="res://redesign/combat_material/frame.gd" id="line_frame"]
+ 
+ [node name="Detail" type="ColorRect"]
+ theme = ExtResource("theme")
+@@ -18,7 +16,7 @@
+ grow_horizontal = 2
+ grow_vertical = 2
+ z_index = 40
+-color = Color(0.00392,0.03922,0.05098,0.74)
++color = Color(0.031373,0.047059,0.027451,0.74)
+ 
+ 
+ [node name="DetailSurface" type="Panel" parent="."]
+@@ -35,7 +33,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("modal")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -71,7 +68,7 @@
+ text = "탄환 상세"
+ vertical_alignment = 1
+ theme_override_font_sizes/font_size = 32
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -110,7 +107,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -135,7 +131,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -160,7 +155,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+--- before/redesign\samples\hud\combat_hud.tscn
++++ after/redesign\samples\hud\combat_hud.tscn
+@@ -19,21 +19,15 @@
+ 
+ [ext_resource type="StyleBox" path="res://assets/ui/combat_pixel_20261101/clear.tres" id="clear"]
+ 
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_standby.png" id="standby"]
+-
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_slate.png" id="cool"]
+-
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_fire.png" id="fire"]
+-
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_reload.png" id="reload"]
+-
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_panel.png" id="modal"]
+-
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_heat.png" id="heat"]
+-
+-[ext_resource type="Script" path="res://redesign/line_band.gd" id="band"]
+-
+-[ext_resource type="Script" path="res://redesign/line_frame.gd" id="line_frame"]
++
++
++
++
++
++
++[ext_resource type="Script" path="res://redesign/combat_material/band.gd" id="band"]
++
++[ext_resource type="Script" path="res://redesign/combat_material/frame.gd" id="line_frame"]
+ 
+ [ext_resource type="Script" path="res://redesign/line_ordinal.gd" id="ordinal"]
+ 
+@@ -54,7 +48,7 @@
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+-color = Color(0.01176,0.07843,0.10196,1)
++color = Color(0.054902,0.07451,0.054902,1)
+ 
+ [node name="Safe" type="MarginContainer" parent="."]
+ layout_mode = 1
+@@ -92,10 +86,10 @@
+ theme_override_font_sizes/font_size = 16
+ size_flags_horizontal = 3
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+-theme_override_colors/font_color = Color(0.36078,0.86667,0.86275,1)
++theme_override_colors/font_color = Color(0.882353,0.862745,0.8,1)
+ 
+ [node name="SaveWarning" type="Label" parent="Safe/Screen/TopHousing/Header"]
+ layout_mode = 2
+@@ -125,7 +119,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -149,7 +142,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -173,7 +165,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -236,7 +227,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -260,7 +250,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -284,7 +273,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -311,7 +299,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("heat")
+ patch_margin_left = 8
+ patch_margin_top = 8
+ patch_margin_right = 8
+@@ -387,7 +374,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -395,6 +381,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline0" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round0/Face0"]
+ layout_mode = 1
+@@ -453,7 +441,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -541,7 +529,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -549,6 +536,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline1" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round1/Face1"]
+ layout_mode = 1
+@@ -606,7 +595,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -694,7 +683,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -702,6 +690,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline2" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round2/Face2"]
+ layout_mode = 1
+@@ -759,7 +749,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -847,7 +837,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -855,6 +844,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline3" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round3/Face3"]
+ layout_mode = 1
+@@ -912,7 +903,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -1000,7 +991,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -1008,6 +998,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline4" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round4/Face4"]
+ layout_mode = 1
+@@ -1065,7 +1057,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -1153,7 +1145,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -1161,6 +1152,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline5" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round5/Face5"]
+ layout_mode = 1
+@@ -1218,7 +1211,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -1306,7 +1299,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -1314,6 +1306,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline6" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round6/Face6"]
+ layout_mode = 1
+@@ -1371,7 +1365,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -1460,7 +1454,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -1468,6 +1461,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline7" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round7/Face7"]
+ layout_mode = 1
+@@ -1525,7 +1520,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -1614,7 +1609,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("standby")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -1622,6 +1616,8 @@
+ mouse_filter = 2
+ axis_stretch_horizontal = 1
+ axis_stretch_vertical = 1
++script = ExtResource("line_frame")
++kind = "card"
+ 
+ [node name="RoundOutline8" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round8/Face8"]
+ layout_mode = 1
+@@ -1679,7 +1675,7 @@
+ offset_top = 43
+ offset_bottom = 73
+ text_overrun_behavior = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -1768,7 +1764,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -1820,7 +1815,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("reload")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -1884,7 +1878,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("fire")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -2012,7 +2005,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -2041,11 +2033,11 @@
+ 
+ [node name="MenuLayer" parent="." instance=ExtResource("menu_scene")]
+ visible = false
+-color = Color(0.00392,0.03922,0.05098,0.74)
++color = Color(0.031373,0.047059,0.027451,0.74)
+ 
+ [node name="Detail" parent="." instance=ExtResource("detail_scene")]
+ visible = false
+-color = Color(0.00392,0.03922,0.05098,0.74)
++color = Color(0.031373,0.047059,0.027451,0.74)
+ 
+ 
+ [node name="Badge" type="Control" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow/Round0/Face0/Index0"]
+--- before/redesign\samples\hud\combat_hud_feedback.gd
++++ after/redesign\samples\hud\combat_hud_feedback.gd
+@@ -106,7 +106,7 @@
+  var face: Control=ui.node("Face%d"%index)
+  face.modulate=Color.WHITE;face.offset_top=8;face.offset_bottom=0
+  var carrier: NinePatchRect=ui.node("RoundArt%d"%index)
+- carrier.texture=ui.hud.StandbyCarrier if occupied else ui.hud.EmptyCarrier
++ carrier.set("face","normal" if occupied else "empty")
+  carrier.modulate=Color.WHITE if occupied else Color(0.4,0.4,0.4,1)
+  for side in [SIDE_LEFT,SIDE_TOP,SIDE_RIGHT,SIDE_BOTTOM]:carrier.set_patch_margin(side,12 if occupied else 8)
+  for prefix in ["Name","Value","Cost","Icon"]:ui.node(prefix+str(index)).visible=occupied
+--- before/redesign\samples\hud\combat_hud_presenter.gd
++++ after/redesign\samples\hud\combat_hud_presenter.gd
+@@ -3,16 +3,11 @@
+ const Content=preload("res://redesign/content.gd")
+ const Model=preload("res://redesign/model.gd")
+ const HudTheme=preload("res://redesign/samples/hud/combat_hud_theme.tres")
+-const ActiveCarrier=preload("res://assets/ui/line_theme_20261101/px_active.png")
+-const StandbyCarrier=preload("res://assets/ui/line_theme_20261101/px_standby.png")
+-const EmptyCarrier=preload("res://assets/ui/line_theme_20261101/px_chip.png")
+-const RemovedCarrier=preload("res://assets/ui/line_theme_20261101/px_danger.png")
+ const SmallFont=preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+ const LargeFont=preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
+-const DisabledKey=preload("res://assets/ui/line_theme_20261101/px_disabled.png")
+-const KeyArt={"Fire":preload("res://assets/ui/line_theme_20261101/px_fire.png"),"Cool":preload("res://assets/ui/line_theme_20261101/px_cool.png"),"Reload":preload("res://assets/ui/line_theme_20261101/px_reload.png"),"EjectApply":preload("res://assets/ui/line_theme_20261101/px_slate.png")}
+-const TEXT=Color("e4f2ee")
+-const MUTED=Color("8fb0b0")
++const HudMaterial=preload("res://redesign/combat_material/skin.gd")
++const TEXT=HudMaterial.INK
++const MUTED=HudMaterial.MUTED
+ const GOLD=Color("f3cf73")
+ const WARNING=Color("ff6f61")
+ var ui: Control
+@@ -71,7 +66,7 @@
+  var button: Button=n(id)
+  var art: NinePatchRect=n(id+"Art")
+  var down: bool=id=="Fire" and button.is_pressed() and not button.disabled
+- art.texture=DisabledKey if button.disabled else KeyArt[id]
++ art.queue_redraw()
+  var required: bool=id=="Reload" and reload_required()
+  art.modulate=Color(1.25,1.25,1.25,1) if button.is_hovered() and not button.disabled else Color.WHITE
+  # The shared line frame owns modulate on redraw; the lamp tint is independent.
+@@ -204,7 +199,7 @@
+  n(id+"Cost").add_theme_color_override("font_color",Color("1c0903") if id=="Fire" else WARNING if danger else MUTED)
+  button.modulate=Color.WHITE
+  if button.disabled:
+-  n(id+"Name").add_theme_color_override("font_color",Color("56777a"));n(id+"Cost").add_theme_color_override("font_color",Color("56777a"))
++  n(id+"Name").add_theme_color_override("font_color",HudMaterial.DIM);n(id+"Cost").add_theme_color_override("font_color",HudMaterial.DIM)
+  pixel_key(id)
+ 
+ func render()->void:
+@@ -286,7 +281,7 @@
+   slot.modulate=Color.WHITE
+   slot.add_theme_stylebox_override("panel",HudTheme.get_stylebox("clear","Panel"))
+   var carrier: NinePatchRect=n("RoundArt%d"%i)
+-  carrier.texture=EmptyCarrier if not occupied else RemovedCarrier if removed else ActiveCarrier if firing else StandbyCarrier
++  carrier.set("face","empty" if not occupied else "removed" if removed else "firing" if firing else "normal")
+   for side in [SIDE_LEFT,SIDE_TOP,SIDE_RIGHT,SIDE_BOTTOM]:carrier.set_patch_margin(side,12 if occupied else 8)
+   carrier.modulate=Color(0.4,0.4,0.4,1) if not occupied else Color.WHITE
+   # The scene reserves 8px above resting cards; the hit target stays fixed.
+@@ -335,7 +330,7 @@
+   # disappears when its orange key switches to the disabled dark face.
+   for suffix in ["Name","Cost"]:
+    n(id+suffix).modulate=Color.WHITE
+-   n(id+suffix).add_theme_color_override("font_color",Color("56777a"))
++   n(id+suffix).add_theme_color_override("font_color",HudMaterial.DIM)
+   pixel_key(id)
+ 
+ func sync_focus()->void:
+--- before/redesign\samples\hud\combat_hud_theme.tres
++++ after/redesign\samples\hud\combat_hud_theme.tres
+@@ -15,22 +15,22 @@
+ border_color = Color(0.36078,0.86667,0.86275,1)
+ anti_aliasing = false
+ [sub_resource type="StyleBoxFlat" id="track"]
+-bg_color = Color(0.01569,0.09412,0.11765,1)
++bg_color = Color(0.062745,0.090196,0.058824,1)
+ content_margin_left = 6.0
+ content_margin_top = 6.0
+ content_margin_right = 6.0
+ content_margin_bottom = 6.0
+ [sub_resource type="StyleBoxFlat" id="grab"]
+-bg_color = Color(0.17255,0.47843,0.50196,1)
++bg_color = Color(0.333333,0.360784,0.298039,1)
+ [resource]
+ default_font = ExtResource("font")
+ default_font_size = 16
+-Label/colors/font_color = Color(0.89412,0.94902,0.93333,1)
+-Button/colors/font_color = Color(0.89412,0.94902,0.93333,1)
+-Button/colors/font_hover_color = Color(0.89412,0.94902,0.93333,1)
+-Button/colors/font_pressed_color = Color(0.89412,0.94902,0.93333,1)
+-Button/colors/font_focus_color = Color(0.89412,0.94902,0.93333,1)
+-Button/colors/font_disabled_color = Color(0.33725,0.46667,0.47843,1)
++Label/colors/font_color = Color(0.882353,0.862745,0.8,1)
++Button/colors/font_color = Color(0.882353,0.862745,0.8,1)
++Button/colors/font_hover_color = Color(0.882353,0.862745,0.8,1)
++Button/colors/font_pressed_color = Color(0.882353,0.862745,0.8,1)
++Button/colors/font_focus_color = Color(0.882353,0.862745,0.8,1)
++Button/colors/font_disabled_color = Color(0.556863,0.576471,0.501961,1)
+ Button/styles/normal = SubResource("clear")
+ Button/styles/hover = SubResource("clear")
+ Button/styles/pressed = SubResource("clear")
+--- before/redesign\samples\hud\combat_menu.tscn
++++ after/redesign\samples\hud\combat_menu.tscn
+@@ -2,13 +2,11 @@
+ 
+ [ext_resource type="StyleBox" path="res://assets/ui/combat_pixel_20261101/clear.tres" id="clear"]
+ 
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_slate.png" id="cool"]
+-
+-[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_panel.png" id="modal"]
++
+ 
+ [ext_resource type="Theme" path="res://redesign/samples/hud/combat_hud_theme.tres" id="theme"]
+ 
+-[ext_resource type="Script" path="res://redesign/line_frame.gd" id="line_frame"]
++[ext_resource type="Script" path="res://redesign/combat_material/frame.gd" id="line_frame"]
+ 
+ [node name="MenuLayer" type="ColorRect"]
+ theme = ExtResource("theme")
+@@ -18,7 +16,7 @@
+ grow_horizontal = 2
+ grow_vertical = 2
+ z_index = 40
+-color = Color(0.00392,0.03922,0.05098,0.74)
++color = Color(0.031373,0.047059,0.027451,0.74)
+ 
+ 
+ [node name="MenuSurface" type="Panel" parent="."]
+@@ -35,7 +33,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("modal")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -82,7 +79,7 @@
+ vertical_alignment = 1
+ theme_override_font_sizes/font_size = 32
+ size_flags_horizontal = 3
+-theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
++theme_override_colors/font_shadow_color = Color(0.031373,0.047059,0.027451,1)
+ theme_override_constants/shadow_offset_x = 0
+ theme_override_constants/shadow_offset_y = 2
+ 
+@@ -99,7 +96,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -124,7 +120,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -149,7 +144,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -174,7 +168,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -199,7 +192,6 @@
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+ scale = Vector2(1,1)
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -222,7 +214,6 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12
+@@ -245,7 +236,6 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+-texture = ExtResource("cool")
+ patch_margin_left = 12
+ patch_margin_top = 12
+ patch_margin_right = 12

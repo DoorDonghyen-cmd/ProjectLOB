@@ -1,0 +1,109 @@
+{
+  "before_checks": 72,
+  "after_checks": 75,
+  "failures": 0,
+  "states": 14,
+  "control_observations": 280,
+  "differences": [],
+  "generated_seed_text_differences": [
+    [
+      "options_1170x540",
+      "Frame/Margin/Layout/DialogScroll/PreparationOptions/@HBoxContainer@228/Seed",
+      "text",
+      "960050",
+      "960323"
+    ],
+    [
+      "options_1280x800",
+      "Frame/Margin/Layout/DialogScroll/PreparationOptions/@HBoxContainer@55/Seed",
+      "text",
+      "960050",
+      "960323"
+    ]
+  ],
+  "source_after": {
+    "redesign/screen.gd": "f79b4716a262bb77dbf7201f7000cb0f0c1fb4a8a564b911ae0a57a45e1530c1",
+    "redesign/equipment/dialog.gd": "8a297ecde0ae14f9b87083254d865a1eaffebbb322462017c404c32477a4690f",
+    "redesign/equipment/dialog.tscn": "ed5bef93c90e4888595893515f9478d6ac68c188d460c803b744c77f41163115",
+    "redesign/equipment/dialog_panel.tres": "4974a33029b36df4d782a480cae2a9a645074325b30425057332185b22641dd3"
+  },
+  "unchanged": {
+    "model.gd": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+    "content.gd": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+    "console_widgets.gd": "e7345bf7e7c6f8111ce4b25c9b971b845c42fc7ff740cec0d1afe6f2b345a41f",
+    "console_dialog.gd": "9e7392dd67a73ca6adbf44aa32b0d5debb5af0feae82020d464ad059c6040973",
+    "campaign.gd": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+    "preferences.gd": "21bcc5348b01ac7be7203ea18f58310235537730ce98ded3767eb57e1e48b003",
+    "equipment_screen.gd": "0f30056b3e599396790dd5094c5bbb74678c498e0f30711f680495e3419dbec9",
+    "console_dialog.tscn": "2de1c4c680335044b07407cfb7c62a6a824b03e9118af82403d0a3325f807fce",
+    "equipment_screen.tscn": "b7a40060ca6412e0da779dd85fe928862d8d18f8eac7b8b38509f468ecb0fefc"
+  },
+  "equipment_checks": 479,
+  "artifact_sha256": {
+    "after/authored_shell.png": "eab1e941ba0d0906fb8a9dc7bb189d11acc3bf06dca5ad369d59eac4bb328151",
+    "after/confirm_1170x540.png": "11176ae331e122ce50925f938a4406cf03b266df27461c5088ebe095bd5c17c7",
+    "after/confirm_1280x800.png": "3c41bd4bc8243521c9a35f02988962f07db5bf003397c14e4bc82ab24ff31b26",
+    "after/deck_1170x540.png": "0694ebd9620dc900a5d75791cacd0fbce12e8026e4ea0aaf78e541db2c31105e",
+    "after/deck_1280x800.png": "fe34409fc202732dcd79c3a6b35a17c5beb9d32fc236a334a96acf17185d74bc",
+    "after/dropdown_1170x540.png": "0d76a381ab04b2183ab27f1c0c12a475396612afd5d4f7cee6440f23b74b9127",
+    "after/dropdown_1280x800.png": "0d76a381ab04b2183ab27f1c0c12a475396612afd5d4f7cee6440f23b74b9127",
+    "after/options_1170x540.png": "0d0faad89da05f31e10a2e14b4b91cd81e432958a51dbf4c016ad7b7e79bc52a",
+    "after/options_1280x800.png": "303fe291a02567234df93b9c1773006cf78e78564d8331b273ab600c1bf2df8c",
+    "after/outside_equipment_1170x540.png": "baf46ba30f13ec4ad98338e67d16cda7f735b1147f8d653b7bcc906eb268b43a",
+    "after/outside_equipment_1280x800.png": "f5f37c7b936848a93514e60de7382f646533182b3f60bb63f0aed73a09843326",
+    "after/settings_1170x540.png": "46d20aee62349229bc24abdcb534b5f7be23240d78c3d69f9c5b98df2933ab63",
+    "after/settings_1280x800.png": "0df562eeba4988138d8b91909dbdaaed7aa5128a08b6bb99eb9a200cfafb3441",
+    "after/settings_off_1170x540.png": "a4dfe3b71ce2d1bc0e31a54cea2fb74df00b6c1ba64755a574676154ac905961",
+    "after/settings_off_1280x800.png": "32237253428a2db798f0a45a943bb7aca0e229963d77fe13283647377cfc7ea7",
+    "after/weapon_1170x540.png": "d524ac342f3cbf8b29e213ef4892e7aad072953457e8dcfc4a7966a6946d707e",
+    "after/weapon_1280x800.png": "d3d4eee6fe5e66826a705ced5980b3327e8e61339a33b9fbb5da56282831fb6d",
+    "before/confirm_1170x540.png": "6e908738801eaf60915beea5939eb6f4903a829d1d57f86979040d3d14e91f77",
+    "before/confirm_1280x800.png": "8c2364d1b7350d74fa7e4943ed4da78c127cb85eb19822039c514f85499516b4",
+    "before/deck_1170x540.png": "b226846cce10bca8141c83c31acd114f72a774b7e3393d07d595fb29fd0fc8cc",
+    "before/deck_1280x800.png": "24f814340f8167d4f15db73dfa576365968fe5fb3e8dc4dca1487b55d70ae05b",
+    "before/dropdown_1170x540.png": "c246a1512069f811cdbddfc54b97ab66c6e5733314f95489499e71090f98fb30",
+    "before/dropdown_1280x800.png": "c246a1512069f811cdbddfc54b97ab66c6e5733314f95489499e71090f98fb30",
+    "before/options_1170x540.png": "723b54685a20f0393758206b9770056b98945c2795bd3658948a44adce9e6abd",
+    "before/options_1280x800.png": "942382b7cf689219327a193c381bccc6d8f39b936de86f377f6c0ee7605cbc69",
+    "before/outside_equipment_1170x540.png": "5eb49f58b9ee47f418244c70ad340c2156340f093c7aee7bb88abe9d5d3da798",
+    "before/outside_equipment_1280x800.png": "126fe50b249db45b867b859bc50022e22e08ccd90c532b80aa9f742615c31f2a",
+    "before/settings_1170x540.png": "87d367aa7265ebd098901a9f89360a2c0cded73413dc072b8bb3f7636e41b74f",
+    "before/settings_1280x800.png": "b0fa05aad8381350f2df76f27ebac89d1623507a723486ee9dba7ae2c646e246",
+    "before/settings_off_1170x540.png": "6eb9e13febbce077a00f75fa06a0aba498a93b5ef10058fa93a8ba3876e6272c",
+    "before/settings_off_1280x800.png": "db3e3f546a41a1ed4ce694c2136f491ebc1e460fa9e791689337fa1d2a8609eb",
+    "before/weapon_1170x540.png": "ad919369c11c53730dd412e796e4338d27f822a3ab7420585104f1050a8108bb",
+    "before/weapon_1280x800.png": "5d6e5faff517e7c4c97228f13c433c162ff672188a001d894c42d35c9623f53d"
+  },
+  "outside_equipment_png_equal": {
+    "outside_equipment_1280x800.png": false,
+    "outside_equipment_1170x540.png": false
+  },
+  "outside_equipment_pixel_analysis": {
+    "outside_equipment_1280x800": {
+      "frame_different_pixels": 0,
+      "whole_different_pixels": 159,
+      "frame_rect": [
+        310,
+        160,
+        660,
+        480
+      ]
+    },
+    "outside_equipment_1170x540": {
+      "frame_different_pixels": 16,
+      "whole_different_pixels": 393,
+      "frame_rect": [
+        255,
+        30,
+        660,
+        480
+      ],
+      "max_channel_difference": 1
+    }
+  },
+  "test_source_sha256": {
+    "tests/equipment_dialog_ui.gd": "ec372a3800314ba1731cff6532f9d5a17990f20b0c3a6aa39851aabf0df6521e",
+    "tests/equipment_live_ui.gd": "31f00addf27e4fd0b8b80263aaa241e034080495b423a572ec9e8869ba7047f1"
+  },
+  "runner_sha256": "67d4b6ff4b4cd0b5b272311fc436f8e645daa967522ccacad5c73742cbd8a7d3"
+}

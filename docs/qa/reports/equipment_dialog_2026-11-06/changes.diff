@@ -1,0 +1,12 @@
+--- before/screen.gd
++++ after/screen.gd
+@@ -1789,7 +1789,8 @@
+ 		battle_view.fast_forward = true
+ 
+ func _dialog(title: String, compact: bool = false) -> VBoxContainer:
+-	var dialog = preload("res://redesign/console_dialog.tscn").instantiate()
++	var shell = preload("res://redesign/equipment/dialog.tscn") if page=="loadout" else preload("res://redesign/console_dialog.tscn")
++	var dialog = shell.instantiate()
+ 	add_child(dialog)
+ 	return dialog.setup(self, title, compact)
+ 

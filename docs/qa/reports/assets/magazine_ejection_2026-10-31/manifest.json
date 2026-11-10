@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-31",
+  "scope": "Opt-in five-weapon A-layout comparison only; campaign generation unchanged.",
+  "engine": "Godot 4.7 stable 5b4e0cb0f",
+  "checks": {
+    "rules": 4011,
+    "ui": 4681,
+    "weapon_regression": 7101,
+    "magazine_loop_regression": 797,
+    "approach_regression": 3498,
+    "legacy_battles": 25,
+    "failures": 0
+  },
+  "probe": {
+    "gun": "scatter",
+    "role": "boss",
+    "order_seed": 17,
+    "width": 48,
+    "depth": 26,
+    "tested_initial_choices": 4,
+    "winning_actual_replays": 3,
+    "hidden_rng_fixed": true,
+    "not_human_win_rate": true
+  },
+  "preexisting_redesign_sources": {
+    "checked": 318,
+    "unchanged": 314,
+    "changed": [
+      "새-게임-프로젝트/redesign/magazine_trial.gd",
+      "새-게임-프로젝트/redesign/model.gd",
+      "새-게임-프로젝트/redesign/samples/combat_weapon_magazine.gd",
+      "새-게임-프로젝트/redesign/samples/combat_weapon_magazine.tscn"
+    ]
+  },
+  "legacy_json_equal": {
+    "weapon_rules.json": true,
+    "legacy_replay.json": true
+  },
+  "source_sha256": {
+    "새-게임-프로젝트/redesign/magazine_trial.gd": "fd9e8b80b6617eb6ebc67a97826f25df24fa1405d8afea6eed0d7972c386ee1d",
+    "새-게임-프로젝트/redesign/model.gd": "04c09f52f4f330f21516386d27c7510273e26d264d9ca0d3cc5b1edafaa6da29",
+    "새-게임-프로젝트/redesign/samples/combat_weapon_magazine.gd": "661c9f58c18cec15af316a39a1191e2bc1133268356cd58620f6d3083fb328e0",
+    "새-게임-프로젝트/redesign/samples/combat_weapon_magazine.tscn": "eb223e9afa63e6f114e9ef3be98751c196c604e07211ca193c3f783104c06291"
+  },
+  "new_source_sha256": {
+    "새-게임-프로젝트/tests/magazine_ejection_rules.gd": "350086c71bcb860b5701f9a5d61405422e69849a532fd53899faef33cb6fc604",
+    "새-게임-프로젝트/tests/magazine_ejection_ui.gd": "cb128ef5f1a8fdfe01b39f012b447bc396bb42ec181d4f1e0ab499f1fbf54b76",
+    "새-게임-프로젝트/tests/magazine_ejection_probe.gd": "be58e68e3621bbef172130e69931e82d316c0378f4b8eb93cbca22265a46db6e",
+    "tools/run_magazine_ejection.ps1": "32e7a7eb256379ea34ac11ab5e00d64c856ea97c7ac6dbf733e0cd001b4dbbec"
+  },
+  "capture_count": 33,
+  "archived_capture_count": 8,
+  "evidence_sha256": {
+    "approach_rules.json": "76e36432e6d76ed5b09c4010f0205a12b89c3853a575cba95f9b4899b776946c",
+    "legacy_replay.json": "e04e8d49f76d8414e7df278fa78914c383bfbc4926b2395f0c67e0738324a574",
+    "magazine_loop_rules.json": "3b7dff6700f6850b1c64b59173de1ee4512d4ba80eeb620ce9bba8278be625e5",
+    "owned_combo_preview.png": "1b679ab389a938e1fb647fb98ad9f2ef27f79321f103e2062c7adf5d605c697e",
+    "owned_combo_victory.png": "e6a9c894c6b07680d4e3c9f38d87f299c981acafa4b201f62021c38b2d2d07ab",
+    "probe.json": "5a6e0cbf31dab25f0aa7503223ba1ff7fa9b779b71e1aa2825109a3f90ba24d4",
+    "removed_heavy_1008x630.png": "7b5b6db976478101eec295facc08a288f9525c2fa6d5a35eaa86caec693db9ac",
+    "removed_single_1008x630.png": "71e764a4ced83b786fb6aedccc899b8e4addb320c54aa61cc55020c5423f0d1f",
+    "resumed_scatter.png": "64d382ac9f88787c77b1326e8420b24f01d06ebb235fbcace00b75abfb19fa52",
+    "rules.json": "16320ddd3bd4286ccf2162d2191088727642efa37158383d37ca0f91cf8ca236",
+    "selected_heavy_1008x630.png": "7954affdef2fa749c518e3e3b448935ffce2e2da73f9e4cb94c5424fbe070dbe",
+    "selected_scatter_1280x576.png": "a62dc69b077b5b34e53653b18966a4b0b90f2e8cb344331bf5b45cc301d37acd",
+    "selected_single_1008x630.png": "6217f6b03803cdf818619883a5df6a3537583b1c52616f9f6fad329894e6463e",
+    "source_before.json": "e312a629a82a53ca19a75881f5ab8a91f62f9f6a48b636cba4098ca9bee28aa3",
+    "ui.json": "1dbf0d6e384709c327d871dccb724515c808c3e3e3e6e46a8f65c4df6c73625c",
+    "weapon_rules.json": "91f97de87b55fd7bb9ebcfdae51f809c8067a5045eff1bc0e75609f0230ed1fe"
+  },
+  "not_validated": [
+    "Human readability, fun and balance",
+    "Mobile hardware sustained FPS and temperature",
+    "Consecutive earned encounters with new rules",
+    "Always removing two cards dominance"
+  ]
+}

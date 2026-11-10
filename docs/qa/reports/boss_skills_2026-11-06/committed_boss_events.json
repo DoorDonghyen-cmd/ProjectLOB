@@ -1,0 +1,770 @@
+[
+  {
+    "run": "single",
+    "region": 1,
+    "node": 802,
+    "launches": 2,
+    "peak_projectiles": 2,
+    "calls": 0,
+    "reserved_deployed": 0,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 2,
+    "events": [
+      {
+        "command": "fire",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 1
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          }
+        ],
+        "source": 0,
+        "target": 10001,
+        "turn": 1
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 2
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 15,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          },
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 2
+          }
+        ],
+        "source": 0,
+        "target": 10002,
+        "turn": 0
+      }
+    ]
+  },
+  {
+    "run": "single",
+    "region": 3,
+    "node": 20902,
+    "launches": 1,
+    "peak_projectiles": 1,
+    "calls": 1,
+    "reserved_deployed": 2,
+    "reserved_deployed_after_call": 2,
+    "intercept_events": 1,
+    "events": [
+      {
+        "command": "reload",
+        "kind": "brood_call",
+        "left": 0,
+        "released": true,
+        "target": 0,
+        "turn": 1
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 30,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 4,
+          "speed": 6,
+          "uid": 1
+        },
+        "source": 4,
+        "target": 10001,
+        "turn": 1
+      }
+    ]
+  },
+  {
+    "run": "burst",
+    "region": 1,
+    "node": 802,
+    "launches": 0,
+    "peak_projectiles": 0,
+    "calls": 0,
+    "reserved_deployed": 0,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 0,
+    "events": []
+  },
+  {
+    "run": "burst",
+    "region": 3,
+    "node": 20902,
+    "launches": 1,
+    "peak_projectiles": 1,
+    "calls": 0,
+    "reserved_deployed": 2,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 1,
+    "events": [
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 30,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 6,
+          "speed": 6,
+          "uid": 1
+        },
+        "source": 6,
+        "target": 10001,
+        "turn": 1
+      }
+    ]
+  },
+  {
+    "run": "scatter",
+    "region": 1,
+    "node": 802,
+    "launches": 2,
+    "peak_projectiles": 2,
+    "calls": 0,
+    "reserved_deployed": 0,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 2,
+    "events": [
+      {
+        "command": "cool",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 1
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          }
+        ],
+        "source": 0,
+        "target": 10001,
+        "turn": 0
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 2
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 15,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          },
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 2
+          }
+        ],
+        "source": 0,
+        "target": 10002,
+        "turn": 0
+      }
+    ]
+  },
+  {
+    "run": "scatter",
+    "region": 3,
+    "node": 20902,
+    "launches": 1,
+    "peak_projectiles": 1,
+    "calls": 0,
+    "reserved_deployed": 2,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 1,
+    "events": [
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 30,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 6,
+          "speed": 6,
+          "uid": 1
+        },
+        "source": 6,
+        "target": 10001,
+        "turn": 1
+      }
+    ]
+  },
+  {
+    "run": "heavy_elite",
+    "region": 1,
+    "node": 802,
+    "launches": 4,
+    "peak_projectiles": 2,
+    "calls": 0,
+    "reserved_deployed": 0,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 4,
+    "events": [
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 1
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          }
+        ],
+        "source": 0,
+        "target": 10001,
+        "turn": 0
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 2
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 15,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          },
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 2
+          }
+        ],
+        "source": 0,
+        "target": 10002,
+        "turn": 1
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 3
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 3
+          }
+        ],
+        "source": 0,
+        "target": 10003,
+        "turn": 0
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 4
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 15,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 3
+          },
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 4
+          }
+        ],
+        "source": 0,
+        "target": 10004,
+        "turn": 1
+      }
+    ]
+  },
+  {
+    "run": "heavy_elite",
+    "region": 3,
+    "node": 20902,
+    "launches": 1,
+    "peak_projectiles": 1,
+    "calls": 1,
+    "reserved_deployed": 2,
+    "reserved_deployed_after_call": 2,
+    "intercept_events": 1,
+    "events": [
+      {
+        "command": "reload",
+        "kind": "brood_call",
+        "left": 0,
+        "released": true,
+        "target": 0,
+        "turn": 1
+      },
+      {
+        "command": "fire",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 30,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 6,
+          "speed": 6,
+          "uid": 1
+        },
+        "source": 6,
+        "target": 10001,
+        "turn": 1
+      }
+    ]
+  },
+  {
+    "run": "amplifier",
+    "region": 1,
+    "node": 802,
+    "launches": 0,
+    "peak_projectiles": 0,
+    "calls": 0,
+    "reserved_deployed": 0,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 0,
+    "events": []
+  },
+  {
+    "run": "amplifier",
+    "region": 3,
+    "node": 20902,
+    "launches": 1,
+    "peak_projectiles": 1,
+    "calls": 1,
+    "reserved_deployed": 2,
+    "reserved_deployed_after_call": 2,
+    "intercept_events": 1,
+    "events": [
+      {
+        "command": "fire",
+        "kind": "brood_call",
+        "left": 0,
+        "released": true,
+        "target": 0,
+        "turn": 0
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 30,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 6,
+          "speed": 6,
+          "uid": 1
+        },
+        "source": 6,
+        "target": 10001,
+        "turn": 1
+      }
+    ]
+  },
+  {
+    "run": "heavy_scout",
+    "region": 1,
+    "node": 802,
+    "launches": 4,
+    "peak_projectiles": 2,
+    "calls": 0,
+    "reserved_deployed": 0,
+    "reserved_deployed_after_call": 0,
+    "intercept_events": 4,
+    "events": [
+      {
+        "command": "fire",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 1
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          }
+        ],
+        "source": 0,
+        "target": 10001,
+        "turn": 2
+      },
+      {
+        "command": "fire",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 2
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 15,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 1
+          },
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 2
+          }
+        ],
+        "source": 0,
+        "target": 10002,
+        "turn": 3
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 3
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 3
+          }
+        ],
+        "source": 0,
+        "target": 10003,
+        "turn": 1
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 21,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 0,
+          "speed": 6,
+          "uid": 4
+        },
+        "projectiles": [
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 15,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 3
+          },
+          {
+            "burn": 0,
+            "def": 0,
+            "distance": 21,
+            "hp": 1,
+            "kind": "pressure",
+            "max_hp": 1,
+            "name": "압력탄",
+            "source": 0,
+            "speed": 6,
+            "uid": 4
+          }
+        ],
+        "source": 0,
+        "target": 10004,
+        "turn": 0
+      }
+    ]
+  },
+  {
+    "run": "heavy_scout",
+    "region": 3,
+    "node": 20902,
+    "launches": 1,
+    "peak_projectiles": 1,
+    "calls": 1,
+    "reserved_deployed": 2,
+    "reserved_deployed_after_call": 2,
+    "intercept_events": 1,
+    "events": [
+      {
+        "command": "reload",
+        "kind": "brood_call",
+        "left": 0,
+        "released": true,
+        "target": 0,
+        "turn": 1
+      },
+      {
+        "command": "reload",
+        "kind": "projectile_launch",
+        "projectile": {
+          "burn": 0,
+          "def": 0,
+          "distance": 30,
+          "hp": 1,
+          "kind": "pressure",
+          "max_hp": 1,
+          "name": "압력탄",
+          "source": 4,
+          "speed": 6,
+          "uid": 1
+        },
+        "source": 4,
+        "target": 10001,
+        "turn": 1
+      }
+    ]
+  }
+]

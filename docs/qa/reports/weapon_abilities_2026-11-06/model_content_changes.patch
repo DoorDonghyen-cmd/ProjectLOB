@@ -1,0 +1,216 @@
+--- before/model.gd
++++ redesign/model.gd
+@@ -13,6 +13,7 @@
+ const Reserve = preload("res://redesign/ammo_reserve.gd")
+ const MagazineTrial = preload("res://redesign/magazine_trial.gd")
+ const FireHeatTrial = preload("res://redesign/fire_heat_trial.gd")
++const WeaponRoles = preload("res://redesign/weapon_role_trial.gd")
+ # Deck-building revision for new full-climb runs (2026-11-01). See magazine_build.gd.
+ const MagazineBuild = preload("res://redesign/magazine_build.gd")
+ const FocusBuild = preload("res://redesign/focus_build.gd")
+@@ -32,6 +33,7 @@
+ 	begin_encounter()
+ 
+ func begin_encounter(field_charges: int = 1) -> void:
++	WeaponRoles.clear(s)
+ 	if Roles.enabled(s):s.fire_zones=[]
+ 	if FireHeatTrial.enabled(s):s.fire_heat_trial.rounds=0
+ 	if Reserve.emergency_enabled(s): s.emergency_uses = 0
+@@ -183,10 +185,11 @@
+ 		if target_index() < 0 or s.magazine.is_empty():
+ 			break
+ 		fired_in_action += 1
++		var weapon_factor := WeaponRoles.consume_front(s)
+ 		var id: String = s.magazine.pop_front()
+ 		var source: String = Content.source_id(id)
+ 		var triad_ready: bool = recent_sources.size() >= 2 and recent_sources[-1] != recent_sources[-2] and source != recent_sources[-1] and source != recent_sources[-2]
+-		var result := _shot(id, -1, {"overdrive":overdrive_pending,"first": recent_sources.is_empty(), "last": s.magazine.is_empty(), "last_attack": not s.magazine.any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "previous_round": previous_round, "fired_count": recent_sources.size(), "sequence_count": Content.prior_kind_count(recent_sources, id)})
++		var result := _shot(id, -1, {"weapon_factor":weapon_factor,"overdrive":overdrive_pending,"first": recent_sources.is_empty(), "last": s.magazine.is_empty(), "last_attack": not s.magazine.any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "previous_round": previous_round, "fired_count": recent_sources.size(), "sequence_count": Content.prior_kind_count(recent_sources, id)})
+ 		result.overdrive = overdrive_pending
+ 		results.append(result)
+ 		peak_heat = maxi(peak_heat, int(s.get("heat", 0)))
+@@ -237,6 +240,7 @@
+ 		s.phase = "won" if int(s.floor) == Content.ENCOUNTERS.size() - 1 else "reward"
+ 		s.reward_taken = false
+ 	if s.phase in ["reward", "won", "lost"]:
++		WeaponRoles.clear(s)
+ 		Gates.begin(s)
+ 		s.heat = 0
+ 		Content.Sustained.reset(s)
+@@ -272,6 +276,7 @@
+ 	s.prepared = []
+ 	s.previous_kill = false
+ 	s.phase = "ready"
++	WeaponRoles.on_load(s, Content.is_attack)
+ 	_record("load", {"load_order": s.magazine.duplicate(), "hand_left": [], "whole_magazine": true})
+ 	s.message = "탄창 %d발 · 다음 두 발부터 사격" % s.magazine.size()
+ 	return true
+@@ -286,10 +291,12 @@
+ 	var positions: Array[int] = []
+ 	for index in indices:
+ 		if not _whole(index, 0, s.magazine.size()-1) or positions.has(int(index)): return false
++		if int(index) == WeaponRoles.mark(s): return false
+ 		positions.append(int(index))
+ 	positions.sort()
+ 	var removed: Array = []
+ 	for index in positions: removed.append(s.magazine[index])
++	WeaponRoles.on_eject(s, positions)
+ 	for i in range(positions.size()-1,-1,-1): s.magazine.remove_at(positions[i])
+ 	for id in removed: _discard_fired_round(str(id))
+ 	MagazineBuild.on_eject(s, removed)
+@@ -318,6 +325,7 @@
+ 	s.heat = 0 if forced or int(s.get("fire_control_version",0))==FireHeatTrial.CAMPAIGN_VERSION else maxi(0, before - MagazineTrial.cooling_amount(Content.reload_cooling(s)))
+ 	Content.Sustained.reset(s)
+ 	if s.phase in ["lost", "reward", "won"]:
++		WeaponRoles.clear(s)
+ 		s.heat = 0
+ 		s.prepared = []
+ 		s.legacy_reload_penalty = 0
+@@ -325,7 +333,9 @@
+ 		_release_unfired_field_round()
+ 	Engines.settle(s, Content.equipped_parts(s))
+ 	_settle_ammo_exhaustion()
++	var reversed := WeaponRoles.after_cool(s, forced, Content.anchor)
+ 	var detail := {"cost": cost, "elapsed": int(s.turns) - start_turns, "heat_before": before, "heat_after": int(s.heat), "forced": forced, "retained": s.magazine.duplicate(), "advance_events": events, "deployments": deployments, "phase": s.phase}
++	if WeaponRoles.enabled(s): detail.reversed = reversed
+ 	s.message = "냉각 · 적 %d행동 · 열 %d→%d · 남은 %d발 보존" % [detail.elapsed, before, s.heat, s.magazine.size()]
+ 	if not forced: _record("cool", detail)
+ 	return detail
+@@ -358,6 +368,7 @@
+ 	return _reload_magazine(overdrive_cost, false)
+ 
+ func _reload_magazine(overdrive_cost: int, emergency: bool) -> bool:
++	if WeaponRoles.locked(s): return false
+ 	if s.phase != "ready" and not (s.phase == "plan" and Content.uses_ammo_cards(s)):
+ 		return false
+ 	if s.phase == "plan":
+@@ -374,6 +385,7 @@
+ 		if MagazineTrial.enabled(s): s.draw.append(id)
+ 		else: _discard_fired_round(str(id))
+ 	s.magazine.clear()
++	WeaponRoles.clear(s)
+ 	s.previous_kill = false
+ 	s.buff = AttackBoosts.after_reload(s.buff)
+ 	s.reloads += 1
+@@ -437,6 +449,7 @@
+ 
+ func _settle_ammo_exhaustion() -> void:
+ 	if not Reserve.exhausted(s): return
++	WeaponRoles.clear(s)
+ 	s.phase = "lost"
+ 	s.loss_reason = "ammo"
+ 	Gates.begin(s)
+@@ -772,7 +785,8 @@
+ 	var gate_charge := int(s.get("gate_charge",0)) if attack else 0
+ 	if attack and s.has("gate_charge"): s.gate_charge = 0
+ 	var overdrive_percent := Content.overdrive_percent(s) if attack and bool(part_context.get("overdrive",false)) else 100
+-	var raw := int(subtotal * factor * part_factor * engine_percent * gate_percent * overdrive_percent / 1000000.0) if attack else 0
++	var weapon_factor := int(part_context.get("weapon_factor",1)) if WeaponRoles.kind(s)=="deadbolt" and attack else 1
++	var raw := int(subtotal * factor * part_factor * weapon_factor * engine_percent * gate_percent * overdrive_percent / 1000000.0) if attack else 0
+ 	var heat_percent:=FireHeatTrial.damage_percent(s,heat_before,int(profile.heat_limit))
+ 	var first_raw:=raw+gate_charge
+ 	if heat_percent<100:
+@@ -799,6 +813,7 @@
+ 	if not minimal and (weakness_bonus > 0): combo.append("약점 +%d" % weakness_bonus)
+ 	if not minimal and (chase_bonus > 0): combo.append("추격 +%d" % chase_bonus)
+ 	if not minimal: combo.append_array(part_combo)
++	if not minimal and weapon_factor>1: combo.append("봉인탄 ×3")
+ 	for hit_index in range(requested_hits):
+ 		if int(e.hp) <= 0: break
+ 		hits += 1
+@@ -811,7 +826,7 @@
+ 			blocked = true
+ 		else:
+ 			e.hp = maxi(0, int(e.hp) - (first_hit if hit_index==0 else per_hit))
+-		if s.gun == "burst":
++		if s.gun == "burst" and not WeaponRoles.enabled(s):
+ 			e.focus_hits = int(e.get("focus_hits", 0)) + 1
+ 			if int(e.focus_hits) == 3:
+ 				e.focus_hits = 0
+@@ -876,7 +891,7 @@
+ 		var remaining_hits := requested_hits-hits if active_parts.has("volley_drive") else 0
+ 		# Target-dependent bonuses are recomputed; the prepared buff is paid only once.
+ 		var base_subtotal := subtotal-weakness_bonus-control_bonus-(2 if active_parts.has("igniter") and burn_before>0 else 0)-(2 if active_parts.has("executioner") and hp_before<=5 else 0)
+-		var relay := _engine_relay(id,remaining_hits,remainder,base_subtotal,factor * (part_factor if FocusBuild.enabled(s) else 1),engine_percent,pen,active_parts,gate_percent,overdrive_percent)
++		var relay := _engine_relay(id,remaining_hits,remainder,base_subtotal,factor * weapon_factor * (part_factor if FocusBuild.enabled(s) else 1),engine_percent,pen,active_parts,gate_percent,overdrive_percent)
+ 		secondary = relay.events
+ 		relay_hits = int(relay.hits)
+ 		relay_damage = int(relay.damage)
+@@ -888,6 +903,11 @@
+ 	var shock_damage := 0
+ 	if active_parts.has("thermal_drive") and engine_percent>100 and damage-detonation>0 and int(s.heat)>=int(profile.heat_limit):
+ 		var shock_raw := int(raw/2)
++		# The seal boosts this cartridge's direct impacts, not an extra wave proc.
++		if weapon_factor>1:
++			var unsealed_raw := int(subtotal * factor * part_factor * engine_percent * gate_percent * overdrive_percent / 1000000.0)
++			if heat_percent<100: unsealed_raw=FireHeatTrial.scaled_damage(unsealed_raw,heat_percent)
++			shock_raw=int(unsealed_raw/2)
+ 		for other_index in active_targets():
+ 			if int(other_index)==index: continue
+ 			var other := target_entity(int(other_index))
+@@ -970,6 +990,9 @@
+ 	if not combo.is_empty(): description += " · " + " / ".join(combo)
+ 	if e.hp == 0: description += " · 요격" if Ranged.is_projectile(index) else " · 처치"
+ 	var result := {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "burn_tick": int(profile.burn_tick), "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description, "focus_before": focus_before, "focus_after": int(e.get("focus_hits", 0)), "focus_damage": focus_damage, "focus_triggers": focus_triggers, "barrier_before": barrier_before, "barrier": int(e.get("barrier", 0)), "blocked_hits": blocked_hits, "barrier_removed": barrier_removed, "boost_granted": int(profile.effect) if spec.effect == "boost" else 0}
++	if WeaponRoles.enabled(s):
++		result.weapon_factor = weapon_factor
++		result.math.weapon_factor = weapon_factor
+ 	result.engine_id = engine_id
+ 	if FocusBuild.enabled(s):
+ 		result.position_label = " · ".join(Array(part_combo).filter(func(label): return "×" in label))
+@@ -1080,7 +1103,7 @@
+ 			dealt = mini(hp,amount)
+ 			other.hp -= dealt
+ 			if dealt>0: connected += 1
+-		if not is_overflow and s.gun=="burst":
++		if not is_overflow and s.gun=="burst" and not WeaponRoles.enabled(s):
+ 			other.focus_hits = int(other.get("focus_hits",0))+1
+ 			if int(other.focus_hits)>=3:
+ 				other.focus_hits = 0
+@@ -1124,7 +1147,7 @@
+ 	var source: String = Content.source_id(str(stack.front()))
+ 	var triad_ready: bool = recent.size() >= 2 and recent[-1] != recent[-2] and source != recent[-1] and source != recent[-2]
+ 	var rounds := _recent_part_rounds() if s.phase == "ready" else []
+-	return copy._shot(str(stack.front()), -1, {"previous_round": str(rounds.back()) if not rounds.is_empty() else "", "first": recent.is_empty(), "last": stack.size() == 1, "last_attack": not stack.slice(1).any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "fired_count": recent.size(), "sequence_count": Content.prior_kind_count(recent, str(stack.front()))})
++	return copy._shot(str(stack.front()), -1, {"weapon_factor":3 if WeaponRoles.mark(s)==0 else 1,"previous_round": str(rounds.back()) if not rounds.is_empty() else "", "first": recent.is_empty(), "last": stack.size() == 1, "last_attack": not stack.slice(1).any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "fired_count": recent.size(), "sequence_count": Content.prior_kind_count(recent, str(stack.front()))})
+ 
+ func movement_preview(turn_count: int) -> Array:
+ 	var copy = get_script().new()
+@@ -1220,6 +1243,7 @@
+ 	return result
+ 
+ func can_field_compress(source: String) -> bool:
++	if WeaponRoles.enabled(s): return false
+ 	if s.phase != "plan" or s.get("course", false) or int(s.get("field_compression_left", 0)) <= 0 or not s.get("field_compression", {}).is_empty(): return false
+ 	if not Content.FIELD_COMPRESSIONS.has(source) or Content.is_compressed(source) or available(source) < 2: return false
+ 	return Content.can_insert(s.plan, Content.field_id(source), capacity())
+@@ -1466,6 +1490,7 @@
+ 			if not Content.AMMO.has(id): return false
+ 			if key in ["deck", "hand", "draw", "discard"] and id == "basic" and not Content.uses_ammo_cards(parsed): return false
+ 			if key in ["deck", "hand", "draw", "discard"] and Content.is_temporary(str(id)): return false
++	if not WeaponRoles.valid(parsed,Content.is_attack): return false
+ 	if not parsed.prepared is Array or parsed.prepared.size() > 3: return false
+ 	for id in parsed.prepared:
+ 		if not id is String or not Content.AMMO.has(id) or (id == "basic" and not Content.uses_ammo_cards(parsed)) or Content.is_temporary(id): return false
+--- before/content.gd
++++ redesign/content.gd
+@@ -1,5 +1,6 @@
+ extends RefCounted
+ const Roles=preload("res://redesign/combat_roles.gd")
++const WeaponRoles=preload("res://redesign/weapon_role_trial.gd")
+ const Sustained = preload("res://redesign/sustained_heat.gd")
+ ## Damage is transparent; scatter alone chooses a random primary target.
+ ## Every round exposes two numbers, one attribute, and at most one effect.
+@@ -396,6 +397,12 @@
+ 
+ static func weapon_spec(state: Dictionary) -> Dictionary:
+ 	var spec: Dictionary = GUNS[state.get("gun", "single")]
++	if WeaponRoles.enabled(state):
++		var trial := spec.duplicate()
++		trial.name = WeaponRoles.NAMES[WeaponRoles.kind(state)]
++		trial.identity = "무작위 1발 강화·봉인" if WeaponRoles.kind(state)=="deadbolt" else "냉각 때 잔탄 역순"
++		trial.text = WeaponRoles.TEXT[WeaponRoles.kind(state)]
++		return trial
+ 	if pressure_combat(state) and reactor_enabled(state):
+ 		var revised := spec.duplicate()
+ 		revised.identity = "강행 공격 ×2 · 냉각 +2턴"

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "reviewed_on": "2026-10-09",
+  "reviewed_on": "2026-11-06",
   "direction": "docs/direction/pixel-production.md",
   "path_base": "repository_root",
   "note": "Reference inventory, not copied image assets. Inspect originals before generation; hashes detect silent drift, not visual quality. Counterexamples are review-only unless an explicitly labelled contrast reference is needed.",
@@ -11,6 +11,7 @@
       "battle_context"
     ],
     "hero_motion": [
+      "hero_contour_C",
       "hero",
       "hero_actions",
       "battle_context"
@@ -27,6 +28,33 @@
     "monster": [
       "hero",
       "eavesback",
+      "battle_background"
+    ],
+    "weapon_live": [
+      "hero",
+      "weapon_live_catalog",
+      "foundry_cohesion_context",
+      "garden_cohesion_context",
+      "rivet_twohand_20261106"
+    ],
+    "outfit_motion": [
+      "hero_contour_C",
+      "outfit_unified_work",
+      "outfit_unified_carrier",
+      "outfit_unified_scout",
+      "outfit_unified_heatworker",
+      "outfit_unified_hoist",
+      "outfit_unified_recovery",
+      "outfit_unified_expedition"
+    ],
+    "central_guard": [
+      "guard_heavy_B_live",
+      "guard_shield_B_live",
+      "hero_contour_C",
+      "battle_background"
+    ],
+    "combat_impact": [
+      "impact_multiplier_live_20261106",
       "battle_background"
     ]
   },
@@ -148,6 +176,234 @@
       "dimensions": [
         1536,
         1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "weapon_live_catalog",
+      "path": "docs/qa/reports/assets/art_cohesion_2026-10-24/weapon_catalog.png",
+      "status": "director_reviewed_user_pending",
+      "role": "Live weapon silhouettes, registered hands, common density",
+      "sha256": "e8bd392a6b53934f514b4f4001c77e1cbedceb97586e74d6dab1a63407c58d2e",
+      "dimensions": [
+        1280,
+        820
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "foundry_cohesion_context",
+      "path": "docs/qa/reports/assets/art_cohesion_2026-10-24/region2_after_1280.png",
+      "status": "director_reviewed_user_pending",
+      "role": "Machine actors against the approved foundry background",
+      "sha256": "604b6fe76982e2280d51a554dea52c8fadf685ec6af8387181dcdc1784a1ed2f",
+      "dimensions": [
+        1280,
+        900
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "garden_cohesion_context",
+      "path": "docs/qa/reports/assets/art_cohesion_2026-10-24/region3_after_1280.png",
+      "status": "director_reviewed_user_pending",
+      "role": "Broad biological masses against upper garden foliage",
+      "sha256": "907021e5ead38366fd152739dd8c5ecbcdadcec06eb40f652c659258002a2453",
+      "dimensions": [
+        1280,
+        900
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "hero_contour_C",
+      "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+      "status": "user_approved_contour_live",
+      "role": "Current base hero C outer-contour treatment; keep coarse material masses and existing combat pose. Equipment uses actual combat actor, no separate portrait generation. Other unique outfits remain existing combat art.",
+      "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "outfit_unified_work",
+      "path": "새-게임-프로젝트/assets/art/outfits_unified_20261025/work_idle.png",
+      "status": "approved_idle_live",
+      "role": "Approved outfit design, C-style body. Left one-hand, right two-hand. For work use original C for pistol. Other poses require measured registration and visual review.",
+      "sha256": "6d1c79ada5abff1123ff908ee16fc6c3075f35ded55c6d401e66959fb66f862b",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "outfit_unified_carrier",
+      "path": "새-게임-프로젝트/assets/art/outfits_unified_20261025/carrier_idle.png",
+      "status": "approved_idle_live",
+      "role": "Approved outfit design, C-style body. Left one-hand, right two-hand. For work use original C for pistol. Other poses require measured registration and visual review.",
+      "sha256": "9e0cade87f03c3f2c0f61822c96f2c5821e97bd2b62e2340fb24ced73ccc49ab",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "outfit_unified_scout",
+      "path": "새-게임-프로젝트/assets/art/outfits_unified_20261025/scout_idle.png",
+      "status": "approved_idle_live",
+      "role": "Approved outfit design, C-style body. Left one-hand, right two-hand. For work use original C for pistol. Other poses require measured registration and visual review.",
+      "sha256": "2cf6a59e9cc09df88c8c7832b7dae0e511b95e9fd24296b1d7f555436a847676",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "outfit_unified_heatworker",
+      "path": "새-게임-프로젝트/assets/art/outfits_unified_20261025/heatworker_idle.png",
+      "status": "approved_idle_live",
+      "role": "Approved outfit design, C-style body. Left one-hand, right two-hand. For work use original C for pistol. Other poses require measured registration and visual review.",
+      "sha256": "3bfdc0b1b6d609605447aa909944cd992d8833511b9e76e764315f3b1731c676",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "outfit_unified_hoist",
+      "path": "새-게임-프로젝트/assets/art/outfits_unified_20261025/hoist_idle.png",
+      "status": "approved_idle_live",
+      "role": "Approved outfit design, C-style body. Left one-hand, right two-hand. For work use original C for pistol. Other poses require measured registration and visual review.",
+      "sha256": "ec4b9deb90f4f68eef6b9869e134cc5b78a293f9d0aff84a851c940d18480e4c",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "outfit_unified_recovery",
+      "path": "새-게임-프로젝트/assets/art/outfits_unified_20261025/recovery_idle.png",
+      "status": "approved_idle_live",
+      "role": "Approved outfit design, C-style body. Left one-hand, right two-hand. For work use original C for pistol. Other poses require measured registration and visual review.",
+      "sha256": "787c559fe95464b926c6b972ecd7259e87fb4a8d08c28b309107e6b4c8def59e",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "outfit_unified_expedition",
+      "path": "새-게임-프로젝트/assets/art/outfits_unified_20261025/expedition_idle.png",
+      "status": "approved_idle_live",
+      "role": "Approved outfit design, C-style body. Left one-hand, right two-hand. For work use original C for pistol. Other poses require measured registration and visual review.",
+      "sha256": "27f3563df47ff3c33ed7273e0881630072ea03a43e1c6e348303bec7bb5c2f0c",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "guard_rusher_B_live",
+      "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_rusher_b.png",
+      "status": "user_approved_B_live",
+      "role": "Approved sealed gray-green automaton family. Species-specific silhouette; preserve the chosen original.",
+      "sha256": "0e39bec39dc17a49ca54940619c3b258be363d2c91f37de70a692afa565b43ab",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "guard_heavy_B_live",
+      "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_heavy_b.png",
+      "status": "user_approved_B_live",
+      "role": "Approved sealed gray-green automaton family. Species-specific silhouette; preserve the chosen original.",
+      "sha256": "fc68f06b9220978eef555390cfab2d00f221ceb091193413de40c270f89b8db3",
+      "dimensions": [
+        1427,
+        1102
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "guard_shield_B_live",
+      "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_shield_b.png",
+      "status": "user_approved_B_live",
+      "role": "Approved sealed gray-green automaton family. Species-specific silhouette; preserve the chosen original.",
+      "sha256": "2184bbc93dbad056ce095b89646945ef955d38b3e7baf88dbed9aada91d709ea",
+      "dimensions": [
+        1178,
+        1335
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "guard_artillery_B_live",
+      "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_artillery_b.png",
+      "status": "user_approved_B_live",
+      "role": "Approved sealed gray-green automaton family. Species-specific silhouette; preserve the chosen original.",
+      "sha256": "23a37e780dc32777fac9351b55139882bb4467e3095127c7c6ea5a0a0cad9dcf",
+      "dimensions": [
+        1312,
+        1199
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "guard_captain_temporary_live",
+      "path": "새-게임-프로젝트/assets/art/central_leaders_20261026/captain_v1.png",
+      "status": "director_temporary_live_user_preference_pending",
+      "role": "B-family leader extension; identity and final preference remain open.",
+      "sha256": "f71e6dbb5574e40457a5504fc32cb221dfa97ca9a7d98dd9fdf09e5385ddb673",
+      "dimensions": [
+        1042,
+        1510
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "tower_ruler_temporary_live",
+      "path": "새-게임-프로젝트/assets/art/central_leaders_20261026/ruler_v1.png",
+      "status": "director_temporary_live_user_preference_pending",
+      "role": "B-family leader extension; identity and final preference remain open.",
+      "sha256": "4e10d7921bffd05fb261fe4fa99c3c24dfe6b6c92eda3cd6b3d0d5637c67c4ee",
+      "dimensions": [
+        988,
+        1592
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "rivet_twohand_20261106",
+      "path": "새-게임-프로젝트/assets/art/rivet_twohand_20261106/rivet_carbine_v1_pixel.png",
+      "status": "director_selected_live_user_preference_pending",
+      "role": "Two-handed Rivet identity and quiet RGB grouping only; not a global PixelOE/palette prescription. Existing hero/background remain style references.",
+      "sha256": "8644713cce39339d304dcd4639eec1756bb44db058987cf4a95653b003676cfc",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "id": "impact_multiplier_live_20261106",
+      "path": "새-게임-프로젝트/assets/art/impact_parts_20261106/multiplier.png",
+      "status": "director_selected_live_user_preference_pending",
+      "role": "Neutral multiplier-hit source sheet. Applied colour/tier lives in impact_style.gd; this is not a universal palette or random-critical mechanic.",
+      "sha256": "040c992a562fd318f26c6dbde7bc7ddaedc1cfe2388426787902178e76adb5e4",
+      "dimensions": [
+        864,
+        816
       ],
       "mode": "RGBA"
     }

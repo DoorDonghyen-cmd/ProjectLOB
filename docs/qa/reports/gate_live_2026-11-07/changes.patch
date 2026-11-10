@@ -1,0 +1,451 @@
+--- a/새-게임-프로젝트/redesign/campaign_ui.gd
++++ b/새-게임-프로젝트/redesign/campaign_ui.gd
+@@ -21,6 +21,7 @@
+ const ShopScreen = preload("res://redesign/shop_screen.tscn")
+ const TerminalShopScreen = preload("res://redesign/shop_terminal_live.tscn")
+ const DeckLoadout = preload("res://redesign/deck_loadout.tscn")
++const GateScreen = preload("res://redesign/samples/gate_review/threshold_preview.tscn")
+ const Insight = preload("res://redesign/run_insight.gd")
+ const Lore = preload("res://redesign/city_story.gd")
+ const CompressorGlyph = preload("res://redesign/field_compressor_view.gd")
+@@ -76,6 +77,9 @@
+ 	if state.phase == "supply" and campaign.modern_places() and campaign.node().get("workshop", false):
+ 		modern_workshop()
+ 		return
++	if state.phase == "gate" and campaign.modern_gates():
++		modern_gate()
++		return
+ 	_run_shell(state)
+ 	if ui.debug_session: ui._label(ui.body, "개발자 연습 · 실제 진행 저장 보존", 18, ui.DANGER)
+ 	if not ui.save_error.is_empty(): ui._label(ui.body, ui.save_error, 18, ui.DANGER)
+@@ -1299,6 +1303,17 @@
+ 		else:
+ 			ui._button(lore_grid, "%02d\n미복원" % id, "city_lore_locked_" + str(id), func(): pass, true)
+ 
++## Gate scene (approved 2026-11-05 threshold review), linked to the live run 2026-11-07.
++## Older gate rules keep gate() below.
++func modern_gate() -> void:
++	var view := GateScreen.instantiate()
++	view.name = "GateScreen"
++	# Fill the screen exactly (no 540 floor): the scene is a fixed stage, not a scroll page.
++	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
++	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
++	view.configure(ui, self)
++	ui.body.add_child(view)
++
+ func modern_workshop() -> void:
+ 	var view := preload("res://redesign/workbench/screen.tscn").instantiate()
+ 	view.custom_minimum_size.y = maxf(540, ui.ReadableUI.available(ui).size.y)
+--- a/새-게임-프로젝트/redesign/screen.gd
++++ b/새-게임-프로젝트/redesign/screen.gd
+@@ -354,6 +354,7 @@
+ 	var edge_margin := 0 if page in ["menu", "loadout"] else (10 if compact_combat else 20)
+ 	if page == "run" and campaign != null and (campaign.s.phase == "shop" or (campaign.s.phase == "reward" and campaign.modern_places()) or city_ui.shows_results(campaign)): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "supply" and campaign.modern_places() and campaign.node().get("workshop", false): edge_margin = 0
++	if page == "run" and campaign != null and campaign.s.phase == "gate" and campaign.modern_gates(): edge_margin = 0
+ 	if page == "run" and campaign != null and campaign.s.phase == "map": edge_margin = 8
+ 	content_margin.custom_minimum_size.y = 0
+ 	_apply_content_margins(edge_margin)
+--- a/새-게임-프로젝트/redesign/samples/gate_review/preview.gd
++++ b/새-게임-프로젝트/redesign/samples/gate_review/preview.gd
+@@ -5,6 +5,8 @@
+ const Ammo = preload("res://redesign/content.gd")
+ const Readability = preload("res://redesign/ui_readability.gd")
+ const GateUI = preload("res://redesign/gate_reward_ui.gd")
++const Actors = preload("res://redesign/service_actor_catalog.gd")
++const Actor = preload("res://redesign/weapon_actor.gd")
+ const ACTIVE := Color("e9c27f")
+ const MUTED := Color("9b9586")
+ 
+@@ -22,8 +24,27 @@
+ var travel_time := 0.72
+ var checks := 0
+ var failures := 0
++## Main-game link (2026-11-07). configure() hands over the live campaign; every
++## gate command then goes through screen.gd::_campaign_action (autosave, sound).
++## Without it the scene stays the standalone review fixture (load_gate, F1/F2).
++var live_host = null
++var live_presenter = null
+ @onready var shelf_layout := %Options is HBoxContainer
+ 
++## Short screens (below 440 px, e.g. 844x390): lift the inspector beside the stage
++## tabs so its action button clears the bottom shelf. Taller screens keep the
++## reviewed layout (offset 124).
++const COMPACT_HEIGHT := 440.0
++func fit_stage() -> void:
++	var compact := size.y > 0.0 and size.y < COMPACT_HEIGHT
++	$Inspector.offset_top = 60.0 if compact else 124.0
++	$Stages.offset_right = $Inspector.offset_left - 12.0 if compact else -24.0
++
++func configure(screen, presenter) -> void:
++	live_host = screen
++	live_presenter = presenter
++	run = screen.campaign
++
+ func _ready() -> void:
+ 	template = %Options.get_child(0).duplicate()
+ 	template.button_pressed = false
+@@ -32,6 +53,11 @@
+ 	%Secondary.pressed.connect(secondary)
+ 	if shelf_layout:
+ 		departure_control().pressed.connect(secondary)
++		resized.connect(fit_stage)
++		fit_stage.call_deferred()
++	if live_host != null:
++		enter_live()
++		return
+ 	get_window().size_changed.connect(fit_window)
+ 	fit_window()
+ 	Input.emulate_mouse_from_touch = true
+@@ -49,9 +75,70 @@
+ 	window.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
+ 	window.content_scale_factor = Readability.scale_for(window.size)
+ 
++## The live gate: real region names, the player's own outfit at the console, and the
++## workbench's utility menu (build, archive, settings, title).
++func enter_live() -> void:
++	var outfit := str(run.model.s.get("outfit", "work"))
++	%Gate.work_profile = Actors.resolve(outfit, "workshop").profile
++	%Gate.operator_texture = Actor.portrait(outfit)
++	%Region.text = run.region_info().name
++	%Destination.text = run.region_info(int(run.s.region) + 1).name
++	%Gate.travel = 0.0
++	add_live_menu()
++	show_mode(Mode.SERVICE if run.gate_ready() else Mode.MODS)
++
++func add_live_menu() -> void:
++	var menu := Button.new()
++	menu.name = "Menu"
++	menu.text = "메뉴"
++	menu.custom_minimum_size = Vector2(72, 44)
++	$Header.add_child(menu)
++	var panel := PanelContainer.new()
++	panel.name = "UtilityMenu"
++	panel.visible = false
++	panel.theme_type_variation = &"Inspector"
++	panel.anchor_left = 1.0
++	panel.anchor_right = 1.0
++	panel.offset_left = -240.0
++	panel.offset_top = 64.0
++	panel.offset_right = -24.0
++	add_child(panel)
++	var actions := VBoxContainer.new()
++	actions.name = "Actions"
++	panel.add_child(actions)
++	for entry in [["Build", "내 빌드", live_presenter.deck], ["Archive", "기록", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
++		var button := Button.new()
++		button.name = entry[0]
++		button.text = entry[1]
++		button.custom_minimum_size = Vector2(0, 44)
++		actions.add_child(button)
++		button.pressed.connect(use_utility.bind(panel, entry[2]))
++	menu.pressed.connect(func(): panel.visible = not panel.visible)
++
++func use_utility(panel: Control, target: Callable) -> void:
++	panel.hide()
++	if target.is_valid():
++		target.call()
++
++## Review fixture calls the rules directly; the live gate uses the main handler
++## without a redraw, so this scene stays (departure redraws instead; see depart()).
++func command(name: String, value: Variant = "", extra: String = "") -> bool:
++	if live_host != null:
++		return live_host._campaign_action(name, value, extra, "", false)
++	match name:
++		"gate": return run.gate(str(value), extra)
++		"gate_production": return run.gate("production", extra, value)
++		"gate_bag": return run.buy_gate_bag()
++		"gate_copy": return run.buy_gate_copy(str(value))
++		"gate_depart": return run.depart_gate()
++	return false
++
+ func _unhandled_key_input(event: InputEvent) -> void:
+ 	if not event.pressed or event.echo or traveling:
+ 		return
++	if live_host != null:
++		if event.keycode == KEY_ESCAPE: back()
++		return
+ 	match event.keycode:
+ 		KEY_F1: load_gate()
+ 		KEY_F2: load_gate(); run.gate("cadence"); show_mode(Mode.SERVICE)
+@@ -103,7 +190,8 @@
+ 			for id in Gates.basics(run.model.s.deck):
+ 				labels[id] = ammo_label(id)
+ 		Mode.SERVICE:
+-			labels = {"bag": "수납 확장  ·  %d Cr" % run.Economy.BAG_PRICE, "copy": "보유 탄 1장 복제"}
++			if paid_service():
++				labels = {"bag": "수납 확장  ·  %d Cr" % run.Economy.BAG_PRICE, "copy": "보유 탄 1장 복제"}
+ 		Mode.COPIES:
+ 			for id in run.gate_copy_options():
+ 				labels[id] = "%s · %d Cr" % [ammo_label(id), run.gate_copy_price(id)]
+@@ -155,7 +243,11 @@
+ 	return "%s · %s %s" % [Ammo.AMMO[id].name, stat.label, stat.value]
+ 
+ func service_used() -> bool:
+-	return run.s.gate_bag_used or run.s.gate_ammo_used
++	return bool(run.s.get("gate_bag_used", false)) or bool(run.s.get("gate_ammo_used", false))
++
++## Runs started before the run economy (older map saves) have no paid gate service.
++func paid_service() -> bool:
++	return run.Economy.enabled(run.s)
+ 
+ func can_copy() -> bool:
+ 	return run.gate_copy_options().any(func(id): return run.can_buy_gate_copy(id))
+@@ -234,6 +326,13 @@
+ 			%Apply.disabled = not Gates.can_produce(run.model.s, specimen, sources)
+ 			show_values("기본탄 %d장 선택" % sources.size(), "%s 3장" % Ammo.AMMO[specimen].name, "전체 탄약 %d장 유지" % deck.size())
+ 		Mode.SERVICE:
++			if not paid_service():
++				%Condition.text = "보유 %d Cr" % credits
++				%Secondary.text = "출발"
++				%Apply.text = "정비 없음"
++				%Apply.disabled = true
++				show_values(%Region.text, %Destination.text, "이 등반에는 관문 유료 정비가 없습니다. 표찰에서 출발하세요.")
++				return
+ 			%Condition.text = "유료 정비 %s   ·   보유 %d Cr" % ["완료" if service_used() else "1회", credits]
+ 			%Secondary.text = "출발"
+ 			var bag := selected == "bag"
+@@ -281,6 +380,8 @@
+ 		Mode.DEFER: return "개조 보류"
+ 		Mode.SPECIMENS, Mode.SOURCES: return "전용 탄약 생산"
+ 		Mode.SERVICE:
++			if not paid_service():
++				return "출발 준비"
+ 			if service_used():
+ 				return "재정비 완료"
+ 			return "수납 확장" if selected == "bag" else "탄환 복제"
+@@ -307,25 +408,25 @@
+ 		Mode.MODS:
+ 			if selected == "production":
+ 				show_mode(Mode.SPECIMENS)
+-			elif run.gate(selected):
++			elif command("gate", selected):
+ 				show_mode(Mode.SERVICE)
+ 		Mode.DEFER:
+-			if run.gate("skip"):
++			if command("gate", "skip"):
+ 				show_mode(Mode.SERVICE)
+ 		Mode.SPECIMENS:
+ 			specimen = selected
+ 			sources.clear()
+ 			show_mode(Mode.SOURCES)
+ 		Mode.SOURCES:
+-			if run.gate("production", specimen, sources):
++			if command("gate_production", sources.duplicate(), specimen):
+ 				show_mode(Mode.SERVICE)
+ 		Mode.SERVICE:
+ 			if selected == "copy":
+ 				show_mode(Mode.COPIES)
+-			elif run.buy_gate_bag():
++			elif command("gate_bag"):
+ 				refresh()
+ 		Mode.COPIES:
+-			if run.buy_gate_copy(selected):
++			if command("gate_copy", selected):
+ 				show_mode(Mode.SERVICE)
+ 		Mode.DEPARTED:
+ 			load_gate()
+@@ -364,8 +465,15 @@
+ 	traveling = true
+ 	refresh()
+ 	await animate_departure()
++	if live_host != null:
++		# Fully black now: the main handler enters the next region and redraws the map.
++		traveling = false
++		if not live_host._campaign_action("gate_depart"):
++			%Gate.travel = 0.0
++			refresh()
++		return
+ 	traveling = false
+-	if run.depart_gate():
++	if command("gate_depart"):
+ 		show_mode(Mode.DEPARTED)
+ 	else:
+ 		%Gate.travel = 0.0
+--- /dev/null
++++ b/새-게임-프로젝트/tests/gate_live_ui.gd (new)
+@@ -0,0 +1,184 @@
++extends SceneTree
++## Approved gate scene in the main game (2026-11-07). A real run reaches the gate
++## through actual boss loot; every input is a touch on the real screen.
++const Campaign = preload("res://redesign/campaign.gd")
++const Gates = preload("res://redesign/gate_upgrades.gd")
++const Actors = preload("res://redesign/service_actor_catalog.gd")
++const GateView = preload("res://redesign/samples/gate_review/preview.gd")
++var host
++var checks := 0
++var failures: Array = []
++var output: String
++
++func _initialize() -> void: run.call_deferred()
++
++func check(ok: bool, label: String) -> bool:
++	checks += 1
++	if not ok:
++		failures.append(label); print("FAIL: " + label)
++	return ok
++
++func settle() -> void:
++	for i in range(8): await process_frame
++	await RenderingServer.frame_post_draw
++
++func capture(label: String) -> void:
++	await settle()
++	root.get_texture().get_image().save_png(output.path_join(label + ".png"))
++
++func find(id: String) -> Control:
++	# Search the gate scene first: names like Menu/Apply/Build are generic.
++	var gate: Node = host.find_child("GateScreen", true, false)
++	if gate != null and id != "GateScreen":
++		var inside: Node = gate.find_child(id, true, false)
++		if inside != null: return inside as Control
++	return host.find_child(id, true, false) as Control
++
++func tap(id: String) -> void:
++	var button := find(id) as Button
++	if not check(button != null and button.is_visible_in_tree() and not button.disabled, "available " + id): return
++	var scroll: Node = button.get_parent()
++	while scroll != null:
++		if scroll is ScrollContainer: scroll.ensure_control_visible(button)
++		scroll = scroll.get_parent()
++	await settle()
++	var point: Vector2 = button.get_global_transform_with_canvas() * (button.size * 0.5)
++	for pressed in [true, false]:
++		var event := InputEventScreenTouch.new()
++		event.index = 0; event.position = point; event.pressed = pressed
++		root.push_input(event, true)
++		await process_frame
++	await settle()
++
++## Earned gate states saved by the full-climb check (`QA_GATE_DIR`, files gate_<gun>_<seed>_r<n>.json).
++## These pass save validation, so autosave can be checked. Region 1..4 gates.
++func earned_gate(region: int = 1):
++	var c = Campaign.new()
++	var file: String = OS.get_environment("QA_GATE_DIR").path_join(OS.get_environment("QA_GATE_PREFIX") + "_r%d.json" % region)
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(file))) and c.s.phase == "gate" and c.modern_gates(), "earned gate restores " + file.get_file())
++	return c
++
++## The review fixture's staging (not save-valid): used only for the outfit pose check.
++func gate_run(outfit: String = "carrier", gun: String = "burst"):
++	var c = Campaign.new()
++	c.start(gun, 251025, 0, "balanced", Campaign.Content.RouteMap.VERSION, outfit, true)
++	c.s.region = 1; c.s.departure_step = 3; c.s.clears = 2; c.s.opening_reward_step = 2; c.s.credits = 43
++	c.s.parts = ["volley_drive"]; c.s.equipped_parts = ["volley_drive"]
++	c.model.s.deck = c.Model.FocusBuild.replace_opening(c.model.s.deck, "precise")
++	var nodes: Array = c.current_nodes()
++	var boss: Dictionary = nodes.filter(func(node): return node.kind == "boss")[0]
++	var prior: Dictionary = nodes.filter(func(node): return node.next.has(boss.id))[0]
++	c.s.node = prior.id; c.s.floor = prior.floor
++	check(c.enter(int(boss.id)), "enter boss")
++	c.model.s.phase = "won"
++	c.sync_combat()
++	check(c.reward("skip") and c.s.phase == "gate" and c.modern_gates(), "boss loot leads to the modern gate")
++	return c
++
++func mount(c) -> void:
++	if is_instance_valid(host): host.free()
++	host = load("res://redesign/main.tscn").instantiate()
++	root.add_child(host)
++	host.campaign = c; host.model = c.model; host.page = "run"; host.redraw()
++	await settle()
++
++func saved():
++	var copy = Campaign.new()
++	check(copy.restore(), "autosave restores")
++	return copy
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
++	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
++	for extent in [Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454)]:
++		root.size = extent
++		var suffix := "%dx%d" % [extent.x, extent.y]
++		var c = earned_gate([1, 2, 3][[Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454)].find(extent)])
++		await mount(c)
++		var gate := find("GateScreen")
++		check(gate != null and gate.is_visible_in_tree(), "gate scene replaces the old gate screen " + suffix)
++		check(find("GateUpgradeGrid") == null and find("CampaignShellHeader") == null, "old gate grid and shell header are gone")
++		check(gate != null and root.get_visible_rect().grow(1).encloses(gate.get_global_rect()), "gate scene fits the screen " + suffix)
++		check(gate != null and gate.get_node("%Region").text == c.region_info().name and gate.get_node("%Destination").text == c.region_info(int(c.s.region) + 1).name, "real region names")
++		var options: Array = c.gate_options()
++		var upgrade: String = str(options.filter(func(id): return id != "production")[0])
++		for id in options: check(find("Option_" + str(id)) != null, "real gate option shown " + str(id))
++		await capture("upgrade_" + suffix)
++		# Highlight is free; apply commits through the main handler and autosaves.
++		var mods_before: Dictionary = c.model.s.gate_mods.duplicate()
++		await tap("Option_" + upgrade)
++		check(c.model.s.gate_mods == mods_before and not c.gate_ready(), "highlight alone changes nothing")
++		await tap("Apply")
++		check(c.gate_ready() and find("GateScreen") == gate, "upgrade applied once and the scene stays")
++		check(saved().gate_ready(), "upgrade is autosaved")
++		await capture("service_" + suffix)
++		# Utility menu: the old gate's parts/ammo access lives here now.
++		await tap("Menu")
++		check(find("UtilityMenu").is_visible_in_tree(), "utility menu opens")
++		await capture("menu_" + suffix)
++		await tap("Build")
++		check(find("WorkspaceOverlay") != null, "build workspace opens over the gate")
++		host._close_workspace(); await settle()
++		check(find("GateScreen") == gate and not find("UtilityMenu").visible, "gate remains after closing build")
++		# Paid service: storage expansion with real price.
++		var limit: int = c.model.deck_limit()
++		var credits: int = c.s.credits
++		await tap("Option_bag")
++		await tap("Apply")
++		check(c.model.deck_limit() == limit + 2 and c.s.credits == credits - c.Economy.BAG_PRICE, "storage expansion uses real rules %s (limit %d->%d, Cr %d->%d, can_grow %s)" % [suffix, limit, c.model.deck_limit(), credits, c.s.credits, c.can_grow_bag()])
++		check(saved().model.deck_limit() == limit + 2, "service is autosaved")
++		# Departure sits on the door plaque; the map follows the blackout.
++		var region: int = c.s.region
++		var exit := find("GateExit")
++		check(exit != null and find("DoorPlaque").get_global_rect().encloses(exit.get_global_rect()), "departure on the destination plate")
++		await tap("GateExit")
++		var started := Time.get_ticks_msec()
++		while c.s.phase != "map" and Time.get_ticks_msec() - started < 5000: await process_frame
++		await settle()
++		check(c.s.phase == "map" and int(c.s.region) == region + 1, "departure enters the next region " + suffix)
++		await capture("after_depart_" + suffix)
++		check(find("PipeMapScreen") != null and find("GateScreen") == null, "map replaces the gate after blackout (map=%s gate=%s phase=%s)" % [find("PipeMapScreen") != null, find("GateScreen") != null, c.s.phase])
++		check(int(saved().s.region) == region + 1, "departure is autosaved")
++	root.size = Vector2i(1280, 800)
++	# Resume after the upgrade opens straight at the paid service step.
++	var resume = earned_gate(4)
++	check(resume.gate(str(resume.gate_options().filter(func(id): return id != "production")[0])), "fixture upgrade")
++	check(resume.save() == OK, "save for resume")
++	var loaded = Campaign.new(); check(loaded.restore(), "resume restores")
++	await mount(loaded)
++	check(find("GateScreen").mode == GateView.Mode.SERVICE and find("GateExit").is_visible_in_tree(), "resume opens at service with departure ready")
++	# Dedicated ammunition production: specimen, three basics, exact swap.
++	var prod = earned_gate(2)
++	await mount(prod)
++	var deck_before: Array = prod.model.s.deck.duplicate()
++	await tap("Option_production"); await tap("Apply")
++	var screen := find("GateScreen")
++	check(screen.mode == GateView.Mode.SPECIMENS, "production asks for a specimen")
++	var specimen: String = str(screen.buttons.keys()[0])
++	await tap("Option_" + specimen); await tap("Apply")
++	var source: String = str(screen.buttons.keys()[0])
++	for i in range(3): await tap("Option_" + source)
++	await capture("production_1280x800")
++	await tap("Apply")
++	check(prod.gate_ready() and prod.model.s.deck.size() == deck_before.size() and prod.model.s.deck.count(specimen) == deck_before.count(specimen) + 3, "production swaps exactly three rounds")
++	# The console operator wears the run's outfit.
++	var scout = gate_run("scout", "single")
++	await mount(scout)
++	check(find("GateScreen").get_node("%Gate").work_profile == Actors.resolve("scout", "workshop").profile, "operator uses the run's outfit pose")
++	await capture("scout_1280x800")
++	# An older map-3 run (no run economy) reaches the new gate without paid service.
++	var old = Campaign.new()
++	var old_file: String = OS.get_environment("QA_LEGACY_GATE")
++	check(old.restore_state(JSON.parse_string(FileAccess.get_file_as_string(old_file))) and old.s.phase == "gate" and not old.Economy.enabled(old.s), "pre-economy gate save restores")
++	await mount(old)
++	var old_upgrade: String = str(old.gate_options().filter(func(id): return id != "production")[0])
++	await tap("Option_" + old_upgrade); await tap("Apply")
++	check(old.gate_ready() and find("Option_bag") == null and find("Apply").disabled, "no paid service offered without the run economy")
++	await capture("legacy_service_1280x800")
++	await tap("GateExit")
++	var wait_from := Time.get_ticks_msec()
++	while old.s.phase != "map" and Time.get_ticks_msec() - wait_from < 5000: await process_frame
++	check(old.s.phase == "map" and int(old.s.region) == 1, "pre-economy run departs normally")
++	print("GATE LIVE UI checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)

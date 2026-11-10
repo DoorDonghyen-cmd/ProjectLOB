@@ -1,0 +1,42 @@
+{
+  "checks": 7802,
+  "failures": [
+    "full campaign restore combat",
+    "one ending after replay",
+    "same final deck, parts and investment"
+  ],
+  "runs": [
+    {
+      "fights": 30,
+      "gun": "heavy",
+      "seed": 17,
+      "source": "build_roles_20261103/climb_earned/balance.json",
+      "version": 3,
+      "won": true
+    },
+    {
+      "fights": 30,
+      "gun": "burst",
+      "seed": 17,
+      "source": "build_roles_20261103/climb_earned/balance.json",
+      "version": 3,
+      "won": true
+    },
+    {
+      "fights": 30,
+      "gun": "single",
+      "seed": 17,
+      "source": "build_roles_20261103/climb_earned/balance.json",
+      "version": 3,
+      "won": true
+    },
+    {
+      "fights": 0,
+      "gun": "heavy",
+      "seed": 17,
+      "source": "late_balance_20261103/climb_fire_v2/balance.json",
+      "version": 2,
+      "won": false
+    }
+  ]
+}

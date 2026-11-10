@@ -1,0 +1,1055 @@
+--- before/equipment_screen.gd
++++ current/equipment_screen.gd
+@@ -2,7 +2,7 @@
+ ## Authored equipment room. Selection changes bindings without rebuilding the page.
+ const Content = preload("res://redesign/content.gd")
+ const CampaignContent = preload("res://redesign/campaign_content.gd")
+-const PixelSkin = preload("res://redesign/combat_pixel_skin.gd")
++const EquipmentSkin = preload("res://redesign/equipment/skin.gd")
+ const WeaponActor = preload("res://redesign/weapon_actor.gd")
+ const Reserve = preload("res://redesign/ammo_reserve.gd")
+ @onready var launch: Button = %Launch
+@@ -11,6 +11,7 @@
+ 
+ func _ready() -> void:
+ 	%Stage.resized.connect(_fit_art)
++	%SelectionScroll.get_v_scroll_bar().value_changed.connect(func(_value: float): _fit_art())
+ 	_fit_art.call_deferred()
+ 
+ func _fit_art() -> void:
+@@ -48,11 +49,6 @@
+ 	for button in find_children("*", "Button", true, false):
+ 		button.pressed.connect(func(): host.feedback.play("click"))
+ 		button.add_theme_font_size_override("font_size", host._scaled(18))
+-		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
+-			var skin := PixelSkin.box("button", state)
+-			skin.content_margin_left = 14
+-			skin.content_margin_right = 14
+-			button.add_theme_stylebox_override(state, skin)
+ 	for label in find_children("*", "Label", true, false):
+ 		var base: int = label.get_theme_font_size("font_size")
+ 		label.add_theme_font_size_override("font_size", host._scaled(base))
+@@ -97,7 +93,8 @@
+ 		%Reload.text = "탄창 교체  %d턴 · 열 유지" % maxi(2,int(gun.reload))
+ 		%Cooling.text = "냉각  1턴 · 열 0"
+ 		%FireMode.text = {"single":"1~2발 범위 선택","burst":"1~3발 범위 선택","scatter":"1~3발 범위 선택","heavy":"1~3발 · 과열 뒤 1발 강행","amplifier":"범위 선택 · 처치하면 연속"}[host.selected_weapon_id]
+-	%OutfitHint.text = "훈련은 기본 작업복을 사용합니다." if host.preparation_training else "신규 4종 테스트 개방 · 목록을 밀어 선택"
++	%OutfitHint.text = "훈련은 기본 작업복을 사용합니다." if host.preparation_training else ""
++	%OutfitHint.visible = host.preparation_training
+ 	%OutfitPortrait.set_loadout(outfit_id, host.selected_weapon_id)
+ 	for id in Content.GUNS:
+ 		_style_choice(find_child("weapon_select_" + id, true, false), id == host.selected_weapon_id)
+@@ -105,7 +102,6 @@
+ 		_style_choice(find_child("outfit_select_" + id, true, false), id == outfit_id)
+ 	launch.name = "start_" + host.selected_weapon_id
+ 	launch.text = "훈련 시작  ›" if host.preparation_training else "등반 시작  ›"
+-	host._primary_button(launch)
+ 	%SelectionSummary.text = "%s  /  %s" % [gun.name, outfit.name]
+ 	%starting_deck.text = "시작 탄환  %d장  ›" % _start_deck().size()
+ 	%preparation_options.text = "등반 설정" if host.selected_difficulty == 0 else "등반 설정 · 난도 %d" % host.selected_difficulty
+@@ -113,17 +109,13 @@
+ 
+ func _fit_layout() -> void:
+ 	var stage_min := maxf(%SelectedWeaponPanel.get_combined_minimum_size().y, %OutfitSelection.get_combined_minimum_size().y) + 8.0
+-	%Stage.custom_minimum_size.y = maxf(336.0, stage_min)
+-	# At accessibility text sizes, allow touch scrolling instead of overlapping.
+-	custom_minimum_size.y = maxf(host.size.y, $Margin/Layout.get_combined_minimum_size().y + 36.0)
++	%Stage.custom_minimum_size.y = maxf(256.0, stage_min)
++	# The authored middle scroll owns overflow; header and launch stay outside it.
++	# Never force the whole screen taller than the host's safe area.
+ 
+ func _style_choice(button: Button, chosen: bool) -> void:
+ 	button.set_pressed_no_signal(chosen)
+-	button.add_theme_stylebox_override("normal", PixelSkin.box("well", "selected" if chosen else "normal"))
+-	button.add_theme_stylebox_override("pressed", PixelSkin.box("well", "selected"))
+-	button.add_theme_stylebox_override("hover", PixelSkin.box("well", "hover"))
+-	button.add_theme_stylebox_override("focus", PixelSkin.box("well", "focus"))
+-	button.modulate = Color.WHITE if chosen else Color("a8b5b5")
++	EquipmentSkin.apply_choice(button, chosen)
+ 	button.tooltip_text = ("선택됨 · " if chosen else "선택 · ") + button.get_meta("caption", "")
+ 	if button.disabled: button.tooltip_text = "훈련은 기본 작업복을 사용합니다."
+ 
+--- before/equipment_screen.tscn
++++ current/equipment_screen.tscn
+@@ -1,14 +1,14 @@
+-[gd_scene load_steps=18 format=3]
++[gd_scene load_steps=17 format=3]
+ [ext_resource type="Script" path="res://redesign/equipment_screen.gd" id="1"]
+ [ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/workshop_v1.png" id="2"]
+ [ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/outfits_v1.png" id="3"]
+ [ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="4"]
+-[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/console_button_normal.tres" id="5"]
+-[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/console_well_normal.tres" id="6"]
+-[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/console_well_selected.tres" id="7"]
+ [ext_resource type="PackedScene" path="res://redesign/equipment_weapon.tscn" id="8"]
+ [ext_resource type="Shader" path="res://redesign/monster_alpha_cutout.gdshader" id="9"]
+ [ext_resource type="Script" path="res://redesign/equipment_actor.gd" id="10"]
++[ext_resource type="Theme" path="res://redesign/equipment/theme.tres" id="11"]
++[ext_resource type="Script" path="res://redesign/equipment/edge.gd" id="12"]
++[ext_resource type="Texture2D" path="res://assets/ui/equipment_20261106/editor_loadout.png" id="13"]
+ [sub_resource type="ShaderMaterial" id="Cutout"]
+ shader = ExtResource("9")
+ [sub_resource type="AtlasTexture" id="Work"]
+@@ -20,15 +20,6 @@
+ [sub_resource type="AtlasTexture" id="Scout"]
+ atlas = ExtResource("3")
+ region = Rect2(1092, 77, 368, 854)
+-[sub_resource type="Theme" id="Theme"]
+-default_font = ExtResource("4")
+-default_font_size = 20
+-Label/colors/font_color = Color(0.85, 0.87, 0.82, 1)
+-Label/colors/font_shadow_color = Color(0.025, 0.045, 0.055, 1)
+-Label/constants/shadow_offset_x = 1
+-Label/constants/shadow_offset_y = 2
+-Button/colors/font_color = Color(0.8, 0.85, 0.8, 1)
+-Button/styles/normal = ExtResource("5")
+ [sub_resource type="Gradient" id="ShadeGradient"]
+ colors = PackedColorArray(0.02, 0.035, 0.05, 0.75, 0.02, 0.035, 0.05, 0, 0.02, 0.035, 0.05, 0.72)
+ offsets = PackedFloat32Array(0, 0.5, 1)
+@@ -47,7 +38,7 @@
+ size_flags_vertical = 3
+ texture_filter = 1
+ script = ExtResource("1")
+-theme = SubResource("Theme")
++theme = ExtResource("11")
+ 
+ [node name="Backdrop" type="TextureRect" parent="." ]
+ unique_name_in_owner = true
+@@ -104,15 +95,29 @@
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "오르바스크 · 출발 정비실"
+-theme_override_colors/font_color = Color(0.54, 0.64, 0.66, 1)
+-
+-[node name="Stage" type="Control" parent="Margin/Layout" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-custom_minimum_size = Vector2(0, 336)
+-size_flags_vertical = 3
+-
+-[node name="SelectedWeaponPanel" type="VBoxContainer" parent="Margin/Layout/Stage" ]
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1.0)
++
++[node name="SelectionScroll" type="ScrollContainer" parent="Margin/Layout"]
++unique_name_in_owner = true
++layout_mode = 2
++size_flags_vertical = 3
++horizontal_scroll_mode = 0
++follow_focus = true
++scroll_deadzone = 12
++
++[node name="SelectionLayout" type="VBoxContainer" parent="Margin/Layout/SelectionScroll"]
++layout_mode = 2
++size_flags_horizontal = 3
++size_flags_vertical = 3
++theme_override_constants/separation = 10
++
++[node name="Stage" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout" ]
++unique_name_in_owner = true
++layout_mode = 2
++custom_minimum_size = Vector2(0, 272)
++size_flags_vertical = 3
++
++[node name="SelectedWeaponPanel" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage" ]
+ unique_name_in_owner = true
+ layout_mode = 1
+ anchor_right = 0.325
+@@ -120,15 +125,15 @@
+ offset_top = 8.0
+ theme_override_constants/separation = 6
+ 
+-[node name="WeaponRole" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel" ]
++[node name="WeaponRole" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "전술탄 조합 입문"
+-theme_override_colors/font_color = Color(0.76, 0.62, 0.4, 1)
+-
+-[node name="WeaponName" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel" ]
++theme_override_colors/font_color = Color(0.745098, 0.639216, 0.419608, 1.0)
++
++[node name="WeaponName" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+@@ -136,13 +141,13 @@
+ text = "리벳"
+ 
+ 
+-[node name="WeaponArt" parent="Margin/Layout/Stage/SelectedWeaponPanel" instance=ExtResource("8")]
++[node name="WeaponArt" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" instance=ExtResource("8")]
+ unique_name_in_owner = true
+ layout_mode = 2
+ custom_minimum_size = Vector2(0, 60)
+ size_flags_vertical = 3
+ 
+-[node name="FireMode" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel" ]
++[node name="FireMode" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+@@ -150,22 +155,22 @@
+ text = "전탄 연쇄"
+ theme_override_colors/font_color = Color(0.57, 0.68, 0.69, 1)
+ 
+-[node name="WeaponIdentity" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel" ]
+-unique_name_in_owner = true
+-layout_mode = 2
+-mouse_filter = 2
+-theme_override_font_sizes/font_size = 24
++[node name="WeaponIdentity" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
++unique_name_in_owner = true
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
+ text = "공격탄 피해 +1 · 재장전 1턴"
+-custom_minimum_size = Vector2(0, 44)
++custom_minimum_size = Vector2(0, 0)
+ autowrap_mode = 2
+ 
+-[node name="Stats" type="GridContainer" parent="Margin/Layout/Stage/SelectedWeaponPanel" ]
++[node name="Stats" type="GridContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+ layout_mode = 2
+ columns = 2
+ theme_override_constants/h_separation = 16
+ theme_override_constants/v_separation = 8
+ 
+-[node name="Capacity" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel/Stats" ]
++[node name="Capacity" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+@@ -173,7 +178,7 @@
+ text = "탄창  4칸"
+ size_flags_horizontal = 3
+ 
+-[node name="Reload" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel/Stats" ]
++[node name="Reload" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+@@ -181,7 +186,7 @@
+ text = "재장전  1턴"
+ size_flags_horizontal = 3
+ 
+-[node name="Heat" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel/Stats" ]
++[node name="Heat" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+@@ -189,7 +194,7 @@
+ text = "열 한계  12"
+ size_flags_horizontal = 3
+ 
+-[node name="Cooling" type="Label" parent="Margin/Layout/Stage/SelectedWeaponPanel/Stats" ]
++[node name="Cooling" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Stats" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ mouse_filter = 2
+@@ -197,32 +202,32 @@
+ text = "냉각  8"
+ size_flags_horizontal = 3
+ 
+-[node name="Details" type="HBoxContainer" parent="Margin/Layout/Stage/SelectedWeaponPanel" ]
++[node name="Details" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel" ]
+ layout_mode = 2
+ theme_override_constants/separation = 8
+ 
+-[node name="weapon_info" type="Button" parent="Margin/Layout/Stage/SelectedWeaponPanel/Details" ]
++[node name="weapon_info" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Details" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ custom_minimum_size = Vector2(0, 48)
+ text = "규칙 상세"
+ size_flags_horizontal = 3
+ 
+-[node name="starting_deck" type="Button" parent="Margin/Layout/Stage/SelectedWeaponPanel/Details" ]
++[node name="starting_deck" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Details" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ custom_minimum_size = Vector2(0, 48)
+ text = "시작 탄환  ›"
+ size_flags_horizontal = 3
+ 
+-[node name="PortraitArea" type="Control" parent="Margin/Layout/Stage" ]
++[node name="PortraitArea" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage" ]
+ layout_mode = 1
+ anchor_left = 0.35
+ anchor_right = 0.69
+ anchor_bottom = 1.0
+ mouse_filter = 2
+ 
+-[node name="OutfitPortrait" type="Control" parent="Margin/Layout/Stage/PortraitArea" ]
++[node name="OutfitPortrait" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/PortraitArea" ]
+ unique_name_in_owner = true
+ layout_mode = 1
+ anchor_right = 1.0
+@@ -230,8 +235,10 @@
+ mouse_filter = 2
+ offset_bottom = -8.0
+ script = ExtResource("10")
+-
+-[node name="OutfitName" type="Label" parent="Margin/Layout/Stage/PortraitArea" ]
++preview_scale = 0.85
++editor_portrait = ExtResource("13")
++
++[node name="OutfitName" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/PortraitArea" ]
+ visible = false
+ unique_name_in_owner = true
+ layout_mode = 2
+@@ -246,7 +253,7 @@
+ offset_top = -56.0
+ offset_bottom = -28.0
+ 
+-[node name="OutfitSummary" type="Label" parent="Margin/Layout/Stage/PortraitArea" ]
++[node name="OutfitSummary" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/PortraitArea" ]
+ visible = false
+ unique_name_in_owner = true
+ layout_mode = 2
+@@ -261,7 +268,7 @@
+ offset_top = -26.0
+ theme_override_colors/font_color = Color(0.88, 0.73, 0.49, 1)
+ 
+-[node name="OutfitSelection" type="VBoxContainer" parent="Margin/Layout/Stage" ]
++[node name="OutfitSelection" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage" ]
+ unique_name_in_owner = true
+ layout_mode = 1
+ anchor_left = 0.715
+@@ -270,36 +277,36 @@
+ offset_top = 8.0
+ theme_override_constants/separation = 10
+ 
+-[node name="OutfitHeading" type="Label" parent="Margin/Layout/Stage/OutfitSelection" ]
++[node name="OutfitHeading" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "복장 선택"
+ 
+ 
+-[node name="OutfitScroll" type="ScrollContainer" parent="Margin/Layout/Stage/OutfitSelection"]
+-unique_name_in_owner = true
+-layout_mode = 2
+-custom_minimum_size = Vector2(0, 240)
++[node name="OutfitScroll" type="ScrollContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection"]
++unique_name_in_owner = true
++layout_mode = 2
++custom_minimum_size = Vector2(0, 184)
+ size_flags_vertical = 3
+ horizontal_scroll_mode = 0
+ follow_focus = true
+ scroll_deadzone = 12
+ 
+-[node name="OutfitList" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll"]
++[node name="OutfitList" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll"]
+ layout_mode = 2
+ size_flags_horizontal = 3
+ theme_override_constants/separation = 8
+ 
+-[node name="outfit_select_work" type="Button" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+-layout_mode = 2
++[node name="outfit_select_work" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 78)
+ size_flags_vertical = 3
+ toggle_mode = true
+ metadata/caption = "기본 작업복"
+-theme_override_styles/normal = ExtResource("7")
+-
+-[node name="Icon" type="TextureRect" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work" ]
++
++[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work" ]
+ layout_mode = 1
+ anchor_bottom = 1.0
+ offset_left = 10.0
+@@ -312,7 +319,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
+-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work" ]
++[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work" ]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -324,29 +331,30 @@
+ alignment = 1
+ theme_override_constants/separation = 7
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Copy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "기본 작업복"
+ 
+ 
+-[node name="Stats" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Copy" ]
++[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "가방 5장 · 교환 1회"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+-[node name="outfit_select_carrier" type="Button" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+-layout_mode = 2
++[node name="outfit_select_carrier" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentSelected"
+ custom_minimum_size = Vector2(0, 78)
+ size_flags_vertical = 3
+ toggle_mode = true
++button_pressed = true
+ metadata/caption = "운반용 외투"
+-theme_override_styles/normal = ExtResource("6")
+-
+-[node name="Icon" type="TextureRect" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier" ]
++
++[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier" ]
+ layout_mode = 1
+ anchor_bottom = 1.0
+ offset_left = 10.0
+@@ -359,7 +367,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
+-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier" ]
++[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier" ]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -371,29 +379,29 @@
+ alignment = 1
+ theme_override_constants/separation = 7
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Copy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "운반용 외투"
+ 
+ 
+-[node name="Stats" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Copy" ]
++[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "가방 6장 · 교환 없음"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+-[node name="outfit_select_scout" type="Button" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+-layout_mode = 2
++[node name="outfit_select_scout" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 78)
+ size_flags_vertical = 3
+ toggle_mode = true
+ metadata/caption = "정찰용 작업복"
+-theme_override_styles/normal = ExtResource("6")
+-
+-[node name="Icon" type="TextureRect" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout" ]
++
++[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout" ]
+ layout_mode = 1
+ anchor_bottom = 1.0
+ offset_left = 10.0
+@@ -406,7 +414,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
+-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout" ]
++[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout" ]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -418,29 +426,29 @@
+ alignment = 1
+ theme_override_constants/separation = 7
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Copy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "정찰용 작업복"
+ 
+ 
+-[node name="Stats" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Copy" ]
++[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "가방 4장 · 교환 2회"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+-[node name="outfit_select_heatworker" type="Button" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+-layout_mode = 2
++[node name="outfit_select_heatworker" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 78)
+ size_flags_vertical = 3
+ toggle_mode = true
+ metadata/caption = "기본 작업복"
+-theme_override_styles/normal = ExtResource("7")
+-
+-[node name="Icon" type="TextureRect" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker" ]
++
++[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker" ]
+ layout_mode = 1
+ anchor_bottom = 1.0
+ offset_left = 10.0
+@@ -453,7 +461,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
+-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker" ]
++[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker" ]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -465,29 +473,29 @@
+ alignment = 1
+ theme_override_constants/separation = 7
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Copy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "기본 작업복"
+ 
+ 
+-[node name="Stats" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Copy" ]
++[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "가방 5장 · 교환 1회"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+-[node name="outfit_select_hoist" type="Button" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+-layout_mode = 2
++[node name="outfit_select_hoist" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 78)
+ size_flags_vertical = 3
+ toggle_mode = true
+ metadata/caption = "기본 작업복"
+-theme_override_styles/normal = ExtResource("7")
+-
+-[node name="Icon" type="TextureRect" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist" ]
++
++[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist" ]
+ layout_mode = 1
+ anchor_bottom = 1.0
+ offset_left = 10.0
+@@ -500,7 +508,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
+-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist" ]
++[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist" ]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -512,29 +520,29 @@
+ alignment = 1
+ theme_override_constants/separation = 7
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Copy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "기본 작업복"
+ 
+ 
+-[node name="Stats" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Copy" ]
++[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "가방 5장 · 교환 1회"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+-[node name="outfit_select_recovery" type="Button" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+-layout_mode = 2
++[node name="outfit_select_recovery" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 78)
+ size_flags_vertical = 3
+ toggle_mode = true
+ metadata/caption = "기본 작업복"
+-theme_override_styles/normal = ExtResource("7")
+-
+-[node name="Icon" type="TextureRect" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery" ]
++
++[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery" ]
+ layout_mode = 1
+ anchor_bottom = 1.0
+ offset_left = 10.0
+@@ -547,7 +555,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
+-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery" ]
++[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery" ]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -559,29 +567,29 @@
+ alignment = 1
+ theme_override_constants/separation = 7
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Copy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "기본 작업복"
+ 
+ 
+-[node name="Stats" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Copy" ]
++[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "가방 5장 · 교환 1회"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+-[node name="outfit_select_expedition" type="Button" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
+-layout_mode = 2
++[node name="outfit_select_expedition" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 78)
+ size_flags_vertical = 3
+ toggle_mode = true
+ metadata/caption = "기본 작업복"
+-theme_override_styles/normal = ExtResource("7")
+-
+-[node name="Icon" type="TextureRect" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition" ]
++
++[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition" ]
+ layout_mode = 1
+ anchor_bottom = 1.0
+ offset_left = 10.0
+@@ -594,7 +602,7 @@
+ expand_mode = 1
+ stretch_mode = 5
+ 
+-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition" ]
++[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition" ]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -606,22 +614,23 @@
+ alignment = 1
+ theme_override_constants/separation = 7
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Copy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "기본 작업복"
+ 
+ 
+-[node name="Stats" type="Label" parent="Margin/Layout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Copy" ]
++[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Copy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "가방 5장 · 교환 1회"
+ theme_override_colors/font_color = Color(0.58, 0.7, 0.71, 1)
+ 
+-[node name="OutfitHint" type="Label" parent="Margin/Layout/Stage/OutfitSelection" ]
+-unique_name_in_owner = true
++[node name="OutfitHint" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection" ]
++unique_name_in_owner = true
++visible = false
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -629,32 +638,33 @@
+ autowrap_mode = 2
+ theme_override_colors/font_color = Color(0.55, 0.65, 0.66, 1)
+ 
+-[node name="WeaponRail" type="VBoxContainer" parent="Margin/Layout" ]
++[node name="WeaponRail" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout" ]
+ layout_mode = 2
+ theme_override_constants/separation = 5
+ 
+-[node name="WeaponHeading" type="Label" parent="Margin/Layout/WeaponRail" ]
++[node name="WeaponHeading" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+ text = "무기 선택"
+-theme_override_colors/font_color = Color(0.61, 0.7, 0.69, 1)
+-
+-[node name="WeaponSelection" type="GridContainer" parent="Margin/Layout/WeaponRail" ]
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1.0)
++
++[node name="WeaponSelection" type="GridContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail" ]
+ unique_name_in_owner = true
+ layout_mode = 2
+ columns = 5
+ theme_override_constants/h_separation = 10
+ 
+-[node name="weapon_select_single" type="Button" parent="Margin/Layout/WeaponRail/WeaponSelection" ]
+-layout_mode = 2
++[node name="weapon_select_single" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentSelected"
+ custom_minimum_size = Vector2(0, 92)
+ size_flags_horizontal = 3
+ toggle_mode = true
++button_pressed = true
+ metadata/caption = "리벳"
+-theme_override_styles/normal = ExtResource("7")
+-
+-[node name="Art" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_single" instance=ExtResource("8")]
++
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_single" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -664,7 +674,7 @@
+ offset_bottom = -28.0
+ gun_id = "single"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_single" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_single" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -677,15 +687,15 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_burst" type="Button" parent="Margin/Layout/WeaponRail/WeaponSelection" ]
+-layout_mode = 2
++[node name="weapon_select_burst" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+ size_flags_horizontal = 3
+ toggle_mode = true
+ metadata/caption = "래칫"
+-theme_override_styles/normal = ExtResource("6")
+-
+-[node name="Art" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_burst" instance=ExtResource("8")]
++
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_burst" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -695,7 +705,7 @@
+ offset_bottom = -28.0
+ gun_id = "burst"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_burst" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_burst" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -708,15 +718,15 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_scatter" type="Button" parent="Margin/Layout/WeaponRail/WeaponSelection" ]
+-layout_mode = 2
++[node name="weapon_select_scatter" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+ size_flags_horizontal = 3
+ toggle_mode = true
+ metadata/caption = "스플린터"
+-theme_override_styles/normal = ExtResource("6")
+-
+-[node name="Art" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_scatter" instance=ExtResource("8")]
++
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_scatter" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -726,7 +736,7 @@
+ offset_bottom = -28.0
+ gun_id = "scatter"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_scatter" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_scatter" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -739,15 +749,15 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_heavy" type="Button" parent="Margin/Layout/WeaponRail/WeaponSelection" ]
+-layout_mode = 2
++[node name="weapon_select_heavy" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+ size_flags_horizontal = 3
+ toggle_mode = true
+ metadata/caption = "리액터"
+-theme_override_styles/normal = ExtResource("6")
+-
+-[node name="Art" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_heavy" instance=ExtResource("8")]
++
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_heavy" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -757,7 +767,7 @@
+ offset_bottom = -28.0
+ gun_id = "heavy"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_heavy" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_heavy" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -770,15 +780,15 @@
+ offset_top = -29.0
+ offset_bottom = -6.0
+ 
+-[node name="weapon_select_amplifier" type="Button" parent="Margin/Layout/WeaponRail/WeaponSelection" ]
+-layout_mode = 2
++[node name="weapon_select_amplifier" type="Button" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection" ]
++layout_mode = 2
++theme_type_variation = &"EquipmentChoice"
+ custom_minimum_size = Vector2(0, 92)
+ size_flags_horizontal = 3
+ toggle_mode = true
+ metadata/caption = "스파이크"
+-theme_override_styles/normal = ExtResource("6")
+-
+-[node name="Art" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_amplifier" instance=ExtResource("8")]
++
++[node name="Art" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_amplifier" instance=ExtResource("8")]
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
+@@ -788,7 +798,7 @@
+ offset_bottom = -28.0
+ gun_id = "amplifier"
+ 
+-[node name="Name" type="Label" parent="Margin/Layout/WeaponRail/WeaponSelection/weapon_select_amplifier" ]
++[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_amplifier" ]
+ layout_mode = 2
+ mouse_filter = 2
+ theme_override_font_sizes/font_size = 16
+@@ -820,11 +830,131 @@
+ text = "리벳  /  기본 작업복"
+ size_flags_horizontal = 3
+ vertical_alignment = 1
+-theme_override_colors/font_color = Color(0.65, 0.75, 0.74, 1)
++theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1.0)
+ 
+ [node name="Launch" type="Button" parent="Margin/Layout/Footer" ]
+ unique_name_in_owner = true
+ layout_mode = 2
++theme_type_variation = &"EquipmentPrimary"
+ custom_minimum_size = Vector2(0, 48)
+ text = "등반 시작  ›"
+ custom_minimum_size = Vector2(250, 54)
++
++[node name="Edge" type="Control" parent="Margin/Layout/Header/loadout_back"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Details/weapon_info"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/SelectedWeaponPanel/Details/starting_deck"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_single"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_burst"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_scatter"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_heavy"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/SelectionScroll/SelectionLayout/WeaponRail/WeaponSelection/weapon_select_amplifier"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/Footer/preparation_options"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
++
++[node name="Edge" type="Control" parent="Margin/Layout/Footer/Launch"]
++layout_mode = 1
++anchor_right = 1.0
++anchor_bottom = 1.0
++mouse_filter = 2
++script = ExtResource("12")
+--- before/equipment_actor.gd
++++ current/equipment_actor.gd
+@@ -1,19 +1,28 @@
++@tool
+ extends Control
+ ## The same composed actor as combat; this view only frames it on the room floor.
+ const ACTOR_SCENE = preload("res://redesign/weapon_actor.tscn")
+ const WeaponActor = preload("res://redesign/weapon_actor.gd")
+ const Pixel = preload("res://redesign/pixel_art.gd")
+ const SOURCE_RECT := Rect2(80, 0, 480, 496)
++@export_range(0.5, 1.0) var preview_scale := 0.85:
++	set(value):
++		preview_scale = value
++		queue_redraw()
++@export var editor_portrait: Texture2D
+ var actor_viewport: SubViewport
+ var actor: Node2D
+ 
+ func _ready() -> void:
+ 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+ 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
++	resized.connect(queue_redraw)
++	if Engine.is_editor_hint():
++		queue_redraw()
++		return
+ 	actor_viewport = ACTOR_SCENE.instantiate()
+ 	add_child(actor_viewport)
+ 	actor = actor_viewport.get_node("Actor")
+-	resized.connect(queue_redraw)
+ 	queue_redraw()
+ 
+ func set_loadout(outfit: String, gun: String) -> void:
+@@ -22,16 +31,17 @@
+ 	queue_redraw()
+ 
+ func display_rect() -> Rect2:
+-	var factor := minf(size.x / SOURCE_RECT.size.x, size.y / SOURCE_RECT.size.y)
++	var factor := minf(size.x / SOURCE_RECT.size.x, size.y / SOURCE_RECT.size.y) * preview_scale
+ 	var extent := SOURCE_RECT.size * factor
+ 	# Align registered boots, not the transparent padding below the source image.
+ 	var foot_y := (WeaponActor.FOOT.y - SOURCE_RECT.position.y) * factor
+ 	return Rect2(Vector2((size.x - extent.x) * 0.5, size.y - foot_y).round(), extent.round())
+ 
+ func _draw() -> void:
+-	if not is_instance_valid(actor_viewport): return
++	var portrait: Texture2D = actor_viewport.get_texture() if is_instance_valid(actor_viewport) else editor_portrait
++	if portrait == null: return
+ 	var rect := display_rect()
+ 	var factor := rect.size.x / SOURCE_RECT.size.x
+ 	var foot := rect.position + (WeaponActor.FOOT - SOURCE_RECT.position) * factor
+ 	Pixel.shadow(self, foot + Vector2(0, 1), 150.0 * factor)
+-	draw_texture_rect_region(actor_viewport.get_texture(), rect, SOURCE_RECT)
++	draw_texture_rect_region(portrait, rect, SOURCE_RECT)
+--- before/screen.gd
++++ current/screen.gd
+@@ -510,8 +510,10 @@
+ 	if not probe.profile.unlocks.has(selected_loadout_id): selected_loadout_id = "balanced"
+ 	selected_difficulty = clampi(selected_difficulty, 0, int(probe.profile.ascension))
+ 	if preparation_seed.is_empty(): preparation_seed = str(int(Time.get_unix_time_from_system()) % 1000000)
+-	var equipment = preload("res://redesign/equipment_screen.tscn").instantiate()
+-	equipment.custom_minimum_size = Vector2(0, maxf(size.y, 620.0))
++	var equipment_scene: PackedScene = preload("res://redesign/equipment_screen.tscn")
++	if ReadableUI.available(self).size.y < 660.0:
++		equipment_scene = preload("res://redesign/equipment/screen_short.tscn")
++	var equipment = equipment_scene.instantiate()
+ 	body.add_child(equipment)
+ 	equipment.bind_screen(self, probe.profile)
+ 

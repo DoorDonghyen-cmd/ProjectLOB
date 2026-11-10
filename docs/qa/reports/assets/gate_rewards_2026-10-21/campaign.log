@@ -1,0 +1,33 @@
+Godot Engine v4.7.stable.official.5b4e0cb0f - https://godotengine.org
+
+GATE CAMPAIGN START heavy upgrade=thermal
+FIRST REGION thermal_drive heavy gate commands=90
+FOUNDRY BATTLE heavy node=10101 solved=true turns=7 used=10 remaining=14
+FOUNDRY BATTLE heavy node=10201 solved=true turns=6 used=12 remaining=12
+FOUNDRY BATTLE heavy node=10301 solved=true turns=9 used=14 remaining=11
+FOUNDRY BATTLE heavy node=10401 solved=true turns=6 used=12 remaining=13
+FOUNDRY BATTLE heavy node=10602 solved=true turns=9 used=13 remaining=13
+FOUNDRY BATTLE heavy node=10701 solved=true turns=8 used=12 remaining=14
+FOUNDRY BATTLE heavy node=10902 solved=true turns=14 used=21 remaining=6
+GATE EFFECTS heavy { "charge_spent": 7, "chain_actions": 0 }
+GATE CAMPAIGN START burst upgrade=chain
+FIRST REGION volley_drive burst gate commands=84
+FOUNDRY BATTLE burst node=10101 solved=true turns=4 used=6 remaining=18
+FOUNDRY BATTLE burst node=10201 solved=true turns=4 used=7 remaining=17
+FOUNDRY BATTLE burst node=10301 solved=true turns=8 used=9 remaining=16
+FOUNDRY BATTLE burst node=10401 solved=true turns=4 used=7 remaining=18
+FOUNDRY BATTLE burst node=10602 solved=true turns=4 used=8 remaining=18
+FOUNDRY BATTLE burst node=10701 solved=true turns=4 used=7 remaining=19
+FOUNDRY BATTLE burst node=10902 solved=true turns=7 used=10 remaining=17
+GATE EFFECTS burst { "charge_spent": 0, "chain_actions": 1 }
+GATE CAMPAIGN START amplifier upgrade=production
+FIRST REGION siege_drive amplifier gate commands=65
+FOUNDRY BATTLE amplifier node=10101 solved=true turns=4 used=3 remaining=21
+FOUNDRY BATTLE amplifier node=10201 solved=true turns=3 used=3 remaining=21
+FOUNDRY BATTLE amplifier node=10301 solved=true turns=6 used=6 remaining=19
+FOUNDRY BATTLE amplifier node=10401 solved=true turns=3 used=4 remaining=21
+FOUNDRY BATTLE amplifier node=10602 solved=true turns=4 used=4 remaining=22
+FOUNDRY BATTLE amplifier node=10701 solved=true turns=3 used=4 remaining=22
+FOUNDRY BATTLE amplifier node=10902 solved=true turns=6 used=5 remaining=22
+GATE EFFECTS amplifier { "charge_spent": 0, "chain_actions": 0 }
+GATE CAMPAIGN COMPLETE checks=3963 failures=0

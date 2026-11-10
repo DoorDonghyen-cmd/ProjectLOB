@@ -1,0 +1,35 @@
+{
+  "status": "visual proposal; production equipment scene and bindings unchanged",
+  "checks": 41,
+  "scope": "Review-only runtime styling of the authored equipment screen; not production integration or Android testing.",
+  "user_confirmed": [
+    "UI before the two proposed new guns",
+    "focus on atmosphere and design",
+    "preserve real-time weapon/outfit/equipment appearance"
+  ],
+  "proposed_only": [
+    "charcoal iron frames and subdued brass selection",
+    "existing background and actor scale/layout",
+    "remove developmental outfit caption"
+  ],
+  "production_source_sha256": {
+    "redesign/equipment_screen.tscn": "845603463217260fb9dded167d7549a0efcb1eaa1a61206968a3659234b4f2f3",
+    "redesign/equipment_screen.gd": "376ffec3d496453fb574ab0216949e656303463364bcfba9bca3f40999061bc8",
+    "redesign/equipment_actor.gd": "8eacd277408a0bc7ffc718eec31e1e3a3a18fe6ae181fa397f87dda08351338c",
+    "redesign/equipment_weapon.gd": "b5aaec45fc600f53f89186f6b902b17de2beca82b11d1f5642cbe26f2e5abb55"
+  },
+  "artifact_sha256": {
+    "before.png": "62711025a93330bd9d0e919e00d7345b977fd5c7931b47ee88d0bf9242f5e118",
+    "before_short.png": "13120ad8f3c5fb418bffafb48e0f6e389626ab692c1ac83d18c25f33d924df81",
+    "capture.gd": "d2e08edbfc40b6e97bebf770797bbbdc1941f4fd812a7f524ec49f5918c67a82",
+    "material.gd": "0c5add17ee11907b49ac3f2f807ddd597957e39716255aa7820ad86cde2a7585",
+    "proposal.png": "3bdce6b47dac807b36576d1b42169c83f6dc1c2683506d2ac8ba9f6502b774ff",
+    "proposal_heavy.png": "309b9ebe8a2766cdbda2ad7da2c67dc30ea0534cec59e1d92c24b03074116498",
+    "proposal_short.png": "857330e52309a1975412f9575257c468078c32d204b083a1898d0f915cd32677",
+    "README.md": "06329010b8ac6df7cde47c81e4e3494c2177afcef8c5da537423d4bcbd99d230",
+    "review.json": "a549f17d0cecf9185d9cae6be6a1c3e858842f6955d41671b0cb30cf7be747a0",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout.log": "c3e00769b87ad1696c0a6d0f60f333d71cce3d64f26cf93c1a0e693bd09c626a",
+    "trim.gd": "1c7ebb846c47634674fb3f2c1454670cf32082944d950ba121cec4e5d46c1a24"
+  }
+}

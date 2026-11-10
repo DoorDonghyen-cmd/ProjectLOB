@@ -1,0 +1,30 @@
+{
+  "scope": "Read-only five-gun role probes and design candidates; no production gameplay, art or UI edits.",
+  "source_sha256": {
+    "redesign/content.gd": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+    "redesign/model.gd": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+    "redesign/forecast.gd": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+    "redesign/combat_roles.gd": "65dec220ab862b5a9c3bb95bae47d2ce604c43d52b1137a7f93d8197d5fd680a",
+    "redesign/campaign.gd": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+    "redesign/fire_heat_trial.gd": "1cb90035928b6e00c846feb431e8439430ee4c0e9687dd7d1868b28dbb4a8e5f",
+    "redesign/magazine_trial.gd": "50773b55b2f3f1e546b9a6148a136704a24459da4c6b71e7690155f2554f5a7a",
+    "redesign/gate_upgrades.gd": "951ec9ea45517d66d9e0a5d7969a8f56d200bedd4092ff9b38f1f482008401b0",
+    "redesign/equipment_screen.gd": "0f30056b3e599396790dd5094c5bbb74678c498e0f30711f680495e3419dbec9",
+    "redesign/equipment_screen.tscn": "b7a40060ca6412e0da779dd85fe928862d8d18f8eac7b8b38509f468ecb0fefc"
+  },
+  "probe_sha256": {
+    "probe.gd": "d9208a9e81e35db9743e7408d0ea67191622d2920102aa1372d30703e6bcf2ac",
+    "order_probe.gd": "7bd05aaca244a53661aa75cabcf640144a57d0cce3e0690c7b4546466d5c5bb8"
+  },
+  "result_sha256": {
+    "roles.json": "965ca94c31f525a6ef33fedc94ab0ff58171229f07884f8b0f5f65553ed3f2b6",
+    "order_probe.json": "ca80e9b25fab066c3bf1e14c3e7f16414f828c1f2634a3e887ee9554d5bdf881"
+  },
+  "current_guns": 5,
+  "new_weapons_implemented": false,
+  "rerun_results_equal": {
+    "roles.json": true,
+    "order_probe.json": true
+  },
+  "runner_sha256": "0f3c596cc3a1148882b0c67698caafc3969a3821dba26b95a3833cd8b1175e15"
+}

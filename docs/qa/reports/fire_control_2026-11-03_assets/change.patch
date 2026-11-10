@@ -1,0 +1,960 @@
+--- a/.agents/skills/00-project-manager/task_tracker.md
++++ b/.agents/skills/00-project-manager/task_tracker.md
+@@ -1,4 +1,6 @@
+ # ProjectLoB 현재 작업
++
++**최신 — 본편 사격/열 통합·덱 빌딩 재검토(2026-11-03):** [현행 규칙](../../../docs/direction/fire-control.md). 새 등반 범위 선택+교체 열 유지, 전용 냉각1행동 열0.5총기6등반154전투·실제 입력/새 프로세스 저장·이전 규칙 회귀 확인. [검증·남은 정예 사례](../../../docs/qa/reports/fire_control_2026-11-03.md). 사용자 사격 반복 문제는125상태 중99통과로 확인. [다음 편성/집중 획득/코어 운용 개편 근거](../../../docs/history/design/deckbuilding-review-2026-11-03.md). 본편 통합은 완료, 덱 빌딩 재미는 문제 확인/후속 설계 단계. Android/복장 혼합·지도 밀도 후속 유지.
+ 
+ **최신 — 사격·열 역할 비교판 연결(2026-11-02):** [실행/조건/본편 연결 기준](../../../docs/direction/fire-heat-comparison.md). 기존 비교 바로가기에서 앞줄 드래그→사격과 교체 냉각0/2/기존, 고열 위력80%를 독립 비교한다. 기본은 범위 선택+열 유지+위력 유지. 15실제 진입×5조건75승리 경로, 규칙5,805·조작105·기존 총기7,101/HUD11,536검사 실패0. [실제 화면·한계·변경분](../../../docs/qa/reports/fire_heat_comparison_2026-11-02.md). 다음은 사람 선택/피로/호흡으로 후보를 좁힌 뒤 후반·파츠·탄약 경제와 본편 통합 판단. Android/복장 혼합 미확인과 지도 밀도 후속은 유지한다.
+ 
+--- a/docs/direction/current.md
++++ b/docs/direction/current.md
+@@ -1,4 +1,6 @@
+ # ORVASK — 현재 방향과 결정 상태
++
++**최신 — 사격·열 관리 본편 통합과 덱 빌딩 문제 확인(2026-11-03):** 사용자 지시2·3에 따라 [새 등반 사격 범위/열 관리](fire-control.md)를 적용했다. 교체는 열 유지/기존 비용, 전용 냉각은1행동 열0. 교체1행동안은 반복 사격 통과를 늘려 제외했다.5총기·6등반154전투 경로, 본편 입력/저장/이전 저장 회귀 확인. 스플린터 특정 정예/획득 경로의 난도 편차는 남는다. [검증·화면](../qa/reports/fire_control_2026-11-03.md). 사용자 "생각 없이 사격해도 진행"은125진입 중99반복 통과로 확인됐다. [덱 빌딩 재검토](../history/design/deckbuilding-review-2026-11-03.md). 다음은 조합별 대응 편성과 집중 획득/연계 보상이며, 덱/보상/적 수치는 이번에 바꾸지 않았다. 아래 본편 미적용/사람 확인 후 통합 계획은 이 실행 결과로 갱신한다.
+ 
+ **최신 비교 — 사격 범위·교체/냉각 역할(2026-11-02):** [격리 비교판](fire-heat-comparison.md)을 `OPEN_MAGAZINE_COMPARISON.cmd`에 연결했다. 앞줄 드래그→사격 확정, 기존 탭→빼내기 유지, 교체 냉각 기존/0/2와 고열 위력80%를 독립 비교한다. 기본은 범위 선택+교체 열 유지+위력 유지. 현행 실제 획득 상태15개×5조건75경로와 예측/저장/조작·기존 HUD 회귀 통과. [화면과 판단 근거](../qa/reports/fire_heat_comparison_2026-11-02.md). 본편 기본 진입/기존 저장은 유지한다. 다음은 선택 이유·조작 피로·전투 호흡 확인 후 후보를 좁히고 후반/파츠/전체 등반을 검증하는 단계다. 아래 “다음은 역할 비교”를 구현 완료·사람 확인 대기로 갱신한다.
+ 
+--- /dev/null
++++ b/docs/direction/fire-control.md
+@@ -0,0 +1,21 @@
++# 본편 사격 범위와 열 관리
++
++2026-11-03. 사용자가 후반/파츠/탄약 검증과 본편 통합을 지시했다. [격리 비교](fire-heat-comparison.md)를 본편 **새 등반**에 연결한다. 채택 수치와 냉각 보완은 디렉터 판단이며, 사람의 재미 검증 완료를 뜻하지 않는다.
++
++## 적용 규칙
++
++- 첫 탄부터 연속으로 끌어 이번 사격의 최대 발수를 정하고 사격 버튼으로 확정한다. 짧게 누르기는 기존 빼내기다. 메뉴 −/+도 같은 발수를 조절한다. 탄창 밖에 놓기·Esc·포커스 이탈·다중 터치는 드래그를 취소한다. 선택만으로 탄·턴·RNG를 쓰지 않는다.
++- 총기별 발수 한계, 리액터 강행과 스파이크 처치 연속, 사격 뒤 적1행동, 과열 강제 냉각은 유지한다. 선택한 발수까지 도달하기 전에 조건에 따라 사격이 멈출 수 있다. 새 전투는 기본 발수로 시작한다.
++- **탄창 교체:** 기존 비용(기본2행동, 실제 파츠 보정 유지), 미사용 탄을 예비로 보내고 새 탄창을 채운다. 열과 연속 공격 누적을 유지한다. 냉각 약실의 교체 냉각+4는 적용한다.
++- **전용 냉각:** 적1행동, 잔탄 보존, 열0, 연속 공격 누적 초기화. 기존 비교의 무기별 부분 냉각보다 강화했다. 재장전에서 냉각을 제거한 뒤 별도 냉각을 반복하는 부담을 낮추고 의도적인 냉각의 이득을 분명히 한다. 열압 빌드는 고열 보너스를 잃는 대가가 있다.
++- 냉각탄/열방출탄·파츠 자체 효과, 적 편성·HP·지도·보상·출발 덱은 이번에 바꾸지 않는다. 고열 위력80%·확률 명중 저하는 채택하지 않는다.
++
++## 근거와 호환
++
++교체1행동안은 검토 후 제외했다. 기존 획득 상태125개에서 사격/빈 탄창 교체 반복 통과가99→107로 늘었다. 사용자 피드백인 생각 없이 사격하는 문제를 강화하기 때문이다. 교체2행동+전용 냉각 강화로5총기의 전체 등반 경로와 스플린터의 다른 시드를 확인했다. 스플린터 특정2구역 정예에서 기존 획득 경로로는 넓은 탐색도 해법을 찾지 못했으며, 경로/획득 선택에 따른 편차를 남은 균형 문제로 유지한다. [과정·실제 화면·검증](../qa/reports/fire_control_2026-11-03.md).
++
++캠페인/전투에 `fire_control_version=1`을 함께 기록하고, 공통 규칙 필드는 기존 `fire_heat_trial` 형식을 재사용한다. 본편에서는 range/none/피해 감소 꺼짐만 허용하고 선택 발수만 저장한다. 누락된 이전 저장은 자동 전환하지 않는다. 비교판은 기존 조건을 유지한다. 장비·총기 상세·파츠 교체 수치도 해당 모드의 실제 규칙을 표시한다.
++
++## 덱 빌딩에 대한 현재 판단
++
++사용자의 "그냥 별 생각없이 사격을 해도 진행이 돼"는 [독립 전투 재생에서도 확인](../history/design/deckbuilding-review-2026-11-03.md)됐다. 이번 입력·열 관리 연결은 선택 수단을 제공한 것이며 이 문제를 해결한 것으로 보지 않는다. 다음 우선순위는 **획득한 조합에 따라 대응이 달라지는 전투 편성, 핵심 탄의 집중 확보, 자동 성장과 능동 선택의 보상 배분**이다. 단순 HP 상향이나 조작 사용률을 목표로 삼지 않는다.
+--- a/docs/direction/fire-heat-comparison.md
++++ b/docs/direction/fire-heat-comparison.md
+@@ -1,4 +1,6 @@
+ # 사격 범위와 교체·냉각 역할 비교
++
++**후속 본편 적용 — 2026-11-03:** 사용자 지시로 [새 등반에 통합](fire-control.md)했다. 본편은 범위 선택/교체 열 유지에 전용 냉각 열0을 더한다. 이 문서의 비교판은11월2일 조건(총기별 부분 냉각/옵션 전환)을 보존한다. 아래 본편 미채택 문구는 비교판 작성 시점의 상태이며 최신 본편 상태를 덮지 않는다.
+ 
+ 2026-11-02. [플레이 후기](../history/design/playtest-review-2026-11-02.md)의 입력·열 관리 문제를 실제 모델과 공통 HUD로 비교한다. 사용자 승인은 개편 진행에 해당한다. 아래 수치는 디렉터 실험값이며 본편 채택이나 재미 검증 완료를 뜻하지 않는다.
+ 
+--- a/docs/direction/game-design.md
++++ b/docs/direction/game-design.md
+@@ -1,4 +1,6 @@
+ # 게임 설계 — 조합과 빌드가 중심인 등반
++
++**현행 — 사격 범위·교체/냉각 분리(2026-11-03):** 본편 새 등반에 [앞줄 범위 선택](fire-control.md)을 적용했다. 교체는 기존 행동 비용/열·연속 누적 유지, 전용 냉각은1행동 열0/누적 초기화/잔탄 보존이다. 냉각 약실의 교체 냉각+4 유지, 고열 위력 감소는 미채택. `fire_control_version=1` 없는 저장은 원래 규칙. 덱 빌딩은 [사격 반복 문제](../history/design/deckbuilding-review-2026-11-03.md)가 남아 있어 전투 편성·획득 집중도를 후속으로 검토한다.
+ 
+ **현행 — 전체 탄창 등반(2026-11-01):** 새 등반은 [전체 등반 탄창 개편](campaign-magazine.md)을 사용한다. 덱을 섞어 자동 장전하고 총기별로 나눠 쏘며, 잔탄 보존 냉각/탄창 교체/최대 두 발 선택 빼내기로 판단한다. 5구역 본편 흐름·획득·성장에 통합했다. 아래 개별 삽입/확정/손패 교환의 과거 규칙은 해당 이전 저장·훈련의 설명이며 새 등반을 덮어쓰지 않는다. [검증과 미확정 균형](../qa/reports/campaign_magazine_2026-11-01.md).
+ 
+--- a/docs/direction/heat-system.md
++++ b/docs/direction/heat-system.md
+@@ -1,4 +1,6 @@
+ # 발열을 중심으로 한 사격 설계
++
++**본편 후속 — 2026-11-03:** 새 등반 `fire_control_version=1`은 [교체/냉각 역할 분리](fire-control.md)를 사용한다. 교체는 열·연속 누적 유지(냉각 약실+4 적용), 전용 냉각은1행동 열0·누적 초기화·잔탄 보존이다. 고열 피해 감소는 채택하지 않았다. 아래 재장전의 일반 냉각/누적 초기화 규칙은 이전 저장에 남는다.
+ 
+ **격리 실험 — 2026-11-02:** [사격·교체/냉각 비교](fire-heat-comparison.md)에서 교체 냉각0/2와 연속 누적 유지, 고열 위력80% 후보를 플레이할 수 있다. 아래 본편 규칙은 그대로이며 실험 키가 없는 저장/새 등반에는 적용하지 않는다. 냉각 약실 효과와 고열 파츠의 가치는 별도로 확인한다.
+ 
+--- a/docs/direction/magazine-build.md
++++ b/docs/direction/magazine-build.md
+@@ -1,4 +1,6 @@
+ # 탄창 등반의 덱 빌딩 보강
++
++**사용자 재평가 — 2026-11-03:** 버전2 이후에도 "그냥 별 생각없이 사격을 해도 진행"된다는 후기를 받았다. 실제 획득125진입 상태의 반복 사격/교체 정책이99개를 통과했다. [조사·한계·다음 개편](../history/design/deckbuilding-review-2026-11-03.md). [사격 범위/열 관리](fire-control.md)는 본편 새 등반에 통합했으나 덱 빌딩 재미 해결로 기록하지 않는다. 다음 초점은 조합별 대응 편성, 핵심 탄 집중 확보, 자동 성장과 능동 선택의 차이다. 아래 덱·보상·적 수치는 이번 조사에서 유지한다.
+ 
+ ## 결정 상태
+ 
+--- a/docs/direction/playtest-priorities.md
++++ b/docs/direction/playtest-priorities.md
+@@ -1,4 +1,6 @@
+ # 플레이 피드백 통합 우선순위
++
++**본편 통합 후 우선순위 — 2026-11-03:** 사용자2·3 실행 지시에 따라 [사격 범위/열 관리](fire-control.md)를 새 등반에 연결하고 후반·파츠·탄약·이전 저장을 검증했다. [6등반154전투·입력/저장·미해결 정예 사례](../qa/reports/fire_control_2026-11-03.md). 최신 사용자 문제는 "그냥 별 생각없이 사격을 해도 진행"이며 독립125상태 중99반복 통과로 확인됐다. 다음은 **조합에 따라 대응이 달라지는 대표 편성 → 핵심 탄 집중/연계/발견 획득 비교 → 코어별 운용 차이 → 지도 밀도·전체 등반 조정**이다. [근거와 범위](../history/design/deckbuilding-review-2026-11-03.md). 복장 혼합·Android 실제 배율/복귀·지속 성능은 병행 미해결로 유지한다.
+ 
+ **비교 구현 완료 — 2026-11-02 후속:** [사격 범위·교체/냉각 비교판](fire-heat-comparison.md)에서 5총기×3실제 진입 상태를 플레이할 수 있다. 앞줄 드래그와 기존 탭 빼내기, 교체 냉각0/2/기존, 고열 위력80%를 독립 비교한다. 기본은 범위 선택+열 유지+위력 유지이며 본편 채택은 아직 아니다. [기능/75경로/화면 근거](../qa/reports/fire_heat_comparison_2026-11-02.md). 다음은 같은 전투의 선택 이유·피로·호흡 확인 → 후보 축소·후반/파츠/탄약 경제 → 본편 통합 판단 → 지도 전투 밀도/전체 등반이다. 아래의 후보 목록은 사용자 제안 기록이며 이번에 전부 구현한 것은 아니다.
+ 
+--- /dev/null
++++ b/docs/history/daily/2026-11-03.md
+@@ -0,0 +1,10 @@
++# 2026-11-03
++
++## 후반 검증·사격/열 본편 통합·덱 빌딩 재검토
++
++- 11월2일 사용자 지시2·3으로 시작한 작업을 이어갔다. 추가 후기 "그냥 별 생각없이 사격을 해도 진행이 돼"를 현재 문제로 반영했다.
++- 새 등반에 앞줄 범위 드래그→사격, 기존 탭→빼내기, 메뉴 발수 조절, 교체 열/연속 누적 유지, 전용 냉각1행동 열0을 연결했다. 총기별 발수/강행/연속 조건과 교체 기존 비용, 냉각 약실+4 유지. 기존 저장/훈련은 전환하지 않는다.
++- 부분 냉각/교체2행동의 후반 난도, 전용 냉각 강화, 교체1행동안을 실제 모델로 비교했다. 교체1행동안은 반복 사격 통과99→107로 사용자 문제를 키워 제외했다. 최종5총기6등반154전투 합법 경로,154전투 명령 재생과 자동 저장/정확한 이어하기 검증. 스플린터 기존 덱의2구역 정예 실패는 미해결 사례로 보존했다.
++- 덱 빌딩 조사: 획득125진입 상태의 사격/빈 탄창 교체 반복 통과99개. 같은 탄 순서의 파츠 제거 대조16개. 초반 낮은 특수탄 비중과 후반 넓고 얕은 구성, 일반 보상 후보의 새 계열 우선 정책을 확인했다. 실제 사용자 덱이나 연속 플레이 승률로 일반화하지 않는다.
++- 다음은 조합별 대응 편성·집중/연계/발견 보상·코어 운용 차이다. 덱/보상/적 수치는 이번 조사에서 유지했다. APK·커밋·푸시·외부 게시 없음. Android 실제 조작·배율/복귀·지속 성능과 복장 혼합 제보는 미확인.
++- [규칙](../../direction/fire-control.md) · [실제 화면/검사/변경분](../../qa/reports/fire_control_2026-11-03.md) · [덱 빌딩 검토](../design/deckbuilding-review-2026-11-03.md).
+--- /dev/null
++++ b/docs/history/design/deckbuilding-review-2026-11-03.md
+@@ -0,0 +1,40 @@
++# 덱 빌딩 재검토 — 사격 반복만으로 진행되는 문제
++
++2026-11-03. 사용자: "덱빌딩의 재미가 아직 부족"이며 구체적으로 "그냥 별 생각없이 사격을 해도 진행이 돼". [이전 검토](deckbuilding-review-2026-11-01.md)의 기본탄 축소·탄창 구성 파츠 변경 이후에도 남은 문제다. 이번에는 원인과 다음 개편 초점을 조사했으며 덱/보상/적 수치를 추가로 바꾸지 않았다.
++
++## 관측한 사실
++
++시드731042에서 실제 획득한5총기×25전투 진입 상태를 사용했다. 정책은 **탄이 있으면 최대 발수 사격, 비면 교체, 공격탄 소진 시 비상 보급**뿐이다. 의도적 냉각·빼내기·범위 선택·미래 RNG 조회는 없다. 각 상태는 독립 진입이며 앞 전투부터 이 정책으로 보상을 얻은 연속 등반 승률은 아니다.
++
++| 구역 | 상태 수 | 기존 규칙 반복 통과 | 새 규칙 반복 통과 | 새 규칙에서 파츠 효과를 제거한 대조 |
++| --- | ---: | ---: | ---: | ---: |
++| 1 | 20 | 16 | 15 | 10 |
++| 2 | 30 | 25 | 26 | 1 |
++| 3 | 20 | 16 | 17 | 4 |
++| 4 | 30 | 24 | 24 | 0 |
++| 5 | 25 | 18 | 17 | 1 |
++| 전체 | 125 | 99 | 99 | 16 |
++
++파츠 제거는 같은 탄 순서를 유지한 인공 대조다. 소유 파츠를 실제로 처분한 획득 경로나 정상 편성 검증으로 세지 않는다. 이것은 파츠가 큰 힘을 제공한다는 근거이며, 모든 파츠를 약화해야 한다는 결론은 아니다.
++
++- 출발 기본탄은 리벳/스파이크14장, 3발 총기20장. 첫 획득 특수탄1장을 넣어도 대부분이 기본탄이다. 조사한1구역 진입 덱의 특수탄 비중은 평균 약10%다.
++- 각 덱에서100개 뽑기 시드를 실제 섞기·첫 특수탄 보장·탄창 장전으로 재생했다.1구역의 두 번째 탄창이 기본탄뿐인 비율은 상태별 평균 약69%였다. 첫 전투처럼 특수탄을 아직 얻지 않은 상태도 포함한다.
++- 5구역 진입 덱은 평균29.9장 중 특수탄15.7장, 특수 탄종11.7종이었다. 핵심 탄을 여러 장 갖추는 구성보다1~2장씩 넓게 가진 구성이 많다. 이는 사용자의 실제 덱 전체가 아니라 기존 공개 정보 기반 획득 정책의 결과다.
++- `campaign_content.rewards()`는 코어/보유 탄에 맞는 후보와 **미보유 계열 우선 후보**를 만든다. 첫 보상·보스·정예·탄약고는 별도 경로다. 일반 후보 함수의125회 대조 모두 두 번째 후보는 새 계열이었으나,125회 모두 실제 일반 보상을 받았다는 뜻은 아니다.
++- 획득 화면은 유한 탄약 모드에서 추가 버튼을 위로 옮긴다. 교체도 가능하지만 탄 총량 확보가 먼저 읽힌다. 총량과 조합 밀도를 함께 선택하게 하는 실제 전후 정보가 중요하다.
++
++원시 결과와 최종 코드 재생은 [본편 통합 보고서](../../qa/reports/fire_control_2026-11-03.md)에 연결한다.
++
++## 판단
++
++**전투 중 선택을 건너뛰어도 성장한 덱이 자동으로 해결하는 구간이 많다.** 사격 범위 선택과 냉각 분리는 그 선택을 할 수 있게 하지만, 선택해야 할 이유를 전투 전체에 만들지는 못했다. 새 규칙에서도 반복 통과 총수가99개인 것이 근거다. 모든 전투에서 조작을 강제할 필요는 없고, 강해진 조합으로 짧게 돌파하는 구간도 필요하다.
++
++현재 가설은 초반에는 특수탄이 적어 선택할 재료가 부족하고, 후반에는 자동 성장 보너스가 대응 차이를 덮는다는 것이다. 탄종이 많다는 사실만으로 여러 빌드가 성립한다고 판단할 수 없다. 기존 방패·사수·화상/장갑·연타 조건 중 어떤 것이 실제 처치선과 생존 시간을 바꾸는지 비교해야 한다.
++
++## 다음 개편 우선순위
++
++1. **대표 전투의 대응 차이부터 만든다.** 장갑 전열, 빠른 후열/압력탄, 지속 피해가 통하는 버티기 등 세 유형을 현재 전투 모델로 비교한다. 같은 덱에서 그대로 사격과 범위/냉각/탄 포기의 결과가 갈리는 사례를 만들되, 특정 탄 한 장 없으면 패배하는 편성은 피한다. 보유 조합에 따라 최소 두 가지 대응이 가능한지 본다. HP 일괄 상향을 먼저 하지 않는다.
++2. **보상을 ‘집중·연계·발견’으로 비교한다.** 보유 핵심 탄을 다시 얻어 밀도를 높이는 선택, 함께 쓸 탄을 얻는 선택, 새 방향을 여는 선택을 나눈다. 지금 보유한 덱으로 실제 다음 탄창과 행동이 얼마나 달라지는지 보여 주며, 전투 총량 감소/비상 보급 부담도 함께 확인한다. 구체 지급량·후보 수는 아직 미채택이다.
++3. **코어가 운영을 바꾸는지 검증한다.** 연타·화상/열압·관통/큰 한 발이 같은 전투에서 서로 다른 운용으로 통과하는지 확인한다. 파츠 없는 대조와의 피해 차이만으로 만족하지 않고, 더 쏘기/멈추기·열을 남기기/버리기·어떤 탄을 모을지가 달라지는지 본다.
++
++본편 입력/열 통합은 완료 작업으로, 덱 빌딩 재미는 **문제 확인·개편 범위 제안**으로 구분한다. 사람의 새 빌드 평가와 Android 실제 조작/지속 성능은 남는다.
+--- a/docs/history/index.md
++++ b/docs/history/index.md
+@@ -1,4 +1,6 @@
+ # ProjectLoB 작업 기록
++
++- [2026-11-03 사격·열 관리 본편 통합·후반/파츠/탄약 검증·덱 빌딩 재검토](daily/2026-11-03.md)
+ 
+ - [2026-11-02 플레이 피드백·배율/방문 경로 수정·탄창/지도 가독성·사격 범위/교체/냉각 비교](daily/2026-11-02.md)
+ 
+--- /dev/null
++++ b/docs/qa/reports/fire_control_2026-11-03.md
+@@ -0,0 +1,69 @@
++# 본편 사격·열 관리 통합과 덱 빌딩 검토
++
++2026-11-02 착수, 11-03 검증/기록. 사용자 요청: 후반·파츠·탄약 검증과 본편 통합 진행, 덱 빌딩 재미 점검. 이어서 "그냥 별 생각없이 사격을 해도 진행이 돼"라고 구체화했다.
++
++## 적용 결과
++
++`PLAY.cmd`의 **새 등반**에 [사격 범위·열 관리](../../direction/fire-control.md)를 연결했다. 첫 탄부터 드래그→사격 확정, 기존 짧은 탭→빼내기, 메뉴 발수 조절을 공통 HUD에서 사용한다. 발사 예측/표시/실제 탄 소모/저장을 같은 모델로 연결했다. 드래그 중 같은 발수에 머물면 예측을 반복 계산하지 않는다.
++
++탄창 교체는 기존 비용과 예비 순환을 유지하며 열·연속 발열을 지우지 않는다. 냉각 약실+4는 유지한다. 전용 냉각은1행동으로 열0·연속 누적 초기화·잔탄 보존. 고열 위력 감소는 껐다. 장비/총기 상세와 파츠 교체 수치를 실제 규칙에 맞췄다. 기존 저장과 훈련은 원래 규칙이며, 캠페인/전투의 버전 불일치나 본편 저장에 실험 설정을 끼운 경우 거절한다.
++
++## 후반 검증에서 바뀐 판단
++
++1. 비교판의 부분 냉각과 교체2행동을 그대로 연결하자 스플린터2구역 정예와 스파이크 최종 보스에서 기존 획득 경로의 승리를 찾지 못했다. 제한 탐색의 실패이며 불가능 증명은 아니다.
++2. 전용 냉각을 열0으로 강화해 스파이크를 포함한4총기의 전체 등반을 확인했다. 스플린터의 해당 정예는 폭384/깊이100과 앞줄 빼내기를 포함해도 해법을 찾지 못했다.
++3. 교체1행동도 시험했다. 해당 두 상태는 승리 경로가 생겼으나, 독립125상태의 사격/빈 탄창 교체 반복 통과가99→107로 늘어 **채택하지 않았다**.
++4. 최종은 교체2행동 유지+전용 냉각 강화다. 스플린터는 같은 시드에서 공개된 정예 표시를 보고 다른 경로를 택하고 코어에 맞는 탄을 우선 획득해 완주했다. 다른 시드17의 정예 우선 경로도 완주했다. 특정 덱/경로의 어려운 정예를 없애거나 성공 사례로 바꾸어 기록하지 않는다.
++
++## 연속 등반과 한계
++
++| 시드·경로/획득 정책 | 총기 | 실제 전투 | 결과 |
++| --- | --- | ---: | --- |
++|731042·기존 상점/정비 우선 정책 | 리벳·래칫·리액터·스파이크 |100 |4등반 완주 |
++|731042·정예 대안 경로/코어 탄 우선 | 스플린터 |24 |완주 |
++|17·정예 우선/코어 탄 우선 | 스플린터 |30 |완주 |
++
++합계6등반154전투. 새 Campaign에서 출발해 실제 지도·보상·구매·정비·전투 명령만 사용했다. 승리나 재화를 주입하지 않았다. 확인한 경로에서 비상 보급은0회, 의도적 냉각은46회였다. 적은 일부 시점에서 접촉 직전까지 도달한다. 스파이크 최종 보스의 최소 거리는1이며 여유가 큰 완주라고 보지 않는다.
++
++탐색은 미래 탄 순서/RNG를 사용한다. 최적 경로나 사람 승률을 측정한 것이 아니다. 총기5종 모두 같은 획득 경로가 통과했다는 주장도 아니다. 스플린터 시드731042의2구역 정예10301·기존 덱은 여전히 미해결 균형 사례다. [기존 경로 실패](fire_control_2026-11-03_assets/scatter_blocked.json) · [넓은 탐색](fire_control_2026-11-03_assets/probe_vent.json).
++
++## 덱 빌딩 검사
++
++사용자의 사격 반복 문제는 별도로 확인했다. 기존 획득 상태125개에서 사격·빈 탄창 교체·소진 시 비상 보급만 쓰는 정책은 기존99개, 최종 규칙에서도99개를 통과했다. 이 정책에는 의도적 냉각·범위 선택·빼내기·미래 정보 판단이 없다. **입력과 열 관리를 통합했다고 덱 빌딩 재미가 해결된 것은 아니다.**
++
++같은 탄 순서에서 파츠 효과를 제거한 인공 대조는16개만 통과했다. 성장 효과는 강하지만, 전투 중 선택을 건너뛰어도 해결되는 구간이 많다는 판단이다. 초반에는 특수탄 밀도가 낮고, 후반에는 많은 계열을1~2장씩 갖는 경향도 관측했다. 실제 사용자 덱이나 보상 전체의 일반화는 피한다. [상세 수치·근거·다음 개편](../../history/design/deckbuilding-review-2026-11-03.md) · [원시 결과](fire_control_2026-11-03_assets/audit.json).
++
++## 실제 Godot 화면
++
++740×360. 선택한 첫 탄만 올라오고1발 사격으로 표시된다. 기존 카드/전장 배치를 사용한다.
++
++![본편 앞줄 범위 선택](fire_control_2026-11-03_assets/ready_740x360.png)
++
++1280×800 장비 화면. 교체와 냉각의 실제 비용/열 처리를 구별하고 시작 탄약 수를 현재 총기에 맞춰 표시한다.
++
++![장비 안내](fire_control_2026-11-03_assets/equipment.png)
++
++844×390·1280×800·2016×908에서도 선택/배치 검사를 수행했다. PC의 터치 이벤트·확대 배율 검사이며 Android 실제 터치/안전 영역·회전 검증은 아니다.
++
++## 검사
++
++Godot4.7, 모든 검사와 재개는 `qa_runtime/fire_control_20261102/` 등 격리 저장에서 수행했다. 날짜 표기는 착수일이며 최종 결과는11월3일이다.
++
++| 검사 | 결과/범위 |
++| --- | --- |
++| `run_fire_control.ps1 -Mode rules -Label release` |249검사 실패0. 새/이전 저장, 선택 소모/예측, 열 유지,6종 파츠×5총기 냉각 계약, 잘못된 버전/실험 설정 거절 |
++| `-Mode ui -Label release` |165검사 실패0. 실제 새 등반 버튼,4크기/5총기 드래그·사격·교체·냉각·빼내기·메뉴, 자동 저장·이전 HUD |
++| `-Mode restart -Label release -Stage write/read` |8/14검사 실패0. 별도 프로세스에서 본편 이어하기·선택 발수·열·RNG·빼내기 잔여량 일치 |
++| 전체 등반 |14,953검사 실패0인6완주. 전투/보상/정비/관문마다 정확한 저장 왕복 |
++| 최종 소스 재생 |16,147검사 실패0. [전체154전투 명령과 시간·저장 재검증](fire_control_2026-11-03_assets/replay.json) |
++| 기존 비교 규칙 |5,805검사 실패0 |
++| 공통 HUD 회귀 |`run_prototype_hud.ps1 -Mode ui -Fast` 11,536검사 실패0 |
++| 리소스 임포트 |`run_prototype_hud.ps1 -Mode import` 통과 |
++
++초기 검사에서 새 숫자 버전의 JSON float 복원을 거절하던 오류를 수정했다. UI 검사 재실행 시 격리 저장의 ‘진행 중 등반 교체’ 확인창을 무시하던 테스트도 바로잡아 새 저장에서 시작한다. 해당 테스트 실패를 제품 기능 통과로 기록하지 않았다. 파츠 계약 중 일부는 통제된 단위검사 상태이며 실제 획득 결과와 구분한다.
++
++[소스/결과 해시](fire_control_2026-11-03_assets/manifest.json) · [이번 변경만 분리한 패치](fire_control_2026-11-03_assets/change.patch). 기존 미커밋 변경을 보존하고 작업 시작 상태를 별도로 저장했다.
++
++## 남은 범위
++
++다음은 덱에 따라 대응이 달라지는 대표 편성, 핵심 탄의 집중 확보와 연계 보상, 자동 성장/능동 선택의 보상 배분이다. 덱/보상/적 개편은 이번 검사 결과를 기반으로 진행할 후속이며 아직 적용하지 않았다. Android 지속 성능/기기 발열·실제 손가락 조작, 기존 복장 혼합 제보는 미확인 상태다. 지도 전투 밀도도 후속으로 유지한다. APK·커밋·푸시·외부 게시 없음.
+--- /dev/null
++++ b/tools/run_fire_control.ps1
+@@ -0,0 +1,22 @@
++param([ValidateSet('climb','audit','rules','ui','restart','probe','replay')][string]$Mode='rules',[string]$Label='final',[string]$Guns='single,burst,scatter,heavy,amplifier',[int]$Seed=731042,[ValidateSet('safe','elite','avoid_elite')][string]$Route='safe',[ValidateSet('write','read')][string]$Stage='write',[ValidateSet('original','focus')][string]$Build='original')
++$ErrorActionPreference='Stop'
++if($Label -notmatch '^[a-zA-Z0-9_-]+$'){throw 'Invalid label'}
++$repo=Split-Path -Parent $PSScriptRoot
++$project=(Get-ChildItem -LiteralPath $repo -Directory | Where-Object {Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')} | Select-Object -First 1).FullName
++$runtime=Join-Path $repo ('qa_runtime/fire_control_20261102/'+$Mode+'_'+$Label)
++$env:APPDATA=Join-Path $runtime 'Roaming';$env:LOCALAPPDATA=Join-Path $runtime 'Local';$env:QA_OUTPUT_DIR=$runtime
++$env:QA_GUNS=$Guns;$env:QA_SEED=$Seed;$env:QA_ROUTE=$Route;$env:QA_RESUME_PHASE=$Stage
++$env:QA_BUILD=$Build
++New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
++$stdout=Join-Path $runtime ($Stage+'_stdout.log');$stderr=Join-Path $runtime ($Stage+'_stderr.log')
++$arguments=@('--path',('"'+$project+'"'),'--script',('res://tests/fire_control_'+$Mode+'.gd'))
++if($Mode -in @('climb','audit','rules','probe','replay')){$arguments+='--headless'}else{$arguments+=@('--rendering-method','gl_compatibility','--resolution','1280x800','--position','-2000,-2000')}
++$process=Start-Process -FilePath 'D:/ProjectLoB/.tmp/godot-4.7/Godot_v4.7-stable_win64_console.exe' -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
++$null=$process.Handle;$deadline=[DateTime]::UtcNow.AddMinutes(25)
++while(-not $process.WaitForExit(500)){
++ $errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++ if($errors -match 'ERROR:|Parse Error' -or [DateTime]::UtcNow -gt $deadline){Stop-Process -Id $process.Id;throw "Fire control stopped: $errors"}
++}
++$process.WaitForExit();$result=Get-Content -Raw -LiteralPath $stdout -Encoding UTF8;$errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++Write-Output ($result -split "`n" | Select-Object -Last 8)
++if($process.ExitCode -ne 0 -or $errors -match 'ERROR:' -or $result -notmatch 'FIRE CONTROL COMPLETE checks=\d+ failures=0'){throw "Fire control failed; see $stdout $errors"}
+--- a/새-게임-프로젝트/redesign/campaign.gd
++++ b/새-게임-프로젝트/redesign/campaign.gd
+@@ -63,6 +63,8 @@
+ 		s.magazine_build_version = Model.MagazineBuild.VERSION
+ 		model.s.magazine_build_version = Model.MagazineBuild.VERSION
+ 		model.s.deck = Model.MagazineBuild.start_deck(gun)
++		s.fire_control_version = Model.FireHeatTrial.CAMPAIGN_VERSION
++		Model.FireHeatTrial.activate_campaign(model.s)
+ 	model.begin_encounter(int(s.compressor_charges))
+ 
+ func magazine_enabled() -> bool:
+@@ -824,6 +826,8 @@
+ 	if not _whole(state.get("sustained_version",0),0,Ammo.Sustained.VERSION): return false
+ 	if not _whole(state.get("growth_version",0),0,Model.Engines.Growth.VERSION): return false
+ 	if not _whole(state.get("magazine_campaign_version",0),0,1): return false
++	if not _whole(state.get("fire_control_version",0),0,Model.FireHeatTrial.CAMPAIGN_VERSION): return false
++	if int(state.get("fire_control_version",0))>0 and int(state.get("magazine_campaign_version",0))!=1:return false
+ 	if not _whole(state.get("magazine_build_version",0),0,Model.MagazineBuild.VERSION): return false
+ 	if int(state.get("magazine_build_version",0))>0 and int(state.get("magazine_campaign_version",0))!=1: return false
+ 	if not _whole(state.get("inventory_version",0),0,Model.Reserve.INVENTORY_VERSION): return false
+@@ -909,6 +913,7 @@
+ 	if not combat.restore_state(data.combat): return false
+ 	if int(state.get("magazine_campaign_version",0))==1 and not Model.MagazineTrial.weapons_enabled(combat.s): return false
+ 	if state.get("magazine_build_version",0) != combat.s.get("magazine_build_version",0): return false
++	if state.get("fire_control_version",0) != combat.s.get("fire_control_version",0): return false
+ 	if state.get("combat_revision",0) != combat.s.get("combat_revision",0): return false
+ 	if state.get("sustained_version",0) != combat.s.get("sustained_version",0): return false
+ 	if state.get("growth_version",0) != combat.s.get("growth_version",0): return false
+--- a/새-게임-프로젝트/redesign/campaign_hud/combat.gd
++++ b/새-게임-프로젝트/redesign/campaign_hud/combat.gd
+@@ -11,6 +11,7 @@
+ var combo_label: Label
+ 
+ func _ready()->void:
++ drag=preload("res://redesign/samples/fire_heat/drag.gd").new(self)
+  var parent: Node=board.get_parent()
+  var at: int=board.get_index()
+  parent.remove_child(board);board.free()
+@@ -45,6 +46,8 @@
+  node("EjectApply").pressed.connect(apply_ejection)
+  for i in range(slot_count):node("Select%d"%i).pressed.connect(select_ejection.bind(i))
+  node("Help").pressed.connect(show_help)
++ node("BudgetLess").pressed.connect(func():select_budget(current_budget()-1))
++ node("BudgetMore").pressed.connect(func():select_budget(current_budget()+1))
+  node("Reset").pressed.connect(show_help)
+  node("Pressure").pressed.connect(show_route)
+  node("Other").pressed.connect(func():host._to_menu.call_deferred())
+@@ -92,10 +95,16 @@
+   combo_label.text=combo_line
+   combo_label.visible=not combo_line.is_empty()
+   combo_label.tooltip_text=combo_line
+- hud.cycle_focus(["MenuClose","Help","Pressure","Other","EffectsVolume","CombatMotion"])
++ node("BudgetRow").visible=Trial.range_enabled(model.s)
++ node("BudgetValue").text="이번 사격 최대 %d발"%current_budget()
++ node("BudgetLess").disabled=current_budget()<=1
++ node("BudgetMore").disabled=current_budget()>=maximum_budget()
++ hud.cycle_focus((["MenuClose","BudgetLess","BudgetMore"] if Trial.range_enabled(model.s) else ["MenuClose"])+["Help","Pressure","Other","EffectsVolume","CombatMotion"])
+ 
+ func show_help()->void:
+- show_detail("탄창과 선택",weapon_hint()+"\n사격 · 적 1행동 / 냉각 · 적 1행동\n탄창 교체 · 적 %d행동 / 미사용 탄은 예비 뒤로\n과열되면 강제 냉각 중 적이 추가로 접근합니다.\n빼내기 · 탄창당 2발까지, 중간 탄도 선택 가능\n빼낸 탄은 이번 전투에서 소모되고 빈자리는 채우지 않습니다.\n다음 전투에 보유 탄 전체가 복구됩니다.\n전투·보상·정비마다 자동 저장합니다."%model.reload_cost())
++ var controls: String=""
++ if Trial.range_enabled(model.s):controls="\n첫 탄부터 오른쪽으로 끌기 → 발수 선택 → 사격 버튼으로 확정\n짧게 누르기 → 빼내기 선택 · 메뉴 −/+로도 발수 조절\n탄창 밖에 놓기·Esc·포커스 이탈은 범위 선택 취소\n짧게 쏴도 적 1행동 · 리액터 강행/스파이크 연속 조건 유지\n탄창 교체는 열·연속 발열 유지(냉각 약실 +4는 적용)\n냉각은 적 1행동·잔탄 보존·열 0·연속 발열 초기화"
++ show_detail("탄창과 선택",weapon_hint()+controls+"\n사격 · 적 1행동 / 냉각 · 적 1행동\n탄창 교체 · 적 %d행동 / 미사용 탄은 예비 뒤로\n과열되면 강제 냉각 중 적이 추가로 접근합니다.\n빼내기 · 탄창당 2발까지, 중간 탄도 선택 가능\n빼낸 탄은 이번 전투에서 소모되고 빈자리는 채우지 않습니다.\n다음 전투에 보유 탄 전체가 복구됩니다.\n전투·보상·정비마다 자동 저장합니다."%model.reload_cost())
+ 
+ func show_route()->void:
+  show_detail("등반 현황","%s · %d / %d층\n현재 · %s\n승리 %d회 · %d Cr\n\n전투가 끝나면 보상을 고르고 지도에서 다음 목적지를 선택합니다. 관문에서는 개조와 재정비를 마친 뒤 다음 구역으로 출발합니다."%[host.campaign.region_info().name,host.campaign.s.floor,host.campaign.region_info().floors,host.campaign.node().name,host.campaign.s.clears,host.campaign.s.credits])
+--- a/새-게임-프로젝트/redesign/campaign_hud/combat.tscn
++++ b/새-게임-프로젝트/redesign/campaign_hud/combat.tscn
+@@ -5,3 +5,28 @@
+ 
+ [node name="CampaignCombatHUD" instance=ExtResource("hud")]
+ script = ExtResource("controller")
++
++[node name="BudgetRow" type="HBoxContainer" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="1"]
++layout_mode = 2
++theme_override_constants/separation = 8
++
++[node name="BudgetLess" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
++layout_mode = 2
++custom_minimum_size = Vector2(44,44)
++theme_override_font_sizes/font_size = 16
++text = "−"
++
++[node name="BudgetMore" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
++layout_mode = 2
++custom_minimum_size = Vector2(44,44)
++theme_override_font_sizes/font_size = 16
++text = "+"
++
++[node name="BudgetValue" type="Label" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
++layout_mode = 2
++size_flags_horizontal = 3
++theme_override_font_sizes/font_size = 16
++text = "이번 사격 최대 2발"
++mouse_filter = 2
++
++[editable path="MenuLayer"]
+--- a/새-게임-프로젝트/redesign/campaign_ui.gd
++++ b/새-게임-프로젝트/redesign/campaign_ui.gd
+@@ -737,7 +737,7 @@
+ 	var projection=ui.model.get_script().new()
+ 	projection.s=after
+ 	var changes: PackedStringArray=[]
+-	if Ammo.reload_cooling(before)!=Ammo.reload_cooling(after): changes.append("재장전 냉각  %d → %d"%[Ammo.reload_cooling(before),Ammo.reload_cooling(after)])
++	if Ammo.replacement_cooling(before)!=Ammo.replacement_cooling(after): changes.append("재장전 냉각  %d → %d"%[Ammo.replacement_cooling(before),Ammo.replacement_cooling(after)])
+ 	if Ammo.hand_capacity(before)!=Ammo.hand_capacity(after): changes.append("선택 패  %d → %d장"%[Ammo.hand_capacity(before),Ammo.hand_capacity(after)])
+ 	if Ammo.heat_limit(before)!=Ammo.heat_limit(after): changes.append("열 한계  %d → %d"%[Ammo.heat_limit(before),Ammo.heat_limit(after)])
+ 	if Ammo.hot_threshold(before)!=Ammo.hot_threshold(after) and (Ammo.uses_hot_effect(before) or Ammo.uses_hot_effect(after)):
+--- a/새-게임-프로젝트/redesign/content.gd
++++ b/새-게임-프로젝트/redesign/content.gd
+@@ -547,10 +547,14 @@
+ static func heat_after_reload(state: Dictionary) -> int:
+ 	var current := int(state.get("heat", 0))
+ 	if preload("res://redesign/fire_heat_trial.gd").separate_reload(state):
+-		var part_bonus:=0
+-		for part in equipped_parts(state):part_bonus+=int(PARTS[part].get("reload_cooling",0))
+-		return maxi(0,current-preload("res://redesign/fire_heat_trial.gd").reload_amount(state,part_bonus))
++		return maxi(0,current-replacement_cooling(state))
+ 	return 0 if current >= heat_limit(state) else maxi(0, current - reload_cooling(state))
++
++static func replacement_cooling(state: Dictionary)->int:
++	if not preload("res://redesign/fire_heat_trial.gd").separate_reload(state):return reload_cooling(state)
++	var part_bonus:=0
++	for part in equipped_parts(state):part_bonus+=int(PARTS[part].get("reload_cooling",0))
++	return preload("res://redesign/fire_heat_trial.gd").reload_amount(state,part_bonus)
+ 
+ static func heat_limit(state: Dictionary) -> int:
+ 	var limit := int(weapon_spec(state).heat_limit)
+--- a/새-게임-프로젝트/redesign/equipment_screen.gd
++++ b/새-게임-프로젝트/redesign/equipment_screen.gd
+@@ -88,8 +88,11 @@
+ 	%OutfitName.text = outfit.name
+ 	%OutfitSummary.text = "손패 %d장 · 교환 %d회" % [outfit.hand, outfit.exchange]
+ 	if not host.preparation_training:
+-		%OutfitSummary.text = "휴대 상한 %d발 · 시작 탄약 20발" % Reserve.CARRY_LIMITS[outfit_id]
+-		%FireMode.text = {"single":"한 번에 최대 2발","burst":"한 번에 최대 3발","scatter":"한 번에 최대 3발","heavy":"3발 · 과열 뒤 1발 강행","amplifier":"단발 · 처치하면 연속"}[host.selected_weapon_id]
++		%WeaponIdentity.text = {"single":"공격탄 피해 +1","burst":"같은 적 3회 적중 시 +4","scatter":"탄마다 무작위 표적","heavy":"과열 뒤 1발 강행","amplifier":"단발 효과 2배 · 처치 연속"}[host.selected_weapon_id]
++		%OutfitSummary.text = "휴대 상한 %d발 · 시작 탄약 %d발" % [Reserve.CARRY_LIMITS[outfit_id],preload("res://redesign/magazine_build.gd").start_deck(host.selected_weapon_id).size()]
++		%Reload.text = "탄창 교체  %d턴 · 열 유지" % maxi(2,int(gun.reload))
++		%Cooling.text = "냉각  1턴 · 열 0"
++		%FireMode.text = {"single":"1~2발 범위 선택","burst":"1~3발 범위 선택","scatter":"1~3발 범위 선택","heavy":"1~3발 · 과열 뒤 1발 강행","amplifier":"범위 선택 · 처치하면 연속"}[host.selected_weapon_id]
+ 	%OutfitHint.text = "훈련은 기본 작업복을 사용합니다." if host.preparation_training else "신규 4종 테스트 개방 · 목록을 밀어 선택"
+ 	%OutfitPortrait.set_loadout(outfit_id, host.selected_weapon_id)
+ 	for id in Content.GUNS:
+--- a/새-게임-프로젝트/redesign/fire_heat_trial.gd
++++ b/새-게임-프로젝트/redesign/fire_heat_trial.gd
+@@ -1,11 +1,16 @@
+ extends RefCounted
+-## Only the isolated comparison opts in. No campaign creation enables this key.
++## Shared rules. New campaigns opt into the selected profile; old saves stay unchanged.
+ const KEY:="fire_heat_trial"
+ const VERSION:=1
++const CAMPAIGN_VERSION:=1
+ const INPUTS:=["fixed","range"]
+ const RELOADS:=["legacy","none","small"]
+ const SMALL_COOLING:=2
+ const HOT_PERCENT:=80
++
++static func activate_campaign(state: Dictionary)->void:
++	state.fire_control_version=CAMPAIGN_VERSION
++	state[KEY]={"version":VERSION,"input":"range","reload":"none","damage":false,"rounds":0}
+ 
+ static func config(state: Dictionary)->Dictionary:return state.get(KEY,{})
+ static func enabled(state: Dictionary)->bool:return int(config(state).get("version",0))==VERSION
+@@ -25,6 +30,12 @@
+ 	return maxi(1,raw*percent/100) if raw>0 else 0
+ 
+ static func valid(state: Dictionary)->bool:
++	var campaign=state.get("fire_control_version",0)
++	if not campaign is int and not campaign is float:return false
++	if campaign!=0 and campaign!=CAMPAIGN_VERSION:return false
++	if campaign==CAMPAIGN_VERSION:
++		if not state.get(KEY) is Dictionary:return false
++		if state[KEY].get("input")!="range" or state[KEY].get("reload")!="none" or state[KEY].get("damage")!=false:return false
+ 	if not state.has(KEY):return true
+ 	if not state[KEY] is Dictionary:return false
+ 	var value: Dictionary=state[KEY]
+--- a/새-게임-프로젝트/redesign/model.gd
++++ b/새-게임-프로젝트/redesign/model.gd
+@@ -27,6 +27,7 @@
+ 	begin_encounter()
+ 
+ func begin_encounter(field_charges: int = 1) -> void:
++	if FireHeatTrial.enabled(s):s.fire_heat_trial.rounds=0
+ 	if Reserve.emergency_enabled(s): s.emergency_uses = 0
+ 	Engines.begin(s)
+ 	Gates.begin(s)
+@@ -306,7 +307,7 @@
+ 	var deployments: Array = []
+ 	if s.phase not in ["lost", "reward", "won"] and reserve_count() > 0 and alive_count() == 0:
+ 		deployments = _deploy_reinforcements(true)
+-	s.heat = 0 if forced else maxi(0, before - MagazineTrial.cooling_amount(Content.reload_cooling(s)))
++	s.heat = 0 if forced or int(s.get("fire_control_version",0))==FireHeatTrial.CAMPAIGN_VERSION else maxi(0, before - MagazineTrial.cooling_amount(Content.reload_cooling(s)))
+ 	Content.Sustained.reset(s)
+ 	if s.phase in ["lost", "reward", "won"]:
+ 		s.heat = 0
+--- a/새-게임-프로젝트/redesign/samples/fire_heat/drag.gd
++++ b/새-게임-프로젝트/redesign/samples/fire_heat/drag.gd
+@@ -73,10 +73,12 @@
+ 		if not active and delta.length()<12:return false
+ 		if not active and (delta.x<0 or absf(delta.y)>absf(delta.x)):
+ 			pending=false;return false # Ordinary horizontal/vertical scroll stays available.
++		var entered:=not active
+ 		active=true
+ 		# Entering drag must also clear any prior ejection selection, even at the same budget.
+ 		var index:=index_at(point)
+-		if index>=0:ui.select_budget(mini(index+1,ui.maximum_budget()),false)
++		var wanted:=mini(index+1,ui.maximum_budget())
++		if index>=0 and (entered or wanted!=ui.current_budget()):ui.select_budget(wanted,false)
+ 		return true
+ 	if release:
+ 		if not active:pending=false;return false
+--- a/새-게임-프로젝트/redesign/samples/fire_heat/screen.gd
++++ b/새-게임-프로젝트/redesign/samples/fire_heat/screen.gd
+@@ -1,16 +1,13 @@
+ extends "res://redesign/samples/hud/combat_weapon_hud.gd"
+-const Trial=preload("res://redesign/fire_heat_trial.gd")
+ const TRIAL_SAVE:="user://fire_heat_comparison_v1.json"
+ const NODES:=[101,401,802]
+ const CASE_NAMES:=["첫 교전","장갑 진지","첫 관문"]
+ var options:={"version":1,"input":"range","reload":"none","damage":false,"rounds":0}
+ var openings: Array=[]
+-var drag
+ 
+ func _ready()->void:
+ 	openings=JSON.parse_string(FileAccess.get_file_as_string("res://redesign/samples/fire_heat/openings.json"))
+ 	case_index=1
+-	drag=preload("res://redesign/samples/fire_heat/drag.gd").new(self)
+ 	super._ready()
+ 	for connection in node("Help").get_signal_connection_list("pressed"):node("Help").disconnect("pressed",connection.callable)
+ 	node("Help").pressed.connect(func():
+@@ -45,19 +42,6 @@
+ func next_case()->void:
+ 	if busy or overlay_open or eject_mode:return
+ 	case_index=(case_index+1)%NODES.size();mount(false)
+-func maximum_budget()->int:
+-	var normal: int=Model.MagazineTrial.WEAPON_PULSES[model.s.gun]
+-	if model.s.gun=="heavy":normal+=1 # The fourth is conditional on actual overdrive.
+-	return maxi(1,mini(normal,model.s.magazine.size()))
+-func current_budget()->int:
+-	var selected:=Trial.budget(model.s)
+-	return mini(selected,maximum_budget()) if selected>0 else maximum_budget()
+-func select_budget(amount: int,save: bool=true)->void:
+-	if busy or not Trial.range_enabled(model.s) or model.s.phase!="ready":return
+-	eject_mode=false;eject_selected.clear();hud.focused_round=-1
+-	model.s.fire_heat_trial.rounds=clampi(amount,1,maximum_budget())
+-	refresh()
+-	if save:persist()
+ func change_option(key: String)->void:
+ 	if busy:return
+ 	if key=="damage":options.damage=not options.damage
+@@ -79,9 +63,6 @@
+ 	node("BudgetValue").text="이번 사격 최대 %d발"%current_budget()
+ 	node("BudgetLess").disabled=not range_mode or current_budget()<=1
+ 	node("BudgetMore").disabled=not range_mode or current_budget()>=maximum_budget()
+-	if range_mode and model.s.phase=="ready" and not model.s.magazine.is_empty():
+-		node("FireName").text=("최대 %d발 사격" if model.s.gun in ["amplifier","heavy"] else "%d발 사격")%current_budget()
+-		node("Fire").accessibility_name=node("FireName").text+" · "+node("FireCost").text
+ 	show_trial_heat(int(model.s.heat))
+ 	node("TrialRules").text="조건 변경 → 같은 전투 처음부터.\n짧은 묶음도 적 1행동. 리액터 4발째는 강행 조건일 때만.\n열 유지/-2 교체는 연속 발열을 끊지 않습니다. 냉각 약실 +4 유지.\n80% 시험: 발사 전 열 75%부터 위력 ×0.8(버림, 최소1), 장갑 차감 전. 화상은 그대로."
+ 
+@@ -106,13 +87,3 @@
+ 	if restored.s.gun!=GUNS[int(data.gun)] or int(restored.s.get("encounter_id",0))!=NODES[int(data.case)]:return false
+ 	gun_index=int(data.gun);case_index=int(data.case);model=restored;options=Trial.config(model.s).duplicate(true)
+ 	return true
+-func _input(event: InputEvent)->void:
+-	if drag!=null and model!=null and not model.s.is_empty() and drag.handle(event):get_viewport().set_input_as_handled();return
+-	super._input(event)
+-func _process(delta: float)->void:
+-	if drag!=null:drag.tick(delta)
+-func select_ejection(index: int)->void:
+-	if drag!=null and drag.suppress_tap():return
+-	super.select_ejection(index)
+-func _notification(what: int)->void:
+-	if what==NOTIFICATION_APPLICATION_FOCUS_OUT and drag!=null:drag.cancel()
+--- a/새-게임-프로젝트/redesign/samples/hud/combat_weapon_hud.gd
++++ b/새-게임-프로젝트/redesign/samples/hud/combat_weapon_hud.gd
+@@ -1,12 +1,18 @@
+ extends "res://redesign/samples/combat_weapon_magazine.gd"
+ const Hud=preload("res://redesign/samples/hud/combat_hud_presenter.gd")
++const Trial=preload("res://redesign/fire_heat_trial.gd")
+ var hud
++var drag
+ func _ready()->void:
++ drag=preload("res://redesign/samples/fire_heat/drag.gd").new(self)
+  hud=Hud.new(self);hud.bind()
+  super._ready()
+ func refresh()->void:
+  super.refresh()
+  if hud!=null:hud.render()
++ if model!=null and Trial.range_enabled(model.s) and model.s.phase=="ready" and not model.s.magazine.is_empty():
++  node("FireName").text=("최대 %d발 사격" if model.s.gun in ["amplifier","heavy"] else "%d발 사격")%current_budget()
++  node("Fire").accessibility_name=node("FireName").text+" · "+node("FireCost").text
+ func lock_actions()->void:
+  super.lock_actions()
+  if hud!=null:hud.lock()
+@@ -15,9 +21,29 @@
+  if hud!=null:hud.sync_focus()
+ func show_detail(title: String,body: String)->void:
+  super.show_detail(title,hud.help_body(title,body))
+-func select_ejection(index: int)->void: hud.choose_round(index)
++func select_ejection(index: int)->void:
++ if drag!=null and drag.suppress_tap():return
++ hud.choose_round(index)
+ func toggle_ejection()->void: hud.remove_selected()
+ func _input(event: InputEvent)->void:
++ if drag!=null and model!=null and not model.s.is_empty() and drag.handle(event):get_viewport().set_input_as_handled();return
+  if hud!=null:hud.pointer_input(event)
++func _process(delta: float)->void:
++ if drag!=null:drag.tick(delta)
++func _notification(what: int)->void:
++ if what==NOTIFICATION_APPLICATION_FOCUS_OUT and drag!=null:drag.cancel()
++func maximum_budget()->int:
++ var normal: int=Model.MagazineTrial.WEAPON_PULSES[model.s.gun]
++ if model.s.gun=="heavy":normal+=1
++ return maxi(1,mini(normal,model.s.magazine.size()))
++func current_budget()->int:
++ var selected:=Trial.budget(model.s)
++ return mini(selected,maximum_budget()) if selected>0 else maximum_budget()
++func select_budget(amount: int,save: bool=true)->void:
++ if busy or not Trial.range_enabled(model.s) or model.s.phase!="ready":return
++ eject_mode=false;eject_selected.clear();hud.focused_round=-1
++ model.s.fire_heat_trial.rounds=clampi(amount,1,maximum_budget())
++ refresh()
++ if save:persist()
+ func _unhandled_key_input(event: InputEvent)->void:
+  if event.is_action_pressed("ui_cancel") and hud.back():get_viewport().set_input_as_handled()
+--- a/새-게임-프로젝트/redesign/screen.gd
++++ b/새-게임-프로젝트/redesign/screen.gd
+@@ -1992,7 +1992,9 @@
+ 	if whole_magazine:
+ 		spec = Content.weapon_spec({"gun":id,"weapon_version":1,"combat_revision":Content.COMBAT_REVISION}).duplicate()
+ 		spec.identity = {"single":"최대 2발 · 공격탄 피해 +1", "burst":"최대 3발 · 같은 적 3회 적중 시 +4", "scatter":"최대 3발 · 탄마다 무작위 표적", "heavy":"최대 3발 · 과열 뒤 1발 강행", "amplifier":"단발 효과 2배 · 처치하면 연속"}[id]
+-		spec.text = "덱에서 섞인 탄창을 장전합니다. 사격 뒤 적이 1행동하며 잔탄은 보존됩니다. 냉각은 적 1행동, 탄창 교체는 적 %d행동입니다. 탄을 먼저 선택해 탄창당 최대 2발을 빼낼 수 있습니다." % int(spec.reload)
++		spec.text = "덱에서 섞인 탄창을 장전합니다. 사격 뒤 적이 1행동하며 잔탄은 보존됩니다. 냉각은 적 1행동, 탄창 교체는 적 %d행동입니다. 탄을 먼저 선택해 탄창당 최대 2발을 빼낼 수 있습니다." % (maxi(2,int(spec.reload)) if page=="loadout" else model.reload_cost())
++		if page=="loadout" or int(model.s.get("fire_control_version",0))==Model.FireHeatTrial.CAMPAIGN_VERSION:
++			spec.text += "\n첫 탄부터 끌어서 발수 선택 → 사격으로 확정합니다. 냉각은 열을 0으로 낮추고 연속 발열을 끊습니다. 탄창 교체는 열과 연속 발열을 유지합니다(냉각 약실 +4 적용)."
+ 	var column := _dialog(spec.name + " · " + spec.role, true)
+ 	column.name = "WeaponDetails"
+ 	_label(column, spec.identity, 24, WeaponView.COLORS[id])
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_audit.gd
+@@ -0,0 +1,58 @@
++extends SceneTree
++const Model=preload("res://redesign/model.gd")
++const Content=preload("res://redesign/content.gd")
++const Campaign=preload("res://redesign/campaign.gd")
++var checks:=0
++var failures: Array=[]
++var records: Array=[]
++var rewards: Array=[]
++func _initialize()->void:run.call_deferred()
++func check(ok: bool,label: String)->void:
++	checks+=1
++	if not ok:failures.append(label);print("FAIL ",label)
++func automatic(state: Dictionary,modern: bool,parts: bool=true)->Dictionary:
++	var m=Model.new();check(m.restore_state(state),"earned combat restores")
++	if modern:Model.FireHeatTrial.activate_campaign(m.s)
++	if not parts:m.s.equipped_parts=[];m.s.part="none" # Ablation, not an earned build.
++	var initial_turns: int=m.s.turns;var actions: Dictionary={};var forced:=0;var min_distance:=9999
++	for step in range(160):
++		if m.s.phase!="ready":break
++		var action:="fire" if not m.s.magazine.is_empty() else "emergency" if m.can_emergency_resupply() else "reload"
++		var ok: bool=m.fire() if action=="fire" else m.emergency_resupply() if action=="emergency" else m.reload_magazine()
++		if not ok:break
++		actions[action]=int(actions.get(action,0))+1
++		if action=="fire":forced+=int(m.s.history.back().detail.get("forced_cooling",{}).get("elapsed",0))
++		for enemy in m.s.enemies+m.s.projectiles:
++			if enemy.hp>0:min_distance=mini(min_distance,int(enemy.distance))
++	return {"won":m.s.phase in ["reward","won"],"phase":m.s.phase,"turns":m.s.turns-initial_turns,"actions":actions,"forced_cooling_turns":forced,"spent":m.s.discard.size(),"remaining":m.s.magazine.size()+m.s.hand.size()+m.s.draw.size(),"margin":min_distance}
++func run()->void:
++	var output:=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/fire_control_20261102/"):quit(2);return
++	for gun in ["single","burst","scatter","heavy","amplifier"]:
++		var folder:=ProjectSettings.globalize_path("res://../qa_runtime/campaign_magazine_20261101/v3_%s/rules"%gun)
++		for file in DirAccess.get_files_at(folder):
++			if not file.begins_with("combat_") or not file.ends_with(".json"):continue
++			var data: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(folder.path_join(file)))
++			var state: Dictionary=data.combat
++			var families: Dictionary={};var special:=0
++			for id in state.deck:
++				var family:=Content.source_id(str(id))
++				families[family]=int(families.get(family,0))+1
++				if family!="basic":special+=1
++			var row:={"gun":gun,"region":int(data.campaign.region)+1,"node":data.campaign.node,"deck_count":state.deck.size(),"special":special,"families":families,"parts":state.equipped_parts,"legacy_repeat":automatic(state,false),"new_repeat":automatic(state,true),"new_without_parts":automatic(state,true,false)}
++			# Draw distributions use actual shuffle, initial-special guarantee and magazine loading.
++			var two_special:=0;var two_empty:=0;var observed:=0
++			for seed in range(100):
++				var m=Model.new();m.s=state.duplicate(true);m.s.seed=str(seed*104729+17);m.begin_encounter();m.trial_load_magazine()
++				var second: Array=m.MagazineTrial.take(m.s.hand+m.s.draw,m.capacity(),Content.slot_cost,Content.anchor).selected
++				var count:=second.filter(func(id):return Content.source_id(str(id))!="basic").size()
++				two_special+=count;two_empty+=int(count==0);observed+=1
++			row.second_special=float(two_special)/observed;row.second_empty=float(two_empty)/observed
++			records.append(row)
++			# Candidate composition at this earned state; not fabricated reward grants.
++			var c=Campaign.new();check(c.restore_state(data),"earned whole campaign restores")
++			var options: Array=Campaign.Content.rewards(c.node(),int(c.s.seed),state.deck,state.equipped_parts,int(c.s.discovery_version))
++			rewards.append({"gun":gun,"node":c.s.node,"region":int(c.s.region)+1,"options":options,"owned_family_counts":options.map(func(id):return families.get(Content.source_id(str(id)),0))})
++		print("AUDIT ",gun)
++	FileAccess.open(output.path_join("audit.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"note":"Independent earned entry snapshots. Repeat policy only fires/reloads/emergency; no deliberate cooling, ejection or future RNG. Removed-parts condition is a synthetic ablation. Not a fresh-run human win rate.","battles":records,"reward_candidates":rewards},"  "))
++	print("FIRE CONTROL COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_audit.gd.uid
+@@ -0,0 +1 @@
++uid://ben1usbbaqpon
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_climb.gd
+@@ -0,0 +1,36 @@
++extends "res://tests/campaign_magazine_rules.gd"
++func choose_ammo(c,options: Array)->String:
++	if OS.get_environment("QA_BUILD")!="focus":return super.choose_ammo(c,options)
++	var priorities: Array={"volley_drive":["precise","charge","shatter","chase","pierce","arc","cool"],"thermal_drive":["bore","charge_heat","vent","detonate","push","cool"],"siege_drive":["pierce","charge","charge_hot","bypass","cool"]}.get(preferred_core,[])
++	for family in priorities:
++		var limit:=4 if family in ["precise","bore","pierce"] else 2 if family=="charge" else 1
++		if c.model.s.deck.filter(func(id):return Ammo.source_id(str(id))==family).size()>=limit:continue
++		for id in options:
++			if Ammo.source_id(str(id))==family:return str(id)
++	return super.choose_ammo(c,options)
++func command(c,item: Dictionary)->bool:
++	if item.action=="enter" and OS.get_environment("QA_ROUTE")=="avoid_elite":
++		var choices: Array=c.choices()
++		var requested: Array=choices.filter(func(n):return int(n.id)==int(item.id))
++		if not requested.is_empty() and requested[0].get("elite",false):
++			for option in choices:
++				if not option.get("elite",false):item=item.duplicate(true);item.id=option.id;break
++	if item.action=="fire":c.model.s.fire_heat_trial.rounds=int(item.get("rounds",0))
++	return super.command(c,item)
++func _run()->void:
++	if not ProjectSettings.globalize_path("user://").replace("\\","/").contains("/qa_runtime/fire_control_20261102/"):quit(2);return
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	solver=preload("res://tests/fire_control_solver.gd").new()
++	route_policy="safe";acquisition_policy="refit"
++	if OS.get_environment("QA_ROUTE")=="elite":route_policy="elite"
++	for gun in OS.get_environment("QA_GUNS").split(","):
++		run_gun=gun;run_seed=int(OS.get_environment("QA_SEED"));commands=[]
++		preferred_core={"single":"siege_drive","burst":"volley_drive","scatter":"volley_drive","heavy":"thermal_drive","amplifier":"siege_drive"}[gun]
++		var c=Campaign.new();c.start(gun,run_seed,0,"balanced",3,"carrier",true)
++		check(c.s.fire_control_version==1 and c.model.FireHeatTrial.range_enabled(c.model.s),"new campaign enables selected production rules")
++		roundtrip(c)
++		var won: bool=await play_run(c)
++		endpoints.append({"gun":gun,"seed":run_seed,"won":won,"region":int(c.s.region)+1,"phase":c.s.phase,"deck":c.model.s.deck,"parts":c.s.equipped_parts,"commands":commands.duplicate(true)})
++		check(won,"new fire-control full climb "+gun);write_report()
++	print("FIRE CONTROL COMPLETE checks=%d failures=%d"%[checks,failures.size()])
++	quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_climb.gd.uid
+@@ -0,0 +1 @@
++uid://6lycwutr4nmk
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_probe.gd
+@@ -0,0 +1,25 @@
++extends SceneTree
++const Model=preload("res://redesign/model.gd")
++const Solver=preload("res://tests/fire_control_solver.gd")
++var rows: Array=[]
++func _initialize()->void:run.call_deferred()
++func run()->void:
++	var output:=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/fire_control_20261102/"):quit(2);return
++	for entry in [["scatter","climb_bursts/combat_scatter_731042_r2_n10301.json"],["amplifier","climb_heavy_amp/combat_amplifier_731042_r5_n41002.json"]]:
++		var data: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(ProjectSettings.globalize_path("res://../qa_runtime/fire_control_20261102/")+entry[1]))
++		var m=Model.new();m.restore_state(data.combat)
++		var solver=Solver.new()
++		var path:=solver.ranged(m.s,384,100,true)
++		for step in path:
++			match step.action:
++				"fire":m.s.fire_heat_trial.rounds=step.rounds;m.fire()
++				"reload":m.reload_magazine()
++				"cool":m.cool_magazine()
++				"emergency":m.emergency_resupply()
++				"eject":m.eject_magazine_rounds(step.indices)
++		rows.append({"gun":entry[0],"path":path,"phase":m.s.phase,"turns":m.s.turns-data.combat.turns,"start":data.combat})
++		FileAccess.open(output.path_join("probe.json"),FileAccess.WRITE).store_string(JSON.stringify(rows,"  "))
++		print("PROBE ",entry[0]," path=",path.size()," phase=",m.s.phase)
++		await process_frame
++	print("FIRE CONTROL COMPLETE checks=0 failures=0");quit()
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_probe.gd.uid
+@@ -0,0 +1 @@
++uid://c2dj6agkdykjt
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_replay.gd
+@@ -0,0 +1,20 @@
++extends "res://tests/fire_control_climb.gd"
++func _run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/fire_control_20261102/"):quit(2);return
++	for label in ["climb_vent_four","climb_scatter_route","climb_scatter17_vent"]:
++		var path: String=ProjectSettings.globalize_path("res://../qa_runtime/fire_control_20261102/")+str(label)+"/balance.json"
++		var report: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(path))
++		for endpoint in report.endpoints:
++			if not check(endpoint.won,"source is a completed earned route"):continue
++			var c=Campaign.new();c.start(endpoint.gun,int(endpoint.seed),0,"balanced",3,"carrier",true)
++			commands=[]
++			for step in endpoint.commands:
++				var expected_turns: int=int(step.get("turns",-1))
++				if not command(c,step.duplicate(true)):break
++				if expected_turns>=0:check(c.model.s.turns==expected_turns,"current model preserves recorded action timing")
++			check(c.s.phase=="won" and c.profile.wins==1,"current source replays whole earned climb and one award")
++			endpoints.append({"gun":endpoint.gun,"seed":endpoint.seed,"source":label,"won":c.s.phase=="won","turns":c.model.s.turns})
++			print("REPLAY ",endpoint.gun," ",endpoint.seed," ",c.s.phase)
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"runs":endpoints},"  "))
++	print("FIRE CONTROL COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_replay.gd.uid
+@@ -0,0 +1 @@
++uid://qnymqm4fafps
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_restart.gd
+@@ -0,0 +1,19 @@
++extends "res://tests/fire_control_ui.gd"
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/fire_control_20261102/"):quit(2);return
++	Input.emulate_mouse_from_touch=true
++	var expected_file:=output.path_join("expected.json")
++	if OS.get_environment("QA_RESUME_PHASE")=="write":
++		var c=Campaign.new();c.start("heavy",731042,0,"balanced",3,"carrier",true);c.enter(101)
++		await mount(c);await drag_one();await tap("Fire");await tap("Reload")
++		await tap("Select1");await tap("EjectToggle")
++		FileAccess.open(expected_file,FileAccess.WRITE).store_string(JSON.stringify({"campaign":c.s,"combat":c.model.s,"profile":c.profile}))
++	else:
++		host=load("res://redesign/main.tscn").instantiate();root.add_child(host);await settle();await tap("resume")
++		var expected: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(expected_file))
++		check(canonical({"campaign":host.campaign.s,"combat":host.model.s,"profile":host.campaign.profile})==expected,"new process resumes exact live rules, prefix, retained heat, RNG and ejection")
++		hud_bounds();check(host.campaign_hud.current_budget()==1,"new process shows selected one-shot prefix")
++		await capture("resumed")
++	host.free();await settle()
++	print("FIRE CONTROL COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_restart.gd.uid
+@@ -0,0 +1 @@
++uid://by3ath4cegxjx
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_rules.gd
+@@ -0,0 +1,54 @@
++extends "res://tests/fire_heat_rules.gd"
++const Campaign=preload("res://redesign/campaign.gd")
++func finish()->void:
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"records":records},"  "))
++	print("FIRE CONTROL COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
++func data(c)->Dictionary:return canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/fire_control_20261102/"):quit(2);return
++	for gun in ["single","burst","scatter","heavy","amplifier"]:
++		var c=Campaign.new();c.start(gun,17,0,"balanced",3,"carrier",true)
++		check(c.s.fire_control_version==1 and Trial.range_enabled(c.model.s),"fresh full campaign enables prefix firing")
++		check(c.save("user://new.json")==OK,"map saves")
++		var loaded=Campaign.new();check(loaded.restore("user://new.json"),"new map restores")
++		check(c.enter(101),"enter real first fight")
++		c.model.s.fire_heat_trial.rounds=1;verify_fire(c.model)
++		var heat: int=c.model.s.heat;var streak:=Content.Sustained.count(c.model.s)
++		check(c.model.reload_magazine(),"actual campaign replacement succeeds")
++		check(c.model.s.heat==heat and Content.Sustained.count(c.model.s)==streak,"replacement keeps heat and sustained count")
++		c.sync_combat();c.save("user://new.json")
++		check(loaded.restore("user://new.json") and data(loaded)==data(c),"mid-combat exact campaign save resumes prefix and RNG")
++		var stable:=data(loaded)
++		for invalid in [0.5,2,"1"]:
++			var corrupt:=data(c);corrupt.campaign.fire_control_version=invalid
++			check(not loaded.restore_state(corrupt) and data(loaded)==stable,"malformed campaign rule version rejected without mutation")
++		for key in ["reload","damage","input"]:
++			var corrupt:=data(c);corrupt.combat.fire_heat_trial[key]={"reload":"legacy","damage":true,"input":"fixed"}[key]
++			check(not loaded.restore_state(corrupt) and data(loaded)==stable,"campaign cannot silently opt into experimental rules")
++		# Exact old-magazine saved games retain old behavior, even after a new encounter.
++		var old_path:=ProjectSettings.globalize_path("res://../qa_runtime/campaign_magazine_20261101/v3_%s/rules/combat_%s_731042_r1_n401.json"%[gun,gun])
++		var old: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(old_path))
++		check(loaded.restore_state(old),"historical magazine campaign restores")
++		check(not Trial.enabled(loaded.model.s),"historical campaign never migrated")
++		loaded.model.fire();var initial: int=loaded.model.s.heat
++		var expected:=Content.heat_after_reload(loaded.model.s)
++		if loaded.model.s.phase=="ready":
++			loaded.model.reload_magazine()
++			check(loaded.model.s.phase!="ready" or loaded.model.s.heat==expected,"historical reload still uses weapon cooling")
++		check(not loaded.s.has("fire_control_version"),"legacy campaign metadata remains absent")
++		# Controlled equipment contracts, not claimed as earned acquisitions.
++		for part in ["none","cooling_breech","thermal_drive","radiator","chain_sink","compression_sink"]:
++			var state: Dictionary=old.combat.duplicate(true)
++			state.equipped_parts=[] if part=="none" else [part];state.part="none"
++			Trial.activate_campaign(state)
++			state.heat=8;state.sustained_attacks=3
++			check(Content.heat_after_reload(state)==(4 if part=="cooling_breech" else 8),"only explicit equipment reload cooling is retained")
++			var m=Model.new();m.s=state;m.s.fire_heat_trial.rounds=1
++			var before: Array=m.s.magazine.duplicate()
++			check(m.cool_magazine(),"dedicated cooling with equipped part")
++			check(m.s.magazine==before and Content.Sustained.count(m.s)==0,"cooling preserves rounds and resets streak with parts")
++			if m.s.phase=="ready":
++				check(m.s.heat==0,"dedicated production cooling fully vents heat")
++		print("RULES ",gun)
++	finish()
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_rules.gd.uid
+@@ -0,0 +1 @@
++uid://by0qu20amvvll
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_solver.gd
+@@ -0,0 +1,46 @@
++extends RefCounted
++const Model=preload("res://redesign/model.gd")
++const Search=preload("res://tests/weapon_magazine_solver.gd")
++const Original=preload("res://tests/campaign_magazine_solver.gd")
++var candidate_limit:=700
++func clone(model):
++	var copy=Model.new();copy.s=Model.simulation_state(model.s);return copy
++func solve(model,width: int=4,depth_limit: int=18)->Array:
++	# Try the original full-pulse option first, then include shorter prefixes.
++	var old:=Search.solve(model.s,32,48)
++	if not old.is_empty():return old.map(func(a):return {"action":"reload" if a=="swap" else a,"rounds":0})
++	var result:=ranged(model.s,maxi(40,width*8),maxi(48,depth_limit*2),false)
++	if result.is_empty():result=ranged(model.s,96,72,true)
++	if result.is_empty():result=ranged(model.s,384,100,true)
++	return result
++func ranged(state: Dictionary,width: int,depth_limit: int,ejection: bool)->Array:
++	var beam: Array=[{"state":state,"path":[]}]
++	for depth in range(depth_limit):
++		var next: Array=[];var seen: Dictionary={}
++		for branch in beam:
++			var base=Model.new();base.s=branch.state
++			var options: Array=[]
++			for action in Search.actions(base):
++				if action=="fire":
++					var max_rounds: int=mini(base.s.magazine.size(),int(Model.MagazineTrial.WEAPON_PULSES[base.s.gun])+(1 if base.s.gun=="heavy" else 0))
++					for amount in range(max_rounds,0,-1):options.append({"action":"fire","rounds":amount})
++				else:options.append({"action":action})
++			if ejection and base.ejection_remaining()>0:
++				for index in range(mini(3,base.s.magazine.size())):options.append({"action":"eject","indices":[index]})
++			for option in options:
++				var m=clone(base)
++				if option.action=="fire":m.s.fire_heat_trial.rounds=int(option.rounds)
++				if not (m.eject_magazine_rounds(option.indices) if option.action=="eject" else Search.command(m,option.action)):continue
++				var step: Dictionary=option.duplicate(true)
++				if step.action=="swap":step.action="reload"
++				var path: Array=branch.path+[step]
++				if m.s.phase in ["reward","won"]:return path
++				if m.s.phase=="lost":continue
++				var key:=JSON.stringify([m.s.enemies,m.s.reinforcements,m.s.projectiles,m.s.magazine,m.s.draw,m.s.hand,m.s.discard,m.s.heat,m.s.buff,m.s.push_left,m.s.get("sustained_attacks",0),m.s.previous_kill,m.s.get("engine",{}),m._recent_part_rounds(),m.s.get("emergency_uses",0),m.s.get("magazine_ejected",0),m.s.target_rng_state,m.s.get("gate_chain",0),m.s.get("gate_charge",0)])
++				if seen.has(key):continue
++				seen[key]=true;next.append({"state":m.s,"path":path,"score":Search.score(m.s)})
++		next.sort_custom(func(a,b):return a.score>b.score)
++		if next.size()>width:next.resize(width)
++		beam=next
++		if beam.is_empty():break
++	return []
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_solver.gd.uid
+@@ -0,0 +1 @@
++uid://ddac45l15j5mm
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_ui.gd
+@@ -0,0 +1,57 @@
++extends "res://tests/campaign_magazine_ui.gd"
++func point(id: String)->Vector2:
++	var item: Control=host.campaign_hud.node(id)
++	return item.get_global_transform_with_canvas()*(item.size*0.5)
++func touch(pos: Vector2,down: bool)->void:
++	var event:=InputEventScreenTouch.new();event.index=0;event.position=pos;event.pressed=down
++	root.push_input(event,true);await process_frame
++func motion(pos: Vector2,relative: Vector2)->void:
++	var event:=InputEventScreenDrag.new();event.index=0;event.position=pos;event.relative=relative
++	root.push_input(event,true);await process_frame
++func drag_one()->void:
++	var from:=point("Select0")
++	await touch(from,true);await motion(from+Vector2(16,0),Vector2(16,0));await touch(from+Vector2(16,0),false);await settle()
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/fire_control_20261102/"):quit(2);return
++	Input.emulate_mouse_from_touch=true
++	if FileAccess.file_exists(Campaign.SAVE):DirAccess.remove_absolute(Campaign.SAVE)
++	host=load("res://redesign/main.tscn").instantiate();root.add_child(host);await settle()
++	host.preparation_seed="731042";host._open_preparation();await settle();await capture("equipment");await tap("start_single")
++	check(host.campaign.s.fire_control_version==1,"actual production start opts into rules")
++	host._campaign_action("departure_skip");await settle();host._campaign_action("enter",101);await settle()
++	for size in [Vector2i(740,360),Vector2i(844,390),Vector2i(1280,800),Vector2i(2016,908)]:
++		root.size=size;await settle();hud_bounds();await drag_one()
++		check(host.campaign_hud.current_budget()==1,"drag selects one round at each viewport scale")
++		await capture("ready_%dx%d"%[size.x,size.y])
++	root.size=Vector2i(844,390)
++	for gun in ["single","burst","scatter","heavy","amplifier"]:
++		var c=Campaign.new();c.start(gun,731042,0,"balanced",3,"carrier",true);c.enter(101);await mount(c)
++		host.campaign_hud.hud.feedback.save_setting("motion","fast")
++		var before: Dictionary=canonical(c.model.s)
++		await drag_one()
++		before.fire_heat_trial.rounds=1
++		check(canonical(c.model.s)==canonical(before),"drag only changes selected budget in live campaign")
++		var oracle=Model.new();oracle.s=c.model.s.duplicate(true);oracle.fire()
++		await tap("Fire");check(canonical(c.model.s)==canonical(oracle.s),"live fire equals selected-prefix real model")
++		var saved:=Campaign.new();check(saved.restore() and canonical(saved.model.s)==canonical(c.model.s),"action automatically saves exact live campaign")
++		if c.model.s.phase!="ready":continue
++		var heat: int=c.model.s.heat;var streak: int=Model.Content.Sustained.count(c.model.s)
++		await tap("Reload")
++		check(c.model.s.heat==heat and Model.Content.Sustained.count(c.model.s)==streak,"live reload keeps heat and sustained counter")
++		await tap("Cool")
++		check(Model.Content.Sustained.count(c.model.s)==0 and c.model.s.heat<heat,"live cooling remains separate from reload")
++		await tap("Select1");await tap("EjectToggle")
++		check(c.model.ejection_remaining()==1,"tap-then-eject still removes a middle round")
++		await tap("Menu");await tap("BudgetMore");await tap("MenuClose")
++		check(host.campaign_hud.current_budget()==2,"menu alternative edits same prefix")
++		print("UI ",gun)
++	# Old saves retain their original firing and menu behavior.
++	var old: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(ProjectSettings.globalize_path("res://../qa_runtime/campaign_magazine_20261101/v3_single/rules/combat_single_731042_r1_n401.json")))
++	var c=Campaign.new();check(c.restore_state(old),"legacy campaign restores for UI");await mount(c)
++	check(not host.campaign_hud.node("BudgetRow").visible,"legacy UI hides unsupported prefix input")
++	var before: Dictionary=canonical(c.model.s);await drag_one() # It may select ejection, never consume or add rule keys.
++	check(canonical(c.model.s)==before and not c.model.s.has("fire_heat_trial"),"legacy drag cannot enable new combat rules")
++	host.free();await settle()
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++	print("FIRE CONTROL COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/fire_control_ui.gd.uid
+@@ -0,0 +1 @@
++uid://dn8no3h08uogx

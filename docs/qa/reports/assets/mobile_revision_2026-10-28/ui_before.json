@@ -1,0 +1,42 @@
+{
+  "checks": 113,
+  "failures": 0,
+  "rows": [
+    {
+      "history_events": 3,
+      "label": "burst_early",
+      "load_0_cpu_ms": 68.867,
+      "load_1_cpu_ms": 45.053,
+      "load_2_cpu_ms": 45.926,
+      "redraw_max_ms": 47.374,
+      "redraw_median_ms": 45.476
+    },
+    {
+      "history_events": 227,
+      "label": "burst_late",
+      "load_0_cpu_ms": 86.982,
+      "load_1_cpu_ms": 74.403,
+      "load_2_cpu_ms": 74.411,
+      "redraw_max_ms": 82.605,
+      "redraw_median_ms": 70.118
+    },
+    {
+      "history_events": 3,
+      "label": "scatter_early",
+      "load_0_cpu_ms": 48.215,
+      "load_1_cpu_ms": 58.825,
+      "load_2_cpu_ms": 47.581,
+      "redraw_max_ms": 56.322,
+      "redraw_median_ms": 46.353
+    },
+    {
+      "history_events": 192,
+      "label": "scatter_late",
+      "load_0_cpu_ms": 73.936,
+      "load_1_cpu_ms": 71.909,
+      "load_2_cpu_ms": 68.37,
+      "redraw_max_ms": 76.321,
+      "redraw_median_ms": 72.622
+    }
+  ]
+}

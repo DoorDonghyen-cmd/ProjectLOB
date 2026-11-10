@@ -1,0 +1,97 @@
+{
+  "armor": [
+    {
+      "ammo": "basic_p3",
+      "armor": 0,
+      "damage": 3,
+      "effective_armor": 0,
+      "raw": 3
+    },
+    {
+      "ammo": "pierce_p3",
+      "armor": 0,
+      "damage": 3,
+      "effective_armor": 0,
+      "raw": 3
+    },
+    {
+      "ammo": "basic_p3",
+      "armor": 3,
+      "damage": 1,
+      "effective_armor": 3,
+      "raw": 3
+    },
+    {
+      "ammo": "pierce_p3",
+      "armor": 3,
+      "damage": 3,
+      "effective_armor": 0,
+      "raw": 3
+    },
+    {
+      "ammo": "basic_p3",
+      "armor": 5,
+      "damage": 1,
+      "effective_armor": 5,
+      "raw": 3
+    },
+    {
+      "ammo": "pierce_p3",
+      "armor": 5,
+      "damage": 1,
+      "effective_armor": 2,
+      "raw": 3
+    }
+  ],
+  "exhaustion": "ammo",
+  "failures": 0,
+  "heat": [
+    {
+      "enemy_hp_before": 200,
+      "forced_reload": {
+        "advance_events": [
+          {
+            "from": 58,
+            "kind": "move",
+            "target": 0,
+            "to": 56,
+            "turn": 0
+          },
+          {
+            "from": 56,
+            "kind": "move",
+            "target": 0,
+            "to": 54,
+            "turn": 1
+          },
+          {
+            "from": 54,
+            "kind": "move",
+            "target": 0,
+            "to": 52,
+            "turn": 2
+          }
+        ],
+        "cost": 3,
+        "deployments": [],
+        "heat_after": 0,
+        "heat_before": 14,
+        "heat_paid": 1,
+        "phase": "plan"
+      },
+      "heat_after": 0,
+      "heat_peak": 14,
+      "phase": "plan",
+      "turns": 4
+    },
+    {
+      "enemy_hp_before": 1,
+      "forced_reload": {},
+      "heat_after": 0,
+      "heat_peak": 14,
+      "phase": "reward",
+      "turns": 1
+    }
+  ],
+  "scope": "Current resolver probes; not campaign win rate, player save reproduction or frame profiling."
+}

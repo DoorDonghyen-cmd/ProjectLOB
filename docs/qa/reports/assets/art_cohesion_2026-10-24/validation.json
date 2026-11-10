@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-24",
+  "checks": {
+    "reactor_rules": {
+      "passed": 152,
+      "failed": 0
+    },
+    "art_cohesion_ui": {
+      "passed": 436,
+      "failed": 0
+    },
+    "actor_catalog": {
+      "passed": 210,
+      "failed": 0
+    },
+    "actor_motion": {
+      "passed": 509,
+      "failed": 0
+    },
+    "weapon_heat": {
+      "passed": 100,
+      "failed": 0
+    },
+    "equipment_ui": {
+      "passed": 544,
+      "failed": 0
+    },
+    "foundry_rules": {
+      "passed": 1408,
+      "failed": 0
+    },
+    "foundry_ui": {
+      "passed": 1156,
+      "failed": 0
+    },
+    "garden_rules": {
+      "passed": 359,
+      "failed": 0
+    },
+    "garden_ui": {
+      "passed": 839,
+      "failed": 0
+    },
+    "reserve_rules": {
+      "passed": 683,
+      "failed": 0
+    },
+    "reserve_reachability": {
+      "passed": 409,
+      "failed": 0
+    },
+    "reactor_wider_reachability": {
+      "passed": 32,
+      "failed": 0
+    }
+  },
+  "total": 6837,
+  "failed": 0,
+  "visual_review": "representative images inspected; automated matrix validates 35 pairs x 6 poses, not human preference",
+  "device": "Windows Godot 4.7 compatibility renderer; Galaxy not tested",
+  "reachability": "19/20 with 250 candidates; remaining Reactor boss case solved with 1000 candidates, width16/depth20, 13turns/22rounds. Not a win rate."
+}

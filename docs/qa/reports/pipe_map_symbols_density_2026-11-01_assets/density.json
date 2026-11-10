@@ -1,0 +1,1015 @@
+{
+  "checks": 771798,
+  "event_assumption": "Skip is legal; optional ambush is not a guaranteed fight.",
+  "failures": [],
+  "flow_probe": {
+    "method": "Campaign choices/enter/skip/leave/save/restore; simulated combat victories",
+    "seed": 2
+  },
+  "gate_counted_as_combat": false,
+  "map_version": 3,
+  "regions": [
+    {
+      "example": {
+        "seed": 2,
+        "without_shortcuts": {
+          "max": 5,
+          "min": 2,
+          "path": [
+            {
+              "floor": 1,
+              "id": 102,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 203,
+              "kind": "combat"
+            },
+            {
+              "floor": 3,
+              "id": 304,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 404,
+              "kind": "workshop"
+            },
+            {
+              "floor": 5,
+              "id": 504,
+              "kind": "event"
+            },
+            {
+              "floor": 6,
+              "id": 604,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 703,
+              "kind": "supply"
+            },
+            {
+              "floor": 8,
+              "id": 802,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 90,
+          "paths_le_two": 4
+        }
+      },
+      "floors": 8,
+      "name": "승강장·주거 통로",
+      "region": 1,
+      "seed_731042": {
+        "with_shortcuts": {
+          "max": 5,
+          "min": 3,
+          "path": [
+            {
+              "floor": 1,
+              "id": 101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 201,
+              "kind": "combat"
+            },
+            {
+              "floor": 3,
+              "id": 302,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 401,
+              "kind": "combat"
+            },
+            {
+              "floor": 5,
+              "id": 501,
+              "kind": "workshop"
+            },
+            {
+              "floor": 6,
+              "id": 601,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 702,
+              "kind": "workshop"
+            },
+            {
+              "floor": 8,
+              "id": 802,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 122,
+          "paths_le_two": 0
+        },
+        "without_shortcuts": {
+          "max": 5,
+          "min": 3,
+          "path": [
+            {
+              "floor": 1,
+              "id": 101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 201,
+              "kind": "combat"
+            },
+            {
+              "floor": 3,
+              "id": 302,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 401,
+              "kind": "combat"
+            },
+            {
+              "floor": 5,
+              "id": 501,
+              "kind": "workshop"
+            },
+            {
+              "floor": 6,
+              "id": 601,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 702,
+              "kind": "workshop"
+            },
+            {
+              "floor": 8,
+              "id": 802,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 113,
+          "paths_le_two": 0
+        }
+      },
+      "shortcut_lowers_minimum": 54,
+      "with_shortcuts": {
+        "maps_le_two": 335,
+        "maximum_histogram": {
+          "4": 26,
+          "5": 974
+        },
+        "minimum_histogram": {
+          "2": 335,
+          "3": 627,
+          "4": 38
+        },
+        "path_count": 112649,
+        "paths_le_two": 3283
+      },
+      "without_shortcuts": {
+        "maps_le_two": 306,
+        "maximum_histogram": {
+          "4": 26,
+          "5": 974
+        },
+        "minimum_histogram": {
+          "2": 306,
+          "3": 631,
+          "4": 63
+        },
+        "path_count": 103089,
+        "paths_le_two": 2896
+      }
+    },
+    {
+      "example": {
+        "seed": 28,
+        "without_shortcuts": {
+          "max": 6,
+          "min": 1,
+          "path": [
+            {
+              "floor": 1,
+              "id": 10101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 10201,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 10302,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 10403,
+              "kind": "event"
+            },
+            {
+              "floor": 5,
+              "id": 10503,
+              "kind": "shop"
+            },
+            {
+              "floor": 6,
+              "id": 10603,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 10703,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 10803,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 10902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 130,
+          "paths_le_two": 9
+        }
+      },
+      "floors": 9,
+      "name": "축열 주조장",
+      "region": 2,
+      "seed_731042": {
+        "with_shortcuts": {
+          "max": 6,
+          "min": 3,
+          "path": [
+            {
+              "floor": 1,
+              "id": 10101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 10202,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 10303,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 10403,
+              "kind": "combat"
+            },
+            {
+              "floor": 5,
+              "id": 10502,
+              "kind": "workshop"
+            },
+            {
+              "floor": 6,
+              "id": 10601,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 10701,
+              "kind": "combat"
+            },
+            {
+              "floor": 8,
+              "id": 10801,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 10902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 341,
+          "paths_le_two": 0
+        },
+        "without_shortcuts": {
+          "max": 6,
+          "min": 3,
+          "path": [
+            {
+              "floor": 1,
+              "id": 10101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 10202,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 10303,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 10403,
+              "kind": "combat"
+            },
+            {
+              "floor": 5,
+              "id": 10502,
+              "kind": "workshop"
+            },
+            {
+              "floor": 6,
+              "id": 10601,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 10701,
+              "kind": "combat"
+            },
+            {
+              "floor": 8,
+              "id": 10801,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 10902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 315,
+          "paths_le_two": 0
+        }
+      },
+      "shortcut_lowers_minimum": 82,
+      "with_shortcuts": {
+        "maps_le_two": 332,
+        "maximum_histogram": {
+          "5": 29,
+          "6": 971
+        },
+        "minimum_histogram": {
+          "1": 39,
+          "2": 293,
+          "3": 521,
+          "4": 147
+        },
+        "path_count": 201085,
+        "paths_le_two": 2875
+      },
+      "without_shortcuts": {
+        "maps_le_two": 306,
+        "maximum_histogram": {
+          "5": 29,
+          "6": 971
+        },
+        "minimum_histogram": {
+          "1": 39,
+          "2": 267,
+          "3": 498,
+          "4": 189,
+          "5": 7
+        },
+        "path_count": 183586,
+        "paths_le_two": 2564
+      }
+    },
+    {
+      "example": {
+        "seed": 5,
+        "without_shortcuts": {
+          "max": 6,
+          "min": 1,
+          "path": [
+            {
+              "floor": 1,
+              "id": 20102,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 20203,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 20304,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 20404,
+              "kind": "shop"
+            },
+            {
+              "floor": 5,
+              "id": 20504,
+              "kind": "event"
+            },
+            {
+              "floor": 6,
+              "id": 20604,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 20704,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 20803,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 20902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 130,
+          "paths_le_two": 12
+        }
+      },
+      "floors": 9,
+      "name": "우수 정원",
+      "region": 3,
+      "seed_731042": {
+        "with_shortcuts": {
+          "max": 6,
+          "min": 3,
+          "path": [
+            {
+              "floor": 1,
+              "id": 20101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 20201,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 20301,
+              "kind": "combat"
+            },
+            {
+              "floor": 4,
+              "id": 20401,
+              "kind": "event"
+            },
+            {
+              "floor": 5,
+              "id": 20501,
+              "kind": "supply"
+            },
+            {
+              "floor": 6,
+              "id": 20601,
+              "kind": "elite"
+            },
+            {
+              "floor": 7,
+              "id": 20702,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 20802,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 20902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 262,
+          "paths_le_two": 0
+        },
+        "without_shortcuts": {
+          "max": 6,
+          "min": 3,
+          "path": [
+            {
+              "floor": 1,
+              "id": 20101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 20201,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 20301,
+              "kind": "combat"
+            },
+            {
+              "floor": 4,
+              "id": 20401,
+              "kind": "event"
+            },
+            {
+              "floor": 5,
+              "id": 20501,
+              "kind": "supply"
+            },
+            {
+              "floor": 6,
+              "id": 20601,
+              "kind": "elite"
+            },
+            {
+              "floor": 7,
+              "id": 20702,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 20802,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 20902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 228,
+          "paths_le_two": 0
+        }
+      },
+      "shortcut_lowers_minimum": 80,
+      "with_shortcuts": {
+        "maps_le_two": 301,
+        "maximum_histogram": {
+          "5": 24,
+          "6": 976
+        },
+        "minimum_histogram": {
+          "1": 36,
+          "2": 265,
+          "3": 550,
+          "4": 147,
+          "5": 2
+        },
+        "path_count": 198524,
+        "paths_le_two": 2811
+      },
+      "without_shortcuts": {
+        "maps_le_two": 276,
+        "maximum_histogram": {
+          "5": 24,
+          "6": 976
+        },
+        "minimum_histogram": {
+          "1": 36,
+          "2": 240,
+          "3": 525,
+          "4": 192,
+          "5": 7
+        },
+        "path_count": 181664,
+        "paths_le_two": 2542
+      }
+    },
+    {
+      "example": {
+        "seed": 9,
+        "without_shortcuts": {
+          "max": 6,
+          "min": 1,
+          "path": [
+            {
+              "floor": 1,
+              "id": 30104,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 30204,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 30304,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 30404,
+              "kind": "event"
+            },
+            {
+              "floor": 5,
+              "id": 30504,
+              "kind": "supply"
+            },
+            {
+              "floor": 6,
+              "id": 30604,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 30704,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 30803,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 30902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 134,
+          "paths_le_two": 10
+        }
+      },
+      "floors": 9,
+      "name": "귀족 거주구",
+      "region": 4,
+      "seed_731042": {
+        "with_shortcuts": {
+          "max": 6,
+          "min": 2,
+          "path": [
+            {
+              "floor": 1,
+              "id": 30102,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 30203,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 30302,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 30401,
+              "kind": "shop"
+            },
+            {
+              "floor": 5,
+              "id": 30501,
+              "kind": "combat"
+            },
+            {
+              "floor": 7,
+              "id": 30701,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 30802,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 30902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 213,
+          "paths_le_two": 12
+        },
+        "without_shortcuts": {
+          "max": 6,
+          "min": 2,
+          "path": [
+            {
+              "floor": 1,
+              "id": 30102,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 30203,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 30302,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 30402,
+              "kind": "supply"
+            },
+            {
+              "floor": 5,
+              "id": 30503,
+              "kind": "event"
+            },
+            {
+              "floor": 6,
+              "id": 30602,
+              "kind": "combat"
+            },
+            {
+              "floor": 7,
+              "id": 30701,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 30802,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 30902,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 202,
+          "paths_le_two": 8
+        }
+      },
+      "shortcut_lowers_minimum": 54,
+      "with_shortcuts": {
+        "maps_le_two": 315,
+        "maximum_histogram": {
+          "5": 13,
+          "6": 987
+        },
+        "minimum_histogram": {
+          "1": 40,
+          "2": 275,
+          "3": 526,
+          "4": 159
+        },
+        "path_count": 195031,
+        "paths_le_two": 2975
+      },
+      "without_shortcuts": {
+        "maps_le_two": 295,
+        "maximum_histogram": {
+          "5": 13,
+          "6": 987
+        },
+        "minimum_histogram": {
+          "1": 40,
+          "2": 255,
+          "3": 514,
+          "4": 189,
+          "5": 2
+        },
+        "path_count": 178223,
+        "paths_le_two": 2668
+      }
+    },
+    {
+      "example": {
+        "seed": 224,
+        "without_shortcuts": {
+          "max": 7,
+          "min": 1,
+          "path": [
+            {
+              "floor": 1,
+              "id": 40102,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 40203,
+              "kind": "event"
+            },
+            {
+              "floor": 3,
+              "id": 40302,
+              "kind": "event"
+            },
+            {
+              "floor": 4,
+              "id": 40403,
+              "kind": "event"
+            },
+            {
+              "floor": 5,
+              "id": 40503,
+              "kind": "supply"
+            },
+            {
+              "floor": 6,
+              "id": 40604,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 40703,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 40802,
+              "kind": "event"
+            },
+            {
+              "floor": 9,
+              "id": 40901,
+              "kind": "event"
+            },
+            {
+              "floor": 10,
+              "id": 41002,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 470,
+          "paths_le_two": 56
+        }
+      },
+      "floors": 10,
+      "name": "중앙 통제구",
+      "region": 5,
+      "seed_731042": {
+        "with_shortcuts": {
+          "max": 7,
+          "min": 4,
+          "path": [
+            {
+              "floor": 1,
+              "id": 40101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 40201,
+              "kind": "elite"
+            },
+            {
+              "floor": 3,
+              "id": 40301,
+              "kind": "combat"
+            },
+            {
+              "floor": 4,
+              "id": 40401,
+              "kind": "event"
+            },
+            {
+              "floor": 5,
+              "id": 40501,
+              "kind": "shop"
+            },
+            {
+              "floor": 6,
+              "id": 40601,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 40701,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 40801,
+              "kind": "combat"
+            },
+            {
+              "floor": 9,
+              "id": 40901,
+              "kind": "supply"
+            },
+            {
+              "floor": 10,
+              "id": 41002,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 263,
+          "paths_le_two": 0
+        },
+        "without_shortcuts": {
+          "max": 7,
+          "min": 4,
+          "path": [
+            {
+              "floor": 1,
+              "id": 40101,
+              "kind": "combat"
+            },
+            {
+              "floor": 2,
+              "id": 40201,
+              "kind": "elite"
+            },
+            {
+              "floor": 3,
+              "id": 40301,
+              "kind": "combat"
+            },
+            {
+              "floor": 4,
+              "id": 40401,
+              "kind": "event"
+            },
+            {
+              "floor": 5,
+              "id": 40501,
+              "kind": "shop"
+            },
+            {
+              "floor": 6,
+              "id": 40601,
+              "kind": "event"
+            },
+            {
+              "floor": 7,
+              "id": 40701,
+              "kind": "event"
+            },
+            {
+              "floor": 8,
+              "id": 40801,
+              "kind": "combat"
+            },
+            {
+              "floor": 9,
+              "id": 40901,
+              "kind": "supply"
+            },
+            {
+              "floor": 10,
+              "id": 41002,
+              "kind": "boss"
+            }
+          ],
+          "path_count": 245,
+          "paths_le_two": 0
+        }
+      },
+      "shortcut_lowers_minimum": 74,
+      "with_shortcuts": {
+        "maps_le_two": 172,
+        "maximum_histogram": {
+          "6": 36,
+          "7": 964
+        },
+        "minimum_histogram": {
+          "1": 13,
+          "2": 159,
+          "3": 419,
+          "4": 350,
+          "5": 59
+        },
+        "path_count": 345599,
+        "paths_le_two": 1540
+      },
+      "without_shortcuts": {
+        "maps_le_two": 162,
+        "maximum_histogram": {
+          "6": 36,
+          "7": 964
+        },
+        "minimum_histogram": {
+          "1": 13,
+          "2": 149,
+          "3": 390,
+          "4": 365,
+          "5": 82,
+          "6": 1
+        },
+        "path_count": 315057,
+        "paths_le_two": 1418
+      }
+    }
+  ],
+  "seed_count": 1000,
+  "seeds": "0..999 inclusive per region"
+}

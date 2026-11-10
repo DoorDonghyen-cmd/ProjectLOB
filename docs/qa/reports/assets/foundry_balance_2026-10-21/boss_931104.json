@@ -1,0 +1,1667 @@
+{
+  "battles": [
+    {
+      "boss": true,
+      "depth": 9.0,
+      "elite": false,
+      "enemies": 8,
+      "gun": "single",
+      "margin": 16,
+      "node": 10902.0,
+      "parts": [
+        "siege_drive",
+        "lens",
+        "breaker",
+        "ordinary_chain",
+        "coil"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "pierce_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "shatter"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "remaining": 9,
+      "seed": 931104,
+      "solved": true,
+      "start_deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "bypass",
+        "pierce_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "turns": 7,
+      "used": 16
+    },
+    {
+      "boss": true,
+      "depth": 9.0,
+      "elite": false,
+      "enemies": 8,
+      "gun": "burst",
+      "margin": 16,
+      "node": 10902.0,
+      "parts": [
+        "volley_drive",
+        "duplex",
+        "igniter"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "precise_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "remaining": 13,
+      "seed": 931104,
+      "solved": true,
+      "start_deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p3",
+        "precise_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "turns": 8,
+      "used": 12
+    },
+    {
+      "boss": true,
+      "depth": 9.0,
+      "elite": false,
+      "enemies": 8,
+      "gun": "scatter",
+      "margin": 16,
+      "node": 10902.0,
+      "parts": [
+        "volley_drive",
+        "duplex",
+        "igniter"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "precise_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "remaining": 13,
+      "seed": 931104,
+      "solved": true,
+      "start_deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p3",
+        "precise_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "turns": 5,
+      "used": 12
+    },
+    {
+      "boss": true,
+      "depth": 9.0,
+      "elite": false,
+      "enemies": 8,
+      "gun": "heavy",
+      "margin": 10,
+      "node": 10902.0,
+      "parts": [
+        "thermal_drive",
+        "lens",
+        "breaker",
+        "ordinary_chain",
+        "coil"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "shatter"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "remaining": 5,
+      "seed": 931104,
+      "solved": true,
+      "start_deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "precise_p5",
+        "shatter"
+      ],
+      "turns": 12,
+      "used": 20
+    },
+    {
+      "boss": true,
+      "depth": 9.0,
+      "elite": false,
+      "enemies": 8,
+      "gun": "amplifier",
+      "margin": 17,
+      "node": 10902.0,
+      "parts": [
+        "siege_drive",
+        "lens",
+        "breaker",
+        "ordinary_chain",
+        "coil"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "pierce_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "remaining": 19,
+      "seed": 931104,
+      "solved": true,
+      "start_deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "bypass",
+        "pierce_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "turns": 5,
+      "used": 6
+    }
+  ],
+  "checks": 720,
+  "failures": [],
+  "runs": [
+    {
+      "commands": [
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "pierce_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 44.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 44.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 44.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 44.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 44.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 45.0
+        },
+        {
+          "action": "reload",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 47.0
+        },
+        {
+          "action": "reload",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 48.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 48.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 48.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 48.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 48.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 48.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 49.0
+        },
+        {
+          "action": "reload",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 50.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 50.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 50.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 50.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "shatter",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 50.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 50.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "reward",
+          "turns": 51.0
+        },
+        {
+          "action": "reward",
+          "credits": 57.0,
+          "id": "credits",
+          "node": 10902.0,
+          "phase": "gate",
+          "replace": "",
+          "turns": 51.0
+        }
+      ],
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "bypass",
+        "pierce_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "floor": 9.0,
+      "gun": "single",
+      "phase": "gate",
+      "region": 1.0,
+      "seed": 931104,
+      "visited": 17
+    },
+    {
+      "commands": [
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "precise_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 39.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 39.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 39.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 39.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 39.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 39.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "reload",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 42.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 42.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 42.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 42.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 42.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 42.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 42.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 46.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "reward",
+          "turns": 47.0
+        },
+        {
+          "action": "reward",
+          "credits": 57.0,
+          "id": "credits",
+          "node": 10902.0,
+          "phase": "gate",
+          "replace": "",
+          "turns": 47.0
+        }
+      ],
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p3",
+        "precise_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "floor": 9.0,
+      "gun": "burst",
+      "phase": "gate",
+      "region": 1.0,
+      "seed": 931104,
+      "visited": 17
+    },
+    {
+      "commands": [
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "precise_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 38.0
+        },
+        {
+          "action": "reload",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 40.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 41.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "reward",
+          "turns": 42.0
+        },
+        {
+          "action": "reward",
+          "credits": 57.0,
+          "id": "credits",
+          "node": 10902.0,
+          "phase": "gate",
+          "replace": "",
+          "turns": 42.0
+        }
+      ],
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "precise_p3",
+        "precise_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "floor": 9.0,
+      "gun": "scatter",
+      "phase": "gate",
+      "region": 1.0,
+      "seed": 931104,
+      "visited": 17
+    },
+    {
+      "commands": [
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 58.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "bore",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 58.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 58.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 58.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 58.0
+        },
+        {
+          "action": "confirm",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 58.0
+        },
+        {
+          "action": "fire",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 61.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 61.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 61.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 61.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 61.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 61.0
+        },
+        {
+          "action": "confirm",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 61.0
+        },
+        {
+          "action": "fire",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 64.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 64.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 64.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 64.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 64.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 64.0
+        },
+        {
+          "action": "confirm",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 64.0
+        },
+        {
+          "action": "fire",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 67.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "bore",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 67.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 67.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "shatter",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 67.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 67.0
+        },
+        {
+          "action": "load",
+          "credits": 48.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 67.0
+        },
+        {
+          "action": "confirm",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 67.0
+        },
+        {
+          "action": "fire",
+          "credits": 48.0,
+          "node": 10902.0,
+          "phase": "reward",
+          "turns": 70.0
+        },
+        {
+          "action": "reward",
+          "credits": 56.0,
+          "id": "credits",
+          "node": 10902.0,
+          "phase": "gate",
+          "replace": "",
+          "turns": 70.0
+        }
+      ],
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "bore",
+        "precise_p5",
+        "shatter"
+      ],
+      "floor": 9.0,
+      "gun": "heavy",
+      "phase": "gate",
+      "region": 1.0,
+      "seed": 931104,
+      "visited": 17
+    },
+    {
+      "commands": [
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 34.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 34.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "pierce_p2",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 34.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 34.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 35.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 36.0
+        },
+        {
+          "action": "reload",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p1",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "load",
+          "credits": 49.0,
+          "id": "basic_p3",
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "confirm",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 37.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "combat",
+          "turns": 38.0
+        },
+        {
+          "action": "fire",
+          "credits": 49.0,
+          "node": 10902.0,
+          "phase": "reward",
+          "turns": 39.0
+        },
+        {
+          "action": "reward",
+          "credits": 60.0,
+          "id": "credits",
+          "node": 10902.0,
+          "phase": "gate",
+          "replace": "",
+          "turns": 39.0
+        }
+      ],
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "bypass",
+        "pierce_p2",
+        "precise_p5",
+        "shatter"
+      ],
+      "floor": 9.0,
+      "gun": "amplifier",
+      "phase": "gate",
+      "region": 1.0,
+      "seed": 931104,
+      "visited": 17
+    }
+  ],
+  "source": "D:\\ProjectLoB\\worktrees\\core-redesign\\qa_runtime\\foundry\\campaign_current_931104"
+}

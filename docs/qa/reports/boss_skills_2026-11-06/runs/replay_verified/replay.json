@@ -1,0 +1,36 @@
+{
+  "checks": 50,
+  "failures": [],
+  "rows": [
+    {
+      "receipt_count": 6,
+      "run": "single",
+      "same_receipts": true
+    },
+    {
+      "receipt_count": 4,
+      "run": "burst",
+      "same_receipts": true
+    },
+    {
+      "receipt_count": 9,
+      "run": "scatter",
+      "same_receipts": true
+    },
+    {
+      "receipt_count": 11,
+      "run": "heavy_elite",
+      "same_receipts": true
+    },
+    {
+      "receipt_count": 4,
+      "run": "amplifier",
+      "same_receipts": true
+    },
+    {
+      "receipt_count": 8,
+      "run": "heavy_scout",
+      "same_receipts": true
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "scope": "Foundry elite/boss; new campaigns only; actual Model/Campaign",
+  "earned_routes": [
+    {
+      "label": "single_safe",
+      "checks": 2693,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "foundry_leaders": [
+        {
+          "node": 10902,
+          "boss": true,
+          "elite": false,
+          "turns": 12,
+          "remaining": 13
+        }
+      ]
+    },
+    {
+      "label": "burst_safe",
+      "checks": 2491,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "foundry_leaders": [
+        {
+          "node": 10902,
+          "boss": true,
+          "elite": false,
+          "turns": 14,
+          "remaining": 18
+        }
+      ]
+    },
+    {
+      "label": "scatter_safe",
+      "checks": 2587,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "foundry_leaders": [
+        {
+          "node": 10902,
+          "boss": true,
+          "elite": false,
+          "turns": 11,
+          "remaining": 16
+        }
+      ]
+    },
+    {
+      "label": "heavy_elite",
+      "checks": 2470,
+      "failures": [],
+      "won": true,
+      "encounters": 31,
+      "emergency": 0,
+      "foundry_leaders": [
+        {
+          "node": 10302,
+          "boss": false,
+          "elite": true,
+          "turns": 20,
+          "remaining": 6
+        },
+        {
+          "node": 10403,
+          "boss": false,
+          "elite": true,
+          "turns": 18,
+          "remaining": 8
+        },
+        {
+          "node": 10704,
+          "boss": false,
+          "elite": true,
+          "turns": 15,
+          "remaining": 11
+        },
+        {
+          "node": 10902,
+          "boss": true,
+          "elite": false,
+          "turns": 9,
+          "remaining": 15
+        }
+      ]
+    },
+    {
+      "label": "amplifier_safe",
+      "checks": 3017,
+      "failures": [],
+      "won": true,
+      "encounters": 30,
+      "emergency": 0,
+      "foundry_leaders": [
+        {
+          "node": 10902,
+          "boss": true,
+          "elite": false,
+          "turns": 10,
+          "remaining": 14
+        }
+      ]
+    },
+    {
+      "label": "heavy_scout",
+      "checks": 2514,
+      "failures": [],
+      "won": true,
+      "encounters": 28,
+      "emergency": 2,
+      "foundry_leaders": [
+        {
+          "node": 10301,
+          "boss": false,
+          "elite": true,
+          "turns": 16,
+          "remaining": 9
+        },
+        {
+          "node": 10902,
+          "boss": true,
+          "elite": false,
+          "turns": 23,
+          "remaining": 8
+        }
+      ]
+    }
+  ],
+  "functional": {
+    "rules_complete": {
+      "checks": 296,
+      "failures": []
+    },
+    "ui_first": {
+      "checks": 111,
+      "failures": []
+    },
+    "probe_events_final": {
+      "checks": 33,
+      "failures": []
+    }
+  },
+  "paired_observations": {
+    "full_fire": {
+      "old": {
+        "cases": 11,
+        "won": 9,
+        "search_unresolved": 0,
+        "open_attack_rounds": 0,
+        "rushes": 35,
+        "turns": 200
+      },
+      "new": {
+        "cases": 11,
+        "won": 5,
+        "search_unresolved": 0,
+        "open_attack_rounds": 33,
+        "rushes": 32,
+        "turns": 160
+      }
+    },
+    "visible_heat_single": {
+      "old": {
+        "cases": 11,
+        "won": 1,
+        "search_unresolved": 0,
+        "open_attack_rounds": 0,
+        "rushes": 43,
+        "turns": 207
+      },
+      "new": {
+        "cases": 11,
+        "won": 1,
+        "search_unresolved": 0,
+        "open_attack_rounds": 19,
+        "rushes": 33,
+        "turns": 110
+      }
+    },
+    "counter_window": {
+      "old": {
+        "cases": 11,
+        "won": 9,
+        "search_unresolved": 0,
+        "open_attack_rounds": 0,
+        "rushes": 31,
+        "turns": 214
+      },
+      "new": {
+        "cases": 11,
+        "won": 9,
+        "search_unresolved": 0,
+        "open_attack_rounds": 45,
+        "rushes": 20,
+        "turns": 177
+      }
+    },
+    "oracle_rng_known": {
+      "old": {
+        "cases": 11,
+        "won": 11,
+        "search_unresolved": 0,
+        "open_attack_rounds": 0,
+        "rushes": 28,
+        "turns": 172
+      },
+      "new": {
+        "cases": 11,
+        "won": 11,
+        "search_unresolved": 0,
+        "open_attack_rounds": 35,
+        "rushes": 21,
+        "turns": 163
+      }
+    }
+  },
+  "committed_leader_events": {
+    "source": "actual final atomic saves, including reload receipts followed by load",
+    "encounters": 10,
+    "rushes": 19,
+    "positive_open_rounds": 30
+  }
+}

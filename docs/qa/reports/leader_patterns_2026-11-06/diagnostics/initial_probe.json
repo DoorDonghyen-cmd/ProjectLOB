@@ -1,0 +1,2541 @@
+{
+  "battles": [
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 38,
+      "closed_rounds": 5,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 6,
+      "gun": "single",
+      "nearest": 12,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "reward",
+      "policy": "full_fire",
+      "recoveries": 1,
+      "reload": 2,
+      "remaining": 10,
+      "rounds": 12,
+      "rushes": 2,
+      "source": "after_single17",
+      "turns": 16,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 25,
+      "closed_rounds": 3,
+      "cool": 3,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "single",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 8,
+      "open_rounds": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 15,
+      "rounds": 7,
+      "rushes": 4,
+      "source": "after_single17",
+      "turns": 12,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "single",
+      "nearest": 18,
+      "node": 10902.0,
+      "open_damage": 34,
+      "open_rounds": 3,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 0,
+      "remaining": 18,
+      "rounds": 4,
+      "rushes": 1,
+      "source": "after_single17",
+      "turns": 4,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 6,
+      "gun": "single",
+      "nearest": 12,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 1,
+      "reload": 2,
+      "remaining": 11,
+      "rounds": 11,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_single17",
+      "turns": 15,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 42,
+      "closed_rounds": 4,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "single",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 2,
+      "reload": 1,
+      "remaining": 16,
+      "rounds": 6,
+      "rushes": 2,
+      "source": "after_single17",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 25,
+      "closed_rounds": 2,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "single",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 12,
+      "open_rounds": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 2,
+      "reload": 0,
+      "remaining": 17,
+      "rounds": 5,
+      "rushes": 2,
+      "source": "after_single17",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "single",
+      "nearest": 17,
+      "node": 10902.0,
+      "open_damage": 46,
+      "open_rounds": 3,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 0,
+      "remaining": 18,
+      "rounds": 4,
+      "rushes": 1,
+      "source": "after_single17",
+      "turns": 4,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 4,
+      "gun": "single",
+      "nearest": 10,
+      "node": 10902.0,
+      "open_damage": 48,
+      "open_rounds": 4,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 1,
+      "reload": 2,
+      "remaining": 13,
+      "rounds": 9,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_single17",
+      "turns": 12,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 24,
+      "closed_rounds": 4,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 9,
+      "gun": "burst",
+      "nearest": 2,
+      "node": 10902.0,
+      "open_damage": 24,
+      "open_rounds": 3,
+      "phase": "reward",
+      "policy": "full_fire",
+      "recoveries": 4,
+      "reload": 2,
+      "remaining": 12,
+      "rounds": 16,
+      "rushes": 3,
+      "source": "after_burst17",
+      "turns": 20,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 4,
+      "closed_rounds": 1,
+      "cool": 3,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "burst",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 32,
+      "open_rounds": 3,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 4,
+      "reload": 1,
+      "remaining": 20,
+      "rounds": 8,
+      "rushes": 3,
+      "source": "after_burst17",
+      "turns": 13,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "burst",
+      "nearest": 18,
+      "node": 10902.0,
+      "open_damage": 32,
+      "open_rounds": 4,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 0,
+      "remaining": 23,
+      "rounds": 5,
+      "rushes": 1,
+      "source": "after_burst17",
+      "turns": 4,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 4,
+      "closed_rounds": 1,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 6,
+      "gun": "burst",
+      "nearest": 6,
+      "node": 10902.0,
+      "open_damage": 40,
+      "open_rounds": 3,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 2,
+      "reload": 2,
+      "remaining": 18,
+      "rounds": 10,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_burst17",
+      "turns": 14,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 21,
+      "closed_rounds": 3,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 3,
+      "gun": "burst",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 18,
+      "open_rounds": 2,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 2,
+      "reload": 1,
+      "remaining": 21,
+      "rounds": 7,
+      "rushes": 2,
+      "source": "after_burst17",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 1,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "burst",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 45,
+      "open_rounds": 3,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 21,
+      "rounds": 7,
+      "rushes": 4,
+      "source": "after_burst17",
+      "turns": 11,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "burst",
+      "nearest": 17,
+      "node": 10902.0,
+      "open_damage": 46,
+      "open_rounds": 4,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 0,
+      "remaining": 23,
+      "rounds": 5,
+      "rushes": 1,
+      "source": "after_burst17",
+      "turns": 4,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 6,
+      "gun": "burst",
+      "nearest": 6,
+      "node": 10902.0,
+      "open_damage": 48,
+      "open_rounds": 3,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 0,
+      "reload": 2,
+      "remaining": 18,
+      "rounds": 10,
+      "rushes": 0,
+      "search_unresolved": false,
+      "source": "after_burst17",
+      "turns": 14,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 29,
+      "closed_rounds": 6,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 7,
+      "gun": "scatter",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 4,
+      "open_rounds": 2,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 4,
+      "reload": 1,
+      "remaining": 13,
+      "rounds": 15,
+      "rushes": 4,
+      "source": "after_scatter17",
+      "turns": 14,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "changed": false,
+      "closed_damage": 5,
+      "closed_rounds": 1,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "scatter",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 19,
+      "rounds": 9,
+      "rushes": 3,
+      "source": "after_scatter17",
+      "turns": 13,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "scatter",
+      "nearest": 18,
+      "node": 10902.0,
+      "open_damage": 5,
+      "open_rounds": 1,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 0,
+      "remaining": 23,
+      "rounds": 5,
+      "rushes": 1,
+      "source": "after_scatter17",
+      "turns": 4,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 48,
+      "closed_rounds": 7,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 6,
+      "gun": "scatter",
+      "nearest": 2,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 2,
+      "reload": 2,
+      "remaining": 14,
+      "rounds": 14,
+      "rushes": 4,
+      "search_unresolved": false,
+      "source": "after_scatter17",
+      "turns": 14,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 12,
+      "closed_rounds": 3,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 5,
+      "gun": "scatter",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 6,
+      "open_rounds": 2,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 17,
+      "rounds": 11,
+      "rushes": 3,
+      "source": "after_scatter17",
+      "turns": 11,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 5,
+      "closed_rounds": 1,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "scatter",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 20,
+      "rounds": 8,
+      "rushes": 4,
+      "source": "after_scatter17",
+      "turns": 11,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "scatter",
+      "nearest": 17,
+      "node": 10902.0,
+      "open_damage": 8,
+      "open_rounds": 1,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 0,
+      "remaining": 23,
+      "rounds": 5,
+      "rushes": 1,
+      "source": "after_scatter17",
+      "turns": 4,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 21,
+      "closed_rounds": 5,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 3,
+      "gun": "scatter",
+      "nearest": 1,
+      "node": 10902.0,
+      "open_damage": 27,
+      "open_rounds": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 2,
+      "reload": 2,
+      "remaining": 16,
+      "rounds": 12,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_scatter17",
+      "turns": 11,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 11,
+      "gun": "heavy",
+      "nearest": 2,
+      "node": 10902.0,
+      "open_damage": 27,
+      "open_rounds": 8,
+      "phase": "reward",
+      "policy": "full_fire",
+      "recoveries": 4,
+      "reload": 1,
+      "remaining": 7,
+      "rounds": 18,
+      "rushes": 3,
+      "source": "after_heavy17",
+      "turns": 17,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "changed": false,
+      "closed_damage": 2,
+      "closed_rounds": 2,
+      "cool": 3,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "heavy",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 3,
+      "open_rounds": 3,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 4,
+      "reload": 0,
+      "remaining": 16,
+      "rounds": 9,
+      "rushes": 4,
+      "source": "after_heavy17",
+      "turns": 12,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "heavy",
+      "nearest": 21,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 0,
+      "reload": 0,
+      "remaining": 24,
+      "rounds": 1,
+      "rushes": 0,
+      "source": "after_heavy17",
+      "turns": 1,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 11,
+      "gun": "heavy",
+      "nearest": 2,
+      "node": 10902.0,
+      "open_damage": 27,
+      "open_rounds": 8,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 4,
+      "reload": 1,
+      "remaining": 7,
+      "rounds": 18,
+      "rushes": 3,
+      "search_unresolved": false,
+      "source": "after_heavy17",
+      "turns": 17,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 7,
+      "gun": "heavy",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 13,
+      "open_rounds": 4,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 16,
+      "rounds": 9,
+      "rushes": 4,
+      "source": "after_heavy17",
+      "turns": 11,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 1,
+      "closed_rounds": 1,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "heavy",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 3,
+      "open_rounds": 2,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 2,
+      "reload": 0,
+      "remaining": 20,
+      "rounds": 5,
+      "rushes": 2,
+      "source": "after_heavy17",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "heavy",
+      "nearest": 21,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 0,
+      "reload": 0,
+      "remaining": 24,
+      "rounds": 1,
+      "rushes": 0,
+      "source": "after_heavy17",
+      "turns": 1,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 8,
+      "gun": "heavy",
+      "nearest": 10,
+      "node": 10902.0,
+      "open_damage": 30,
+      "open_rounds": 5,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 1,
+      "reload": 2,
+      "remaining": 14,
+      "rounds": 11,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_heavy17",
+      "turns": 15,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 20,
+      "closed_rounds": 2,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "amplifier",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 5,
+      "open_rounds": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 0,
+      "reload": 1,
+      "remaining": 17,
+      "rounds": 5,
+      "rushes": 1,
+      "source": "after_amplifier17",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 3,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "amplifier",
+      "nearest": 6,
+      "node": 10902.0,
+      "open_damage": 33,
+      "open_rounds": 2,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "recoveries": 1,
+      "reload": 2,
+      "remaining": 11,
+      "rounds": 11,
+      "rushes": 2,
+      "source": "after_amplifier17",
+      "turns": 20,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 26,
+      "closed_rounds": 1,
+      "cool": 3,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "amplifier",
+      "nearest": 10,
+      "node": 10902.0,
+      "open_damage": 15,
+      "open_rounds": 2,
+      "phase": "reward",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 2,
+      "remaining": 10,
+      "rounds": 12,
+      "rushes": 2,
+      "source": "after_amplifier17",
+      "turns": 18,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 20,
+      "closed_rounds": 2,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "amplifier",
+      "nearest": 18,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 0,
+      "reload": 2,
+      "remaining": 14,
+      "rounds": 8,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_amplifier17",
+      "turns": 10,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 20,
+      "closed_rounds": 2,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "amplifier",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 5,
+      "open_rounds": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 0,
+      "reload": 1,
+      "remaining": 17,
+      "rounds": 5,
+      "rushes": 1,
+      "source": "after_amplifier17",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "changed": true,
+      "closed_damage": 2,
+      "closed_rounds": 1,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "amplifier",
+      "nearest": 6,
+      "node": 10902.0,
+      "open_damage": 38,
+      "open_rounds": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "recoveries": 1,
+      "reload": 1,
+      "remaining": 14,
+      "rounds": 8,
+      "rushes": 1,
+      "source": "after_amplifier17",
+      "turns": 12,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 26,
+      "closed_rounds": 1,
+      "cool": 3,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "amplifier",
+      "nearest": 10,
+      "node": 10902.0,
+      "open_damage": 22,
+      "open_rounds": 2,
+      "phase": "reward",
+      "policy": "counter_window",
+      "recoveries": 1,
+      "reload": 2,
+      "remaining": 11,
+      "rounds": 11,
+      "rushes": 2,
+      "source": "after_amplifier17",
+      "turns": 16,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 20,
+      "closed_rounds": 2,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 2,
+      "gun": "amplifier",
+      "nearest": 18,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 0,
+      "reload": 2,
+      "remaining": 14,
+      "rounds": 8,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_amplifier17",
+      "turns": 10,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 21,
+      "closed_rounds": 6,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 12,
+      "gun": "heavy",
+      "nearest": 2,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "reward",
+      "policy": "full_fire",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 7,
+      "rounds": 17,
+      "rushes": 3,
+      "source": "after_heavy731042scout",
+      "turns": 20,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 4,
+      "closed_rounds": 3,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "heavy",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 4,
+      "reload": 1,
+      "remaining": 15,
+      "rounds": 9,
+      "rushes": 4,
+      "source": "after_heavy731042scout",
+      "turns": 13,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 1,
+      "emergency": 0,
+      "forced_cooling": 4,
+      "gun": "heavy",
+      "nearest": 13,
+      "node": 10902.0,
+      "open_damage": 16,
+      "open_rounds": 3,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 2,
+      "reload": 0,
+      "remaining": 18,
+      "rounds": 6,
+      "rushes": 2,
+      "source": "after_heavy731042scout",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "changed": false,
+      "closed_damage": 21,
+      "closed_rounds": 6,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 12,
+      "gun": "heavy",
+      "nearest": 2,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 3,
+      "reload": 1,
+      "remaining": 7,
+      "rounds": 17,
+      "rushes": 3,
+      "search_unresolved": false,
+      "source": "after_heavy731042scout",
+      "turns": 20,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 21,
+      "closed_rounds": 6,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 5,
+      "gun": "heavy",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 0,
+      "open_rounds": 0,
+      "phase": "lost",
+      "policy": "full_fire",
+      "recoveries": 2,
+      "reload": 1,
+      "remaining": 13,
+      "rounds": 11,
+      "rushes": 3,
+      "source": "after_heavy731042scout",
+      "turns": 11,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "changed": true,
+      "closed_damage": 2,
+      "closed_rounds": 2,
+      "cool": 2,
+      "emergency": 0,
+      "forced_cooling": 0,
+      "gun": "heavy",
+      "nearest": 0,
+      "node": 10902.0,
+      "open_damage": 5,
+      "open_rounds": 3,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "recoveries": 3,
+      "reload": 0,
+      "remaining": 15,
+      "rounds": 9,
+      "rushes": 4,
+      "source": "after_heavy731042scout",
+      "turns": 11,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 0,
+      "closed_rounds": 0,
+      "cool": 1,
+      "emergency": 0,
+      "forced_cooling": 4,
+      "gun": "heavy",
+      "nearest": 9,
+      "node": 10902.0,
+      "open_damage": 29,
+      "open_rounds": 5,
+      "phase": "ready",
+      "policy": "counter_window",
+      "recoveries": 2,
+      "reload": 0,
+      "remaining": 18,
+      "rounds": 6,
+      "rushes": 2,
+      "source": "after_heavy731042scout",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "changed": true,
+      "closed_damage": 24,
+      "closed_rounds": 4,
+      "cool": 0,
+      "emergency": 0,
+      "forced_cooling": 12,
+      "gun": "heavy",
+      "nearest": 1,
+      "node": 10902.0,
+      "open_damage": 24,
+      "open_rounds": 2,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "recoveries": 2,
+      "reload": 3,
+      "remaining": 8,
+      "rounds": 16,
+      "rushes": 1,
+      "search_unresolved": false,
+      "source": "after_heavy731042scout",
+      "turns": 23,
+      "won": true
+    }
+  ],
+  "checks": 28,
+  "failures": [
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }",
+    "policy issued illegal command counter_window { \"action\": \"cool\", \"rounds\": 0 }"
+  ]
+}

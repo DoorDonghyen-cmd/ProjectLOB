@@ -1,0 +1,1153 @@
+--- before/새-게임-프로젝트/redesign/combat_roles.gd
++++ after/새-게임-프로젝트/redesign/combat_roles.gd
+@@ -1,24 +1,29 @@
+ extends RefCounted
+ ## New-run roles and investments. No dependency on Content/Model (shared by both).
+-const VERSION:=2
++const VERSION:=3
+ const MINIMUM:={"scout":8,"work":10,"carrier":12,"heatworker":10,"hoist":14,"recovery":12,"expedition":14}
+ const CARRY:={"scout":22,"work":26,"carrier":32,"heatworker":28,"hoist":34,"recovery":30,"expedition":36}
+ const BAG_STEPS:=3
+-static func enabled(state: Dictionary)->bool:return int(state.get("combat_roles_version",0)) in [1,2]
++static func enabled(state: Dictionary)->bool:return int(state.get("combat_roles_version",0)) in [1,2,3]
++static func builds(state: Dictionary)->bool:return int(state.get("combat_roles_version",0))==3
+ static func burn_growth(state: Dictionary,parts: Array)->int:
++	if builds(state) and parts.has("inferno"):return 2
+ 	if int(state.get("combat_roles_version",0))<2 or not parts.has("thermal_drive"):return 0
+ 	return int(state.get("engine",{}).get("levels",{}).get("thermal_drive",0))/2
+ static func level(state: Dictionary,id: String)->int:return int(state.get("gate_mods",{}).get(id,0)) if enabled(state) else 0
+ static func minimum(state: Dictionary)->int:return int(MINIMUM.get(state.get("outfit","work"),10)) if enabled(state) else 8
+ static func carry(state: Dictionary)->int:return int(CARRY.get(state.get("outfit","work"),26))+2*mini(BAG_STEPS,int(state.get("bag_upgrades",0)))
+-static func relay_limit(state: Dictionary,parts: Array)->int:return 1+level(state,"conduction")+(1 if parts.has("arc_splitter") else 0) if enabled(state) else 10000
++static func relay_limit(state: Dictionary,parts: Array)->int:return 1+level(state,"conduction")+(1 if parts.has("capacitor" if builds(state) else "arc_splitter") else 0) if enabled(state) else 10000
++static func fire_radius(state: Dictionary,parts: Array)->int:return 3 if builds(state) and parts.has("inferno") else 2
++static func slow_duration(state: Dictionary,compressed: bool,parts: Array)->int:return (3 if compressed else 2)+(1 if builds(state) and parts.has("momentum") else 0)
++static func control_bonus(state: Dictionary,parts: Array,enemy: Dictionary)->int:return 2 if builds(state) and parts.has("rammer") and int(enemy.get("slow_left",0))>0 else 0
+ static func pulse_bonus(state: Dictionary)->int:return level(state,"cadence")
+ static func base_heat(state: Dictionary,base: int)->int:return maxi(1,base-level(state,"efficiency")) if enabled(state) and base>0 else base
+ static func fire_duration(parts: Array)->int:return 4 if parts.has("inferno") else 2
+ static func ignite(state: Dictionary,center: int,damage: int,parts: Array)->void:
+ 	if not enabled(state):return
+ 	if not state.has("fire_zones"):state.fire_zones=[]
+-	var zone:={"center":center,"radius":2,"left":fire_duration(parts),"damage":damage+(2 if parts.has("coil") else 0)}
++	var zone:={"center":center,"radius":fire_radius(state,parts),"left":fire_duration(parts),"damage":damage+(2 if parts.has("coil") else 0)}
+ 	for prior in state.fire_zones:
+ 		if int(prior.center)==center:prior.left=maxi(prior.left,zone.left);prior.damage=maxi(prior.damage,zone.damage);return
+ 	if state.fire_zones.size()>=3:state.fire_zones.pop_front()
+@@ -47,10 +52,10 @@
+ 	for zone in state.fire_zones:
+ 		if not zone is Dictionary or zone.size()!=4:return false
+ 		for key in ["center","radius","left","damage"]:
+-			if not zone.has(key) or not whole(zone[key],0 if key=="center" else 1,1000000 if key=="center" else 2 if key=="radius" else 4 if key=="left" else 100):return false
++			if not zone.has(key) or not whole(zone[key],0 if key=="center" else 1,1000000 if key=="center" else (3 if builds(state) else 2) if key=="radius" else 4 if key=="left" else 100):return false
+ 	if not state.get("enemies",[]) is Array or not state.get("reinforcements",[]) is Array:return false
+ 	for enemy in state.get("enemies",[])+state.get("reinforcements",[]):
+ 		if not enemy is Dictionary:return false
+-		if not whole(enemy.get("slow_left",0),0,3) or not enemy.get("slow_used",false) is bool:return false
++		if not whole(enemy.get("slow_left",0),0,4 if builds(state) else 3) or not enemy.get("slow_used",false) is bool:return false
+ 		if int(enemy.get("slow_left",0))>0 and not enemy.get("slow_used",false):return false
+ 	return true
+--- /dev/null
++++ after/새-게임-프로젝트/redesign/build_choices.gd
+@@ -0,0 +1,41 @@
++extends RefCounted
++## Acquisition follows owned ammunition as well as the equipped core. No set bonus.
++const Ammo=preload("res://redesign/content.gd")
++const Focus=preload("res://redesign/focus_build.gd")
++const MODULES:={
++	"bore":["coil","igniter","rammer","compression_sink","radiator"],
++	"arc":["capacitor","reclaimer","rammer","chain_sink"],
++	"precise":["duplex","sequencer","third_striker","breaker","reclaimer"],
++	"pierce":["lens","third_striker","afterburner","opening","sequencer"],
++	"vent":["chain_sink","afterburner","ember_core","compression_sink"],
++	"push":["rammer","coil","igniter","radiator"]}
++const SIGNATURE:={"bore":"coil","arc":"capacitor","precise":"third_striker","pierce":"third_striker","vent":"chain_sink","push":"rammer"}
++static func family(state: Dictionary)->String:return Ammo.source_id(Focus.main_round(state)) if not Focus.main_round(state).is_empty() else ""
++static func modules(pool: Array,state: Dictionary)->Array:
++	var wanted: Array=MODULES.get(family(state),[]).duplicate()
++	if state.get("deck",[]).any(func(id):return Ammo.source_id(str(id))=="disrupt") and not wanted.has("rammer"):wanted.append("rammer")
++	if Ammo.equipped_parts(state).any(func(id):return id in ["volley_drive","siege_drive"]) and not wanted.has("capacitor"):wanted.append("capacitor")
++	return pool.filter(func(id):return wanted.has(id) and not Ammo.is_core_part(id))
++static func signature(state: Dictionary)->String:return str(SIGNATURE.get(family(state),""))
++static func role(id: String)->String:
++	if id in ["coil","inferno","igniter"]:return "불길"
++	if id in ["momentum","rammer"]:return "제어"
++	if id in ["arc_splitter","capacitor","reclaimer"]:return "전이"
++	if id in ["third_striker","opening","afterburner","sequencer","duplex","lens"]:return "직접 화력"
++	return "운용"
++static func shop_ammo(state: Dictionary,node: Dictionary,revision: int)->String:
++	var main:=Focus.main_round(state)
++	if main.is_empty():return ""
++	var supports: Array=Focus.supports_for(state,Ammo.source_id(main))
++	var slot:=posmod(int(node.id)+int(state.seed)+revision,3)
++	if slot==1:
++		var upgraded:=Focus.upgrade(main)
++		if not upgraded.is_empty():return upgraded
++	if slot==2:
++		var fewest:=1000000;var candidates: Array=[]
++		for id in supports:
++			var count: int=state.deck.filter(func(held):return Ammo.source_id(str(held))==Ammo.source_id(id)).size()
++			if count<fewest:fewest=count;candidates=[id]
++			elif count==fewest:candidates.append(id)
++		if not candidates.is_empty():return candidates[posmod(int(node.id)+revision,candidates.size())]
++	return main
+--- before/새-게임-프로젝트/redesign/campaign_content.gd
++++ after/새-게임-프로젝트/redesign/campaign_content.gd
+@@ -353,7 +353,9 @@
+ 		if ticket <= 0: return str(pools[grade][random.randi_range(0, pools[grade].size() - 1)])
+ 	return str(candidates[0])
+ 
+-static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = [], seen_ammo: Array = [], equipped: Array = [], discovery_version: int = 0, focus_version: int = 0) -> Array:
++static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = [], seen_ammo: Array = [], equipped: Array = [], discovery_version: int = 0, focus_version: int = 0, state: Dictionary = {}) -> Array:
++	var builds:=Ammo.Roles.builds(state)
++	var choices=preload("res://redesign/build_choices.gd")
+ 	var random := rng(seed_value, int(node.id) + 1900 + revision * 37)
+ 	var ammo_choices := shuffle(ammo_pool(node, discovery_version), random)
+ 	var seen_families := seen_ammo.map(func(id): return Ammo.source_id(str(id))) if discovery_version >= 2 else seen_ammo
+@@ -380,13 +382,15 @@
+ 			var modules := candidates.filter(func(id): return not Ammo.is_core_part(id))
+ 			if not modules.is_empty(): candidates = modules
+ 		if not selected.is_empty():
+-			var different := candidates.filter(func(id): return BuildGuide.family(id) != BuildGuide.family(str(selected[0])))
++			var different := candidates.filter(func(id): return choices.role(id) != choices.role(str(selected[0])) if builds else BuildGuide.family(id) != BuildGuide.family(str(selected[0])))
+ 			if not different.is_empty(): candidates = different
+ 		else:
+-			var compatible := Discovery.modules(candidates, equipped) if discovery_version >= 1 else preload("res://redesign/build_affinity.gd").candidates(candidates,equipped,true)
++			var compatible := choices.modules(candidates,state) if builds else Discovery.modules(candidates, equipped) if discovery_version >= 1 else preload("res://redesign/build_affinity.gd").candidates(candidates,equipped,true)
+ 			if not compatible.is_empty(): candidates = compatible
+ 		# An early public offer exposes the positional build; later shops keep the pool.
+-		if focus_version == 1 and selected.is_empty() and revision == 0 and int(node.get("region", 0)) == 0 and pool.has("third_striker") and not seen.has("third_striker"):
++		if builds and selected.is_empty() and revision==0 and int(node.get("region",0))==0 and candidates.has(choices.signature(state)) and not seen.has(choices.signature(state)):
++			candidates=[choices.signature(state)]
++		elif not builds and focus_version == 1 and selected.is_empty() and revision == 0 and int(node.get("region", 0)) == 0 and pool.has("third_striker") and not seen.has("third_striker"):
+ 			candidates = ["third_striker"]
+ 		var picked: String = pick_part(candidates, node, random)
+ 		selected.append(picked)
+--- before/새-게임-프로젝트/redesign/campaign.gd
++++ after/새-게임-프로젝트/redesign/campaign.gd
+@@ -455,7 +455,7 @@
+ 	if first_ammo_reward(): return []
+ 	if not node().get("elite", false): return []
+ 	var options: Array = []
+-	for offer in Content.offers(node(), int(s.seed), 0, str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), [], [], int(s.get("discovery_version",0)), int(s.get("focus_build_version",0))):
++	for offer in Content.offers(node(), int(s.seed), 0, str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), [], [], int(s.get("discovery_version",0)), int(s.get("focus_build_version",0)),model.s):
+ 		if offer.type == "part" and not s.parts.has(offer.id): options.append(offer.id)
+ 	return options.slice(0, 2)
+ 
+@@ -594,9 +594,10 @@
+ 	return true
+ 
+ func _stock_shop(shop_node: Dictionary) -> void:
+-	s.offers = Content.offers(shop_node, int(s.seed), int(s.shop_revision), str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), s.get("shop_seen_ammo", []), s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)), int(s.get("focus_build_version",0)))
++	s.offers = Content.offers(shop_node, int(s.seed), int(s.shop_revision), str(s.gun), _offer_owned(), s.get("shop_seen_parts", []), s.get("shop_seen_ammo", []), s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)), int(s.get("focus_build_version",0)),model.s)
+ 	if Model.FocusBuild.enabled(s):
+ 		var main := Model.FocusBuild.main_round(model.s)
++		if Model.Roles.builds(model.s):main=preload("res://redesign/build_choices.gd").shop_ammo(model.s,shop_node,int(s.shop_revision))
+ 		if not main.is_empty():
+ 			s.offers[0].id = main
+ 			s.offers[0].price = 24 if Ammo.grade(main) == 1 else 12
+--- before/새-게임-프로젝트/redesign/gate_upgrades.gd
++++ after/새-게임-프로젝트/redesign/gate_upgrades.gd
+@@ -43,9 +43,10 @@
+ 	var result: Array = []
+ 	for id in (["cadence","efficiency","conduction","chain"] if Roles.enabled(state) else ["thermal","chain"]):
+ 		if id=="cadence" and state.get("gun","")=="amplifier":continue
++		if id=="conduction" and Roles.builds(state) and not Ammo.equipped_parts(state).any(func(part):return part in ["volley_drive","siege_drive"]):continue
+ 		if level(state,id)<MAX_LEVEL: result.append(id)
+ 	if basics(state.deck).size()>=3 and not specimens(state.deck).is_empty(): result.append("production")
+-	if late_growth and Growth.enabled(state) and level(state,"growth")<Growth.MAX_UPGRADES: result.append("growth")
++	if late_growth and Growth.enabled(state) and level(state,"growth")<Growth.MAX_UPGRADES and (not Roles.builds(state) or Ammo.equipped_parts(state).any(func(part):return part in ["volley_drive","siege_drive","thermal_drive"])): result.append("growth")
+ 	return result
+ 
+ static func can_produce(state: Dictionary, specimen: String, sources: Array) -> bool:
+--- before/새-게임-프로젝트/redesign/content.gd
++++ after/새-게임-프로젝트/redesign/content.gd
+@@ -47,10 +47,16 @@
+ static func overdrive_percent(state: Dictionary) -> int:
+ 	return 200 if pressure_combat(state) and reactor_enabled(state) else 100
+ 
++const BUILD_ROLE_PARTS:={
++	"inferno":{"effect":"지역 불길","value":"화상 +2 · 범위 +1m","role":"지역 소이","upside":"화상 +2 · 불길 4행동 / 앞뒤 3m","text":"화상과 지역 불길의 행동당 피해 +2. 소이탄 화상 기간 +2(최대 6), 불씨 이동 한도 +2. 착발 지점 앞뒤 3m의 불길이 4적 행동 지속됩니다. 화상/불길 중첩 합산 없음. 재장전 +1행동. 성장형 열압 코어와 동시 장착할 수 없습니다."},
++	"momentum":{"effect":"접근 제어","value":"경직 +1 · 밀기 +2m","role":"제어 유지","upside":"차단탄 경직 +1행동 · 밀기/한도 +2m","text":"차단탄의 접근 감속 기간 +1적 행동(일반 3, 압축 4). 같은 적에게 경직은 여전히 전투당 1회이며 특수 행동 차단 기간은 늘리지 않습니다. 충격탄 밀치기와 탄창당 한도 +2m. 직접 피해 −1."},
++	"rammer":{"effect":"경직 후속","value":"직접 피해 +2","role":"제어 후 화력","upside":"경직 중인 적 직접 피해 +2 · 밀기 +1m","text":"접근 감속이 남아 있는 적을 직접 타격할 때 타격당 피해 +2. 차단탄으로 먼저 경직시킨 뒤 주력 탄을 연결하세요. 화상/기폭/전격 전이에는 적용하지 않으며 연쇄 코어의 잔여 타격은 새 표적의 경직을 다시 확인합니다. 기존 밀치기와 탄창당 한도 +1m도 유지합니다."},
++	"capacitor":{"effect":"전이 확장","value":"전이 +1 · 대상 +1","role":"전이 모듈","upside":"전격 전이 피해 +1 · 처치 전이 대상 +1","text":"전격탄 전이 피해 +1. 연쇄·돌파 코어의 처치 후 전이 대상도 추가 1기 늘립니다. 모듈이므로 해당 코어와 함께 장착할 수 있습니다. 처치 전이의 직접 피해 배율은 바꾸지 않습니다."},
++	"arc_splitter":{"text":"전격탄 전이 피해 +2, 전격 전이 대상 +1. 모든 직접 피해 −1. 전격의 광역 전이를 위한 코어이며 연쇄·돌파 코어와 동시 장착할 수 없습니다.","upside":"전격 전이 피해 +2 · 대상 +1"}}
+ static func part_spec(id: String, state: Dictionary) -> Dictionary:
+ 	var magazine_build: bool = int(state.get("magazine_build_version", 0)) >= 1 and MAGAZINE_BUILD_PARTS.has(id)
+ 	var focus: bool = int(state.get("focus_build_version", 0)) == 1 and FOCUS_PARTS.has(id)
+-	var role_part:=Roles.enabled(state) and id in ["volley_drive","siege_drive","arc_splitter","inferno","coil","thermal_drive"]
++	var role_part: bool=(Roles.enabled(state) and id in ["volley_drive","siege_drive","arc_splitter","inferno","coil","thermal_drive"]) or (Roles.builds(state) and BUILD_ROLE_PARTS.has(id))
+ 	if not role_part and (not revised_combat(state) or not REVISED_PARTS.has(id)) and not magazine_build and not focus: return PARTS[id]
+ 	var result: Dictionary = PARTS[id].duplicate()
+ 	if revised_combat(state) and REVISED_PARTS.has(id): result.merge(REVISED_PARTS[id], true)
+@@ -58,7 +64,7 @@
+ 	if focus: result.merge(FOCUS_PARTS[id], true)
+ 	if role_part:
+ 		if id in ["volley_drive","siege_drive"]:
+-			result.text+="\n처치 후 전이: 주 대상 외 최대 %d기. 관문 전이 회로/분배 파츠로 대상을 늘립니다."%Roles.relay_limit(state,equipped_parts(state))
++			result.text+="\n처치 후 전이: 주 대상 외 최대 %d기. 관문 전이 회로/%s로 대상을 늘립니다."%[Roles.relay_limit(state,equipped_parts(state)),"전이 축전기" if Roles.builds(state) else "분배 파츠"]
+ 			result.value+=" · 추가 %d기"%Roles.relay_limit(state,equipped_parts(state))
+ 		elif id=="arc_splitter":result.text+="\n연쇄·돌파 코어의 처치 후 전이 대상도 +1기.";result.upside+=" · 처치 전이 +1기"
+ 		elif id=="inferno":result.text+="\n착발 지점의 불길도 2 → 4적 행동 지속.";result.upside+=" · 불길 4행동"
+@@ -66,6 +72,7 @@
+ 		elif id=="thermal_drive" and int(state.get("combat_roles_version",0))>=2:
+ 			result.text+="\n성장 2회마다 화상·지역 불길의 행동당 피해 +1. 기폭도 성장한 화상 피해를 사용합니다. 지속 피해에는 증폭·위치·고열 배율을 곱하지 않습니다."
+ 			result.upside+=" · 성장 2회마다 화상 +1"
++	if Roles.builds(state) and BUILD_ROLE_PARTS.has(id):result.merge(BUILD_ROLE_PARTS[id],true)
+ 	return result
+ 
+ static func sequencer_bonus(state: Dictionary) -> int:
+@@ -477,7 +484,7 @@
+ 		"shatter": return {"label":"장갑", "value":"−%d" % value}
+ 		"cool": return {"label":"냉각", "value":"−%d" % value}
+ 		"prepare": return {"label":"예약", "value":"%d장" % value}
+-		"disrupt": return {"label":"경직 행동", "value":str(3 if is_compressed(id) else 2)} if Roles.enabled(state) else {"label":"차단", "value":"%d턴" % value}
++		"disrupt": return {"label":"경직 행동", "value":str(Roles.slow_duration(state,is_compressed(id),equipped_parts(state)))} if Roles.enabled(state) else {"label":"차단", "value":"%d턴" % value}
+ 		"spread": return {"label":"화상 이동", "value":"%d" % value}
+ 		"burn": return {"label":"화상 / 턴", "value":str(burn_damage(state))}
+ 	return {"label":"피해", "value":str(damage(id, state)) + ("×%d" % hit_count(id, state) if effect == "double" else "")}
+--- before/새-게임-프로젝트/redesign/model.gd
++++ after/새-게임-프로젝트/redesign/model.gd
+@@ -88,7 +88,9 @@
+ 	return Content.capacity(s)
+ 
+ func reload_cost() -> int:
+-	if MagazineTrial.weapons_enabled(s): return maxi(2, base_reload_cost())
++	if MagazineTrial.weapons_enabled(s):
++		var inferno_cost:=1 if Roles.builds(s) and Content.equipped_parts(s).has("inferno") else 0
++		return maxi(2, base_reload_cost()-inferno_cost)+inferno_cost
+ 	if MagazineTrial.enabled(s): return base_reload_cost() + 1
+ 	return base_reload_cost() + (1 if int(s.get("heat", 0)) >= Content.heat_limit(s) else 0) + int(s.get("legacy_reload_penalty", 0))
+ 
+@@ -697,6 +699,10 @@
+ 		if not minimal: part_combo.append("교차 급탄 +%d" % ordinary_bonus)
+ 		if not minimal: part_effects.append({"id": "ordinary_chain", "label": "교차 급탄 +%d" % ordinary_bonus})
+ 	var burn_before := int(e.get("burn", 0))
++	var control_bonus:=Roles.control_bonus(s,active_parts,e) if attack else 0
++	if control_bonus>0:
++		part_bonus+=control_bonus
++		if not minimal:part_combo.append("경직 추격 +2");part_effects.append({"id":"rammer","label":"경직 피해 +2"})
+ 	if active_parts.has("ember_core") and heat_before >= int(profile.hot_threshold):
+ 		var bonus := int(Content.PARTS.ember_core.hot_damage)
+ 		part_bonus += bonus
+@@ -855,7 +861,7 @@
+ 		var remainder := maxi(0,first_hit-hp_before) if requested_hits==1 and blocked_hits==0 and active_parts.has("siege_drive") else 0
+ 		var remaining_hits := requested_hits-hits if active_parts.has("volley_drive") else 0
+ 		# Target-dependent bonuses are recomputed; the prepared buff is paid only once.
+-		var base_subtotal := subtotal-weakness_bonus-(2 if active_parts.has("igniter") and burn_before>0 else 0)-(2 if active_parts.has("executioner") and hp_before<=5 else 0)
++		var base_subtotal := subtotal-weakness_bonus-control_bonus-(2 if active_parts.has("igniter") and burn_before>0 else 0)-(2 if active_parts.has("executioner") and hp_before<=5 else 0)
+ 		var relay := _engine_relay(id,remaining_hits,remainder,base_subtotal,factor * (part_factor if FocusBuild.enabled(s) else 1),engine_percent,pen,active_parts,gate_percent,overdrive_percent)
+ 		secondary = relay.events
+ 		relay_hits = int(relay.hits)
+@@ -890,7 +896,7 @@
+ 			interrupted = int(profile.effect)
+ 			e.jammed = interrupted
+ 			e.disrupted = true
+-	var slowed := Roles.slow(e,3 if Content.is_compressed(id) else 2) if Roles.enabled(s) and spec.effect=="disrupt" and not Ranged.is_projectile(index) else 0
++	var slowed := Roles.slow(e,Roles.slow_duration(s,Content.is_compressed(id),active_parts)) if Roles.enabled(s) and spec.effect=="disrupt" and not Ranged.is_projectile(index) else 0
+ 	var transferred := 0
+ 	if spec.effect == "spread" and not Ranged.is_projectile(index) and burn_before > 0:
+ 		var others: Array = []
+@@ -983,6 +989,7 @@
+ 	result.boost_hot_failed = bool(applied.hot_failed)
+ 	result.boost_factor_granted = Content.boost_factor(id, s) if spec.effect == "boost" else 1
+ 	result.pending_boost = s.buff.duplicate(true)
++	if Roles.builds(s):result.slowed=slowed;result.fire_zones=s.fire_zones.duplicate(true)
+ 	result.part_effects = preload("res://redesign/part_feedback.gd").shot_effects(s, result, part_effects, burn_before)
+ 	if chain_cooled > 0: result.part_effects.append({"id": "chain_sink", "label": "세 번째 발 냉각 −%d" % chain_cooled})
+ 	if active_parts.has("indexer") and prepared_rounds.size() > Content.multiplier(s): result.part_effects.append({"id": "indexer", "label": "예약 +1장"})
+@@ -1047,7 +1054,7 @@
+ 		var blocked := int(other.get("barrier",0))>0
+ 		var amount := overflow
+ 		if not is_overflow:
+-			var added := Content.weakness_bonus(id,other)+(2 if parts.has("igniter") and int(other.get("burn",0))>0 else 0)+(2 if parts.has("executioner") and hp<=5 else 0)
++			var added := Content.weakness_bonus(id,other)+Roles.control_bonus(s,parts,other)+(2 if parts.has("igniter") and int(other.get("burn",0))>0 else 0)+(2 if parts.has("executioner") and hp<=5 else 0)
+ 			amount = int((base+added)*factor*percent*gate_percent*overdrive_percent/1000000.0)
+ 		amount = Content.armored_damage(amount,maxi(0,int(other.def)-pen),s,0 if is_overflow else 1)
+ 		var dealt := 0
+@@ -1067,6 +1074,7 @@
+ 				dealt += extra
+ 		total += dealt
+ 		events.append({"kind":"overflow" if is_overflow else "relay","target":next,"damage":dealt,"hp":int(other.hp),"barrier":int(other.get("barrier",0)),"focus_hits":int(other.get("focus_hits",0)),"blocked_hits":1 if blocked else 0,"intercept":Ranged.is_projectile(next) and int(other.hp)<=0})
++		if Roles.builds(s) and not is_overflow and not blocked and Roles.control_bonus(s,parts,other)>0:events[-1].control_bonus=2
+ 		if Noble.shielded(other):
+ 			events[-1].exposure_left=int(other.exposure_left)
+ 			events[-1].barrier_removed=removed
+--- before/새-게임-프로젝트/redesign/readability.gd
++++ after/새-게임-프로젝트/redesign/readability.gd
+@@ -17,8 +17,8 @@
+ 
+ static func _description(id: String, state: Dictionary) -> String:
+ 	var spec: Dictionary = Content.AMMO[id]
+-	if Content.Roles.enabled(state) and spec.effect=="disrupt":return "특수 행동 차단과 함께 접근량을 %d적 행동 동안 절반으로 낮춥니다(올림, 이동 시 최소 1). 적마다 경직 1회 · 압력탄 제외."%(3 if Content.is_compressed(id) else 2)
+-	if Content.Roles.enabled(state) and spec.effect=="burn":return "표적에 화상 %d턴. 착발 지점 앞뒤 2m에 불길을 %d적 행동 남깁니다.\n화상은 행동당 %d, 불길은 %d피해 · 장갑/차폐 무시. 겹친 화상/불길은 큰 값 한 번만 적용됩니다.\n불길 최대 3곳 · 재장전/냉각 중에도 진행."%[Content.burn_amount(id,state),Content.Roles.fire_duration(Content.equipped_parts(state)),Content.burn_damage(state),Content.burn_damage(state)+(2 if Content.has_part(state,"coil") else 0)]
++	if Content.Roles.enabled(state) and spec.effect=="disrupt":return "특수 행동 차단과 함께 접근량을 %d적 행동 동안 절반으로 낮춥니다(올림, 이동 시 최소 1). 적마다 경직 1회 · 압력탄 제외."%Content.Roles.slow_duration(state,Content.is_compressed(id),Content.equipped_parts(state))
++	if Content.Roles.enabled(state) and spec.effect=="burn":return "표적에 화상 %d턴. 착발 지점 앞뒤 %dm에 불길을 %d적 행동 남깁니다.\n화상은 행동당 %d, 불길은 %d피해 · 장갑/차폐 무시. 겹친 화상/불길은 큰 값 한 번만 적용됩니다.\n불길 최대 3곳 · 재장전/냉각 중에도 진행."%[Content.burn_amount(id,state),Content.Roles.fire_radius(state,Content.equipped_parts(state)),Content.Roles.fire_duration(Content.equipped_parts(state)),Content.burn_damage(state),Content.burn_damage(state)+(2 if Content.has_part(state,"coil") else 0)]
+ 	if spec.effect == "burn":
+ 		return "직접 피해 %d · 보호막에 막혀도 화상 %d턴 부여.\n매 적 행동 직전 HP에 %d피해 · 보호막·장갑 무시.\n재장전 중에도 진행. 추가 적중은 기간을 더하며 최대 6턴, 턴당 피해는 중첩되지 않습니다.\n%s" % [Content.damage(id, state), Content.burn_amount(id, state), Content.burn_damage(state), Content.compression_cost_text(id, state)]
+ 	if spec.get("profile",false):
+--- before/새-게임-프로젝트/redesign/ammo_card_view.gd
++++ after/새-게임-프로젝트/redesign/ammo_card_view.gd
+@@ -95,7 +95,7 @@
+ 	var spec: Dictionary = Content.AMMO[ammo_id]
+ 	match str(spec.effect):
+ 		"prepare": return "뒤 %d장 → 다음 패" % Content.effect_value(ammo_id, state)
+-		"disrupt": return "접근 감속 %d행동"%(3 if Content.is_compressed(ammo_id) else 2) if Content.Roles.enabled(state) else "준비 정지 %d턴" % Content.effect_value(ammo_id, state)
++		"disrupt": return "접근 감속 %d행동"%Content.Roles.slow_duration(state,Content.is_compressed(ammo_id),Content.equipped_parts(state)) if Content.Roles.enabled(state) else "준비 정지 %d턴" % Content.effect_value(ammo_id, state)
+ 		"spread": return "화상 이동 최대 %d" % Content.effect_value(ammo_id, state)
+ 		"sequence": return "탄종×%d · 최대3" % Content.effect_value(ammo_id, state)
+ 		"burn": return "지역 불길 %d행동"%Content.Roles.fire_duration(Content.equipped_parts(state)) if Content.Roles.enabled(state) else "%d턴 · 보호막 무시" % Content.burn_amount(ammo_id, state)
+--- before/새-게임-프로젝트/redesign/part_feedback.gd
++++ after/새-게임-프로젝트/redesign/part_feedback.gd
+@@ -1,106 +1,118 @@
+-extends RefCounted
+-## Presentation observations only. No commands, RNG, or counterfactual HP totals.
+-const Content = preload("res://redesign/content.gd")
+-const PASSIVE := ["loader", "supply", "reserve", "field_press", "radiator", "cooling_breech"]
+-
+-static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array, burn_before: int) -> Array:
+-	var effects: Array = []
+-	var id := str(shot.id)
+-	var spec: Dictionary = Content.AMMO[id]
+-	var unblocked := int(shot.hits) > int(shot.blocked_hits)
+-	if unblocked:
+-		for effect in conditional: effects.append(effect.duplicate())
+-	for part in Content.equipped_parts(state):
+-		var label := ""
+-		match part:
+-			"overbore":
+-				if unblocked and Content.is_heavy_attack(id): label = "중량 피해 +3"
+-			"lens":
+-				if unblocked and int(spec.pen) > 0 and int(shot.math.armor_before) > int(shot.pen) - 2: label = "관통 +2"
+-			"breaker":
+-				if int(shot.barrier_removed) > int(shot.blocked_hits): label = "보호 파쇄"
+-			"duplex":
+-				var direct_hits := int(shot.hits)
+-				for impact in shot.get("secondary",[]):
+-					if impact.get("kind","") == "relay": direct_hits += 1
+-				if Content.source_id(id) == "precise" and direct_hits > int(spec.get("hits", 2)): label = "타격 +%d" % mini(Content.duplex_bonus(state), direct_hits - int(spec.get("hits",2)))
+-			"sequencer":
+-				if spec.effect == "boost" and int(spec.get("boost_factor", 1)) == 1: label = "증폭 +%d" % Content.sequencer_bonus(state)
+-			"coil", "inferno":
+-				var bonus := 1 if part == "coil" else 2
+-				# A capped or killed target must not claim extra burn duration.
+-				var without := mini(6, burn_before + int(spec.value) + (2 if part == "coil" and Content.has_part(state, "inferno") else 0) + (1 if part == "inferno" and Content.has_part(state, "coil") else 0))
+-				if spec.effect == "burn" and int(shot.burn_added) > 0 and int(shot.burn) > without:
+-					label = "화상 +%d" % mini(bonus, int(shot.burn) - without)
+-			"capacitor", "arc_splitter":
+-				# Applied enhancement, not additive credit for enemy HP removed.
+-				if spec.effect == "arc" and not shot.secondary.is_empty(): label = "전이 강화"
+-			"rammer", "momentum":
+-				if int(shot.push) > 0: label = "밀기 %dm" % int(shot.push)
+-		if not label.is_empty(): effects.append({"id": part, "label": label})
+-	return effects
+-
+-static func slots(prediction: Dictionary, part: String) -> Array:
+-	var found: Array = []
+-	# Aggregated random previews do not promise a particular hidden target/trigger.
+-	if prediction.get("random", false): return found
+-	var shots: Array = prediction.get("shots", [])
+-	for i in range(shots.size()):
+-		for effect in shots[i].get("part_effects", []):
+-			if str(effect.id) == part:
+-				found.append(i + 1)
+-				break
+-	return found
+-
+-static func readiness(prediction: Dictionary, part: String) -> String:
+-	if PASSIVE.has(part): return "장착 중 · " + str(Content.PARTS[part].upside)
+-	if prediction.get("pending", false): return "발동 예측 계산 중"
+-	if prediction.get("random", false):
+-		if part in ["reclaimer", "ember_core", "chain_sink", "indexer", "ordinary_chain", "compression_sink", "volley_drive", "thermal_drive", "siege_drive"]:
+-			var chances: PackedStringArray = []
+-			for i in range(prediction.get("shots", []).size()):
+-				var chance := float(prediction.shots[i].get("part_probabilities", {}).get(part, 0))
+-				if chance > 0: chances.append("%d번 %d%%" % [i + 1, roundi(chance * 100)])
+-			return "발동 예상 · " + " / ".join(chances) if not chances.is_empty() else "이번 발사에서 발동 없음"
+-		return "무작위 표적 · 실제 발사 후 발동 확인"
+-	var positions := slots(prediction, part)
+-	if positions.is_empty(): return "이번 발사에서 발동 없음"
+-	var labels: PackedStringArray = []
+-	for position in positions: labels.append(str(position))
+-	return "이번 발사 · " + "/".join(labels) + "번째 탄에서 발동 예상"
+-
+-static func encounter_state(state: Dictionary) -> Dictionary:
+-	var result := state.duplicate(false)
+-	var history: Array = state.get("history", [])
+-	var start := 0
+-	for i in range(history.size() - 1, -1, -1):
+-		if str(history[i].get("action", "")) == "encounter":
+-			start = i
+-			break
+-	result.history = history.slice(start)
+-	return result
+-
+-static func highlights(state: Dictionary) -> Array:
+-	var counts: Dictionary = {}
+-	var focus := 0
+-	var boosted := 0
+-	for event in encounter_state(state).get("history", []):
+-		if str(event.get("action", "")) != "fire": continue
+-		for shot in event.get("detail", {}).get("results", []):
+-			for effect in shot.get("part_effects", []):
+-				var id := str(effect.id)
+-				counts[id] = int(counts.get(id, 0)) + 1
+-			focus += int(shot.get("focus_damage", 0))
+-			if int(shot.get("math", {}).get("boost", 0)) > 0 and int(shot.get("hits", 0)) > int(shot.get("blocked_hits", 0)): boosted += 1
+-	var ids: Array = counts.keys()
+-	ids.sort_custom(func(a, b):
+-		var conditional := ["triad", "igniter", "opening", "afterburner", "executioner", "reclaimer", "ember_core"]
+-		if conditional.has(a) != conditional.has(b): return conditional.has(a)
+-		if int(counts[a]) != int(counts[b]): return int(counts[a]) > int(counts[b])
+-		return str(a) < str(b)
+-	)
+-	var result: Array = []
+-	for id in ids.slice(0, 2): result.append({"id": id, "text": "%s · %d발 발동" % [Content.PARTS[id].name, counts[id]]})
+-	if result.size() < 2 and focus > 0: result.append({"id": "", "text": "집중 추가 피해 %d" % focus})
+-	if result.size() < 2 and boosted > 0: result.append({"id": "", "text": "증폭 연계 %d발" % boosted})
+-	return result
++extends RefCounted
++## Presentation observations only. No commands, RNG, or counterfactual HP totals.
++const Content = preload("res://redesign/content.gd")
++const PASSIVE := ["loader", "supply", "reserve", "field_press", "radiator", "cooling_breech"]
++
++static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array, burn_before: int) -> Array:
++	var effects: Array = []
++	var id := str(shot.id)
++	var spec: Dictionary = Content.AMMO[id]
++	var unblocked := int(shot.hits) > int(shot.blocked_hits)
++	if unblocked:
++		for effect in conditional: effects.append(effect.duplicate())
++	for part in Content.equipped_parts(state):
++		var label := ""
++		match part:
++			"overbore":
++				if unblocked and Content.is_heavy_attack(id): label = "중량 피해 +3"
++			"lens":
++				if unblocked and int(spec.pen) > 0 and int(shot.math.armor_before) > int(shot.pen) - 2: label = "관통 +2"
++			"breaker":
++				if int(shot.barrier_removed) > int(shot.blocked_hits): label = "보호 파쇄"
++			"duplex":
++				var direct_hits := int(shot.hits)
++				for impact in shot.get("secondary",[]):
++					if impact.get("kind","") == "relay": direct_hits += 1
++				if Content.source_id(id) == "precise" and direct_hits > int(spec.get("hits", 2)): label = "타격 +%d" % mini(Content.duplex_bonus(state), direct_hits - int(spec.get("hits",2)))
++			"sequencer":
++				if spec.effect == "boost" and int(spec.get("boost_factor", 1)) == 1: label = "증폭 +%d" % Content.sequencer_bonus(state)
++			"coil", "inferno":
++				var bonus := 1 if part == "coil" else 2
++				# A capped or killed target must not claim extra burn duration.
++				var without := mini(6, burn_before + int(spec.value) + (2 if part == "coil" and Content.has_part(state, "inferno") else 0) + (1 if part == "inferno" and Content.has_part(state, "coil") else 0))
++				if spec.effect == "burn" and int(shot.burn_added) > 0 and int(shot.burn) > without:
++					label = "화상 +%d" % mini(bonus, int(shot.burn) - without)
++			"capacitor", "arc_splitter":
++				# Applied enhancement, not additive credit for enemy HP removed.
++				if spec.effect == "arc" and not shot.secondary.is_empty(): label = "전이 강화"
++			"rammer", "momentum":
++				if int(shot.push) > 0: label = "밀기 %dm" % int(shot.push)
++		if Content.Roles.builds(state):
++			if spec.effect=="burn" and not shot.get("fire_zones",[]).is_empty():
++				if part=="inferno":label="불길 4행동 · 앞뒤 3m"
++				elif part=="coil":label="불길 피해 +2"
++				elif part=="thermal_drive" and Content.Roles.burn_growth(state,[part])>0:label="성장 화상 %d"%int(shot.burn_tick)
++			if part=="momentum" and int(shot.get("slowed",0))>0:label="경직 %d행동"%int(shot.slowed)
++			if part=="rammer" and not effects.any(func(effect):return effect.id=="rammer") and shot.get("secondary",[]).any(func(impact):return int(impact.get("control_bonus",0))>0):label="경직 피해 +2"
++			if part=="capacitor":
++				var reached: Array=[]
++				for impact in shot.get("secondary",[]):
++					if impact.get("kind","") in ["relay","overflow"] and not reached.has(impact.target):reached.append(impact.target)
++				if reached.size()>1+Content.Roles.level(state,"conduction"):label="처치 전이 +1기"
++		if not label.is_empty(): effects.append({"id": part, "label": label})
++	return effects
++
++static func slots(prediction: Dictionary, part: String) -> Array:
++	var found: Array = []
++	# Aggregated random previews do not promise a particular hidden target/trigger.
++	if prediction.get("random", false): return found
++	var shots: Array = prediction.get("shots", [])
++	for i in range(shots.size()):
++		for effect in shots[i].get("part_effects", []):
++			if str(effect.id) == part:
++				found.append(i + 1)
++				break
++	return found
++
++static func readiness(prediction: Dictionary, part: String) -> String:
++	if PASSIVE.has(part): return "장착 중 · " + str(Content.PARTS[part].upside)
++	if prediction.get("pending", false): return "발동 예측 계산 중"
++	if prediction.get("random", false):
++		if part in ["reclaimer", "ember_core", "chain_sink", "indexer", "ordinary_chain", "compression_sink", "volley_drive", "thermal_drive", "siege_drive"]:
++			var chances: PackedStringArray = []
++			for i in range(prediction.get("shots", []).size()):
++				var chance := float(prediction.shots[i].get("part_probabilities", {}).get(part, 0))
++				if chance > 0: chances.append("%d번 %d%%" % [i + 1, roundi(chance * 100)])
++			return "발동 예상 · " + " / ".join(chances) if not chances.is_empty() else "이번 발사에서 발동 없음"
++		return "무작위 표적 · 실제 발사 후 발동 확인"
++	var positions := slots(prediction, part)
++	if positions.is_empty(): return "이번 발사에서 발동 없음"
++	var labels: PackedStringArray = []
++	for position in positions: labels.append(str(position))
++	return "이번 발사 · " + "/".join(labels) + "번째 탄에서 발동 예상"
++
++static func encounter_state(state: Dictionary) -> Dictionary:
++	var result := state.duplicate(false)
++	var history: Array = state.get("history", [])
++	var start := 0
++	for i in range(history.size() - 1, -1, -1):
++		if str(history[i].get("action", "")) == "encounter":
++			start = i
++			break
++	result.history = history.slice(start)
++	return result
++
++static func highlights(state: Dictionary) -> Array:
++	var counts: Dictionary = {}
++	var focus := 0
++	var boosted := 0
++	for event in encounter_state(state).get("history", []):
++		if str(event.get("action", "")) != "fire": continue
++		for shot in event.get("detail", {}).get("results", []):
++			for effect in shot.get("part_effects", []):
++				var id := str(effect.id)
++				counts[id] = int(counts.get(id, 0)) + 1
++			focus += int(shot.get("focus_damage", 0))
++			if int(shot.get("math", {}).get("boost", 0)) > 0 and int(shot.get("hits", 0)) > int(shot.get("blocked_hits", 0)): boosted += 1
++	var ids: Array = counts.keys()
++	ids.sort_custom(func(a, b):
++		var conditional := ["triad", "igniter", "opening", "afterburner", "executioner", "reclaimer", "ember_core"]
++		if conditional.has(a) != conditional.has(b): return conditional.has(a)
++		if int(counts[a]) != int(counts[b]): return int(counts[a]) > int(counts[b])
++		return str(a) < str(b)
++	)
++	var result: Array = []
++	for id in ids.slice(0, 2): result.append({"id": id, "text": "%s · %d발 발동" % [Content.PARTS[id].name, counts[id]]})
++	if result.size() < 2 and focus > 0: result.append({"id": "", "text": "집중 추가 피해 %d" % focus})
++	if result.size() < 2 and boosted > 0: result.append({"id": "", "text": "증폭 연계 %d발" % boosted})
++	return result
+--- before/새-게임-프로젝트/redesign/build_guide.gd
++++ after/새-게임-프로젝트/redesign/build_guide.gd
+@@ -46,6 +46,14 @@
+ 	return str(FAMILIES.get(id, "빌드"))
+ 
+ static func connection(id: String, state: Dictionary) -> String:
++	if Ammo.Roles.builds(state):
++		match id:
++			"inferno":return "화상 +2 · 넓은 불길 4행동 · 냉각/교체 중에도 피해"
++			"momentum":return "차단탄 경직 3/4행동 · 밀기로 접근 시간 확보"
++			"rammer":return "차단 → 경직 중 주력 탄 · 타격마다 +2"
++			"capacitor":return "전격 강화 · 연쇄/돌파와 함께 장착해 전이 대상 +1"
++			"arc_splitter":return "전격 전이 대상 +1 · 성장 코어와 교체하는 선택"
++			"coil":return "화상 +1행동 · 불길 피해 +2 · 소이/기폭 연결"
+ 	if id == "third_striker": return "지원탄도 한 발 · 주력 탄을 세 번째 발사에 맞춰 ×3"
+ 	if int(state.get("focus_build_version",0)) == 1:
+ 		if id == "opening": return "첫 발 ×2 · 앞 탄을 빼내 주력 탄으로 시작"
+--- /dev/null
++++ after/새-게임-프로젝트/tests/build_roles_rules.gd
+@@ -0,0 +1,88 @@
++extends "res://tests/playtest_rework_rules.gd"
++const Choices=preload("res://redesign/build_choices.gd")
++func build(rounds: Array,parts: Array=[],gun: String="single",version: int=3):
++	var m=modern(rounds,parts,gun);m.s.combat_roles_version=version;return m
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/build_roles_20261103/"):quit(2);return
++	var fire=build(["bore","basic_p2"],["inferno","coil"])
++	targets(fire,3,30,3)
++	var r:=shot(fire)
++	check(r.burn_tick==4 and r.fire_zones[0].damage==6 and r.fire_zones[0].radius==3,"specialist fire core/coil has bounded area identity")
++	check(fire.s.enemies[1].hp==24 and fire.s.enemies[2].hp==30,"three-meter boundary includes only adjacent target")
++	check(r.part_effects.any(func(p):return p.id=="inferno") and r.part_effects.any(func(p):return p.id=="coil"),"actual ground fire parts emit readable receipts")
++	check(fire.s.fire_zones[0].left==3 and fire.reload_cost()==3,"four-action zone retains extra reload cost")
++	restore_check(fire)
++	for compressed in [false,true]:
++		var m=build(["disrupt_c" if compressed else "disrupt","basic_p2"],["momentum"])
++		m.s.enemies[0].speed=4
++		var hit:=shot(m)
++		check(hit.slowed==(4 if compressed else 3) and m.s.enemies[0].slow_left==hit.slowed-1,"control core extends finite approach slow")
++		check(hit.part_effects.any(func(p):return p.id=="momentum"),"control duration activation is visible")
++		check(Roles.slow(m.s.enemies[0],4)==0,"control cannot renew per-enemy slow")
++		restore_check(m)
++	var combo=build(["disrupt","precise_p2","basic_p2"],["volley_drive","rammer"])
++	check(shot(combo).damage==0,"control setup does not receive attack damage")
++	var plain=Model.new();check(plain.restore_state(canonical(combo.s)),"same conditioned state clones")
++	plain.s.equipped_parts.erase("rammer");plain.s.push_left=Content.push_budget(plain.s)
++	var enhanced:=shot(combo);var ordinary:=shot(plain)
++	check(enhanced.damage-ordinary.damage==2*enhanced.hits,"following multi-hit gets two per actual hit")
++	check(enhanced.part_effects.any(func(p):return p.id=="rammer"),"follow-up activation has an actual receipt")
++	check(combo.s.enemies[0].slow_left==0,"normal two-action setup window expires")
++	check(shot(combo).damage==shot(plain).damage,"no permanent damage buff after slow")
++	for primary_slow in [true,false]:
++		var relay=build(["precise_p2","basic_p2"],["volley_drive","duplex","rammer"])
++		targets(relay,2,1000);relay.s.enemies[0].hp=1
++		var target: int=0 if primary_slow else 1
++		relay.s.enemies[target].slow_left=2;relay.s.enemies[target].slow_used=true
++		var baseline=Model.new();check(baseline.restore_state(canonical(relay.s)),"relay comparison state restores")
++		baseline.s.equipped_parts.erase("rammer");baseline.s.push_left=Content.push_budget(baseline.s)
++		var a:=shot(relay);var b:=shot(baseline)
++		check(a.part_effects.any(func(p):return p.id=="rammer"),"primary or secondary conditional hit reports rammer")
++		for i in range(a.secondary.size()):check(a.secondary[i].damage-b.secondary[i].damage==(0 if primary_slow else 2),"relay re-evaluates destination slow")
++	var relay=build(["precise_p2","basic_p2"],["volley_drive","duplex","capacitor"])
++	check(Content.valid_part_set("single",relay.s.equipped_parts),"relay expansion is a legally compatible module")
++	check(not Content.valid_part_set("single",["volley_drive","arc_splitter"]),"two-core restriction retained")
++	targets(relay,4,1)
++	var hits:=shot(relay)
++	check(relay.alive_count()==1 and hits.secondary.size()==2,"capacitor extends to exactly two extra targets")
++	check(hits.part_effects.any(func(p):return p.id=="capacitor"),"expanded relay reports its module")
++	var overflow=build(["basic_p3"],["siege_drive","capacitor"])
++	targets(overflow,4,1)
++	var carried:=shot(overflow)
++	check(carried.secondary.size()==2 and carried.part_effects.any(func(p):return p.id=="capacitor"),"overflow expansion also reports its actual extra target")
++	for core in ["volley_drive","siege_drive","thermal_drive","inferno","momentum","arc_splitter"]:
++		var state=build(["bore","basic_p2"],[core]).s
++		check(Model.Gates.options(state,true).has("conduction")==(core in ["volley_drive","siege_drive"]),"gate relay option has current compatible core")
++		check(Model.Gates.options(state,true).has("growth")==(core in Model.Engines.IDS),"growth gate applies only to growing cores")
++	var before_offers=load("res://../qa_runtime/build_roles_20261103/before/새-게임-프로젝트/redesign/campaign_content.gd")
++	var data=Campaign.Content
++	for seed_value in range(80):
++		for family in ["bore","arc","precise_p2","pierce_p2","vent"]:
++			var state=build(["basic_p2"],["thermal_drive"]).s
++			state.deck=[family,family,"disrupt","basic_p2"]
++			state.seed=str(seed_value)
++			var node: Dictionary={"id":303,"region":0,"floor":3,"elite":false}
++			var owned: Array=["thermal_drive","field_press","reserve"]
++			var offers: Array=data.offers(node,seed_value,0,"single",owned,[],[],state.equipped_parts,3,1,state)
++			check(offers[1].id==Choices.signature(state),"first regional shop exposes the chosen ammo role")
++			check(Choices.role(offers[1].id)!=Choices.role(offers[2].id),"second choice provides another role")
++			var seen: Array=[offers[1].id,offers[2].id]
++			var rerolled: Array=data.offers(node,seed_value,1,"single",owned,seen,[],state.equipped_parts,3,1,state)
++			check(not seen.has(rerolled[1].id) and not seen.has(rerolled[2].id),"unseen priority survives adaptive fitting")
++			for version in [1,2]:
++				state.combat_roles_version=version
++				check(canonical(data.offers(node,seed_value,0,"single",owned,[],[],state.equipped_parts,3,1,state))==canonical(before_offers.offers(node,seed_value,0,"single",owned,[],[],state.equipped_parts,3,1)),"v1/v2 offer RNG and result unchanged")
++	var state=build(["bore","bore","disrupt","basic_p2"],["thermal_drive"]).s
++	var ammo: Array=[]
++	for revision in range(3):ammo.append(Choices.shop_ammo(state,{"id":303},revision))
++	check(ammo.has("bore") and ammo.has("bore_c") and ammo.any(func(id):return id in ["detonate","spread"]),"shop rotates copy, improved copy and missing support")
++	var old_model=load("res://../qa_runtime/build_roles_20261103/before/새-게임-프로젝트/redesign/model.gd")
++	for version in [1,2]:
++		for parts in [["inferno","coil"],["momentum","rammer"],["volley_drive","capacitor"]]:
++			var current=build(["disrupt","bore","precise_p2","basic_p2"],parts,"single",version)
++			var prior=old_model.new();check(prior.restore_state(canonical(current.s)),"historical role state restores")
++			for action in ["fire","fire","cool_magazine","fire"]:
++				check(current.call(action)==prior.call(action) and canonical(current.s)==canonical(prior.s),"historical full resolver remains exact")
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++	print("BUILD ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/build_roles_climb.gd
+@@ -0,0 +1,48 @@
++extends "res://tests/late_balance_climb.gd"
++var build_kind:="fire"
++func choose_ammo(c,options: Array)->String:
++	if c.first_ammo_reward():
++		var main: String={"fire":"bore","control":"precise_p2","direct":"pierce_p2"}[build_kind]
++		if options.has(main):return main
++	if not c.first_ammo_reward():
++		for id in (["disrupt","detonate"] if build_kind=="fire" else ["disrupt"]):
++			if options.has(id) and not c.model.s.deck.any(func(held):return Ammo.source_id(held)==id):return id
++	return super.choose_ammo(c,options)
++func choose_parts(c)->bool:
++	var preferred: Array={
++		"fire":[preferred_core,"coil","igniter","rammer","compression_sink","chain_sink","radiator"],
++		"control":[preferred_core,"rammer","third_striker","duplex","capacitor","sequencer","chain_sink"],
++		"direct":[preferred_core,"third_striker","opening","capacitor","afterburner","lens","sequencer"]}[build_kind]
++	var chosen: Array=[]
++	for id in preferred+c.s.parts:
++		if not chosen.has(id) and c.s.parts.has(id) and Ammo.valid_part_set(run_gun,chosen+[id]):chosen.append(id)
++		if chosen.size()==5:break
++	if chosen==c.s.equipped_parts:return true
++	if not c.s.equipped_parts.is_empty() and not command(c,{"action":"equip","id":"none"}):return false
++	for id in chosen:
++		if not command(c,{"action":"equip","id":id}):return false
++	return true
++func command(c,item: Dictionary)->bool:
++	if c.s.phase=="shop" and item.action=="buy":snapshot(c,"shop_%s_%d_r%d_n%d"%[run_gun,run_seed,int(c.s.region)+1,c.s.node])
++	return super.command(c,item)
++func _run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/build_roles_20261103/"):quit(2);return
++	solver=preload("res://tests/fire_control_solver.gd").new()
++	route_policy="safe";acquisition_policy="refit";rule_version=3
++	var selected:=OS.get_environment("QA_GUNS")
++	if selected.is_empty():selected="heavy,burst,single"
++	var seeds:=OS.get_environment("QA_SEEDS")
++	if seeds.is_empty():seeds="17"
++	for seed_text in seeds.split(","):
++		for gun in selected.split(","):
++			run_gun=gun;run_seed=int(seed_text);commands=[]
++			build_kind={"heavy":"fire","burst":"control","single":"direct"}[gun];role_build=build_kind=="fire"
++			preferred_core={"single":"siege_drive","burst":"volley_drive","heavy":"thermal_drive"}[gun]
++			var c=Campaign.new();c.start(gun,run_seed,0,"balanced",4,"carrier",true)
++			check(c.s.combat_roles_version==3 and c.model.s.combat_roles_version==3,"new full climb uses build choices")
++			roundtrip(c)
++			var won: bool=await play_run(c)
++			endpoints.append({"gun":gun,"seed":run_seed,"role_version":3,"build":build_kind,"won":won,"region":int(c.s.region)+1,"phase":c.s.phase,"deck":c.model.s.deck,"parts":c.s.equipped_parts,"gate_mods":c.model.s.gate_mods,"commands":commands.duplicate(true)})
++			check(won,"earned build climb "+gun+"/"+seed_text);write_report()
++	print("BUILD ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/build_roles_probe.gd
+@@ -0,0 +1,54 @@
++extends "res://tests/build_roles_rules.gd"
++func earned_branches()->Array:
++	var result: Array=[]
++	var search=preload("res://tests/fire_control_solver.gd").new()
++	for region in [3,4]:
++		var file:="res://../qa_runtime/build_roles_20261103/climb_earned/gate_heavy_17_r%d.json"%region
++		var source: Dictionary=JSON.parse_string(FileAccess.get_file_as_string(file))
++		for core in ["thermal_drive","inferno" if region==3 else "momentum"]:
++			var c=Campaign.new();check(c.restore_state(source),"earned gate restores for legal core comparison")
++			if core!="thermal_drive":check(c.replace_part("thermal_drive",core),"swap only an actually owned specialist core")
++			check(c.gate("skip") and c.depart_gate(),"same unincreased next region for both core choices")
++			check(c.enter(int(c.choices()[0].id)),"enter the same next battle through a legal map link")
++			var start: int=c.model.s.turns
++			var path: Array=search.solve(c.model)
++			check(not path.is_empty(),"owned specialist has a reachable next battle")
++			var actions: Array=[];var last: Dictionary={}
++			for step in path:
++				if step.action=="fire":c.model.s.fire_heat_trial.rounds=int(step.get("rounds",0))
++				var ok: bool
++				match step.action:
++					"fire":ok=c.model.fire()
++					"cool":ok=c.model.cool_magazine()
++					"reload":ok=c.model.reload_magazine()
++					"emergency":ok=c.model.emergency_resupply()
++					"eject":ok=c.model.eject_magazine_rounds(step.indices)
++				check(ok,"legal earned core combat input")
++				last=c.model.s.duplicate(true);actions.append(step)
++				c.sync_combat();check(c.save()==OK,"earned branch saves")
++				var resumed=Campaign.new();check(resumed.restore(),"earned branch save restores")
++				check(canonical(resumed.model.s)==canonical(c.model.s),"branch resume preserves exact combat")
++			check(c.s.phase=="reward","owned core reaches actual battle reward")
++			result.append({"source":file,"core":core,"node":c.s.node,"won":c.s.phase=="reward","turns":int(last.get("turns",start))-start,"parts":c.s.equipped_parts,"deck":c.model.s.deck,"commands":actions})
++	return result
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/build_roles_20261103/"):quit(2);return
++	for kind in ["fire","control","relay","direct"]:
++		for version in [2,3]:
++			var rounds: Array={"fire":["bore","basic_p1","basic_p1","basic_p1"],"control":["disrupt_c","precise_p1","basic_p1","basic_p1"],"relay":["precise_p2"],"direct":["basic_p2","charge","precise_p2"]}[kind]
++			var parts: Array={"fire":["inferno","coil"],"control":["momentum","rammer"],"relay":["volley_drive","duplex","capacitor"],"direct":["volley_drive","third_striker","opening"]}[kind]
++			var m=build(rounds,parts,"single",version)
++			targets(m,4 if kind=="relay" else 3,1 if kind=="relay" else 1000,3)
++			for enemy in m.s.enemies:enemy.speed=0 if kind=="fire" else 2
++			var events: Array=[]
++			for i in range(rounds.size()):events.append(shot(m))
++			restore_check(m)
++			records.append({"kind":kind,"version":version,"hp":m.s.enemies.map(func(e):return e.hp),"distances":m.s.enemies.map(func(e):return e.distance),"turns":m.s.turns,"reload_cost":m.reload_cost(),"direct":events.map(func(e):return e.damage),"alive":m.alive_count()})
++	check(records[1].hp[1]<records[0].hp[1] and records[1].hp[2]==records[0].hp[2],"area specialist improves bounded adjacent damage")
++	check(records[3].direct[1]>records[2].direct[1] and records[3].distances[0]>records[2].distances[0],"setup buys actual attack payoff and approach time")
++	check(records[5].alive==records[4].alive-1,"legal relay module gains one target")
++	check(records[7].direct==records[6].direct and records[7].hp==records[6].hp and records[7].turns==records[6].turns,"existing first/third direct combination is mechanically unchanged")
++	var earned:=earned_branches()
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"note":"Controlled fixtures separated from legal owned-core branches. Search sees future RNG; not human win rate.","checks":checks,"failures":failures,"comparisons":records,"earned_core_branches":earned},"  "))
++	print("BUILD ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/build_roles_ui.gd
+@@ -0,0 +1,41 @@
++extends "res://tests/fire_control_ui.gd"
++func labels(node: Node)->String:
++	var result:=""
++	if node is Label or node is RichTextLabel:result=node.text+"\n"
++	for child in node.get_children():result+=labels(child)
++	return result
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR");Input.emulate_mouse_from_touch=true
++	if not output.replace("\\","/").contains("/qa_runtime/build_roles_20261103/"):quit(2);return
++	var source: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/build_roles_20261103/climb_earned/shop_heavy_17_r1_n503.json"))
++	for extent in [Vector2i(844,390),Vector2i(1280,800)]:
++		root.size=extent
++		var c=Campaign.new();check(c.restore_state(source),"earned role-specific shop restores")
++		await mount(c)
++		check(c.s.offers[1].id=="coil","actual fire deck exposes fire module")
++		await tap("Offer1");await capture("fire_shop_%dx%d"%[extent.x,extent.y])
++		await tap("Details")
++		check(host.find_child("RulesText",true,false).text.contains("불길"),"public fire module detail explains ground synergy")
++		await capture("coil_detail_%dx%d"%[extent.x,extent.y])
++		# Remount the exact earned shop for a real unsold purchase and auto-save.
++		await mount(c)
++		var offer: Dictionary=c.s.offers[2];var credits: int=c.s.credits
++		check(not offer.sold and credits>=int(offer.price),"earned wallet can buy alternate role")
++		await tap("Offer2");await tap("Buy")
++		check(c.s.parts.has(offer.id) and c.s.credits==credits-int(offer.price),"touch purchase grants exact offered part and debits price")
++		var restored=Campaign.new();check(restored.restore() and canonical(restored.s)==canonical(c.s),"new offer purchase resumes from auto-save")
++		var battle: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/build_roles_20261103/climb_earned/combat_heavy_17_r4_n30101.json"))
++		c=Campaign.new();check(c.restore_state(battle),"earned new-rule combat restores")
++		await mount(c);hud_bounds();await tap("Parts")
++		check(host.campaign_hud.node("DetailBody").text.contains("경직"),"equipped build detail includes control follow-up relationship")
++		await capture("fire_build_%dx%d"%[extent.x,extent.y]);await tap("CloseDetail")
++		host.campaign_hud.select_budget(1)
++		var oracle=Model.new();oracle.s=c.model.s.duplicate(true);oracle.fire()
++		host.campaign_hud.hud.feedback.save_setting("motion","fast")
++		await tap("Fire")
++		check(canonical(c.model.s)==canonical(oracle.s),"live new-rule shot matches model")
++		check(restored.restore() and canonical(restored.model.s)==canonical(c.model.s),"live new-rule shot auto-saves exactly")
++		await capture("fire_shot_%dx%d"%[extent.x,extent.y])
++	host.free();await settle()
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++	print("BUILD ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ after/새-게임-프로젝트/tests/build_roles_replay.gd
+@@ -0,0 +1,26 @@
++extends "res://tests/build_roles_climb.gd"
++func _run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/build_roles_20261103/"):quit(2);return
++	var result: Array=[]
++	for file in ["build_roles_20261103/climb_earned/balance.json","late_balance_20261103/climb_fire_v2/balance.json"]:
++		var report: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/"+file))
++		for endpoint in report.endpoints:
++			if int(endpoint.seed)!=17:continue
++			var filter:=OS.get_environment("QA_REPLAY_GUN")
++			if not filter.is_empty() and (endpoint.gun!=filter or int(endpoint.role_version)!=3):continue
++			run_gun=endpoint.gun;run_seed=int(endpoint.seed);rule_version=int(endpoint.role_version)
++			var c=Campaign.new();c.start(run_gun,run_seed,0,"balanced",4,"carrier",true)
++			c.s.combat_roles_version=rule_version;c.model.s.combat_roles_version=rule_version
++			commands=[];metrics={};var fights:=0
++			for step in endpoint.commands:
++				var phase: String=c.s.phase
++				if not command(c,step.duplicate(true)):break
++				if step.has("turns"):check(c.model.s.turns==int(step.turns),"exact recorded command timing")
++				if phase=="combat" and c.s.phase=="reward":fights+=1
++			check(c.s.phase=="won" and c.profile.wins==1,"one ending after replay")
++			check(c.model.s.deck==endpoint.deck and c.s.equipped_parts==endpoint.parts and JSON.parse_string(JSON.stringify(c.model.s.gate_mods))==endpoint.gate_mods,"same final deck, parts and investment")
++			result.append({"source":file,"seed":run_seed,"gun":run_gun,"version":rule_version,"won":c.s.phase=="won","fights":fights})
++			print("BUILD REPLAY ",JSON.stringify(result.back()))
++			FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"runs":result},"  "))
++	print("BUILD ROLES COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- before/새-게임-프로젝트/tests/late_balance_rules.gd
++++ after/새-게임-프로젝트/tests/late_balance_rules.gd
+@@ -1,65 +1,65 @@
+-extends "res://tests/playtest_rework_rules.gd"
+-func grown(version: int,level: int,rounds: Array=["bore","detonate","basic_p2"],parts: Array=["thermal_drive"],gun: String="heavy"):
+-	var m=modern(rounds,parts,gun)
+-	m.s.combat_roles_version=version;m.s.engine.levels.thermal_drive=level
+-	return m
+-func run()->void:
+-	output=OS.get_environment("QA_OUTPUT_DIR")
+-	if not output.replace("\\","/").contains("/qa_runtime/late_balance_20261103/"):quit(2);return
+-	for level in range(9):
+-		for version in [1,2]:
+-			var m=grown(version,level)
+-			var expected: int=2+(level/2 if version==2 else 0)
+-			check(Content.burn_damage(m.s)==expected,"earned two-level fire growth only in v2")
+-			var r:=shot(m)
+-			check(r.burn_tick==expected and r.fire_zones[0].damage==expected,"impact and ground fire expose real grown damage")
+-			check(m.s.history.back().detail.advance_events[0].damage==expected,"first attached/ground tick applied once")
+-			var before_hp: int=m.s.enemies[0].hp
+-			check(m.cool_magazine(),"one-action cooling remains a legal burn alternative")
+-			check(before_hp-int(m.s.enemies[0].hp)==expected,"cooling advances damage, does not double-stack")
+-			restore_check(m)
+-			var restored=Model.new();check(restored.restore_state(canonical(m.s)),"growing fire resumes")
+-			var remaining: int=m.s.enemies[0].burn
+-			var result:=shot(restored)
+-			check(result.detonation==remaining*expected,"detonation uses actual remaining grown burn")
+-			var original:=shot(m)
+-			check(canonical(original)==canonical(result) and canonical(m.s)==canonical(restored.s),"resume preserves next result/RNG/state")
+-	var coil=grown(2,8,["bore","basic_p2"],["thermal_drive","coil"])
+-	check(shot(coil).fire_zones[0].damage==8,"coil adds two to six-damage grown ground fire")
+-	var unsupported=grown(2,8,["bore","basic_p2"],["siege_drive"])
+-	check(Content.burn_damage(unsupported.s)==2,"unequipped thermal levels do not boost another core")
+-	for gun in ["single","burst","scatter","heavy","amplifier"]:
+-		var m=grown(2,8,["bore","basic_p2"],["thermal_drive"],gun)
+-		var r:=shot(m)
+-		check(r.burn_tick==(8 if gun=="amplifier" else 6),"grown fire preserves each weapon's base "+gun)
+-	var expanded=grown(2,8)
+-	expanded.s.gate_mods.growth=3;expanded.s.engine.levels.thermal_drive=14
+-	check(Content.burn_damage(expanded.s)==9,"three earned growth expansions keep the same two-level rate")
+-	restore_check(expanded)
+-	var heat=grown(2,8);var cold=grown(2,8)
+-	heat.s.heat=Content.hot_threshold(heat.s)
+-	check(Content.burn_damage(heat.s)==Content.burn_damage(cold.s),"burn does not multiply again with hot direct damage")
+-	for version in [1,2]:
+-		var m=grown(version,8,["basic_p2","vent"])
+-		m.s.heat=3
+-		var plain=grown(1,8,["basic_p2","vent"]);plain.s.heat=3
+-		m.s.fire_heat_trial.rounds=2;plain.s.fire_heat_trial.rounds=2
+-		var actual:=verify_fire(m);var reference:=verify_fire(plain)
+-		for shots in [actual.results,reference.results]:
+-			for result in shots:result.erase("burn_tick")
+-		check(canonical(actual)==canonical(reference),"direct vent/heat/overdrive mechanics unchanged (unused burn metadata excluded)")
+-	var c=Campaign.new();c.start("heavy",17,0,"balanced",4,"carrier",true)
+-	check(c.s.combat_roles_version==2 and c.model.s.combat_roles_version==2,"fresh full climb defaults to v2")
+-	check(c.restore_state(canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})),"fresh v2 campaign restores")
+-	for version in [1,2]:
+-		var data: Dictionary=canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})
+-		data.campaign.combat_roles_version=version;data.combat.combat_roles_version=version
+-		check(c.restore_state(data) and c.s.combat_roles_version==version,"historical version remains pinned")
+-	for invalid in [-1,1.5,3,"2"]:
+-		var data: Dictionary=canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})
+-		data.campaign.combat_roles_version=invalid;data.combat.combat_roles_version=invalid
+-		check(not c.restore_state(data),"invalid role version rejected atomically")
+-	check(Content.part_spec("thermal_drive",heat.s).text.contains("성장 2회마다"),"part description explains the growth")
+-	check(Model.Engines.growth_rule(heat.s,"thermal_drive").contains("화상 +1"),"core growth detail explains the fire increase")
+-	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
+-	print("LATE BALANCE COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
++extends "res://tests/playtest_rework_rules.gd"
++func grown(version: int,level: int,rounds: Array=["bore","detonate","basic_p2"],parts: Array=["thermal_drive"],gun: String="heavy"):
++	var m=modern(rounds,parts,gun)
++	m.s.combat_roles_version=version;m.s.engine.levels.thermal_drive=level
++	return m
++func run()->void:
++	output=OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\","/").contains("/qa_runtime/late_balance_20261103/"):quit(2);return
++	for level in range(9):
++		for version in [1,2]:
++			var m=grown(version,level)
++			var expected: int=2+(level/2 if version==2 else 0)
++			check(Content.burn_damage(m.s)==expected,"earned two-level fire growth only in v2")
++			var r:=shot(m)
++			check(r.burn_tick==expected and r.fire_zones[0].damage==expected,"impact and ground fire expose real grown damage")
++			check(m.s.history.back().detail.advance_events[0].damage==expected,"first attached/ground tick applied once")
++			var before_hp: int=m.s.enemies[0].hp
++			check(m.cool_magazine(),"one-action cooling remains a legal burn alternative")
++			check(before_hp-int(m.s.enemies[0].hp)==expected,"cooling advances damage, does not double-stack")
++			restore_check(m)
++			var restored=Model.new();check(restored.restore_state(canonical(m.s)),"growing fire resumes")
++			var remaining: int=m.s.enemies[0].burn
++			var result:=shot(restored)
++			check(result.detonation==remaining*expected,"detonation uses actual remaining grown burn")
++			var original:=shot(m)
++			check(canonical(original)==canonical(result) and canonical(m.s)==canonical(restored.s),"resume preserves next result/RNG/state")
++	var coil=grown(2,8,["bore","basic_p2"],["thermal_drive","coil"])
++	check(shot(coil).fire_zones[0].damage==8,"coil adds two to six-damage grown ground fire")
++	var unsupported=grown(2,8,["bore","basic_p2"],["siege_drive"])
++	check(Content.burn_damage(unsupported.s)==2,"unequipped thermal levels do not boost another core")
++	for gun in ["single","burst","scatter","heavy","amplifier"]:
++		var m=grown(2,8,["bore","basic_p2"],["thermal_drive"],gun)
++		var r:=shot(m)
++		check(r.burn_tick==(8 if gun=="amplifier" else 6),"grown fire preserves each weapon's base "+gun)
++	var expanded=grown(2,8)
++	expanded.s.gate_mods.growth=3;expanded.s.engine.levels.thermal_drive=14
++	check(Content.burn_damage(expanded.s)==9,"three earned growth expansions keep the same two-level rate")
++	restore_check(expanded)
++	var heat=grown(2,8);var cold=grown(2,8)
++	heat.s.heat=Content.hot_threshold(heat.s)
++	check(Content.burn_damage(heat.s)==Content.burn_damage(cold.s),"burn does not multiply again with hot direct damage")
++	for version in [1,2]:
++		var m=grown(version,8,["basic_p2","vent"])
++		m.s.heat=3
++		var plain=grown(1,8,["basic_p2","vent"]);plain.s.heat=3
++		m.s.fire_heat_trial.rounds=2;plain.s.fire_heat_trial.rounds=2
++		var actual:=verify_fire(m);var reference:=verify_fire(plain)
++		for shots in [actual.results,reference.results]:
++			for result in shots:result.erase("burn_tick")
++		check(canonical(actual)==canonical(reference),"direct vent/heat/overdrive mechanics unchanged (unused burn metadata excluded)")
++	var c=Campaign.new();c.start("heavy",17,0,"balanced",4,"carrier",true)
++	check(c.s.combat_roles_version==Roles.VERSION and c.model.s.combat_roles_version==Roles.VERSION,"fresh full climb uses current role version")
++	check(c.restore_state(canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})),"fresh v2 campaign restores")
++	for version in [1,2]:
++		var data: Dictionary=canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})
++		data.campaign.combat_roles_version=version;data.combat.combat_roles_version=version
++		check(c.restore_state(data) and c.s.combat_roles_version==version,"historical version remains pinned")
++	for invalid in [-1,1.5,Roles.VERSION+1,"2"]:
++		var data: Dictionary=canonical({"campaign":c.s,"combat":c.model.s,"profile":c.profile})
++		data.campaign.combat_roles_version=invalid;data.combat.combat_roles_version=invalid
++		check(not c.restore_state(data),"invalid role version rejected atomically")
++	check(Content.part_spec("thermal_drive",heat.s).text.contains("성장 2회마다"),"part description explains the growth")
++	check(Model.Engines.growth_rule(heat.s,"thermal_drive").contains("화상 +1"),"core growth detail explains the fire increase")
++	FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++	print("LATE BALANCE COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- before/새-게임-프로젝트/tests/playtest_rework_rules.gd
++++ after/새-게임-프로젝트/tests/playtest_rework_rules.gd
+@@ -64,6 +64,7 @@
+    c._grow_bag();restore_check(c.model)
+   check(not c.can_grow_bag() and c.model.deck_limit()==Roles.CARRY[outfit]+6,"three storage investments cap every outfit")
+  var fresh=Campaign.new();fresh.start("burst",21,0,"balanced",4,"carrier",true)
++ fresh.s.combat_roles_version=1;fresh.model.s.combat_roles_version=1 # Historical investment contract; current compatible-core filter is tested separately.
+  for id in ["cadence","efficiency","conduction"]:
+   check(Model.Gates.options(fresh.model.s).has(id),"new investment offered "+id)
+   var state: Dictionary=fresh.model.s.duplicate(true);state.gate_mods[id]=2
+--- /dev/null
++++ after/tools/run_build_roles.ps1
+@@ -0,0 +1,20 @@
++param([ValidateSet('probe','climb','rules','replay','ui')][string]$Mode='probe',[string]$Label='analysis')
++$ErrorActionPreference='Stop'
++if($Label -notmatch '^[a-zA-Z0-9_-]+$'){throw 'Invalid label'}
++$repo=Split-Path -Parent $PSScriptRoot
++$project=(Get-ChildItem -LiteralPath $repo -Directory | Where-Object {Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')} | Select-Object -First 1).FullName
++$runtime=Join-Path $repo ('qa_runtime/build_roles_20261103/'+$Mode+'_'+$Label)
++$env:APPDATA=Join-Path $runtime 'Roaming';$env:LOCALAPPDATA=Join-Path $runtime 'Local';$env:QA_OUTPUT_DIR=$runtime
++New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
++$stdout=Join-Path $runtime 'stdout.log';$stderr=Join-Path $runtime 'stderr.log'
++$arguments=@('--path',('"'+$project+'"'),'--script',('res://tests/build_roles_'+$Mode+'.gd'))
++if($Mode -eq 'ui'){$arguments+=@('--rendering-method','gl_compatibility','--resolution','1280x800','--position','-2000,-2000')}else{$arguments+='--headless'}
++$process=Start-Process -FilePath 'D:/ProjectLoB/.tmp/godot-4.7/Godot_v4.7-stable_win64_console.exe' -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
++$null=$process.Handle;$deadline=[DateTime]::UtcNow.AddMinutes(30)
++while(-not $process.WaitForExit(500)){
++ $errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++ if($errors -match 'ERROR:|Parse Error' -or [DateTime]::UtcNow -gt $deadline){Stop-Process -Id $process.Id;throw "Build roles stopped: $errors"}
++}
++$process.WaitForExit();$result=Get-Content -Raw -LiteralPath $stdout -Encoding UTF8;$errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++Write-Output ($result -split "`n" | Select-Object -Last 4)
++if($process.ExitCode -ne 0 -or $errors -match 'ERROR:' -or $result -notmatch 'BUILD ROLES COMPLETE.*failures=0'){throw "Build roles failed; see $stdout $errors"}
+--- before/docs/direction/parts-builds.md
++++ after/docs/direction/parts-builds.md
+@@ -1,6 +1,26 @@
+ # 파츠 역할과 탄환 빌드
+ 
+-**후속 적용(2026-11-03):** [처치 전이/소이 역할·관문 운용 성장](combat-roles-growth.md)을 새 등반에 연결했다. 연쇄/돌파의 직접 화력은 유지하고 전이 대상은 기본 추가1기부터 투자한다. 기존 전격 분배·열폭주 노심·코일을 전이/불길 역할에도 연결한다. 새 위치 파츠는 유지하며 모든 파츠를 위치 조건으로 통일하지 않는다.
++**현행 — 탄환 역할과 획득 선택 v3(2026-11-03):** 사용자가 승인한 다음 우선순위2를 새 등반 `combat_roles_version=3`에 적용했다. 기존 v1/v2 이어하기는 계산·획득을 유지한다. 아래 수치는 디렉터 구현값이며 사람 재미/최종 균형 확정과 구분한다. [실제 획득·비교·화면 검증](../qa/reports/build_roles_2026-11-03.md).
++
++| 역할 | 현행 v3 효과와 비용 |
++|---|---|
++| 직접 화력 | 선두 ×2·제3 실제 탄 ×3·증폭된 마지막 단타 ×3과 성장형 3코어를 유지한다. 모든 파츠를 위치 배율로 통일하지 않는다. |
++| 소이 전용 코어 `inferno` | 화상/불길 행동당 피해 +2, 착발 앞뒤 3m·4적 행동. 기존 표적 화상 기간 +2/불씨 이동 +2 유지. 재장전은 총기의 기본 최소 비용을 적용한 뒤 +1행동으로 실제 대가를 보장한다. 코일은 불길 피해 +2, 점화 약실은 화상 대상 직접 후속을 담당한다. |
++| 제어 코어 `momentum` | 차단탄 접근 감속 +1행동: 일반3/압축4. 같은 적에게 전투당1회. 특수 행동 차단 기간은 별개. 밀기/한도 +2m, 직접 피해 −1 유지. |
++| 후속 모듈 `rammer` | 감속이 남은 적의 직접 타격당 피해 +2. 차단 지원탄 자체·화상·기폭·전격 전이에 추가 피해 없음. 연쇄 코어의 잔여 타격은 새 표적을 재판정하며 돌파의 초과 피해는 원래 공격의 초과분을 전달한다. 기존 밀기/한도 +1m 유지. |
++| 전이 모듈 `capacitor` | 전격 전이 피해 +1에 연쇄/돌파 처치 전이 대상 +1을 추가. 기존 코어 `arc_splitter`에 붙었던 동시 장착 불가능한 설명/확장 연결을 이 모듈로 옮겼다. 전격 분배 코어는 전격 전이 +2/대상+1, 직접 −1의 고유 역할이다. |
++
++장착5칸/코어1개, 가격·등급·카드 수·UI 배치·적 편성은 그대로다. 소이 전용 코어와 성장형 열압 코어는 대체 관계이며 성장8의 열압을 무조건 교체할 이유로 제안하지 않는다.
++
++상점과 정예 보상의 첫 파츠는 보유 주력 탄 계열을 보고 추천한다. 첫 구역 기본 진열의 대표는 소이→코일, 전격→축전기, 연타/철갑→제3 격발기, 열방출→연쇄 방열기다. 보유 차단탄은 충격 가이드, 장착 연쇄/돌파 코어는 축전기를 연관 후보로 추가한다. 두 번째는 가능한 다른 역할을 제안하며 미소유/미등장 우선·등급 추첨을 유지한다. 미등장 후보가 남으면 재진열에서 이미 본 대표 파츠를 강제 반복하지 않는다.
++
++상점의 기존 탄환 한 칸은 주력 복사/강화/적게 보유한 연관 지원탄을 시드·노드·진열 횟수로 순환한다. 지원탄은 계열 수를 세므로 일반/고급을 별도 결핍으로 오인하지 않는다. 보유 탄 상태와 동일 입력이면 결과가 같다.
++
++관문 전이 확장은 장착 연쇄/돌파 코어에, 성장 확장은 성장형3코어에만 제시한다. 기존 저장의 선택/투자 효과를 지우지 않는다. 실제 발동에는 불길·경직·후속 피해·처치 전이 확장 표시를 연결한다. 회수 탄·원래 발사 입력과 저장 형식은 유지한다.
++
++획득 검사에서 첫 상점 30Cr로 12Cr 탄을 먼저 사면 30Cr 파츠를 놓칠 수 있었다. 자동 검사 정책의 선택 결과이므로 이번에 무료 보급/가격 인하로 덮지 않는다. 다음 우선순위3에서 복장 최소/최대·전투 밀도·상점 구매 여력을 함께 확인한다.
++
++**앞선 역할 v1/v2 적용(2026-11-03):** [처치 전이/소이 역할·관문 운용 성장](combat-roles-growth.md)을 새 등반에 연결했다. 연쇄/돌파의 직접 화력은 유지하고 전이 대상은 기본 추가1기부터 투자한다. 기존 전격 분배·열폭주 노심·코일을 전이/불길 역할에도 연결한다. 새 위치 파츠는 유지하며 모든 파츠를 위치 조건으로 통일하지 않는다.
+ 
+ **현행 추가 — 위치 파츠와 주력 탄(2026-11-03):** `focus_build_version=1` 새 등반에서 선두 격발기 첫 발 ×2, 신규 모듈 제3 격발기 세 번째 실제 탄 ×3, 후미 점화기 실제 증폭된 마지막 단타 ×3을 적용했다. 지원탄도 순서에 포함하며 빼내기는 제외, 냉각/부분 사격은 유지, 교체는 초기화. 성장/증폭/연타·냉각·관통 파츠는 각 역할을 유지한다. [전체 조건·계산 순서·획득](focus-build.md) · [검증](../qa/reports/focus_build_2026-11-03.md). 아래 기존 규칙은 해당 이전 저장에 남는다. 전 파츠 일괄 교체나 사람 재미 확정은 아니다.
+ 
+--- before/docs/direction/combat-roles-growth.md
++++ after/docs/direction/combat-roles-growth.md
+@@ -4,9 +4,11 @@
+ 
+ ## 적용과 호환
+ 
+-- 새 등반은 지도 `map_version=4`. 탄창 본편 새 등반은 `combat_roles_version=2`를 캠페인/전투 상태에 함께 기록한다. 앞선 역할 개편의 v1 저장도 그대로 지원하며 이어하기에서 버전을 올리지 않는다.
++- 새 등반은 지도 `map_version=4`. 탄창 본편 새 등반은 `combat_roles_version=3`를 캠페인/전투 상태에 함께 기록한다. 앞선 역할 개편의 v1/v2 저장도 그대로 지원하며 이어하기에서 버전을 올리지 않는다.
+ - 이전 지도 v1~v3와 기존 진행 중인 덱·코어·발사·휴대 규칙은 유지한다. 같은 시드 재도전은 기존 지도 버전을 따르며, 이번 규칙을 보려면 **새 등반**을 시작한다. 입력/히트 표시 수정은 공통 화면에 적용한다.
+ - APK·외부 게시·커밋은 수행하지 않았다. 실행은 기존 `PLAY.cmd`다.
++
++v3 코어·파츠/획득의 세부 결정과 유지 조건은 [파츠 역할](parts-builds.md), 검사·실제 화면·미확인 범위는 [검증 기록](../qa/reports/build_roles_2026-11-03.md)을 따른다. 성장형 코어의 큰 직접 피해와 v2 소이 성장률은 유지한다.
+ 
+ ## 입력과 피격 표시
+ 
+@@ -27,11 +29,11 @@
+ | 요소 | 새 등반 규칙 |
+ |---|---|
+ | 연쇄·돌파 코어 | 주 표적을 제외한 **추가 1기**까지 잔여 타격/초과 피해 전달. 같은 추가 적에게 여러 타격이 들어가도 대상 수는 한 번 센다. 주 표적의 직접 피해·위치 배율·코어 화력 성장은 유지한다. |
+-| 전이 성장 | 관문 전이 회로 확장 1회당 추가 대상 +1, 최대 2회. 전격 분배 파츠도 처치 전이 대상 +1. 모두 투자하면 추가 4기까지. 일반 광역탄·열압 충격파는 이 제한과 구별한다. |
++| 전이 성장 | 관문 전이 회로 확장 1회당 추가 대상 +1, 최대 2회. v3에서는 함께 장착 가능한 전이 축전기 모듈도 처치 전이 대상 +1(v1/v2의 전격 분배 연결은 옛 저장에 보존). 모두 투자하면 추가 4기까지. 일반 광역탄·열압 충격파는 이 제한과 구별한다. |
+ | 소이탄 | 기존 표적 화상에 더해 착발 거리 앞뒤 2m에 불길을 **적 행동 2회** 남긴다. 직접 처치해도 그 지점에 남는다. 매 적 행동의 이동 직전에 범위 안 적에게 피해, 장갑/차폐 무시. 재장전·냉각도 시간을 진행한다. |
+ | 불길 중첩 | 동시에 최대 3곳, 같은 중심은 기간/피해를 큰 값으로 갱신한다. 겹친 지역 피해와 표적 화상은 행동당 큰 피해 한 번만 적용한다. 네 번째 지점은 가장 먼저 생성한 지점을 교체한다. 전투마다 초기화하며 압력탄에는 생성하지 않는다. |
+-| 소이 파츠 | 열폭주 노심은 불길 기간을 4적 행동으로 늘리고, 코일 파츠는 불길 피해 +2. 기존 표적 화상·기폭·불씨 이동의 연계도 유지한다. |
+-| 차단탄의 경직 | 이동 적의 통상 접근량을 2적 행동 동안 절반으로 낮춘다(올림, 이동하는 경우 최소 1). 압축형은 3행동. 같은 적에게 경직은 전투당 1회. 기존 특수 행동 차단도 별도 조건대로 유지한다. 압력탄·독려/끌기 자체를 정지시키지 않는다. |
++| 소이 파츠 | v3 열폭주 노심은 화상/불길 피해 +2·앞뒤3m·4적 행동, 재장전 +1행동. 코일은 불길 피해 +2. 기존 표적 화상·기폭·불씨 이동의 연계도 유지한다. |
++| 차단탄의 경직 | 이동 적의 통상 접근량을 2적 행동 동안 절반으로 낮춘다(올림, 이동하는 경우 최소 1). 압축형은 3행동. v3 충격 피스톤은 기간 +1행동, 충격 가이드는 경직 중 직접 타격당 +2. 같은 적에게 경직은 전투당 1회. 기존 특수 행동 차단도 별도 조건대로 유지한다. 압력탄·독려/끌기 자체를 정지시키지 않는다. |
+ 
+ 불길의 기본 피해는 현행 화상 피해를 사용한다. 증폭·배율·위치 파츠의 직접 피해 배율을 불길에 중복 적용하지 않는다. 경직은 일반 이동을 늦추는 선택이며 모든 적을 멈추는 기능이 아니다. 실제 전투의 불길 영역/남은 행동, 피격 문구, 적 행동 예고, 탄 상세를 계산과 연결한다.
+ 
+--- before/docs/direction/current.md
++++ after/docs/direction/current.md
+@@ -1,4 +1,6 @@
+ # ORVASK — 현재 방향과 결정 상태
++
++**최신 — 역할별 파츠·보상 선택 적용(2026-11-03):** 새 등반 v3에 소이/제어 전용 코어, 경직 후속·합법 처치 전이 확장 모듈, 주력 탄 기반 파츠/상점 지원 제안과 유효 관문 선택을 연결했다. 기존 직접 배율·v2 소이 성장과 v1/v2 이어하기는 유지한다. [규칙](parts-builds.md) · [90전투·화면·회귀·한계](../qa/reports/build_roles_2026-11-03.md). 다음 우선순위3은 복장·지도·성장 전체 경제이며 사람의 빌드 체감과 Android/복장 혼합은 별도 남는다.
+ 
+ **최신 — 후반 소이 성장 보정(2026-11-03):** [v2 규칙](combat-roles-growth.md)에 열압 코어 성장2회당 화상/불길+1을 연결하고 카드 상세의 고정 설명을 수정했다. [세 시드 동일 획득 비교·실제 화면·저장/회귀](../qa/reports/late_balance_2026-11-03.md). 기존 v1 이어하기는 보존. 다음은 코어·파츠 후보가 소이/제어·전이·직접 화력의 선택을 뒷받침하는지 검토하고 새 빌드 사람 체감을 확인하는 단계다.
+ 
+--- before/docs/direction/playtest-priorities.md
++++ after/docs/direction/playtest-priorities.md
+@@ -1,4 +1,6 @@
+ # 플레이 피드백 통합 우선순위
++
++**최신 — 우선순위2 적용(2026-11-03):** [탄환 역할별 코어·파츠/보상 선택](parts-builds.md)을 새 등반 v3에 연결했다. 실제 획득3등반90전투 및 기존 규칙/화면 검증은 [보고서](../qa/reports/build_roles_2026-11-03.md) 참조. **다음은3번 복장·지도·성장 전체 경제**: 첫 상점의 주력 탄/대표 파츠 양자택일, 복장별 탄약 소진·정비 기회, 직접 화력 후반 비상 보급을 비교한다. 값싼 탄 선택을 자동 오답으로 만들거나 강한 배율 조합을 일괄 약화하지 않는다. 사람의 선택 체감과 Android/복장 혼합은 별도다.
+ 
+ **최신 — 우선순위1 보정 적용(2026-11-03):** 후반 소이/리액터의 과열 반복과 성장 정체를 분리해 [열압 성장의 화상 연결](combat-roles-growth.md)을 새 등반 v2에 적용했다. [3시드 획득 비교·표시 수정·검증](../qa/reports/late_balance_2026-11-03.md). 다음2번은 탄환 역할별 코어·파츠/보상 선택의 재구성, 그 다음3번은 복장·지도·성장 전체 경제다. 사람 플레이의 호흡/긴장감은 별도 확인한다.
+ 
+--- before/.agents/skills/00-project-manager/task_tracker.md
++++ after/.agents/skills/00-project-manager/task_tracker.md
+@@ -1,4 +1,6 @@
+ # ProjectLoB 현재 작업
++
++**최신 — 우선순위2 파츠·획득 적용(2026-11-03):** [v3 현행 규칙](../../../docs/direction/parts-builds.md) · [90전투·획득/조작/저장·한계](../../../docs/qa/reports/build_roles_2026-11-03.md). 주력 탄 기반 파츠 제안, 소이/제어 효과·발동 표시, 실제 동시 장착 가능한 전이 모듈을 새 등반에 연결했다. v1/v2 유지. 다음은 복장별 최소/상한과 지도·보상·정비 구매 여력을 묶은 경제 검토다. 사람 재미·작은 상점 보조 글자·Android/복장 혼합은 완료로 간주하지 않는다.
+ 
+ **최신 — 후반 소이/리액터 보정 적용(2026-11-03):** [규칙](../../../docs/direction/combat-roles-growth.md) · [3시드 실제 획득/화면/검증](../../../docs/qa/reports/late_balance_2026-11-03.md). 새 등반 v2 열압 코어 성장2회당 화상+1, 실제 탄환 상세 연결. v1 저장 유지. 다음은 코어·파츠/보상 선택 검토와 사람 체감 확인이며, Android/복장 혼합은 미해결 별도 범위.
+ 
+--- before/docs/history/daily/2026-11-03.md
++++ after/docs/history/daily/2026-11-03.md
+@@ -50,3 +50,16 @@
+ - 실제 화면에서 고정 소이 설명2피해/옛 발열이 남은 오류를 수정해 현행 설명과 카드 값을 연결했다.844×390/1280×800 실제 획득 저장의 상세·스크롤·사격/자동 저장 확인.
+ - 기능842·기존 역할319·UI59검사 통과. 최종6등반174전투 재생15,621·HUD11,536검사 및 임포트도 통과했다. 사람 체감·다른 복장/빌드·Android/복장 혼합은 별도다. APK·커밋·외부 게시 없음.
+ - [규칙](../../direction/combat-roles-growth.md) · [원인·비교·실제 화면·검증](../../qa/reports/late_balance_2026-11-03.md).
++
++
++## 역할별 코어·파츠와 획득 선택 v3
++
++- 사용자가 다음 우선순위2 실행을 지시했다. 소이/제어 전용 효과와 실제 발동, 주력 탄 기반 파츠·상점 지원 추천, 적용 코어가 있는 관문 선택을 새 등반 v3에 연결했다. 큰 직접 배율·위치 파츠·v2 소이 성장은 유지하고 v1/v2 이어하기를 보존했다.
++- 코어인 전격 분배에 붙은 동시 장착 불가능한 처치 전이 확장을 모듈 전이 축전기로 옮겼다. 충격 가이드의 경직 후속은 실제 표적을 재판정하며 연쇄 잔여 타격/돌파 초과 피해의 발동 표시를 구분한다. 단발 최소 재장전 비용이 열폭주 노심의 대가를 삼키지 않게 v3에서 +1행동을 보장한다.
++- 시드17 운반 복장·실제 획득3등반90전투: 소이468행동/비상0, 제어연타397/0, 직접철갑417/1. 최종 소스 재생7,795검사 실패0. 첫 상점 탄 구매로 대표 파츠를 못 사는 정책 결과는 다음 전체 경제 판단에 남겼다.
++- 실제 소유 관문 코어 교체4전투 비교에서 이미 성장8인 열압→노심/피스톤 교체는 더 느렸다. 전용 코어가 성장 코어의 무조건적인 상위 장비라는 결론은 내리지 않았다. 장착 설명과 효과·비용을 명시하고 사람 선택/희귀 획득 시점은 후속이다.
++- 규칙3,048·통제/소유 분기442·기존 소이842/역할319·실제 화면68·HUD11,536검사와 Godot 임포트를 확인했다. 844×390 상점 보조 글자 크기/픽셀 획 문제는 남으며 작은 화면 기능 통과와 판독성 해결을 구분한다.
++- 작업 전988파일과 기존 작업 상태 보존, 변경분/해시·실제 Godot 캡처·초기 테스트 실패/최종 결과를 별도 기록했다. APK·커밋·외부 게시 없음. 다음 우선순위3은 복장/지도/성장 경제; 사람 체감·Android/복장 혼합은 별도다.
++- [현행 규칙](../../direction/parts-builds.md) · [결과·재현·화면·한계](../../qa/reports/build_roles_2026-11-03.md).
++
++- 마지막 확인: 최종 코드의 새 등반90전투 재생7,795·화면68·통제/소유 분기442검사 실패0. 기존 v2 시드17 등반30전투도 행동/획득/결산을 그대로 재생해 호환성2,655검사 실패0.
+--- /dev/null
++++ after/docs/qa/reports/build_roles_2026-11-03.md
+@@ -0,0 +1,63 @@
++# 역할별 코어·파츠와 보상 선택 검증
++
++2026-11-03 · 우선순위2 실행. [현행 규칙](../../direction/parts-builds.md) · [실행](../../../PLAY.cmd). **새 등반 v3**, 이전 v1/v2 이어하기는 기존 규칙. 승인 범위는 사용자의 순차 개편 실행이며 아래 수치는 디렉터 구현값이다.
++
++## 바꾼 이유와 적용
++
++- 기존 추천이 장착 코어만 보아 같은 열압 코어의 소이/열방출 덱을 구별하지 못했다. 상점·정예의 첫 파츠 추천에 보유 주력 계열과 지원탄을 반영하고, 다른 역할의 두 번째 후보·미등장 우선을 유지했다.
++- 첫 구역 대표 파츠: 소이 코일, 전격 축전기, 연타/철갑 제3 격발기, 열방출 연쇄 방열기. 이후에도 후보를 잠그지 않는다. 상점 탄 한 칸은 복사/강화/연관 지원을 순환한다. 가격과 진열 칸, 새 재화는 바꾸지 않았다.
++- 전격 분배는 코어여서 연쇄/돌파와 함께 장착할 수 없는데 처치 전이 확장이 연결돼 있었다. v3에서는 합법적으로 동시 장착되는 전이 축전기 모듈로 대상+1을 옮기고 설명/발동을 맞췄다.
++- 열폭주 노심: 고정 화상+2·불길3m/4행동, 실제 재장전+1. 최소 재장전2가 이 비용을 삼키던 단발 총기에서도 대가를 적용한다. 충격 피스톤: 경직+1행동. 충격 가이드: 감속 중 직접 타격당+2, 연쇄 후속 표적 재판정. 발동 표시도 실제 사건을 사용한다.
++- 관문 전이/성장 개조는 적용되는 코어를 장착했을 때만 제시한다. 큰 직접 피해·첫/세 번째/마지막 위치 배율·v2 열압의 성장2당 화상+1은 유지했다.
++
++## 기능과 통제 비교
++
++| 검사 | 결과 | 범위 |
++|---|---:|---|
++| v3 규칙 | 3,048 / 실패0 | 80시드×5주력 추천·다른 역할·재진열, 범위/기간/재장전, 경직 만료/연쇄 표적 재판정/발동, 합법 전이 확장, 관문 조건, v1/v2 획득 RNG·실제 모델 결과 |
++| 통제 비교 + 실제 보유 코어 분기 | 442 / 실패0 | 8개 비교 상태와 관문에서 소유 코어를 교체한4전투, 합법 입력/저장/복원 |
++| 기존 소이 성장 | 842 / 실패0 | v1/v2 성장·불길·기폭/저장, 새 버전 범위 검사 |
++| 기존 역할 | 319 / 실패0 | 이전 경직/전이·저장·복장/투자 계약 |
++| 실제 화면 | 68 / 실패0 | 844×390·1280×800 상점 선택/상세/구매·잔액·자동저장, 실제 획득 파츠 상세·HUD 사격/저장 |
++| 기존 `run_prototype_hud.ps1 -Mode ui -Fast` | 11,536 / 실패0 | 기존 HUD 조작/계산/배치 계약 |
++| Godot 임포트 | 통과 | Android build-tools 경고는 기존 로컬 환경 경고. APK를 만들지 않았다. |
++
++통제 비교는 실제 모델을 사용한 고정 시험이며 획득 증거와 구분한다. 단발·정지 적 세 기(3m 간격), 노심+코일의 4행동 피해는 주 대상24→32, 인접 대상0→24, 6m 대상0→0이다. 직접 피해는 동일하고 재장전2→3이다. 압축 차단→연타의 피스톤+가이드 후속 직접 피해는2→6이며, 네 번째 행동에서 추가 감속 한 행동이 드러난다. 전이 축전기+연쇄+복열은 체력1 적4기 중2→3기 처치. 기존 첫/세 번째 조합의 직접 피해8/0/42와 행동 수는 같다. 지속 피해에 배율을 다시 곱하지 않는다.
++
++## 실제 획득 등반
++
++시드17·운반 복장·지도v4·보이는 보상과 소유 파츠만 사용한다. 매 전투 전 합법 장착, 실제 상점 비용·보상 교체·관문 개조를 거쳤고 모든 명령을 저장 후 복원한다. 검색기는 미래 무작위/패를 보므로 아래는 도달 가능성과 자원 지표이며 사람 승률/재미/최적 전략이 아니다.
++
++| 구성 | 전투 | 총 행동 | 비상 보급 | 최소 잔탄 | 결과 |
++|---|---:|---:|---:|---:|---|
++| 리액터·소이/열압 | 30 | 468 | 0 | 2 | 최종 관문 완료 |
++| 버스트·제어/연타/연쇄 | 30 | 397 | 0 | 10 | 최종 관문 완료 |
++| 단발·철갑/돌파 | 30 | 417 | 1 | 1 | 최종 관문 완료 |
++
++등반 검사7,222건 실패0. 소이 등반은 점화 약실·충격 가이드, 제어 등반은 가이드·복열·축전기, 직접 등반은 선두·축전기·후미 등을 실제 획득해 사용했다. 모든 제안 파츠를 구매하거나 모든 코어를 장착했다고 주장하지 않는다. 첫 상점30Cr에서 탄12Cr를 우선 구매한 정책은 코일/제3 파츠를 놓쳤다. 같은 상점의 다른 역할 파츠 구매는 화면 입력으로 확인했다. 가격 조정은 다음 전체 경제 검토에서 판단한다.
++
++코어 분기는 같은 실제 획득 관문 저장에서 소유 코어만 교체하고 같은 다음 전투로 갔다. 성장8 열압→열폭주 노심은4구역 첫 전투15→23행동, 열압→충격 피스톤은5구역 첫 전투17→52행동이었다. 두 전용 코어 모두 승리 경로는 있지만 이미 성장한 소이 덱에서 코어만 갈면 상위 장비가 되지 않는다. 제어에 맞춘 덱/순서에서의 비용 대비 선택과 희귀 코어 등장 시점은 후속 플레이·경제 검토 대상이다.
++
++최종 소스의 새 등반90전투 재생은 7,795검사 실패0(리액터2,453·버스트2,440·단발2,902)이다. 각 명령의 행동 수·획득 덱·장착·개조·단일 결산·저장을 대조했다. [리액터](../../../qa_runtime/build_roles_20261103/replay_release_heavy/result.json) · [버스트](../../../qa_runtime/build_roles_20261103/replay_release_burst/result.json) · [단발](../../../qa_runtime/build_roles_20261103/replay_release_single/result.json).
++
++이전 v2 시드17 등반30전투도 기록된 명령으로 최종 관문까지 그대로 재생했다. 호환성2,655검사 실패0이며 당시 v3 재생까지 포함한 전체 배치10,450검사 실패0이다. [v2 포함 재생 결과](../../../qa_runtime/build_roles_20261103/replay_verified/result.json). 이후 v3의 경직 후속/돌파 전이 발동 메타데이터를 보완한 최종 코드에서 위90전투를 다시 재생했고 새 규칙3,048·화면68·통제/분기442검사도 다시 통과했다. v1/v2 코드는 해당 보완의 적용 대상이 아니다.
++
++## 실제 화면과 확인 한계
++
++![844×390 실제 첫 상점](build_roles_2026-11-03/fire_shop_844x390.png)
++
++![같은 크기의 코일 상세](build_roles_2026-11-03/coil_detail_844x390.png)
++
++![1280×800 실제 획득 빌드 상세](build_roles_2026-11-03/fire_build_1280x800.png)
++
++![실제 발사 후](build_roles_2026-11-03/fire_shot_1280x800.png)
++
++실제 Godot 캡처를 열어 확인했다. 새 규칙은 기존 상세와 구매 영역에 표시되고 입력/스크롤을 막지 않는다. 844×390 상점의 보조 글자는 작고 일부 픽셀 글자 획이 거칠다. 이번 기능/영역 검사를 모바일 판독성 해결로 간주하지 않는다. Android 실기기 터치/배율·복귀·지속 발열/성능·재장전 복장 혼합·사람 빌드 체감은 별도 미확인이다.
++
++## 재현과 변경 관리
++
++- 작업 전 `qa_runtime/build_roles_20261103/before/`에 988개 관련 파일과 기존 작업 상태를 보존했다. [이번 변경 목록/해시](build_roles_2026-11-03/manifest.json)와 [이번 변경만 비교](build_roles_2026-11-03/changes.diff)를 사용한다. 기존 대규모 미커밋 작업을 초기화하지 않았다.
++- 실행: `tools/run_build_roles.ps1 -Mode rules -Label release`, `-Mode climb -Label earned`, `-Mode probe -Label release`, `-Mode ui -Label release`, `-Mode replay -Label ...`. 모두 전용 `qa_runtime/build_roles_20261103/` 아래 APPDATA/LOCALAPPDATA로 진행한다. `QA_REPLAY_GUN`은 v3 총기 하나만 재생하며 비우면 세 등반과 v2 시드17을 재생한다.
++- [규칙 결과](../../../qa_runtime/build_roles_20261103/rules_release/result.json) · [통제/소유 코어 분기](../../../qa_runtime/build_roles_20261103/probe_release/result.json) · [90전투/획득 명령](../../../qa_runtime/build_roles_20261103/climb_earned/balance.json) · [화면 결과](../../../qa_runtime/build_roles_20261103/ui_release/result.json).
++- 초기 테스트의 잘못된 압축/탄창 배치·파츠 제거 후 밀기 한도, 3행동으로4행동 경직을 비교한 조건, Error값을 bool로 읽은 저장 검사, 옛 상점 선택자·없는 재생 helper를 수정했다. 실패 로그를 보존했고 위 최종 결과와 혼용하지 않는다.
++- 기능·시각 확인·사람 이해도는 분리한다. 다음은 복장/지도/전체 성장 경제와 실제 플레이. APK·커밋·푸시·외부 게시는 수행하지 않았다.

@@ -1,0 +1,157 @@
+{
+  "native_checks": 531,
+  "native_failures": [],
+  "contexts": 26,
+  "frames": 160,
+  "regions": [
+    "acquired_r1",
+    "acquired_r2",
+    "acquired_r3",
+    "acquired_r4",
+    "acquired_r5"
+  ],
+  "source_audit": {
+    "files": {
+      "battle_view.gd": {
+        "before": "079c8124353d92270edaa14d8a08d163f3cde91100a2479643d5b13b58e92dce",
+        "after": "5f28b6bc82020919a5938e4d03436b0e0798db0ac8096c31b038fd8dd5417c21",
+        "unchanged": false
+      },
+      "samples/risk_battle_view.gd": {
+        "before": "6edd57fdfaaf66cd2d1600e7682d978539886c65995ad57799c9d81a3a67bc31",
+        "after": "bd32ffaa851fa0965f3e06602f1d9a432151533e265855b53094f051b4063110",
+        "unchanged": false
+      },
+      "combat_vfx.gd": {
+        "before": "1b77c14f7ede6d112b431a84e5cf35cb8b7fbe9ef33eac1246b202ba63073933",
+        "after": "106d3ca0d16e1833e64af0e76d11cfa29701fa7721474b68d6f02aaaccfb29f0",
+        "unchanged": false
+      },
+      "impact_style.gd": {
+        "before": "b410a9e9a4991f3fde1c2e977448b5bf32632956630b7f269708595986589b05",
+        "after": "b410a9e9a4991f3fde1c2e977448b5bf32632956630b7f269708595986589b05",
+        "unchanged": true
+      },
+      "damage_readout.gd": {
+        "before": "b8fd98eb95aaf602a7bd4c130ddc10d27a2347bb51bb377e3dfa1e09ae7a4e08",
+        "after": "b8fd98eb95aaf602a7bd4c130ddc10d27a2347bb51bb377e3dfa1e09ae7a4e08",
+        "unchanged": true
+      },
+      "model.gd": {
+        "before": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+        "after": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+        "unchanged": true
+      },
+      "campaign.gd": {
+        "before": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+        "after": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+        "unchanged": true
+      },
+      "forecast.gd": {
+        "before": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+        "after": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+        "unchanged": true
+      },
+      "content.gd": {
+        "before": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+        "after": "5dd3a8671d9e873703d13422a501d2c5c3ae684e588e89b24821d23a1b68626c",
+        "unchanged": true
+      },
+      "part_feedback.gd": {
+        "before": "e35e22f1114907bb58386aa578dfd3a6bd9e825f965b97006b38b96748fb963b",
+        "after": "e35e22f1114907bb58386aa578dfd3a6bd9e825f965b97006b38b96748fb963b",
+        "unchanged": true
+      },
+      "firing_vfx.gd": {
+        "before": "3eafca7fc9dd4fedea61eb9bca13fa877ee45a1db491d451abfe0b677d4b58b7",
+        "after": "3eafca7fc9dd4fedea61eb9bca13fa877ee45a1db491d451abfe0b677d4b58b7",
+        "unchanged": true
+      },
+      "projectile_visual.gd": {
+        "before": "0b6d764f1ae86c5e3e07d0e641e51ce9f79e5c8079da1fcf4c18f9a040405284",
+        "after": "0b6d764f1ae86c5e3e07d0e641e51ce9f79e5c8079da1fcf4c18f9a040405284",
+        "unchanged": true
+      },
+      "weapon_actor.gd": {
+        "before": "3b34e859ea59037a98dedaf4d935fddee41baced2510b98575e77e802b58e1ef",
+        "after": "3b34e859ea59037a98dedaf4d935fddee41baced2510b98575e77e802b58e1ef",
+        "unchanged": true
+      },
+      "weapon_art.gd": {
+        "before": "43b236114bf89564f6118e2ac3a4a3978cf4a3eae104d6fdc73a3298dd069e93",
+        "after": "43b236114bf89564f6118e2ac3a4a3978cf4a3eae104d6fdc73a3298dd069e93",
+        "unchanged": true
+      },
+      "combat_readout_layer.gd": {
+        "before": "5b9e125b77276454945fe245078ea51eef23173f11bd3bb5eff065c9201ae4d8",
+        "after": "20a18ad15b99e78fce6cdbd73f85983fb3a75238ff9d3f757e73598106169d92",
+        "unchanged": false
+      }
+    },
+    "protected_files": [
+      "model.gd",
+      "campaign.gd",
+      "forecast.gd",
+      "content.gd",
+      "part_feedback.gd",
+      "impact_style.gd",
+      "damage_readout.gd",
+      "firing_vfx.gd",
+      "projectile_visual.gd",
+      "weapon_actor.gd",
+      "weapon_art.gd"
+    ],
+    "flight_unchanged": true,
+    "selected_resources": 365,
+    "surface_resources": [
+      "res://assets/art/surface_fx_20261106/fire.png",
+      "res://assets/art/surface_fx_20261106/metal.png",
+      "res://assets/art/surface_fx_20261106/shield.png",
+      "res://redesign/surface_feedback.gd"
+    ]
+  },
+  "timed_await_calls_unchanged": true,
+  "capture_speed": {
+    "controlled_large": 2,
+    "small_and_acquired": 1
+  },
+  "logs": {
+    "surface_rules": {
+      "path": "qa_runtime/surface_fx_20261106/rules/stdout.log",
+      "result": "SURFACE FX RULES COMPLETE checks=210 failures=0"
+    },
+    "surface_native": {
+      "path": "qa_runtime/surface_fx_20261106/ui/stdout.log",
+      "result": "SURFACE FX UI COMPLETE checks=531 failures=0 frames=160"
+    },
+    "gallery": {
+      "path": "qa_runtime/surface_fx_20261106/gallery/stdout.log",
+      "result": "SURFACE FX GALLERY COMPLETE failures=0"
+    },
+    "impact_rules": {
+      "path": "qa_runtime/impact_parts_20261106/rules/stdout.log",
+      "result": "IMPACT PARTS RULES COMPLETE checks=172 failures=0"
+    },
+    "impact_native": {
+      "path": "qa_runtime/impact_parts_20261106/ui/stdout.log",
+      "result": "IMPACT PARTS UI COMPLETE checks=291 failures=0 frames=49"
+    },
+    "incendiary": {
+      "path": "qa_runtime/incendiary/rules/stdout.log",
+      "result": "INCENDIARY RULES COMPLETE checks=1705 failures=0"
+    },
+    "hud": {
+      "path": "qa_runtime/combat_hud_20261031/prototype_20261101/ui/stdout.log",
+      "result": "COMBAT HUD UI COMPLETE checks=11558 failures=0"
+    }
+  },
+  "sha256": {
+    "docs/qa/reports/surface_fx_2026-11-06/acquired_foundry.png": "7a6cefc15f2c610ba2c79bf288f8bda4db9eeedc2799ab051b0565a58242a3a1",
+    "docs/qa/reports/surface_fx_2026-11-06/reduced_fire.png": "0815e8de6af3cbf0045c9df2f08ed48cefe134ea691580bf9ca9669785bb6ddd",
+    "docs/qa/reports/surface_fx_2026-11-06/small_transfer.png": "86cfc16f9d5a483840ed7228ee6a4a008b582c117f77e62aa18d7d7e20e85679",
+    "docs/qa/reports/surface_fx_2026-11-06/surface_comparison.png": "cc3218a80b11107eaa85872f454d021e076124d306d947e1b731f5ae7c320d08",
+    "새-게임-프로젝트/redesign/surface_feedback.gd": "0debf150ff2db2a2c0d6b58ba12cc244237e67d23dfb716f458f6df78d3b5b2b",
+    "새-게임-프로젝트/redesign/combat_vfx.gd": "106d3ca0d16e1833e64af0e76d11cfa29701fa7721474b68d6f02aaaccfb29f0",
+    "새-게임-프로젝트/redesign/samples/risk_battle_view.gd": "bd32ffaa851fa0965f3e06602f1d9a432151533e265855b53094f051b4063110"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "scope": "Map presentation integrated; graph generation/combat/save unchanged. PC native captures and public map input; no Android hardware claim.",
+  "checks": {
+    "current_v4": 15770,
+    "legacy_map_entry_v1_v2_v3": 1337,
+    "authored_scene": 11,
+    "hud": 11558
+  },
+  "unmodified_rule_files": [
+    "redesign/model.gd",
+    "redesign/campaign.gd",
+    "redesign/campaign_content.gd",
+    "redesign/route_map.gd",
+    "redesign/screen.gd"
+  ],
+  "source_sha256": {
+    "새-게임-프로젝트/redesign/pipe_map/art.gd": "048088558d2aadcee135319605a44b0db5f0527e1bf9587b700ab587498f41d2",
+    "새-게임-프로젝트/redesign/pipe_map/art.gd.uid": "c2b7d47a562cfb6b287170f71164a9b72c9029adfae36303613ff3c3cdaa3c79",
+    "새-게임-프로젝트/redesign/pipe_map/board.tres": "853ac57d9d402386aba230d65cdae7008565f339ea34ce222e5472f77493b7e1",
+    "새-게임-프로젝트/redesign/pipe_map/button.tres": "7a9f7da34b40301461834d2db4aa74f4357a8955ea6af10c4b98340a489d4c85",
+    "새-게임-프로젝트/redesign/pipe_map/button_disabled.tres": "156d7adbe68c7991f241bbf700d568eadc4178ff59337234846627f52ef32e4e",
+    "새-게임-프로젝트/redesign/pipe_map/button_focus.tres": "836c339f885d056babde91e40e02cd70ca30c754d12a14b8ed4ed21fc21e9d44",
+    "새-게임-프로젝트/redesign/pipe_map/button_hover.tres": "6abc497f0770011029217bf4856350506abd4cac63fe4330857a8db1228bef35",
+    "새-게임-프로젝트/redesign/pipe_map/button_pressed.tres": "69c4116452c9498a65a62d63e58900657ea8cd0cee66e2740ee533d5cc57774a",
+    "새-게임-프로젝트/redesign/pipe_map/gate.gd": "51511356d1aa2f641d486bd065f5a2793b0ca1546dc80ff8cd02d33fc5d8fd33",
+    "새-게임-프로젝트/redesign/pipe_map/gate.gd.uid": "7a7d59e68c7d8d4d90ad0e9c471b6e704694d40236a339b78e93b8b195993e61",
+    "새-게임-프로젝트/redesign/pipe_map/gate.tres": "a0a3b908051459b878646819e603f8095fd902ad25f4606888a7dfac574578fa",
+    "새-게임-프로젝트/redesign/pipe_map/graph.gd": "3860af83b1dd5a099e652dfce8c4b69214737e53f5d1bdcbe71f70523448b7db",
+    "새-게임-프로젝트/redesign/pipe_map/graph.gd.uid": "cfa531e4f0209efa5151c1ec947a475c73cfa08cf2bd09b24aef486330badc87",
+    "새-게임-프로젝트/redesign/pipe_map/key.tscn": "ebb1cf0167b97c9a86bc9455296a20933837fd0a4fa12b204010e31868dc94b5",
+    "새-게임-프로젝트/redesign/pipe_map/material.gd": "65c2bf22c3956457c36bc97d11f2494f785f48d08372a8af0282b8ce268da4a3",
+    "새-게임-프로젝트/redesign/pipe_map/panel.tres": "23d45b61fbfa8000267c0eee111903a47ee1ca496c8586fee62ba0bc297ad32b",
+    "새-게임-프로젝트/redesign/pipe_map/place.gd": "ccef1987b0e00e3591931528e808727b39dba0f289fa565460233a04fe02bbef",
+    "새-게임-프로젝트/redesign/pipe_map/place.gd.uid": "3cf70c7ac2066499daeaf0c6fc3e6abef0d7b63ed879d9198ef86109c624e730",
+    "새-게임-프로젝트/redesign/pipe_map/place.tscn": "ba0793215c2dbedb6bb1dc5f07ea982c71618c91d4fa7fe11b50124bdfe1138d",
+    "새-게임-프로젝트/redesign/pipe_map/primary.tres": "b15892b63de095860d41044b750b6bf846c07e306cf9445af3259cbf125618b0",
+    "새-게임-프로젝트/redesign/pipe_map/primary_hover.tres": "b72d542273812562aeacd9545f151f5cb664aec1cc631aabf25d6f990ad0bd44",
+    "새-게임-프로젝트/redesign/pipe_map/primary_pressed.tres": "1ad900bd1978366fb2bea8cf674b578ea0018d5291e093f78f2f5697938ef9ca",
+    "새-게임-프로젝트/redesign/pipe_map/rail.gd": "4c56709a1e3d3cf4ed6122d27b0988ca6f73517121a1dedb3f3822ffd69fe20c",
+    "새-게임-프로젝트/redesign/pipe_map/rail.gd.uid": "b6e8f31303e85c752e2274ba62cb25f081c1adaa14f7f4b224397963f452f8a2",
+    "새-게임-프로젝트/redesign/pipe_map/screen.gd": "3b99f59c702b9a5e5eeaa6af92247df9509f8827a1f1632ac1fdacdba64513fd",
+    "새-게임-프로젝트/redesign/pipe_map/screen.gd.uid": "683ec01d4ce30f3ca32755a9413ee24ea4c17ad9c085b5062482c2c672de2c57",
+    "새-게임-프로젝트/redesign/pipe_map/screen.tscn": "3cb25d784614c3395fedac6ccf3f0a1b7aabe07f227118fa8c4a2452dcfd974d",
+    "새-게임-프로젝트/redesign/pipe_map/selection.tres": "52cd5671dd03b05e8c0bd81ecf27a9c9dccfbdb17cc08dd2419c291c41f45914",
+    "새-게임-프로젝트/redesign/pipe_map/state_key.gd": "cef1ea63b6d88a0286bafecb4e1a8fc0e8311269da29b9db8c81778d02a5b630",
+    "새-게임-프로젝트/redesign/pipe_map/theme.tres": "873a12040dbb2e1ca51938d25a0955792f27dc340908a4c578434dea3caafc44",
+    "새-게임-프로젝트/tests/map_material_ui.gd": "e2ec1be933dd740350967011f4a3d1b53af638aabd0be0aed894ecac72de1bad",
+    "tools/run_map_material.ps1": "401c96280898005847afc5bcfb46cbf831ed03b2f30740e266081465761a671a"
+  },
+  "known_test_fixture_issue": "Original pipe_map_ui old single/731042 route rejects siege_drive reward at command 4 without any map UI; use current earned heavy/17 route and direct legacy-entry cases."
+}

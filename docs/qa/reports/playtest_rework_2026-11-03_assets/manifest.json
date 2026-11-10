@@ -1,0 +1,477 @@
+{
+  "created_local_date": "2026-11-03",
+  "active_root": "D:\\ProjectLoB\\worktrees\\core-redesign",
+  "head": "197c6941fb8134349083de1e187bbe82571c5413",
+  "baseline_status": {
+    "path": "qa_runtime/playtest_rework_20261103/status_before.txt",
+    "sha256": "ca5f469f7f732e56a8850e42d32ef452597e703e992bc0e265b54e76c84e26f8",
+    "bytes": 76403
+  },
+  "baseline_scope": "Turn-start snapshot of existing redesign/tests/tools/direction/history/tracker text sources. Existing dirty changes preserved.",
+  "changed_text_sources": [
+    {
+      "path": ".agents/skills/00-project-manager/task_tracker.md",
+      "sha256": "c182f5ef3822195ece23a587a36435494f1e47bcce15b0c143723b822c8a6891",
+      "bytes": 72674,
+      "before_sha256": "e2e265edbf03b61aff2acf8dc7e0c0a5acced9becaeda4d6f318d3032bf2769a"
+    },
+    {
+      "path": "docs/direction/ammo-reserve.md",
+      "sha256": "5ad146cd9467afd5c9ec34fd389767b041578050e829befe787e808befa9db64",
+      "bytes": 12098,
+      "before_sha256": "994f337190d903217f3a93ec319cf821da355a3230ed6eda0d7700af908d993a"
+    },
+    {
+      "path": "docs/direction/current.md",
+      "sha256": "938a1c0ece23346cfaa74872ce520d225036c2d2ab4acf0e7545bf5fedbf8e49",
+      "bytes": 117868,
+      "before_sha256": "eda9030b3d50a2ccaf0f491bc29cbb2dd04f339b66c39fcc2be90b95cc34dda3"
+    },
+    {
+      "path": "docs/direction/fire-control.md",
+      "sha256": "8b4fc3f80d922bf4433b887e1613f35177aef825cbef7b8fb498bab7a2ca2079",
+      "bytes": 3729,
+      "before_sha256": "202f865bf78e46be1f6837b4f3eebe0cf86ff3a1ec32dcd53057b12d6a466e45"
+    },
+    {
+      "path": "docs/direction/focus-build.md",
+      "sha256": "b639a63711f4780ff43ec24e3c311377aca3d4257e056d5189275facdba4c776",
+      "bytes": 4184,
+      "before_sha256": "7a5782e0c8cd2288576a043eb1b44ba484a1736052a70d0ee5d3c89065e9d61c"
+    },
+    {
+      "path": "docs/direction/outfit-bag.md",
+      "sha256": "dddb70613dbec353c904a92a3ea17d3e57726f25efdc7c2108ce184f862cf7bf",
+      "bytes": 9359,
+      "before_sha256": "f1df14c1c7ae75aeb1bcdfca020243554b758e35f6a08fe2420cca0d79334442"
+    },
+    {
+      "path": "docs/direction/parts-builds.md",
+      "sha256": "1811f61726e23a6c210ddf290745b88d037cf04ecd803d35eb27cfc80ac29c96",
+      "bytes": 8924,
+      "before_sha256": "ad610fff2453b0fb7cbce646d0bf0da61e179b5b8665137a2578f9f351ddc7d7"
+    },
+    {
+      "path": "docs/direction/playtest-priorities.md",
+      "sha256": "5dba4d7368707079528087fa34e878c5506358262c2f003061ebe57b3949ed49",
+      "bytes": 33655,
+      "before_sha256": "6dc9107d309fcb575ba1725d2feb97c87123f3e0f9a194ad701ad507f967c409"
+    },
+    {
+      "path": "docs/direction/route-map.md",
+      "sha256": "f462010caab6c3b002efbbbb4514ac9f05da8ff6c6d7054ecbcf804440ce20fe",
+      "bytes": 24708,
+      "before_sha256": "9de33174e6bad080dc949bda4ae77ce5535696b9f8964cfbe81c759dad2b5dcd"
+    },
+    {
+      "path": "docs/history/daily/2026-11-03.md",
+      "sha256": "8fa92a4146ccae400447349592f01769b4497b3c5e3636a272331908de211fb8",
+      "bytes": 7082,
+      "before_sha256": "eeb16c164676d86b5aafff3b86418b6beff81c407a7b54ff478bac3acfcc698e"
+    },
+    {
+      "path": "docs/history/design/playtest-review-2026-11-03.md",
+      "sha256": "04ebbddc8f2e6089dd2494e6a527cb75310dbb0833fc4cbde1500a1585ef3e88",
+      "bytes": 11677,
+      "before_sha256": "2cbc70334300c3136d0712755c5090d986454f1852cab29d61dd7436b2e656e1"
+    },
+    {
+      "path": "docs/history/index.md",
+      "sha256": "0bffca1281fb73c58b7f3772acd812cb9a542db0ec8b7c98784cd26a2cb573da",
+      "bytes": 3207,
+      "before_sha256": "8bfbc883ca8db4aa4bbfc626c8845bd6db08bba6a64225ae51f4409915abaffe"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_card_view.gd",
+      "sha256": "404649e24cbd582bbd5a7b835ab2baf28c2b8fab3476c37fce5ab1b5f40a6d63",
+      "bytes": 12187,
+      "before_sha256": "def8608bf414c44a5910455f6b446abbbab1e20563e293e0880228ddfbe71f1b"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/ammo_reserve.gd",
+      "sha256": "4f1be63fc4dc2ec55d5f955cbb45dcc14984c2d63e80e5fc65f7dcd42c874b87",
+      "bytes": 2915,
+      "before_sha256": "60020f07eda5edaa5a9f05fb28db275c36b132b1ea18aaa3b6b5e6252d92425b"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/battle_view.gd",
+      "sha256": "f593eac207d5723ab87d919c7c66dfd821d52a6931257510065bc97b5fed6a64",
+      "bytes": 45319,
+      "before_sha256": "aa1b220a789c28f402554a1e28e6fa9e4ccbbb1e3fb0ddfb71d15ab74e9afad6"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign.gd",
+      "sha256": "02ad037aa22ebafb7440bf4d7c5e93c692dacb277b6e717fdd964a7a24a3aa4a",
+      "bytes": 53716,
+      "before_sha256": "0fa965353efe28f58a7c69dcbc49805757ab1bc602b6746a8cc54aa9edf49f16"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_ui.gd",
+      "sha256": "864053fed3a40d8d99d14ee2d2d91a81b1f4551355209361ba053805e4b41dfa",
+      "bytes": 81238,
+      "before_sha256": "8327ddde9ad94e7954b06e86ac081504b06d4a050f271abe6b98e1373ae8e18e"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/content.gd",
+      "sha256": "563c758b0bea39ec9268377bcef2ca771505befac8024a09f643e08646117ed2",
+      "bytes": 71963,
+      "before_sha256": "eb7e9fb585dbf3826a1b5b5943f487398a2f62c140502394424e360b2a37a28a"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/damage_readout.gd",
+      "sha256": "c921b0442a3aed6c3bd576556cbe5aecb2fc44e176ac0e643710ec73e9113b7e",
+      "bytes": 5376,
+      "before_sha256": "e359dc60ab65adb5006354b2645a7cb1478f589461dc47e3778a20b498572fe3"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/enemy_threat.gd",
+      "sha256": "0ccfd421cd24adcf7f46849744a2c1d75c4d7b2de6ed16d7261f3a702b557fd1",
+      "bytes": 2471,
+      "before_sha256": "fc826ce9cb173e127543260f2de4034a01ea895637eacd21c37f2dce93bae59e"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/equipment_screen.gd",
+      "sha256": "376ffec3d496453fb574ab0216949e656303463364bcfba9bca3f40999061bc8",
+      "bytes": 11686,
+      "before_sha256": "cff9375e02b8e329926fae7a7352696872d3c20372257ffb11075b839c27309c"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/focus_build.gd",
+      "sha256": "1c0539e1a953d32f61d50c82d20c1153d554b75bce647d05937c4f250c2b513f",
+      "bytes": 5293,
+      "before_sha256": "3a1a7a8206f402ee748b4d9ffddfe54ea5fcd4efcac0ea2ba9401ce727c2111a"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/forecast.gd",
+      "sha256": "b422292fe1b0b71e03f339fd7578e24857a2c7a53d379f1ec5af71edacd2ba85",
+      "bytes": 32742,
+      "before_sha256": "7af8dbed0c1c3a6ab099958486075f95c9e4ce157fd38dda9f12a54bbb5d8bba"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/gate_reward_ui.gd",
+      "sha256": "0aee030e8c927ee58469ce24e772928b7812739b00aaf8f3db5249c53d9cde53",
+      "bytes": 13960,
+      "before_sha256": "31daff5845c1b1a31abda201fba300d72f34f8c9f87bdb4f84ea1275afa691b0"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/gate_upgrades.gd",
+      "sha256": "252efb0bf8611d65d3a630de8e1572feeee1d5f607a862afc6ba1621f1dfd817",
+      "bytes": 6682,
+      "before_sha256": "f61d907d321acce926f6da0319d5d3cdebf700a31f7be41559b86af8fbcf6678"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/magazine_trial.gd",
+      "sha256": "50773b55b2f3f1e546b9a6148a136704a24459da4c6b71e7690155f2554f5a7a",
+      "bytes": 2123,
+      "before_sha256": "f89526e644be674c41f2678558bc80e9c9d94e6b8dd0dfd9e64e7f987ae2e73b"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/model.gd",
+      "sha256": "edbbfc6e5d8e0f12d759e1c0eebdb703e4401b6c27c4dd793bd6dce2cf83604d",
+      "bytes": 87682,
+      "before_sha256": "8b1dd14f520c8dce5e136200e9e5b5eb21c1778588029b5e38c9ab0fd2f3a913"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/readability.gd",
+      "sha256": "9131e499e21a2b3cad6df0922f0df01dd3f1a4c7675eec64b8997f3e77de5cc4",
+      "bytes": 18452,
+      "before_sha256": "f91aa8cb6e373f17f8374a83391f980149348f1fedcdf5655fdce69d2ac126ba"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/route_map.gd",
+      "sha256": "e13408487bb565c59b059d1ec13a6d6d0283cfbb195edd396eda7a10f5bd007a",
+      "bytes": 7482,
+      "before_sha256": "aca81c9849dd8195688a53d7dcf52349cc043e67a61ca156370226afed86b588"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/combat_weapon_magazine.gd",
+      "sha256": "b74cd4051d9aef46d1d195679e784379d6c191f09b840b091b7ee37a9d42099d",
+      "bytes": 20292,
+      "before_sha256": "9eaf29aa00cf89a444060468e842bb25610a53f3fc35b260f0675b0c0a9844c4"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/fire_heat/drag.gd",
+      "sha256": "9a00c6ba3b79da62bf9e09a293afefdd89df1e7166e412329c534bf2831b384a",
+      "bytes": 4595,
+      "before_sha256": "b147812f03533875533a92acc9da9e010fba0a3c0835dd5669c9815ac44c68b8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/hud/combat_hud_presenter.gd",
+      "sha256": "74009c93e017fa6fbdea5861749ec4ccf8cd0f935e03311945b37b43c9261791",
+      "bytes": 20930,
+      "before_sha256": "f1713c30975a16ede0628042d61925157350463ff880222aa3c40ec11b9a7fd2"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/hud/combat_weapon_hud.gd",
+      "sha256": "52ff9d7d68f205ce2ba77bac3bfa409abfe8c6f010e90a30d30f490269ac2b7c",
+      "bytes": 2045,
+      "before_sha256": "280f1e12008c3feba7ab0bffdef7fa0a4f33f35e0589578efd22ef99dc6fdb77"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/risk_battle_view.gd",
+      "sha256": "328aaaf25ef5111015a2ef4a38ac9bdba08d1fb2c80ecbe27b54c2c20f347f7a",
+      "bytes": 23472,
+      "before_sha256": "15cb11c210319a4f2cddd9237ce46833d2bf319cec1f6f473d58890fbdd0a5de"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/screen.gd",
+      "sha256": "7a5f367094529d7d2ff2ef9b378f0979e022f7583cb13eaf476b5bb10289b5c8",
+      "bytes": 163379,
+      "before_sha256": "b82beb516804e4e3fc2ff7d386e2e676a3e54c669e54b71e005ccd9762f3b44e"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_solver.gd",
+      "sha256": "fdc26b9b2baccba76a194c4661962f24c6d0fc15916aa4ee1b4ddfadef5376be",
+      "bytes": 2785,
+      "before_sha256": "9de0e948a3869a84a30900dc4a31869e60dbff40ce2a715a405bb9c695b1bc27"
+    },
+    {
+      "path": "docs/direction/combat-roles-growth.md",
+      "sha256": "fbad4169e6d910646295e9d06aeefdf02ece603c8825d6ff34955e7284a6cf5c",
+      "bytes": 8595,
+      "before_sha256": null
+    },
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03.md",
+      "sha256": "9719506ade8f52f7e27357f8fc9aa08b7007273b2b64e024d8a84808550ed9cf",
+      "bytes": 9378,
+      "before_sha256": null
+    },
+    {
+      "path": "tools/run_playtest_rework.ps1",
+      "sha256": "56f6f5b76bcf6328a0f0e96c09ac11973fd38bc420f1760a6f7f9b1ffe80bdb2",
+      "bytes": 1979,
+      "before_sha256": null
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/combat_roles.gd",
+      "sha256": "e2ba69574bc88c7380b970bc2dc06e2c7483c503971bafa0aa78ece386239665",
+      "bytes": 3910,
+      "before_sha256": null
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_climb.gd",
+      "sha256": "30aa5cfc946767b7d48fe374b11aaae090f02721d73a103215c932987b5a3cb2",
+      "bytes": 2032,
+      "before_sha256": null
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_maps.gd",
+      "sha256": "e4fb2edfec04542c09c9cc1f5c67053f354d9a978bb4186511320fd28cb7d09f",
+      "bytes": 3215,
+      "before_sha256": null
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_replay.gd",
+      "sha256": "391a1d1bf28bd8a89be7a585e1192e2bcf76b5c4f0416f5c6fa4f1c5806436ce",
+      "bytes": 2803,
+      "before_sha256": null
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_restart.gd",
+      "sha256": "ce5b491dc6871c7c9c90a2226d5c2556c8ca770ef1e639406b67f691d99fcc8c",
+      "bytes": 2926,
+      "before_sha256": null
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_rules.gd",
+      "sha256": "38761ce051471d032bb23a335b29c046774ba987d5d87b16690c5f674d3acd74",
+      "bytes": 6379,
+      "before_sha256": null
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_ui.gd",
+      "sha256": "3674533a1947d7175da2ab87e31ae98499c3727479bf41990130ebecfd379c54",
+      "bytes": 7400,
+      "before_sha256": null
+    }
+  ],
+  "generated_uid_files": [
+    {
+      "path": "새-게임-프로젝트/redesign/combat_roles.gd.uid",
+      "sha256": "a6225217221095739ce3f330e565243c75baae7491c8dcd162fcce9883849eee",
+      "bytes": 19
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_climb.gd.uid",
+      "sha256": "c9fb3599ce381000523e8ebf395449022457e5f2650713dcaba76afca060f272",
+      "bytes": 20
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_maps.gd.uid",
+      "sha256": "78785ba45a43344fce7600da3eb47360e083bc4383e142b7c3c5814cf4dba118",
+      "bytes": 20
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_replay.gd.uid",
+      "sha256": "91e7f88507df846775d383276da55e4897c6ee42b00b3c1c22e7dbfd8189923e",
+      "bytes": 19
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_rules.gd.uid",
+      "sha256": "32ca8f12a3da1a6b341adedf8a7cd277fdf4bb8f83b655b3791d32c1a2989526",
+      "bytes": 20
+    },
+    {
+      "path": "새-게임-프로젝트/tests/playtest_rework_ui.gd.uid",
+      "sha256": "40ff8b1fe192ea7d6e10daa4356d2fd5d06f46104026452ad0666be36b763969",
+      "bytes": 20
+    }
+  ],
+  "source_delta": {
+    "path": "qa_runtime/playtest_rework_20261103/source_delta.patch",
+    "sha256": "10732761b10c5da48a9c7c145e0042387fb83587caa9eba325316cf9cb38d64f",
+    "bytes": 136089
+  },
+  "final_results": [
+    {
+      "path": "qa_runtime/playtest_rework_20261103/rules_final/result.json",
+      "sha256": "ed7501964cca2cb4f36e21b328f17b160ed1664a2c2964bcfb22ae3c2f83b771",
+      "bytes": 987,
+      "checks": 319,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/ui_final_layout2/result.json",
+      "sha256": "f4dc29eb5d0a793b71bdcfcab97bb5525ad3e04d10cdf9a98140cb3a7507ed38",
+      "bytes": 36,
+      "checks": 80,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/maps_cached_final/result.json",
+      "sha256": "94f5f31fb5c2aab5cfa137880767b2aae560a6578bd3fd0926f2e16bae84a8b0",
+      "bytes": 514,
+      "checks": 982401,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/climb_primary/balance.json",
+      "sha256": "26541141564a676db8dd0d7b996db637a16e9139914e1db093c34e603507a082",
+      "bytes": 313523,
+      "checks": 7479,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/climb_alternate/balance.json",
+      "sha256": "30605cb8f7580c5ef7d50e5a1a8c34e79847c6e9d2e338df24ae8439c6299d88",
+      "bytes": 204638,
+      "checks": 4882,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/climb_amplifier_final/balance.json",
+      "sha256": "f2759cc33192615363a4125e0564e902d66124f4bfd03d4b52edab86cf0514a6",
+      "bytes": 102776,
+      "checks": 2535,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/climb_incendiary/balance.json",
+      "sha256": "22a51579a8d2881eba30757a6e8cfb64538496cd4be6b15e8276e14bdb7568bc",
+      "bytes": 104923,
+      "checks": 2485,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/replay_verified/result.json",
+      "sha256": "19a17f3cead1c28a466ac5e7ce9139a5094fd8343eca486b994e7cac51cbc649",
+      "bytes": 1913,
+      "checks": 16133,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/restart_verified/write_result.json",
+      "sha256": "00c7e931a4e79972620df61a0f72ae14959e54635327e47f780192d8af428adc",
+      "bytes": 35,
+      "checks": 6,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/playtest_rework_20261103/restart_verified/read_result.json",
+      "sha256": "14d96204e81bcb7f0e86d91db4eaf3ff65d16bbdb323e5cc15fb6f0c3e8a438a",
+      "bytes": 35,
+      "checks": 5,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/focus_build_20261103/rules_role_regression/result.json",
+      "sha256": "8d41eb46bf44e76f0195ec96509b601bde027d4d7009c57965b6ddeef982f00c",
+      "bytes": 13427,
+      "checks": 643,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/fire_control_20261102/ui_role_regression/result.json",
+      "sha256": "1bfa3aafb4acd4ed5463937dfcebbb5d723f328d913b7d4d0d19efd948934bf3",
+      "bytes": 37,
+      "checks": 165,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/combat_hud_20261031/prototype_20261101/ui/ui.json",
+      "sha256": "f469f02d6b9ec9047e5e6c28ce9c963bccfce219b0573406b0f528b8bf050c98",
+      "bytes": 2540,
+      "checks": 11536,
+      "failures": []
+    },
+    {
+      "path": "qa_runtime/combat_hud_20261031/prototype_20261101/import/stdout.log",
+      "sha256": "8ba15b0cb4430962105120d7a816a0f60fbeade06554ecc157a5955764c381c0",
+      "bytes": 3774
+    },
+    {
+      "path": "qa_runtime/combat_hud_20261031/prototype_20261101/import/stderr.log",
+      "sha256": "240694613f60198bae5e682cb2b154fca7f2885d9b071350a08eecb46f2ac2e0",
+      "bytes": 49
+    }
+  ],
+  "visual_evidence": [
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/equipment.png",
+      "sha256": "38a33bae4d48a3cb249e1b6eff5078df6e2c60498e1f530d7081e4c0b0ae9a02",
+      "bytes": 277723
+    },
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/gate_growth.png",
+      "sha256": "5fd898f01b6ac79b919965191a880275a1ba2def627e838a61ac6ad2fb5c2d55",
+      "bytes": 105527
+    },
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/ground_fire.png",
+      "sha256": "2cdcd723331cf58dd922a8ce5644facbd6911a12ff66e6115c88ad41c32e31fe",
+      "bytes": 136550
+    },
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/hit_after.png",
+      "sha256": "db05e0433af9a92a5f375881a1e768e0545767c95f6ced8e2ec859b15193058d",
+      "bytes": 139172
+    },
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/hit_before.png",
+      "sha256": "586e98eee351c0038b3beb2041a350739fc810930bb18731504682ae8db4d6cf",
+      "bytes": 141025
+    },
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/role_packages.png",
+      "sha256": "87bc442e6a5c4b279ae8a11fbed324e896ce25c73361f9355370e745dedb3868",
+      "bytes": 15730
+    },
+    {
+      "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/slow.png",
+      "sha256": "6661274556c26b2d7945489c62dde84719dcd1e66f1376d9605f0143fb9d3403",
+      "bytes": 134576
+    }
+  ],
+  "verified_replay": {
+    "path": "docs/qa/reports/playtest_rework_2026-11-03_assets/replay_verified.json",
+    "sha256": "19a17f3cead1c28a466ac5e7ce9139a5094fd8343eca486b994e7cac51cbc649",
+    "bytes": 1913
+  },
+  "cohort": "6 completed climbs / 168 encounters; seed 731042; carrier outfit; five weapons plus an incendiary-heavy build. Earlier amplifier climb superseded by climb_amplifier_final.",
+  "limits": [
+    "Automated search sees future RNG; does not establish human win rate or fun.",
+    "Android touch, resume, sustained performance and device heating not validated.",
+    "Late heavy/incendiary ammunition burden and other outfit economies remain for further playtesting."
+  ]
+}

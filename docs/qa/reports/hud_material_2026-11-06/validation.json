@@ -1,0 +1,85 @@
+{
+  "capture_cases": 18,
+  "visible_control_observations": 2579,
+  "differences": [],
+  "before_checks": 93,
+  "after_checks": 93,
+  "after_failures": [],
+  "source_after": {
+    "redesign/equipment/edge.gd": "7a0bf06b8fc962e6b0f4e1a4bf5886813d8ec602a37c0c28655bf850a1a18c75",
+    "redesign/pipe_map/screen.tscn": "50c4472e10c64e02060c97e6e0df4f3d9c5b60fac3e2c9a67c490b58d43d50e8",
+    "redesign/samples/hud/combat_detail.tscn": "bd5bb96f9ebd0392cd0b4c1c69df4ae03b5ab399038f724a931c052795dee20e",
+    "redesign/samples/hud/combat_hud.tscn": "d135e997c2d46dc96f5b9fb983a470cdec5439af34a4cffc28ef0822eafd4515",
+    "redesign/samples/hud/combat_hud_feedback.gd": "332fa99c1bfc62be05b396a1361a330f3d02249e0c5344d17ee064d027fb210b",
+    "redesign/samples/hud/combat_hud_presenter.gd": "b1400cae811378eddd20ed60e528c579a4005240aaaa3f0e7d303a089b8075c0",
+    "redesign/samples/hud/combat_hud_theme.tres": "ab5c4457e91d349dee5edd9d188fd00885a187f22e48f8065a6c528beea1f4e8",
+    "redesign/samples/hud/combat_menu.tscn": "ba159ed7bbc0535977d1d9fd7d1beb466ca936b2c670257602fe23b56d788483",
+    "redesign/combat_material/band.gd": "9d1990bd67d6a7107b2d9c6adccd8c578e877d081d74a8f92eda81c098a547e6",
+    "redesign/combat_material/frame.gd": "ecd240d286bcdca7f44ebb7fbc1987f9ae6c03c7ee5326f433552f2e83196428",
+    "redesign/combat_material/skin.gd": "5a8b626bbc8e3694bfe1333367362d947ae80447aa86debf768bb31a950de209"
+  },
+  "unchanged_rules": {
+    "redesign/campaign_content.gd": true,
+    "redesign/model.gd": true,
+    "redesign/route_map.gd": true,
+    "redesign/forecast.gd": true,
+    "redesign/campaign.gd": true,
+    "redesign/samples/hud/combat_weapon_hud.gd": true
+  },
+  "checks": {
+    "hud": {
+      "checks": 11558,
+      "failures": []
+    },
+    "map": {
+      "checks": 15770,
+      "failures": []
+    },
+    "flow": {
+      "checks": 1532,
+      "failures": []
+    },
+    "equipment": {
+      "checks": 310,
+      "failures": 0
+    },
+    "authored_combat": {
+      "checks": 3,
+      "failures": 0
+    },
+    "preview": {
+      "checks": 11,
+      "failures": 0
+    }
+  },
+  "artifact_sha256": {
+    "after/battle_r1.png": "16c7801fb6d3c9de58d5ee0ac6f7065f64bb54ff391485c1e1cb6b8ca6de5b75",
+    "after/battle_r3.png": "70150ca824a4264c30d0a025d525183ae243bc8fe5b35f4fef52f7e7b46b8fed",
+    "after/detail_1280x800.png": "951850512ab67b6dd9f15d4bf3fa5ab20bd410891b11bedb4a7215c9111f9334",
+    "after/fired_1280x800.png": "bf27133c82c8ce38cc0cdfee1a3746dbeea5ea63924212b639925449d25f68fe",
+    "after/flow_shop.png": "815fceae82ee3db06a0fbf7969ebdfc9394eddc00efa185d2f569474b3ad6906",
+    "after/flow_supply.png": "1060de12c1795e5dec341baf7baedd195b02e4b2b7e057fb4edbfe2e3fd70cff",
+    "after/impact_r5.png": "a1f8c0cf609d2e07c0ba8afd804ec314f4b87779db297837fb9b0da36ad459d0",
+    "after/map.png": "05df3ffc54ab5b0956d6d04bc394433a2516cff5cb5d4347d68644fdb7760c35",
+    "after/menu_1280x800.png": "ac510b775d4e05385d186557c49370caca670eaeddeffad71d00299a76d549af",
+    "after/ready_1170x540.png": "c64947374eb9dd1ab5a6a6f0fc29d08795fd0f2a6f2bce9587bd9621a6f8cba4",
+    "after/ready_1280x800.png": "63f764d9f3345b8d295dd628f5bea9da3c753f2dba49428927a76d9be97eb5f4",
+    "after/reloaded_1280x800.png": "dbdc8f2f4539cae44b47d0e325216ae09856924e534969f6f4abff69a15ad123",
+    "after/selected_740x360.png": "56ea76c84a3489ad5c98ee48a6457e629f5990e42541841adf4a0b67da27c147",
+    "authored/combat_detail.png": "2d9bb32f674ad2e54a30e627ccf8ddc7cfb110e194a7efcf4f62618551e7025a",
+    "authored/combat_hud.png": "6369f77a00a8e64b8be088da412365bb8a400f65ad91e97e72e4aa8eae95a594",
+    "authored/combat_menu.png": "6bd85845f353001221954831abc6b8dfb072f77939a75784c035d88aaba8b68e",
+    "before/detail_1280x800.png": "fb1932506edf3c6da553e5bf04dcc03115229206489386bb0ad7db7525646de7",
+    "before/fired_1280x800.png": "85fb8421f7cc6b0a29389de82fea07f068cf7b590b202b2c2151b78f87b971cd",
+    "before/map.png": "669c29d3eb22b4b8c7a306565166b56bbbfa9a8ba8269e16e9b4b6ee7844fc04",
+    "before/menu_1280x800.png": "deb58cda95c1ec55f34eaf781ca03a1af0dd7a0ba047fb6ce865e24a43fc1f10",
+    "before/ready_1170x540.png": "79869b3c14fb8608af65c7eda391af1ad0b1c1662178c42d290d1b9f732fd762",
+    "before/ready_1280x800.png": "35ef36d2bc24615dae7c4a87afa26139e534b8df689903aff7475b7f12bff7fe",
+    "before/reloaded_1280x800.png": "ddf50a2eed71ec5c41f7b75ae04b0465deb37dc591efbb14d550f282adb6b49e",
+    "before/selected_740x360.png": "43bda2298430cac32b249aada8607916e2e80fdcaf1db99d08013aa137fb2659"
+  },
+  "capture_tool_sha256": {
+    "새-게임-프로젝트/tests/hud_material_capture.gd": "fe6890159ebcc22c3ca93d50ca9aa46ed1cff08e30a16a34871ee1c4f8a151f2",
+    "tools/run_hud_material.ps1": "1d87a1b067191a518c415cbfb864539c5a3577f7a21ed64f0f34312e2a54d5d9"
+  }
+}

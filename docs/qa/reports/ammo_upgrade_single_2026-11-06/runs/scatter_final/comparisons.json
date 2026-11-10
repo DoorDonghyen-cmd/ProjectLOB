@@ -1,0 +1,628 @@
+[
+	{
+		"branches": [
+			{
+				"choice": "keep",
+				"deck_count": 24,
+				"deck_limit": 32,
+				"operation": "keep",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 3,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"third_striker": 1,
+								"volley_drive": 7
+							},
+							"phase": "lost",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 1,
+							"remaining": 16,
+							"turns": 8,
+							"won": false
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 1,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 13,
+							"forced_turns": 3,
+							"limit_hit": false,
+							"nearest_after_action": 7,
+							"node": 802,
+							"part_events": {
+								"third_striker": 2,
+								"volley_drive": 12
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 3,
+							"remaining": 11,
+							"turns": 15,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 13,
+							"forced_turns": 6,
+							"limit_hit": false,
+							"nearest_after_action": 22,
+							"node": 10101,
+							"part_events": {
+								"third_striker": 2,
+								"volley_drive": 13
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 2,
+							"reload": 1,
+							"remaining": 11,
+							"turns": 13,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 1,
+							"emergency": 0,
+							"fire": 6,
+							"fired_rounds": 6,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"third_striker": 1,
+								"volley_drive": 5
+							},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 0,
+							"remaining": 18,
+							"turns": 7,
+							"won": false
+						}
+					]
+				}
+			},
+			{
+				"choice": "upgrade",
+				"deck_count": 23,
+				"deck_limit": 32,
+				"operation": "upgrade",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 8,
+							"forced_turns": 3,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"third_striker": 1,
+								"volley_drive": 8
+							},
+							"phase": "lost",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 1,
+							"remaining": 15,
+							"turns": 8,
+							"won": false
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 2,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 12,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 3,
+							"node": 802,
+							"part_events": {
+								"third_striker": 2,
+								"volley_drive": 12
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 1,
+							"remaining": 11,
+							"turns": 9,
+							"won": true
+						},
+						{
+							"cool": 1,
+							"emergency": 0,
+							"fire": 6,
+							"fired_rounds": 14,
+							"forced_turns": 6,
+							"limit_hit": false,
+							"nearest_after_action": 6,
+							"node": 10101,
+							"part_events": {
+								"third_striker": 3,
+								"volley_drive": 13
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 2,
+							"reload": 2,
+							"remaining": 9,
+							"turns": 17,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 2,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 5,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"third_striker": 1,
+								"volley_drive": 5
+							},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 0,
+							"remaining": 18,
+							"turns": 7,
+							"won": false
+						}
+					]
+				}
+			},
+			{
+				"choice": "other_work",
+				"deck_count": 24,
+				"deck_limit": 34,
+				"operation": "bag",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 3,
+							"fired_rounds": 8,
+							"forced_turns": 3,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"third_striker": 1,
+								"volley_drive": 7
+							},
+							"phase": "lost",
+							"policy": "full_fire",
+							"region": 1,
+							"reload": 1,
+							"remaining": 16,
+							"turns": 8,
+							"won": false
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 1,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 13,
+							"forced_turns": 3,
+							"limit_hit": false,
+							"nearest_after_action": 7,
+							"node": 802,
+							"part_events": {
+								"third_striker": 2,
+								"volley_drive": 12
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 1,
+							"reload": 3,
+							"remaining": 11,
+							"turns": 15,
+							"won": true
+						},
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 13,
+							"forced_turns": 6,
+							"limit_hit": false,
+							"nearest_after_action": 22,
+							"node": 10101,
+							"part_events": {
+								"third_striker": 2,
+								"volley_drive": 13
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 2,
+							"reload": 1,
+							"remaining": 11,
+							"turns": 13,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 1,
+							"emergency": 0,
+							"fire": 6,
+							"fired_rounds": 6,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 802,
+							"part_events": {
+								"third_striker": 1,
+								"volley_drive": 5
+							},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 1,
+							"reload": 0,
+							"remaining": 18,
+							"turns": 7,
+							"won": false
+						}
+					]
+				}
+			}
+		],
+		"deck_before": [
+			"precise_p2",
+			"precise_p2",
+			"charge",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"precise_p2",
+			"precise_p2",
+			"precise_p2",
+			"precise_p2_power"
+		],
+		"gun": "scatter",
+		"node": 703,
+		"outfit": "carrier",
+		"parts": [
+			"volley_drive",
+			"third_striker"
+		],
+		"region": 1,
+		"seed": 17,
+		"source": "precise_p2",
+		"target": "precise_p2_c"
+	},
+	{
+		"branches": [
+			{
+				"choice": "keep",
+				"deck_count": 31,
+				"deck_limit": 34,
+				"operation": "keep",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 16,
+							"forced_turns": 6,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 41002,
+							"part_events": {
+								"duplex": 2,
+								"third_striker": 2,
+								"volley_drive": 7
+							},
+							"phase": "lost",
+							"policy": "full_fire",
+							"region": 5,
+							"reload": 2,
+							"remaining": 15,
+							"turns": 15,
+							"won": false
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 15,
+							"forced_turns": 6,
+							"limit_hit": false,
+							"nearest_after_action": 14,
+							"node": 41002,
+							"part_events": {
+								"duplex": 5,
+								"third_striker": 2,
+								"volley_drive": 10
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 5,
+							"reload": 3,
+							"remaining": 16,
+							"turns": 16,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 3,
+							"emergency": 0,
+							"fire": 12,
+							"fired_rounds": 12,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 41002,
+							"part_events": {
+								"duplex": 2,
+								"third_striker": 2,
+								"volley_drive": 5
+							},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 5,
+							"reload": 1,
+							"remaining": 19,
+							"turns": 17,
+							"won": false
+						}
+					]
+				}
+			},
+			{
+				"choice": "upgrade",
+				"deck_count": 30,
+				"deck_limit": 34,
+				"operation": "upgrade",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 7,
+							"fired_rounds": 19,
+							"forced_turns": 9,
+							"limit_hit": false,
+							"nearest_after_action": 2,
+							"node": 41002,
+							"part_events": {
+								"duplex": 5,
+								"rammer": 1,
+								"third_striker": 2,
+								"volley_drive": 12
+							},
+							"phase": "reward",
+							"policy": "full_fire",
+							"region": 5,
+							"reload": 2,
+							"remaining": 11,
+							"turns": 20,
+							"won": true
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 17,
+							"forced_turns": 9,
+							"limit_hit": false,
+							"nearest_after_action": 14,
+							"node": 41002,
+							"part_events": {
+								"duplex": 5,
+								"third_striker": 3,
+								"volley_drive": 13
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 5,
+							"reload": 3,
+							"remaining": 13,
+							"turns": 19,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 2,
+							"emergency": 0,
+							"fire": 8,
+							"fired_rounds": 8,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 41002,
+							"part_events": {
+								"duplex": 2,
+								"volley_drive": 3
+							},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 5,
+							"reload": 1,
+							"remaining": 22,
+							"turns": 12,
+							"won": false
+						}
+					]
+				}
+			},
+			{
+				"choice": "other_work",
+				"deck_count": 31,
+				"deck_limit": 36,
+				"operation": "bag",
+				"policies": {
+					"full_fire": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 5,
+							"fired_rounds": 16,
+							"forced_turns": 6,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 41002,
+							"part_events": {
+								"duplex": 2,
+								"third_striker": 2,
+								"volley_drive": 7
+							},
+							"phase": "lost",
+							"policy": "full_fire",
+							"region": 5,
+							"reload": 2,
+							"remaining": 15,
+							"turns": 15,
+							"won": false
+						}
+					],
+					"oracle_rng_known": [
+						{
+							"cool": 0,
+							"emergency": 0,
+							"fire": 4,
+							"fired_rounds": 15,
+							"forced_turns": 6,
+							"limit_hit": false,
+							"nearest_after_action": 14,
+							"node": 41002,
+							"part_events": {
+								"duplex": 5,
+								"third_striker": 2,
+								"volley_drive": 10
+							},
+							"phase": "reward",
+							"policy": "oracle_rng_known",
+							"region": 5,
+							"reload": 3,
+							"remaining": 16,
+							"turns": 16,
+							"won": true
+						}
+					],
+					"visible_heat_single": [
+						{
+							"cool": 3,
+							"emergency": 0,
+							"fire": 12,
+							"fired_rounds": 12,
+							"forced_turns": 0,
+							"limit_hit": false,
+							"nearest_after_action": 0,
+							"node": 41002,
+							"part_events": {
+								"duplex": 2,
+								"third_striker": 2,
+								"volley_drive": 5
+							},
+							"phase": "lost",
+							"policy": "visible_heat_single",
+							"region": 5,
+							"reload": 1,
+							"remaining": 19,
+							"turns": 17,
+							"won": false
+						}
+					]
+				}
+			}
+		],
+		"deck_before": [
+			"charge",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p2",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"basic_p3",
+			"precise_p2",
+			"precise_p2_power",
+			"precise_p2_c",
+			"disrupt",
+			"precise_p2_power_c",
+			"precise_p2_power_c",
+			"chase",
+			"charge_hot",
+			"shatter",
+			"charge",
+			"charge_hot",
+			"precise_p2_c",
+			"precise_p2_power_c"
+		],
+		"gun": "scatter",
+		"node": 40901,
+		"outfit": "carrier",
+		"parts": [
+			"volley_drive",
+			"rammer",
+			"third_striker",
+			"duplex",
+			"capacitor"
+		],
+		"region": 5,
+		"seed": 17,
+		"source": "charge",
+		"target": "charge_c"
+	}
+]

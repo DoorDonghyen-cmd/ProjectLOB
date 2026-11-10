@@ -1,0 +1,628 @@
+{
+  "note": "Bounded search with future draw/RNG; not human win rate, optimality or fun validation.",
+  "checks": 18375,
+  "failures": [
+    "fresh earned route heavy_731042_r5_n41002",
+    "earned equipment reaches ending heavy"
+  ],
+  "failure_classification": "Continuation failures, if present, are two unmet reachability assertions for one heavy final-boss condition. They are retained, not counted as successful checks. No other failure is accepted.",
+  "runs": {
+    "rules_final3": {
+      "checks": 614,
+      "battles": 0
+    },
+    "matrix_final": {
+      "checks": 5690,
+      "battles": 50
+    },
+    "work17_final": {
+      "checks": 2651,
+      "battles": 25
+    },
+    "scout_final": {
+      "checks": 1400,
+      "battles": 10
+    },
+    "probes_final": {
+      "checks": 1332,
+      "battles": 0
+    },
+    "ui_verified": {
+      "checks": 57,
+      "battles": 0
+    },
+    "continuation_final": {
+      "checks": 6631,
+      "battles": 46
+    }
+  },
+  "slice_runs": 17,
+  "slice_success": 17,
+  "new_slice_runs": 12,
+  "slice_battles": 85,
+  "continuations": [
+    {
+      "gun": "single",
+      "region": 4.0,
+      "seed": 731042,
+      "source": "matrix_final/gate_single_v12_731042_carrier.json",
+      "version": 12,
+      "won": true
+    },
+    {
+      "gun": "heavy",
+      "region": 4.0,
+      "seed": 731042,
+      "source": "matrix_final/gate_heavy_v12_731042_carrier.json",
+      "version": 12,
+      "won": false
+    }
+  ],
+  "continuation_battles": 46,
+  "matrix": [
+    {
+      "gun": "single",
+      "version": 11,
+      "floor": 1,
+      "role": "legacy",
+      "turns": 1,
+      "used": 4
+    },
+    {
+      "gun": "single",
+      "version": 11,
+      "floor": 2,
+      "role": "legacy",
+      "turns": 1,
+      "used": 3
+    },
+    {
+      "gun": "single",
+      "version": 11,
+      "floor": 4,
+      "role": "legacy",
+      "turns": 3,
+      "used": 5
+    },
+    {
+      "gun": "single",
+      "version": 11,
+      "floor": 6,
+      "role": "legacy",
+      "turns": 5,
+      "used": 8
+    },
+    {
+      "gun": "single",
+      "version": 11,
+      "floor": 8,
+      "role": "legacy",
+      "turns": 7,
+      "used": 11
+    },
+    {
+      "gun": "burst",
+      "version": 11,
+      "floor": 1,
+      "role": "legacy",
+      "turns": 4,
+      "used": 5
+    },
+    {
+      "gun": "burst",
+      "version": 11,
+      "floor": 2,
+      "role": "legacy",
+      "turns": 1,
+      "used": 4
+    },
+    {
+      "gun": "burst",
+      "version": 11,
+      "floor": 4,
+      "role": "legacy",
+      "turns": 7,
+      "used": 10
+    },
+    {
+      "gun": "burst",
+      "version": 11,
+      "floor": 6,
+      "role": "legacy",
+      "turns": 7,
+      "used": 12
+    },
+    {
+      "gun": "burst",
+      "version": 11,
+      "floor": 8,
+      "role": "legacy",
+      "turns": 14,
+      "used": 17
+    },
+    {
+      "gun": "scatter",
+      "version": 11,
+      "floor": 1,
+      "role": "legacy",
+      "turns": 5,
+      "used": 6
+    },
+    {
+      "gun": "scatter",
+      "version": 11,
+      "floor": 2,
+      "role": "legacy",
+      "turns": 1,
+      "used": 5
+    },
+    {
+      "gun": "scatter",
+      "version": 11,
+      "floor": 4,
+      "role": "legacy",
+      "turns": 4,
+      "used": 9
+    },
+    {
+      "gun": "scatter",
+      "version": 11,
+      "floor": 6,
+      "role": "legacy",
+      "turns": 7,
+      "used": 13
+    },
+    {
+      "gun": "scatter",
+      "version": 11,
+      "floor": 8,
+      "role": "legacy",
+      "turns": 11,
+      "used": 20
+    },
+    {
+      "gun": "heavy",
+      "version": 11,
+      "floor": 1,
+      "role": "legacy",
+      "turns": 1,
+      "used": 6
+    },
+    {
+      "gun": "heavy",
+      "version": 11,
+      "floor": 2,
+      "role": "legacy",
+      "turns": 1,
+      "used": 6
+    },
+    {
+      "gun": "heavy",
+      "version": 11,
+      "floor": 4,
+      "role": "legacy",
+      "turns": 7,
+      "used": 10
+    },
+    {
+      "gun": "heavy",
+      "version": 11,
+      "floor": 6,
+      "role": "legacy",
+      "turns": 6,
+      "used": 10
+    },
+    {
+      "gun": "heavy",
+      "version": 11,
+      "floor": 8,
+      "role": "legacy",
+      "turns": 16,
+      "used": 22
+    },
+    {
+      "gun": "amplifier",
+      "version": 11,
+      "floor": 1,
+      "role": "legacy",
+      "turns": 2,
+      "used": 3
+    },
+    {
+      "gun": "amplifier",
+      "version": 11,
+      "floor": 2,
+      "role": "legacy",
+      "turns": 1,
+      "used": 2
+    },
+    {
+      "gun": "amplifier",
+      "version": 11,
+      "floor": 4,
+      "role": "legacy",
+      "turns": 3,
+      "used": 3
+    },
+    {
+      "gun": "amplifier",
+      "version": 11,
+      "floor": 6,
+      "role": "legacy",
+      "turns": 6,
+      "used": 4
+    },
+    {
+      "gun": "amplifier",
+      "version": 11,
+      "floor": 8,
+      "role": "legacy",
+      "turns": 6,
+      "used": 6
+    },
+    {
+      "gun": "single",
+      "version": 12,
+      "floor": 1,
+      "role": "",
+      "turns": 1,
+      "used": 4
+    },
+    {
+      "gun": "single",
+      "version": 12,
+      "floor": 2,
+      "role": "sweep",
+      "turns": 1,
+      "used": 3
+    },
+    {
+      "gun": "single",
+      "version": 12,
+      "floor": 4,
+      "role": "breach",
+      "turns": 5,
+      "used": 8
+    },
+    {
+      "gun": "single",
+      "version": 12,
+      "floor": 6,
+      "role": "payoff",
+      "turns": 1,
+      "used": 3
+    },
+    {
+      "gun": "single",
+      "version": 12,
+      "floor": 8,
+      "role": "",
+      "turns": 7,
+      "used": 11
+    },
+    {
+      "gun": "burst",
+      "version": 12,
+      "floor": 1,
+      "role": "",
+      "turns": 4,
+      "used": 5
+    },
+    {
+      "gun": "burst",
+      "version": 12,
+      "floor": 2,
+      "role": "sweep",
+      "turns": 1,
+      "used": 4
+    },
+    {
+      "gun": "burst",
+      "version": 12,
+      "floor": 4,
+      "role": "breach",
+      "turns": 4,
+      "used": 7
+    },
+    {
+      "gun": "burst",
+      "version": 12,
+      "floor": 6,
+      "role": "payoff",
+      "turns": 1,
+      "used": 4
+    },
+    {
+      "gun": "burst",
+      "version": 12,
+      "floor": 8,
+      "role": "",
+      "turns": 14,
+      "used": 17
+    },
+    {
+      "gun": "scatter",
+      "version": 12,
+      "floor": 1,
+      "role": "",
+      "turns": 5,
+      "used": 6
+    },
+    {
+      "gun": "scatter",
+      "version": 12,
+      "floor": 2,
+      "role": "sweep",
+      "turns": 1,
+      "used": 4
+    },
+    {
+      "gun": "scatter",
+      "version": 12,
+      "floor": 4,
+      "role": "breach",
+      "turns": 4,
+      "used": 8
+    },
+    {
+      "gun": "scatter",
+      "version": 12,
+      "floor": 6,
+      "role": "payoff",
+      "turns": 1,
+      "used": 4
+    },
+    {
+      "gun": "scatter",
+      "version": 12,
+      "floor": 8,
+      "role": "",
+      "turns": 11,
+      "used": 20
+    },
+    {
+      "gun": "heavy",
+      "version": 12,
+      "floor": 1,
+      "role": "",
+      "turns": 1,
+      "used": 6
+    },
+    {
+      "gun": "heavy",
+      "version": 12,
+      "floor": 2,
+      "role": "sweep",
+      "turns": 1,
+      "used": 6
+    },
+    {
+      "gun": "heavy",
+      "version": 12,
+      "floor": 4,
+      "role": "breach",
+      "turns": 6,
+      "used": 7
+    },
+    {
+      "gun": "heavy",
+      "version": 12,
+      "floor": 6,
+      "role": "payoff",
+      "turns": 1,
+      "used": 5
+    },
+    {
+      "gun": "heavy",
+      "version": 12,
+      "floor": 8,
+      "role": "",
+      "turns": 16,
+      "used": 22
+    },
+    {
+      "gun": "amplifier",
+      "version": 12,
+      "floor": 1,
+      "role": "",
+      "turns": 2,
+      "used": 3
+    },
+    {
+      "gun": "amplifier",
+      "version": 12,
+      "floor": 2,
+      "role": "sweep",
+      "turns": 1,
+      "used": 2
+    },
+    {
+      "gun": "amplifier",
+      "version": 12,
+      "floor": 4,
+      "role": "breach",
+      "turns": 2,
+      "used": 2
+    },
+    {
+      "gun": "amplifier",
+      "version": 12,
+      "floor": 6,
+      "role": "payoff",
+      "turns": 1,
+      "used": 2
+    },
+    {
+      "gun": "amplifier",
+      "version": 12,
+      "floor": 8,
+      "role": "",
+      "turns": 7,
+      "used": 6
+    }
+  ],
+  "timing": [
+    {
+      "gun": "single",
+      "policy": "immediate",
+      "turns": 5,
+      "used": 8,
+      "won": true
+    },
+    {
+      "gun": "single",
+      "policy": "reload_first",
+      "turns": 2,
+      "used": 3,
+      "won": true
+    },
+    {
+      "gun": "single",
+      "policy": "short_first",
+      "turns": 5,
+      "used": 7,
+      "won": true
+    },
+    {
+      "gun": "burst",
+      "policy": "immediate",
+      "turns": 4,
+      "used": 8,
+      "won": true
+    },
+    {
+      "gun": "burst",
+      "policy": "reload_first",
+      "turns": 6,
+      "used": 8,
+      "won": true
+    },
+    {
+      "gun": "burst",
+      "policy": "short_first",
+      "turns": 7,
+      "used": 7,
+      "won": true
+    },
+    {
+      "gun": "scatter",
+      "policy": "immediate",
+      "turns": 4,
+      "used": 9,
+      "won": true
+    },
+    {
+      "gun": "scatter",
+      "policy": "reload_first",
+      "turns": 6,
+      "used": 9,
+      "won": true
+    },
+    {
+      "gun": "scatter",
+      "policy": "short_first",
+      "turns": 7,
+      "used": 9,
+      "won": true
+    },
+    {
+      "gun": "heavy",
+      "policy": "immediate",
+      "turns": 6,
+      "used": 7,
+      "won": true
+    },
+    {
+      "gun": "heavy",
+      "policy": "reload_first",
+      "turns": 8,
+      "used": 7,
+      "won": true
+    },
+    {
+      "gun": "heavy",
+      "policy": "short_first",
+      "turns": 4,
+      "used": 7,
+      "won": true
+    },
+    {
+      "gun": "amplifier",
+      "policy": "immediate",
+      "turns": 2,
+      "used": 2,
+      "won": true
+    },
+    {
+      "gun": "amplifier",
+      "policy": "reload_first",
+      "turns": 5,
+      "used": 3,
+      "won": true
+    },
+    {
+      "gun": "amplifier",
+      "policy": "short_first",
+      "turns": 4,
+      "used": 3,
+      "won": true
+    },
+    {
+      "firing_order": [
+        "charge",
+        "basic_p3"
+      ],
+      "gun": "single",
+      "policy": "closed",
+      "remaining_hp": 11
+    },
+    {
+      "firing_order": [
+        "basic_p3",
+        "charge"
+      ],
+      "gun": "single",
+      "policy": "closed",
+      "remaining_hp": 13
+    },
+    {
+      "firing_order": [
+        "charge",
+        "basic_p3"
+      ],
+      "gun": "single",
+      "policy": "open",
+      "remaining_hp": 2
+    },
+    {
+      "firing_order": [
+        "basic_p3",
+        "charge"
+      ],
+      "gun": "single",
+      "policy": "open",
+      "remaining_hp": 8
+    }
+  ],
+  "changed_production": [
+    "새-게임-프로젝트\\redesign\\campaign.gd",
+    "새-게임-프로젝트\\redesign\\campaign_content.gd",
+    "새-게임-프로젝트\\redesign\\combat_rhythm.gd",
+    "새-게임-프로젝트\\redesign\\content.gd",
+    "새-게임-프로젝트\\redesign\\enemy_status_icons.gd",
+    "새-게임-프로젝트\\redesign\\residential_roster.gd",
+    "새-게임-프로젝트\\redesign\\slum_roster.gd"
+  ],
+  "heavy_final_legacy_comparison": {
+    "campaign": [
+      "log",
+      "roster_version"
+    ],
+    "combat": [
+      "history",
+      "reloads",
+      "shots",
+      "turns"
+    ]
+  }
+}

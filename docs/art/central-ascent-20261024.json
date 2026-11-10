@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-24",
+  "tool": "built-in image_gen",
+  "intent": "stylized-concept",
+  "purpose": "region 5 central command district, three-stage battle backgrounds",
+  "transparent_background": false,
+  "jobs": [
+    {
+      "id": "lower_v1",
+      "brief": "EARLY: Retinue checkpoint gallery. A huge rectangular steel security bulkhead at left-center, closed with THREE broad horizontal locking bars and a large plain circular mechanical seal, with paired massive square jambs. Behind it recede perfectly aligned rectangular checkpoint housings and shuttered guard inspection bays, suspended transport rails and thick vertical cable spines. At far left a small low rectangular maintenance hatch and one hooded amber inspection lamp behind the hero, NOT an ornate arch. Quiet charcoal-blue screening wall across right half with only widely spaced vertical ribs. Recognition in y430–680: lower locking bars, bulkhead plinths, square inspection bay bases. Regimented, no palace façade.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/upper_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/noble_background_2026-10-24/stage2_1280.png"
+      ],
+      "prompt": "Use case: stylized-concept. ONE production pixel-art battle background for ORVASK, final FIFTH DISTRICT: the CENTRAL COMMAND PRECINCT of an enormous dystopian climate-control tower, guarded by a uniform mechanical retinue. Input1 is approved atmospheric pixel STYLE, input2 is recent matching cluster density and foreground scale, input3 is actual battle viewport COMPOSITION reference only. Do not copy their houses, ornate noble door, plants, people, enemies, words or HUD.\nFinal district identity: unified authoritarian engineering, severe repeated modules, sealed access, controlled power. The PERSONAL luxury and ivory mansions of district4 end here. Massive gunmetal ribs, blue-black steel, muted slate and desaturated deep blue-violet, sparse cold gray-green instrument light and tiny old amber maintenance lights. Dull bronze used only on functional rings or connectors. No jewelry, decorative cloth, household windows, vegetation, skulls, fantasy cathedral, glowing magical runes, dense sci-fi neon or weapon racks.\nSTYLE: broad muted pixel clusters, deliberate large stepped edges, grouped architectural shadow planes, approximately 5–10px-looking cluster scale on a 1672x941 image. Softness from coherent shapes and low contrast, NOT blur. No glossy rendered concept art, optical blur, grain, dithering, pinprick rivets, or countless fine cables. All architectural shapes remain readable at the small battle scale.\nLOCK GAME GEOMETRY: opaque 1672x941, exactly ONE continuous perfectly LEVEL side-on metal combat bridge across the whole image; foot contact at source y687, like input2. Quiet narrow floor edge and thick dark structural beams underneath. Single low subdued rail immediately BEHIND the bridge. Do not place objects, roots, staircases, gaps, control consoles or shadows in front of or on the walking plane.\nVIEWPORT: game shows source roughly y400–780; panoramic screens crop to y490–755. Architecture's recognizable features must be in this LOWER MIDDLE band too. Small hero at x10%, 4 enemies x45–96%; x42–96% y420–685 must remain quiet mid-dark surfaces/atmospheric depth so HP and sprites read. Bright features concentrated on LEFT-CENTER and far distance, never a white glowing wall behind enemies. Monumental enclosed tower depth; no exterior sky. No humans, silhouettes of occupants, creatures, robots, humanoid statues, throne occupant, text, numbers, symbols that resemble writing, icons, UI or watermark.\n\nEARLY: Retinue checkpoint gallery. A huge rectangular steel security bulkhead at left-center, closed with THREE broad horizontal locking bars and a large plain circular mechanical seal, with paired massive square jambs. Behind it recede perfectly aligned rectangular checkpoint housings and shuttered guard inspection bays, suspended transport rails and thick vertical cable spines. At far left a small low rectangular maintenance hatch and one hooded amber inspection lamp behind the hero, NOT an ornate arch. Quiet charcoal-blue screening wall across right half with only widely spaced vertical ribs. Recognition in y430–680: lower locking bars, bulkhead plinths, square inspection bay bases. Regimented, no palace façade.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-03e442b0-2e3c-44c7-bd24-c4a7b12bc540.png",
+      "asset": "새-게임-프로젝트/assets/art/central_ascent_20261024/lower_v1.png",
+      "source_floor_y": 686,
+      "postprocessing": "None. Original generated PNG copied unchanged; runtime crop and ground registration only.",
+      "status": "Integrated in region5. Three viewport ratios, real load/fire/reload, save restoration, developer touch, elite/boss, finish and ending-transition checks passed. 16 representative runtime captures visually inspected. User preference / Galaxy pending.",
+      "sha256": "90409edf6bd91d8d13330458e5a3ada858b328cf73cf5bc645452838cc6a779a",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/upper_v1.png": "c6d791aa1e9616d66b0c88c2b3064ccc64081b8e013529e5bd9f661923f5d896",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/noble_background_2026-10-24/stage2_1280.png": "dd794f7b090724efdd17daafb7d836a92e6ef3600ffccfe0a6370c92783d4078"
+      }
+    },
+    {
+      "id": "middle_v1",
+      "brief": "MIDDLE: Central supply switching hall. At left-center TWO giant vertical ceramic-and-steel switching columns with broad horizontal bands, heavy mechanical lever housings low down and a single thick curved copper bus-bar connecting them. Behind, massive sealed water/heat/power distribution manifolds fan upward into repeated square supports, deep blue-gray atmospheric channels between. A dim recessed inspection desk far left, closed shutters, one tiny amber lamp. The lower lever housings and supply pipes are clearly visible at y450–680, the right half quiet ranks of dark switching cabinets and broad soft structures. No doors as central focal point; this image must be recognizably different from a gate. No readable controls, no sparks or electricity beams. Cold administrative control of the entire tower.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/upper_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/noble_background_2026-10-24/stage2_1280.png"
+      ],
+      "prompt": "Use case: stylized-concept. ONE production pixel-art battle background for ORVASK, final FIFTH DISTRICT: the CENTRAL COMMAND PRECINCT of an enormous dystopian climate-control tower, guarded by a uniform mechanical retinue. Input1 is approved atmospheric pixel STYLE, input2 is recent matching cluster density and foreground scale, input3 is actual battle viewport COMPOSITION reference only. Do not copy their houses, ornate noble door, plants, people, enemies, words or HUD.\nFinal district identity: unified authoritarian engineering, severe repeated modules, sealed access, controlled power. The PERSONAL luxury and ivory mansions of district4 end here. Massive gunmetal ribs, blue-black steel, muted slate and desaturated deep blue-violet, sparse cold gray-green instrument light and tiny old amber maintenance lights. Dull bronze used only on functional rings or connectors. No jewelry, decorative cloth, household windows, vegetation, skulls, fantasy cathedral, glowing magical runes, dense sci-fi neon or weapon racks.\nSTYLE: broad muted pixel clusters, deliberate large stepped edges, grouped architectural shadow planes, approximately 5–10px-looking cluster scale on a 1672x941 image. Softness from coherent shapes and low contrast, NOT blur. No glossy rendered concept art, optical blur, grain, dithering, pinprick rivets, or countless fine cables. All architectural shapes remain readable at the small battle scale.\nLOCK GAME GEOMETRY: opaque 1672x941, exactly ONE continuous perfectly LEVEL side-on metal combat bridge across the whole image; foot contact at source y687, like input2. Quiet narrow floor edge and thick dark structural beams underneath. Single low subdued rail immediately BEHIND the bridge. Do not place objects, roots, staircases, gaps, control consoles or shadows in front of or on the walking plane.\nVIEWPORT: game shows source roughly y400–780; panoramic screens crop to y490–755. Architecture's recognizable features must be in this LOWER MIDDLE band too. Small hero at x10%, 4 enemies x45–96%; x42–96% y420–685 must remain quiet mid-dark surfaces/atmospheric depth so HP and sprites read. Bright features concentrated on LEFT-CENTER and far distance, never a white glowing wall behind enemies. Monumental enclosed tower depth; no exterior sky. No humans, silhouettes of occupants, creatures, robots, humanoid statues, throne occupant, text, numbers, symbols that resemble writing, icons, UI or watermark.\n\nMIDDLE: Central supply switching hall. At left-center TWO giant vertical ceramic-and-steel switching columns with broad horizontal bands, heavy mechanical lever housings low down and a single thick curved copper bus-bar connecting them. Behind, massive sealed water/heat/power distribution manifolds fan upward into repeated square supports, deep blue-gray atmospheric channels between. A dim recessed inspection desk far left, closed shutters, one tiny amber lamp. The lower lever housings and supply pipes are clearly visible at y450–680, the right half quiet ranks of dark switching cabinets and broad soft structures. No doors as central focal point; this image must be recognizably different from a gate. No readable controls, no sparks or electricity beams. Cold administrative control of the entire tower.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-ed69a2ae-ff48-490c-8f07-3eac8bd9e316.png",
+      "asset": "새-게임-프로젝트/assets/art/central_ascent_20261024/middle_v1.png",
+      "source_floor_y": 687,
+      "postprocessing": "None. Original generated PNG copied unchanged; runtime crop and ground registration only.",
+      "status": "Integrated in region5. Three viewport ratios, real load/fire/reload, save restoration, developer touch, elite/boss, finish and ending-transition checks passed. 16 representative runtime captures visually inspected. User preference / Galaxy pending.",
+      "sha256": "87dd0228fb5ef5d7fc62d772e9ca619832a511c9948d1aed2baf159aac6bb02c",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/upper_v1.png": "c6d791aa1e9616d66b0c88c2b3064ccc64081b8e013529e5bd9f661923f5d896",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/noble_background_2026-10-24/stage2_1280.png": "dd794f7b090724efdd17daafb7d836a92e6ef3600ffccfe0a6370c92783d4078"
+      }
+    },
+    {
+      "id": "upper_v1",
+      "brief": "LATE: The tower's central climate-control heart, seen from the final battle bridge. Left-center a single monumental CIRCULAR mechanical iris nested in heavy concentric bronze-and-gunmetal rings around a dark sealed center. Its diameter is immense; lower arc and several thick radial locks are visible at y400–680, not only above the crop. A large vertical regulation spine descends from it into a base hidden BEHIND the bridge. Five enormous utility conduits depart into the distant tower, broad coherent silhouettes rather than spaghetti wires. Sparse muted gray-green pressure lights deep in the mechanism, no bright portal or neon core. Right half is quiet dark sloping structural shields and an abyss of distant support ribs for boss and escorts. Far-left small squared maintenance recess, one subdued amber work lamp. Finality and scale of infrastructure, no throne or occupant baked into the environment, no palace door, no starfield.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/upper_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/noble_background_2026-10-24/stage2_1280.png"
+      ],
+      "prompt": "Use case: stylized-concept. ONE production pixel-art battle background for ORVASK, final FIFTH DISTRICT: the CENTRAL COMMAND PRECINCT of an enormous dystopian climate-control tower, guarded by a uniform mechanical retinue. Input1 is approved atmospheric pixel STYLE, input2 is recent matching cluster density and foreground scale, input3 is actual battle viewport COMPOSITION reference only. Do not copy their houses, ornate noble door, plants, people, enemies, words or HUD.\nFinal district identity: unified authoritarian engineering, severe repeated modules, sealed access, controlled power. The PERSONAL luxury and ivory mansions of district4 end here. Massive gunmetal ribs, blue-black steel, muted slate and desaturated deep blue-violet, sparse cold gray-green instrument light and tiny old amber maintenance lights. Dull bronze used only on functional rings or connectors. No jewelry, decorative cloth, household windows, vegetation, skulls, fantasy cathedral, glowing magical runes, dense sci-fi neon or weapon racks.\nSTYLE: broad muted pixel clusters, deliberate large stepped edges, grouped architectural shadow planes, approximately 5–10px-looking cluster scale on a 1672x941 image. Softness from coherent shapes and low contrast, NOT blur. No glossy rendered concept art, optical blur, grain, dithering, pinprick rivets, or countless fine cables. All architectural shapes remain readable at the small battle scale.\nLOCK GAME GEOMETRY: opaque 1672x941, exactly ONE continuous perfectly LEVEL side-on metal combat bridge across the whole image; foot contact at source y687, like input2. Quiet narrow floor edge and thick dark structural beams underneath. Single low subdued rail immediately BEHIND the bridge. Do not place objects, roots, staircases, gaps, control consoles or shadows in front of or on the walking plane.\nVIEWPORT: game shows source roughly y400–780; panoramic screens crop to y490–755. Architecture's recognizable features must be in this LOWER MIDDLE band too. Small hero at x10%, 4 enemies x45–96%; x42–96% y420–685 must remain quiet mid-dark surfaces/atmospheric depth so HP and sprites read. Bright features concentrated on LEFT-CENTER and far distance, never a white glowing wall behind enemies. Monumental enclosed tower depth; no exterior sky. No humans, silhouettes of occupants, creatures, robots, humanoid statues, throne occupant, text, numbers, symbols that resemble writing, icons, UI or watermark.\n\nLATE: The tower's central climate-control heart, seen from the final battle bridge. Left-center a single monumental CIRCULAR mechanical iris nested in heavy concentric bronze-and-gunmetal rings around a dark sealed center. Its diameter is immense; lower arc and several thick radial locks are visible at y400–680, not only above the crop. A large vertical regulation spine descends from it into a base hidden BEHIND the bridge. Five enormous utility conduits depart into the distant tower, broad coherent silhouettes rather than spaghetti wires. Sparse muted gray-green pressure lights deep in the mechanism, no bright portal or neon core. Right half is quiet dark sloping structural shields and an abyss of distant support ribs for boss and escorts. Far-left small squared maintenance recess, one subdued amber work lamp. Finality and scale of infrastructure, no throne or occupant baked into the environment, no palace door, no starfield.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-dba18719-8ed6-4c10-8000-ad940308c6d8.png",
+      "asset": "새-게임-프로젝트/assets/art/central_ascent_20261024/upper_v1.png",
+      "source_floor_y": 687,
+      "postprocessing": "None. Original generated PNG copied unchanged; runtime crop and ground registration only.",
+      "status": "Integrated in region5. Three viewport ratios, real load/fire/reload, save restoration, developer touch, elite/boss, finish and ending-transition checks passed. 16 representative runtime captures visually inspected. User preference / Galaxy pending.",
+      "sha256": "ffddead3d9b0f06d02ab77f4ffbaea4a31b97157a1e6201a09a38c29b3170fc5",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/upper_v1.png": "c6d791aa1e9616d66b0c88c2b3064ccc64081b8e013529e5bd9f661923f5d896",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/noble_background_2026-10-24/stage2_1280.png": "dd794f7b090724efdd17daafb7d836a92e6ef3600ffccfe0a6370c92783d4078"
+      }
+    }
+  ],
+  "reference_roles": [
+    "Approved original tower setting and pixel-cluster style",
+    "Recent noble background for scale and ground geometry, not ornament or subject",
+    "Actual noble battle composition; not actors or HUD"
+  ],
+  "preview_provenance": "Actual recorded second-gate 26-round deck and equipment. Third/fourth-region route paths synthesized without combat/rewards; later rooms are direct visual jumps, not earned fifth-region progression or balance evidence. The inherited fixture predates gate modifications (gate_version=0); the ending transition check covers that preserved legacy state, not a modern five-region balance run.",
+  "user_preference": "Pending review of new fifth-region backgrounds.",
+  "verification_report": "docs/qa/reports/central_background_2026-10-24.md"
+}

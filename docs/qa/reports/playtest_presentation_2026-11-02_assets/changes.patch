@@ -1,0 +1,817 @@
+--- before/redesign/samples/hud/combat_hud_presenter.gd
++++ after/redesign/samples/hud/combat_hud_presenter.gd
+@@ -20,10 +20,12 @@
+ var focused_round: int=-1
+ var observed_model
+ var observed_stack: Array=[]
++var observed_remaining:=0
+ var observed_turns: int=-1
+ var previous_scale_mode: int=0
+ var previous_scale_factor: float=1.0
+ var previous_scale_size:=Vector2i.ZERO
++var scaling_active:=false
+ var feedback
+ 
+ func _init(surface: Control)->void:ui=surface
+@@ -35,6 +37,7 @@
+  previous_scale_mode=ui.get_window().content_scale_mode
+  previous_scale_factor=ui.get_window().content_scale_factor
+  previous_scale_size=ui.get_window().content_scale_size
++ scaling_active=true
+  ui.get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_DISABLED
+  ui.get_window().content_scale_size=Vector2i.ZERO
+  ui.tree_exiting.connect(restore_scale)
+@@ -87,11 +90,16 @@
+ 
+ func restore_scale()->void:
+  if not is_instance_valid(ui):return
++ # Restoring the Window synchronously resizes this still-attached Control.
++ # Stop its resize callback first or it reapplies the combat multiplier to menus.
++ scaling_active=false
++ if ui.resized.is_connected(apply_safe_area):ui.resized.disconnect(apply_safe_area)
+  ui.get_window().content_scale_mode=previous_scale_mode
+  ui.get_window().content_scale_factor=previous_scale_factor
+  ui.get_window().content_scale_size=previous_scale_size
+ 
+ func apply_safe_area()->void:
++ if not scaling_active or not ui.is_inside_tree():return
+  var window: Vector2i=DisplayServer.window_get_size()
+  # Local to this HUD: retain readable units at small windows, enlarge on dense displays.
+  var factor: float=maxf(1.0,floorf(minf(float(window.x)/1008.0,float(window.y)/454.0)))
+@@ -169,7 +177,7 @@
+  var id: String=ui.model.s.magazine[index]
+  var spec: Dictionary=Content.AMMO[id]
+  var amount:=str(spec.dmg)+(" ×%d회"%int(spec.get("hits",2)) if str(spec.effect)=="double" else "")
+- ui.show_detail(spec.name,"%d번째 탄 · %d칸 사용 · 발열 %s\n기본 피해 %s · 장갑 관통 %d\n\n%s\n\n청록 테두리와 순서 번호는 다음 발사 탄입니다. 카드 수치는 탄의 기본 성능입니다. 기본 피해는 표적·총기·코어·연계 적용 전 위력입니다.\n사용한 탄은 이번 전투에 돌아오지 않으며 다음 전투에 복구됩니다."%[index+1,Content.slot_cost(id),Content.heat_label(id,ui.model.s),amount,int(spec.pen),spec.text])
++ ui.show_detail(spec.name,"%d번째 탄 · %d칸 사용 · 발열 %s\n기본 피해 %s · 장갑 관통 %d\n\n%s\n\n위로 올라온 청록 테두리의 탄이 다음 발사 대상입니다. 카드 수치는 탄의 기본 성능입니다. 기본 피해는 표적·총기·코어·연계 적용 전 위력입니다.\n사용한 탄은 이번 전투에 돌아오지 않으며 다음 전투에 복구됩니다."%[index+1,Content.slot_cost(id),Content.heat_label(id,ui.model.s),amount,int(spec.pen),spec.text])
+ 
+ func help_body(title: String,body: String)->String:
+  body=body.replace("−","-")
+@@ -199,6 +207,7 @@
+  var stack: Array=state.magazine
+  if observed_model!=model or observed_stack!=stack or observed_turns!=int(state.turns):focused_round=-1
+  observed_model=model;observed_stack=stack.duplicate();observed_turns=int(state.turns)
++ observed_remaining=Model.Reserve.remaining(state)
+  var prediction: Dictionary=ui.last_prediction
+  var shots: Array=prediction.get("shots",[])
+  var heat: Dictionary=prediction.get("heat",{})
+@@ -269,7 +278,9 @@
+   carrier.texture=EmptyCarrier if not occupied else RemovedCarrier if removed else ActiveCarrier if firing else StandbyCarrier
+   for side in [SIDE_LEFT,SIDE_TOP,SIDE_RIGHT,SIDE_BOTTOM]:carrier.set_patch_margin(side,12 if occupied else 8)
+   carrier.modulate=Color(0.4,0.4,0.4,1) if not occupied else Color.WHITE
+-  n("Face%d"%i).position.y=0
++  # The scene reserves 8px above resting cards; the hit target stays fixed.
++  n("Face%d"%i).offset_top=0 if firing or removed else 8
++  n("Face%d"%i).offset_bottom=-8 if firing or removed else 0
+   n("RoundOutline%d"%i).add_theme_stylebox_override("panel",HudTheme.get_stylebox("clear","Panel"))
+   n("EmptyMark%d"%i).visible=false;n("EmptyRail%d"%i).visible=false
+   n("Inspect%d"%i).visible=false
+--- before/redesign/samples/hud/combat_hud_feedback.gd
++++ after/redesign/samples/hud/combat_hud_feedback.gd
+@@ -11,6 +11,13 @@
+ var action_kind: String=""
+ var action_active: bool=false
+ var observed_phase: String=""
++var shown_stack: Array=[]
++var shots_shown:=0
++var remaining_before:=0
++var swap_empty:=false
++var swap_ready:=false
++var magazine_tween: Tween
++var heat_tween: Tween
+ 
+ func bind(surface: Control)->void:
+  ui=surface
+@@ -51,13 +58,26 @@
+ func begin_action()->void:
+  action_active=true
+  action_kind=str(ui.model.s.history.back().action) if not ui.model.s.history.is_empty() else ""
++ # Whole-magazine replacement records reload, then its automatic load.
++ # The public command is still a replacement throughout both records.
++ if action_kind=="load" and ui.model.s.history.size()>1 and str(ui.model.s.history[-2].action)=="reload":action_kind="reload"
+  sound.begin_action()
++ stop_magazine_motion()
++ shown_stack=ui.hud.observed_stack.duplicate()
++ shots_shown=0;swap_empty=false;swap_ready=false
++ remaining_before=ui.hud.observed_remaining
+  # The model is already resolved here; the board still holds the pre-action state.
+  show_heat(int(ui.board.heat_debt))
+ 
+ func shot(result: Dictionary)->void:
+  if not action_active:return
+  sound.shot(result)
++ # One result is one spent cartridge, even when it hits multiple targets/times.
++ if action_kind=="fire" and shots_shown<shown_stack.size():
++  show_round(shots_shown,"")
++  shots_shown+=1
++  ui.node("MagazineTitle").text="탄창 %d / %d"%[shown_stack.size()-shots_shown,ui.model.capacity()]
++  ui.node("Bag").text="남은 %d발"%maxi(0,remaining_before-shots_shown)
+  show_heat(int(result.get("heat_before",ui.board.heat_debt)))
+ 
+ func impact(result: Dictionary)->void:
+@@ -75,6 +95,71 @@
+  elif kind!="reload_complete" or str(event.get("phase",""))=="ready":
+   sound.heat_event(event)
+  if event.has("heat"):show_heat(int(event.heat))
++ if action_kind=="reload":
++  if kind=="reload_turn" and not swap_empty:empty_magazine()
++  elif kind=="turn_complete" and int(event.get("turn",-1))==ui.board.reload_base-1 and ui.model.s.phase=="ready":seat_magazine()
++  elif kind=="reload_complete" and not swap_ready and str(event.get("phase",""))=="ready":seat_magazine()
++ if kind in ["heat_added","overheat_lock","cooling_turn","reload_complete"]:heat_pulse()
++
++func show_round(index: int,id: String)->void:
++ var occupied:=not id.is_empty()
++ var face: Control=ui.node("Face%d"%index)
++ face.modulate=Color.WHITE;face.offset_top=8;face.offset_bottom=0
++ var carrier: NinePatchRect=ui.node("RoundArt%d"%index)
++ carrier.texture=ui.hud.StandbyCarrier if occupied else ui.hud.EmptyCarrier
++ carrier.modulate=Color.WHITE if occupied else Color(0.4,0.4,0.4,1)
++ for side in [SIDE_LEFT,SIDE_TOP,SIDE_RIGHT,SIDE_BOTTOM]:carrier.set_patch_margin(side,12 if occupied else 8)
++ for prefix in ["Name","Value","Cost","Icon"]:ui.node(prefix+str(index)).visible=occupied
++ ui.node("Index%d"%index).hide()
++ if not occupied:return
++ ui.node("Name%d"%index).text=Content.AMMO[id].name
++ ui.node("Value%d"%index).text=str(Content.primary_stat(id,ui.model.s).value).replace("−","-")
++ ui.node("Cost%d"%index).text="열 "+Content.heat_label(id,ui.model.s).replace("−","-")
++ ui.node("Icon%d"%index).item_id=id
++
++func stop_magazine_motion()->void:
++ if magazine_tween!=null and magazine_tween.is_valid():magazine_tween.kill()
++ magazine_tween=null
++
++func empty_magazine()->void:
++ swap_empty=true
++ ui.node("MagazineTitle").text="탄창 분리"
++ if ui.board.reduced_feedback:
++  clear_sockets();return
++ magazine_tween=create_tween().set_parallel(true)
++ for i in range(ui.slot_count):
++  var face: Control=ui.node("Face%d"%i)
++  magazine_tween.tween_property(face,"modulate:a",0.0,0.12*ui.board.speed_scale)
++  magazine_tween.tween_property(face,"position:y",16.0,0.12*ui.board.speed_scale)
++ magazine_tween.chain().tween_callback(clear_sockets)
++
++func clear_sockets()->void:
++ for i in range(ui.slot_count):show_round(i,"")
++ ui.node("MagazineTitle").text="새 탄창 장전 중"
++
++func seat_magazine()->void:
++ stop_magazine_motion();swap_ready=true
++ var stack: Array=ui.model.s.magazine
++ for i in range(ui.slot_count):show_round(i,str(stack[i]) if i<stack.size() else "")
++ ui.node("MagazineTitle").text="장전 완료 · %d / %d"%[stack.size(),ui.model.capacity()]
++ if ui.board.reduced_feedback:return
++ # A single grouped seating motion, independent of deck size. No extra wait.
++ magazine_tween=create_tween().set_parallel(true)
++ for i in range(stack.size()):
++  var face: Control=ui.node("Face%d"%i)
++  face.modulate=Color("f3cf73");face.position.y=16
++  magazine_tween.tween_property(face,"position:y",8.0,0.16*ui.board.speed_scale)
++  magazine_tween.tween_property(face,"modulate",Color.WHITE,0.16*ui.board.speed_scale)
++
++func heat_pulse()->void:
++ if heat_tween!=null and heat_tween.is_valid():heat_tween.kill()
++ var group: Control=ui.node("HeatGroup")
++ group.modulate=Color.WHITE
++ if ui.board.reduced_feedback:return
++ var cooling: bool=action_kind=="cool" or ui.board.cooling_cost>0
++ group.modulate=Color("80e6e4") if cooling else Color("ff9b6a")
++ heat_tween=create_tween()
++ heat_tween.tween_property(group,"modulate",Color.WHITE,0.22*ui.board.speed_scale)
+ 
+ func show_heat(heat: int)->void:
+  var limit: int=Content.heat_limit(ui.model.s)
+@@ -89,6 +174,10 @@
+ 
+ func sync_phase()->void:
+  if ui.busy:return
++ stop_magazine_motion()
++ for i in range(ui.slot_count):ui.node("Face%d"%i).modulate=Color.WHITE
++ if heat_tween!=null and heat_tween.is_valid():heat_tween.kill()
++ ui.node("HeatGroup").modulate=Color.WHITE
+  action_active=false
+  var phase: String=str(ui.model.s.phase)
+  # Refreshing, reopening a menu, or restoring a won encounter is silent.
+--- before/redesign/samples/hud/combat_hud.tscn
++++ after/redesign/samples/hud/combat_hud.tscn
+@@ -368,7 +368,7 @@
+ 
+ [node name="Round0" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -377,6 +377,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -408,7 +409,7 @@
+ mouse_filter = 2
+ text = "1"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -460,7 +461,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -521,7 +522,7 @@
+ 
+ [node name="Round1" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -530,6 +531,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -561,7 +563,7 @@
+ mouse_filter = 2
+ text = "2"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -612,7 +614,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -673,7 +675,7 @@
+ 
+ [node name="Round2" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -682,6 +684,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -713,7 +716,7 @@
+ mouse_filter = 2
+ text = ""
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -764,7 +767,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -825,7 +828,7 @@
+ 
+ [node name="Round3" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -834,6 +837,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -865,7 +869,7 @@
+ mouse_filter = 2
+ text = ""
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -916,7 +920,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -977,7 +981,7 @@
+ 
+ [node name="Round4" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -986,6 +990,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -1017,7 +1022,7 @@
+ mouse_filter = 2
+ text = ""
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -1068,7 +1073,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -1129,7 +1134,7 @@
+ 
+ [node name="Round5" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -1138,6 +1143,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -1169,7 +1175,7 @@
+ mouse_filter = 2
+ text = ""
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -1220,7 +1226,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -1281,7 +1287,7 @@
+ 
+ [node name="Round6" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -1290,6 +1296,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -1321,7 +1328,7 @@
+ mouse_filter = 2
+ text = ""
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -1372,7 +1379,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -1433,7 +1440,7 @@
+ 
+ [node name="Round7" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -1443,6 +1450,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -1474,7 +1482,7 @@
+ mouse_filter = 2
+ text = ""
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -1525,7 +1533,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -1586,7 +1594,7 @@
+ 
+ [node name="Round8" type="Panel" parent="Safe/Screen/Console/ConsoleMargin/ConsoleRows/HandRow/MagazineHousing/RoundRow"]
+ layout_mode = 2
+-custom_minimum_size = Vector2(76,96)
++custom_minimum_size = Vector2(76,104)
+ size_flags_horizontal = 1
+ mouse_filter = 2
+ theme_override_styles/panel = ExtResource("clear")
+@@ -1596,6 +1604,7 @@
+ layout_mode = 1
+ anchor_right = 1.0
+ anchor_bottom = 1.0
++offset_top = 8.0
+ grow_horizontal = 2
+ grow_vertical = 2
+ mouse_filter = 2
+@@ -1627,7 +1636,7 @@
+ mouse_filter = 2
+ text = ""
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 4
+@@ -1678,7 +1687,7 @@
+ mouse_filter = 2
+ text = "열 +3"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -1788,7 +1797,7 @@
+ mouse_filter = 2
+ text = "적 1행동"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -1840,7 +1849,7 @@
+ mouse_filter = 2
+ text = "적 2행동"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+@@ -1895,7 +1904,7 @@
+ mouse_filter = 2
+ text = "적 1행동"
+ vertical_alignment = 1
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ layout_mode = 0
+ anchor_right = 1.0
+ offset_left = 12
+--- before/redesign/pipe_map/graph.gd
++++ after/redesign/pipe_map/graph.gd
+@@ -30,7 +30,9 @@
+ 	for child in get_children(): remove_child(child); child.queue_free()
+ 	nodes = campaign.current_nodes()
+ 	available = campaign.choices().map(func(n): return int(n.id))
+-	visited = campaign.s.visited.duplicate()
++	# JSON restores numbers as floats; Array.has/find require matching types.
++	# Normalize this view's IDs so saved journeys retain their visited trail.
++	visited = campaign.s.visited.map(func(id): return int(id))
+ 	current = int(campaign.s.node)
+ 	floors = int(campaign.region_info().floors)
+ 	region_index = int(campaign.s.region)
+@@ -151,9 +153,9 @@
+ 	for y in range(0,int(size.y),64): draw_line(Vector2(0,y),Vector2(size.x,y),Color("1d4f561f"),2,false)
+ 	for path in paths:
+ 		var color := Color({"off":"15363c","later":"24585e","preview":"3d7f86","open":"5cdddc","trail":"f3cf73","pick":"5cdddc"}[path.state])
+-		var width := 4.0 if path.state in ["trail","pick"] else 2.0
++		var width := 6.0 if path.state in ["trail","pick"] else 4.0 if path.state=="open" else 2.0
+ 		var points: PackedVector2Array = path.points
+-		if path.state in ["trail","pick"]: draw_polyline(points,Color("3a2c10") if path.state=="trail" else Color("0d3a40"),8,false)
++		if path.state in ["trail","pick","open"]: draw_polyline(points,Color("3a2c10") if path.state=="trail" else Color("0d3a40"),width+4,false)
+ 		for i in range(points.size()-1):
+ 			if path.shortcut or path.state=="off": draw_dashed_line(points[i],points[i+1],color,width,4,false)
+ 			else: draw_line(points[i],points[i+1],color,width,false)
+@@ -161,10 +163,23 @@
+ 				var length := points[i].distance_to(points[i+1])
+ 				for step in range(flow_step*2,int(length),8):
+ 					draw_rect(Rect2((points[i].move_toward(points[i+1],step)-Vector2.ONE).round(),Vector2(2,2)),Color("e4fffd"))
++		# One upward chevron on the longest vertical leg makes direction readable
++		# without adding arrows to every future branch.
++		if path.state in ["trail","pick","open"]:
++			var longest:=0.0
++			var arrow:=Vector2.ZERO
++			for i in range(points.size()-1):
++				var length:=points[i].distance_to(points[i+1])
++				if is_equal_approx(points[i].x,points[i+1].x) and length>longest:
++					longest=length;arrow=((points[i]+points[i+1])*0.5).round()
++			if longest>=20:
++				var chevron:=PackedVector2Array([arrow+Vector2(-6,3),arrow+Vector2(0,-3),arrow+Vector2(6,3)])
++				draw_polyline(chevron,Color("03141a"),6,false)
++				draw_polyline(chevron,color,2,false)
+ 		if path.shortcut:
+ 			var mark := (points[2]+points[3])*0.5
+-			draw_rect(Rect2(mark-Vector2(34,10),Vector2(68,20)),Color("03141a"))
+-			draw_string(preload("res://redesign/combat_pixel_font.tres"),mark+Vector2(-34,4),"전투 생략",HORIZONTAL_ALIGNMENT_CENTER,68,12,color)
++			draw_rect(Rect2(mark-Vector2(38,12),Vector2(76,24)),Color("03141a"))
++			draw_string(preload("res://redesign/combat_pixel_font.tres"),mark+Vector2(-38,6),"전투 생략",HORIZONTAL_ALIGNMENT_CENTER,76,16,color)
+ 	# Two small collars belong to each location, not each edge: merging paths stay quiet.
+ 	for item in nodes:
+ 		var id := int(item.id)
+--- before/redesign/pipe_map/place.gd
++++ after/redesign/pipe_map/place.gd
+@@ -25,7 +25,7 @@
+ func refresh(selected: bool) -> void:
+ 	var changed := selected and not button_pressed
+ 	set_pressed_no_signal(selected)
+-	var color := Color("e4f2ee") if state == "reach" else Color("f3cf73") if state == "current" else Color("a38a4e") if state == "visited" else Color("24464c") if state == "off" else Color("83afb0") if preview else Color("4f7c80")
++	var color := Color("e4f2ee") if state == "reach" else Color("f3cf73") if state == "current" else Color("d5b970") if state == "visited" else Color("24464c") if state == "off" else Color("83afb0") if preview else Color("4f7c80")
+ 	if selected: color = Color("e4fffd")
+ 	if selection_feedback != null and selection_feedback.is_valid(): selection_feedback.kill()
+ 	selection_feedback = null
+@@ -46,12 +46,10 @@
+ 			draw_line(p + Vector2(dx,dy), p + Vector2(dx*10,dy), LineSkin.GOLD, 2, false)
+ 			draw_line(p + Vector2(dx,dy), p + Vector2(dx,dy*10), LineSkin.GOLD, 2, false)
+ 	if state == "current":
+-		for x in range(0, int(size.x), 8):
+-			draw_rect(Rect2(x,0,mini(4,int(size.x)-x),2),LineSkin.INK)
+-			draw_rect(Rect2(x,size.y-2,mini(4,int(size.x)-x),2),LineSkin.INK)
+-		for y in range(0, int(size.y), 8):
+-			draw_rect(Rect2(0,y,2,mini(4,int(size.y)-y)),LineSkin.INK)
+-			draw_rect(Rect2(size.x-2,y,2,mini(4,int(size.y)-y)),LineSkin.INK)
++		draw_rect(rect.grow(-2),LineSkin.GOLD,false,4)
++	elif state == "visited":
++		var corner:=size-Vector2(13,9)
++		draw_polyline(PackedVector2Array([corner+Vector2(-4,0),corner+Vector2(0,4),corner+Vector2(8,-4)]),LineSkin.GOLD,2,false)
+ 	if has_focus(): draw_rect(rect.grow(-2), LineSkin.GOLD, false, 2)
+ 
+ func _ready() -> void:
+--- before/redesign/pipe_map/screen.gd
++++ after/redesign/pipe_map/screen.gd
+@@ -121,6 +121,12 @@
+ 		var here: float=graph.positions[int(campaign.s.node)].y
+ 		if maxf(bottom,here+30)-minf(top,here-30)<=scroll.size.y:
+ 			top=minf(top,here-30);bottom=maxf(bottom,here+30)
++	# Keep the last travelled edge in context when three neighboring places fit.
++	var current_index: int=graph.visited.find(int(campaign.s.node))
++	if current_index>0 and graph.positions.has(graph.visited[current_index-1]):
++		var previous: float=graph.positions[graph.visited[current_index-1]].y
++		if maxf(bottom,previous+30)-minf(top,previous-30)<=scroll.size.y:
++			top=minf(top,previous-30);bottom=maxf(bottom,previous+30)
+ 	if force or top<scroll.scroll_vertical or bottom>scroll.scroll_vertical+scroll.size.y:
+ 		scroll.scroll_vertical=int((top+bottom-scroll.size.y)*0.5)
+ 
+--- before/redesign/pipe_map/screen.tscn
++++ after/redesign/pipe_map/screen.tscn
+@@ -58,7 +58,7 @@
+ [node name="RunStatusBar" type="Label" parent="Header/Location"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "75 Cr · 탄약 10/30 · 난도 0"
+ 
+ [node name="city_deck" type="Button" parent="Header"]
+@@ -112,6 +112,164 @@
+ text = ""
+ visible = false
+ 
++[node name="MapLegend" type="HFlowContainer" parent="."]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/h_separation = 12
++theme_override_constants/v_separation = 0
++
++[node name="LegendCombat" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendCombat"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("combat")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendCombat"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "전투"
++
++[node name="LegendElite" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendElite"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("elite_detail")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendElite"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "정예"
++
++[node name="LegendShop" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendShop"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("shop")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendShop"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "상점"
++
++[node name="LegendWorkshop" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendWorkshop"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("workshop")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendWorkshop"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "공방"
++
++[node name="LegendSupply" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendSupply"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("supply")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendSupply"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "탄약고"
++
++[node name="LegendEvent" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendEvent"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("event")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendEvent"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "조우"
++
++[node name="LegendGate" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendGate"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("boss_small")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendGate"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "관문"
++
++[node name="LegendBypass" type="HBoxContainer" parent="MapLegend"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_constants/separation = 4
++
++[node name="Icon" type="TextureRect" parent="MapLegend/LegendBypass"]
++custom_minimum_size = Vector2(36,36)
++layout_mode = 2
++mouse_filter = 2
++texture = ExtResource("bypass")
++expand_mode = 1
++stretch_mode = 5
++
++[node name="Text" type="Label" parent="MapLegend/LegendBypass"]
++layout_mode = 2
++mouse_filter = 2
++theme_override_font_sizes/font_size = 16
++text = "샛길"
++
+ [node name="MapWorkspace" type="HBoxContainer" parent="."]
+ layout_mode = 2
+ size_flags_vertical = 3
+@@ -511,7 +669,7 @@
+ [node name="MapRouteDetail" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+ layout_mode = 2
+ mouse_filter = 2
+-theme_override_font_sizes/font_size = 12
++theme_override_font_sizes/font_size = 16
+ text = "연결된 길로만 갈 수 있음"
+ visible = false
+ autowrap_mode = 3

@@ -1,0 +1,1080 @@
+--- a/새-게임-프로젝트/redesign/combat_roles.gd
++++ b/새-게임-프로젝트/redesign/combat_roles.gd
+@@ -1,13 +1,16 @@
+ extends RefCounted
+ ## New-run roles and investments. No dependency on Content/Model (shared by both).
+ const VERSION:=3
++const SPECIALIST_VERSION:=1
+ const MINIMUM:={"scout":8,"work":10,"carrier":12,"heatworker":10,"hoist":14,"recovery":12,"expedition":14}
+ const CARRY:={"scout":22,"work":26,"carrier":32,"heatworker":28,"hoist":34,"recovery":30,"expedition":36}
+ const BAG_STEPS:=3
+ static func enabled(state: Dictionary)->bool:return int(state.get("combat_roles_version",0)) in [1,2,3]
+ static func builds(state: Dictionary)->bool:return int(state.get("combat_roles_version",0))==3
++static func specialists(state: Dictionary)->bool:return int(state.get("specialist_core_version",0))==SPECIALIST_VERSION
+ static func burn_growth(state: Dictionary,parts: Array)->int:
+-	if builds(state) and parts.has("inferno"):return 2
++	if builds(state) and parts.has("inferno"):
++		return 2+(int(state.get("engine",{}).get("levels",{}).get("thermal_drive",0))/2 if specialists(state) else 0)
+ 	if int(state.get("combat_roles_version",0))<2 or not parts.has("thermal_drive"):return 0
+ 	return int(state.get("engine",{}).get("levels",{}).get("thermal_drive",0))/2
+ static func level(state: Dictionary,id: String)->int:return int(state.get("gate_mods",{}).get(id,0)) if enabled(state) else 0
+@@ -46,6 +49,8 @@
+ static func whole(value: Variant,low: int,high: int)->bool:
+ 	return (value is int or value is float) and is_finite(value) and floorf(value)==value and value>=low and value<=high
+ static func valid(state: Dictionary)->bool:
++	if not whole(state.get("specialist_core_version",0),0,SPECIALIST_VERSION):return false
++	if specialists(state) and not builds(state):return false
+ 	if not whole(state.get("combat_roles_version",0),0,VERSION):return false
+ 	if not enabled(state):return not state.has("fire_zones")
+ 	if int(state.get("focus_build_version",0))!=1 or not state.get("fire_zones") is Array or state.fire_zones.size()>3:return false
+--- a/새-게임-프로젝트/redesign/campaign.gd
++++ b/새-게임-프로젝트/redesign/campaign.gd
+@@ -70,6 +70,7 @@
+ 		model.s.focus_build_version = Model.FocusBuild.VERSION
+ 	if magazine_mode and map_version>=4:
+ 		s.combat_roles_version=Model.Roles.VERSION;model.s.combat_roles_version=Model.Roles.VERSION
++		s.specialist_core_version=Model.Roles.SPECIALIST_VERSION;model.s.specialist_core_version=Model.Roles.SPECIALIST_VERSION
+ 		s.economy_version=Economy.VERSION;s.intro_part_bought=false;s.gate_bag_used=false;s.gate_ammo_used=false
+ 	model.begin_encounter(int(s.compressor_charges))
+ 
+@@ -989,6 +990,7 @@
+ 	if state.get("fire_control_version",0) != combat.s.get("fire_control_version",0): return false
+ 	if state.get("focus_build_version",0) != combat.s.get("focus_build_version",0): return false
+ 	if state.get("combat_roles_version",0)!=combat.s.get("combat_roles_version",0):return false
++	if not _whole(state.get("specialist_core_version",0),0,Model.Roles.SPECIALIST_VERSION) or state.get("specialist_core_version",0)!=combat.s.get("specialist_core_version",0):return false
+ 	if Model.Roles.enabled(combat.s) and (int(state.map_version)<4 or combat.s.deck.size()<Model.Roles.minimum(combat.s)):return false
+ 	if state.get("combat_revision",0) != combat.s.get("combat_revision",0): return false
+ 	if state.get("sustained_version",0) != combat.s.get("sustained_version",0): return false
+--- a/새-게임-프로젝트/redesign/content.gd
++++ b/새-게임-프로젝트/redesign/content.gd
+@@ -73,6 +73,11 @@
+ 			result.text+="\n성장 2회마다 화상·지역 불길의 행동당 피해 +1. 기폭도 성장한 화상 피해를 사용합니다. 지속 피해에는 증폭·위치·고열 배율을 곱하지 않습니다."
+ 			result.upside+=" · 성장 2회마다 화상 +1"
+ 	if Roles.builds(state) and BUILD_ROLE_PARTS.has(id):result.merge(BUILD_ROLE_PARTS[id],true)
++	if id=="inferno" and Roles.specialists(state):
++		var burn:=Roles.burn_growth(state,[id])
++		result.value="화상 +%d · 범위 +1m"%burn
++		result.upside="화상 +%d · 불길 4행동 / 앞뒤 3m"%burn
++		result.text="화상과 지역 불길의 행동당 피해 +2에, 열압 구동핵의 누적 성장 2회당 +1을 더합니다(현재 총 +%d). 열압의 고열 직접 피해 배율과 충격파는 이어받지 않습니다. 노심을 장착한 동안 열압 성장은 멈추며, 기록은 보존됩니다. 소이탄 화상 기간 +2(최대 6), 불씨 이동 한도 +2. 착발 지점 앞뒤 3m의 불길이 4적 행동 지속됩니다. 화상/불길 중첩 합산 없음. 재장전 +1행동. 코어는 1개만 장착합니다."%burn
+ 	return result
+ 
+ static func sequencer_bonus(state: Dictionary) -> int:
+--- a/새-게임-프로젝트/redesign/campaign_ui.gd
++++ b/새-게임-프로젝트/redesign/campaign_ui.gd
+@@ -15,6 +15,7 @@
+ const UpgradeChoice = preload("res://redesign/upgrade_choice_view.gd")
+ const CompressionChoice = preload("res://redesign/compression_choice_view.gd")
+ const ShopOffer = preload("res://redesign/shop_offer.tscn")
++const PartChoice=preload("res://redesign/part_choice.gd")
+ const PartInspection = preload("res://redesign/part_inspector.tscn")
+ const ShopWorkbench = preload("res://redesign/shop_workbench.tscn")
+ const ShopScreen = preload("res://redesign/shop_screen.tscn")
+@@ -1201,17 +1202,20 @@
+ 		var lines: PackedStringArray=[]
+ 		var costs: PackedStringArray=[]
+ 		if not active:
+-			lines.append("얻음  "+str(data.upside))
++			lines.append("얻음  "+PartChoice.effect(id,after))
+ 			if not str(data.downside).is_empty(): costs.append("대가  "+str(data.downside))
+ 		var removed_id:=id if active else outgoing
+ 		if not removed_id.is_empty():
+ 			var removed: Dictionary=Ammo.part_spec(removed_id,ui.model.s)
+-			lines.append("잃음  "+str(removed.upside))
++			lines.append("잃음  "+PartChoice.effect(removed_id,before))
+ 			if not str(removed.downside).is_empty(): costs.append("해제  "+str(removed.downside))
++		var fit:=PartChoice.fit(id,after)
++		if not fit.is_empty():lines.append(fit)
+ 		effects.text="\n".join(lines)
+ 		cost.text="\n".join(costs)
+ 		cost.visible=not cost.text.is_empty()
+ 		var changes:=_part_stat_changes(before,after)
++		changes.append_array(PartChoice.deltas(before,after))
+ 		var projection=ui.model.get_script().new();projection.s=after
+ 		delta.text="\n".join(changes) if not changes.is_empty() else "탄창 %d칸 · 재장전 %d턴 유지"%[Ammo.capacity(after),projection.reload_cost()]
+ 		var command:="replace_part" if not outgoing.is_empty() else "equip"
+--- a/새-게임-프로젝트/redesign/run_insight.gd
++++ b/새-게임-프로젝트/redesign/run_insight.gd
+@@ -1,4 +1,5 @@
+ extends RefCounted
++const PartChoice=preload("res://redesign/part_choice.gd")
+ ## Converts already-public combat state into compact debrief and reward guidance.
+ ## It never predicts hidden rolls or mutates the run.
+ const Content = preload("res://redesign/content.gd")
+@@ -150,6 +151,10 @@
+ 			"arc":
+ 				return "전이 피해 %d · 다른 생존 적이 필요" % Content.effect_value(id, state)
+ 	elif Content.PARTS.has(id):
++		if PartChoice.Engines.IDS.has(id) or (Content.revised_combat(state) and Content.REVISED_PARTS.has(id)) or (int(state.get("magazine_build_version",0))>0 and Content.MAGAZINE_BUILD_PARTS.has(id)) or (int(state.get("focus_build_version",0))==1 and Content.FOCUS_PARTS.has(id)) or (Content.Roles.builds(state) and Content.BUILD_ROLE_PARTS.has(id)):
++			var effect:=PartChoice.effect(id,state)
++			var cost:=str(Content.part_spec(id,state).get("downside",""))
++			return effect+(" · "+cost if not cost.is_empty() else "")
+ 		var states := _part_states(id, state)
+ 		var before: Dictionary = states[0]
+ 		var after: Dictionary = states[1]
+--- a/새-게임-프로젝트/redesign/part_card_view.gd
++++ b/새-게임-프로젝트/redesign/part_card_view.gd
+@@ -77,7 +77,7 @@
+ 	return preload("res://redesign/damage_engines.gd").value(state,part_id) if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.part_spec(part_id,state).get("value", "비어 있음"))
+ 
+ func role_text() -> String:
+-	return "성장 %d/8" % preload("res://redesign/damage_engines.gd").level(state,part_id) if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.part_spec(part_id,state).get("role", "전투 사이 무료 교체"))
++	return "성장 %d/%d" % [preload("res://redesign/damage_engines.gd").level(state,part_id),preload("res://redesign/core_growth.gd").limit(state)] if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.part_spec(part_id,state).get("role", "전투 사이 무료 교체"))
+ 
+ func _draw() -> void:
+ 	if not Content.PARTS.has(part_id): return
+--- a/새-게임-프로젝트/redesign/build_guide.gd
++++ b/새-게임-프로젝트/redesign/build_guide.gd
+@@ -48,7 +48,7 @@
+ static func connection(id: String, state: Dictionary) -> String:
+ 	if Ammo.Roles.builds(state):
+ 		match id:
+-			"inferno":return "화상 +2 · 넓은 불길 4행동 · 냉각/교체 중에도 피해"
++			"inferno":return "화상 +%d · 넓은 불길 4행동 · 냉각/교체 중에도 피해"%Ammo.Roles.burn_growth(state,[id])
+ 			"momentum":return "차단탄 경직 3/4행동 · 밀기로 접근 시간 확보"
+ 			"rammer":return "차단 → 경직 중 주력 탄 · 타격마다 +2"
+ 			"capacitor":return "전격 강화 · 연쇄/돌파와 함께 장착해 전이 대상 +1"
+--- a/새-게임-프로젝트/redesign/forecast.gd
++++ b/새-게임-프로젝트/redesign/forecast.gd
+@@ -72,7 +72,7 @@
+ 	key += JSON.stringify([state.get("magazine_trial_version",0), state.get("weapon_magazine_version",0), action_rounds])
+ 	key += JSON.stringify([state.get("magazine_build_version",0), state.get("magazine_loaded",[])])
+ 	key += JSON.stringify(state.get("fire_heat_trial",{}))
+-	key += JSON.stringify([state.get("focus_build_version",0),state.get("combat_roles_version",0),state.get("fire_zones",[])])
++	key += JSON.stringify([state.get("focus_build_version",0),state.get("combat_roles_version",0),state.get("specialist_core_version",0),state.get("fire_zones",[])])
+ 	cache_lock.lock()
+ 	if key == cached_key:
+ 		var cached := cached_result.duplicate(true)
+@@ -236,6 +236,8 @@
+ 	copy.field_compression = state.get("field_compression", {}).duplicate(false)
+ 	copy.prepared = state.get("prepared", []).duplicate(false)
+ 	copy.engine = state.get("engine",Model.Engines.fresh()).duplicate(true)
++	# Each random target owns its zones; a sibling branch must not inherit its fire.
++	if state.has("fire_zones"): copy.fire_zones = state.fire_zones.duplicate(true)
+ 	return copy
+ 
+ # Within one bullet step, gun, parts, target order, reserves, deck and the
+@@ -247,10 +249,12 @@
+ 	key.append(state.get("prepared", []).duplicate())
+ 	key.append_array([state.get("sustained_version",0),state.get("sustained_attacks",0)])
+ 	key.append(JSON.stringify(state.get("engine",{})))
++	key.append(JSON.stringify(state.get("fire_zones",[])))
+ 	key.append_array([int(state.get("gate_charge",0)),int(state.get("gate_chain",0))])
+ 	for enemy in state.enemies:
+ 		key.append_array([int(enemy.hp), int(enemy.def), int(enemy.distance), int(enemy.get("burn", 0)), int(enemy.get("focus_hits", 0)), int(enemy.get("barrier", 0)), int(enemy.get("stance_def", 0)), int(enemy.get("jammed", 0)), bool(enemy.get("disrupted", false))])
+ 		key.append(int(enemy.get("exposure_left",0)))
++		key.append_array([int(enemy.get("slow_left",0)),bool(enemy.get("slow_used",false))])
+ 	for projectile in state.get("projectiles", []):
+ 		key.append_array([int(projectile.uid), int(projectile.hp), int(projectile.distance), int(projectile.get("burn", 0))])
+ 	return key
+--- /dev/null
++++ b/새-게임-프로젝트/redesign/part_choice.gd
+@@ -0,0 +1,40 @@
++extends RefCounted
++## Read-only choice information from the current run; no state writes.
++const Ammo=preload("res://redesign/content.gd")
++const Engines=preload("res://redesign/damage_engines.gd")
++static func effect(id: String,state: Dictionary)->String:
++ if not Engines.IDS.has(id):return str(Ammo.part_spec(id,state).get("upside",""))
++ var value:=Engines.value(state,id)
++ match id:
++  "volley_drive":return value+" · 처치 뒤 남은 타격 전이"
++  "siege_drive":return value+" · 처치 뒤 초과 피해 전이"
++  "thermal_drive":
++   var burn:=Ammo.Roles.burn_growth(state,[id])
++   return value+" · 열 한계 충격파"+(" · 화상 +%d"%burn if burn>0 else "")
++ return value
++static func family_count(state: Dictionary,family: String)->int:
++ return state.get("deck",[]).filter(func(id):return Ammo.source_id(str(id))==family).size()
++static func fit(id: String,state: Dictionary)->String:
++ match id:
++  "inferno":
++   var count:=family_count(state,"bore")
++   return "소이탄 %d장 · 기폭탄 %d장"%[count,family_count(state,"detonate")] if count>0 else "현재 소이탄 없음 · 소이탄을 확보해야 불길을 남깁니다."
++  "momentum":return "차단탄 %d장 · 충격탄 %d장"%[family_count(state,"disrupt"),family_count(state,"push")]
++  "arc_splitter":return "전격탄 %d장 · 전격의 전이만 강화합니다."%family_count(state,"arc")
++ return ""
++static func deltas(before: Dictionary,after: Dictionary)->PackedStringArray:
++ var lines: PackedStringArray=[]
++ var a:=Ammo.equipped_parts(before);var b:=Ammo.equipped_parts(after)
++ if family_count(before,"bore")>0:
++  var burn_a:=Ammo.burn_damage(before);var burn_b:=Ammo.burn_damage(after)
++  if burn_a!=burn_b:lines.append("화상 피해 / 행동  %d → %d"%[burn_a,burn_b])
++  if Ammo.Roles.enabled(before):
++   var ground_a:=burn_a+(2 if a.has("coil") else 0);var ground_b:=burn_b+(2 if b.has("coil") else 0)
++   if ground_a!=ground_b:lines.append("불길 피해 / 행동  %d → %d"%[ground_a,ground_b])
++   if Ammo.Roles.fire_duration(a)!=Ammo.Roles.fire_duration(b):lines.append("불길 지속  %d → %d행동"%[Ammo.Roles.fire_duration(a),Ammo.Roles.fire_duration(b)])
++   if Ammo.Roles.fire_radius(before,a)!=Ammo.Roles.fire_radius(after,b):lines.append("불길 범위  앞뒤 %d → %dm"%[Ammo.Roles.fire_radius(before,a),Ammo.Roles.fire_radius(after,b)])
++ var removed: Array=a.filter(func(id):return Engines.IDS.has(id) and not b.has(id))
++ if not removed.is_empty():
++  var id: String=removed[0]
++  lines.append("성장 %d/%d 기록 보존 · 다시 장착하면 복구"%[Engines.level(before,id),Engines.Growth.limit(before)])
++ return lines
+--- /dev/null
++++ b/새-게임-프로젝트/tests/core_choice_probe.gd
+@@ -0,0 +1,61 @@
++extends "res://tests/build_roles_rules.gd"
++const Search=preload("res://tests/fire_control_solver.gd")
++const CASES=[
++ ["fire_r2","build_roles_20261103/climb_earned/gate_heavy_17_r2.json","thermal_drive","inferno"],
++ ["fire_r3","build_roles_20261103/climb_earned/gate_heavy_17_r3.json","thermal_drive","inferno"],
++ ["fire_r4","build_roles_20261103/climb_earned/gate_heavy_17_r4.json","thermal_drive","inferno"],
++ ["control_mismatch","build_roles_20261103/climb_earned/gate_heavy_17_r4.json","thermal_drive","momentum"],
++ ["fire_mismatch","build_roles_20261103/climb_earned/gate_burst_17_r2.json","volley_drive","inferno"],
++ ["coil_value","economy_roles_20261103/climb_carrier_heavy/gate_heavy_17_r3.json","coil",""],
++ ["duplex_value","economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json","duplex",""],
++ ["third_value","economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json","third_striker",""],
++ ["rammer_value","economy_roles_20261103/climb_scout_burst/gate_burst_731042_r4.json","rammer",""],
++ ["position_swap","economy_roles_20261103/climb_expedition_copy/gate_single_931104_r3.json","afterburner","sequencer"]]
++func run()->void:
++ output=OS.get_environment("QA_OUTPUT_DIR")
++ if not output.replace("\\","/").contains("/qa_runtime/core_choice_20261103/"):quit(2);return
++ for item in CASES:
++  for swap in [false,true]:
++   var source: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/"+item[1]))
++   var c=Campaign.new();check(c.restore_state(source),"restore actual earned gate")
++   if OS.get_environment("QA_SPECIALIST")=="1":
++    c.s.specialist_core_version=1;c.model.s.specialist_core_version=1
++   if swap:
++    check(c.equip(item[2]) if item[3].is_empty() else c.replace_part(item[2],item[3]),"legal owned part change")
++   var loadout: Array=c.s.equipped_parts.duplicate()
++   check(c.gate("skip") and c.depart_gate(),"same gate departure without extra upgrade")
++   check(c.enter(int(c.choices()[0].id)),"same first linked next battle")
++   var initial: Dictionary=c.model.s.duplicate(true)
++   var search=Search.new();var start:=Time.get_ticks_msec()
++   var path: Array=search.solve(c.model)
++   var row: Dictionary={"case":item[0],"source":item[1],"swap":swap,"from":item[2],"to":item[3],"node":c.s.node,"parts":loadout,"deck":initial.deck,"levels":initial.engine.levels,"solved":not path.is_empty(),"fire":0,"cool":0,"reload":0,"eject":0,"emergency":0,"turns":0,"forced_turns":0,"burn_damage":0,"remaining":0,"margin":1000000,"max_direct_hit":0,"path":path,"search_ms":Time.get_ticks_msec()-start}
++   for step in path:
++    if step.action=="fire":c.model.s.fire_heat_trial.rounds=int(step.get("rounds",0))
++    var ok: bool
++    match step.action:
++     "fire":ok=c.model.fire()
++     "cool":ok=c.model.cool_magazine()
++     "reload":ok=c.model.reload_magazine()
++     "emergency":ok=c.model.emergency_resupply()
++     "eject":ok=c.model.eject_magazine_rounds(step.indices)
++    check(ok,"accepted battle command")
++    row[step.action]+=1
++    var state: Dictionary=c.model.s
++    row.turns=int(state.turns)-int(initial.turns)
++    row.remaining=c.model.Reserve.remaining(state)
++    for enemy in state.enemies+c.model.Ranged.active(state):
++     if int(enemy.hp)>0:row.margin=mini(row.margin,int(enemy.distance))
++    var detail: Dictionary=state.history.back().detail
++    row.forced_turns+=int(detail.get("forced_cooling",{}).get("elapsed",0))
++    for event in detail.get("advance_events",[])+detail.get("forced_cooling",{}).get("advance_events",[]):
++     if event.kind=="burn":row.burn_damage+=int(event.damage)
++    for shot_result in detail.get("results",[]):row.max_direct_hit=maxi(row.max_direct_hit,int(shot_result.damage))
++    c.sync_combat();check(c.save()==OK,"comparison saves")
++    var resumed=Campaign.new();check(resumed.restore() and canonical(resumed.model.s)==canonical(c.model.s),"comparison resumes same combat")
++   if not path.is_empty():check(c.s.phase=="reward","path reaches reward")
++   row.phase=c.s.phase
++   records.append(row)
++   FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"note":"Actual owned-part branches; bounded search sees future draws and RNG. Not optimality or human win rate.","comparisons":records},"  "))
++   print("CORE CHOICE ",item[0]," swap=",swap," solved=",row.solved," turns=",row.turns," remain=",row.remaining," margin=",row.margin)
++   await process_frame
++ print("CORE CHOICE COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/core_choice_climb.gd
+@@ -0,0 +1,33 @@
++extends "res://tests/build_roles_climb.gd"
++func choose_parts(c)->bool:
++ # Keep the earned starting core until the preferred replacement is actually owned.
++ var desired:=preferred_core
++ if preferred_core=="inferno" and not c.s.parts.has("inferno") and c.s.parts.has("thermal_drive"):preferred_core="thermal_drive"
++ var ok: bool=super.choose_parts(c)
++ preferred_core=desired
++ return ok
++func command(c,item: Dictionary)->bool:
++ if item.action=="reward" and c.engine_reward() and preferred_core=="inferno":
++  item=item.duplicate(true);item.id="thermal_drive"
++ return super.command(c,item)
++func _run()->void:
++ output=OS.get_environment("QA_OUTPUT_DIR")
++ if not output.replace("\\","/").contains("/qa_runtime/core_choice_20261103/"):quit(2);return
++ solver=preload("res://tests/fire_control_solver.gd").new();route_policy="safe";acquisition_policy="refit";rule_version=3
++ run_gun="heavy";run_seed=int(OS.get_environment("QA_SEED")) if not OS.get_environment("QA_SEED").is_empty() else 17;build_kind="fire";role_build=true
++ preferred_core=OS.get_environment("QA_CORE")
++ if preferred_core not in ["thermal_drive","inferno"]:quit(2);return
++ var c=Campaign.new()
++ if OS.get_environment("QA_FRESH")=="1":
++  c.start(run_gun,run_seed,0,"balanced",4,"carrier",true)
++ else:
++  check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/build_roles_20261103/climb_earned/gate_heavy_17_r2.json"))),"earned r2 specialist ownership restores")
++  if OS.get_environment("QA_SPECIALIST")=="1":c.s.specialist_core_version=1;c.model.s.specialist_core_version=1
++  if preferred_core=="inferno":check(c.replace_part("thermal_drive","inferno"),"legally equip owned specialist")
++ roundtrip(c)
++ var won: bool=await play_run(c)
++ endpoints.append({"seed":run_seed,"core":preferred_core,"won":won,"phase":c.s.phase,"region":int(c.s.region)+1,"deck":c.model.s.deck,"parts":c.s.equipped_parts,"credits":c.s.credits,"commands":commands})
++ check(won,"owned core reaches ending after three earned regions")
++ for battle in battles:battle.remaining=int(battle.metrics.get("remaining",battle.remaining))
++ write_report()
++ print("CORE CHOICE COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/core_choice_rules.gd
+@@ -0,0 +1,100 @@
++extends "res://tests/build_roles_rules.gd"
++const Choice=preload("res://redesign/part_choice.gd")
++const Insight=preload("res://redesign/run_insight.gd")
++func run()->void:
++ output=OS.get_environment("QA_OUTPUT_DIR")
++ if not output.replace("\\","/").contains("/qa_runtime/core_choice_20261103/"):quit(2);return
++ for level in [0,4,8,14]:
++  for new_rule in [false,true]:
++   var m=build(["bore","basic_p2"],["inferno","coil"])
++   m.s.growth_version=1;m.s.gate_mods.growth=3;m.s.engine.levels.thermal_drive=level
++   if new_rule:m.s.specialist_core_version=1
++   targets(m,3,1000,3)
++   var inherited: int=level/2 if new_rule else 0
++   var original_levels: Dictionary=m.s.engine.levels.duplicate()
++   var r:=shot(m)
++   check(r.burn_tick==4+inherited,"new specialist inherits only earned thermal burn; legacy is fixed")
++   check(r.fire_zones[0].damage==6+inherited and r.fire_zones[0].radius==3,"ground fire/coil reuse inherited burn exactly once")
++   check(r.engine_percent==100 if r.has("engine_percent") else Choice.Engines.percent(m.s,["inferno"],1,true)==100,"no thermal direct multiplier transfers")
++   check(m.reload_cost()==3,"inferno retains real extra reload action")
++   for e in m.s.enemies:e.hp=0
++   m.s.phase="reward";Choice.Engines.settle(m.s,["inferno"])
++   check(m.s.engine.levels==original_levels,"specialist does not earn thermal growth")
++ # Alternate old/new/old scatter forecasts in the same cache, then compare real targets.
++ var scatter=build(["bore"],["inferno"],"scatter")
++ scatter.s.engine.levels.thermal_drive=8
++ targets(scatter,3,1000,3)
++ for enemy in scatter.s.enemies:enemy.speed=0
++ var legacy_forecast: Dictionary={}
++ for version in [0,1,0]:
++  if version==1:scatter.s.specialist_core_version=1
++  else:scatter.s.erase("specialist_core_version")
++  var original: Dictionary=canonical(scatter.s)
++  var prediction: Dictionary=Forecast.analyze(scatter.s,true)
++  check(canonical(scatter.s)==original,"scatter forecast preserves source state and RNG")
++  check(prediction.shots[0].burn_tick==(8 if version==1 else 4),"scatter cache follows specialist rule")
++  if legacy_forecast.is_empty():legacy_forecast=prediction
++  elif version==0:check(canonical(prediction)==canonical(legacy_forecast),"returning to legacy reuses only legacy results")
++  else:check(canonical(prediction.enemies)!=canonical(legacy_forecast.enemies),"specialist burn changes predicted enemy HP ranges")
++  for seed_value in range(1,13):
++   var actual=Model.new();actual.s=original.duplicate(true);actual.s.rng=seed_value
++   check(actual.fire(),"scatter candidate fires real command")
++   if seed_value==1:FileAccess.open(output.path_join("scatter_%d.json"%version),FileAccess.WRITE).store_string(JSON.stringify({"prediction":prediction,"actual":actual.s,"before":original},"  "))
++   for i in range(actual.s.enemies.size()):
++    var hp: int=actual.s.enemies[i].hp
++    check(hp>=prediction.enemies[i].hp_min and hp<=prediction.enemies[i].hp_max,"actual scatter HP remains inside correct rule forecast")
++ # Burn/control/multiple rounds exercise branch merging, including pre-existing zones.
++ for rounds in [["bore","bore"],["disrupt","bore"],["bore","disrupt"]]:
++  var multi=build(rounds,["inferno"],"scatter")
++  multi.s.specialist_core_version=1;multi.s.engine.levels.thermal_drive=8
++  multi.s.fire_heat_trial.rounds=2
++  targets(multi,3,50,3)
++  multi.s.fire_zones=[{"center":1000,"radius":3,"left":2,"damage":2}]
++  var original: Dictionary=canonical(multi.s)
++  var prediction: Dictionary=Forecast.analyze(multi.s,true)
++  check(canonical(multi.s)==original,"multi-round forecast preserves existing zones and RNG")
++  for seed_value in range(1,25):
++   var actual=Model.new();actual.s=original.duplicate(true);actual.s.rng=seed_value
++   check(actual.fire(),"mixed scatter sequence fires")
++   for i in range(actual.s.enemies.size()):
++    var e: Dictionary=actual.s.enemies[i];var p: Dictionary=prediction.enemies[i]
++    check(e.hp>=p.hp_min and e.hp<=p.hp_max,"mixed actual HP lies in branch range")
++    check(e.distance>=p.distance_min and e.distance<=p.distance_max,"mixed actual movement lies in branch range")
++ for id in ["thermal_drive","volley_drive","siege_drive","momentum","arc_splitter"]:
++  var m=build(["bore","precise_p2","arc"],[id])
++  targets(m,3,1000,3)
++  var legacy=Model.new();check(legacy.restore_state(canonical(m.s)),"unaffected core legacy fixture restores")
++  m.s.specialist_core_version=1
++  var a:=shot(m);var b:=shot(legacy)
++  FileAccess.open(output.path_join("unaffected_"+id+".json"),FileAccess.WRITE).store_string(JSON.stringify({"a":a,"b":b,"enemies_a":m.s.enemies,"enemies_b":legacy.s.enemies},"  "))
++  check(canonical(a)==canonical(b) and canonical(m.s.enemies)==canonical(legacy.s.enemies),"other core results unchanged: "+id)
++ var c=Campaign.new();c.start("heavy",17,0,"balanced",4,"carrier",true)
++ check(c.s.specialist_core_version==1 and c.model.s.specialist_core_version==1,"new production campaign activates versioned specialist rule")
++ check(c.save()==OK,"new campaign saves")
++ var restored=Campaign.new();check(restored.restore() and canonical(c.s)==canonical(restored.s) and canonical(c.model.s)==canonical(restored.model.s),"new rule is saved and restored exactly")
++ var earned: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/build_roles_20261103/climb_earned/gate_heavy_17_r2.json"))
++ check(c.restore_state(earned) and not c.model.s.has("specialist_core_version"),"existing save retains absent specialist rule")
++ var prior: Dictionary=canonical(c.model.s)
++ check(c.replace_part("thermal_drive","inferno"),"owned specialist replaces one core")
++ check(Choice.Engines.level(c.model.s,"thermal_drive")==8 and Content.burn_damage(c.model.s)==4,"legacy swap preserves growth record but keeps old burn damage")
++ check(c.replace_part("inferno","thermal_drive"),"original core can be restored")
++ check(c.model.s.engine==prior.engine and Choice.effect("thermal_drive",c.model.s).contains("2.70"),"returning restores actual grown multiplier")
++ var bad=earned.duplicate(true);bad.campaign.specialist_core_version=1
++ check(not restored.restore_state(bad),"mismatched campaign/combat flag rejected")
++ for value in [-1,0.5,2,"1",true]:
++  var state: Dictionary=prior.duplicate(true);state.specialist_core_version=value
++  var model_check=Model.new();check(not model_check.restore_state(state),"malformed specialist flag rejected")
++ var before: Dictionary=prior.duplicate(true);var after: Dictionary=prior.duplicate(true)
++ after.equipped_parts=["inferno"];after.specialist_core_version=1
++ var unchanged:=JSON.stringify(before)+JSON.stringify(after)
++ check(Choice.effect("thermal_drive",before).contains("화상 +4"),"choice shows earned burn being removed")
++ check(Choice.effect("inferno",after).contains("화상 +6"),"choice shows inherited specialist effect")
++ check("\n".join(Choice.deltas(before,after)).contains("6 → 8"),"comparison explains real total burn delta")
++ check("\n".join(Choice.deltas(before,after)).contains("기록 보존"),"comparison does not imply stored growth was deleted")
++ check(JSON.stringify(before)+JSON.stringify(after)==unchanged,"choice descriptions do not consume state or RNG")
++ check(Insight.reward_impact("duplex",before,[]).contains("+2"),"detail uses actual revised extra hits")
++ check(Insight.reward_impact("opening",before,[]).contains("×2"),"detail uses current first-shot multiplier")
++ check(Insight.reward_impact("afterburner",before,[]).contains("×3"),"detail uses current last-shot multiplier")
++ FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"records":records},"  "))
++ print("CORE CHOICE COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
++
+--- /dev/null
++++ b/새-게임-프로젝트/tests/core_choice_ui.gd
+@@ -0,0 +1,49 @@
++extends "res://tests/campaign_magazine_ui.gd"
++func run()->void:
++ output=OS.get_environment("QA_OUTPUT_DIR");Input.emulate_mouse_from_touch=true
++ if not output.replace("\\","/").contains("/qa_runtime/core_choice_20261103/"):quit(2);return
++ var source: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/build_roles_20261103/climb_earned/gate_heavy_17_r2.json"))
++ for extent in [Vector2i(1280,800),Vector2i(844,390),Vector2i(2340,1080)]:
++  if is_instance_valid(host):host.free()
++  root.size=extent;root.content_scale_factor=1;root.content_scale_size=Vector2i(1280,800)
++  var c=Campaign.new();check(c.restore_state(source),"earned core inventory restores")
++  c.s.specialist_core_version=1;c.model.s.specialist_core_version=1
++  var unchanged=canonical({"campaign":c.s,"combat":c.model.s})
++  await mount(c);await tap("city_deck");await tap("city_part_select_inferno")
++  var effect: Label=host.find_child("PartEffectChanges",true,false)
++  var delta: Label=host.find_child("PartChangePreview",true,false)
++  check(effect.text.contains("2.70") and effect.text.contains("화상 +6") and effect.text.contains("소이탄"),"preview shows current growth, specialist benefit and owned ammo")
++  check(delta.text.contains("6 → 8") and delta.text.contains("기록 보존"),"preview shows burn delta and retained growth")
++  check(canonical({"campaign":c.s,"combat":c.model.s})==unchanged,"inspection does not modify run state or RNG")
++  var scroll: ScrollContainer=host.find_child("WorkspaceScroll",true,false)
++  scroll.ensure_control_visible(delta);await settle()
++  check(scroll.get_h_scroll_bar().max_value<=scroll.get_h_scroll_bar().page+2,"core comparison fits small screen width")
++  await capture("core_choice_%dx%d"%[extent.x,extent.y])
++  await tap("city_deck_equip_inferno")
++  check(c.s.equipped_parts.has("inferno") and not c.s.equipped_parts.has("thermal_drive"),"public replacement respects single core limit")
++  var restored=Campaign.new();check(restored.restore() and canonical(restored.s)==canonical(c.s) and canonical(restored.model.s)==canonical(c.model.s),"replacement autosaves exact versioned state")
++  await tap("part_rules");await capture("inferno_rules_%dx%d"%[extent.x,extent.y])
++  await mount(c);await tap("city_deck");await tap("city_part_select_thermal_drive");await tap("city_deck_equip_thermal_drive")
++  check(c.model.s.engine.levels.thermal_drive==8 and c.is_equipped("thermal_drive"),"public swap-back preserves earned growth")
++  check(c.model.Content.burn_damage(c.model.s)==6,"swap-back resumes thermal burn calculation")
++ # A genuinely earned new-run specialist battle through the production HUD.
++ var battle: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/core_choice_20261103/climb_fresh17/combat_heavy_17_r3_n20502.json"))
++ for extent in [Vector2i(1280,800),Vector2i(2340,1080)]:
++  root.size=extent
++  var c=Campaign.new();check(c.restore_state(battle),"actual newly earned specialist encounter restores")
++  check(c.model.s.specialist_core_version==1 and c.is_equipped("inferno"),"earned encounter uses new specialist without promotion")
++  await mount(c);hud_bounds()
++  host.campaign_hud.hud.feedback.save_setting("motion","fast")
++  var unchanged: Dictionary=canonical(c.model.s)
++  await capture("earned_inferno_%dx%d"%[extent.x,extent.y])
++  check(canonical(c.model.s)==unchanged,"live preview and capture leave state and RNG unchanged")
++  var oracle=Model.new();oracle.s=c.model.s.duplicate(true)
++  check(oracle.fire(),"earned specialist oracle fires")
++  await tap("Fire")
++  check(canonical(c.model.s)==canonical(oracle.s),"public specialist fire exactly matches real resolver")
++  check(c.model.s.history.back().detail.results[0].burn_tick==8,"earned thermal growth contributes live burn")
++  var saved=Campaign.new();check(saved.restore() and canonical(saved.model.s)==canonical(c.model.s),"specialist fire autosaves exact combat")
++  await capture("earned_inferno_fired_%dx%d"%[extent.x,extent.y])
++ host.free();await settle()
++ FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures},"  "))
++ print("CORE CHOICE COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/새-게임-프로젝트/tests/core_choice_replay.gd
+@@ -0,0 +1,30 @@
++extends "res://tests/core_choice_climb.gd"
++func _run()->void:
++ output=OS.get_environment("QA_OUTPUT_DIR")
++ if not output.replace("\\","/").contains("/qa_runtime/core_choice_20261103/"):quit(2);return
++ var rows: Array=[]
++ var labels:=OS.get_environment("QA_REPLAY_LABELS")
++ if labels.is_empty():labels="thermal,inferno,inherited,fresh17,fresh731042"
++ for label in labels.split(","):
++  var source:=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/core_choice_20261103/climb_"+label+"/balance.json")) as Dictionary
++  if source.endpoints.is_empty():check(false,"completed branch exists "+label);continue
++  var endpoint: Dictionary=source.endpoints[0]
++  var c=Campaign.new();run_gun="heavy";run_seed=int(endpoint.get("seed",731042 if label.begins_with("fresh731042") else 17));preferred_core=endpoint.core
++  if label.begins_with("fresh"):
++   c.start(run_gun,run_seed,0,"balanced",4,"carrier",true)
++  else:
++   check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/build_roles_20261103/climb_earned/gate_heavy_17_r2.json"))),"original earned branch restores")
++   if label=="inherited":c.s.specialist_core_version=1;c.model.s.specialist_core_version=1
++   if preferred_core=="inferno":check(c.replace_part("thermal_drive","inferno"),"initial replay swap uses owned core")
++  commands=[];metrics={};var fights:=0
++  for step in endpoint.commands:
++   var phase: String=c.s.phase
++   if not command(c,step.duplicate(true)):break
++   if step.has("turns"):check(c.model.s.turns==int(step.turns),"recorded command timing agrees")
++   if phase=="combat" and c.s.phase=="reward":fights+=1
++  check(c.s.phase=="won" and c.profile.wins==1,"single ending after replay "+label)
++  check(c.model.s.deck==endpoint.deck and c.s.equipped_parts==endpoint.parts and c.s.credits==endpoint.credits,"same final deck parts and wallet "+label)
++  rows.append({"label":label,"fights":fights,"won":c.s.phase=="won"})
++  print("CORE REPLAY ",JSON.stringify(rows.back()))
++  FileAccess.open(output.path_join("result.json"),FileAccess.WRITE).store_string(JSON.stringify({"checks":checks,"failures":failures,"runs":rows},"  "))
++ print("CORE CHOICE COMPLETE checks=%d failures=%d"%[checks,failures.size()]);quit(0 if failures.is_empty() else 1)
+--- a/새-게임-프로젝트/tests/build_roles_replay.gd
++++ b/새-게임-프로젝트/tests/build_roles_replay.gd
+@@ -7,11 +7,16 @@
+ 		var report: Dictionary=JSON.parse_string(FileAccess.get_file_as_string("res://../qa_runtime/"+file))
+ 		for endpoint in report.endpoints:
+ 			if int(endpoint.seed)!=17:continue
++			var role_filter:=OS.get_environment("QA_REPLAY_ROLE")
++			if not role_filter.is_empty() and int(endpoint.role_version)!=int(role_filter):continue
+ 			var filter:=OS.get_environment("QA_REPLAY_GUN")
+ 			if not filter.is_empty() and (endpoint.gun!=filter or int(endpoint.role_version)!=3):continue
+ 			run_gun=endpoint.gun;run_seed=int(endpoint.seed);rule_version=int(endpoint.role_version)
+ 			var c=Campaign.new();c.start(run_gun,run_seed,0,"balanced",4,"carrier",true)
+ 			c.s.combat_roles_version=rule_version;c.model.s.combat_roles_version=rule_version
++			# Historical records predate both acquisition support and specialist inheritance.
++			for key in ["economy_version","intro_part_bought","gate_bag_used","gate_ammo_used"]:c.s.erase(key)
++			c.s.erase("specialist_core_version");c.model.s.erase("specialist_core_version")
+ 			commands=[];metrics={};var fights:=0
+ 			for step in endpoint.commands:
+ 				var phase: String=c.s.phase
+--- /dev/null
++++ b/tools/run_core_choice.ps1
+@@ -0,0 +1,20 @@
++param([ValidateSet('probe','climb','rules','ui','replay')][string]$Mode='probe',[string]$Label='baseline')
++$ErrorActionPreference='Stop'
++if($Label -notmatch '^[a-zA-Z0-9_-]+$'){throw 'Invalid label'}
++$repo=Split-Path -Parent $PSScriptRoot
++$project=(Get-ChildItem -LiteralPath $repo -Directory | Where-Object {Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')} | Select-Object -First 1).FullName
++$runtime=Join-Path $repo ('qa_runtime/core_choice_20261103/'+$Mode+'_'+$Label)
++$env:APPDATA=Join-Path $runtime 'Roaming';$env:LOCALAPPDATA=Join-Path $runtime 'Local';$env:QA_OUTPUT_DIR=$runtime
++New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
++$stdout=Join-Path $runtime 'stdout.log';$stderr=Join-Path $runtime 'stderr.log'
++$arguments=@('--path',('"'+$project+'"'),'--script',('res://tests/core_choice_'+$Mode+'.gd'))
++if($Mode -eq 'ui'){$arguments+=@('--rendering-method','gl_compatibility','--resolution','1280x800','--position','-2000,-2000')}else{$arguments+='--headless'}
++$p=Start-Process -FilePath 'D:/ProjectLoB/.tmp/godot-4.7/Godot_v4.7-stable_win64_console.exe' -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput $stdout -RedirectStandardError $stderr
++$null=$p.Handle;$deadline=[DateTime]::UtcNow.AddMinutes(25)
++while(-not $p.WaitForExit(500)){
++ $errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++ if($errors -match 'ERROR:|Parse Error' -or [DateTime]::UtcNow -gt $deadline){Stop-Process -Id $p.Id;throw "Core choice stopped: $errors"}
++}
++$p.WaitForExit();$result=Get-Content -Raw -LiteralPath $stdout -Encoding UTF8;$errors=Get-Content -Raw -LiteralPath $stderr -Encoding UTF8
++Write-Output ($result -split "`n" | Select-Object -Last 6)
++if($p.ExitCode -ne 0 -or $errors -match 'ERROR:' -or $result -notmatch 'CORE CHOICE COMPLETE.*failures=0'){throw "Core choice failed; see $stdout $errors"}
+--- a/docs/direction/parts-builds.md
++++ b/docs/direction/parts-builds.md
+@@ -1,4 +1,12 @@
+ # 파츠 역할과 탄환 빌드
++
++**현행 — 성장 후 코어 교체 보완(2026-11-04):** 사용자 다음 작업 실행 승인에 따라 실제 보유 코어/모듈의 유지·교체를 비교했다. 새 등반 `specialist_core_version=1`에서 열폭주 노심은 기존 화상 +2에 **열압 구동핵의 누적 성장 2회당 +1**을 더한다. 열압 직접 배율/충격파를 이어받지 않고, 노심 장착 중에는 열압이 추가 성장하지 않는다. 재장전 +1행동과 코어1개 제한은 유지한다. 성장 기록은 계속 보존되어 원래 코어로 돌아갈 수 있다. 이전 저장에 표식이 없으면 기존 고정 +2를 그대로 사용한다. 이 규칙은 디렉터 보정값이며 사람 재미/최종 균형 확정은 아니다. [비교·실제 획득·표시·검증](../qa/reports/core_choice_2026-11-04.md).
++
++- 질문: 성장한 코어를 계속 쓰기와 소이 전용 코어로 전환하기가 각각 유효한 선택인가?
++- 근거: 실제 보유 관문에서 분기한 동일19전투 경로는 열압 유지314행동·비상0회, 기존 노심434행동·비상2회였다. 성장 기록의 화상 효과까지 잃는 문제가 확인됐다.
++- 적용: 노심의 화상 성장만 계승하며 직접 화력/재장전의 차이는 남긴다. 같은 경로의 보정 노심은295행동·비상0회, 열압 대비8전투 빠름/2동일/9느림이었다. 이후 획득도 실제 선택으로 달라질 수 있으므로 순수 단일 효과 비교는 별도의 같은 상태20분기 검사를 따른다.
++- 표시: 빌드 작업실은 현재 성장 배율·화상 피해 변화·관련 보유 탄 수·성장 기록 보존을 보여 준다. 상세의 첫/마지막 발·복열/증폭 등 이전 규칙 문구를 현재 `part_spec` 기준으로 정리했다. 카드 성장 상한도 관문 투자에 맞춘다.
++- 유지/보류: 기존 성장3코어와 위치/제어 모듈의 수치는 유지했다. 소이 없는 연타 덱의 노심, 제어 탄이 적은 소이 덱의 피스톤을 강제 정답으로 만들지 않는다. 피스톤/분기 전이기의 전용 덱 장기 획득 비교와 다른4복장 경제는 후속이다.
+ 
+ **경제 후속(2026-11-03):** 새 등반 `economy_version=1`에서 현재 탄과 맞는 첫 추천 모듈을 등반당1회18Cr에 살 수 있다. 그 외 파츠 가격30Cr와 이전 저장은 유지한다. 관문의 수납/보유 탄 복제1회 선택도 [복장·탄약 경제](outfit-bag.md)에 연결했다. 아래 v3 적용 당시의 ‘가격 유지/다음 경제 검토’는 이 후속으로 갱신한다.
+ 
+--- a/docs/direction/current.md
++++ b/docs/direction/current.md
+@@ -1,4 +1,6 @@
+ # ORVASK — 현재 방향과 결정 상태
++
++**최신 — 코어 유지/교체 가치 보완(2026-11-04):** [현재 코어 규칙](parts-builds.md)에 새 등반 열폭주 노심의 열압 화상 성장 기록 계승을 적용했다. 고열 직접 배율/충격파와 추가 성장은 옮기지 않으며 재장전 대가는 유지한다. 같은 실제 보유19전투 분기에서 기존 노심434→보정295행동, 열압 유지는314행동이었다. 교체 화면의 현재 배율·화상 차이·보유 탄·성장 보존과 오래된 파츠 설명도 수정했다. [검증·화면·한계](../qa/reports/core_choice_2026-11-04.md). 이전 저장 규칙 보존. 산탄 예측의 불길 분기 공유도 수정했고 실제 피해 계산은 유지했다. 다음은 미검증4복장 경제와 전용 제어/전격 덱의 코어 선택, 실제 S26/복장 혼합/지속 성능 확인이다.
+ 
+ **최신 — PC·Galaxy S26 기준 공통 가독성 수정(2026-11-03):** 사용자 실행 승인으로 상점 전체 Canvas 축소와 비전투 viewport 축소를 제거하고 native/정수 배율·최소16px 글자·반응형/세로 스크롤을 연결했다. 지도·장소·작업실·장비/설정·보상/관문을 함께 수정하고 미지원 기호를 자체 도트 보조 글꼴로 동봉했다. 작은 상세 창의 닫기 버튼은 고정한다. 기존 라이브 전투 HUD 크기와 전투/저장 규칙은 유지한다. S26 기본형2340×1080 및 감소 가용 영역을 PC에서 렌더/입력 검사했다. [화면·검사·남은 범위](../qa/reports/ui_readability_2026-11-03.md). Android 실기기·OS 배율/안전 영역·사람 체감은 미검증이다. 아래 과거 작은 상점 글자/비전투 축소 상태는 이 구현으로 대체한다.
+ 
+--- /dev/null
++++ b/.agents/skills/00-project-manager/task_tracker.md
+@@ -0,0 +1,322 @@
++# ProjectLoB 현재 작업
++
++**최신 — 코어 선택 후속(2026-11-04):** [현재 규칙](../../../docs/direction/parts-builds.md) · [비교/저장/화면/한계](../../../docs/qa/reports/core_choice_2026-11-04.md). 성장한 열압 유지와 실제 보유 노심 교체를 비교해 새 등반 노심에 화상 성장 기록 계승을 연결했다. 직접 배율/충격파·추가 성장 미계승, 재장전 대가와 이전 저장 유지. 현재 성장 수치/피해 차이·탄 보유 수를 교체 화면에 표시한다. 산탄 예측의 불길 분기 공유도 수정했다. 이전 상점/공통 글자 문제는 [가독성 수정](../../../docs/qa/reports/ui_readability_2026-11-03.md) 완료. 다음은 다른4복장 경제·전용 제어/전격 코어의 장기 선택과 S26 실기기/복장 혼합·지속 성능이며 사람 체감은 별도다.
++
++**최신 — 우선순위3 경제 적용(2026-11-03):** [현행 수납/구매 규칙](../../../docs/direction/outfit-bag.md) · [검증/화면/한계](../../../docs/qa/reports/economy_roles_2026-11-03.md). 새 등반 첫 연결 모듈18Cr/1회, 관문 유료 정비1회(확장18Cr 또는 보유 탄 복제12/24Cr) 적용. 정찰/운반/원정3복장3시드·87전투와 원정 비복제29전투 비교, 원정 비상2→0. 이전 저장 유지. 다음은 사람의 선택 가치·전용 코어 교체 체감과 미실행 복장/경로 확인; Android/복장 혼합·상점 작은 글자는 별도다.
++
++**최신 — 우선순위2 파츠·획득 적용(2026-11-03):** [v3 현행 규칙](../../../docs/direction/parts-builds.md) · [90전투·획득/조작/저장·한계](../../../docs/qa/reports/build_roles_2026-11-03.md). 주력 탄 기반 파츠 제안, 소이/제어 효과·발동 표시, 실제 동시 장착 가능한 전이 모듈을 새 등반에 연결했다. v1/v2 유지. 다음은 복장별 최소/상한과 지도·보상·정비 구매 여력을 묶은 경제 검토다. 사람 재미·작은 상점 보조 글자·Android/복장 혼합은 완료로 간주하지 않는다.
++
++**최신 — 후반 소이/리액터 보정 적용(2026-11-03):** [규칙](../../../docs/direction/combat-roles-growth.md) · [3시드 실제 획득/화면/검증](../../../docs/qa/reports/late_balance_2026-11-03.md). 새 등반 v2 열압 코어 성장2회당 화상+1, 실제 탄환 상세 연결. v1 저장 유지. 다음은 코어·파츠/보상 선택 검토와 사람 체감 확인이며, Android/복장 혼합은 미해결 별도 범위.
++
++**최신 — 플레이 피드백 개편 본편 적용(2026-11-03):** [현행 규칙](../../../docs/direction/combat-roles-growth.md). 히트 위치·드래그/탄수 표시, 지도 v4, 추가1기 전이/확장, 불길/감속·획득, 관문 발수/열 효율, 복장 수납 정비를 연결했다. [검증·화면·남은 범위](../../../docs/qa/reports/playtest_rework_2026-11-03.md). 새 등반 사용, 이전 저장 유지. 다음은 사람 조작/빌드 체감과 후반 리액터·소이/다른 복장의 탄약 경제. Android/복장 혼합·APK는 별도 범위다.
++
++**접수 당시 기록 — 구현 상태는 상단 적용 결과 참조(2026-11-03):** 현재 전투 재미/긴장감에 대한 사용자 긍정 평가. [히트/드래그·지도·탄종/전이·성장 검토](../../../docs/history/design/playtest-review-2026-11-03.md). 다음은 입력/표시 오류 → 기존 미수정 지도 밀도 → 탄환/코어/파츠 역할·전이 성장 → 복장 수납·발수/열 효율이다. 선택한 탄수와 예측 소비 수의 표시 기준 차이, 기존 휴대 상한과 손패 기반 정비 조건을 소스에서 확인했다. 문서 검토만 수행했으며 제보 재현/수정·새 규칙 구현은 아직 아니다. 이전 지도 후순위·사람 재미 확인 대기는 최신 후기로 대체하고 Android/복장 혼합은 미해결 유지.
++
++**최신 — 핵심 탄·위치 파츠 본편 적용(2026-11-03):** [현행 규칙](../../../docs/direction/focus-build.md). 주력 2장+지원 1장 시작, 집중/지원/강화 획득, 첫/세 번째/마지막 공격 배율을 새 등반에 연결했다. [5총기 125전투·정확한 재생/저장·피해/화면/회귀](../../../docs/qa/reports/focus_build_2026-11-03.md). 기능 통과·사람 재미 확인 대기. 다음은 성장/보상 이유와 후반 탄약 체감 → 대표 편성 → 지도 밀도. 반복 사격 통과 감소가 목표가 아니며 Android/복장 혼합은 후속이다.
++
++**최신 — 본편 사격/열 통합·덱 빌딩 재검토(2026-11-03):** [현행 규칙](../../../docs/direction/fire-control.md). 새 등반 범위 선택+교체 열 유지, 전용 냉각1행동 열0.5총기6등반154전투·실제 입력/새 프로세스 저장·이전 규칙 회귀 확인. [검증·남은 정예 사례](../../../docs/qa/reports/fire_control_2026-11-03.md). 사용자 사격 반복 문제는125상태 중99통과로 확인. [다음 편성/집중 획득/코어 운용 개편 근거](../../../docs/history/design/deckbuilding-review-2026-11-03.md). 본편 통합은 완료, 덱 빌딩 재미는 문제 확인/후속 설계 단계. Android/복장 혼합·지도 밀도 후속 유지.
++
++**최신 — 사격·열 역할 비교판 연결(2026-11-02):** [실행/조건/본편 연결 기준](../../../docs/direction/fire-heat-comparison.md). 기존 비교 바로가기에서 앞줄 드래그→사격과 교체 냉각0/2/기존, 고열 위력80%를 독립 비교한다. 기본은 범위 선택+열 유지+위력 유지. 15실제 진입×5조건75승리 경로, 규칙5,805·조작105·기존 총기7,101/HUD11,536검사 실패0. [실제 화면·한계·변경분](../../../docs/qa/reports/fire_heat_comparison_2026-11-02.md). 다음은 사람 선택/피로/호흡으로 후보를 좁힌 뒤 후반·파츠·탄약 경제와 본편 통합 판단. Android/복장 혼합 미확인과 지도 밀도 후속은 유지한다.
++
++**최신 — 후기의 오류·표시 반영(2026-11-02):** 전투 이탈 배율과 복원 저장의 방문 경로 누락 수정. 발사 탄 상승/매 발 소모·교체/열 연출·주요 글자16px·지도 상시 범례/경로 적용. [검증·변경분](../../../docs/qa/reports/playtest_presentation_2026-11-02.md). 복장 혼합은35조합 미재현으로 미해결, 실기기 배율/복귀·성능은 후속. 다음은 [사격 입력·교체/냉각·열 역할 비교](../../../docs/direction/playtest-priorities.md).
++
++**최신 — 덱 빌딩 보강 버전2(2026-11-01):** 사용자 후기 반영으로 새 등반 일반 ×2.0·정예 ×1.6 체력, 장갑 예외, 출발 거리 보정, 3발 총기 20장 덱 적용. 5총기 전체 등반 실패0, 리벳 일반전 탄창 1.0→1.6개. [규칙](../../../docs/direction/magazine-build.md) · [검증](../../../docs/qa/reports/magazine_build_2026-11-01.md). 다음: 새 등반 사람 플레이로 전투 길이·덱 체감 확인.
++
++**최신 — 덱 빌딩 보강(2026-11-01):** 새 등반에 14장 출발 덱·탄창 구성 조건 파츠3종·연계 표시를 적용했다. 규칙51·화면43·분기786검사 통과, 전체 등반은 스플린터 최종 보스만 기본 탐색 폭 실패(넓힌 탐색으로 승리 경로 확인). [규칙](../../../docs/direction/magazine-build.md) · [검증·변경분](../../../docs/qa/reports/magazine_build_2026-11-01.md). 다음: 사람 플레이로 덱 체감·스플린터 탄약 확인.
++
++**최신 — 배관도 그래픽 마감(2026-11-01):** 사용자 승인으로 작은 장소 기호·구역 문양5종과3상태·관문 손잡이·접속부·조용한 지도 면을 적용했다. 기존 지도 배치172항목·전투/경로 규칙4파일 동일. 지도 통합16,249·현행 지도/장소654·기존 HUD11,536검사 실패0. [전후·제작·검증](../../../docs/qa/reports/pipe_map_art_2026-11-01.md). 다음은 사용자 전체 등반에서 기호/경로/샛길의 판독성과 후반 선택 체감 확인이다. Android 실기기는 별도다.
++
++**최신 — 배관도 지도 본편 적용(2026-11-01):** 사용자 실행 승인으로 목업의 5구역 진행표·고정 관문·스크롤 배관도·선택/이동 패널을 실제 경로에 연결했다. 샛길의 전투/보상 포기 표시와 이전 지도 v1/v2 저장을 보존한다. 지도 통합14,686·현행 지도/장소654·기존 HUD11,536검사 실패0. [화면·검증 경계](../../../docs/qa/reports/pipe_map_godot_2026-11-01.md). 다음은 사용자 전체 등반의 경로/샛길 판독성과 후반 선택 체감이다. APK는 사용자 진행, Android 지속 성능은 미검증이다.
++
++**현재 — 전체 등반 통합 완료(2026-11-01):** `PLAY.cmd`의 새 등반에 탄창 개편/라인 HUD를 기본 연결했다. 5총기125전투의 실제 획득·관문·최종 보스, 본편 화면25전투·귀환 결과, 별도 프로세스 이어하기·이전 규칙 보존 검증 통과. [적용 범위/결정](../../../docs/direction/campaign-magazine.md) · [검사와 실제 화면](../../../docs/qa/reports/campaign_magazine_2026-11-01.md). 다음 우선순위는 사용자 전체 등반의 후반 압박/선택/복장 가치 확인이며 모바일 APK는 사용자 진행, 실기기 지속 성능은 미검증이다. 이전 아래의 별도 여정/본편 미통합 상태를 대체한다.
++
++**최신 — 전투 피드백·과열 접근 복구(2026-11-01):** 사용자 요청으로 모바일 제작을 제외하고 현재 여정 HUD의 효과음·실시간 열·음량/연출 설정과 생략되던 강제 냉각 중 적 이동을 연결했다. [수정·검증·화면·한계](../../../docs/qa/reports/journey_feedback_2026-11-01.md). 계산/저장/기본 진입 유지. 다음은 기존 획득 덱의 정예/다른 탄 순서 선택 검토, 사람 체감/실기기는 별도. APK는 사용자가 진행한다.
++
++**최신 — 여정 모바일 전달 준비(2026-11-01):** 기존 배포 도구에 `magazine-journey`를 연결했다. 공통 클래스 누락을 보완하고 컴파일 리소스의5총기·5전투/정비2곳·성장·새 프로세스 재개·본편/비교 저장 불변을 확인했다. [검증·준비 범위](../../../docs/qa/reports/mobile_journey_ready_2026-11-01.md). 기본 진입/규칙/현재 배포본 유지, APK 생성/업로드 없음. 다음은 요청 시 여정 APK 전달과 실기기 지속 성능·사람의 연속 선택 체감이다.
++
++**최신 — 첫 관문 여정 점검(2026-11-01):** 라인 + 도트에 대한 사용자 긍정 평가 후 연속 플레이를 점검했다. 행동 뒤 적 안내가 사라지고 HP 사격 예측이 누락되던 연결을 수정했다. 획득 후 빼내기/그대로 사격 대안,5총기25전투 재생·기존 HUD/5전투 흐름/저장 재개 통과. [판단·화면·검증 범위](../../../docs/qa/reports/journey_review_2026-11-01.md). 외형·수치는 유지하고, 다음은 보상 이후 선택 변화와 관문 긴장감의 사람 확인이다. 모바일 전달 모드·실기기 성능과 본편 규칙 전환은 별도 후속.
++
++**최신 — 라인 + 도트 테마 Godot 적용(2026-11-01):** 사용자 확정 [테마](../../../docs/direction/ui-line-theme.md)를 전투 HUD·메뉴/상세·보상/정비·여정 경로와 본편 지도/장소/상점에 적용했다. 카드76×96·버튼44/50·입력·계산·저장·기본 진입을 유지했다. [같은 크기 비교·검사·남은 확인](../../../docs/qa/reports/ui_line_godot_2026-11-01.md). 기존 HUD 검사와 현행 지도/장소·상점 검사를 통과했다. 실기기 선명도/지속 성능과 사용자 미감 확인은 남는다.
++
++**현재 — 전투 밖 UI 연결(2026-11-01):** 코어/탄/무료 정비의 실제 전후 미리보기, 고정 여정의 현재/다음 구간·준비 상태, 확정 연속 입력 방지를 기존 실행본에 적용했다. [화면·집중/전체 흐름·저장 검증](../../../docs/qa/reports/journey_flow_ui_2026-11-01.md). 다음은 보상 선택 이유와 준비 정보의 사람 확인이다. 상점·분기 지도/새 경제 추가, 본편 기본 진입 전환·APK 배포는 아직 아니다.
++
++**현재 — HTML 검토안 Godot 연결(2026-11-01):** 작은 탄창·오른쪽 행동 버튼·공통 상세/메뉴·보상/정비를 기존 탄창 여정과 비교 HUD에 연결했다. [화면·검증·남은 범위](../../../docs/qa/reports/ui_prototype_godot_2026-11-01.md).5전투 연속 획득/정비/관문, 재도전과 새 프로세스의 정확한 저장 재개 확인. `OPEN_COMBAT_UI_STUDY.cmd`로 플레이한다. 다음은 사람의 미감/연속 선택 체감과 본편 통합 조건 확인이며, 지도/상점 목업 전체 이식·본편 기본 진입·APK 배포는 아직 아니다. Android 실기기 안전 영역/지속 성능은 남는다.
++
++**현재 — HTML 작은 화면 조작 보완(2026-11-01):** 전체 축소 대신 화면 폭별 배치로 전투 버튼44px 이상·카드 이름14px를 확보했다. 5크기 실측, 선택/빼내기/사격/냉각/교체·상세 스크롤·상점 실제 구매·지도 이동 검증, 상태 회귀10개 통과. [화면·근거·한계](../../../docs/qa/reports/ui_prototype_mobile_2026-11-01.md). 다음은 Godot UI/격리 저장 통합. 본편·APK 유지, Android 실제 터치/지속 성능과 사람 체감은 후속이다.
++
++**현재 — 프로젝트 전반 작업 절차 반영(2026-10-31):** [재미 실험·변경 영향·전투/경제·사운드 검수](../../../docs/direction/development-workflow.md)를 기존 역할에 연결했다. [탄창 여정 통합 조건](../../../docs/direction/magazine-journey.md#본편-연결-판단-조건)과 [사람 플레이 기록지](../../../docs/qa/protocols/magazine-journey-playtest.md), [모바일 지속 성능/저장 복귀 절차](../../../docs/qa/protocols/mobile-sustained.md)를 준비했다. 최신 UI는 [공통 급탄 장비 버전](../../../docs/qa/reports/combat_feedkit_2026-10-31.md)이다. 다음은 최신 화면/연속 선택 체감 확인과 미해결 통합 조건 검증이다. 사람·실기기 결과는 미확정이며 게임 코드·기본 진입·APK는 이번 작업에서 변경하지 않는다. 상세는 [오늘 기록](../../../docs/history/daily/2026-10-31.md)에 둔다.
++
++**현재 — 전투 UI 우선 개편(2026-10-31):** 사용자 요청에 따라 [전투 배치·디자인](../../../docs/direction/combat-hud.md)을 정리했다. 탄창 여정과 독립 비교를 공통 HUD에 연결하고 메뉴/탄 상세, 이번 사격/대기 기본값, 실제 행동 비용과 열 표시를 묶었다. 기존 두 실행 파일에서 새 화면을 사용한다. [검증·전후 화면](../../../docs/qa/reports/combat_hud_2026-10-31.md). 다음은 사람의 가독성·미감 확인 후 연속 성장/선택 체감 테스트다. 본편 기본 진입과 기존 APK는 유지한다.
++
++**현재 — 탄창 여정 구현(2026-10-31):** [출발20발 → 실제 코어/탄 보상 → 무료 정비2회 → 관문까지5전투](../../../docs/direction/magazine-journey.md)를 연결했다.5총기·현재 전투의 정확한 재도전·전 구간 별도 자동 저장 제공. 실행은 `OPEN_COMBAT_UI_STUDY.cmd`, 이전 독립 비교는 `OPEN_MAGAZINE_COMPARISON.cmd`. [검증 기록](../../../docs/qa/reports/magazine_journey_2026-10-31.md). 다음은 사람의 연속 성장 체감/선택 이유, 다른 순서·정예/후반과 모바일 지속 성능이며 본편 기본 진입은 유지한다.
++
++**사용자 비교 평가 반영(2026-10-31):** 이전보다 긴장감·선택·덱 빌딩이 뚜렷하게 좋아졌다는 후기를 받았다. 현행 비교 구조를 후속 개발 기준으로 유지하고 보상/덱 변화를 포함한 초반3~5연속 전투를 다음 작업으로 둔다. 빼내기 개별 유효성은 판단 유보이며 정확한 수치·전체 균형·지속 성능은 별도다. [판단 근거와 범위](../../../docs/direction/magazine-ejection.md#사용자-후기와-다음-비교-범위).
++
++**모바일 전달 완료(2026-10-31):** 사용자 외부 플레이 요청에 따라 선택 빼내기 비교로 바로 시작하는 ARM64 APK `0.5.20261031.ejection`을 ZIP으로 Drive에 올리고 내려받기 해시를 확인했다. APK의20전투/저장 재개·실제 터치 검증 통과, 원래 시작 씬·export 설정 복구. [다운로드·검증·실기기 미검증 범위](../../../docs/qa/reports/magazine_ejection_mobile_2026-10-31.md).
++
++**현재 — 선택 빼내기 구현·검증(2026-10-31):** [탄창당2발·중간 선택·확정 전 결과 미리보기](../../../docs/direction/magazine-ejection.md)를 같은 A안 비교에 연결했다. 사용한 한도의 저장/재개, 사격 사이 추가 빼내기, 전체 교체 시 회복, 유한 탄약/예측/실제 입력을 검증했다. [검사·실제 화면·한계](../../../docs/qa/reports/magazine_ejection_2026-10-31.md). 스플린터 보스 순서17은 첫/중간 빼내기 모두 승리 경로를 확인했으므로 아래의 미해결은 빼내기 도입 전 기록이다. 다음은 무조건2발 빼기의 우세 여부, 새 규칙의 연속 획득·정예와 리액터 장기전 편차다. 본편 미활성, 사람·실기기는 후속이다.
++
++**현재 — 총기별 탄창 구현·검증(2026-10-31):** [5총기×4전투 비교](../../../docs/direction/weapon-magazine.md).5~9칸, 총기 고유 연사/강행/처치 연쇄, 무작위 범위·확률과 별도 저장을 연결했다. 기능7,101·조작5,291·최종 화면/상세2,131·종료15검사 통과, 기존 리벳 운용797·접근3,498·본편25전투 동일. 사람/실기기와 새 규칙의 연속 획득 경로는 후속. 스플린터 보스 순서17은 제한 탐색 미해결이며 우선 조사한다.
++
++**현재 — 접근 압박 비교 구현·검증(2026-10-31):** [5전투 비교와 다음 단계](../../../docs/direction/combat-approach.md). A안 리벳 6칸에서 방패/보스 이동 적의 거리·속도를 조정했다. 자연 사격 중 냉각/교체/과열 선택이 접촉 결과를 바꾸며 같은 탄창의 이전 거리 비교와 저장·재개를 제공한다. 기능3,498·화면701검사 실패0, 기존25전투 결과 동일. 다음은 다른 총기·새 규칙의 연속 획득 경로·정예. 본편 미활성, 사람 체감·모바일 지속 성능은 미검증.
++
++**현재 — A안 탄창 반복 플레이 구현·검증(2026-10-31):** [현재 후보와 다음 작업](../../../docs/direction/combat-magazine-loop.md). 리벳 6칸의 두 발 사격·잔탄 보존 냉각·탄창 교체·독립 저장/재개를 일반전과 보스전 승패까지 연결했다. 본편 신규 등반은 미활성, 기존 25전투 결과 동일. 다음은 자연 플레이의 접근 압박, 다른 총기, 신규 규칙의 연속 획득 경로다. 모바일 지속 성능·사람 체감은 후속.
++
++**현재 — A안 채택·탄창 확대 비교 완료(2026-10-31):** [6칸 시안과 용량 비교](../../../docs/direction/combat-magazine-capacity.md)를 준비했다. A는 사용자 선택, 6칸은 첫 비교값이며 요청의 실제 용량/표시 수 의미는 확인 중이다. 본편/기존 저장은 유지. 다음은 탄창 교체·사격·접근 비용과 열/미발사 탄 정책의 공동 비교다. 모바일 지속 성능·사람 미감·전 총기 균형은 미검증이다.
++
++**현재 — 초반 전투 호흡 1차 적용·사람 재테스트:** 새 등반 일반전을 짧은 무리전·사수 대응·교대 방패 진지로 구분하고 두 번째 승리의 조합 후보를 연결했다. 기존 저장 보존, 실제 획득 경로와 준비 선택 차이·화면 검증을 진행했다. [현행 규칙](../../../docs/direction/combat-rhythm.md) · [검증과 남은 범위](../../../docs/qa/reports/combat_rhythm_2026-10-30.md). 다음은 사람의 반복감/선택 변화 재테스트 후 후반 확장 판단이며 관문 연출보다 우선한다.
++
++**로컬 적용·검증 / 사람 체감 후속 — 후반 관문 성장 확장(2026-10-30):** 새 등반의2~4구역 관문에서 기존 개조 대신 코어 상한+2 선택, 조건 달성/승리 후 실제 성장·저장/예측·4후보 화면 연결 완료. 기존 저장 유지. 초반112전투 동일,10조건275전투·51,292검사 실패0, 정비 포함9조건 엔딩 경로 확인. [현행](../../../docs/direction/damage-growth.md) · [검증·미해결·화면](../../../docs/qa/reports/late_core_growth_2026-10-30.md). 다음 독립 작업은8번 관문 통과 연출 검토. 정찰 리액터 최종전, 스플린터 발열, 성장 선택의 사람 체감, 모바일 지속 성능/발열은 후속이다.
++
++**로컬 적용·검증 / 사람 재테스트 필요 — 일렬 접지·거리 표시(2026-10-29):** 사용자 승인으로 같은 바닥선 복원, 큰 가림의 적 수·표적/포커스 우선 표시, 보스 이동량 숫자의 상세 분리를 적용했다. 배경·독립 가로 위치·전투 규칙은 유지. [검증·실제 화면·남은 확인](../../../docs/qa/reports/enemy_grounding_2026-10-29.md). 다음 독립 작업은 **발열·연속 사격·고장 방식 비교**다. 겹친 개체 식별/위험 이해도와 모바일 지속 성능·발열은 미검증으로 유지한다.
++
++**로컬 적용·검증 — 적 이동·위협 표시(2026-10-28):** 독립 거리 좌표·얕은 깊이, 몸체 겹침과 HP/터치 분리, 상시 거리 숫자 제거/상세 유지, 실제 다음 적 행동의 접촉·발사·돌진 경고를 적용했다.7,542검사 실패0, 실제 이동141프레임 역전0. [화면·성능·한계](../../../docs/qa/reports/enemy_readability_2026-10-28.md). 다음 독립 작업은 **발열·연속 사격·고장 방식 비교**. 모바일 지속 성능/발열, 사람의 식별/위험 이해도와 전체 화면 재생성 비용은 남는다.
++
++**로컬 적용·검증 — 성장·파츠 체감1차(2026-10-28):** 실제 발동별 궤적/적중·사격 결과 유지, 성장 전후/축적 표시와 코어 선택 문구 오류를 수정했다. 전투162조건 동일, 기능/실제 화면/저장3,058검사 실패0. [화면·검증·성능 관측/한계](../../../docs/qa/reports/build_feedback_2026-10-28.md). 다음 독립 구현은 **적 이동·겹침·위협 표시**. 성장/강적 장기 균형·사람 체감·모바일 지속 성능과 PC 화면 재생성 비용은 남는다.
++
++**로컬 적용·기능/화면 검증 — 관문 재정비(2026-10-28):** 개조 후 재정비에 머물며 보유 파츠 무료 장착·교체, 탄약/휴대량 확인과 명시적 출발을 연결했다. 선택/재정비/출발 자동 저장·재개, 보상 중복 방지와 기존 저장 호환을 검사했다. [실제 화면·검증·전투 탐색 한계](../../../docs/qa/reports/gate_reorganization_2026-10-28.md). 다음은 **성장·파츠 발동 체감/강적 대응**이다. [통합 계획](../../../docs/direction/playtest-priorities.md)의 모바일 지속 성능·발열과 사람 플레이 확인은 남는다.
++
++**로컬 적용·검증 완료 / 모바일 확인 필요 — 성능2차·장비 접지(2026-10-28):** 전장 배치 재사용·잔열 갱신 절감·무기 합성 필요 시 렌더·전체 이력 보존 저장 캐시, 모바일60FPS 상한과 장비 발 위치/그림자를 적용했다. [측정·검증·캐시 비용·화면](../../../docs/qa/reports/mobile_revision_2026-10-28.md). 실기기 지속 FPS·발열은 미검증으로 유지한다. 다음 독립 구현은 **관문 재정비/출발**이며 이후 작업은 [통합 계획](../../../docs/direction/playtest-priorities.md)을 따른다. 아래 과거 ‘다음 작업’과 미확정 표시는 당시 이력이다.
++
++**완료 — 비상 탄약 보급 추가(2026-10-27):** 사용자 승인안에 따라 새 등반의 공격탄 고갈 시 기본탄4발/일반 재장전+첫 회1턴/매회1턴 증가를 본편에 적용했다. 지원탄만 남은 손패·예비/탄창 판정·적 행동·화상·예측·보급 횟수/가방·자동 저장·기존 규칙 호환을 검증했다. 기본탄 반복 보급 비교와 실제 등반 회귀 결과, 과거 리액터 실패 경로를 구제하지 못한 한계를 [보고서](../../../docs/qa/reports/emergency_resupply_2026-10-27.md)에 기록한다. 다음 구현은 적 이동과 거리·위협 표시다. 반복 보급의 사람 체감·Galaxy와 전체 빌드 장기 균형은 후속이다.
++
++**진행 중 — 순차 개편4차 적용(2026-10-27):** 새 등반 보유 탄 한 장 교체·공방3후보 교체·복장별 총 휴대28~40장, 가방 성장과 소진 안내를 본편에 연결했다. 기존 저장32장/기본탄 교체 보존.771/683/449/실제UI177검사 실패0, 리액터2시드8,588검사/나머지4무기14,190검사와6회 엔딩 확인.108회귀 전투의 턴·잔탄·최소거리 동일. [전체 결과](../../../docs/qa/reports/inventory_revision_2026-10-27.md). 다음 구현은 적 이동과 거리·위협 표시다. 파츠 슬롯/비상 보급/일회용 특수탄/관문 씬은 후속 판단, 복장별 장기 균형·사람 체감·Galaxy는 미검증이다.
++
++**진행 중 — 순차 개편3차 적용(2026-10-27):** 새 등반 장갑 비례 감쇠, 리액터 강행 공격×2, 주조장 축압/친위대 지휘2행동과 제한된 차폐 보충을 적용했다. 기존 저장0/1 보존, 지도 정보·계산 상세·장비 설명·개발 테스트 연결. 집중449/기존290·273·1,775/UI136검사 실패0, 이전 대표162조건 결과 동일. 전체 등반의 성공/제한 탐색 실패와 획득·장착 정책을 [보고서](../../../docs/qa/reports/pressure_revision_2026-10-27.md)에 분리 기록한다. 다음은 획득·교체/가방·탄창 역할/고갈 대응. 자동 장착 파츠를 유지하는 경로와 실제 소유 파츠를 바꾸는 경로를 구분하며, 사람 체감·Galaxy는 미검증이다.
++
++**진행 중 — 순차 개편2차 적용(2026-10-27):** 새 등반의 코어 성장/시퀀서/복열/후미/철갑을 조정해 조합의 차이를 키웠다. 기존 저장 규칙 보존. 대표162조건, 집중290/회귀273/중앙1,775/전투UI237/상점UI92 통과. 실제 새 등반4무기 엔딩 확인, 첫 보상 고정 리액터는 종전처럼2구역 관문 탐색 실패. 맞춤 획득 리액터는4,965검사/엔딩 통과했지만 최종전 잔탄1발로 여유가 작다. [적용·근거·증거](../../../docs/qa/reports/build_revision_2026-10-27.md). 다음은 장갑/열/정예·보스 대응과 획득 기회. 가방·슬롯/거리 표현/소모품·고갈/관문 씬은 후속.
++
++**진행 중 — 승인된 순차 개편(2026-10-27):** 후반 기록 복사 병목1차 수정 본편 적용. 전체 기록/계산 보존, 래칫5구역 화면 약110→70ms·예측15.5→0.7ms. 집중273/중앙1,775/연계142/UI113실패0; 과거 확장977실패는 기존 전체 복사에서도 동일. 3빌드162조건 비교 준비, 수치 미변경. 다음은 탄환·파츠·방어·열·보스 공동 조정. UI 재구성·Galaxy/체감은 남음. [결과·한계·후속](../../../docs/qa/reports/playtest_revision_2026-10-27.md).
++
++**최신 플레이 피드백 정리 — 2026-10-26:** 사용자 요청으로 구현에 앞서 오늘 원문12항목과 개선안·판단 기준을 정리했다. 후반 성능, 파츠/탄 선택, 방어/열/보스 대응을 함께 개선하는 제안이며 게임 규칙 변경 없음. 복장의 총 휴대량/손패 역할, 슬롯 확장, 비상 보급·일회용 탄약은 미확정이다. 이전 격리 계산의 기능 확인과 아직 측정하지 않은 성능/사람 체감을 구분한다. [전체 피드백·개선안·우선순위](../../../docs/history/design/playtest-review-2026-10-26.md).
++
++**현재 — 승인 B 친위대 본편·5구역까지 임시 균형:** 일반4종+친위대장+탑의 지배자, 교대 지휘와 차폐 피드백·엔딩 연결을 편성11에 적용. 첫 관문 HP32, 최종전 포격 호위→중장병, 다른 구역과 이전 저장 보존. 새 등반5무기·3시드 연속 검증 결과는 [완료 보고서](../../../docs/qa/reports/central_live_2026-10-26.md), 현행 수치는 [중앙 정본](../../../docs/direction/central-enemies.md). 실행 `PLAY.cmd` 또는 개발 메뉴 중앙 일반전/친위대장/지배자. 다음 판단은 추가 지도자 원화 선호, 실제 지휘 이해와 장기 체감, Galaxy 실기기다. A/B 비교 뷰어와 원본은 보존한다.
++
++**현재 — 승인 상점·실내 아트 본편 통합 완료:** 실제 상점 노드에 새 레이아웃/현재 장비·복장·이야기/구매·교체·파츠·충전·저장 연결. 상점1,295/복장 통합1,368검사 실패0. 보급·작업대 새 배경/자세 확인, 고해상도 원본3장 백업 일치. 실행 `PLAY.cmd`; 다음은 사용자 본편 체감/Galaxy 확인. 아래 ‘별도 시안/본편 미교체’ 상태보다 우선. [화면·검증](../../../docs/qa/reports/shop_live_2026-10-25.md).
++
++**현재 — 실내 배경 도트 밀도 완화:** 상점/보급/작업대 세밀한 원본 별도 보존, 큰 도트 색면 버전 본편/시안 적용.21복장·장소 합성 시각 확인, 상점3비율924검사 실패0. 다음은 사용자 미감 확인. [비교·백업](../../../docs/qa/reports/service_background_grouped_2026-10-25.md).
++
++**현재 — 실내 인물 교정(2026-10-25):** 상점 대화 자세 복원, 7복장×3장소의 배경/인물 도트 조화와 손·발 접점 교정. 본편 캐릭터 아트와 상점 시안에 적용. 통합1,368/시안924검사 실패0,21실내 조합 시각 확인. 다음은 사용자 미감 확인이며 상점 UI 본편 전환은 별도 단계다. [검증·화면](../../../docs/qa/reports/service_cohesion_2026-10-25.md).
++
++**현재 — 상점 와이어프레임 인게임 시안(2026-10-25):** 별도 Godot 화면과 현행 구매 모델 연결. 후속 v2는 먹색 효과판/황동 구매 버튼, 중첩 박스 축소와 상세 설명 분리. `SHOP_UI_PREVIEW.cmd`로 실행. 세 비율·터치/구매/상세889검사 실패0, 대표 렌더 확인. 본편 교체 전 사용자 미감 확인 단계이며 본편 상점/저장/4구역 유지. [시안과 검증](../../../docs/history/design/shop-wireframe-preview-2026-10-25.md).
++
++**현재 — 4구역 본편 적용:** 일반4종/수석 시종/백동 후작, 차폐 개방·복구 예고·키포즈·개발 메뉴 테스트를 연결했다. 실제3→4구역 획득 덱 다섯 무기 진행과5구역 입구, 저장/예측/화면/피니시 검증 완료. 다음은 사용자4구역 체감 확인과5구역 친위대·지배자 설계 구현이다. 기존 저장1~9는 보존, 새 등반 편성10. [규칙](../../../docs/direction/noble-enemies.md) · [검증·테스트 경로](../../../docs/qa/reports/noble_live_2026-10-25.md).
++
++**현재 — 승인7복장 본편 적용:** 전투·장비 선택의 같은 배우 사용, C 기준 한손/양손 체형·색면, 운반/정찰 구분, 21실내 자세 적용 완료. 동작과 저장 검증의 최신 결과는 [보고서](../../../docs/qa/reports/outfits_unified_2026-10-25.md)에 둔다. 다음은 사용자 실제 움직임·미감 확인이다. 규칙·기본 선택 운반6장·획득 방식은 유지했다.
++
++**현재 — 무기5종·화풍 통합 완료:** 본편 이름/원화/파지·모션·공통 표시를 적용하고 스플린터v4 회녹색, 리액터 신규 규칙/기존 저장 분리를 연결했다. 최종6837검사 실패0. Drive PDF 전달과 사용자 미감/Galaxy/탄약 효율 후속은 [최종 보고](../../../docs/qa/reports/art_cohesion_2026-10-24.md) 참조. 아래 시안 단계 기록보다 우선한다.
++
++
++**최신 — 남은 무기3종 원화:** 사용자 요청으로 스플린터/리액터/스파이크 각1장 제작·채팅 표시, 전체 프롬프트·원본·참조/출력 해시 보존. 격리 Godot400px/110px 비교1장 확인. 새3종 파지/모션/본편 적용과 사용자 미감 확인은 후속. [화면·범위](../../../docs/qa/reports/weapon_concepts_2026-10-24.md).
++
++**최신 후속 — 리벳 축소·명칭/압쇄 재설계:** 영문 음차5명칭안, 시안 리벳 손 기준23%/진열18% 축소. 별도9렌더 오류 없음,3대표 화면 확인. 압쇄는 사용자가 능력 자체 변경을 선택했고, 리액터 과부하 연사로 새 설계안을 정리했다. 본편 이름/능력 미변경. [규칙안·경계 조건](../../../docs/direction/weapon-design.md) · [화면](../../../docs/qa/reports/weapon_concepts_2026-10-24.md).
++
++**최신 — 무기 디자인/명칭 시안(2026-10-24):** 사용자 요청으로3구역 이후 확장보다 기존 파지 유지·무기 디자인 검토를 먼저 한다. ARC Raiders 원제작자 자료 참고,5종 이름안과 빗장/래칫 원화2장·독립 Godot 비교 뷰어 추가.9렌더 생성/대표4장 최종 시각 확인, 구문/실행 오류 없음. 본편 무기 이름·아트·규칙 미교체, 사용자 미감/나머지3종/본편 통합 후속. [설계](../../../docs/direction/weapon-design.md) · [실행·검수](../../../docs/qa/reports/weapon_concepts_2026-10-24.md).
++
++**현재 — 우수 정원 정예·보스(2026-10-24 후속):** 긴발 숨접이/수로의 어미2원화·6키포즈, 도약 예고/차단/휴식과 본편 편성9·개발 바로가기 적용. 기존 저장 보존. 최종4,650검사 실패0, 23캡처 중 대표7장 검수. 획득 덱5무기×2전투 돌파 가능; 무기 간 탄약 격차와 현행 성장의3구역 전체 진행·사용자 미감/Galaxy는 후속. 다음 제작 우선순위는4구역 귀족/시종 외형·차폐 해제 예고. [화면·검증](../../../docs/qa/reports/garden_live_2026-10-24.md).
++
++**현재 — 중앙 통제구3단계 배경(2026-10-24 후속):** 검문 회랑/공급 통제실/중앙 제어핵 원화와 본편5구역·개발 메뉴3진입 연결. 현행10단계3등분, 기존 편성/수치 유지. 중앙/귀족/정원/공통 회귀5,967검사 실패0,19렌더 중16화면 검수. 미리보기의 이전 방 완료 상태를 초기화해 보상/기존 엔딩 전환 확인. 다섯 구역 높이별 전투 배경 제작을 마쳤으며 다음 우선 제작은3구역 긴발 숨접이/수로의 어미 시안·동작·접근 예고다. 4~5구역 전용 적·엔딩 아트·연속 밸런스·Galaxy·신규 배경 사용자 미감은 후속. [화면·출처·검증](../../../docs/qa/reports/central_background_2026-10-24.md).
++
++**현재 — 귀족 거주구3단계 배경(2026-10-24):** 사용자 다음 구역 요청으로4구역 전용 승강장/저택 거리/가문 접견관 원화를 본편에 연결했다.9단계3등분·개발 메뉴3진입·작업 표시명 ‘귀족 거주구’, 기존 편성/수치 유지. 최종 귀족/정원/공통 배경4,178검사 실패0, 대표13화면 검수. 최초 입력 검사 실패는 진단 이후 재현되지 않았으며 원인 미확정 기록. 5구역 중추 배경은 위 후속 작업에서 적용했으며3구역 신규 정예/보스·4구역 귀족 적과 차폐 동작은 별도 후속. 사용자 미감·Galaxy·연속 난이도는 미검증. [화면·출처·검증](../../../docs/qa/reports/noble_background_2026-10-24.md).
++
++**현재 — 우수 정원3단계 배경(2026-10-23 후속):** 주조장 배경 긍정 평가 이후 다음 구역 요청으로3구역 사육 통로/온실/집수 수로를 본편 적용했다.9단계3등분·기존 저장 편성 보존·개발 메뉴 정원 배경3진입 연결. 최초 기능2,520검사 실패0,16렌더/대표12장 시각 확인. 사용자 정원 긍정 평가 후 상층 식물 보강 요청에 따라 upper_v2 적용, UI 재검증1,641검사 실패0 및 상층3비율·보스·피니시5화면 확인. 다음은3구역 긴발 숨접이/수로의 어미 시안·동작/도약 예고와 접근 압박 조정. 상층v2 사용자 미감·Galaxy·현행 편성 연속 난이도는 후속. [화면·검증·실행](../../../docs/qa/reports/garden_background_2026-10-23.md).
++
++**현재 — 주조장 정예·보스 시안(2026-10-23):** 금형 파수꾼/주조 감독2장과 일반 금형공 비교 완료. 기존 뷰어의 일반4종/정예·보스 그룹 전환,3해상도12화면 잘림·겹침·발/개발 진입·닫기 실패0. 총6종 정지 시안 준비, 본편 수치·편성은 기존 상태. 다음은 상태 키포즈와 고체력 패턴/전투 표시 연결. 사용자 미감·Galaxy·전용 배경은 후속. [화면·출처](../../../docs/qa/reports/foundry_leaders_2026-10-23.md).
++
++**현재 — 주조장 일반4종 시안(2026-10-22):** 원화4장과 독립 Godot 확대/전투 크기 뷰어, 개발 메뉴 진입 완료.3비율 렌더/발·잘림/진입·닫기 확인. 본편 편성·전투 수치는 기존 상태. 다음은 사용자 시안 검토 후2구역 정예/보스 및 상태 동작 제작. [화면·출처](../../../docs/qa/reports/foundry_concepts_2026-10-22.md).
++
++**현재 — 구역별 적 콘셉트(2026-10-21):** 사용자 요청에 따라 일반 고유15종/정예5/보스5의 디렉터1차안 정리. 구역마다 일반4종을 배치하며 상층5칸은 기존 기계의 시종/친위 사양으로 재등장.3구역 긴발 정예/수로의 어미는 신규 제안. 다음은 사용자 명단·정체/실루엣 검토 후2구역 정지 콘셉트 제작. 게임 규칙·아트는 아직 미변경. [명단](../../../docs/direction/enemy-concepts.md).
++
++**현재 — 관문 개조(2026-10-21):** 첫 전투 코어 유지, 보스 전리품+특별 개조 연결. 축열/생산권/연쇄와 전투 표시, 생산 전 확인, 기존 저장 버전 보존 완료. 규칙540/UI48/비축 회귀683/1→2구역 연속3,963검사 실패0. 다음은 사용자 새 등반 관문 선택 체감과 무기별 성장 편차,3~5구역 장기 검증. [규칙](../../../docs/direction/gate-rewards.md) · [증거](../../../docs/qa/reports/gate_rewards_2026-10-21.md).
++
++**현재 — 복장 윤곽·첫 지역 인간 적(2026-10-21):** 선택7복장 v4, 인간 일반4종/정예1종3키포즈와 전투·예고·후속 아이콘 적용. 새 등반 편성7, 기존 저장 보존. 생물4종/공명 정예3구역 이관. 다음은 사용자 새 등반 미감·역할 판독과2구역 체감 확인,3구역 전체 진행/경제·환경 아트는 후속. [현행](../../../docs/direction/slum-enemies.md) · [화면·검증](../../../docs/qa/reports/slum_outfits_2026-10-21.md).
++
++**현재 — 2구역 테스트 확장(2026-10-21):** 축열 주조장 일반전6→7→8기, 장갑 교대 정예와 장갑/호위 독려 보스를 편성6에 연결했다. 실제1구역 획득 덱으로5총기·2시드 연속 진행, 열/예측/저장·실제 화면 검증. 개발자 메뉴에 무기별2구역 입구 추가(저장 안 함). 다음은 사용자2구역 테스트와 압쇄의 탄약 부담·증강의 여유 차이 확인. 전용 아트/고난도/Galaxy는 후속. [규칙](../../../docs/direction/monster-roster.md) · [비교·검증·실행](../../../docs/qa/reports/foundry_balance_2026-10-21.md).
++
++**현재 — 보스 문판 상향(2026-10-21):** 폐쇄 당직의 닫힘/열림 차이를 강화했다. 다음은 공격 시점 선택과 탄약 부담의 사용자 체감 확인. [현행 수치·적용 범위](../../../docs/direction/monster-roster.md) · [비교·검증](../../../docs/qa/reports/boss_armor_2026-10-21.md).
++
++**현재 — 장전 후 개별 회수 금지(2026-10-21 최종):** 사용자 승인으로 개별 회수/임시 압축 취소를 금지하고 순서 이동은 유지했다. 포기 시 전체 재장전 배출+기존 턴 비용, 미장전 손패 보존. 회수 버튼 제거와 배출 수/적 행동 턴 표시, 첫 발 고정 안내 적용. 이전 개별 회수 비용안 대체, 비축 이전 저장/훈련 유지. 다음은 사람의 판단 긴장감과 조작 부담 확인. [규칙](../../../docs/direction/ammo-reserve.md) · [검증](../../../docs/qa/reports/load_commit_2026-10-21.md).
++
++**현재 완료 — 플레이 피드백 후속(2026-10-20):** 새 등반의 전투별 탄약 비축, 추가/교체 선택, 확정 후 배출 비용, 미사용 손패 보존, 확보 특수탄 첫 패1장, 과열 비용 분절, 정예/보스 전달과 복장7종 선택 자세 통일을 적용했다. 기존 저장은 원래 순환 유지. 다음은 사용자 새 등반 테스트로 탄약 소진·저위력탄 보존·과열 비용·복장 미감을 확인하는 것. 발사기구 파츠/상위 구역/Galaxy는 후속. [현행 규칙](../../../docs/direction/ammo-reserve.md) · [검증·화면](../../../docs/qa/reports/playtest_revision_2026-10-20.md).
++
++**현재 완료 — 소이탄 통합(2026-10-20):** 고열탄을 화상 계열 소이탄으로 통합, 기존 탄/장전/압축/캠페인 저장 보존. 손패·발사 레일·보호막 피격 결과에 화상 피해/기간을 우선 표시. 집중·발열·획득·UI 6,761검사 실패0. 사용자 체감·Galaxy·보호막 재충전 적은 후속. [현행 규칙](../../../docs/direction/ammo-build-roles.md) · [검증](../../../docs/qa/reports/incendiary_merge_2026-10-20.md).
++
++**초기 점검 — 2026-10-20 플레이 피드백:** 전투 재미 개선은 사용자 확인. 발열/정예·보스/복장 문제와 탄약 비교안을 기록하고 게이지 기준선 누락을 수정했다. 이후 구현 상태는 위 최신 완료 항목이 우선한다. [당시 점검](../../../docs/qa/reports/playtest_review_2026-10-20.md).
++
++**현재 완료 — 첫 지역 정예·보스:** 공명 처마등과 폐쇄 당직의 원화/상태 동작·예고·규칙·본편 편성5·개발 메뉴를 연결했다. 기존 저장 편성 보존. 80조건 돌파 경로 및 첫 구역6회 전체 진행/저장, 3해상도 UI와 보스 피니시 확인. 다음은 사용자 전투 체감, Galaxy, 난도/상위 지역 확장 판단. [규칙·수치 원본](../../../docs/direction/monster-roster.md#현행-구현--편성5) · [검증·화면](../../../docs/qa/reports/elite_boss_2026-10-18.md).
++
++**현행 작업 — 장소 배경·피니시 타이밍:** 그림39~53% 확대, 버튼 비확장/정렬 유지, 상점 긴 이야기1200px 콘텐츠. 마지막 탄 적중 직전부터 확대하고 피해 확인/사망 이후 복귀. 3,849검사 실패0, 실제 단계 화면 확인. 다음은 사용자 체감·Galaxy 확인과 기존 장소 선택 가치 검증. [결과](../../../docs/qa/reports/place_art_finish_timing_2026-10-18.md).
++
++
++**전투 UI 통합 — 2026-10-18 후속:** 사용자 요청으로 발사 카드 아래에 결과 행을 배치해 발열까지 간격4→40px, 발열에서 탄환 선택 제목까지44→8px로 조정했다. 손패에 공통 계단형 금속 외피·이름 띠·탄약 홈·발열 비용 띠, 빈 자리에 어두운 홈을 적용했다. 조작부430px·카드132px·고정10자리·규칙 유지. 최신 UI/배치2,270검사 실패0, 실제 화면 검수. Galaxy·사용자 미감은 후속. [화면·검증](../../../docs/qa/reports/combat_card_finish_2026-10-18.md).
++
++**전투 계기 도트 폴리싱 — 2026-10-18:** 사용자 요청으로 발사 순서를 급탄 레일·약실 홈으로, 발열을 금속 계기·온도계·눈금/한계 경고로 다듬고 조작 키의 재질을 통일했다. 실제/예상 열·냉각 구분, 높이/입력/규칙 유지. UI1,444+발열410=1,854검사 실패0, 실제 화면 검수. 플레이 균형은 사용자 테스트 의견 대기, 계기 외형은 사용자 긍정 평가, Galaxy는 확인 전. [화면·검증](../../../docs/qa/reports/combat_instruments_2026-10-18.md).
++
++**피니시 대상 줌 — 2026-10-18 후속:** 사용자 추가 요청으로 전장 최대25% 확대, 줌인·슬로우·줌아웃 전체2.5초(보통 설정)로 조정했다. 동시 처치 대상을 함께 담고 배경 빈틈·숫자 잘림을 제한하며 HUD는 고정한다. 이전12% 버전은 사용자 긍정 평가. 조정 후3해상도456검사 실패0, 실제2.468~2.504초·1.25배 확인. 25%·2.5초도 사용자 긍정 평가로 유지. Galaxy는 후속. [화면·검증](../../../docs/qa/reports/finish_zoom_2026-10-18.md).
++
++**큰 피해·처치·피니시 — 2026-10-18 후속:** 사용자 피드백으로 실제 큰 피해/처치 숫자를 확대하고 전투의 마지막 처치에 로컬 슬로우를 추가했다(초기0.8초, 현행2.5초). 증원 대기에는 생략하며 동시·화상 처치, 건너뛰기/빠르게/즉시와 본편 보상 전환을 검증했다. 발사 결과 UI·전투 계산 유지. 집중526+기존 연출909=1,435검사 실패0. 기본탄 위력2~3 빈도는 수치 변경 없이 후속 밸런스 관찰로 기록. Galaxy·사람 체감은 후속. [화면·검증](../../../docs/qa/reports/finish_feedback_2026-10-18.md).
++
++**탄환 공용 UI·확보 흐름 — 2026-10-18 후속:** 작은 무광 탄환 아트를 보상·상점·가방·압축에 통합하고, 나머지 현행 11가족과 기존 연계탄 그림을 추가했다. 교체/개조의 실제 주요 효과·발열·칸수 비교, 가방의 고정 탭/상세와 내부 터치 스크롤을 적용. 전투 고정10자리와 게임 규칙 유지. 실제 GPU UI검사2,985개 실패0; Galaxy·사용자 미감은 확인 전. [화면·범위·검증](../../../docs/qa/reports/ammo_collection_2026-10-18.md).
++
++**전투 카드 본편 통합 — 2026-10-18:** 작은 v4 탄환 카드와 레일/발열/행동 키를 실제 전투에 연결했다. 4·6·10장 모두 같은 10자리 배열, 미확장·빈 칸·장전·사용함·압축을 구별한다. 길게 누르기/상세 버튼과 실제 회수·교환·압축 연결. 기능/실제 화면 검증 완료, Galaxy·사용자 미감은 확인 전. [화면·범위·검증](../../../docs/qa/reports/combat_hand_live_2026-10-18.md).
++
++
++**상점·파츠 UI — 2026-10-17:** 외부 디자인 원칙을 세계관·도트·Godot에 맞게 기존 아트 스킬에 선별 반영. 상점 실내 높이/상품·구매 결과, 장착대·성능표 파츠 카드, 교체 효과/패널티/실제 수치 비교 적용. 핵심 규칙 유지. 현행 UI1,097검사 실패0, 실제 Galaxy/사람 미감 확인 전. [화면·검증·과거 검사 한계](../../../docs/qa/reports/shop_parts_design_2026-10-17.md).
++
++**최신 — 탄환 카드/확보 UI:** 탄약 받침·성능표의 공용 도트 카드, 보상 전체 선택, 교체·추가 비교와 비차단 확보 알림 적용. 규칙 유지. UI1,083검사 실패0/3해상도, 사람 미감·Galaxy 확인 필요. 후속 상점·파츠 개편은 위 최신 항목 참조. [화면과 검증](../../../docs/qa/reports/ammo_card_design_2026-10-17.md).
++
++**최신 — 특수탄 직접 확보:** 기본탄10장 출발, 첫 승리 코어→특수탄 선택, 보상/상점/보급 기본탄 교체, 초반 편성4. 기존 저장 보존. 기능·3해상도 검증 완료, 사람 체감/Galaxy 확인 필요. [규칙](../../../docs/direction/ammo-build-roles.md) · [증거](../../../docs/qa/reports/earned_ammo_2026-10-17.md).
++
++**구역 배경3단계:** 첫 구역 전투 배경을 현재 노드 높이로 변경, 초반기존/중반폐쇄주거/상층승강설비. 전 구역 공통규칙과 개발 미리보기3개,881검사/실패0 및3해상도 시각 검수. [기록](../../../docs/qa/reports/ascent_background_2026-10-11.md). 사람 선호와 다른 구역별 아트 제작은 후속.
++
++**돌출 막대 원인 정정·수정:** 사용자 재캡처를 발열0/1로 재현하여 잔열18×3 사각 효과로 확인. 독립 막대/과열 사각형 제거, 실제 금속 텍스처 내 열기 색으로 교체. 직접 회귀100+동작502+전투911=1,513검사/실패0. [같은 조건 전후·원인](../../../docs/qa/reports/weapon_heat_artifact_2026-10-11.md). 사용자 재확인은 후속.
++
++**전투 총구 가독성 후속:** 전투 전용 총기5종 단순화·장총 앞손 가림 축소·재장전 부품 재등록. 동작501+전투911=1,412검사/실패0,5종×6자세와 본편 화면 확인. [결과](../../../docs/qa/reports/weapon_readability_2026-10-11.md). 사람 선호/Galaxy는 후속.
++
++**사용자 검수 후 수정 — 무기 모션:** 권총 팔의 길이/방향 일관성과 쇄도 크기v2교정. 일반탄 반동0 조건 해소, 진행률에 따른 재장전 부품 추출/삽입. 실제 렌더 비교 포함 동작501+전투911=1,412검사/실패0. [수정 화면·원인](../../../docs/qa/reports/weapon_motion_2026-10-11.md). 사람 체감 재확인/Galaxy는 후속.
++
++**최신 — 무기별 전투 모션:** 권총/장총2가족·기존5총기 분리 합성, 약실/탄창/총열 재장전·총구 효과 등록. 동작453+전투 피드백911=1,364검사 통과, 실제3해상도 확인. 기본 복장 대상이며 다른 복장 전투 외형·Galaxy 체감은 후속. [기록](../../../docs/qa/reports/weapon_motion_2026-10-11.md).
++
++**최신 — 총기 원화:** 장비 선택의 큰 그림과 하단5총기를 전용 원화로 통합. 457검사 통과와5종×3화면비 캡처 확인. [결과·한계](../../../docs/qa/reports/weapon_art_2026-10-11.md). 전투 캐릭터의 총기별 동작은 후속.
++
++**최신 — 등반 장비 선택:** 다섯 무기·세 복장을 정비실 한 화면에 통합. 복장별 중앙 미리보기, 실제 시작 덱/가방/교환/발열 수치 연결, 보급·난도·시드 보조 창과 기존 저장 보호 유지. [화면·검증·남은 범위](../../../docs/qa/reports/equipment_2026-10-11.md). 다음은 화면 체감 확인, 복장별 전투 애니메이션은 별도 후속.
++
++**최신 — 타이틀 전용 대기:** 왼쪽 시선과 4포즈/6.9초 모자 챙 동작 적용, 접지·화면 크롭·즉시 설정 정지 포함190검사 통과. [실제 화면](../../../docs/qa/reports/title_idle_2026-10-11.md). 사람 선호/Galaxy 확인은 후속.
++
++**최신 — ORVASK 타이틀:** 사용자 채택한 단일 제목·탑 고유명, 전용 배경/격자 로고/메인 메뉴 본편 적용. 현재 저장에 따른 주 행동·하단 보조 메뉴·설정·기존 Windows 저장 경로 보존. 타이틀111/프런트33/탐색418 =562검사 통과. [실제 화면·한계](../../../docs/qa/reports/title_2026-10-11.md). 다음은 사용자 첫 화면 체감 확인 및 무기 준비 화면 시각 연결, 이후 두 번째 지역.
++
++**최신 — 첫 지역 본편 생물:** 새 등반의 네 생물·단계별 소개/혼합·관문, 기존 저장 버전 보존, 실제 종별 반응/상세/예측 연결. 규칙4162/UI475/5총기×2시드 캠페인4407 =9044검사 통과. [증거·한계](../../../docs/qa/reports/residential_campaign_2026-10-11.md). 다음은 사람 플레이에서 종 대응/탄환 선택 체감 확인 후 상위 지역 종별 제작.
++
++**최신 — 공통 도트 창·터치 스크롤:** 네이티브 설정/상세/확인 창 대체, 중간 패널 입력 차단 수정. 고정 닫기/확인/취소·포커스, 보관함/맵/내용/페이지 스와이프와 탄환 드래그 공존.79+418=497검사 통과. [증거·실기기 한계](../../../docs/qa/reports/modal_touch_2026-10-11.md). 다음은 첫 지역 생물의 본편 적용·편성 검증.
++
++**최신 — 화면 연결·행동 효과음:** 실제 행동에 원본12종 소리와 비차단 페이지 전환 연결. 효과음 설정/음소거/즉시/건너뛰기 지원. 빠른 왕복의 지연 포커스 오류 수정.3해상도258검사·실제 믹서 최대0.758118, 실패0. [검증·미검증](../../../docs/qa/reports/presentation_feedback_2026-10-11.md). 청감/Galaxy·최종 사운드 세트·네이티브 대화창 외곽은 후속.
++
++**최신 — 처마등 동작:**4키포즈·4태그 ASE 타임라인/내보내기/발 등록/실제 이벤트 재생 연결. 동작81+시안163+가족221=465검사 통과. [화면과 남은 범위](../../../docs/qa/reports/monster_motion_2026-10-11.md). 개발 메뉴 → 몬스터 동작 · 처마등. 사람 체감/후속 프레임·종 확장은 후속.
++
++**후속 완료 — 개발 작업대:** 공용 UI 상태 비교와 현행 탄환/파츠 검색·장전·장착·실제 조합 시험·결과 고정 비교. 저장 격리/실제 Model·Forecast 연결, 3해상도134검사 통과. [화면/실행/남은 범위](../../../docs/qa/reports/developer_lab_2026-10-11.md). 다음은 대표 적의 태그 애니메이션 제작 경로와 본편 대화창 등 스타일 잔재 점검.
++
++**현재 — 외부 자료 확보 완료:**12개 저장소/5,445파일 고정 버전·해시·라이선스·복원 도구 확보. UI 테마 로드 통과; Importality 종료 정리 경고, 카드 도구 샘플 경로 의존 기록. 공통 드롭다운/토글/스크롤바 첫 적용75검사 통과. [보관소](../../../reference_library/README.md) · [다음 적용 순서](../../../docs/direction/external-adoption.md). 다음은 전체 UI 상태 비교와 현재 Content 기반 탄환·파츠 제작 도구.
++
++**현재 후속 — 전투 효과와 제작 경로:** 장갑 파편·실제 대상 전격·냉각 증기 적용. 승인 주인공4자세의 편집 원본과 좌표 내보내기 연결. 전투911/동작226검사 통과, 원본 RGBA 보존. [검증](../../../docs/qa/reports/combat_vfx_pipeline_2026-10-11.md) · [효과 확장 기준](../../../docs/direction/effect-pipeline.md). 다음은 효과 강도·속도의 사용자 체감 확인.
++
++**후속 구현 — 전투 조작 단서:** 삽입 위치/냉각 미리보기·비활성 이유·실제 탄 수·버튼 역할색과 재장전 턴 분절. 전투 씬 주요 배치 직렬화. 새3해상도340검사/0실패. [증거](../../../docs/qa/reports/combat_affordance_2026-10-10.md). 비전투 확장 및 사람/Galaxy 확인은 후속.
++
++**후속 구현 — 전투 피드백:** 사용자 선택 도트 UI 유지, 피해 숫자/효과 분리·실제 다중 표적 피해·HP 잔상·버튼/탄창 반응. 모델/RNG 보존·3해상도 겹침·즉시 설정 검사. [증거](../../../docs/qa/reports/combat_feedback_2026-10-09.md). 강도/속도와 Galaxy 체감은 후속.
++
++**현행 — 전투 도트 UI 통합 수정:** 사용자 미채택 정비함 외피를 철회. 도트 프레임/글꼴을 탄환·탄창·발열·발사·재장전(위험 포함)·보조 버튼에 연결. 발사/재장전 폭 정렬, 카드 입력 피드백/드래그 통일. [통합 화면·검증](../../../docs/qa/reports/combat_pixel_ui_2026-10-09.md). 사용자 스타일 채택·Galaxy 판독은 후속.
++
++**최신 완료 — 전투 비주얼 1차:** 공용 금속 프레임/탄창·분절 열계·접지/입자·과열/냉각 및 실제 진행 표시 적용. 개발 시연 연결, 실제3해상도282/고정배치662검사 통과. 다음은 사람/Galaxy에서 강도·판독·속도 확인. [검증](../../../docs/qa/reports/combat_finish_2026-10-09.md).
++
++**후속 수정 — 장전 화면 높이:** 장전/회수/확정/과열·예측 전환의 위치 변화 재현 후 고정 공간으로 수정.3해상도662검사 통과. [증거](../../../docs/qa/reports/combat_hierarchy_2026-10-09.md#후속-수정--장전-시-화면-높이-변화).
++
++**최신 완료 — 전투 정보 위계·발열/냉각:** 조건부 편집/결과·큰 열 게이지·냉각 전후/적 턴·과열 경고, 다음2장 가방 이동. 3해상도473검사/전투341/가방618 통과. [검증](../../../docs/qa/reports/combat_hierarchy_2026-10-09.md). 다음은 사람 플레이로 발열 판단과 재장전 비용 이해도 확인.
++
++**최신 완료 — 탄환 가방:** 전투 버튼·5개 분류/수량·탄환 상세·무소모 열람·중복 없는 집계·닫기/뒤로/포커스.3해상도618검사/전투UI341검사 통과, Galaxy/사람 체감은 후속. [검증](../../../docs/qa/reports/ammo_bag_2026-10-09.md).
++
++**최신 적용 — 기본탄 개별 카드:** 새 등반 기본3/전술7, 가방 포함·버린 더미 순환, 교환/예약/제거·편집 중 재장전·개별 UI·구 저장 분리. 규칙11842/UI341/가방756/파츠2265검사 통과. [규칙](../../../docs/direction/ammo-cycle.md), [검증](../../../docs/qa/reports/ammo_cycle_2026-10-09.md). 다음은 사람 플레이로 시작 비율·큰 탄창의 패 부족을 확인.
++
++**완료 — 파츠 역할 개편:** 기존26종 역할 재분류/2종 수정·신규2종, 총28종. 일반 연쇄·압축 준비·관통/중량 특화와 실제 발동·산개 예측·상점/장비·연습3종 연결. [설계](../../../docs/direction/parts-builds.md), [검증](../../../docs/qa/reports/parts_revision_2026-10-09.md). 다음은 일반/압축 선택 빈도·필수 파츠 여부와 Galaxy 체감 확인.
++
++**적용 — 탄환 등급/압축17계열:** 일반2→고급1, 상점 영구 압축/전투 임시/후반 발견 연결. 신규 고급11계열, 비용/위치 비교와 등급 막대 적용. 규칙2518·실제 UI559검사 통과. 희귀 단계·사람 밸런스·Galaxy 확인은 후속. [설계](../../../docs/direction/ammo-grades.md), [검증](../../../docs/qa/reports/ammo_grades_2026-10-09.md).
++
++**후속 완료 — 탄종 명칭 통일:** 기본탄/불씨탄/연타탄/고열탄/열방출탄 및 UI 축약명·관련 설명 적용. 내부 ID/수치 유지. 4해상도5총기3342검사, 긴 이름 실제 화면 확인. [기록](../../../docs/qa/reports/ammo_card_cleanup_2026-10-09.md#후속--탄환-이름-정리).
++
++**후속 완료 — 전투 탄환 카드 정리:** 발열 확대/상단 정렬, 피해 밝기 통일, 압축·수량 분리, 내부 효과 박스 제거, 드래그 미리보기 통일. 실제4해상도5총기3342검사/0실패 및 작은 화면 시각 확인. [비교·검증](../../../docs/qa/reports/ammo_card_cleanup_2026-10-09.md). 사용자 체감·Galaxy는 후속.
++
++**후속 완료 — 상태 아이콘 우측 상단 정렬:** HP 왼쪽/약점·장갑 오른쪽, 다중 상태는 위로 줄바꿈, 거리는 발밑 유지. 실제3해상도2180검사/0실패, 세 자리 HP+복합 상태 겹침 및 화면 확인. [현재 화면·검증](../../../docs/qa/reports/enemy_hud_2026-10-09.md). 사람 체감·Galaxy 실기기는 후속.
++
++**후속 완료 — A/B/C/D 제거·HP/거리/약점 확대:** HP26/거리20/상태 기호21px, 박스 없이 위계 정리. 탄창 피해량/실제 터치 표적 강조, 산개 가능한 대상 표시, 상세 이름 연결. 실제3해상도800검사/0실패. [현재 화면·검증](../../../docs/qa/reports/enemy_hud_2026-10-09.md). 사람 체감·Galaxy 확인은 후속.
++
++**후속 완료 — 몬스터 HUD 박스 제거:** 사각 배경/프레임 없이 현재값·체력 바·거리·아이콘 표시. 밝은 배경의 글자 대비 보강, 숨은 터치 영역/상세 유지. 실제3해상도782검사/0실패. [현재 화면](../../../docs/qa/reports/enemy_hud_2026-10-09_assets/open_idle_1008.png). 사람 체감은 후속.
++
++**완료 — 몬스터 머리 위 정보 최적화:** 예상 HP/손실 바 제거, 현재 HP·거리·A/B/C+도트 상태 아이콘, 머리 기준 배치/발밑 중복 제거, 터치 상세를 공통 전체 화면으로 정리. 실제3해상도782검사/0실패, 장전 전후 HUD 픽셀 동일/명중 후 실제값 확인. [화면·검증](../../../docs/qa/reports/enemy_hud_2026-10-09.md). 아이콘 이해도와 Galaxy 실기기는 후속. APK/커밋/푸시 없음.
++
++**완료 — 전장 확대·탄환 카드 화풍 정리:** 본편 전투 공통 높이 재배분, 승인 주인공 크기·카드 글자 크기 유지, 카드 프레임/속성 강조색 조정. 4해상도·5총기3134검사/0실패, 기존 생물 시안 회귀221검사/0실패. [화면·검증](../../../docs/qa/reports/combat_layout_2026-10-09.md). 다음은 사용자 체감 확인, 기존 몬스터 종별 동작·지역 편성 구체화. APK/커밋/푸시 없음.
++
++**완료 — 후속 생물2종/네 역할 비교:** 개발 → `몬스터 시안 · 주거 통로`. 숨접이·빗주머니를 승인 처마등/주인공/배경 기준으로 각1회 제작하고 기존 접근·전기 약점에 연결했다. 3해상도221검사/0실패, 실제 접지/클릭/사격/재장전/원거리/일반 화면 복귀 확인. [보고서](../../../docs/qa/reports/residential_creatures_2026-10-09.md). 다음은 새2종 컨셉/형태 확인 후 첫 구역 목록과 종별 동작·편성 구체화. 본편 교체/신규 APK 없음.
++
++**완료 — 대표 몬스터 시안/플레이 비교:** 개발 → `몬스터 시안 · 처마등`, 기존 장갑 역할에 겹등판 생물 후보를 표시한다. 승인 참조로 제작·알파 보정1회, 실제3해상도163검사/0실패와 화면 확인. [결과](../../../docs/qa/reports/eavesback_concept_2026-10-09.md). 개별 시안의 사용자 확인/첫 구역 목록·편성 확정은 후속. 본편 자산/저장 변경 없음.
++
++**완료 — 아트 제작 참조와 절차 통합:** [도트 제작 기준](../../../docs/direction/pixel-production.md)에 승인 주인공·배경·탐사도, 반례, 용도별 제작 지시와 첫 전달 전 검수를 묶었다. 원본9개 경로/메타데이터/해시 목록 및 활성·탐색용 아트 스킬 연결. 신규 생성/런타임 변경 없음. 다음은 첫 구역 대표 몬스터의 컨셉·상태 시안을 이 기준으로 만들고 실제 전장에서 비교하는 작업이다. 제작 일관성 개선은 새 제작 후 검증한다.
++
++**완료 — 사용자 채택 탐사도 본편 통합:** 본편/개발 지도·범례를 같은 역할 표식으로 통일했다. 5구역 색감, 선택 밝기 반응/이동 확정 표시, 즉시 연출 생략. 격리 저장에서 실제3해상도·5구역·3연출 설정 포함583검사/0실패, 작은 화면과 구역 화면 시각 확인. [검증](../../../docs/qa/reports/map_chart_adoption_2026-10-09.md). 다음은 사용자 플레이에서 새 반응/구역 구분 체감과 Galaxy 터치 확인이다. APK·커밋·푸시는 이번 범위에 없다.
++
++**최신 UI — 지도 정보량 축소:** 전체 폭 지도+하단 장소명/이동, 예외 조건 한 줄, 상세는 `자세히`로 분리했다. 3해상도 UI328검사/0실패와 작은 화면 시각 확인. 사람의 가독성 체감은 후속이다. [검증](../../../docs/qa/reports/map_information_2026-10-09.md).
++
++2026-10-09 · `prototype/core-redesign` · 활성 Godot 프로젝트 `새-게임-프로젝트`.
++
++**추가 사용자 결정:** 거대한 탑의 각 이동 지점을 실제1층 단위로 보이게 하지 않도록 층수/F/LV표기를 제거하고 구역명·시설·연결선 중심으로 표시했다. 내부 진행/저장 규칙은 유지한다. [시각 검증](../../../docs/qa/reports/tower_scale_ui_2026-10-09.md).
++
++**최신 구현 — 생성형 맵/경로 성장:** 출발4곳·분기/합류·5지역45방·시드별 시설/연결, 정비1회 선택, 정예 파츠 보상, 일반 배급 보정을 본편에 적용했다. 지도 미리보기/이동 확정/독립 스크롤과 기존35방 저장의 버전 보존을 연결했다. [설계](../../../docs/direction/route-map.md), [검증](../../../docs/qa/reports/route_map_2026-10-09.md). 다음은 새 등반의 체감 길이, 정예/정비 선택과 성장 속도에 대한 사람 플레이 확인이다.
++
++**직전 구현 — 개인적 등반 동기:** 사용자 채택 후 도입/지도 목표/5상점 대화/20기록/정상 복구/귀환을 본편에 연결했다. 기록실은 전체 화면으로 통일했다. 이전 진행·발견 ID를 보존하고 도입 단계와 복구 완료를 원자 저장한다. [구현 범위·검증·한계](../../../docs/qa/reports/story_flow_2026-10-09.md). 새 등반 또는 개발 → 출발 장면에서 확인한다. 인물 원화·소품/지역 배경·새 몬스터 자산은 후속이다.
++
++**후속 — 몬스터 개성 논의:** 사용자가 제작 규모를 채택하고 생물의 낯선 형태, 인간형 기계·태엽의 개성을 요청했다. 후속 답변으로 인간형 적도 전부 순수 기계임을 확정했다. [몬스터 v0.5](../../../docs/direction/monster-roster.md)의 대표 컨셉 후보를 논의한 뒤 지역별 역할/추가 종 설정 → 정지 컨셉 → 자산·명칭 통합 → 동작으로 진행한다. 이름·개별 시안·편성과 밸런스는 미확정이다. 몬스터 새 컨셉 자체는 문서 단계다.
++
++**동작 그림 사용자 확정:** 새 주인공4키포즈가 원하는 그림이라는 확인을 받았다. 이 표현을 유지하며 후속 자세/적 동작을 확장한다. 재생 속도·연결감은 별도 플레이 검증 대상이다. [확정 범위](../../../docs/direction/pixel-style.md).
++
++**전투 동작 1차 적용:** 주인공 조준·반동·재장전4키포즈와 적의 대기/접근/피격/처치 반응을 본편에 연결했다. 신규226·배우350·거리1,492검사/0실패. [자산·화면·한계](../../../docs/qa/reports/actor_motion_2026-10-05.md). 다음은 사용자 동작 체감 확인과 종별 보행/공격 프레임·자세 연결 보강이다.
++
++**거리 배치 버그 수정:** 13m/9m 역전을 실제 화면에서 재현하고 적·압력탄을 거리 순으로 통합 배치했다. 3해상도1,492검사/0실패, 행동 중123프레임 역전0건, 기존 배우350검사/0실패. [원인·변경·실제 화면](../../../docs/qa/reports/distance_order_2026-10-05.md). 사용자 수정본 플레이 확인은 후속이다.
++
++**적7종 v2 적용 완료:** 사용자 확정 주인공의 큰 색면/절제된 명암으로 적을 제작해 본편·샘플·증원 아이콘에 적용했다. 개구리 팽창 프레임의 가로 원점을 정렬했다. 실제3해상도350검사/0실패와 화면 확인 완료. [전후 화면·출처·검증](../../../docs/qa/reports/enemy_mass_v2_2026-10-05.md). 다음은 같은 표현의 대기·사격·재장전 동작이며 적 이미지의 사용자 시각 확인은 후속이다.
++
++**최신 아트 작업:** 주인공의 잔디테일/명암을 큰 색면으로 정리하고 압력두꺼비 2상태·기존 적 6종을 같은 표현으로 제작했다. 본편/샘플 적용, 원본 보존. 실제3해상도·전체7종·준비/발사/요격/차단350검사/0실패. [비교 화면·출처·한계](../../../docs/qa/reports/actor_cohesion_2026-10-05.md). 사용자 시각 확인, 프레임 애니메이션·세계관 생물 재설계·지역 배경은 후속이다. 탄환·총기·탄창·파츠 밸런스는 앞서 정한 후속 폴리싱으로 유지한다.
++
++**최신 작업:** 사용자의 탄종 확장 승인과 탄창·파츠·총기 연동 요구를 반영했다. 예약/차단/확산/연계4종 + 냉각 약실/연쇄 방열기/예약 급탄기3종, 총 전술18종·파츠26종. 기존 손패·순환·잔열·LIFO와 총기 기본값을 유지한다. 카드·전투 결과·예약 상태·상점·장비 비교·저장v12까지 연결했다. [설계](../../../docs/direction/build-synergy.md), [검증](../../../docs/qa/reports/build_synergy_2026-10-05.md).
++
++신규 규칙6,562/0·실제 UI399/0·2,520개 통제 사례19,216/0. 전체35층5총기×2경로27,075/0, 4,394명령 재생30,779/0으로 최종 상태/전투 이력 일치. 다섯 총기·성장/파츠 조합·압축/예약 보존·산개 정확 확률·v11 호환을 확인했다. 자동 기능 통과를 사람의 장기 재미/승률로 해석하지 않는다. 다음 우선순위는 실제 선택 빈도, 짧은/긴 탄창 운영, 새 탄의 역할 이해도다. Galaxy 새 빌드는 요청 시 전달한다.
++
++**최신 모바일 전달 완료:** v12 작업 트리 APK `0.5.20261005.232901`을 검증·ZIP 포장·Drive 업로드 후 재다운로드 SHA-256까지 대조했다. 배우 v2·주인공 동작·거리 배치 수정을 포함한다. [파일·검증·한계](../../../docs/qa/reports/mobile_delivery_2026-10-05.md). 앞으로 APK 요청은 [동일 전달 절차](../../../docs/mobile-delivery.md)로 처리한다. 사용자의 플레이 체감과 별도로 기기 성능/터치 검증 수치는 아직 없다.
++
++## 직전 구현 — 패 선택·순환·잔열
++
++슬더스2의 공개 덱 규칙/개발사 설명을 검토한 뒤 탄창+2장(최소5장), 재장전 시 미사용 패까지 순환, 무기별 일부 냉각·잔열 유지, 후보 전체 페이지 접근과 재장전 후 열 표시를 적용했다. 사용자 승인 범위 안의 디렉터 1차 구현값이며 LIFO/탄환 화력/적 수치는 유지했다. 저장v11은 기존 배열/작은 패를 보존한다. [설계·출처](../../../docs/direction/decision-value.md), [검증·화면·남은 한계](../../../docs/qa/reports/decision_revision_2026-10-04.md).
++
++새 규칙827/0·UI245/0, 전체 등반26,757/0·5무기×2경로·35층·4,341명령 저장/복원을 통과했다.
++
++후반 확장 시 손패 전부를 넣는 현상은 통제 사례에서0이 됐고, 무작위 빌드의 미발사 과열 탄은169→507발이다. 보행자 무작위 독립 전투211/216·통제 빌드240/240으로 선택 문제 전체가 해결된 것은 아니다. 다음은 조건부 탄의 비용/보상과 적 역할별 두 가지 이상 대응이다.
++
++## 직전 검토 — 탄환 선택 가치
++
++사용자의 반복 체감에 따라 현행 LIFO 모델을 심층 감사했다. 2,592독립 전투·270실제 등반·72손패/12,116장전·2,400빌드 비교, 명령/종결/최종 상태 검증 오류0. 보행자/쇄도는 무작위212/216, 압쇄216/216 통과. 압쇄는 시작 덱·무성장 무작위6시드 전부 완주·150교전 과열0. 확장 후5장 패를 전부 넣는 구조와 마지막 발 과열의 높은 비중이 선택 압박을 낮춘다. [증거·정책 한계·개선 우선순위](../../../docs/qa/reports/decision_depth_2026-10-04.md).
++
++이번에는 감사 도구/문서만 추가했다. 다음 우선순위는 보행자·압쇄의 첫 지역에서 손패/탄창·열·처치선/행동 시한을 함께 재설계하는 것이다. 제안 단계이며 수치·플레이 화면은 미변경. 전 무기 일괄 하향이나 단순 콘텐츠 증설로 결론내리지 않는다.
++
++## 직전 규칙 수정 — 마지막 장전 탄부터 발사
++
++사용자의 원래 의도에 맞춰 새 탄을 발사 레일 맨 앞에 넣는다. 보이는 레일/예측/실제 발사는 왼쪽부터 동일하다. 끝 고정 탄은 처음, 첫 고정 탄은 마지막에 장전하며 불가 사유를 카드와 레일에 표시한다. 드래그/선택 회수/맨 앞 회수/전장 압축/샘플을 연결했다. v10 저장은 v9의 기존 발사 순서를 보존한다. [검증·화면](../../../docs/qa/reports/lifo_2026-10-04.md).
++
++이번에는 화력·발열·경제 수치를 유지했다. 사용자가 반복 지적한 아무 탄이나 넣어도 효율적인 문제와 선택 가치 검증은 여전히 다음 과제다. 장전 규칙 수정의 기능 통과를 밸런스 해결로 취급하지 않는다.
++
++## 이전 후속 작업 — 발열 빌드 비교와 결과 피드백
++
++2,400 독립 전투(5무기·4시드·4편성·3덱·5구성·2정책)를 비교했다. 냉각형/고열형의 장단점이 있어 현재 수치는 유지한다. 보상·엔딩에 열 요약, 게임 내부 교전 기록, 원거리/일반/강제 재장전의 실패 원인, 파츠 실제 수치와 고열 상호작용 안내를 추가했다. 신규 규칙248/0·실제UI316/0·기존 피드백445/0. [근거·화면·미검증](../../../docs/qa/reports/heat_polish_2026-10-04.md). 자동 정책은 사람 승률/선택률이 아니다.
++
++## 이전 구현 — 발열 빌드 확장
++
++사용자의 진행 승인을 받아 [열 기반 빌드](../../../docs/direction/heat-builds.md)를 본편에 적용했다. 파츠3종(한계+3 방열판·처치 냉각2 순환펌프·고열 화력+2/한계−2 잔열 노심), 탄환2종(고열 보너스 과급·마지막 열 전환 방출)을 추가했다. 시작 덱은 유지하며 전술 보급14종·파츠23종이다.
++
++카드·레일·게이지·실제 발동 피드백, 상점/보상 획득, 장비 교체의 열 한계와 고열 조건 변화, 저장/정확 예측까지 연결했다. 산개5발 이상은 별도 스레드의 정확 예측으로 입력을 유지하며 이전 계산을 취소하고 최신 패 결과만 반영한다. 일반/강제 재장전 기본 규칙은 유지한다.
++
++신규 규칙2,479/0·UI274/0, 기존 탄환45,881/0·UI253/0, 기존 열757/0·UI272/0, 성장4,589/0. 새 보급 풀로 전체 등반26,829/0: 5무기×2경로×35층·4,353명령 저장 복원. 같은4,353명령의 재생30,492/0으로10경로 최종 전투 이력까지 일치했다.
++
++[검증·실제 화면·성능·한계](../../../docs/qa/reports/heat_builds_2026-10-04.md). 기능 통과와 사람의 이해도/재미를 구분한다. PC 복잡한8발 계산 자체는 약1.35초, UI 호출25.9ms와 계산 중 실제 편집을 확인했다. Galaxy 미검증.
++
++## 다음 우선순위
++
++1. 2파츠 통제 비교는 완료했다. 다음 밸런스 검증은 최대5파츠·압축·난도 상승의 편중이며, 사람 플레이로 방열/처치 냉각/고열의 실제 선택 빈도와 방출 효율을 확인한다. 열 제어 부품이 모든 빌드의 필수품이 되는지, 압쇄의 높은 안정성이 적절한지 판단한다. 자동 완주는 사람의 승률이 아니다.
++2. Galaxy에서 예측 대기 시간·터치·글자 읽기·반복 조작 피로도를 확인한다. APK는 요청 시 생성한다.
++3. [몬스터 시안](../../../docs/direction/monster-roster.md), 캐릭터/무기 프레임, 지역별 배경, 사운드와 연출 폴리싱. 적 외형은 임시다.
++4. [간접 서사](../../../docs/direction/narrative-delivery.md)와 [복장·헬멧](../../../docs/direction/appearance.md)은 설계 단계다.
++
++실행: [PLAY.cmd](../../../PLAY.cmd), [확인 순서](../../../RETURN_CHECK.md). 기존 덱·진행을 보존한다. 후속 모바일 요청으로 APK·Drive 전달을 완료했으며 커밋·푸시는 하지 않았다. 이전 개발/검증은 [일지](../../../docs/history/daily/2026-10-04.md), [발열 기본 구현](../../../docs/qa/reports/heat_system_2026-10-04.md)을 따른다.
++
++## 장소 아트 적용 — 2026-10-11
++상점 내부/보급 보관함/등 보이는 정비 작업대 3종 적용. 상점 대화, 유료/무료 압축, 보급, 취소·맵 복귀, 그림 위 터치 스크롤 검증343/0. 지역별 실내 변형·정적 그림의 작업 애니메이션은 후속. [화면과 근거](../../../docs/qa/reports/service_locations_2026-10-11.md).
++
++### 공통 실내 후속 수정
++외부 탑 풍경을 닫힌 실내로 교체한 v2 적용, UI343/0. 지역별 실내 변형 대신 모든 지역에서 공통 사용. 복장 선택/저장은 있으나 장소·전투의 실제 복장 외형 교체는 미구현이며 레이어 분리 제작안 검토 완료. [증거](../../../docs/qa/reports/service_interiors_v2_2026-10-11.md).
++
++### 장소 레이어 분리 완료
++빈 실내3/투명 작업복3자세, 캠페인 복장ID→자세 리소스 조회 연결. 미제작 복장은 기본 표시. UI517/0 및 실제 합성/숨김 검수 완료. 다음은 복장별 신규 자세 제작이며 전투 복장 변경은 별도. [증거](../../../docs/qa/reports/service_layers_2026-10-11.md).
+--- /dev/null
++++ b/docs/history/index.md
+@@ -0,0 +1,49 @@
++# ProjectLoB 작업 기록
++
++- [2026-11-04 코어 유지·교체 가치 보완·실제 성장 비교·산탄 불길 예측 수정](daily/2026-11-04.md)
++
++- [2026-11-03 핵심 탄·위치 파츠 적용·사격/열 본편 통합·덱 빌딩 검토·후속 플레이 피드백 개편](daily/2026-11-03.md)
++
++- [2026-11-02 플레이 피드백·배율/방문 경로 수정·탄창/지도 가독성·사격 범위/교체/냉각 비교](daily/2026-11-02.md)
++
++- [2026-11-01 픽셀 HUD·즉시 빼내기·HTML 모델 연결·작은 화면 조작 보완·덱 빌딩 검토와 보강](daily/2026-11-01.md)
++
++- 2026-10-31: [게임 스튜디오 절차 선별 반영](../qa/reports/studio_workflow_2026-10-31.md) — 기존 역할8개·재미 검증·본편 통합·모바일 지속 플레이·변경 영향·전투/경제/사운드/배포 검수.
++
++- [2026-10-31 플레이 후기·통합 개편 계획·1단계 UI A/B·A안 6칸·탄창 운용·접근 압박 비교](daily/2026-10-31.md)
++
++- [2026-10-30 성장·탄약 경제 감사·후반 성장·초반 전투 호흡 개편](daily/2026-10-30.md)
++
++- 2026-10-29: [연속 발열 B1 본편 연결·검증](../qa/reports/sustained_heat_2026-10-29.md) — 새 등반 적용, 기존 이어하기 보존, 다음은 전체 성장/탄약 경제.
++
++- [2026-10-28 통합 우선순위·모바일 성능2차·장비 접지·후기 검토](daily/2026-10-28.md)
++
++- [2026-10-27 순차 개편·장갑/발열·획득/휴대·비상 탄약 보급](daily/2026-10-27.md)
++
++- [2026-10-25 주인공 C·복장7종 통합, 4구역 귀족/시종, 상점 UI 시안·실내 자세/도트 교정](daily/2026-10-25.md)
++
++- [2026-10-24 귀족·중추 배경, 정원 정예/보스, 무기 명칭·빗장/래칫 시안](daily/2026-10-24.md)
++
++- [2026-10-23 주조장 정예·보스 시안, 6종 본편 연결·축압/전진·획득 덱·주조장/정원3단계 전투 배경](daily/2026-10-23.md)
++
++- [2026-10-22 주조장 일반 몬스터4종 정지 시안·Godot 비교 화면](daily/2026-10-22.md)
++
++- [2026-10-21 개별 회수 금지·2구역 확장·복장 윤곽·인간 약탈단·관문 개조](daily/2026-10-21.md)
++
++- [2026-10-20 소이탄 통합·탄약 비축·과열/패턴 전달·복장 선택 통일](daily/2026-10-20.md)
++
++- [2026-10-18 전투 카드 본편 통합·고정10자리](daily/2026-10-18.md)
++
++현재 기준은 [방향과 결정 상태](../direction/current.md)다. 아래 기록은 해당 날짜에 실제로 수행한 결과다.
++
++- [2026-10-11 전투 효과·주인공 제작 원본·효과 구조 검토](daily/2026-10-11.md)
++- [2026-10-10 전투 도트 UI 조작 단서와 재장전 상태](daily/2026-10-10.md)
++
++- [2026-10-09 몬스터·계급 세계관과 등반 동기 본편 적용](daily/2026-10-09.md)
++- [2026-10-05 아트·동작·거리 수정 및 몬스터 설정 재정비](daily/2026-10-05.md)
++- [2026-10-05 최신 모바일 APK·Drive 전달과 무결성 검증](../qa/reports/mobile_delivery_2026-10-05.md)
++- [몬스터 목록 v0.2 보존본](design/monster-roster-v0.2-2026-10-05.md) — 현행은 [v0.3](../direction/monster-roster.md).
++
++- [2026-10-02 기획·아트·지침 리빌딩](daily/2026-10-02.md)
++
++이전 마스터 인덱스와 스킬에 누적된 일지는 `docs/archive/guidance-2026-10-02/` 및 기존 역사 파일에 보존한다.
+--- /dev/null
++++ b/docs/history/daily/2026-11-04.md
+@@ -0,0 +1,14 @@
++# 2026-11-04 작업 기록
++
++## 성장 코어 유지·교체와 파츠 선택 후속
++
++- 사용자 다음 단계 실행 승인에 따라 실제 획득한 코어/모듈의 유지·교체를 비교했다. 이번 범위는 코어 선택이며 다른 4복장 경제와 실기기 검증을 완료 처리하지 않았다.
++- 성장 8 열압→노심 교체에서 기존 화상 성장까지 사라지는 문제와 교체 창이 시작 배율을 표시하는 문제를 확인했다. 새 등반 `specialist_core_version=1` 노심에 화상 성장 기록만 계승했다. 고열 직접 배율/충격파·추가 성장 미계승, 재장전 +1행동·단일 코어 제한과 이전 저장 규칙 유지.
++- 작업실에 현재 성장 효과·화상/불길 변화·연관 탄 수·성장 기록 보존을 표시했다. 현재 수치와 어긋난 첫/마지막 발·복열 등 상세 및 카드 성장 상한을 수정했다.
++- 같은 실제 보유 관문에서 19전투 비교: 열압 유지 314행동·비상 0회, 기존 노심 434·2회, 보정 노심 295·0회. 보정 노심이 열압보다 빠른 전투 8, 같은 전투 2, 느린 전투 9로 선택 차이가 남는다. 최저 접근 거리는 6→2로 좁아지는 대가도 기록했다.
++- 새 게임에서 실제 획득한 시드 17은 30전투·409행동·비상 0회. 시드 731042에서 노심 획득 전 열압을 유지하는 정책은 28전투·381행동·비상 0회, 같은 경로 열압 유지 401행동·비상 0회. 초기 자동 검사가 코어를 모듈로 밀어낸 416행동·비상 3회 기록은 검사 정책 문제로 구분·보존했다. 사람 승률이나 최적 전략의 근거는 아니다.
++- 산탄의 예측 분기들이 불길 배열을 공유하는 기존 결함을 재현해 분기별 복사·불길/감속 병합 기준을 수정했다. 새 코어 규칙도 예측 캐시에 포함했다. 실제 전투 계산은 이 예측 수정으로 바꾸지 않았다.
++- 코어/산탄 규칙 927, 기존 파츠 규칙 3,048, 본편 UI 107, 기존 HUD 11,536검사 실패 0. 대표 코어 경로 115전투 재생 9,748, 이전 v2/v3 120전투 재생 10,450검사 실패 0. 이전 재생 fixture의 경제 표식 차이를 수정했고 제품 저장 검증을 완화하지 않았다. 정책 수정 시드도 별도 28전투·2,309검사 재생 실패 0으로 확인했다.
++- PC 1280×800/844×390/2340×1080에서 실제 교체·되돌리기·성장 보존·저장과 신규 획득 전투 사격을 확인하고 대표 캡처를 검수했다. S26 해상도를 고려한 PC 검사이며 Android 실기기/사람 이해도 검증은 아니다.
++- 다음: 미검증 4복장 경제, 제어/전격 전용 코어의 획득·교체, S26 실기기/재장전 복장 혼합/지속 성능. APK·커밋·푸시·외부 게시 없음.
++- [현재 결정](../../direction/parts-builds.md) · [결과·화면·재현·증거·한계](../../qa/reports/core_choice_2026-11-04.md).
+--- /dev/null
++++ b/docs/qa/reports/core_choice_2026-11-04.md
+@@ -0,0 +1,118 @@
++# 성장한 코어의 유지·교체와 파츠 선택 검증
++
++2026-11-04 · 활성 `core-redesign` 작업 트리 · Godot 4.7 Windows Compatibility
++
++사용자가 승인한 다음 단계 중 **코어·파츠 선택 가치**를 진행했다. 다른 4복장 장기 경제와 Android 실기기 검증은 이번 완료 범위가 아니다. 기존 변경을 보존하고 `qa_runtime/core_choice_20261103/before/`에 작업 시작 형상을 기록했다. 실행 중 날짜가 바뀌어 런타임 폴더 이름은 11월 3일, 최종 보고서는 11월 4일이다.
++
++## 판단과 적용
++
++성장 8의 열압 구동핵에서 열폭주 노심으로 바꾸면 직접 배율뿐 아니라 이미 키운 화상 +4도 사라졌다. 노심의 기존 화상 +2만으로는 이 손실을 만회하기 어려웠다. 교체 화면도 현재 ×2.70 대신 시작 ×1.50을 보여 주어 손실을 작게 설명했다.
++
++새 등반에 다음 보정을 적용했다.
++
++- 열폭주 노심: 기존 화상/불길 +2에 **열압 성장 기록 2회당 +1**을 계승한다. 성장 8이면 노심 보너스 +6, 기본 화상 2를 합쳐 행동당 8이다.
++- 고열 직접 피해 배율·충격파는 계승하지 않는다. 노심 장착 중 열압은 추가 성장하지 않는다. 재장전 +1행동과 코어 1개 제한을 유지한다.
++- 다른 코어로 바꿔도 성장 기록은 보존된다. 원래 열압 코어를 다시 장착하면 기존 성장 효과가 돌아온다.
++- 새 등반의 `specialist_core_version=1`로 구분한다. 표식 없는 이전 저장은 종전 고정 +2이며 자동 이행하지 않는다.
++- 교체 화면에 현재 성장 효과, 실제 화상/불길 피해·지속·범위 차이, 연관 탄 보유 수, 성장 기록 보존을 표시한다. 첫 발·마지막 발·복열 등의 이전 수치 설명도 현재 규칙과 맞췄다. 성장 카드의 상한은 관문 투자에 따른 실제 상한을 표시한다.
++
++이 보정은 실행을 위임받은 범위에서 선택한 디렉터 구현값이다. 사람의 재미나 최종 균형이 확정됐다는 뜻은 아니다. [현재 결정](../../direction/parts-builds.md).
++
++## 같은 보유 상태에서 다음 전투 비교
++
++실제로 획득한 저장의 소유 파츠만 공개 교체/해제 명령으로 바꿨다. 같은 덱·적·시드에서 유지/교체 각 1회씩, 10사례 20분기를 검사했다. 보정안은 동일한 이전 저장에 새 규칙 표식만 적용한 **통제 비교**이며, 새 등반에서 획득했다는 근거는 아래 별도 검사다.
++
++| 소이 덱의 다음 전투 | 열압 유지 행동 | 기존 노심 행동 | 보정 노심 행동 | 유지 → 보정 잔탄 |
++|---|---:|---:|---:|---:|
++| 2관문 뒤 | 18 | 25 | 16 | 8 → 11 |
++| 3관문 뒤 | 15 | 23 | 20 | 13 → 13 |
++| 4관문 뒤 | 17 | 23 | 19 | 10 → 10 |
++
++보정 노심으로 바꿔도 세 사례 중 두 사례는 열압 유지가 빠르다. 마지막 사례는 행동이 늘지만 최소 접근 거리는 33→37로 벌어진다. 즉 행동 수만으로 우열을 확정하지 않았다.
++
++다른 파츠도 확인했다. 소이 없는 연타 덱의 노심은 7→28행동, 소이 중심 덱의 피스톤은 17→52행동이었다. 조합이 맞지 않는 교체를 유리하게 만들도록 수치를 올리지 않았다. 복열을 빼면 8→11행동·잔탄 18→13, 제3 격발기를 빼면 행동은 8로 같지만 잔탄 18→16이었다. 후미→시퀀서는 12→11행동, 잔탄은 같았다. 코일·충격 가이드 해제가 이 한 전투에서는 결과를 바꾸지 않았지만, 전반적으로 무가치하다는 근거로 사용하지 않았다.
++
++원본: [기존 규칙 20분기](core_choice_2026-11-04/probe_baseline_result.json), [보정 규칙 20분기](core_choice_2026-11-04/probe_inherited_result.json).
++
++## 실제 보유 관문 이후 19전투
++
++실제 2관문 저장에서 같은 19개 노드를 끝까지 진행했다. 전투·보상·구매·정비·저장은 실제 모델과 합법 명령을 사용했다. 노심 보정 분기는 새 표식을 적용한 비교이며 승리·탄약·파츠를 삽입하지 않았다.
++
++| 선택 | 총 적 행동 | 수동 재장전 | 냉각 | 비상 보급 | 최저 잔탄 | 최소 접근 거리 |
++|---|---:|---:|---:|---:|---:|---:|
++| 열압 유지 | 314 | 34 | 3 | 0 | 2 | 6 |
++| 기존 노심 | 434 | 43 | 5 | 2 | 0 | 2 |
++| 보정 노심 | 295 | 30 | 3 | 0 | 6 | 2 |
++
++보정 노심은 열압보다 8전투 빠름·2동일·9느림이었다. 총 자원 부담은 줄었지만 더 가까이 접근하는 전투도 있다. 후속 구매/획득은 선택에 따라 달라지므로 434→295 전부를 단일 피해 보너스의 순수 효과로 해석하지 않는다. 단일 상태 비교는 위 표를 따른다.
++
++[열압 유지 경로](core_choice_2026-11-04/climb_thermal.json) · [기존 노심 경로](core_choice_2026-11-04/climb_inferno.json) · [보정 노심 경로](core_choice_2026-11-04/climb_inherited.json).
++
++## 처음부터 새 등반
++
++운반복/리액터로 시작해 첫 성장 코어는 열압을 고르고, 노심은 실제 획득한 뒤 장착했다. 시드 17은 30전투·409행동·비상 0회·최저 잔탄 7로 완주했다. 노심을 쓴 전투는 17개다.
++
++시드 731042의 최초 자동 정책은 노심 획득 전 4구역 두 전투에서 열압을 빼고 모듈 5개를 채웠다. 이 경로의 416행동·비상 3회는 **노심 자체의 약점과 분리**한다. 원본을 보존하고, 대체 코어를 얻기 전에는 열압을 유지하도록 검사 정책을 수정해 다시 비교했다. 제품의 자동 장착 동작을 수정한 것은 아니다.
++
++| 시드 731042 · 같은 28전투 경로 | 총 행동 | 비상 보급 | 최저 잔탄 | 남은 자금 |
++|---|---:|---:|---:|---:|
++| 열압 유지 | 401 | 0 | 3 | 164Cr |
++| 열압 유지 후 획득한 노심으로 교체 | 381 | 0 | 6 | 164Cr |
++
++[검사 정책을 수정한 실제 새 등반](core_choice_2026-11-04/climb_fresh731042keepcore.json)은 28전투·2,146검사 실패 0으로 완주했다. 노심을 사용한 전투는 7개이며, 유지보다 5전투 빠름·22동일·1느림이다. 두 경로의 마지막 덱과 코어 외 장착 모듈, 남은 자금은 같다. 재장전/냉각 운용과 적 편성에 따라 유지가 유리한 전투가 남아 있다.
++
++[새 등반 시드 17](core_choice_2026-11-04/climb_fresh17.json) · [기존 검사 정책 시드 731042](core_choice_2026-11-04/climb_fresh731042.json) · [시드 731042 열압 유지](core_choice_2026-11-04/climb_fresh731042thermal.json).
++
++검색기는 제한된 탐색으로 통과 경로를 찾고 모델의 난수 상태를 이용한다. 이는 재현 가능한 획득·자원·명령 검증이며, 최적 전략·평균 승률·사람의 선택 가치 증명이 아니다.
++
++## 무작위 표적 예측 오류
++
++추가 검사에서 산탄의 서로 다른 표적 분기가 불길 배열을 공유하는 기존 오류를 발견했다. 한 분기에서 생긴 불길이 다른 분기에도 들어가, 닿지 않을 수 있는 적까지 반드시 피해를 입는다고 예측했다. 단일 소이탄·3표적 사례에서 바깥 적의 최대 HP가 1000이어야 하는데 기존 예측은 996, 보정 규칙은 992였다.
++
++불길을 분기마다 복사하고, 분기 합치기 기준에 불길·감속 상태를 포함했다. 예측 캐시에도 새 코어 규칙 표식을 추가했다. **실제 피해 계산은 변경하지 않았다.** 새 예측은 기존 규칙 995~1000, 보정 규칙 991~1000으로 실제 결과를 포함한다. 기존/새/기존 규칙 교차 조회, 이미 깔린 불길, 소이·차단 2발 혼합에서 실제 HP·이동 범위와 상태/RNG 불변을 검사했다.
++
++[수정 전 증거](core_choice_2026-11-04/rules_scatter_diagnosis_scatter_1.json) · [수정 후 증거](core_choice_2026-11-04/rules_final_fixed_scatter_1.json).
++
++## 기능·화면·호환 검증
++
++| 검사 | 결과 |
++|---|---|
++| 코어 규칙·다른 5코어 불변·기존 저장·새 표식·산탄 예측 | 927검사, 실패 0 |
++| 기존 파츠/획득 규칙 | 3,048검사, 실패 0 |
++| 새/기존 코어 경로 5개 독립 재생 | 115전투, 9,748검사, 실패 0 |
++| 코어 유지 정책 보완 시드 독립 재생 | 28전투, 2,309검사, 실패 0 |
++| 실제 UI 교체·되돌리기·저장·신규 획득 전투 사격 | 107검사, 실패 0 |
++| 기존 `run_prototype_hud.ps1 -Mode ui -Fast` | 11,536검사, 실패 0 |
++
++이전 v3 3총기 90전투와 v2 리액터 30전투를 당시 표식으로 다시 시작해 총 **120전투·10,450검사 실패 0**을 확인했다. 기록된 명령의 행동 수, 마지막 덱/파츠/관문 투자와 단일 엔딩을 재현했다. [기존 규칙 재생 결과](core_choice_2026-11-04/legacy_fixed_result.json).
++
++UI는 1280×800, 844×390, 2340×1080에서 실행했다. 작업실을 열고 노심을 선택→교체→상세→열압 복귀, 터치 입력·스크롤·자동 저장·성장 복구를 확인했다. 새 등반에서 실제 획득한 3구역 전투도 1280×800/2340×1080으로 열어 사격 버튼 입력이 모델 결과 및 저장과 정확히 일치함을 확인했다. 화면 장식 목업이 아니다.
++
++- [교체 화면 1280×800](core_choice_2026-11-04/core_choice_1280x800.png)
++- [작은 화면의 비교 영역 844×390](core_choice_2026-11-04/core_choice_844x390.png): 본문을 스크롤한 상태, 제목/닫기는 고정.
++- [노심 상세 2340×1080](core_choice_2026-11-04/inferno_rules_2340x1080.png)
++- [실제 획득 전투 사격 뒤 2340×1080](core_choice_2026-11-04/earned_inferno_fired_2340x1080.png)
++
++대표 캡처를 직접 확인했다. 2340×1080은 S26를 고려한 **PC 렌더 크기**이며 Android 실기기 안전 영역·OS 배율·손가락 조작·발열을 검증한 것이 아니다. 사람의 설명 이해도도 별도다.
++
++## 재현과 변경 추적
++
++활성 저장소에서 PowerShell로 실행한다. 런너는 별도 APPDATA/LOCALAPPDATA를 사용하며 실제 사용자 저장에 접근하지 않는다.
++
++```powershell
++./tools/run_core_choice.ps1 -Mode rules -Label check
++./tools/run_core_choice.ps1 -Mode ui -Label check
++./tools/run_core_choice.ps1 -Mode replay -Label check
++./tools/run_build_roles.ps1 -Mode replay -Label core_legacy_check
++./tools/run_prototype_hud.ps1 -Mode ui -Fast
++```
++
++`probe` 기본은 기존 규칙 비교, `QA_SPECIALIST=1`은 같은 획득 상태에서 새 규칙 비교다. `climb`은 `QA_CORE=thermal_drive|inferno`; `QA_FRESH=1`, `QA_SEED`로 실제 새 등반을 실행한다. `QA_REPLAY_LABELS`로 보존된 `climb_<label>/balance.json`의 명령만 재생할 수 있다. 기존 획득 저장/원본 규칙 파일을 사용하는 회귀 검사는 해당 `qa_runtime` 자료가 필요하다.
++
++초기 검사 오류도 보존했다. GDScript 타입 추론 오류와 JSON 정수/실수 비교는 검사 코드에서 수정했다. 이전 v2 재생 실패는 현재 새 게임 생성에 과거에는 없던 경제 표식이 붙은 검사 초기 상태 문제였다. 과거 기록에서 경제/전용 코어 표식을 제거해 당시 시작 상태를 재현했으며 제품의 저장 검증을 완화하지 않았다. 산탄 예측 실패는 위의 실제 제품 결함으로 수정했다.
++
++[이번 변경분](core_choice_2026-11-04/change.patch) · [파일 해시/입력 기록](core_choice_2026-11-04/manifest.json) · [실행별 요약](core_choice_2026-11-04/summary.json).
++
++## 남은 범위
++
++다른 4복장 장기 경제, 제어/전격 전용 덱의 실제 획득·코어 유지/교체, 다른 경로/시드와 사람의 선택 체감은 후속이다. S26 실기기 화면 비율·재장전 복장 혼합·지속 성능은 별도 미검증이다. APK 생성·커밋·푸시·외부 게시를 수행하지 않았다.

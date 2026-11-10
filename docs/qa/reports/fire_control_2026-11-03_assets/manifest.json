@@ -1,0 +1,253 @@
+{
+  "date": "2026-11-03",
+  "engine": "Godot4.7 stable",
+  "baseline": "qa_runtime/fire_control_20261102/baseline; preserved dirty worktree, not git HEAD",
+  "production": "prefix selection; replacement retains heat/streak at original cost; voluntary cooling fully vents; no damage penalty",
+  "files": [
+    {
+      "path": ".agents/skills/00-project-manager/task_tracker.md",
+      "before_sha256": "b2af43d1c860f99ee82322140607892f95427d08ed62b37603a7ea1ab6ff4018",
+      "after_sha256": "81f9007a11a328b8ff1c53722ae10f961548231d68ac9e7b6e33184cac109207"
+    },
+    {
+      "path": "docs/direction/current.md",
+      "before_sha256": "5fd2f7e004ee163df6ce5f2cb695553e272e6c7db583ae69296daabefd3a37d9",
+      "after_sha256": "6ed81dee6da7d5e4079e7beca62427f95c0805a6841dcd3f27076aca801133c3"
+    },
+    {
+      "path": "docs/direction/fire-control.md",
+      "before_sha256": null,
+      "after_sha256": "202f865bf78e46be1f6837b4f3eebe0cf86ff3a1ec32dcd53057b12d6a466e45"
+    },
+    {
+      "path": "docs/direction/fire-heat-comparison.md",
+      "before_sha256": "bd6f087dc8705594aa71b19c63c9d7397954d3cf1743f0422f7092e0adfe8336",
+      "after_sha256": "ff599af35ef2acb21bc59bd9120236444bb13b55315e523b232b3f13d1e948c7"
+    },
+    {
+      "path": "docs/direction/game-design.md",
+      "before_sha256": "a6b841079131ddff687920a2551c8ae6bd5f43921ebb1f75b9bef0b6253ac83b",
+      "after_sha256": "97ab1058214b6f4e6c38ca4c3183d29075ac6ab0d91888980c57cb30bbfb1821"
+    },
+    {
+      "path": "docs/direction/heat-system.md",
+      "before_sha256": "49c57bba3dc5e3f1567be3311eb150917abf9e8944dfc7b666ee26ec5139c3a2",
+      "after_sha256": "db1d1402de9f6ca92a66123acf6e2ed574e47e1f097d8d79810a14371c7a6b0a"
+    },
+    {
+      "path": "docs/direction/magazine-build.md",
+      "before_sha256": "18d917bda93ae58908fbb9c2d46833db112a83731b0fdcb92a9d34f3c05202b5",
+      "after_sha256": "92dbf9de9b22ab9471dc1dabbf8cc5da29ff121e8d4fe19c1226958a70d085a0"
+    },
+    {
+      "path": "docs/direction/playtest-priorities.md",
+      "before_sha256": "83c3f418e9da80cf14e2cbf7e86167e5c33164d4ef8eaec31eee50acc8a9a27c",
+      "after_sha256": "b5b235425cd748abb400056215fc9d9d149be3581d31f52240a2e55dab109f7e"
+    },
+    {
+      "path": "docs/history/daily/2026-11-03.md",
+      "before_sha256": null,
+      "after_sha256": "ec671459608ad5ccbb7f9044ba0ed0e5bf7db0ea3166d2680a4de6c6683c8626"
+    },
+    {
+      "path": "docs/history/design/deckbuilding-review-2026-11-03.md",
+      "before_sha256": null,
+      "after_sha256": "d451d523977e4f64a33a4b3608aaddc9d09750691c773a0e335d53a05e395531"
+    },
+    {
+      "path": "docs/history/index.md",
+      "before_sha256": "ee6a5e0d09494d49204a82c323b827cc6bd2a20893e8973890908a5a5e09d141",
+      "after_sha256": "2734d6bfa6584aa892f496c778656a65970a1b4cf09dce0560fc7c46c7f3c2da"
+    },
+    {
+      "path": "docs/qa/reports/fire_control_2026-11-03.md",
+      "before_sha256": null,
+      "after_sha256": "6b54d3e3121d7f4734b6898a60a5a07f689dac97b39c86dfb1a100090d8dfadc"
+    },
+    {
+      "path": "tools/run_fire_control.ps1",
+      "before_sha256": null,
+      "after_sha256": "81c002848d78763889ddca961b2a0035c952bde2a7eb313b70679458dc7245e8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign.gd",
+      "before_sha256": "14de6de976d467b6859f19824aa59b10931382720e3487726324ac7fdc54fa6e",
+      "after_sha256": "c3d98ee005182aff2d01f4d4e9e2a7c2667639539768026747b61469c697e151"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_hud/combat.gd",
+      "before_sha256": "fd8c2639a37afc5557bbac67b619121b22408cc52831da81c8068af8c86a6cb7",
+      "after_sha256": "b1bc38dc311f0c4593ea6803436801ab76b9b8b08036c2f09af771c383b0fa25"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_hud/combat.tscn",
+      "before_sha256": "c8b1fcd3355037915b153fc3291d24ce03ccfc2ed6fcbf3b7e42ff3a820d37e9",
+      "after_sha256": "c30726410c6cf789a4d885a667df7852e8838757c24d7bd7b14c4d25bafc08c8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/campaign_ui.gd",
+      "before_sha256": "1e6cb3d982bb66766e61c5979eedc23b3864401957ffa9ca792d26a086cab44a",
+      "after_sha256": "1075c270f5515694bd1fd27d91b3f8a6ced69bf6b784f98891dd7578d2088764"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/content.gd",
+      "before_sha256": "6254c0b567853251235adb08da86f58b6a7a8c959671cd7d6490cf177522edae",
+      "after_sha256": "1f7a7163817300091444033bf4f43767f9f31877f366195a61a5eeaa36c90085"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/equipment_screen.gd",
+      "before_sha256": "b6d3dc3b86c426d3ba3e18e4fabdc0a5b4f08462c067d30b56aa029c9174435d",
+      "after_sha256": "cff9375e02b8e329926fae7a7352696872d3c20372257ffb11075b839c27309c"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/fire_heat_trial.gd",
+      "before_sha256": "9e110534445b9f23b80d0a3ec151abaef82fe1bc6d5949b9b0fb76adbe16927c",
+      "after_sha256": "1cb90035928b6e00c846feb431e8439430ee4c0e9687dd7d1868b28dbb4a8e5f"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/model.gd",
+      "before_sha256": "9ab1e27533d071fc2f3c423c46276831ccdf27f2e2b111acb136385dfa42e3e1",
+      "after_sha256": "7010744a45c8d4cc71451e2ea1d49c70bfc44d6c093f1215e57666baf5f13e85"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/fire_heat/drag.gd",
+      "before_sha256": "77ef9222125657820e76f473a9bbf958df0815053be367a9167e74660d9c4937",
+      "after_sha256": "b147812f03533875533a92acc9da9e010fba0a3c0835dd5669c9815ac44c68b8"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/fire_heat/screen.gd",
+      "before_sha256": "f09ab95f119fc320820d76531f6607bed9fa9fcbe3c3368da4ffcad8c81af7c3",
+      "after_sha256": "815c39292332c6970b3cf1d63576bf8b1a07681692b995d7d730acf06c7b72ea"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/samples/hud/combat_weapon_hud.gd",
+      "before_sha256": "c8593f29548de6ec8ea42fd2359bc3c13edcd4bb0afbd8f0324de6c5d3528709",
+      "after_sha256": "280f1e12008c3feba7ab0bffdef7fa0a4f33f35e0589578efd22ef99dc6fdb77"
+    },
+    {
+      "path": "새-게임-프로젝트/redesign/screen.gd",
+      "before_sha256": "f1ece62303b662cf925f6bc7ca518cb92ebaeded459959a9c9cec8cdb907b197",
+      "after_sha256": "decb1f043ea9a3aeb33b7090c5c1829aa3948c95306b8e4bff70605a134a0f0a"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_audit.gd",
+      "before_sha256": null,
+      "after_sha256": "ebd3b150c038e7633a2fff8d56699f89053b2b989c34f93ad878a5631dc669d0"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_audit.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "c41eb20f8a29e60708b3388c5c67b8933a276dd2c7d0c6e443e527fa3588b66e"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_climb.gd",
+      "before_sha256": null,
+      "after_sha256": "f040f644c718367f59c8a2341d777bd4e2e6be7e077b4ab0b65928cf1859570a"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_climb.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "ce924e6cb388b8f8eea220b3d6c783b7c685515db849524cd86074a09fc784a1"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_probe.gd",
+      "before_sha256": null,
+      "after_sha256": "9681e866535d25fce65d53792a647482fb5d7d1a782110b0b841e9372ae8e845"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_probe.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "861e52e813d2eb7be765b4685e534c37076ec74833baedb640e2598c95f4b38e"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_replay.gd",
+      "before_sha256": null,
+      "after_sha256": "7f3b78681cbb07742e5c8f29af55dfe62ca7ad8df33d11a02c1d22f44c0eb391"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_replay.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "ab6c856e79623b3b80e33ef3f2c4b498871118d13fa13919e3009dd1d20fc935"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_restart.gd",
+      "before_sha256": null,
+      "after_sha256": "d6ef13b1b0e9bff8bf78074d21103fe8f006c502bc3f45b8854d52660bbbfe5c"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_restart.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "0a9548adcc9729bdfa4094fabdf9f94b3834e218c35f1749bfe29cb1e2e6d647"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_rules.gd",
+      "before_sha256": null,
+      "after_sha256": "859a6c985949fe9dfcb7bcc5ce0cc7ed81de2a1a263c417bec68fe7b3636accf"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_rules.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "24034bf184ea846a96aa66bed352c51b1e6d6da5a6b501fc438a651a77145787"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_solver.gd",
+      "before_sha256": null,
+      "after_sha256": "9de0e948a3869a84a30900dc4a31869e60dbff40ce2a715a405bb9c695b1bc27"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_solver.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "79b4be10aae97376444f8dcd5ec804dabc5eff516aa4022d054940b8de69395e"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_ui.gd",
+      "before_sha256": null,
+      "after_sha256": "369496edc8f25fd3c5e13792901ddf8b95dd28ac7aa555c5d08082f3d4c0b72f"
+    },
+    {
+      "path": "새-게임-프로젝트/tests/fire_control_ui.gd.uid",
+      "before_sha256": null,
+      "after_sha256": "6d07739577456cf57699602b6c594cb0b4ccffaba2fde82e9ce50427030e1ed2"
+    }
+  ],
+  "evidence": {
+    "audit.json": "d18d9a9d63c7cc3d0c4e2b0c46539b0aefe727a0f719e652663995b978ddf6ae",
+    "audit_final_write_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit_final_write_stdout.log": "2549c2decb64e059b6f2a565749bd69745a2f921fedaafdffc1ec465de859b78",
+    "change.patch": "2cd29e7729b920dcde9e65f21e083a0f4ab7e6c35cd29a7e1ac85a716f8c7870",
+    "comparison_rules_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "comparison_rules_stdout.log": "c0c88980fab21aa462cd40bc90649cfffd455f6d194413244697ddfa72158d37",
+    "comparison_ui_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "comparison_ui_stdout.log": "5e75d1e9732bfee7964b1eb0366c1b10b551b3b9347911093e2aa7a863d3ddbd",
+    "equipment.png": "108d1865ab8a22158c1be45af1cecb1e5e344caf813bde8a4f45b0b5b42a77e0",
+    "four_climbs.json": "5471815d5051c842fbee768ab08e0f38be14510f9fd52a947c2b62b7792cd6d0",
+    "hud_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hud_stdout.log": "c19e68b7c19d71c0b00644a3544b4135fc3b75f193a6f337621b1c7a1bc9beb8",
+    "import_stderr.log": "240694613f60198bae5e682cb2b154fca7f2885d9b071350a08eecb46f2ac2e0",
+    "import_stdout.log": "34feeb86e4f3db144ca74d34fd7a22a87144676164dda29166f2e1d35c7d82bd",
+    "one_action_audit.json": "6fcdaa281918914deabceced66cfe8fc2463dfd54a678e8b301e0de36c3c07cc",
+    "one_action_probe.json": "10e4b6922e7b8259f765821e8a70e209fe28fef26558afd6d5bdb1fcac9b4757",
+    "probe_vent.json": "1c53495cb67e44b2776e30457d2a9705d5f5ddd68e0a7ee84cf20d0461ce4fe9",
+    "ready_1280x800.png": "3b7ba71bfcf879c4e8e0d2f3e0cc05527002c88706cdc3a64045851701d6c958",
+    "ready_2016x908.png": "13059a5f73b30a28548cd3cf222da5907a05029e36feedec272fb174e99ac1b6",
+    "ready_740x360.png": "ed0819e93ded38d56ab6c9fdfb6b8bafe48c343494d3f7ab179c103f9bb66916",
+    "ready_844x390.png": "e89b8430edbb6438cab4adaf8890a44dbffc0612b59409636825a62d187e31cd",
+    "replay.json": "509170cbb54e1c5d35bf5dff50f64c75ca5dfa98a6be468fc93aef5bb08efb63",
+    "replay_final_write_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "replay_final_write_stdout.log": "3bf05f3f3391e8dd435caaf3b140a0197704b6c232a5cb709eb28b13a319214a",
+    "restart_release_read_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "restart_release_read_stdout.log": "07ed22bb0cab65902e016e639cae99c44cd48330b27b0dc74afee3ed9f8a70d1",
+    "restart_release_write_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "restart_release_write_stdout.log": "be82f129aca1830885d9a915b050187255243a2e95b0c1e7fff8a133a3293d87",
+    "resumed.png": "8d82d1488b63d38fd527ab6fc1ee3c87f30a2919c68c540bb856085d270763a3",
+    "rules.json": "a807d1564435b20097423968286a1b6ba2da56bbb93b39a75f1d3afbf9b2b379",
+    "rules_release_write_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rules_release_write_stdout.log": "cab1010d89857f4b114f687c7137b1fc02311f8c19d52569fa1508c527d278b0",
+    "scatter_blocked.json": "6ae3f2cdae7a5a1bc5930160af5a024a2dcd9dc356b03bc51c2ac7f1655dd292",
+    "scatter_route.json": "91adf4e2bf16ada06534dba1858d338b72790e7dd3e9164c625083b3fdd9c798",
+    "scatter_seed17.json": "a6b163f8f977b4f2e72b8db868f902f6b61f844b85d7e0bde0acd059a52c37c8",
+    "ui.json": "1bfa3aafb4acd4ed5463937dfcebbb5d723f328d913b7d4d0d19efd948934bf3",
+    "ui_release_write_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ui_release_write_stdout.log": "f2555d5683771fcb6d049bec249ec75d1d7b9a3b96fdf768d45fc8f9d18ee9f2"
+  }
+}

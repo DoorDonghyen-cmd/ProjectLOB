@@ -1,0 +1,1225 @@
+{
+  "checks": 1358,
+  "encounters": [
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge"
+      ],
+      "gun": "single",
+      "kind": "elite",
+      "parts": [
+        "siege_drive"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "pierce_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/single_elite.json",
+      "turns": 5,
+      "used": 12
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge",
+        "pierce_p1",
+        "bypass"
+      ],
+      "gun": "single",
+      "kind": "boss",
+      "parts": [
+        "siege_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "pierce_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "pierce_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/single_boss.json",
+      "turns": 6,
+      "used": 12
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase"
+      ],
+      "gun": "burst",
+      "kind": "elite",
+      "parts": [
+        "volley_drive"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "precise_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "charge"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/burst_elite.json",
+      "turns": 8,
+      "used": 14
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase",
+        "shatter",
+        "chase"
+      ],
+      "gun": "burst",
+      "kind": "boss",
+      "parts": [
+        "volley_drive",
+        "chain_sink"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "shatter"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "shatter"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/burst_boss.json",
+      "turns": 10,
+      "used": 16
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase"
+      ],
+      "gun": "scatter",
+      "kind": "elite",
+      "parts": [
+        "volley_drive"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "precise_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/scatter_elite.json",
+      "turns": 5,
+      "used": 12
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "precise_p2",
+        "charge",
+        "shatter",
+        "chase",
+        "shatter",
+        "chase"
+      ],
+      "gun": "scatter",
+      "kind": "boss",
+      "parts": [
+        "volley_drive",
+        "chain_sink"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "shatter"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "shatter"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/scatter_boss.json",
+      "turns": 7,
+      "used": 16
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "cool",
+        "cool"
+      ],
+      "gun": "heavy",
+      "kind": "elite",
+      "parts": [
+        "thermal_drive"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "cool"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/heavy_elite.json",
+      "turns": 10,
+      "used": 19
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "bore",
+        "bore",
+        "cool",
+        "cool",
+        "precise_p1",
+        "cool"
+      ],
+      "gun": "heavy",
+      "kind": "boss",
+      "parts": [
+        "thermal_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "cool"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "precise_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "load",
+          "id": "basic_p1"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "cool"
+        },
+        {
+          "action": "load",
+          "id": "cool"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "bore"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/heavy_boss.json",
+      "turns": 12,
+      "used": 24
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge"
+      ],
+      "gun": "amplifier",
+      "kind": "elite",
+      "parts": [
+        "siege_drive"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "pierce_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "reload"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/amplifier_elite.json",
+      "turns": 4,
+      "used": 6
+    },
+    {
+      "deck": [
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p1",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p2",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "basic_p3",
+        "pierce_p2",
+        "charge",
+        "pierce_p3",
+        "charge",
+        "pierce_p1",
+        "bypass"
+      ],
+      "gun": "amplifier",
+      "kind": "boss",
+      "parts": [
+        "siege_drive",
+        "breaker",
+        "lens"
+      ],
+      "path": [
+        {
+          "action": "load",
+          "id": "pierce_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "load",
+          "id": "basic_p3"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "load",
+          "id": "basic_p2"
+        },
+        {
+          "action": "confirm"
+        },
+        {
+          "action": "fire"
+        },
+        {
+          "action": "fire"
+        }
+      ],
+      "solved": true,
+      "source": "res://tests/fixtures/foundry_arrivals_20261023/amplifier_boss.json",
+      "turns": 6,
+      "used": 6
+    }
+  ],
+  "failures": []
+}

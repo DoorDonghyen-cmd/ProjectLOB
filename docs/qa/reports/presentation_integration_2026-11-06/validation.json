@@ -1,0 +1,78 @@
+{
+  "scope": "Native desktop Godot4.7 Compatibility, RTX4060Ti; 15 accelerated fixture cycles and one committed 293-command five-region replay. Not Android sustained FPS, temperature, human readability or audio listening.",
+  "stress": {
+    "checks": 392,
+    "failures": 0,
+    "samples": 30
+  },
+  "flow": {
+    "checks": 1532,
+    "failures": 0,
+    "samples": 70,
+    "viewports": [
+      [
+        1280,
+        800
+      ],
+      [
+        1170,
+        540
+      ],
+      [
+        1008,
+        454
+      ]
+    ],
+    "full_campaign_model_profile_matches_original": true
+  },
+  "hud": {
+    "checks": 11558,
+    "failures": 0
+  },
+  "changed_production_files": [
+    "redesign/samples/hud/combat_hud_presenter.gd"
+  ],
+  "source_before": {
+    "redesign/samples/risk_battle_view.gd": "bd32ffaa851fa0965f3e06602f1d9a432151533e265855b53094f051b4063110",
+    "redesign/battle_view.gd": "5f28b6bc82020919a5938e4d03436b0e0798db0ac8096c31b038fd8dd5417c21",
+    "redesign/ui/interaction_feedback.gd": "e1d98da453eb73bcdf436882d930eea37b351372d8f8370c976fbed6b282660f",
+    "redesign/ui/interaction_response.gd": "0cb4525624cd19e0aa36a34c191f1538c08befaea59f2eba683217794b15811a",
+    "redesign/presentation_feedback.gd": "1b6e8885508ab7236fe9882d8d5f8ea8070f54d8fb7d2d6e227580fc6d96a9be",
+    "redesign/samples/tower_battle_view.gd": "3237c66759ac68cdda4c4490872731f79612750530d46e1dcbca08bf7e7e216f",
+    "redesign/model.gd": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+    "redesign/campaign.gd": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+    "redesign/forecast.gd": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+    "redesign/samples/hud/combat_hud_presenter.gd": "9eac2729d50b9d3ad7a25df355aacc96fb61da1750f88d95d38bb0b117d2a07a"
+  },
+  "source_after": {
+    "redesign/samples/risk_battle_view.gd": "bd32ffaa851fa0965f3e06602f1d9a432151533e265855b53094f051b4063110",
+    "redesign/battle_view.gd": "5f28b6bc82020919a5938e4d03436b0e0798db0ac8096c31b038fd8dd5417c21",
+    "redesign/ui/interaction_feedback.gd": "e1d98da453eb73bcdf436882d930eea37b351372d8f8370c976fbed6b282660f",
+    "redesign/ui/interaction_response.gd": "0cb4525624cd19e0aa36a34c191f1538c08befaea59f2eba683217794b15811a",
+    "redesign/presentation_feedback.gd": "1b6e8885508ab7236fe9882d8d5f8ea8070f54d8fb7d2d6e227580fc6d96a9be",
+    "redesign/samples/tower_battle_view.gd": "3237c66759ac68cdda4c4490872731f79612750530d46e1dcbca08bf7e7e216f",
+    "redesign/model.gd": "1b2605888dc0cfc93eeb5d60e9e3db851a0bc6e656382c410f0dce5a82c16831",
+    "redesign/campaign.gd": "e3f0d2bafd17672483a54cb85a2e484d39f0f1b6d1c80d534009720611fe42de",
+    "redesign/forecast.gd": "3b7b48cd2a1ab11fc56d45ffded2fd8bb11928a4bd2c153eb6da4e5c7c30919a",
+    "redesign/samples/hud/combat_hud_presenter.gd": "a479e6336e6d4907816c58dcf095072571f75b5e53c066e91bbfa1ec62b78e56"
+  },
+  "artifact_sha256": {
+    "after.png": "e17e661d5248f665f93c079da2764576ca7dc7346d8616712230e918afe2e26e",
+    "after_key.png": "0b43da5598ca73d06a6eda8aadc9c0c246f6acc165095594341993f9f71c6115",
+    "before.png": "cc7f3cda2ef7bc9cbced7ae04046a8aa38a8429a733b7fb5ad49418bf03a8c5f",
+    "before_key.png": "c5650c7770b90149f5c834fb54f321fe8590cff53b8d3882bba602a11913269a",
+    "flow_integration.json": "f37cdfea178f046b2aea69af202f42f7dee004d852f133101b6eef3b566be247",
+    "flow_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "flow_stdout.log": "41ff0a24b0b5770a045747f63a260db625be4f06cfa2dedd12f8945247c3b076",
+    "hud_stdout.log": "6cd148947701d2d29024ae15a9fc9749df8d88b13e1f47bfdae02285f3ed815e",
+    "narrow_impact.png": "711408ac17cbaca32e8abc4d2035e7199f33b153b1a7d09f2d9998c999c86171",
+    "README.md": "0ddeb803eb927836c652493ffecc18debc77461c9f513a52413d718bfe3503c9",
+    "shop.png": "c653d2f1b94d4f215e0653b7948b64e088fa704af22f7f9695deca5d2876cdd8",
+    "stress_integration.json": "0d3bfaea9c812d0e2d13d3849c957cbd610d12052d5200ac10e69faf50bc781f",
+    "stress_stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stress_stdout.log": "2f308b5409d8b777ec41bf128121815b2c69fd320916939a162eaab56502e2ad",
+    "workshop.png": "81b51dfbfdb8fa265f1562a4dfdf570648acd6329c448b1f81a8bf7ef443fa6f"
+  },
+  "android_device_tested": false,
+  "apk_rebuilt": false
+}

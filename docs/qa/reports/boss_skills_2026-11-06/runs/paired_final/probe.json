@@ -1,0 +1,3802 @@
+{
+  "battles": [
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 11,
+      "reserved_deployed": 0,
+      "source": "single_safe",
+      "turns": 8,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 3,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 10,
+      "reserved_deployed": 0,
+      "source": "single_safe",
+      "turns": 13,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 11,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "single_safe",
+      "turns": 8,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 10,
+      "reserved_deployed": 0,
+      "source": "single_safe",
+      "turns": 9,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 3,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 3,
+      "launches": 3,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 10,
+      "reserved_deployed": 0,
+      "source": "single_safe",
+      "turns": 13,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 10,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "single_safe",
+      "turns": 8,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 13,
+      "reserved_deployed": 0,
+      "source": "single_safe",
+      "turns": 10,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 18,
+      "reserved_deployed": 0,
+      "source": "single_safe",
+      "turns": 9,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 16,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "single_safe",
+      "turns": 5,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 13,
+      "reserved_deployed": 2,
+      "source": "single_safe",
+      "turns": 10,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 18,
+      "reserved_deployed": 1,
+      "source": "single_safe",
+      "turns": 9,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "single",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 15,
+      "reserved_deployed": 2,
+      "search_unresolved": false,
+      "source": "single_safe",
+      "turns": 5,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 17,
+      "reserved_deployed": 0,
+      "source": "burst_safe",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 17,
+      "reserved_deployed": 0,
+      "source": "burst_safe",
+      "turns": 10,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 18,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "burst_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 0,
+      "launches": 2,
+      "loss_reason": "projectile",
+      "peak_projectiles": 2,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 17,
+      "reserved_deployed": 0,
+      "source": "burst_safe",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 17,
+      "reserved_deployed": 0,
+      "source": "burst_safe",
+      "turns": 10,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 18,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "burst_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 22,
+      "reserved_deployed": 0,
+      "source": "burst_safe",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 20,
+      "reserved_deployed": 0,
+      "source": "burst_safe",
+      "turns": 13,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 20,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "burst_safe",
+      "turns": 8,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 22,
+      "reserved_deployed": 2,
+      "source": "burst_safe",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 19,
+      "reserved_deployed": 2,
+      "source": "burst_safe",
+      "turns": 14,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "burst",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 20,
+      "reserved_deployed": 2,
+      "search_unresolved": false,
+      "source": "burst_safe",
+      "turns": 8,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 16,
+      "reserved_deployed": 0,
+      "source": "scatter_safe",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 0,
+      "remaining": 18,
+      "reserved_deployed": 0,
+      "source": "scatter_safe",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "cool",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 2,
+      "remaining": 13,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "scatter_safe",
+      "turns": 12,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 0,
+      "launches": 2,
+      "loss_reason": "projectile",
+      "peak_projectiles": 2,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 16,
+      "reserved_deployed": 0,
+      "source": "scatter_safe",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 0,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 0,
+      "remaining": 18,
+      "reserved_deployed": 0,
+      "source": "scatter_safe",
+      "turns": 7,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "cool",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 2,
+      "remaining": 13,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "scatter_safe",
+      "turns": 12,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 15,
+      "reserved_deployed": 0,
+      "source": "scatter_safe",
+      "turns": 10,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 15,
+      "reserved_deployed": 0,
+      "source": "scatter_safe",
+      "turns": 18,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "cool",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 20,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "scatter_safe",
+      "turns": 6,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 19,
+      "reserved_deployed": 2,
+      "source": "scatter_safe",
+      "turns": 9,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 20,
+      "reserved_deployed": 2,
+      "source": "scatter_safe",
+      "turns": 13,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "cool",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "scatter",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 19,
+      "reserved_deployed": 2,
+      "search_unresolved": false,
+      "source": "scatter_safe",
+      "turns": 6,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 0,
+      "remaining": 15,
+      "reserved_deployed": 0,
+      "source": "heavy_elite",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 0,
+      "remaining": 16,
+      "reserved_deployed": 0,
+      "source": "heavy_elite",
+      "turns": 13,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 3,
+      "remaining": 10,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "heavy_elite",
+      "turns": 19,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 0,
+      "launches": 2,
+      "loss_reason": "projectile",
+      "peak_projectiles": 2,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 0,
+      "remaining": 15,
+      "reserved_deployed": 0,
+      "source": "heavy_elite",
+      "turns": 8,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 0,
+      "remaining": 16,
+      "reserved_deployed": 0,
+      "source": "heavy_elite",
+      "turns": 13,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 4,
+      "launches": 4,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 3,
+      "remaining": 10,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "heavy_elite",
+      "turns": 19,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 17,
+      "reserved_deployed": 0,
+      "source": "heavy_elite",
+      "turns": 9,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 17,
+      "reserved_deployed": 0,
+      "source": "heavy_elite",
+      "turns": 12,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 14,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "heavy_elite",
+      "turns": 13,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 17,
+      "reserved_deployed": 1,
+      "source": "heavy_elite",
+      "turns": 9,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 3,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 16,
+      "reserved_deployed": 2,
+      "source": "heavy_elite",
+      "turns": 15,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 2,
+      "remaining": 13,
+      "reserved_deployed": 2,
+      "search_unresolved": false,
+      "source": "heavy_elite",
+      "turns": 11,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 13,
+      "reserved_deployed": 0,
+      "source": "amplifier_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 3,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 11,
+      "reserved_deployed": 0,
+      "source": "amplifier_safe",
+      "turns": 12,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 13,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "amplifier_safe",
+      "turns": 6,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 13,
+      "reserved_deployed": 0,
+      "source": "amplifier_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 2,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 12,
+      "reserved_deployed": 0,
+      "source": "amplifier_safe",
+      "turns": 10,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 13,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "amplifier_safe",
+      "turns": 6,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 16,
+      "reserved_deployed": 0,
+      "source": "amplifier_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 18,
+      "reserved_deployed": 0,
+      "source": "amplifier_safe",
+      "turns": 9,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 2,
+      "remaining": 19,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "amplifier_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 16,
+      "reserved_deployed": 2,
+      "source": "amplifier_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 1,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 0,
+      "launches": 1,
+      "loss_reason": "projectile",
+      "peak_projectiles": 1,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 18,
+      "reserved_deployed": 2,
+      "source": "amplifier_safe",
+      "turns": 9,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "amplifier",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 2,
+      "remaining": 19,
+      "reserved_deployed": 2,
+      "search_unresolved": false,
+      "source": "amplifier_safe",
+      "turns": 7,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 8,
+      "reserved_deployed": 0,
+      "source": "heavy_scout",
+      "turns": 15,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 9,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 4,
+      "launches": 4,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 2,
+      "remaining": 1,
+      "reserved_deployed": 0,
+      "source": "heavy_scout",
+      "turns": 34,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 8,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "heavy_scout",
+      "turns": 15,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 4,
+      "launches": 4,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 1.0,
+      "reload": 1,
+      "remaining": 5,
+      "reserved_deployed": 0,
+      "source": "heavy_scout",
+      "turns": 20,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 3,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "lost",
+      "policy": "visible_heat_single",
+      "region": 1.0,
+      "reload": 0,
+      "remaining": 15,
+      "reserved_deployed": 0,
+      "source": "heavy_scout",
+      "turns": 10,
+      "won": false
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 4,
+      "launches": 4,
+      "loss_reason": "",
+      "peak_projectiles": 2,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 1.0,
+      "reload": 2,
+      "remaining": 9,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "heavy_scout",
+      "turns": 19,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 2,
+      "launches": 2,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 10,
+      "reserved_deployed": 0,
+      "source": "heavy_scout",
+      "turns": 15,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 7,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 6,
+      "launches": 6,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 2,
+      "remaining": 3,
+      "reserved_deployed": 0,
+      "source": "heavy_scout",
+      "turns": 32,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "reload",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        },
+        {
+          "action": "fire",
+          "rounds": 0.0
+        }
+      ],
+      "calls": 0,
+      "changed": false,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 14,
+      "reserved_deployed": 0,
+      "search_unresolved": false,
+      "source": "heavy_scout",
+      "turns": 9,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 0,
+      "launches": 0,
+      "loss_reason": "",
+      "peak_projectiles": 0,
+      "phase": "reward",
+      "policy": "full_fire",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 13,
+      "reserved_deployed": 2,
+      "source": "heavy_scout",
+      "turns": 10,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        },
+        {
+          "action": "cool",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 1
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 7,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 6,
+      "launches": 6,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "visible_heat_single",
+      "region": 3.0,
+      "reload": 2,
+      "remaining": 3,
+      "reserved_deployed": 2,
+      "source": "heavy_scout",
+      "turns": 32,
+      "won": true
+    },
+    {
+      "actions": [
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "reload",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        },
+        {
+          "action": "fire",
+          "rounds": 0
+        }
+      ],
+      "calls": 1,
+      "changed": true,
+      "cool": 0,
+      "emergency": 0,
+      "gun": "heavy",
+      "intercept_events": 1,
+      "launches": 1,
+      "loss_reason": "",
+      "peak_projectiles": 1,
+      "phase": "reward",
+      "policy": "oracle_rng_known",
+      "region": 3.0,
+      "reload": 1,
+      "remaining": 12,
+      "reserved_deployed": 2,
+      "search_unresolved": false,
+      "source": "heavy_scout",
+      "turns": 10,
+      "won": true
+    }
+  ],
+  "checks": 36,
+  "failures": []
+}

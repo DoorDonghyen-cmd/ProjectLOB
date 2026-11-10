@@ -1,0 +1,225 @@
+{
+  "alive": [],
+  "board": [
+    {
+      "burn": 0.0,
+      "def": 0,
+      "distance": 21,
+      "guard_armor": 0,
+      "hp": 0,
+      "kind": "spitter",
+      "lane": 0.0,
+      "max_hp": 32.0,
+      "name": "폐쇄 당직",
+      "ranged_left": 2,
+      "ranged_phase": "recover",
+      "rank": "boss",
+      "species": "closure_watch",
+      "speed": 0.0
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 10,
+      "hp": 0,
+      "kind": "runner",
+      "lane": 1.0,
+      "max_hp": 5.0,
+      "name": "길목 도둑",
+      "species": "slum_thief",
+      "speed": 3
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 12,
+      "hp": 0,
+      "kind": "runner",
+      "lane": 2.0,
+      "max_hp": 5.0,
+      "name": "길목 도둑",
+      "species": "slum_thief",
+      "speed": 3
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 3,
+      "hp": 0,
+      "kind": "evader",
+      "lane": 3.0,
+      "max_hp": 5.0,
+      "name": "전지 약탈자",
+      "species": "slum_battery",
+      "speed": 2,
+      "weakness": "electric"
+    },
+    {
+      "burn": 0.0,
+      "def": 1.0,
+      "distance": 3,
+      "hp": 0,
+      "kind": "wall",
+      "lane": 1,
+      "max_hp": 8.0,
+      "name": "철판 약탈자",
+      "species": "slum_plate",
+      "speed": 2
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 11,
+      "hp": 0,
+      "kind": "runner",
+      "lane": 2,
+      "max_hp": 5.0,
+      "name": "길목 도둑",
+      "species": "slum_thief",
+      "speed": 3
+    }
+  ],
+  "checks": 15,
+  "children": [
+    {
+      "class": "Label",
+      "name": "HeatReadout",
+      "script": ""
+    },
+    {
+      "class": "Node2D",
+      "name": "@Node2D@4",
+      "script": "res://redesign/combat_readout_layer.gd"
+    },
+    {
+      "class": "SubViewport",
+      "name": "WeaponActorViewport",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@6",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@7",
+      "script": ""
+    },
+    {
+      "class": "Sprite2D",
+      "name": "@Sprite2D@8",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@9",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@10",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@11",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@12",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@13",
+      "script": ""
+    },
+    {
+      "class": "Polygon2D",
+      "name": "@Polygon2D@14",
+      "script": ""
+    }
+  ],
+  "failures": [],
+  "model": [
+    {
+      "burn": 0.0,
+      "def": 0,
+      "distance": 21,
+      "guard_armor": 0,
+      "hp": 0,
+      "kind": "spitter",
+      "lane": 0.0,
+      "max_hp": 32.0,
+      "name": "폐쇄 당직",
+      "ranged_left": 2,
+      "ranged_phase": "recover",
+      "rank": "boss",
+      "species": "closure_watch",
+      "speed": 0.0
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 10,
+      "hp": 0,
+      "kind": "runner",
+      "lane": 1.0,
+      "max_hp": 5.0,
+      "name": "길목 도둑",
+      "species": "slum_thief",
+      "speed": 3
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 12,
+      "hp": 0,
+      "kind": "runner",
+      "lane": 2.0,
+      "max_hp": 5.0,
+      "name": "길목 도둑",
+      "species": "slum_thief",
+      "speed": 3
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 3,
+      "hp": 0,
+      "kind": "evader",
+      "lane": 3.0,
+      "max_hp": 5.0,
+      "name": "전지 약탈자",
+      "species": "slum_battery",
+      "speed": 2,
+      "weakness": "electric"
+    },
+    {
+      "burn": 0.0,
+      "def": 1.0,
+      "distance": 3,
+      "hp": 0,
+      "kind": "wall",
+      "lane": 1,
+      "max_hp": 8.0,
+      "name": "철판 약탈자",
+      "species": "slum_plate",
+      "speed": 2
+    },
+    {
+      "burn": 0.0,
+      "def": 0.0,
+      "distance": 11,
+      "hp": 0,
+      "kind": "runner",
+      "lane": 2,
+      "max_hp": 5.0,
+      "name": "길목 도둑",
+      "species": "slum_thief",
+      "speed": 3
+    }
+  ]
+}

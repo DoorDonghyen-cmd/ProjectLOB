@@ -1,0 +1,110 @@
+{
+	"checks": 137,
+	"failures": 0,
+	"heat_marker_observations": [
+		{
+			"deck": [
+				"basic_p1"
+			],
+			"displayed_threshold": 5,
+			"parts": [
+				"thermal_drive"
+			]
+		},
+		{
+			"deck": [
+				"charge_heat"
+			],
+			"displayed_threshold": 6,
+			"parts": []
+		},
+		{
+			"deck": [
+				"thermal_c"
+			],
+			"displayed_threshold": 6,
+			"parts": []
+		},
+		{
+			"deck": [
+				"thermal"
+			],
+			"displayed_threshold": 6,
+			"parts": []
+		}
+	],
+	"recall_repetitions": 20,
+	"same_battle_reshuffle": true,
+	"thermal_boundary": [
+		{
+			"bonus": 0,
+			"damage": 2,
+			"gun": "single",
+			"heat_before": 5,
+			"threshold": 6
+		},
+		{
+			"bonus": 4,
+			"damage": 6,
+			"gun": "single",
+			"heat_before": 6,
+			"threshold": 6
+		},
+		{
+			"bonus": 0,
+			"damage": 1,
+			"gun": "burst",
+			"heat_before": 6,
+			"threshold": 7
+		},
+		{
+			"bonus": 4,
+			"damage": 5,
+			"gun": "burst",
+			"heat_before": 7,
+			"threshold": 7
+		},
+		{
+			"bonus": 0,
+			"damage": 1,
+			"gun": "scatter",
+			"heat_before": 7,
+			"threshold": 8
+		},
+		{
+			"bonus": 4,
+			"damage": 5,
+			"gun": "scatter",
+			"heat_before": 8,
+			"threshold": 8
+		},
+		{
+			"bonus": 0,
+			"damage": 1,
+			"gun": "heavy",
+			"heat_before": 6,
+			"threshold": 7
+		},
+		{
+			"bonus": 4,
+			"damage": 5,
+			"gun": "heavy",
+			"heat_before": 7,
+			"threshold": 7
+		},
+		{
+			"bonus": 0,
+			"damage": 2,
+			"gun": "amplifier",
+			"heat_before": 4,
+			"threshold": 5
+		},
+		{
+			"bonus": 8,
+			"damage": 10,
+			"gun": "amplifier",
+			"heat_before": 5,
+			"threshold": 5
+		}
+	]
+}

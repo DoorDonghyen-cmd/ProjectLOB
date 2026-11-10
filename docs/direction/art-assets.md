@@ -1,5 +1,75 @@
 # 아트 자산과 적용 상태
 
+**전투 복장 7종 G안 적용(2026-11-08)** — 승인된 운반복 G를 기준으로 권총·장총의 실제 사용 자세 77개를 [몸체·앞손 공용 아틀라스](../../새-게임-프로젝트/assets/art/combat_outfit_grid_20261108/provenance.json)에 구웠다. 전투와 장비 선택의 총을 든 배우에 적용했다. 복장별 재질색을 살리고 손·총·발 등록을 유지한다. [Godot 28컷 복장·자세 비교](../qa/reports/combat_outfit_grid_2026-11-08/outfits.png)
+
+**이전 전투 복장 7종 색면 정리(2026-11-07)** — 운반복 E안을 기준으로 헬멧·어깨·가방·바지의 도트 덩어리를 정리했다. [자산 21장과 출처](../../새-게임-프로젝트/assets/art/combat_outfit_blocks_20261107/provenance.json)는 원본 포즈·파지·발 좌표 및 G의 제작 입력을 보존한다. [당시 Godot 복장 비교](../qa/reports/combat_outfit_blocks_2026-11-07/outfits.png)
+
+**신규 총기2종(2026-11-06):** `assets/art/weapon_expansion_20261106/{deadbolt_break_v4,rewinder_v1}.png`와 같은 폴더의 provenance를 등록했다. 생성 원본/프롬프트·참조·폐기 후보는 [제작 기록](../art/concepts/2026-11-06-new-weapons/provenance.json), 실제 본편 선택/7복장·6자세/사격/냉각은 [검수](../qa/reports/weapon_live_2026-11-06/README.md)를 따른다. 리와인더 외형은 사용자 긍정, 데드볼트는 사용자 중절식 방향 선택의 구현안이며 최종 화면 미감 확인은 남는다.
+
+**정적 리소스 수의 범위 정정(2026-11-06 후속 UI 검수):** 과거 기록의 ‘magazine-journey/여정’ 개수는 공유 HUD의 별도5전투 연구판을 추적한 목록이다. 본편 전체 리소스 수/패키지 포함 검사로 사용하지 않는다. [실제 본편 main.tscn 진입 기준 검사](../qa/reports/interaction_fx_2026-11-06/README.md)를 구분한다. 기존 VFX의 본편 연결 자체는 실제 캠페인 장면/공개 입력 검사로 확인했다.
+
+**장갑·차폐/불꽃 시트1차(2026-11-06):** `assets/art/surface_fx_20261106/`의 금속 접촉29·차폐23·화염 반복12프레임 시트3개를 본편에 연결했다. 고정 pixelfx의 실제 접점/팔레트를 등록하고 횃불 하드웨어는 제외했다. 전류·불씨 이동/장갑 조각은 제한된 Godot 도형이다. [출처·해시](../../새-게임-프로젝트/assets/art/surface_fx_20261106/provenance.json) · [26구성/5구역 실제 화면·검증/한계](../qa/reports/surface_fx_2026-11-06/README.md). 숫자 위계를 지키고12Hz/그리기 상한·동작 축소를 적용했다. 여정 참조365개. 세부 재질·사람/S26은 후속이다.
+
+**탄두형 투사체 후속(2026-11-06):** 승인된 탄환의 구리/강철 색면을 참고해 `projectile_visual.gd`에서 계단형 금속 탄두를 그린다. 기본·침형·띠형·둔형·소이형/지원 캡슐로 구분하고 실제 비행 방향으로 회전한다. PNG 추가 없이 기존 섬광 시트/탄환 카드와 연결하며 강화색은 띠/짧은 잔상에 남긴다. [최신 실제 화면·범위·검증](../qa/reports/firing_fx_2026-11-06/README.md#탄두형-투사체-후속). 본편 참조361개, 실제 화면17구성/66단계 확인. 이전 본편 섬광 시트는 유지한다.
+
+**5총기 발사 시트1차(2026-11-06):** `assets/art/firing_fx_20261106/muzzle.png`는 고정 pixelfx의 섬광 레시피만 재구성한480×384/30프레임 중립 시트다. 실제 총구 좌표/회전과 강화 적중색에 연결한다. 탄도는 실제 결과당 한 줄이며 지원/강행·동작 축소를 구분한다. [출처/해시](../../새-게임-프로젝트/assets/art/firing_fx_20261106/provenance.json) · [실제 화면/검증·한계](../qa/reports/firing_fx_2026-11-06/README.md). 후보 전체 효과의 연기·탄피·다수 탄도는 복사하지 않았다. 사람/S26과 나머지 타격·속성 효과는 후속이다.
+
+**파츠/배율 적중 시트1차 본편(2026-11-06):** `assets/art/impact_parts_20261106/multiplier.png`는 고정 pixelfx의23프레임 중립색 시트864×816이다. 실제 적용된 효과에 따라 본편에서 색/단계를 지정하며 접점(84,80)을 맞춘다. 숫자의 +/모서리/이중 눈금과 중첩 측면 무늬는 Godot 도형이다. [출처/옵션·해시/고지](../../새-게임-프로젝트/assets/art/impact_parts_20261106/provenance.json) · [색/실제 입력·동작 축소·검증](../qa/reports/impact_parts_2026-11-06/README.md). 선택한 시트만 본편 참조하며 비교용 hit-spark는 QA에 보존했다. 사람 미감·Android와 재질/차폐/다른 효과는 후속이다.
+
+**리벳 양손 카빈 본편(2026-11-06):** `assets/art/rivet_twohand_20261106/rivet_carbine_v1.png`는 내장 image_gen/4실제 참조로 만든2172×724 RGBA 원화이며 `rivet_carbine_v1_pixel.png`는 선택한 PixelOE RGB 정리본이다. 본편 `weapon_art.gd`의 장비/전투 공통 프로필에 등록했고7복장 장총 자세를 재사용했다. [전체 프롬프트/참조/해시](../../새-게임-프로젝트/assets/art/rivet_twohand_20261106/provenance.json) · [후보8종과 처리](../../새-게임-프로젝트/assets/art/style_pilot_20261106/provenance.json) · [전후/검증](../qa/reports/rivet_art_2026-11-06/README.md). 기존 원화/몸체/배경은 보존했다. 선택안은 본편 적용, 나머지 후보는 비교용이며 사람의 미감 채택/Android는 후속이다.
+
+**전투 기호 최신 — 2026-11-01 후속:** 사용자 승인으로 `pipe_map_art_20261101/combat.png`는 교차 총기36px, `elite.png`는 같은 총기 뒤 방호판44px, `elite_detail.png`는 별도36px 판으로 교체했다. 앞선 몬스터 얼굴 두 형태를 대체한다. 관문 차단문과 나머지26PNG·씬·게임 규칙은 동일하다. 지도/선택 패널/범례 공통 적용. 픽셀 좌표 원본과 정확한2배 내보내기를 기존 제작 도구에 유지한다. [최신 화면·변경 범위·검증](../qa/reports/pipe_map_symbols_density_2026-11-01.md). 미감의 사용자 확인은 후속이다.
+
+**배관도 전용 그래픽 — 2026-11-01:** `assets/ui/pipe_map_art_20261101/`의29PNG와 지도 전용 면을 본편에 연결했다. 장소 기호7종+정예 상세1, 구역 문양5종×3상태, 밸브2, 관문 크기/상태3, 지도 면1이다. 원본은 `art_source/ui/pipe_map_20261101/`, 편집 가능한 픽셀 좌표/제작 명령은 `tools/build_pipe_map_art.py`다. 코드로 직접 그린 도트이며 생성형 이미지나 기존 그림의 자동 임계값 변환을 사용하지 않았다. [참조·해시 목록](../../새-게임-프로젝트/assets/ui/pipe_map_art_20261101/provenance.json) · [실제 전후·검증](../qa/reports/pipe_map_art_2026-11-01.md). 기존 동네/제어실2기호·공통 라인 테마와 과거 지도 자산은 보존한다. 제작 원본 폴더의 미사용 관문 변형3개는 초안이며 런타임 내보내기에서 제외했다. 사용자 미감과 Android 실기기 검증은 별도다.
+
+**최신 적용 — 픽셀 전투 HUD(2026-11-01):** 승인 목업을 `assets/ui/combat_pixel_20261101/`의32×32 상태 프레임10종,14×22 탄환20종, Galmuri9/11 비트맵 글꼴과 테마로 분리해 탄창 여정/비교 HUD에 연결했다. 글꼴은각1024×2048 두 페이지와OFL을 포함한다. LibreSprite 네이티브 픽셀 제작, 모든 글리프의 원본BDF 대조와 투명성 검증 완료. [제작·해시](../../새-게임-프로젝트/assets/ui/combat_pixel_20261101/provenance.json) · [실제 화면·검증](../qa/reports/combat_pixel_live_2026-11-01.md). 글자/수치는 Godot 노드이며 공용 탄환/배우/배경 원본과 feedkit 이력은 보존한다. 현재 HUD의 feedkit 외피를 대체하며 Android/사용자 체감은 후속이다.
+
+**최신 적용 — 같은 제작소의 급탄 장비8종(2026-10-31):** `assets/art/combat_feedkit_20261031/kit.png`는 내장 image_gen으로 제작한 RGBA1536×1024 원본이다. 레일·발사/대기 패·사격/냉각/교체판·발열계·모달8종을 사용한다. 읽기 전용 알파 경계 측정과 Godot AtlasTexture/9분할/축척으로 연결했고 원본 비트맵은 편집하지 않았다. [전체 프롬프트·참조·해시](../../새-게임-프로젝트/assets/art/combat_feedkit_20261031/provenance.json) · [등록 도구](../../tools/build_combat_feedkit_resources.py) · [실제 화면·검증](../qa/reports/combat_feedkit_2026-10-31.md). 앞선 천/종이/개별 소품 원본은 보존한다. 사용자 미감은 확인 전이다.
+
+**최신 적용 — 전투 도트 소품 원화(2026-10-31):** `assets/art/combat_pixelcraft_20261031/kit.png` RGBA1536×1024 원본8부품과 AtlasTexture8등록을 추가했다. 천 받침·표찰·사격/냉각/교체판·계기 홈·모달7종은 적용, 헤더 탭은 미사용 원본으로 보존한다. PNG무편집·읽기 전용 알파 측정·Godot영역/9분할/축척/nearest 표시로 연결했다. [원화·프롬프트·참조·해시](../../새-게임-프로젝트/assets/art/combat_pixelcraft_20261031/provenance.json) · [등록 도구](../../tools/build_combat_pixelcraft_resources.py) · [실제 화면·검증](../qa/reports/combat_pixelcraft_2026-10-31.md). 기존 배우/배경/탄환 PNG는 무변경이며 사용자 미감 확인은 남는다.
+
+**최신 적용 — 전투 UI 색·형태 분리(2026-10-31):** `assets/ui/combat_identity/`의 SVG8개·TRES27개로 반복 청회색 박스를 대체했다. 밝은 탄약 표찰과 주홍 트리거는 모서리 고정9분할, 공통 받침·냉각·교체는 네이티브 스타일, 포커스는 밝고 어두운 면에 대응하는 두 색 모서리다. 기능 글자/숫자는 Godot노드로 남는다. 기존 작은 탄환 원화는 무변경. [제작 원본](../../tools/build_combat_hud_identity.py) · [출처·용도·해시](../../새-게임-프로젝트/assets/ui/combat_identity/manifest.json) · [실제 화면·검증](../qa/reports/combat_identity_2026-10-31.md). 새 미감은 사용자 확인 전이다.
+
+**최신 적용 — 작은 무광 탄환과 단순한 HUD(2026-10-31):** 이전 큰 탄환의 도트·광택에 대한 사용자 지적으로 `assets/art/ammo_quiet_20261031/rounds.png`의20프레임 원화를 공용 표시로 연결했다. 승인 캐릭터와 기존 탄종 형태를 참조하고 원본 PNG를 바이트 그대로 보존했다.189탄환 ID와 thermal→bore 별칭을 유지하며 주 탄창의 그림은 최대28×44다. `assets/ui/combat_quiet/`의18개 네이티브 StyleBox가 주 화면의 두꺼운 외피·홈을 대체한다. 이전 원화/금속 HUD는 이력으로 보존한다. [출처·프롬프트·해시](../../새-게임-프로젝트/assets/art/ammo_quiet_20261031/provenance.json) · [통합 화면·검증](../qa/reports/combat_focus_2026-10-31.md). 새 미감의 사용자 확인은 남는다.
+
+**최신 적용 — 탄환 재질 통일(2026-10-31):** `assets/art/ammo_cohesion_20261031/`의 생성 원본PNG3장(기본6·특수12·이전 저장용2)을 공용 `ammo_art.gd`에 연결했다. 현재189탄환 ID의 원형/개조/등급/이전 별칭에 대응한다. `thermal`은 기존대로 `bore`를 사용하므로 별도 규칙이나 새 탄종이 생긴 것이 아니다. 기존 원화와 과거 비교 시안은 보존했다. 원본 파일은 바이트 그대로 복사하고 Godot의 영역 등록·nearest 표시만 적용했다. [참조·프롬프트·원본/결과 해시](../../새-게임-프로젝트/assets/art/ammo_cohesion_20261031/provenance.json) · [전체·인게임·검증](../qa/reports/ammo_cohesion_2026-10-31.md). 사용자 미감 확인은 후속이다.
+
+**최신 적용 — 전투 HUD 재질(2026-10-31):** `assets/ui/combat_hardware/`에 도트 금속 프레임20종의SVG/TRES와 냉각·교체·사격 기호3종을 추가했다. 새 공통 전투HUD에 연결하고 기존 배경·배우·탄환 원화는 보존했다. 이미지 생성이나 래스터 편집 없이 직접 작성한 벡터 모양이며,9분할로 모서리를 유지한다. [제작 원본](../../tools/build_combat_hud_materials.py) · [용도·참조·해시](../../새-게임-프로젝트/assets/ui/combat_hardware/manifest.json) · [실제 화면/검증](../qa/reports/combat_hud_cohesion_2026-10-31.md). 미감의 사용자 확인은 후속이다.
+
+**최신 적용 — 승인 B 친위대6종(2026-10-26):** `central_guard_alt_20261025/`의 사용자 선택 B 일반4PNG와 `central_leaders_20261026/`의 친위대장/탑의 지배자 추가 원화2PNG를 본편에 연결했다. 추가2종은 같은 계열의 디렉터 임시 원화이며 사용자 선호는 후속이다. 원본 픽셀 보존, alpha/발 기준 측정과 export-safe texture 등록, 이동·피격·사망·지휘 강조·피니시 통합. 별도 상태 키포즈 시트는 제작하지 않았다. A/B 비교 뷰어는 이력으로 유지. [추가 원화 출처](../../새-게임-프로젝트/assets/art/central_leaders_20261026/provenance.json) · [실제 화면·검증](../qa/reports/central_live_2026-10-26.md).
+
+**최신 적용 — 귀족 거주구6종(2026-10-25):** `assets/art/noble_enemies_20261025/`의 최종5PNG로 일반4종·정예·보스를 본편에 연결했다. 차폐형4종은 각3자세, 가문 시종/경호기는 정지 원화와 절차적 동작이다. 원본 픽셀은 보존하고 알파 경계·발 접점·축척을 Godot에 등록했다. C 주인공과 귀족 배경을 함께 참조했다. 제작자 화면 검수 완료, 사용자 미감은 후속. [실제 화면](../qa/reports/noble_live_2026-10-25.md) · [원본·프롬프트](../../새-게임-프로젝트/assets/art/noble_enemies_20261025/provenance.json).
+
+**최신 적용 — 승인7복장 본편 통합(2026-10-25):** `assets/art/outfits_unified_20261025/`의 대기7장/동작13장(교정2장 포함)/실내7장으로 장비 선택·전투·21실내 자세를 연결했다. 기본 권총은 기존 C를 보존하며 운반복 멜빵/정찰복 길이/인양 릴을 교정했다. 아래 시안 미적용 상태는 제작 당시 이력이다. [화면·검증](../qa/reports/outfits_unified_2026-10-25.md) · [원본·프롬프트](../../새-게임-프로젝트/assets/art/outfits_unified_20261025/provenance.json).
+
+**전체7복장 시안 후속 — 2026-10-25:** 운반복 멜빵이 한손 앞팔을 덮던 오류를carrier_v4에서 양쪽 파지 모두 교정. 방열/인양/회수/원정4종을 C의 몸 비율·색면·윤곽과 기존 낮은 파지를 기준으로 시안 제작했다. 실제 복장 고유 장치/밀폐 헬멧은 유지. Godot245px/94px 전체7종 비교, 본편 미적용·사용자 검토 전. [전체 비교·출처](../art/concepts/2026-10-25-outfit-unification/ALL_OUTFITS.md).
+
+**기본·운반·정찰 통일 시안 — 2026-10-25 후속:** 리벳·스파이크 C를 기준으로 기본 양손 몸체를 맞추고, 운반복은 긴 적재 외투/정찰복은 짧은 재킷으로 구분한2자세 원화3장을 제작했다. 실제 총기와 Godot245px/94px 정지 비교까지이며 본편은 미변경. 최초 양손 팔 들림을 기존 low-ready 파지로 교정했다. 사용자 검토·6키포즈/접점·전체5무기·실내 연결은 후속. [비교판·프롬프트·범위](../art/concepts/2026-10-25-outfit-unification/README.md).
+
+**스플린터 최신v3:** v2의 벌어진 총열은 사용자에게 닭발처럼 보여 제외. `weapon_redesign_20261024/scatter_splinter_v3.png`(2172×724 RGBA)는 v1을 입력으로 원통형 덮개와 전면 세 총구로 수정한 정지 시안이다. 원본·다른 무기는 보존. Godot400px/110px 비교 확인, 본편/파지/모션 미적용. [제작 기록](../../새-게임-프로젝트/assets/art/weapon_redesign_20261024/splinter_v3_provenance.json).
+
+**스플린터 외형 수정:** 사용자 요청으로 `weapon_redesign_20261024/scatter_splinter_v2.png`(2172×724 RGBA)를 제작했다. v1을 실제 편집 입력으로 사용해 전면을 세 노출 총열로 변경, 원본/몸체 계열/다른 무기는 보존했다. 정지 시안이며 본편 미적용. [수정 프롬프트·해시](../../새-게임-프로젝트/assets/art/weapon_redesign_20261024/splinter_v2_provenance.json) · [작은 크기 비교](../qa/reports/assets/weapon_remaining_concepts_2026-10-24_splinter_v2/remaining_concepts_1440.png).
+
+**무기 시안 최신:** 아래 첫 시안의 빗장은 현재 **리벳(Rivet)** 제안으로 변경. 생성PNG는 보존하고 Godot 부착 축척을0.13→0.10, 진열을82%로 줄였다. 래칫은 유지. 후속 요청으로 스플린터2172×724/리액터2160×728/스파이크2098×749 RGBA 원본도 각1장 확보했다. 기존 두 총기와 승인 주인공을 image_gen 입력으로 사용, 원본 무편집·전체 프롬프트·참조/출력 해시 보존. 새3종은400px/110px 폭의 Godot 정지 비교까지이며 파지·모션·본편은 미적용이다. [최신 설계](weapon-design.md) · [검수](../qa/reports/weapon_concepts_2026-10-24.md) · [새3종 제작 기록](../../새-게임-프로젝트/assets/art/weapon_redesign_20261024/remaining_concepts_provenance.json).
+
+**무기 디자인 시안2종 — 2026-10-24:** `weapon_redesign_20261024/single_latch_v1.png`(1536×1024), `burst_ratchet_v1.png`(1774×887) RGBA. 내장 image_gen 원본 보존, 기존 무기/승인 캐릭터/실제 정원 화면을 참조했다. 독립 뷰어의 장비 크기·몸체 합성·6자세·복장 전환에만 연결. 빗장/래칫은 이름 제안이며 본편은 보행자/쇄도와 기존 이미지 유지. [프롬프트·해시](../../새-게임-프로젝트/assets/art/weapon_redesign_20261024/provenance.json) · [렌더](../qa/reports/weapon_concepts_2026-10-24.md).
+
+**우수 정원 정예·보스 — 2026-10-24:** `garden_leaders_20261024/longleg_states_v1.png`, `watermother_states_v1.png`. 내장 image_gen2장/각3키포즈,2172×724 RGBA 원본 보존. 승인 숨접이/빗주머니/주인공/실제 정원 화면 참조. UV 다각형·발 위치·종별 동일 축척으로 분리/표시하며 메타데이터 측정 재현 도구를 보존했다. 본편3구역 신규 편성9와 개발 정예/보스 바로가기, 피격·도약·피니시 통합. 3비율23캡처 중 대표7장 검수, 사용자 미감/Galaxy는 확인 전. [전체 프롬프트·해시](../art/garden-leaders-20261024.json) · [화면·검증](../qa/reports/garden_live_2026-10-24.md).
+
+**중앙 통제구 전용3단계 전투 배경 — 2026-10-24 후속:** `central_ascent_20261024/{lower,middle,upper}_v1.png`. 내장 image_gen3장, 승인 주거/최근 귀족 원화·실제 전투 화면 참조.1672×941 RGB 생성 원본 보존, 실제 지면686/687/687 등록. 검문 회랑→공급 통제실→중앙 제어핵으로 본편5구역에 적용. 3비율 일반/정예/보스·피니시·기존 엔딩19렌더 중16장 확인. 1~5구역 전용 전투 배경 적용 완료이며 아래 과거 미제작 표기보다 이 항목이 우선한다. 사용자 미감·Galaxy·친위대/지배자·엔딩 전용 아트는 후속. [화면·전체 프롬프트·검증](../qa/reports/central_background_2026-10-24.md).
+
+**귀족 거주구 전용3단계 전투 배경 — 2026-10-24:** `noble_ascent_20261024/{lower,middle,upper}_v1.png`. 내장 image_gen3장, 승인 주거/정원 상층v2와 실제 전투 화면 참조.1672×941 RGB 원본 보존, 실제 지면686/686/687 등록. 전용 승강장→저택 거리→가문 접견관으로 본편4구역에 적용하고 표시명을 ‘귀족 거주구’로 정리했다.3비율 일반/정예/보스·피니시16장 중 대표13장 시각 확인. 사용자 미감·Galaxy·귀족 전용 적은 후속이며5구역 원화는 위 항목에서 적용했다. [실제 화면·전체 프롬프트·검증](../qa/reports/noble_background_2026-10-24.md). 아래 정원 제작 당시4~5구역 미제작 상태보다 이 항목이 우선한다.
+
+**우수 정원 전용3단계 전투 배경:** `garden_ascent_20261023/lower_v1.png`, `middle_v1.png`, `upper_v2.png`. 승인 주거/주조장 원화 참조, 내장 image_gen으로 제작.1672×941 RGB 원본 보존, 발판y663/698/687 등록. 사육 통로→온실→집수 수로로 본편3구역에 적용했다. 사용자 전체 방향 긍정 평가 후 상층 식물 보강 요청으로 수문·기둥의 뿌리와 덩굴, 하부 잎을 추가한v2로 교체했다. 상층v1은 이력 보존. [화면·전체 프롬프트·검증](../qa/reports/garden_background_2026-10-23.md). 상층v2 사용자 미감은 후속,4~5구역 전용 배경은 미제작.
+
+**주조장 전용3단계 전투 배경:** `foundry_ascent_20261023/lower_v1.png`, `middle_v1.png`, `upper_v1.png`. 내장 image_gen으로 승인 주거 배경과 실제 전투 화면을 참조해 제작.1672×941 원본을 보존하고 발판 y702/713/713 등록. 본편2구역과 개발 비교에 적용,3비율/피니시13화면 검수. [실제 화면·전체 프롬프트·검증](../qa/reports/foundry_background_2026-10-23.md). 주조장 배경은 사용자 긍정 평가를 받았고,3구역 배경은 위의 후속 작업으로 적용했다.4~5구역은 미제작.
+
+**주조장 본편 동작 — 2026-10-23 후속:** 이전6종 원화와 `foundry_motion_20261023/`의 2포즈 시트3장(금형 파수꾼 축압/전진, 주조 감독 축압/전진, 압력공 조준/반동)을 편성8 본편에 연결했다. 키포즈+절차형 이동·피격·사망이며 프레임별 수작업 걷기 애니메이션은 아니다. 원본 PNG·전체 프롬프트·해시·발 기준·UV 등록 보존. 보스 시트의 두 실루엣은 좌우 폭이 일부 겹쳐 투명한 사이를 나누는 UV 다각형으로 분리한다. 실제 렌더에서는 체력 영역을 확보하도록 정예140px/보스148px 표시 높이를 사용한다. 아래 정지 시안 단계보다 이 적용 상태가 우선한다. [출처·등록](../../새-게임-프로젝트/assets/art/foundry_motion_20261023/provenance.json) · [화면·검증](../qa/reports/foundry_live_2026-10-23.md).
+
+**주조장 정예·보스 콘셉트 — 2026-10-23:** `foundry_leaders_20261023/`의 금형 파수꾼·주조 감독 정지 원화2장을 추가했다. 이전 일반4종과 같은 재질/화풍을 사용하며 기존 비교 뷰어에 그룹 전환을 추가했다. 원본 RGBA/발 기준/전체 프롬프트와 참조·출력 해시 보존,3해상도 실제 비교 완료. 본편 아트 교체·상태 키포즈는 후속. [제작 기록](../../새-게임-프로젝트/assets/art/foundry_leaders_20261023/provenance.json) · [화면·검증](../qa/reports/foundry_leaders_2026-10-23.md).
+
+**주조장 일반4종 콘셉트 — 2026-10-22:** `foundry_concepts_20261022/`의 노역 인형·금형공·압력공·재받이4장을 정지 시안으로 제작했다. 원본 RGBA/측정 영역/발 기준을 보존하고 확대·전투 크기 비교 화면과 개발 메뉴 진입을 연결했다. 본편 편성/아트는 미교체, 새 배경/상태 동작/사용자 미감은 후속. [원본·전체 프롬프트](../../새-게임-프로젝트/assets/art/foundry_concepts_20261022/provenance.json) · [비교 화면·검증](../qa/reports/foundry_concepts_2026-10-22.md).
+
 **정예·보스 원화 — 2026-10-18 본편 적용:** `elite_boss_20261018/resonant_eavesback_states.png`와 `closure_watch_states.png`를 편성5 주거구에 연결했다. 각각 대기/공명·닫힘/열림2상태, 기존 큰 색면 참조를 실제 이미지 입력으로 사용했다. 생성 PNG는 그대로 보존하고 Godot 영역/발 기준점/nearest/기존 알파 컷아웃으로 표시한다. 상태·피격·사망의 절차형 동작 포함, 모든 프레임을 그린 애니메이션은 아니다. 제작자 실제 화면 검수 완료, 사용자 미감/Galaxy는 후속. [프롬프트·출처·해시](../art/concepts/elite-boss-20261018/provenance.json) · [전투 화면](../qa/reports/elite_boss_2026-10-18.md).
 
 **탄환 공용 아트 — 2026-10-18 후속:** 기존6종 v4와 새 `ammo_recast_20261018/special_rounds_v1.png` 12종을 공용 렌더에 연결. 현재 획득17가족 + 기존 연계탄을 같은 무광 큰 색면으로 표시한다. 예약/차단의 이전 보유물은 기존 그림 유지. 보상·상점·가방·압축도 같은 원화 사용. 생성 원본 그대로, Godot 영역 등록/nearest 렌더. [생성 기록·해시](../art/concepts/ammo-recast-20261018/provenance.json) · [실제 화면](../qa/reports/ammo_collection_2026-10-18.md). 아래 전투만 적용/나머지 기존 그림 내용은 이전 단계다.
@@ -16,7 +86,7 @@
 **신규 복장 본편 4종:** `outfits_live_20261013`의 방열복·인양·회수 15개 PNG와 기존 `outfit_preview_20261011` 원정복5개를 `outfit_art.gd`/`service_actor_catalog.gd`에서 공유한다. 선택·전투·실내·복장 작업실에 적용. [생성 프롬프트·참조·해시](../../새-게임-프로젝트/assets/art/outfits_live_20261013/provenance.json) · [화면·검증](../qa/reports/outfits_live_2026-10-13.md). 인양 대기 팔은 재생성v2 사용, 새 자산 원본 알파 보존. 기존 scout/carrier 별도 전투·실내 원화는 후속.
 
 
-**첫 구역 높이별 전투 배경:** 기존 `tower_sample_20261003/residential_tower.png` + `residential_ascent_20261011/middle_v1.png`, `upper_v1.png`. 후속2종은 기존 승인 배경을 참조한 내장 image_gen 원본이며 후처리 없이 발판 높이를 등록했다. [화면/검증/전체 프롬프트](../qa/reports/ascent_background_2026-10-11.md). 다른 구역 전용3종은 아직 제작 전이다.
+**첫 구역 높이별 전투 배경:** 기존 `tower_sample_20261003/residential_tower.png` + `residential_ascent_20261011/middle_v1.png`, `upper_v1.png`. 후속2종은 기존 승인 배경을 참조한 내장 image_gen 원본이며 후처리 없이 발판 높이를 등록했다. [화면/검증/전체 프롬프트](../qa/reports/ascent_background_2026-10-11.md). 2구역 전용3종은 위의 주조장 배경으로 후속 적용했다.3구역도 우수 정원 후속 원화로 적용했다.4~5구역은 제작 전이다.
 
 **전투 잔열 표시:** 별도 사각 막대를 없애고 각 무기 텍스처의 금속 영역에만 열기 색을 적용한다. 투명 영역·손·몸체 윤곽은 유지하며 냉각0에서 원복된다. [사용자 캡처 재현/수정](../qa/reports/weapon_heat_artifact_2026-10-11.md).
 
@@ -109,6 +179,10 @@ Use case: stylized-concept. Asset type: production background texture for a 2D t
 
 ## 총기 원화5종
 
+### 현행 캐릭터 C안·장비 선택 공유 — 2026-10-25
+
+`hero_contours_20261025/work_pistol.png`는 사용자가 채택한 C안 그대로, `work_long.png`는 같은 윤곽 기준을 기존 양손6자세에 적용한 image_gen 편집본이다. [전체 프롬프트·원본·해시](../../새-게임-프로젝트/assets/art/hero_contours_20261025/provenance.json). 장비 선택은 `equipment_actor.gd`에서 본편 `weapon_actor.tscn`을 그대로 사용하며, 전투 몸체·재질·총·손 합성을 공유한다. 선택용 별도 초상화는 현행 표시에서 제외했다. 기존 특수4복장 몸체는 유지한다. [화면·검증](../qa/reports/hero_contour_live_2026-10-25.md).
+
 `assets/art/weapons_20261011/`의 `single/burst/scatter/heavy/amplifier_v1.png`를 장비실의 큰 그림·선택 목록에 공유한다. 승인 주인공의 색면/재료를 참고한 built-in image_gen 원화이며 각 전체 프롬프트·해시·범위는 `provenance.json`에 있다. PNG는 수정 없이 보존하고 각 `.tres`의 영역과 기존 alpha0.5 셰이더로 여백/가장자리를 처리한다. 이전 장비 그림의 SubViewport6개를 TextureRect로 대체했다. [검수·캡처](../qa/reports/weapon_art_2026-10-11.md).
 
 ### 장소 실내 3종 적용
@@ -125,3 +199,8 @@ Use case: stylized-concept. Asset type: production background texture for a 2D t
 - 전용 outfit_preview.tscn에서만 원정복 전투/장소 배우를 사용한다. 본편 복장 카탈로그와 저장에는 미연결.
 - 원정복 v3는 사용자 채택, 신규 동작/화면은 사용자 확인 전. 다른3종은 시안만 존재.
 - [검증·차이·실행 경로](../qa/reports/outfit_preview_2026-10-11.md).
+
+
+## 무기5종 본편·배우 화풍 통합
+
+`weapon_redesign_20261024`의 리벳/래칫/리액터/스파이크 원화와 스플린터v4를 본편에 연결했다. 원본은보존하며 공통 등록/표시를 통해 전투와 장비의 밀도를 조정했다. 신규 생성은 스플린터 색 수정1장이고, 다른 배우는 표시 격자/그림자 처리 조정이다. [전체 프롬프트·해시](../../새-게임-프로젝트/assets/art/weapon_redesign_20261024/splinter_v4_provenance.json) · [실제 화면과 범위](../qa/reports/art_cohesion_2026-10-24.md).
