@@ -1,0 +1,309 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/part_mount.gd" id="logic"]
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/item_glyph.gd" id="glyph"]
+
+[node name="PartsPane" type="HBoxContainer"]
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+script = ExtResource("logic")
+
+[node name="Loadout" type="VBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(253, 0)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.74
+theme_override_constants/separation = 8
+
+[node name="MountCount" type="Label" parent="Loadout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "장착대 · 5 / 5"
+theme_override_colors/font_color = Color(0.95, 0.73, 0.49, 1)
+
+[node name="Slots" type="HBoxContainer" parent="Loadout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Slot1" type="Button" parent="Loadout/Slots"]
+layout_mode = 2
+custom_minimum_size = Vector2(46, 48)
+toggle_mode = true
+tooltip_text = "빈 슬롯"
+
+[node name="Glyph" type="Control" parent="Loadout/Slots/Slot1"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 5.0
+mouse_filter = 2
+script = ExtResource("glyph")
+item_id = "coil"
+is_part = true
+
+[node name="Number" type="Label" parent="Loadout/Slots/Slot1"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 20.0
+offset_bottom = 17.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "1"
+
+[node name="Slot2" type="Button" parent="Loadout/Slots"]
+layout_mode = 2
+custom_minimum_size = Vector2(46, 48)
+toggle_mode = true
+tooltip_text = "빈 슬롯"
+
+[node name="Glyph" type="Control" parent="Loadout/Slots/Slot2"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 5.0
+mouse_filter = 2
+script = ExtResource("glyph")
+item_id = "coil"
+is_part = true
+
+[node name="Number" type="Label" parent="Loadout/Slots/Slot2"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 20.0
+offset_bottom = 17.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "2"
+
+[node name="Slot3" type="Button" parent="Loadout/Slots"]
+layout_mode = 2
+custom_minimum_size = Vector2(46, 48)
+toggle_mode = true
+tooltip_text = "빈 슬롯"
+
+[node name="Glyph" type="Control" parent="Loadout/Slots/Slot3"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 5.0
+mouse_filter = 2
+script = ExtResource("glyph")
+item_id = "coil"
+is_part = true
+
+[node name="Number" type="Label" parent="Loadout/Slots/Slot3"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 20.0
+offset_bottom = 17.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "3"
+
+[node name="Slot4" type="Button" parent="Loadout/Slots"]
+layout_mode = 2
+custom_minimum_size = Vector2(46, 48)
+toggle_mode = true
+tooltip_text = "빈 슬롯"
+
+[node name="Glyph" type="Control" parent="Loadout/Slots/Slot4"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 5.0
+mouse_filter = 2
+script = ExtResource("glyph")
+item_id = "coil"
+is_part = true
+
+[node name="Number" type="Label" parent="Loadout/Slots/Slot4"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 20.0
+offset_bottom = 17.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "4"
+
+[node name="Slot5" type="Button" parent="Loadout/Slots"]
+layout_mode = 2
+custom_minimum_size = Vector2(46, 48)
+toggle_mode = true
+tooltip_text = "빈 슬롯"
+
+[node name="Glyph" type="Control" parent="Loadout/Slots/Slot5"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 5.0
+mouse_filter = 2
+script = ExtResource("glyph")
+item_id = "coil"
+is_part = true
+
+[node name="Number" type="Label" parent="Loadout/Slots/Slot5"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 1.0
+offset_right = 20.0
+offset_bottom = 17.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "5"
+
+[node name="StorageRule" type="ColorRect" parent="Loadout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 1)
+mouse_filter = 2
+color = Color(0.35, 0.29, 0.22, 1)
+
+[node name="StorageCount" type="Label" parent="Loadout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "보관함 · 2개"
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+
+[node name="StorageScroll" type="ScrollContainer" parent="Loadout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 66)
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Storage" type="VBoxContainer" parent="Loadout/StorageScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="StorageEmpty" type="Label" parent="Loadout/StorageScroll/Storage"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "보관 중인 파츠가 없습니다."
+autowrap_mode = 3
+line_spacing = 4
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+
+[node name="Divider" type="ColorRect" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(1, 0)
+mouse_filter = 2
+color = Color(0.35, 0.29, 0.22, 1)
+
+[node name="Detail" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.26
+theme_override_constants/separation = 7
+
+[node name="Identity" type="HBoxContainer" parent="Detail"]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="SelectedGlyph" type="Control" parent="Detail/Identity"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(70, 54)
+mouse_filter = 2
+script = ExtResource("glyph")
+item_id = "lens"
+is_part = true
+showcase = true
+
+[node name="IdentityText" type="VBoxContainer" parent="Detail/Identity"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="PartStatus" type="Label" parent="Detail/Identity/IdentityText"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "보관 중"
+autowrap_mode = 3
+line_spacing = 4
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+
+[node name="PartName" type="Label" parent="Detail/Identity/IdentityText"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "가속 총열"
+theme_override_font_sizes/font_size = 32
+autowrap_mode = 3
+
+[node name="DetailRule" type="ColorRect" parent="Detail"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 1)
+mouse_filter = 2
+color = Color(0.35, 0.29, 0.22, 1)
+
+[node name="DetailsScroll" type="ScrollContainer" parent="Detail"]
+unique_name_in_owner = true
+layout_mode = 2
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 82)
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Details" type="VBoxContainer" parent="Detail/DetailsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Instruction" type="Label" parent="Detail/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "교체할 장착 슬롯을 고르세요."
+autowrap_mode = 3
+line_spacing = 4
+theme_override_colors/font_color = Color(0.95, 0.73, 0.49, 1)
+
+[node name="Gain" type="Label" parent="Detail/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "얻음  원래 관통이 있는 탄 관통 +2"
+autowrap_mode = 3
+line_spacing = 4
+
+[node name="Loss" type="Label" parent="Detail/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "잃음  화상 기간 +1턴 · 불길 피해 +2"
+autowrap_mode = 3
+line_spacing = 4
+theme_override_colors/font_color = Color(0.82, 0.61, 0.52, 1)
+
+[node name="Stats" type="Label" parent="Detail/DetailsScroll/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "불길 피해 / 행동  5 → 3"
+autowrap_mode = 3
+line_spacing = 4
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+
+[node name="ConfirmRow" type="HBoxContainer" parent="Detail"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Apply" type="Button" parent="Detail/ConfirmRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_type_variation = &"BuyAction"
+text = "교체 장착"
+disabled = true
+
+[node name="Result" type="Label" parent="Detail/ConfirmRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+size_flags_horizontal = 3
+vertical_alignment = 1
+text_overrun_behavior = 3
+theme_override_colors/font_color = Color(0.95, 0.73, 0.49, 1)
+

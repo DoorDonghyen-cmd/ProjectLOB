@@ -9,7 +9,7 @@ const COPPER := Color("927051")
 const RUST := Color("615343")
 const INSET := Color("35464b")
 const SIZE := Vector2(32, 24)
-const IDS := ["volley_drive", "thermal_drive", "siege_drive", "ordinary_chain", "compression_sink", "cooling_breech", "chain_sink", "indexer", "radiator", "reclaimer", "ember_core", "lens", "loader", "supply", "coil", "capacitor", "rammer", "sequencer", "duplex", "igniter", "breaker", "executioner", "reserve", "opening", "afterburner", "field_press", "overbore", "inferno", "arc_splitter", "momentum", "triad"]
+const IDS := ["volley_drive", "thermal_drive", "siege_drive", "ordinary_chain", "compression_sink", "cooling_breech", "chain_sink", "indexer", "radiator", "reclaimer", "ember_core", "lens", "loader", "supply", "coil", "capacitor", "rammer", "sequencer", "duplex", "igniter", "breaker", "executioner", "reserve", "opening", "afterburner", "field_press", "overbore", "inferno", "arc_splitter", "momentum", "triad", "third_striker", "resonator", "tally"]
 
 static func rect(c: CanvasItem, x: float, y: float, w: float, h: float, color: Color) -> void:
 	c.draw_rect(Rect2(x, y, w, h), color)
@@ -253,6 +253,31 @@ static func draw(c: CanvasItem, id: String, center: Vector2, accent: Color, fact
 			for i in range(3):
 				metal(c, 4 + i * 9, 3, 6, 13)
 				rect(c, 5 + i * 9, 6, 3, 6, accent_metal if i == 2 else COPPER)
+		"third_striker":
+			# 2026-11-08: the part had no icon (empty slot look). Three rounds in a receiver,
+			# a striker block over the third one; distinct from the triad's three chambers.
+			metal(c, 3, 15, 26, 7)
+			for i in range(3):
+				rect(c, 6 + i * 7, 8, 3, 7, SHADE if i < 2 else COPPER)
+				rect(c, 6 + i * 7, 8, 3, 1, LIGHT if i == 2 else STEEL)
+			metal(c, 17, 1, 10, 5)
+			rect(c, 20, 6, 3, 2, RUST)
+			rect(c, 25, 2, 2, 2, accent_metal)
+		"resonator":
+			# 2026-11-08 build engine: a receiver with three rising strike bars.
+			metal(c, 3, 16, 26, 6)
+			for i in range(3):
+				var h := 4 + i * 4
+				rect(c, 6 + i * 8, 15 - h, 5, h, COPPER if i == 2 else accent_metal)
+				rect(c, 6 + i * 8, 15 - h, 5, 1, LIGHT)
+			rect(c, 4, 18, 24, 1, RUST)
+		"tally":
+			# 2026-11-08 build engine: a counter plate with tick marks and a dial.
+			metal(c, 4, 4, 24, 17)
+			rect(c, 6, 6, 12, 13, INSET)
+			for i in range(3): rect(c, 8 + i * 3, 8, 1, 9, LIGHT if i < 2 else COPPER)
+			disc(c, 23, 12, 4, SHADE)
+			rect(c, 23, 9, 1, 4, COPPER)
 		"none":
 			rect(c, 14, 6, 3, 12, SHADE)
 			rect(c, 9, 11, 13, 3, SHADE)

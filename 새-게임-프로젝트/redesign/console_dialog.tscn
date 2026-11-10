@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://redesign/console_dialog.gd" id="1"]
-[ext_resource type="StyleBox" path="res://assets/ui/console/panel_normal.tres" id="2"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/console_panel_normal.tres" id="2"]
 [ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="3"]
-[ext_resource type="StyleBox" path="res://assets/ui/console/button_normal.tres" id="4"]
-[ext_resource type="StyleBox" path="res://assets/ui/console/primary_normal.tres" id="5"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/console_button_normal.tres" id="4"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/console_primary_normal.tres" id="5"]
 
 [node name="ConsoleDialog" type="Control"]
 layout_mode = 3
@@ -61,7 +61,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("3")
 theme_override_colors/font_color = Color(0.83, 0.87, 0.84, 1)
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 24
 text = "파츠 분해"
 autowrap_mode = 2
 
@@ -96,7 +96,7 @@ theme_override_constants/separation = 16
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3")
 theme_override_colors/font_color = Color(0.55, 0.67, 0.68, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 16
 text = "선택한 파츠를 분해하고 10Cr를 받습니다.\n분해한 파츠는 보관함에서 사라집니다."
 autowrap_mode = 2
 

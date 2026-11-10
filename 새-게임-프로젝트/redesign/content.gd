@@ -1,18 +1,115 @@
 extends RefCounted
+const Roles=preload("res://redesign/combat_roles.gd")
+const WeaponRoles=preload("res://redesign/weapon_role_trial.gd")
+const Sustained = preload("res://redesign/sustained_heat.gd")
 ## Damage is transparent; scatter alone chooses a random primary target.
 ## Every round exposes two numbers, one attribute, and at most one effect.
+const Merge = preload("res://redesign/ammo_merge.gd")
 const Variants = preload("res://redesign/ammo_variants.gd")
+const COMBAT_REVISION := 2
+# Existing saves omit combat_revision and retain the original part rules.
+const REVISED_PARTS := {
+	"volley_drive": {"text":"직접 타격당 피해 +1. 처치 후 남은 타격은 최근접 표적으로 이어지며 장갑·배리어를 적용합니다. 다회 타격탄 열 +1. 한 전투에서 피해 타격 3회 후 승리하면 성장 1, 성장 2마다 타격 피해 +1, 최대 +5. 이번 등반 유지."},
+	"thermal_drive": {"text":"발사 직전 열이 한계의 절반 이상이면 직접 피해 ×1.50. 고열 직접 피해를 주고 승리하면 배율 +0.15, 최대 ×2.70. 전투당 1회 성장, 이번 등반 유지. 고열 공격으로 열 한계에 도달하면 나머지 전열에 1회 타격 피해의 절반을 충격파로 전달합니다. 장갑·배리어 적용. 자신의 발열로 고열 조건을 채우지 않습니다. 열 한계 −2."},
+	"siege_drive": {"text":"1회 타격 공격탄의 직접 피해 ×2.00. 처치 후 초과 피해는 최근접 표적에 전달하며 장갑·배리어를 적용합니다. 한 탄의 직접 피해(전달 포함) 8 이상 후 승리하면 배율 +0.15, 최대 ×3.20. 전투당 1회 성장, 이번 등반 유지. 탄창 −1칸. 기폭·전이 피해 제외."},
+	"sequencer": {"value":"증폭 +3","upside":"증폭 추가 피해 +3","text":"일반·잔열·유지 증폭의 타격당 추가 피해 +3. 적용 발수와 고열 조건은 탄환을 따릅니다. 배율탄의 배율은 바꾸지 않습니다."},
+	"duplex": {"value":"+2 타격","upside":"연타 타격 +2","downside":"연타탄 열 +1","text":"연타탄의 직접 타격 +2, 발열 +1. 증폭은 각 타격에 적용되고 연쇄 구동핵은 남은 타격을 다음 적에게 전달합니다. 배리어는 타격마다 소모합니다."},
+	"afterburner": {"effect":"강화 단타 결산","value":"마지막 단타 ×2","role":"증폭 후 마무리","upside":"증폭된 마지막 단타 피해 ×2","text":"탄창의 마지막 공격탄이 증폭 또는 배율 강화를 받은 1회 타격 탄이면 직접 피해 ×2. 뒤에 냉각 등 지원탄이 있어도 발동합니다. 장갑 차감 전 적용하며 기폭·전이에는 적용하지 않습니다. 재장전 +1턴."}
+}
+
+# New full-climb runs (`magazine_build_version` 1) load magazines automatically, so
+# these parts read the loaded magazine instead of a hand-built order. See magazine_build.gd.
+const MAGAZINE_BUILD_PARTS := {
+	"opening": {"text":"탄창의 첫 발 직접 피해 +2. 탄창은 자동으로 채워지며, 쏘기 전에 앞 탄을 빼내면 다음 탄이 첫 발이 됩니다."},
+	"triad": {"effect":"3종 탄창","value":"+3 피해","role":"혼합 탄창","upside":"특수탄 3종 이상 탄창 · 특수 공격탄 피해 +3","text":"장전된 탄창에 서로 다른 특수 탄종이 3종 이상이면 그 탄창의 특수 공격탄 직접 피해 +3. 순서는 상관없고 빼낸 탄은 세지 않습니다. 기본탄 직접 피해 −1."},
+	"compression_sink": {"effect":"일반탄과 압축","upside":"일반 전술탄이 든 탄창의 압축탄 발열 −2","text":"장전된 탄창에 일반 전술탄(기본탄 제외)이 1장 이상 있으면 그 탄창의 압축탄 발생 열 −2(최소 0). 순서는 상관없고 빼낸 탄은 세지 않습니다. 열 한계 −1, 점유 칸·첫/마지막 발 제약은 유지합니다."},
+	"afterburner": {"upside":"증폭탄이 든 탄창의 마지막 단타 ×2","text":"탄창에 증폭·배율탄이 있으면 마지막 공격탄이 1회 타격 탄일 때 직접 피해 ×2. 증폭탄이 바로 앞에 없어도 되며, 빼낸 탄은 세지 않습니다. 장갑 차감 전 적용하며 기폭·전이에는 적용하지 않습니다. 재장전 +1턴."}
+}
+
+const FOCUS_PARTS := {
+	"opening": {"value":"첫 발 ×2", "upside":"탄창 첫 발 직접 피해 ×2", "text":"같은 탄창에서 실제로 발사한 첫 탄의 직접 피해 ×2. 지원탄도 순서에 포함되어 강화 기회를 사용합니다. 빼낸 탄은 세지 않습니다. 연타의 모든 직접 타격에 적용하며 화상·기폭·전이에는 적용하지 않습니다."},
+	"afterburner": {"value":"강화 마무리 ×3", "upside":"증폭된 마지막 단타 직접 피해 ×3", "text":"실제 증폭 또는 배율 효과를 받은 마지막 공격탄이 단타일 때 직접 피해 ×3. 탄창에 지원탄이 들어 있는 것만으로는 발동하지 않습니다. 뒤의 지원탄은 허용합니다. 화상·기폭·전이에는 적용하지 않으며 재장전 +1행동."}
+}
+
+static func revised_combat(state: Dictionary) -> bool:
+	return int(state.get("combat_revision", 0)) >= 1
+
+static func pressure_combat(state: Dictionary) -> bool:
+	return int(state.get("combat_revision", 0)) >= 2
+
+static func armor_percent(armor: int) -> int:
+	return mini(80, maxi(0, armor) * 10)
+
+static func armored_damage(raw: int, armor: int, state: Dictionary, minimum: int = 1) -> int:
+	if raw <= 0: return 0
+	var reduced := floori(raw * (100 - armor_percent(armor)) / 100.0) if pressure_combat(state) else raw - maxi(0, armor)
+	return maxi(minimum, reduced)
+
+static func overdrive_percent(state: Dictionary) -> int:
+	return 200 if pressure_combat(state) and reactor_enabled(state) else 100
+
+const BUILD_ROLE_PARTS:={
+	"inferno":{"effect":"지역 불길","value":"화상 +2 · 범위 +1m","role":"지역 소이","upside":"화상 +2 · 불길 4행동 / 앞뒤 3m","text":"화상과 지역 불길의 행동당 피해 +2. 소이탄 화상 기간 +2(최대 6), 불씨 이동 한도 +2. 착발 지점 앞뒤 3m의 불길이 4적 행동 지속됩니다. 화상/불길 중첩 합산 없음. 재장전 +1행동. 성장형 열압 코어와 동시 장착할 수 없습니다."},
+	"momentum":{"effect":"접근 제어","value":"경직 +1 · 밀기 +2m","role":"제어 유지","upside":"차단탄 경직 +1행동 · 밀기/한도 +2m","text":"차단탄의 접근 감속 기간 +1적 행동(일반 3, 압축 4). 같은 적에게 경직은 여전히 전투당 1회이며 특수 행동 차단 기간은 늘리지 않습니다. 충격탄 밀치기와 탄창당 한도 +2m. 직접 피해 −1."},
+	"rammer":{"effect":"경직 후속","value":"직접 피해 +2","role":"제어 후 화력","upside":"경직 중인 적 직접 피해 +2 · 밀기 +1m","text":"접근 감속이 남아 있는 적을 직접 타격할 때 타격당 피해 +2. 차단탄으로 먼저 경직시킨 뒤 주력 탄을 연결하세요. 화상/기폭/전격 전이에는 적용하지 않으며 연쇄 코어의 잔여 타격은 새 표적의 경직을 다시 확인합니다. 기존 밀치기와 탄창당 한도 +1m도 유지합니다."},
+	"capacitor":{"effect":"전이 확장","value":"전이 +1 · 대상 +1","role":"전이 모듈","upside":"전격 전이 피해 +1 · 처치 전이 대상 +1","text":"전격탄 전이 피해 +1. 연쇄·돌파 코어의 처치 후 전이 대상도 추가 1기 늘립니다. 모듈이므로 해당 코어와 함께 장착할 수 있습니다. 처치 전이의 직접 피해 배율은 바꾸지 않습니다."},
+	"arc_splitter":{"text":"전격탄 전이 피해 +2, 전격 전이 대상 +1. 모든 직접 피해 −1. 전격의 광역 전이를 위한 코어이며 연쇄·돌파 코어와 동시 장착할 수 없습니다.","upside":"전격 전이 피해 +2 · 대상 +1"}}
+static func part_spec(id: String, state: Dictionary) -> Dictionary:
+	if id == "tally" and int(state.get("build_engine_version", 0)) == 1:
+		# Build engine growth (build_engine.gd): show the current record on the part.
+		var kills := int(state.get("part_growth", {}).get("tally", 0))
+		var tally: Dictionary = PARTS[id].duplicate()
+		var bonus := mini(6, kills / 3)
+		tally.value = "현재 +%d / 최대 +6" % bonus
+		tally.text += "\n기록: 처치 %d회 · 연타 타격당 +%d" % [kills, bonus]
+		return tally
+	var magazine_build: bool = int(state.get("magazine_build_version", 0)) >= 1 and MAGAZINE_BUILD_PARTS.has(id)
+	var focus: bool = int(state.get("focus_build_version", 0)) == 1 and FOCUS_PARTS.has(id)
+	var role_part: bool=(Roles.enabled(state) and id in ["volley_drive","siege_drive","arc_splitter","inferno","coil","thermal_drive"]) or (Roles.builds(state) and BUILD_ROLE_PARTS.has(id))
+	if not role_part and (not revised_combat(state) or not REVISED_PARTS.has(id)) and not magazine_build and not focus: return PARTS[id]
+	var result: Dictionary = PARTS[id].duplicate()
+	if revised_combat(state) and REVISED_PARTS.has(id): result.merge(REVISED_PARTS[id], true)
+	if magazine_build: result.merge(MAGAZINE_BUILD_PARTS[id], true)
+	if focus: result.merge(FOCUS_PARTS[id], true)
+	if role_part:
+		if id in ["volley_drive","siege_drive"]:
+			result.text+="\n처치 후 전이: 주 대상 외 최대 %d기. 관문 전이 회로/%s로 대상을 늘립니다."%[Roles.relay_limit(state,equipped_parts(state)),"전이 축전기" if Roles.builds(state) else "분배 파츠"]
+			result.value+=" · 추가 %d기"%Roles.relay_limit(state,equipped_parts(state))
+		elif id=="arc_splitter":result.text+="\n연쇄·돌파 코어의 처치 후 전이 대상도 +1기.";result.upside+=" · 처치 전이 +1기"
+		elif id=="inferno":result.text+="\n착발 지점의 불길도 2 → 4적 행동 지속.";result.upside+=" · 불길 4행동"
+		elif id=="coil":
+			var bonus:=Roles.coil_ground_bonus(state)
+			result.text+="\n착발 지점 불길의 행동당 피해 +%d."%bonus;result.upside+=" · 불길 피해 +%d"%bonus
+		elif id=="thermal_drive" and int(state.get("combat_roles_version",0))>=2:
+			result.text+="\n성장 %d회마다 화상·지역 불길의 행동당 피해 +1. 기폭도 성장한 화상 피해를 사용합니다. 지속 피해에는 증폭·위치·고열 배율을 곱하지 않습니다."%Roles.burn_growth_step(state)
+			result.upside+=" · 성장 %d회마다 화상 +1"%Roles.burn_growth_step(state)
+	if Roles.builds(state) and BUILD_ROLE_PARTS.has(id):result.merge(BUILD_ROLE_PARTS[id],true)
+	if id=="inferno" and Roles.specialists(state):
+		var burn:=Roles.burn_growth(state,[id])
+		result.value="화상 +%d · 범위 +1m"%burn
+		result.upside="화상 +%d · 불길 4행동 / 앞뒤 3m"%burn
+		result.text="화상과 지역 불길의 행동당 피해 +2에, 열압 구동핵의 누적 성장 %d회당 +1을 더합니다(현재 총 +%d). 열압의 고열 직접 피해 배율과 충격파는 이어받지 않습니다. 노심을 장착한 동안 열압 성장은 멈추며, 기록은 보존됩니다. 소이탄 화상 기간 +2(최대 6), 불씨 이동 한도 +2. 착발 지점 앞뒤 3m의 불길이 %d적 행동 지속됩니다. 화상/불길 중첩 합산 없음. 재장전 +1행동. 코어는 1개만 장착합니다."%[Roles.burn_growth_step(state),burn,Roles.fire_duration([id],state)]
+	if id=="inferno" and Roles.Balance.enabled(state):
+		var duration:=Roles.fire_duration([id],state)
+		result.text=result.text.replace("4적 행동","%d적 행동"%duration)
+		result.upside=result.upside.replace("4행동","%d행동"%duration)
+	return result
+
+static func sequencer_bonus(state: Dictionary) -> int:
+	return 3 if revised_combat(state) else 1
+
+static func duplex_bonus(state: Dictionary) -> int:
+	return 2 if revised_combat(state) else 1
 const BASE_AMMO := {
 	"prepare": {"heat": 2, "name": "예약탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "prepare", "value": 1, "text": "뒤의 탄환 1발을 다음 재장전 패로 예약합니다. 현장 압축탄은 제외하며 예약은 최대 3장. 탄을 복제하지 않습니다."},
 	"disrupt": {"heat": 2, "name": "차단탄", "dmg": 0, "pen": 0, "attribute": "electric", "effect": "disrupt", "value": 1, "text": "생존 표적의 발사 준비·충전을 1턴 멈춥니다. 이동과 이미 발사된 압력탄에는 영향이 없으며, 적마다 한 번만 차단할 수 있습니다."},
 	"spread": {"heat": 2, "name": "불씨탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "spread", "value": 2, "text": "표적의 화상 최대 2를 가장 가까운 다른 생존 적에게 옮깁니다. 원래 표적의 화상은 옮긴 만큼 줄어듭니다. 압력탄은 제외합니다."},
 	"sequence": {"heat": 3, "name": "연계탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "sequence", "value": 2, "text": "이번 탄창에서 앞서 발사한 다른 탄종 하나마다 피해 +2, 최대 3종. 같은 탄과 그 압축형은 한 종류로 셉니다."},
 	"vent": {"heat": 0, "name": "열방출탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "vent", "value": 2, "heat_spend": 4, "anchor": "last", "text": "가장 먼저 장전하며 마지막에 발사합니다. 발사 직전 열을 최대 4 소모하고, 소모한 열 1마다 직접 피해 +2. 앞에서 과열되면 발사되지 않습니다."},
-	"thermal": {"heat": 4, "name": "고열탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "thermal", "value": 4, "text": "발사 직전 열이 무기 한계의 절반 이상이면 직접 피해 +4. 자신의 발열로는 조건을 채우지 못합니다."},
 	"basic": {"heat": 1, "name": "기본탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "", "value": 0, "text": "발열 1의 물리 탄환. 덱에서 한 장씩 뽑고, 사용 후 버린 더미로 이동합니다."},
 	"pierce": {"heat": 3, "name": "철갑탄", "dmg": 2, "pen": 3, "attribute": "physical", "effect": "", "value": 0, "text": "높은 관통으로 장갑을 곧바로 뚫는 물리탄입니다."},
 	"push": {"heat": 2, "name": "충격탄", "dmg": 1, "pen": 0, "attribute": "physical", "effect": "push", "value": 2, "text": "적을 2m 밀어 거리를 벌리고 다음 표적을 바꿉니다. 탄창당 총 2m까지 밀 수 있습니다."},
-	"bore": {"heat": 2, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 3, "text": "생존한 적에게 화상 3을 남깁니다. 화상은 적의 전진 직전에 1피해를 주고 1 감소합니다."},
+	"bore": {"heat": 4, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 3, "text": "보호막에 막혀도 화상을 3턴 더합니다(최대 6턴). 매 적 행동 직전 HP에 2피해, 보호막·장갑 무시. 재장전 중에도 진행. 무기 발열 +4."},
 	"charge": {"heat": 3, "name": "증폭탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 3, "boost_rounds": 1, "text": "다음 공격탄 1발의 타격당 피해 +3. 지원탄은 소비하지 않습니다. 일반·잔열 증폭은 마지막 효과로 교체됩니다. 연타의 각 타격에 적용됩니다."},
 	"charge_heat": {"heat": 1, "name": "잔열 증폭탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 6, "boost_rounds": 1, "boost_hot": true, "text": "다음 공격 직전 열이 무기 한계의 절반 이상이면 타격당 피해 +6. 낮으면 강화 없이 소비합니다. 공격 자체의 발열은 조건에서 제외. 일반 증폭과 교체되며 냉각 순서에 주의."},
 	"charge_hot": {"heat": 5, "name": "배율탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 0, "boost_factor": 2, "boost_rounds": 1, "boost_heat": 3, "text": "다음 공격탄의 타격당 피해 ×2. 증폭을 더한 뒤 배율을 적용하고 장갑을 차감합니다. 강화받은 공격은 추가 발열 +3. 같은 배율은 중첩되지 않습니다. 준비 발열 5."},
@@ -21,13 +118,13 @@ const BASE_AMMO := {
 	"shatter": {"heat": 1, "name": "파쇄탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "shatter", "value": 3, "text": "직접 피해 없이 장갑을 3 낮춥니다. 배리어를 소모하지 않고 장갑에 적용됩니다. 후속 탄환 모두가 낮아진 장갑을 공격합니다."},
 	"detonate": {"heat": 3, "name": "기폭탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "detonate", "value": 1, "text": "타격 후 남은 화상의 총 피해를 즉시 입히고 화상을 없앱니다. 기폭 피해는 장갑과 배리어를 무시합니다. 먼저 소이탄으로 불을 붙이세요."},
 	"chase": {"heat": 3, "name": "추격탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "chase", "value": 4, "text": "이 탄창의 직전 탄환이 적을 처치했다면 피해 +4. 전이 처치도 인정하며, 압력탄 요격과 턴 종료 화상 처치는 인정하지 않습니다."},
-	"bypass": {"heat": 2, "name": "우회탄", "dmg": 2, "pen": 1, "attribute": "physical", "effect": "bypass", "value": 1, "text": "가장 앞선 적을 건너뛰고 두 번째 적을 공격합니다. 산개는 앞 적을 제외한 적 중 무작위. 적이 하나면 그 적을 공격하고, 최근접 압력탄은 먼저 요격합니다."},
+	"bypass": {"heat": 2, "name": "우회탄", "dmg": 2, "pen": 1, "attribute": "physical", "effect": "bypass", "value": 1, "text": "가장 앞선 적을 건너뛰고 두 번째 적을 공격합니다. 스플린터는 앞 적을 제외한 적 중 무작위. 적이 하나면 그 적을 공격하고, 최근접 압력탄은 먼저 요격합니다."},
 	"cool": {"heat": 0, "name": "냉각탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "cool", "value": 3, "text": "현재 열을 3 낮춥니다. 직접 피해가 없고 강화 효과를 소비하지 않습니다. 과열에 도달하기 전에 배치하세요. 열은 0 아래로 내려가지 않습니다."},
 	# Compressed rounds keep the family name. Their silhouette and magazine fit
 	# communicate the variant in combat; prose lives only in inspection surfaces.
 	"pierce_c": {"heat": 5, "name": "철갑탄", "dmg": 5, "pen": 6, "attribute": "physical", "effect": "", "value": 0, "compressed": true, "source": "pierce", "slot_cost": 2, "anchor": "", "text": "두 철갑탄을 한 발에 집약합니다. 탄창 2칸을 차지하지만 높은 장갑을 한 번에 관통합니다."},
 	"push_c": {"heat": 4, "name": "충격탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "push", "value": 3, "push_budget_bonus": 1, "compressed": true, "source": "push", "slot_cost": 1, "anchor": "last", "text": "가장 먼저 장전하며 마지막에 발사합니다. 강한 충격으로 적의 다음 접근 거리를 벌립니다."},
-	"bore_c": {"heat": 4, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 6, "compressed": true, "source": "bore", "slot_cost": 2, "anchor": "", "text": "탄창 2칸을 차지하고 화상을 한 발에 최대치까지 축적합니다."},
+	"bore_c": {"heat": 7, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 6, "compressed": true, "source": "bore", "slot_cost": 1, "anchor": "", "text": "보호막에 막혀도 화상 최대 6턴. 매 적 행동 직전 HP에 2피해, 보호막·장갑 무시. 탄창 1칸에 집약하는 대신 발열 +7."},
 	"charge_c": {"heat": 5, "name": "증폭탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 4, "boost_rounds": 2, "compressed": true, "source": "charge", "slot_cost": 1, "anchor": "last", "text": "가장 먼저 장전하며 마지막에 발사합니다. 남긴 증폭은 다음 탄창의 첫 공격탄 두 발로 이어집니다. 지원탄은 소비하지 않으며 다른 증폭과 더해집니다."},
 	"precise_c": {"heat": 6, "name": "연타탄", "dmg": 3, "pen": 0, "attribute": "physical", "effect": "double", "value": 3, "hits": 3, "compressed": true, "source": "precise", "slot_cost": 1, "anchor": "first", "text": "가장 마지막에 장전하며 첫 발로 같은 적을 3회 타격합니다."},
 	"arc_c": {"heat": 6, "name": "전격탄", "dmg": 4, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "arc_targets": 99, "compressed": true, "source": "arc", "slot_cost": 1, "anchor": "first", "text": "가장 마지막에 장전하며 첫 발로 주 표적을 제외한 모든 생존 적에게 전이합니다."},
@@ -36,7 +133,7 @@ const BASE_AMMO := {
 	# source rounds when fired or discarded.
 	"pierce_f": {"heat": 5, "name": "철갑탄", "dmg": 5, "pen": 6, "attribute": "physical", "effect": "", "value": 0, "compressed": true, "temporary": true, "source": "pierce", "slot_cost": 2, "anchor": "", "text": "이번 교전에서 두 철갑탄을 한 발에 임시 집약합니다."},
 	"push_f": {"heat": 4, "name": "충격탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "push", "value": 3, "push_budget_bonus": 1, "compressed": true, "temporary": true, "source": "push", "slot_cost": 1, "anchor": "last", "text": "이번 교전에서 두 충격탄을 마지막 한 발로 임시 집약합니다."},
-	"bore_f": {"heat": 4, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 6, "compressed": true, "temporary": true, "source": "bore", "slot_cost": 2, "anchor": "", "text": "이번 교전에서 두 소이탄을 한 발에 임시 집약합니다."},
+	"bore_f": {"heat": 7, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 6, "compressed": true, "temporary": true, "source": "bore", "slot_cost": 1, "anchor": "", "text": "임시 압축 · 사용/재장전 시 원본 2장 복원. 보호막에 막혀도 화상 최대 6턴, 매 적 행동 직전 HP에 2피해, 보호막·장갑 무시. 탄창 1칸 · 발열 +7."},
 	"charge_f": {"heat": 5, "name": "증폭탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 4, "boost_rounds": 2, "compressed": true, "temporary": true, "source": "charge", "slot_cost": 1, "anchor": "last", "text": "이번 교전에서 두 증폭탄을 마지막 한 발로 임시 집약합니다."},
 	"precise_f": {"heat": 6, "name": "연타탄", "dmg": 3, "pen": 0, "attribute": "physical", "effect": "double", "value": 3, "hits": 3, "compressed": true, "temporary": true, "source": "precise", "slot_cost": 1, "anchor": "first", "text": "이번 교전에서 두 연타탄을 첫 한 발로 임시 집약합니다."},
 	"arc_f": {"heat": 6, "name": "전격탄", "dmg": 4, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "arc_targets": 99, "compressed": true, "temporary": true, "source": "arc", "slot_cost": 1, "anchor": "first", "text": "이번 교전에서 두 전격탄을 첫 한 발로 임시 집약합니다."},
@@ -51,16 +148,14 @@ const BASE_AMMO := {
 	"sequence_f": {"heat": 5, "name": "연계탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "sequence", "value": 3, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 마지막 발 고정. 앞서 발사한 다른 탄종마다 피해 +3, 최대 3종. 높은 발열을 감당할 공간을 남겨야 합니다.", "anchor": "last", "compressed": true, "source": "sequence", "temporary": true},
 	"vent_c": {"heat": 0, "name": "열방출탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "vent", "value": 3, "heat_spend": 6, "anchor": "last", "text": "마지막 발 고정·탄창 2칸. 발사 직전 열을 최대 6 소모하고 열 1마다 피해 +3. 앞에서 과열되면 발사할 수 없습니다.", "slot_cost": 2, "compressed": true, "source": "vent"},
 	"vent_f": {"heat": 0, "name": "열방출탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "vent", "value": 3, "heat_spend": 6, "anchor": "last", "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 마지막 발 고정·탄창 2칸. 발사 직전 열을 최대 6 소모하고 열 1마다 피해 +3. 앞에서 과열되면 발사할 수 없습니다.", "slot_cost": 2, "compressed": true, "source": "vent", "temporary": true},
-	"thermal_c": {"heat": 6, "name": "고열탄", "dmg": 3, "pen": 1, "attribute": "physical", "effect": "thermal", "value": 6, "text": "발사 직전 열이 무기 한계의 절반 이상이면 피해 +6. 발열 6으로 강제 재장전 위험이 커집니다. 자신의 발열로 조건을 채우지 않습니다.", "compressed": true, "source": "thermal"},
-	"thermal_f": {"heat": 6, "name": "고열탄", "dmg": 3, "pen": 1, "attribute": "physical", "effect": "thermal", "value": 6, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 발사 직전 열이 무기 한계의 절반 이상이면 피해 +6. 발열 6으로 강제 재장전 위험이 커집니다. 자신의 발열로 조건을 채우지 않습니다.", "compressed": true, "source": "thermal", "temporary": true},
 	"shatter_c": {"heat": 3, "name": "파쇄탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "shatter", "value": 5, "text": "첫 발 고정. 직접 피해 없이 장갑을 5 낮춥니다. 배리어를 소모하지 않고 장갑에 적용됩니다.", "anchor": "first", "compressed": true, "source": "shatter"},
 	"shatter_f": {"heat": 3, "name": "파쇄탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "shatter", "value": 5, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 첫 발 고정. 직접 피해 없이 장갑을 5 낮춥니다. 배리어를 소모하지 않고 장갑에 적용됩니다.", "anchor": "first", "compressed": true, "source": "shatter", "temporary": true},
 	"detonate_c": {"heat": 5, "name": "기폭탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "detonate", "value": 1, "text": "마지막 발 고정. 남은 화상의 총 피해를 두 배로 기폭하고 화상을 없앱니다. 장갑·배리어를 무시하지만 화상이 없으면 기폭 피해도 없습니다.", "detonate_scale": 2, "anchor": "last", "compressed": true, "source": "detonate"},
 	"detonate_f": {"heat": 5, "name": "기폭탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "detonate", "value": 1, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 마지막 발 고정. 남은 화상의 총 피해를 두 배로 기폭하고 화상을 없앱니다. 장갑·배리어를 무시하지만 화상이 없으면 기폭 피해도 없습니다.", "detonate_scale": 2, "anchor": "last", "compressed": true, "source": "detonate", "temporary": true},
 	"chase_c": {"heat": 5, "name": "추격탄", "dmg": 2, "pen": 1, "attribute": "physical", "effect": "chase", "value": 7, "text": "직전 탄환이 적을 처치했다면 피해 +7. 발열 5. 전이 처치는 인정하며 요격·턴 종료 화상 처치는 제외합니다.", "compressed": true, "source": "chase"},
 	"chase_f": {"heat": 5, "name": "추격탄", "dmg": 2, "pen": 1, "attribute": "physical", "effect": "chase", "value": 7, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 직전 탄환이 적을 처치했다면 피해 +7. 발열 5. 전이 처치는 인정하며 요격·턴 종료 화상 처치는 제외합니다.", "compressed": true, "source": "chase", "temporary": true},
-	"bypass_c": {"heat": 4, "name": "우회탄", "dmg": 4, "pen": 2, "attribute": "physical", "effect": "bypass", "value": 1, "text": "첫 발 고정. 앞 적을 건너뛰어 두 번째 적을 공격합니다. 발열 4. 산개는 앞 적을 제외한 무작위 표적, 최근접 압력탄 요격은 우선합니다.", "anchor": "first", "compressed": true, "source": "bypass"},
-	"bypass_f": {"heat": 4, "name": "우회탄", "dmg": 4, "pen": 2, "attribute": "physical", "effect": "bypass", "value": 1, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 첫 발 고정. 앞 적을 건너뛰어 두 번째 적을 공격합니다. 발열 4. 산개는 앞 적을 제외한 무작위 표적, 최근접 압력탄 요격은 우선합니다.", "anchor": "first", "compressed": true, "source": "bypass", "temporary": true},
+	"bypass_c": {"heat": 4, "name": "우회탄", "dmg": 4, "pen": 2, "attribute": "physical", "effect": "bypass", "value": 1, "text": "첫 발 고정. 앞 적을 건너뛰어 두 번째 적을 공격합니다. 발열 4. 스플린터는 앞 적을 제외한 무작위 표적, 최근접 압력탄 요격은 우선합니다.", "anchor": "first", "compressed": true, "source": "bypass"},
+	"bypass_f": {"heat": 4, "name": "우회탄", "dmg": 4, "pen": 2, "attribute": "physical", "effect": "bypass", "value": 1, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 첫 발 고정. 앞 적을 건너뛰어 두 번째 적을 공격합니다. 발열 4. 스플린터는 앞 적을 제외한 무작위 표적, 최근접 압력탄 요격은 우선합니다.", "anchor": "first", "compressed": true, "source": "bypass", "temporary": true},
 	"cool_c": {"heat": 0, "name": "냉각탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "cool", "value": 5, "text": "첫 발 고정. 현재 열을 5 낮춥니다. 중간 발열을 식히는 용도로 배치할 수 없고 직접 피해가 없고 강화 효과를 소비하지 않습니다.", "anchor": "first", "compressed": true, "source": "cool"},
 	"cool_f": {"heat": 0, "name": "냉각탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "cool", "value": 5, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 첫 발 고정. 현재 열을 5 낮춥니다. 중간 발열을 식히는 용도로 배치할 수 없고 직접 피해가 없고 강화 효과를 소비하지 않습니다.", "anchor": "first", "compressed": true, "source": "cool", "temporary": true},
 }
@@ -71,7 +166,6 @@ const BASE_COMPRESSIONS := {
 	"spread": "spread_c",
 	"sequence": "sequence_c",
 	"vent": "vent_c",
-	"thermal": "thermal_c",
 	"shatter": "shatter_c",
 	"detonate": "detonate_c",
 	"chase": "chase_c",
@@ -92,7 +186,6 @@ const BASE_FIELD_COMPRESSIONS := {
 	"spread": "spread_f",
 	"sequence": "sequence_f",
 	"vent": "vent_f",
-	"thermal": "thermal_f",
 	"shatter": "shatter_f",
 	"detonate": "detonate_f",
 	"chase": "chase_f",
@@ -107,16 +200,18 @@ const BASE_FIELD_COMPRESSIONS := {
 	"arc": "arc_f",
 }
 
-static var AMMO: Dictionary = Variants.build(BASE_AMMO)
+static var AMMO: Dictionary = Variants.build(Merge.definitions(BASE_AMMO))
 static var COMPRESSIONS: Dictionary = Variants.compressions(BASE_COMPRESSIONS)
 static var FIELD_COMPRESSIONS: Dictionary = Variants.compressions(BASE_FIELD_COMPRESSIONS, true)
 
 const GUNS := {
-	"single": {"reload_cooling": 8, "heat_limit": 12, "name": "보행자", "role": "전술탄 조합 입문", "capacity": 4, "reload": 1, "bonus": 1, "basic_bonus": 1, "mode": "chain", "identity": "공격탄 피해 +1 · 재장전 1턴", "recommendation": "약점탄과 증폭 연계를 섞는 안정형", "text": "전탄 연쇄 · 공격탄 피해 +1 / 기본탄 +1 · 증폭·파쇄·냉각 제외 · 재장전 1턴"},
-	"burst": {"reload_cooling": 9, "heat_limit": 14, "name": "쇄도", "role": "집중 적중", "capacity": 4, "reload": 2, "bonus": 0, "mode": "chain", "identity": "같은 적 3회 적중마다 추가 피해 4", "recommendation": "증폭 → 연타 · 3번째 타격 계산", "text": "전탄 연쇄 · 주 타격 3회마다 고정 추가 피해 4 · 재장전 2턴"},
-	"scatter": {"reload_cooling": 12, "heat_limit": 16, "name": "산개", "role": "무작위 분산", "capacity": 5, "reload": 2, "bonus": 0, "mode": "chain", "identity": "탄환마다 무작위 표적 · 넉넉한 탄창", "recommendation": "표적별 확률 · 분산 피해와 전격", "text": "전탄 연쇄 · 생존 적 중 균등 무작위 표적 · 탄창 5칸 / 재장전 2턴"},
-	"heavy": {"reload_cooling": 6, "heat_limit": 13, "name": "압쇄", "role": "속성 특화", "capacity": 4, "reload": 1, "bonus": 0, "mode": "chain", "identity": "화상 턴당 피해 2 · 전이 피해 3", "recommendation": "소이 지속 피해 · 전격 전이", "text": "전탄 연쇄 · 소이 화상 피해 2 / 전격 전이 피해 3 · 재장전 1턴"},
-	"amplifier": {"reload_cooling": 7, "heat_limit": 10, "name": "증강", "role": "한 발 효과 강화", "capacity": 3, "reload": 1, "bonus": 0, "mode": "single", "identity": "단발 2배 · 처치 시 연속", "recommendation": "증폭 +6 · 연타 4×2 · 충격 4m", "text": "1발 발사 · 주 표적 처치 시 계속 · 기본 피해/관통과 효과 강도 2배 · 타격 수/지속 기간 유지 · 재장전 1턴"},
+	"single": {"reload_cooling": 8, "heat_limit": 12, "name": "리벳", "role": "전술탄 조합 입문", "capacity": 4, "reload": 1, "bonus": 1, "basic_bonus": 1, "mode": "chain", "identity": "공격탄 피해 +1 · 재장전 1턴", "recommendation": "약점탄과 증폭 연계를 섞는 안정형", "text": "전탄 연쇄 · 공격탄 피해 +1 / 기본탄 +1 · 증폭·파쇄·냉각 제외 · 재장전 1턴"},
+	"burst": {"reload_cooling": 9, "heat_limit": 14, "name": "래칫", "role": "집중 적중", "capacity": 4, "reload": 2, "bonus": 0, "mode": "chain", "identity": "같은 적 3회 적중마다 추가 피해 4", "recommendation": "증폭 → 연타 · 3번째 타격 계산", "text": "전탄 연쇄 · 주 타격 3회마다 고정 추가 피해 4 · 재장전 2턴"},
+	"scatter": {"reload_cooling": 12, "heat_limit": 16, "name": "스플린터", "role": "무작위 분산", "capacity": 5, "reload": 2, "bonus": 0, "mode": "chain", "identity": "탄환마다 무작위 표적 · 넉넉한 탄창", "recommendation": "표적별 확률 · 분산 피해와 전격", "text": "전탄 연쇄 · 생존 적 중 균등 무작위 표적 · 탄창 5칸 / 재장전 2턴"},
+	"heavy": {"reload_cooling": 8, "heat_limit": 14, "name": "리액터", "role": "과부하 연사", "capacity": 6, "reload": 2, "bonus": 0, "mode": "chain", "identity": "과열 후 1발 강행 · 냉각 +2턴", "recommendation": "마지막 추가탄으로 화력 또는 냉각 선택", "text": "전탄 연쇄 · 과열 후 남은 탄 1발 추가 사격 후 중단 · 강행 후에도 과열이면 기본 재장전 +냉각 2턴 · 탄창 6칸 / 기본 재장전 2턴"},
+	"amplifier": {"reload_cooling": 7, "heat_limit": 10, "name": "스파이크", "role": "한 발 효과 강화", "capacity": 3, "reload": 1, "bonus": 0, "mode": "single", "identity": "단발 2배 · 처치 시 연속", "recommendation": "증폭 +6 · 연타 4×2 · 충격 4m", "text": "1발 발사 · 주 표적 처치 시 계속 · 기본 피해/관통과 효과 강도 2배 · 타격 수/지속 기간 유지 · 재장전 1턴"},
+	"rewinder": {"reload_cooling":9,"heat_limit":14,"name":"리와인더","role":"순서 제어","capacity":4,"reload":2,"bonus":0,"mode":"chain","identity":"냉각 때 잔탄 역순","recommendation":"위치 파츠 · 지원탄과 주력 탄의 순서 전환","text":"탄창당 첫 수동 냉각에 고정탄을 제외한 남은 탄 순서를 뒤집습니다. 냉각은 적 1행동, 열 0. 강제 냉각·냉각탄은 반전하지 않습니다."},
+	"deadbolt": {"reload_cooling":9,"heat_limit":14,"name":"데드볼트","role":"강화탄 봉인","capacity":4,"reload":2,"bonus":0,"mode":"chain","identity":"무작위 1발 ×3·봉인","recommendation":"공개된 강화탄을 지원·위치 파츠로 연결","text":"장전 시 무작위 공격탄 1발의 이번 탄창 직접 피해 ×3. 그 탄은 빼낼 수 없고, 발사 전 탄창 교체가 잠깁니다. 냉각·다른 탄 빼내기는 유지합니다."},
 }
 
 # Equipment rules stay independent from visual outfit assets.
@@ -139,7 +234,7 @@ static func valid_bag_state(state: Dictionary) -> bool:
 	if state.bag_version != BAG_VERSION or not OUTFITS.has(state.get("outfit", "")): return false
 	var upgrades = state.get("bag_upgrades", -1)
 	if not upgrades is int and not upgrades is float: return false
-	return upgrades == int(upgrades) and upgrades >= 0 and upgrades <= MAX_BAG_CAPACITY - int(OUTFITS[state.outfit].hand)
+	return upgrades == int(upgrades) and upgrades >= 0 and upgrades <= (Roles.BAG_STEPS if Roles.enabled(state) else MAX_BAG_CAPACITY - int(OUTFITS[state.outfit].hand))
 
 static func outfit_name(state: Dictionary) -> String:
 	return str(OUTFITS[state.outfit].name) if OUTFITS.has(state.get("outfit", "")) else "기존 가방"
@@ -160,20 +255,24 @@ const PARTS := {
 	"lens": {"grade": 0, "name": "가속 총열", "kind": "module", "effect": "관통탄 강화", "value": "관통 +2", "role": "관통탄 특화", "upside": "원래 관통이 있는 탄 관통 +2", "downside": "", "text": "탄환 자체 관통이 1 이상인 탄의 관통 +2. 기본탄이나 관통 없는 탄에 새 관통을 부여하지 않습니다. 철갑·우회 등 관통탄을 강화합니다."},
 	"loader": {"grade": 1, "name": "회수 가속기", "kind": "module", "effect": "재장전", "value": "−1턴", "role": "빠른 순환", "upside": "재장전 −1턴", "downside": "", "text": "재장전 비용 −1턴 (최소 1턴)."},
 	"supply": {"grade": 1, "name": "확장 탄창", "kind": "module", "effect": "탄창", "value": "+1칸", "role": "긴 연쇄", "upside": "탄창 +1칸", "downside": "", "text": "탄창 +1칸. 뽑은 탄환으로 더 긴 순서를 설계합니다. 가방 크기는 늘어나지 않습니다."},
-	"coil": {"grade": 0, "name": "열축전 코일", "kind": "module", "effect": "화상", "value": "+1", "role": "지속 피해", "upside": "화상 +1", "downside": "", "text": "소이탄이 남기는 화상 +1. 불씨탄의 화상 이동 한도 +1."},
+	"coil": {"grade": 0, "name": "열축전 코일", "kind": "module", "effect": "화상 기간", "value": "+1턴", "role": "지속 피해", "upside": "화상 기간 +1턴", "downside": "", "text": "소이탄의 화상 기간 +1턴(최대 6턴). 불씨탄으로 옮기는 기간 한도 +1턴."},
 	"capacitor": {"grade": 0, "name": "전이 축전기", "kind": "module", "effect": "전이", "value": "+1 피해", "role": "다수전 전이", "upside": "전이 피해 +1", "downside": "", "text": "전격탄의 전이 피해 +1. 많은 적을 동시에 정리하는 빌드를 강화합니다."},
 	"rammer": {"grade": 0, "name": "충격 가이드", "kind": "module", "effect": "밀치기", "value": "+1m", "role": "거리 제어", "upside": "밀치기·한도 +1m", "downside": "", "text": "충격탄 밀치기와 탄창당 밀치기 한도 +1m."},
 	"sequencer": {"grade": 1, "name": "증폭 시퀀서", "kind": "module", "effect": "증폭", "value": "증폭 +1", "role": "순서 증폭", "upside": "증폭 피해 +1", "downside": "", "text": "증폭탄의 타격당 추가 피해 +1. 적용 발수는 탄환을 따릅니다."},
-	"duplex": {"grade": 1, "name": "복열 노리쇠", "kind": "module", "effect": "연타", "value": "+1 타격", "role": "배리어 · 집중", "upside": "연타 타격 +1", "downside": "", "text": "연타탄 타격 +1. 배리어와 쇄도 집중을 빠르게 전개합니다."},
+	"duplex": {"grade": 1, "name": "복열 노리쇠", "kind": "module", "effect": "연타", "value": "+1 타격", "role": "배리어 · 집중", "upside": "연타 타격 +1", "downside": "", "text": "연타탄 타격 +1. 배리어와 래칫 집중을 빠르게 전개합니다."},
 	"igniter": {"grade": 1, "name": "점화 약실", "kind": "module", "effect": "점화 추격", "value": "+2 피해", "role": "소이 후속", "upside": "화상 중인 적 피해 +2", "downside": "", "text": "화상 중인 적을 직접 타격할 때 피해 +2."},
 	"breaker": {"grade": 0, "name": "배리어 파쇄기", "kind": "module", "effect": "배리어", "value": "+1 파쇄", "role": "다중 타격", "upside": "타격당 배리어 1칸 추가 제거", "downside": "", "text": "각 타격이 배리어를 한 칸 더 제거합니다. 연타탄과 결합하면 빠르게 보호막을 걷어 냅니다."},
 	"executioner": {"grade": 0, "name": "처형 조준기", "kind": "module", "effect": "마무리", "value": "+2 피해", "role": "처치선 보정", "upside": "HP 5 이하 적 피해 +2", "downside": "", "text": "발사 직전 HP가 5 이하인 적에게 직접 피해 +2."},
 	"reserve": {"grade": 0, "name": "예비 급탄기", "kind": "module", "effect": "패 교환", "value": "+1회", "role": "조합 탐색", "upside": "패 교환 +1회", "downside": "", "text": "교전 시작과 재장전마다 복장의 패 교환 횟수 +1회. 운반용 외투도 1회 교환할 수 있습니다."},
 	"opening": {"grade": 1, "name": "선두 격발기", "kind": "module", "effect": "첫 발", "value": "+2 피해", "role": "선두 설계", "upside": "탄창 첫 발 피해 +2", "downside": "", "text": "장전한 탄창의 첫 발 직접 피해 +2. 어떤 탄을 선두에 놓을지 결정합니다."},
+	"third_striker": {"grade":1,"name":"제3 격발기","kind":"module","effect":"세 번째 발","value":"3번째 ×3","role":"주력 탄 타이밍","upside":"탄창의 세 번째 탄 직접 피해 ×3","downside":"","text":"같은 탄창에서 실제로 발사한 세 번째 탄의 직접 피해 ×3. 지원탄도 한 발로 세고 연타는 타격 수와 무관하게 한 발입니다. 빼내기는 세지 않으며 냉각은 순서를 유지하고 탄창 교체 시 초기화합니다. 화상·기폭·전이에는 적용하지 않습니다."},
+	# Build engine trial (2026-11-08, build_engine.gd): offered only in runs with build_engine_version.
+	"resonator": {"grade": 2, "name": "연타 공명기", "kind": "module", "effect": "연타 공명", "value": "타격마다 ×1·×2·×3", "role": "연타 결정타", "upside": "연타탄의 n번째 타격 피해 ×n", "downside": "연타탄 열 +1", "text": "연타탄이 같은 적을 때리는 동안 타격마다 배율이 커집니다. 1타 ×1, 2타 ×2, 3타 ×3. 증폭·기록·위치 배율이 모두 곱해집니다. 연타탄 열 +1."},
+	"tally": {"grade": 1, "name": "타격 기록기", "kind": "module", "effect": "처치 기록", "value": "최대 +6", "role": "등반 성장", "upside": "연타 처치 3회마다 연타 타격당 +1", "downside": "분해하면 기록 소멸", "text": "장착한 동안 연타탄으로 적을 3번 처치할 때마다 이번 등반에서 연타탄 타격당 피해 +1(최대 +6). 해제해도 기록은 남고, 분해하면 사라집니다."},
 	"afterburner": {"grade": 1, "name": "후미 점화기", "kind": "module", "effect": "마지막 발", "value": "+3 피해", "role": "후미 결산", "upside": "탄창 마지막 발 피해 +3", "downside": "재장전 +1턴", "text": "탄창 마지막 발 직접 피해 +3. 재장전 비용이 1턴 증가합니다."},
 	"field_press": {"grade": 2, "name": "야전 압축기", "kind": "core", "effect": "현장 압축", "value": "+1회", "role": "압축 빌드", "upside": "교전마다 현장 압축 +1회", "downside": "탄창 −2칸", "text": "교전 시작마다 현장 압축 기회 +1. 대신 탄창 슬롯을 2칸 잃습니다."},
 	"overbore": {"grade": 2, "name": "과구경 총열", "kind": "core", "effect": "2칸 공격탄", "value": "피해 +3 · 관통 +2", "role": "중량 압축탄", "upside": "2칸 공격탄 피해 +3 · 관통 +2", "downside": "탄창 −1칸", "text": "2칸을 차지하고 기본 피해가 있는 탄의 타격당 피해 +3·관통 +2. 탄창 −1칸. 1칸 탄과 기본 피해 0인 예약탄 등은 강화하지 않습니다."},
-	"inferno": {"grade": 2, "name": "열폭주 노심", "kind": "core", "effect": "화상", "value": "+2", "role": "고열 소이", "upside": "화상 +2", "downside": "재장전 +1턴", "text": "소이탄 화상과 불씨탄의 화상 이동 한도 +2. 재장전 비용 +1턴."},
+	"inferno": {"grade": 2, "name": "열폭주 노심", "kind": "core", "effect": "화상 기간", "value": "+2턴", "role": "고열 소이", "upside": "화상 기간 +2턴", "downside": "재장전 +1턴", "text": "소이탄의 화상 기간 +2턴(최대 6턴), 불씨탄으로 옮기는 기간 한도 +2턴. 재장전 비용 +1턴."},
 	"arc_splitter": {"grade": 2, "name": "분기 전이기", "kind": "core", "effect": "전이", "value": "+2 · 대상+1", "role": "물량 정리", "upside": "전이 피해 +2 · 대상 +1", "downside": "직접 피해 −1", "text": "전격탄 전이 피해 +2, 전이 대상 +1. 대신 모든 직접 피해 −1."},
 	"momentum": {"grade": 2, "name": "충격 피스톤", "kind": "core", "effect": "밀치기", "value": "+2m", "role": "극단 거리 제어", "upside": "밀치기·한도 +2m", "downside": "직접 피해 −1", "text": "충격탄 밀치기와 탄창당 한도 +2m. 대신 모든 직접 피해 −1."},
 	"triad": {"grade": 2, "name": "삼중 시퀀서", "kind": "core", "effect": "서로 다른 3발", "value": "+5 피해", "role": "혼합 순서", "upside": "서로 다른 3번째 탄 피해 +5", "downside": "기본탄 피해 −1", "text": "직전 두 발과 서로 다른 탄종을 세 번째로 발사하면 직접 피해 +5. 기본탄 직접 피해 −1."},
@@ -181,7 +280,7 @@ const PARTS := {
 
 const MAX_EQUIPPED_PARTS := 5
 
-const TACTICAL_AMMO := ["charge", "precise", "pierce", "bore", "push", "arc", "shatter", "detonate", "chase", "bypass", "cool", "charge_hot", "vent", "thermal", "prepare", "disrupt", "spread", "sequence", "charge_heat"]
+const TACTICAL_AMMO := ["charge", "precise", "pierce", "bore", "push", "arc", "shatter", "detonate", "chase", "bypass", "cool", "charge_hot", "vent", "prepare", "disrupt", "spread", "sequence", "charge_heat"]
 const START_DECK := ["charge", "precise", "pierce", "push", "charge", "precise", "pierce", "push", "charge", "precise"]
 const GUN_DECKS := {
 	"burst": ["charge", "precise", "pierce", "charge", "precise", "pierce", "charge", "precise", "pierce", "precise"],
@@ -210,7 +309,7 @@ const ENEMY_RULES := {
 const ENCOUNTERS := [
 	{"name": "01 / 폐기물 승강장", "text": "증폭탄을 마지막에 넣어 먼저 발사하고, 바로 다음 탄을 증폭할까?"},
 	{"name": "02 / 장갑 검문", "text": "장갑은 피해를 줄인다. 철갑탄의 관통으로 남는 장갑을 없애세요."},
-	{"name": "03 / 열처리 통로", "text": "소이탄을 일찍 발사하면 화상이 여러 번 전진을 막아 줍니다."},
+	{"name": "03 / 열처리 통로", "text": "소이탄의 화상은 재장전 중에도 피해를 줍니다. 접근하는 적과 발열을 함께 살피세요."},
 	{"name": "04 / 압축 운반로", "text": "증폭 뒤 연타탄은 증폭 피해를 두 번 적용합니다."},
 	{"name": "05 / 무인 정비층", "text": "충격탄으로 거리를 벌리고 다음 표적 순서를 바꾸세요."},
 	{"name": "06 / 전도 경계", "text": "전격탄은 가장 가까운 다른 적에게 피해를 전이합니다."},
@@ -232,7 +331,7 @@ const COURSE_GRANTS := [["charge", "charge"], ["pierce"], ["bore"], ["precise"],
 const LESSONS := [
 	"피해 → HP · 증폭탄 바로 뒤의 한 발이 강해집니다",
 	"관통 → 장갑 · 철갑탄은 장갑 감소를 줄입니다",
-	"화상은 적의 전진 직전에 1피해를 줍니다",
+	"화상은 보호막을 무시하고 적 행동 직전에 피해를 줍니다",
 	"연타탄은 두 번 공격 · 증폭도 두 번 적용됩니다",
 	"충격탄은 2m 밀어 거리와 다음 표적을 바꿉니다",
 	"전격탄은 가장 가까운 다른 적에게 2피해를 전이합니다",
@@ -246,13 +345,36 @@ static func lesson(state: Dictionary) -> String:
 		5: return "전격탄은 다른 생존 적에게 %d피해를 전이합니다" % effect_value("arc", state)
 	return LESSONS[int(state.floor)]
 
-static func enemy_rule(enemy: Dictionary) -> String:
+static func enemy_rule(enemy: Dictionary, state: Dictionary = {}) -> String:
+	var rule := _enemy_rule(enemy)
+	if int(enemy.get("slow_left",0))>0:rule+="\n경직 %d행동 · 접근량 절반(올림), 이동 시 최소 1"%int(enemy.slow_left)
+	if pressure_combat(state) and maxi(int(enemy.get("def",0)),int(enemy.get("guard_armor",0)))>0:
+		rule += "\n관통을 뺀 장갑 1마다 직접 피해 10% 감소(최대 80%, 버림, 최소 1). 파쇄는 장갑 자체를 낮추고 화상·전이는 장갑을 무시합니다."
+	return rule
+
+static func _enemy_rule(enemy: Dictionary) -> String:
+	if preload("res://redesign/noble_house.gd").active(enemy): return preload("res://redesign/noble_house.gd").detail(enemy)
+	if preload("res://redesign/central_guard.gd").active(enemy): return preload("res://redesign/central_guard.gd").detail(enemy)
 	var kind := str(enemy.get("kind", ""))
 	var parts: PackedStringArray = []
 	if int(enemy.get("jammed", 0)) > 0: parts.append("특수 행동 차단 %d턴" % int(enemy.jammed))
 	elif bool(enemy.get("disrupted", false)): parts.append("차단 소진")
+	if preload("res://redesign/garden_hunters.gd").active(enemy):
+		parts.append(preload("res://redesign/garden_hunters.gd").intent(enemy))
+		parts.append("두 번째 적 행동에 %dm 도약 → 다음 행동 숨고르기. 준비 중에도 피해를 받으며, 호위는 별도로 이동합니다. 재장전이 2턴이면 두 행동이 진행됩니다." % int(enemy.leap_distance))
+		if preload("res://redesign/boss_skills.gd").caller(enemy): parts.append("3적 행동 후 대기 중인 2기를 호출해 빈 전열을 채웁니다. 전투당 1회이며 차단탄으로 호출을 늦출 수 있습니다. 호출된 적은 등장 행동에 이동하지 않습니다.")
+		return " · ".join(parts)
+	if preload("res://redesign/foundry_workers.gd").winding(enemy):
+		parts.append(preload("res://redesign/foundry_workers.gd").intent(enemy))
+		parts.append("축압 중 매 행동 %dm 접근 · %d번째 행동 %dm 전진 → 다음 행동 정지. 호위는 당기지 않습니다." % [int(enemy.speed),int(enemy.windup_max),int(enemy.speed)+int(enemy.surge)])
+		if int(enemy.get("foundry_version", 0)) == 3:
+			parts.append("돌진 직후 장갑이 열립니다. 다음 적 행동까지 장갑 0이며, 정지 행동이 끝나면 남은 장갑 %d로 닫힙니다. 파쇄로 깎은 장갑은 복구되지 않습니다. 재장전은 여러 적 행동을 진행할 수 있습니다." % int(enemy.shell_armor))
+		return " · ".join(parts)
 	if preload("res://redesign/ranged.gd").is_gatekeeper(enemy):
-		parts.append("문판 방어 2턴 → 개방·발사 준비 2턴. 열린 동안 장갑 0. 압력탄은 HP 1, 매 턴 6m 접근하며 요격할 수 있습니다. 탄 소멸 후 2턴 회복하고 다시 닫습니다.")
+		if preload("res://redesign/boss_skills.gd").salvo(enemy):
+			parts.append("문판 장갑 %d · 방어 2턴 → 개방 준비 2턴 → 압력탄 2연발. 두 탄은 한 적 행동 간격으로 발사되며 각각 HP 1, 매 적 행동 6m 접근합니다. 생성 행동에는 이동하지 않습니다. 두 탄이 모두 사라진 뒤 열린 채 2행동 회복합니다. 발사 중 차단으로 다음 탄을 늦출 수 있고, 본체를 처치하면 남은 발사를 막습니다. 이미 발사된 탄은 남습니다. 파쇄로 깎은 문판 장갑은 복구되지 않습니다." % int(enemy.guard_armor))
+			return " · ".join(parts)
+		parts.append("문판 장갑 %d · 방어 2턴 → 개방·발사 준비 2턴. 열린 동안 장갑 0. 파쇄로 깎은 장갑은 다시 닫아도 회복되지 않습니다. 압력탄은 HP 1, 매 턴 6m 접근하며 요격할 수 있습니다. 탄 소멸 후 2턴 회복하고 다시 닫습니다." % int(enemy.guard_armor))
 		return " · ".join(parts)
 	if kind == "spitter":
 		parts.append("제자리에서 2턴 준비 후 압력탄 발사 · 압력탄은 HP 1, 매 턴 6m 접근. 생성한 턴에는 이동하지 않으며 가장 가까우면 다음 탄으로 요격합니다. 탄 소멸 후 1턴 회복.")
@@ -260,12 +382,17 @@ static func enemy_rule(enemy: Dictionary) -> String:
 	if int(enemy.get("barrier_max", 0)) > 0:
 		parts.append("배리어 %d/%d" % [int(enemy.get("barrier", 0)), int(enemy.barrier_max)])
 	if int(enemy.get("charge_max", 0)) > 0:
-		parts.append("충전 %d/%d · 완료 시 다른 적 −%dm" % [int(enemy.get("charge", 0)), int(enemy.charge_max), int(enemy.get("charge_pull", 2))])
+		parts.append("%s %d/%d · 완료 시 다른 적 −%dm" % ["지휘 준비" if str(enemy.get("species",""))=="slum_leader" else "충전",int(enemy.get("charge", 0)), int(enemy.charge_max), int(enemy.get("charge_pull", 2))])
 	if bool(enemy.get("stance", false)):
 		parts.append("태세 장갑 %d → %d" % [int(enemy.def), 0 if bool(enemy.get("stance_closed", true)) else int(enemy.get("stance_def", 4))])
+		if str(enemy.get("species","")) == "slum_plate": parts.append("적 행동마다 개폐 · 재장전이 2턴이면 다시 같은 태세. 무기의 재장전 시간에 맞춰 개방을 노리거나 관통·화상으로 돌파하세요.")
 	if not parts.is_empty():
 		return " · ".join(parts)
-	var species_rule := preload("res://redesign/residential_roster.gd").rule(enemy)
+	var species_rule := preload("res://redesign/slum_roster.gd").rule(enemy)
+	if preload("res://redesign/foundry_workers.gd").active(enemy):
+		species_rule = {"labor_effigy":"천천히 접근하는 노동 인형 · 높은 체력을 누적 피해로 깎으세요.","mold_worker":"체력이 높은 금형 몸통 · 얇은 장갑을 관통하거나 화상으로 계속 피해를 입히세요.","ash_catcher":"체력이 낮은 작업 호위 · 처치 연쇄와 초과 피해를 연결할 기회입니다."}.get(str(enemy.species),"")
+		if int(enemy.get("foundry_version",1))>=2: species_rule=species_rule.replace("얇은 장갑","장갑 3")
+	if species_rule.is_empty(): species_rule = preload("res://redesign/residential_roster.gd").rule(enemy)
 	return species_rule if not species_rule.is_empty() else str(ENEMY_RULES.get(kind, ""))
 
 static func course_pool(index: int) -> Array:
@@ -277,6 +404,27 @@ static func course_pool(index: int) -> Array:
 
 static func axes(state: Dictionary) -> Dictionary:
 	return {"armor": not state.get("course", false) or int(state.floor) >= 1}
+
+static func reactor_enabled(state: Dictionary) -> bool:
+	return state.get("gun", "") == "heavy" and int(state.get("weapon_version", 0)) >= 1
+
+static func weapon_spec(state: Dictionary) -> Dictionary:
+	var spec: Dictionary = GUNS[state.get("gun", "single")]
+	if WeaponRoles.enabled(state):
+		var trial := spec.duplicate()
+		trial.name = WeaponRoles.NAMES[WeaponRoles.kind(state)]
+		trial.identity = "무작위 1발 강화·봉인" if WeaponRoles.kind(state)=="deadbolt" else "냉각 때 잔탄 역순"
+		trial.text = WeaponRoles.TEXT[WeaponRoles.kind(state)]
+		return trial
+	if pressure_combat(state) and reactor_enabled(state):
+		var revised := spec.duplicate()
+		revised.identity = "강행 공격 ×2 · 냉각 +2턴"
+		revised.text = "전탄 연쇄 · 과열 후 다음 탄 1발 강행 · 강행 공격의 직접 피해 ×2(장갑 적용 전) · 냉각탄으로 한계 아래로 내리면 강제 재장전 없이 종료 · 여전히 과열이면 기본 재장전 +냉각 2턴"
+		return revised
+	if state.get("gun", "") != "heavy" or reactor_enabled(state): return spec
+	var legacy := spec.duplicate()
+	legacy.merge({"reload_cooling":6,"heat_limit":13,"capacity":4,"reload":1,"role":"속성 특화 · 이전 등반","identity":"이전 등반 · 화상 피해 4 / 전이 피해 3","text":"이전 등반 규칙 · 소이 화상 피해 4 / 전격 전이 피해 3 · 재장전 1턴"},true)
+	return legacy
 
 static func multiplier(state: Dictionary) -> int:
 	return 2 if state.get("gun", "single") == "amplifier" else 1
@@ -335,7 +483,8 @@ static func damage(id: String, state: Dictionary) -> int:
 	return maxi(0, result)
 
 static func penetration(id: String, state: Dictionary) -> int:
-	return int(AMMO[id].pen) * multiplier(state) + (2 if has_part(state, "lens") and int(AMMO[id].pen) > 0 else 0) + (2 if has_part(state, "overbore") and is_heavy_attack(id) else 0)
+	var base := int(AMMO[id].pen) + (2 if revised_combat(state) and source_id(id) == "pierce" else 0)
+	return base * multiplier(state) + (2 if has_part(state, "lens") and int(AMMO[id].pen) > 0 else 0) + (2 if has_part(state, "overbore") and is_heavy_attack(id) else 0)
 
 static func is_heavy_attack(id: String) -> bool:
 	return slot_cost(id) >= 2 and int(AMMO[id].dmg) > 0
@@ -354,7 +503,7 @@ static func ammo_role(id: String) -> String:
 		"boost": return "강화"
 		"shatter", "disrupt", "spread", "burn", "push": return "준비"
 		"cool", "prepare": return "관리"
-		"detonate", "chase", "thermal", "vent", "sequence": return "마무리"
+		"detonate", "chase", "vent", "sequence": return "마무리"
 	return "공격"
 
 static func boost_factor(id: String, state: Dictionary) -> int:
@@ -372,8 +521,9 @@ static func primary_stat(id: String, state: Dictionary) -> Dictionary:
 		"shatter": return {"label":"장갑", "value":"−%d" % value}
 		"cool": return {"label":"냉각", "value":"−%d" % value}
 		"prepare": return {"label":"예약", "value":"%d장" % value}
-		"disrupt": return {"label":"차단", "value":"%d턴" % value}
+		"disrupt": return {"label":"경직 행동", "value":str(Roles.slow_duration(state,is_compressed(id),equipped_parts(state)))} if Roles.enabled(state) else {"label":"차단", "value":"%d턴" % value}
 		"spread": return {"label":"화상 이동", "value":"%d" % value}
+		"burn": return {"label":"화상 / 턴", "value":str(burn_damage(state))}
 	return {"label":"피해", "value":str(damage(id, state)) + ("×%d" % hit_count(id, state) if effect == "double" else "")}
 
 static func boost_rounds(id: String) -> int:
@@ -382,12 +532,12 @@ static func boost_rounds(id: String) -> int:
 static func effect_value(id: String, state: Dictionary) -> int:
 	var effect := str(AMMO[id].effect)
 	var value := int(AMMO[id].value) * multiplier(state)
-	if effect == "arc" and state.get("gun", "") == "heavy": value = 3
+	if effect == "arc" and state.get("gun", "") == "heavy" and not reactor_enabled(state): value = 3
 	if effect == "arc" and has_part(state, "capacitor"): value += 1
 	if effect == "arc" and has_part(state, "arc_splitter"): value += 2
 	if effect == "push" and has_part(state, "rammer"): value += 1
 	if effect == "push" and has_part(state, "momentum"): value += 2
-	if effect == "boost" and int(AMMO[id].get("boost_factor", 1)) == 1 and has_part(state, "sequencer"): value += 1
+	if effect == "boost" and int(AMMO[id].get("boost_factor", 1)) == 1 and has_part(state, "sequencer"): value += sequencer_bonus(state)
 	if effect == "prepare": value = mini(3, value + (1 if has_part(state, "indexer") else 0))
 	if effect == "spread":
 		if has_part(state, "coil"): value += 1
@@ -401,15 +551,20 @@ static func prior_kind_count(prior: Array, current: String) -> int:
 		if kind != source_id(current) and not kinds.has(kind): kinds.append(kind)
 	return mini(3, kinds.size())
 
+static func uses_hot_effect(state: Dictionary) -> bool:
+	if has_part(state, "ember_core") or has_part(state, "thermal_drive"): return true
+	return state.get("deck", []).any(func(id): return bool(AMMO.get(str(id), {}).get("boost_hot", false)))
+
 static func burn_damage(state: Dictionary) -> int:
-	return 2 if state.get("gun", "") in ["heavy", "amplifier"] else 1
+	var base:=4 if state.get("gun", "") == "amplifier" or (state.get("gun", "") == "heavy" and not reactor_enabled(state)) else 2
+	return base+Roles.burn_growth(state,equipped_parts(state))
 
 static func push_budget(state: Dictionary) -> int:
 	return 2 * multiplier(state) + (1 if has_part(state, "rammer") else 0) + (2 if has_part(state, "momentum") else 0)
 
 static func hit_count(id: String, state: Dictionary) -> int:
 	var hits := int(AMMO[id].get("hits", 2 if str(AMMO[id].effect) == "double" else 1))
-	if source_id(id) == "precise" and has_part(state, "duplex"): hits += 1
+	if source_id(id) == "precise" and has_part(state, "duplex"): hits += duplex_bonus(state)
 	return hits
 
 static func weakness_bonus(id: String, enemy: Dictionary) -> int:
@@ -419,7 +574,8 @@ static func chains(state: Dictionary) -> bool:
 	return str(GUNS[state.gun].mode) == "chain"
 
 static func capacity(state: Dictionary) -> int:
-	var result := int(GUNS[state.gun].capacity) + int(state.get("capacity_bonus", 0))
+	var result := int(weapon_spec(state).capacity) + int(state.get("capacity_bonus", 0))
+	if preload("res://redesign/magazine_trial.gd").enabled(state): result += preload("res://redesign/magazine_trial.gd").EXTRA_SLOTS
 	if has_part(state, "supply"): result += 1
 	if has_part(state, "field_press"): result -= 2
 	if has_part(state, "overbore"): result -= 1
@@ -450,16 +606,24 @@ static func hand_capacity(state: Dictionary) -> int:
 	return maxi(5, capacity(state) + 2)
 
 static func reload_cooling(state: Dictionary) -> int:
-	var result := int(GUNS[state.gun].reload_cooling)
+	var result := int(weapon_spec(state).reload_cooling)
 	for part in equipped_parts(state): result += int(PARTS[part].get("reload_cooling", 0))
 	return maxi(1, result)
 
 static func heat_after_reload(state: Dictionary) -> int:
 	var current := int(state.get("heat", 0))
+	if preload("res://redesign/fire_heat_trial.gd").separate_reload(state):
+		return maxi(0,current-replacement_cooling(state))
 	return 0 if current >= heat_limit(state) else maxi(0, current - reload_cooling(state))
 
+static func replacement_cooling(state: Dictionary)->int:
+	if not preload("res://redesign/fire_heat_trial.gd").separate_reload(state):return reload_cooling(state)
+	var part_bonus:=0
+	for part in equipped_parts(state):part_bonus+=int(PARTS[part].get("reload_cooling",0))
+	return preload("res://redesign/fire_heat_trial.gd").reload_amount(state,part_bonus)
+
 static func heat_limit(state: Dictionary) -> int:
-	var limit := int(GUNS[state.get("gun", "single")].heat_limit)
+	var limit := int(weapon_spec(state).heat_limit)
 	for part in equipped_parts(state): limit += int(PARTS[part].get("heat_limit", 0))
 	return maxi(1, limit)
 
@@ -470,10 +634,13 @@ static func heat_label(id: String, state: Dictionary) -> String:
 	return "0~−%d" % int(AMMO[id].heat_spend) if str(AMMO[id].effect) == "vent" else "%+d" % heat_delta(id, state)
 
 static func heat_delta(id: String, state: Dictionary) -> int:
-	return -effect_value(id, state) if str(AMMO[id].effect) == "cool" else heat_cost(id) + part_heat_bonus(id,state)
+	return -effect_value(id, state) if str(AMMO[id].effect) == "cool" else Roles.base_heat(state,heat_cost(id)) + part_heat_bonus(id,state)
 
 static func part_heat_bonus(id: String, state: Dictionary) -> int:
-	return 1 if is_attack(id) and has_part(state,"volley_drive") and hit_count(id,state)>1 else 0
+	var bonus := 1 if is_attack(id) and has_part(state,"volley_drive") and hit_count(id,state)>1 else 0
+	if revised_combat(state) and source_id(id) == "precise" and has_part(state,"duplex"): bonus += 1
+	if int(state.get("build_engine_version", 0)) == 1 and str(AMMO[id].effect) == "double" and has_part(state, "resonator"): bonus += 1
+	return bonus
 
 static func field_compression_bonus(state: Dictionary) -> int:
 	return 1 if has_part(state, "field_press") else 0

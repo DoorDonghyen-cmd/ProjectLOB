@@ -1,4 +1,6 @@
 extends "res://tests/ammo_expansion_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old hand-loading combat forecast and cards. Replaced by: weapon_live_ui (magazine combat).
+## Current UI suites: docs/qa/ui-test-suites.md
 const Forecast = preload("res://redesign/forecast.gd")
 
 func press_without_wait(key: String) -> void:

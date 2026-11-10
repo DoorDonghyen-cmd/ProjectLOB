@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 
 REPO = Path(__file__).resolve().parents[1]
 APK_NAME = "LastOnBoard-city.apk"
+PLAY_MODES = json.loads((REPO / "tools/mobile_play_modes.json").read_text(encoding="utf-8"))
 
 
 def read_json(path):
@@ -48,6 +49,28 @@ def verify_architectures(manifest, names):
     require(actual == set(abis), "APK architectures differ from manifest")
 
 
+def verify_mode_resources(manifest, names, prefix="assets/"):
+    """Also used with an exported resource-only pack before APK production."""
+    mode = manifest.get("play_mode", "campaign")
+    require(mode in PLAY_MODES, "Unsupported mobile play mode")
+    spec = PLAY_MODES[mode]
+    require(manifest.get("main_scene") == spec["main_scene"], "Play mode entry scene mismatch")
+    required = ["project.binary", "redesign/model.gdc", "redesign/content.gdc",
+                spec["main_scene"][6:] + ".remap", spec["entry_script"][6:-3] + ".gdc"]
+    if mode == "weapon-magazine":
+        required += [f"redesign/samples/combat_weapon_{gun}_{role}.json"
+                     for gun in ["single", "burst", "scatter", "heavy", "amplifier"]
+                     for role in ["breach", "boss", "sweep", "payoff"]]
+    if mode == "magazine-journey":
+        required += ["redesign/magazine_journey.gdc", "redesign/campaign.gdc",
+                     "redesign/samples/hud/combat_hud_presenter.gdc",
+                     "redesign/samples/hud/journey_flow_presenter.gdc",
+                     "redesign/samples/hud/journey_flow.tscn.remap",
+                     "redesign/samples/hud/journey_route.tscn.remap", "redesign/line_skin.gdc"]
+    for relative in required:
+        require(prefix + relative in names, "Required mobile resource missing: " + relative)
+
+
 def verify(release, godot):
     manifest = read_json(release / "build_manifest.json")
     config = read_json(REPO / "tools/mobile_delivery.json")
@@ -64,8 +87,7 @@ def verify(release, godot):
         require(archive.testzip() is None, "Corrupt APK ZIP entry")
         names = archive.namelist()
         verify_architectures(manifest, names)
-        for name in ["assets/project.binary", "assets/redesign/model.gdc", "assets/redesign/content.gdc", "assets/redesign/screen.gdc", "assets/redesign/main.tscn.remap"]:
-            require(name in names, "Required APK resource missing: " + name)
+        verify_mode_resources(manifest, names)
         asset_names = [name for name in names if name.startswith("assets/") and not name.endswith("/")]
         require(not any("tests" in PurePosixPath(name).parts for name in asset_names), "Test code exported")
         for name in asset_names:
@@ -84,14 +106,24 @@ def verify(release, godot):
         folder = release / "package_probe" / suffix
         folder.mkdir(exist_ok=True)
         env[variable] = str(folder)
-    result = subprocess.run([str(godot), "--headless", "--path", str(assets), "--script", str(REPO / "tools/mobile_package_probe.gd"), "--", str(version)], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, timeout=90)
-    (release / "package_probe/stdout.log").write_text(result.stdout, encoding="utf-8")
-    (release / "package_probe/stderr.log").write_text(result.stderr, encoding="utf-8")
-    diagnostic = (result.stdout + result.stderr).replace("ERROR: Failed to read the root certificate store.", "")
-    require(result.returncode == 0 and "MOBILE_PACKAGE_PROBE_PASS" in result.stdout and not re.search(r"SCRIPT ERROR|Parse Error|ERROR:", diagnostic), "Packaged resource smoke test failed; see package_probe logs")
-    report = {"apk_sha256": digest(apk), "crc_valid": True, "entries": len(names), "assets": len(asset_names), "signing_certificate_sha256": match[1], "model_version": version, "compiled_resource_probe": "passed on desktop Godot", "android_device_tested": False}
+    run_resource_probe(assets, godot, version, manifest, env, release / "package_probe")
+    report = {"apk_sha256": digest(apk), "crc_valid": True, "entries": len(names), "assets": len(asset_names), "signing_certificate_sha256": match[1], "model_version": version, "main_scene": manifest["main_scene"], "play_mode": manifest.get("play_mode", "campaign"), "compiled_resource_probe": "passed on desktop Godot", "android_device_tested": False}
     write_json(release / "validation.json", report)
     print(json.dumps(report))
+
+
+def run_resource_probe(assets, godot, version, manifest, env, logs):
+    mode = manifest.get("play_mode", "campaign")
+    stages = ["write", "read"] if mode == "magazine-journey" else ["single"]
+    for stage in stages:
+        result = subprocess.run([str(godot), "--headless", "--path", str(assets), "--script", str(REPO / "tools/mobile_package_probe.gd"), "--", str(version), manifest["main_scene"], mode, stage], capture_output=True, text=True, encoding="utf-8", errors="replace", env=env, timeout=120)
+        stem = "" if stage == "single" else stage + "_"
+        (logs / (stem + "stdout.log")).write_text(result.stdout, encoding="utf-8")
+        (logs / (stem + "stderr.log")).write_text(result.stderr, encoding="utf-8")
+        diagnostic = (result.stdout + result.stderr).replace("ERROR: Failed to read the root certificate store.", "")
+        require(result.returncode == 0 and "MOBILE_PACKAGE_PROBE_PASS" in result.stdout and not re.search(r"SCRIPT ERROR|Parse Error|ERROR:", diagnostic), "Packaged resource smoke test failed; see package_probe logs")
+        if mode == "magazine-journey":
+            require("MOBILE_JOURNEY_PROBE_PASS stage=" + stage in result.stdout, "Journey probe did not complete")
 
 
 def package(release):
@@ -100,6 +132,7 @@ def package(release):
     config = read_json(REPO / "tools/mobile_delivery.json")
     apk = release / APK_NAME
     require(digest(apk) == validation["apk_sha256"] == manifest["sha256"].lower(), "APK changed after validation")
+    require(manifest.get("play_mode", "campaign") == validation.get("play_mode", "campaign") and manifest.get("main_scene") == validation.get("main_scene"), "Play mode changed after validation")
     # This allowlist deliberately excludes QA profiles, settings, logs and source.
     files = [APK_NAME, "INSTALL.md", "RELEASE_NOTES.md", "build_manifest.json", "validation.json"]
     checksums = "".join(f"{digest(release / name)}  {name}\n" for name in files)
@@ -114,6 +147,7 @@ def package(release):
     limit = config["drive"].get("max_upload_bytes")
     require(limit is None or target.stat().st_size <= limit, "Delivery ZIP exceeds the Drive connector upload limit; reduce unused exported resources and create a new build")
     request = {"schema_version": 1, "build_id": release.name, "status": "ready_for_upload", "version_name": manifest["version_name"], "version_code": manifest["version_code"], "apk_path": str(apk), "zip_path": str(target), "file_name": target.name, "mime_type": "application/zip", "size_bytes": target.stat().st_size, "sha256": digest(target), "md5": digest(target, "md5"), "parent_folder_id": config["drive"]["folder_id"]}
+    request.update(play_mode=manifest.get("play_mode", "campaign"), main_scene=manifest.get("main_scene"))
     write_json(release / "delivery_request.json", request)
     print(json.dumps(request))
 

@@ -131,7 +131,10 @@ func _run() -> void:
 	# Campaign core offers use normal reward/equip/save paths, old campaigns remain eligible for old ammo rewards.
 	var c=Campaign.new(); c.start("single",731042,0,"balanced",Data.RouteMap.VERSION,"carrier")
 	check(c.enter(int(c.choices()[0].id)),"enter first encounter")
-	c.s.clears=1; c.s.phase="reward"
+	# A reward save requires a cleared combat, including the current two-step opener.
+	for enemy in c.model.s.enemies: enemy.hp=0
+	c.model.s.phase="reward"
+	c.sync_combat()
 	check(c.part_rewards().size()==3 and c.reward_options().is_empty(),"first victory offers three build directions")
 	check(c.reward("thermal_drive") and c.equipped_parts().has("thermal_drive"),"real reward equips core")
 	c.model.s.engine.levels.thermal_drive=3

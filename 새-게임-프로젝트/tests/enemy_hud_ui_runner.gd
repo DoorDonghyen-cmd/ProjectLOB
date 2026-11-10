@@ -36,21 +36,15 @@ func hud_fit() -> void:
 			for previous in occupied: check(not bounds.intersects(previous), "status icons do not overlap")
 			occupied.append(bounds)
 		check(status.cells.size() == Icons.entries(view.enemies[i]).size(), "all active statuses remain visible")
-		var distance: Rect2 = view.distance_label_rect(i)
-		check(Rect2(Vector2.ZERO, view.size).encloses(distance), "distance stays inside field")
-		check(distance.position.y >= view.enemy_feet(i).y + 4, "distance clears feet and target brackets")
-		check(view._enemy_at(distance.get_center()) == i, "ground distance opens the same enemy")
-		if not view.reinforcements.is_empty():
-			var reserve: Rect2 = view.reinforcement_strip_rect()
-			check(not distance.intersects(reserve), "distance clears reinforcement strip")
-		for j in view._alive_indices():
-			check(is_equal_approx(distance.position.y, view.distance_label_rect(j).position.y), "distance shares stable ground baseline")
-			if i != j: check(not distance.intersects(view.distance_label_rect(j)), "distance labels stay separate")
+		check(view._enemy_at(hud.get_center()) == i, "separated HP opens the same enemy")
+		check(view.threat_readouts.has(i), "next enemy action is available")
+		check(view.FONT.get_string_size(str(view.threat_readouts[i].text), HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x <= hud.size.x - 14, "next-action warning fits")
+		check(view.readout_layer.z_index > 6, "HP stays above overlapping actors")
 		var old_clock: float = view.actor_clock
 		var old_motion: float = view.march_phase
 		view.actor_clock += 0.7
 		view.march_phase = 1.0
-		check(distance.is_equal_approx(view.distance_label_rect(i)), "animation cannot move distance baseline")
+		check(hud.is_equal_approx(view.enemy_plaque(i)), "idle animation cannot move HP or warning")
 		view.actor_clock = old_clock
 		view.march_phase = old_motion
 		check(Rect2(Vector2.ZERO, view.size).encloses(hud), "HUD inside field")
@@ -96,7 +90,7 @@ func _run() -> void:
 		check(screen.find_child("SlotDetails",true,false) != null,"ready slot opens calculation")
 		await capture("slot_detail_%d" % resolution.x)
 		await tap("workspace_close")
-		check(screen.battle_view.preview_targets == [0], "slot touch identifies actual monster without a letter")
+		check(screen.battle_view.preview_targets == [0], "slot touch identifies actual monster")
 		check(screen.battle_view._enemy_text(0).begins_with(str(screen.model.s.enemies[0].name)), "tooltip starts with monster name without letter")
 		check(not screen.magazine_view.compact_lines(screen.full_forecast, 0)[0].contains("A"), "firing rail uses damage without letter")
 		await capture("ready_%d" % resolution.x)

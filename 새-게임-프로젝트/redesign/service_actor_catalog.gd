@@ -1,32 +1,41 @@
 extends RefCounted
-## New outfits register only their three poses here; room art is independent.
+## Shared rooms, selected costume; unknown legacy IDs use the work fallback.
 const POSES := {
-	"work": {
-		"shop": preload("res://redesign/service_actor_shop_work.tres"),
-		"supply": preload("res://redesign/service_actor_supply_work.tres"),
-		"workshop": preload("res://redesign/service_actor_workshop_work.tres")
+	"work":{
+		"shop":preload("res://redesign/service_actor_shop_work_cohesive.tres"),
+		"supply":preload("res://redesign/service_actor_supply_work_cohesive.tres"),
+		"workshop":preload("res://redesign/service_actor_workshop_work_cohesive.tres"),
 	},
-	"heatworker": {
-		"shop": preload("res://redesign/service_actor_shop_heatworker.tres"),
-		"supply": preload("res://redesign/service_actor_supply_heatworker.tres"),
-		"workshop": preload("res://redesign/service_actor_workshop_heatworker.tres"),
+	"carrier":{
+		"shop":preload("res://redesign/service_actor_shop_carrier_cohesive.tres"),
+		"supply":preload("res://redesign/service_actor_supply_carrier_cohesive.tres"),
+		"workshop":preload("res://redesign/service_actor_workshop_carrier_cohesive.tres"),
 	},
-	"hoist": {
-		"shop": preload("res://redesign/service_actor_shop_hoist.tres"),
-		"supply": preload("res://redesign/service_actor_supply_hoist.tres"),
-		"workshop": preload("res://redesign/service_actor_workshop_hoist.tres"),
+	"scout":{
+		"shop":preload("res://redesign/service_actor_shop_scout_cohesive.tres"),
+		"supply":preload("res://redesign/service_actor_supply_scout_cohesive.tres"),
+		"workshop":preload("res://redesign/service_actor_workshop_scout_cohesive.tres"),
 	},
-	"recovery": {
-		"shop": preload("res://redesign/service_actor_shop_recovery.tres"),
-		"supply": preload("res://redesign/service_actor_supply_recovery.tres"),
-		"workshop": preload("res://redesign/service_actor_workshop_recovery.tres"),
+	"heatworker":{
+		"shop":preload("res://redesign/service_actor_shop_heatworker_cohesive.tres"),
+		"supply":preload("res://redesign/service_actor_supply_heatworker_cohesive.tres"),
+		"workshop":preload("res://redesign/service_actor_workshop_heatworker_cohesive.tres"),
 	},
-	"expedition": {
-		"shop": preload("res://redesign/outfit_preview_shop.tres"),
-		"supply": preload("res://redesign/outfit_preview_supply.tres"),
-		"workshop": preload("res://redesign/outfit_preview_workshop.tres"),
+	"hoist":{
+		"shop":preload("res://redesign/service_actor_shop_hoist_cohesive.tres"),
+		"supply":preload("res://redesign/service_actor_supply_hoist_cohesive.tres"),
+		"workshop":preload("res://redesign/service_actor_workshop_hoist_cohesive.tres"),
 	},
-
+	"recovery":{
+		"shop":preload("res://redesign/service_actor_shop_recovery_cohesive.tres"),
+		"supply":preload("res://redesign/service_actor_supply_recovery_cohesive.tres"),
+		"workshop":preload("res://redesign/service_actor_workshop_recovery_cohesive.tres"),
+	},
+	"expedition":{
+		"shop":preload("res://redesign/service_actor_shop_expedition_cohesive.tres"),
+		"supply":preload("res://redesign/service_actor_supply_expedition_cohesive.tres"),
+		"workshop":preload("res://redesign/service_actor_workshop_expedition_cohesive.tres"),
+	},
 }
 
 static func resolve(outfit: String, place: String) -> Dictionary:

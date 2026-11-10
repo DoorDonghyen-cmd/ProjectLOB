@@ -1,4 +1,6 @@
 extends SceneTree
+## RETIRED 2026-11-08 as a run target: checks old hand-loading combat forecasts. Replaced by: weapon_live_ui.
+## Current UI suites: docs/qa/ui-test-suites.md
 const Model = preload("res://redesign/model.gd")
 const Content = preload("res://redesign/content.gd")
 const Forecast = preload("res://redesign/forecast.gd")

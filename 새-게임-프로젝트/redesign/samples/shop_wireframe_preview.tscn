@@ -1,0 +1,1200 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/shop_wireframe_preview.gd" id="logic"]
+[ext_resource type="Script" path="res://redesign/samples/shop_preview_icon.gd" id="icon"]
+[ext_resource type="Script" path="res://redesign/service_actor_layer.gd" id="actor"]
+[ext_resource type="Resource" path="res://redesign/service_actor_shop_carrier_cohesive.tres" id="pose"]
+[ext_resource type="Texture2D" path="res://assets/art/service_background_grouped_20261025/shop.png" id="room"]
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/panel_normal.tres" id="panel_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/well_normal.tres" id="well_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/card_normal.tres" id="card_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/card_selected.tres" id="card_selected"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/cartridge_normal.tres" id="cartridge_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/cartridge_selected.tres" id="cartridge_selected"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/cartridge_hover.tres" id="cartridge_hover"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_normal.tres" id="button_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_hover.tres" id="button_hover"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_pressed.tres" id="button_pressed"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_disabled.tres" id="button_disabled"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/button_focus.tres" id="button_focus"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/primary_normal.tres" id="primary_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/primary_hover.tres" id="primary_hover"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/primary_pressed.tres" id="primary_pressed"]
+[ext_resource type="StyleBox" path="res://assets/ui/console/primary_disabled.tres" id="primary_disabled"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/bare.tres" id="shop_bare"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/buy_disabled.tres" id="shop_buy_disabled"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/buy_hover.tres" id="shop_buy_hover"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/buy_normal.tres" id="shop_buy_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/buy_pressed.tres" id="shop_buy_pressed"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/invoice.tres" id="shop_invoice"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/key_disabled.tres" id="shop_key_disabled"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/key_focus.tres" id="shop_key_focus"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/key_hover.tres" id="shop_key_hover"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/key_normal.tres" id="shop_key_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/key_pressed.tres" id="shop_key_pressed"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/offer_hover.tres" id="shop_offer_hover"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/offer_normal.tres" id="shop_offer_normal"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/offer_selected.tres" id="shop_offer_selected"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/shelf.tres" id="shop_shelf"]
+[ext_resource type="StyleBox" path="res://assets/ui/shop_preview/stat.tres" id="shop_stat"]
+
+[sub_resource type="Theme" id="Theme"]
+default_font = ExtResource("font")
+default_font_size = 24
+Label/colors/font_color = Color(0.83, 0.86, 0.82, 1)
+Button/colors/font_color = Color(0.83, 0.86, 0.82, 1)
+Button/colors/font_hover_color = Color(0.93, 0.94, 0.85, 1)
+Button/colors/font_pressed_color = Color(0.93, 0.94, 0.85, 1)
+Button/colors/font_disabled_color = Color(0.43, 0.51, 0.51, 1)
+Button/styles/normal = ExtResource("shop_key_normal")
+Button/styles/hover = ExtResource("shop_key_hover")
+Button/styles/pressed = ExtResource("shop_key_pressed")
+Button/styles/disabled = ExtResource("shop_key_disabled")
+Button/styles/focus = ExtResource("shop_key_focus")
+
+[node name="ShopWireframePreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = SubResource("Theme")
+script = ExtResource("logic")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.055, 0.09, 0.105, 1)
+mouse_filter = 2
+
+[node name="Safe" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Layout" type="VBoxContainer" parent="Safe"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Header" type="HBoxContainer" parent="Safe/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 20
+custom_minimum_size = Vector2(0, 58)
+
+[node name="Brand" type="Label" parent="Safe/Layout/Header"]
+layout_mode = 2
+mouse_filter = 2
+text = "ORVASK"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="Location" type="Label" parent="Safe/Layout/Header"]
+layout_mode = 2
+mouse_filter = 2
+text = "승강장 · 주거 통로"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+size_flags_horizontal = 3
+
+[node name="PreviewBadge" type="Label" parent="Safe/Layout/Header"]
+layout_mode = 2
+mouse_filter = 2
+text = "상점 시안"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Wallet" type="Label" parent="Safe/Layout/Header"]
+layout_mode = 2
+mouse_filter = 2
+text = "75 Cr"
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+custom_minimum_size = Vector2(150, 0)
+horizontal_alignment = 2
+
+[node name="Reset" type="Button" parent="Safe/Layout/Header"]
+layout_mode = 2
+text = "초기화"
+custom_minimum_size = Vector2(110, 52)
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="Rows" type="VBoxContainer" parent="Safe/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 12
+size_flags_vertical = 3
+
+[node name="Overview" type="HBoxContainer" parent="Safe/Layout/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 24
+size_flags_vertical = 3
+
+[node name="Market" type="VBoxContainer" parent="Safe/Layout/Rows/Overview"]
+layout_mode = 2
+theme_override_constants/separation = 12
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.05
+
+[node name="Inspector" type="VBoxContainer" parent="Safe/Layout/Rows/Overview"]
+layout_mode = 2
+theme_override_constants/separation = 16
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.0
+custom_minimum_size = Vector2(452, 0)
+
+[node name="Story" type="HBoxContainer" parent="Safe/Layout/Rows/Overview/Market"]
+layout_mode = 2
+theme_override_constants/separation = 20
+custom_minimum_size = Vector2(0, 212)
+size_flags_vertical = 3
+
+[node name="Room" type="TextureRect" parent="Safe/Layout/Rows/Overview/Market/Story"]
+layout_mode = 2
+custom_minimum_size = Vector2(550, 190)
+size_flags_horizontal = 3
+size_flags_vertical = 4
+texture = ExtResource("room")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="Hero" type="Control" parent="Safe/Layout/Rows/Overview/Market/Story/Room"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("actor")
+profile = ExtResource("pose")
+room_foot = Vector2(0.409, 0.9)
+room_height = 0.643
+
+[node name="Copy" type="VBoxContainer" parent="Safe/Layout/Rows/Overview/Market/Story"]
+layout_mode = 2
+theme_override_constants/separation = 8
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(330, 0)
+alignment = 1
+
+[node name="Title" type="Label" parent="Safe/Layout/Rows/Overview/Market/Story/Copy"]
+layout_mode = 2
+mouse_filter = 2
+text = "승강장 거래소"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+
+[node name="Greeting" type="Label" parent="Safe/Layout/Rows/Overview/Market/Story/Copy"]
+layout_mode = 2
+mouse_filter = 2
+text = "“안쪽 문은 열어 둬요.\n거기까지 난방이 가야 해서.”"
+theme_override_font_sizes/font_size = 23
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+autowrap_mode = 2
+
+[node name="Narration" type="Label" parent="Safe/Layout/Rows/Overview/Market/Story/Copy"]
+layout_mode = 2
+mouse_filter = 2
+text = "주소표가 묶인 코일 세 개가\n수리대 위에 놓여 있다."
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+autowrap_mode = 2
+
+[node name="Voice" type="Label" parent="Safe/Layout/Rows/Overview/Market/Story/Copy"]
+layout_mode = 2
+mouse_filter = 2
+text = "“올라갈 거면 쓸 만한 걸 가져가.”"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+autowrap_mode = 2
+
+[node name="StockHeading" type="HBoxContainer" parent="Safe/Layout/Rows/Overview/Market"]
+layout_mode = 2
+theme_override_constants/separation = 12
+custom_minimum_size = Vector2(0, 44)
+
+[node name="Heading" type="Label" parent="Safe/Layout/Rows/Overview/Market/StockHeading"]
+layout_mode = 2
+mouse_filter = 2
+text = "오늘의 물건"
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+size_flags_horizontal = 3
+
+[node name="Reroll" type="Button" parent="Safe/Layout/Rows/Overview/Market/StockHeading"]
+layout_mode = 2
+text = "새 진열 · 3 Cr"
+custom_minimum_size = Vector2(188, 44)
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 21
+
+[node name="SelectionRow" type="HBoxContainer" parent="Safe/Layout/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 24
+custom_minimum_size = Vector2(0, 324)
+
+[node name="Offers" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow"]
+layout_mode = 2
+theme_override_constants/separation = 14
+custom_minimum_size = Vector2(0, 324)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.05
+
+[node name="Offer0" type="Button" parent="Safe/Layout/Rows/SelectionRow/Offers"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 324)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("shop_offer_selected")
+theme_override_styles/hover = ExtResource("shop_offer_hover")
+theme_override_styles/pressed = ExtResource("shop_offer_selected")
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Tags" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+mouse_filter = 2
+
+[node name="Kind" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/Tags"]
+layout_mode = 2
+mouse_filter = 2
+text = "탄환"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+size_flags_horizontal = 3
+
+[node name="Grade" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/Tags"]
+layout_mode = 2
+mouse_filter = 2
+text = "일반"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 104)
+script = ExtResource("icon")
+item_id = "precise_p1"
+is_part = false
+
+[node name="Name" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "연타탄"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+
+[node name="StatPlate" type="PanelContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("shop_stat")
+mouse_filter = 2
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/StatPlate"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+mouse_filter = 2
+
+[node name="StatRow" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/StatPlate/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Stat" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/StatPlate/Inset/StatRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "1 × 2"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+
+[node name="Heat" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/StatPlate/Inset/StatRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "열 +4"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.80, 0.57, 0.43, 1)
+
+[node name="Description" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "같은 적을 두 번 타격"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Foot" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="Price" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/Foot"]
+layout_mode = 2
+mouse_filter = 2
+text = "12 Cr"
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+size_flags_horizontal = 3
+
+[node name="Owned" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer0/Inset/Content/Foot"]
+layout_mode = 2
+mouse_filter = 2
+text = "보유 2장"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Offer1" type="Button" parent="Safe/Layout/Rows/SelectionRow/Offers"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 324)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("shop_offer_normal")
+theme_override_styles/hover = ExtResource("shop_offer_hover")
+theme_override_styles/pressed = ExtResource("shop_offer_selected")
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Tags" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+mouse_filter = 2
+
+[node name="Kind" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/Tags"]
+layout_mode = 2
+mouse_filter = 2
+text = "파츠"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+size_flags_horizontal = 3
+
+[node name="Grade" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/Tags"]
+layout_mode = 2
+mouse_filter = 2
+text = "고급"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 104)
+script = ExtResource("icon")
+item_id = "supply"
+is_part = true
+
+[node name="Name" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "확장 탄창"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+
+[node name="StatPlate" type="PanelContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("shop_stat")
+mouse_filter = 2
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/StatPlate"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+mouse_filter = 2
+
+[node name="StatRow" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/StatPlate/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Stat" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/StatPlate/Inset/StatRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "탄창 +1칸"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+
+[node name="Heat" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/StatPlate/Inset/StatRow"]
+layout_mode = 2
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.80, 0.57, 0.43, 1)
+
+[node name="Description" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "한 번에 더 긴 연쇄"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Foot" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="Price" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/Foot"]
+layout_mode = 2
+mouse_filter = 2
+text = "30 Cr"
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+size_flags_horizontal = 3
+
+[node name="Owned" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer1/Inset/Content/Foot"]
+layout_mode = 2
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Offer2" type="Button" parent="Safe/Layout/Rows/SelectionRow/Offers"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 324)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("shop_offer_normal")
+theme_override_styles/hover = ExtResource("shop_offer_hover")
+theme_override_styles/pressed = ExtResource("shop_offer_selected")
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Tags" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+mouse_filter = 2
+
+[node name="Kind" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/Tags"]
+layout_mode = 2
+mouse_filter = 2
+text = "파츠"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+size_flags_horizontal = 3
+
+[node name="Grade" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/Tags"]
+layout_mode = 2
+mouse_filter = 2
+text = "일반"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 104)
+script = ExtResource("icon")
+item_id = "lens"
+is_part = true
+
+[node name="Name" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "가속 총열"
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+
+[node name="StatPlate" type="PanelContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("shop_stat")
+mouse_filter = 2
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/StatPlate"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+mouse_filter = 2
+
+[node name="StatRow" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/StatPlate/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Stat" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/StatPlate/Inset/StatRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "관통 +2"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+
+[node name="Heat" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/StatPlate/Inset/StatRow"]
+layout_mode = 2
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.80, 0.57, 0.43, 1)
+
+[node name="Description" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "관통이 있는 탄에 적용"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Foot" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+mouse_filter = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="Price" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/Foot"]
+layout_mode = 2
+mouse_filter = 2
+text = "30 Cr"
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+size_flags_horizontal = 3
+
+[node name="Owned" type="Label" parent="Safe/Layout/Rows/SelectionRow/Offers/Offer2/Inset/Content/Foot"]
+layout_mode = 2
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Footer" type="HBoxContainer" parent="Safe/Layout/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="MarketFooter" type="VBoxContainer" parent="Safe/Layout/Rows/Footer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.05
+
+[node name="InspectorFooter" type="VBoxContainer" parent="Safe/Layout/Rows/Footer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.0
+custom_minimum_size = Vector2(452, 0)
+
+[node name="AmmoSummary" type="PanelContainer" parent="Safe/Layout/Rows/Footer/MarketFooter"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("shop_bare")
+custom_minimum_size = Vector2(0, 78)
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/Footer/MarketFooter/AmmoSummary"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Row" type="HBoxContainer" parent="Safe/Layout/Rows/Footer/MarketFooter/AmmoSummary/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="DeckCount" type="Label" parent="Safe/Layout/Rows/Footer/MarketFooter/AmmoSummary/Inset/Row"]
+layout_mode = 2
+mouse_filter = 2
+text = "보유 탄약 20 / 32"
+theme_override_font_sizes/font_size = 23
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+
+[node name="Composition" type="Label" parent="Safe/Layout/Rows/Footer/MarketFooter/AmmoSummary/Inset/Row"]
+layout_mode = 2
+mouse_filter = 2
+text = "기본 16  ·  철갑 2  ·  연타 2"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+size_flags_horizontal = 3
+
+[node name="Bag" type="Button" parent="Safe/Layout/Rows/Footer/MarketFooter/AmmoSummary/Inset/Row"]
+layout_mode = 2
+text = "탄환 가방"
+custom_minimum_size = Vector2(152, 52)
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="Service" type="HBoxContainer" parent="Safe/Layout/Rows/Footer/MarketFooter"]
+layout_mode = 2
+theme_override_constants/separation = 16
+custom_minimum_size = Vector2(0, 58)
+
+[node name="ChargeInfo" type="Label" parent="Safe/Layout/Rows/Footer/MarketFooter/Service"]
+layout_mode = 2
+mouse_filter = 2
+text = "압축 충전 1 / 2"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+size_flags_horizontal = 3
+
+[node name="Charge" type="Button" parent="Safe/Layout/Rows/Footer/MarketFooter/Service"]
+layout_mode = 2
+text = "1회 충전 · 18 Cr"
+custom_minimum_size = Vector2(224, 56)
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="Loadout" type="PanelContainer" parent="Safe/Layout/Rows/Overview/Inspector"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("shop_bare")
+custom_minimum_size = Vector2(0, 176)
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/Overview/Inspector/Loadout"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Content" type="VBoxContainer" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TitleRow" type="HBoxContainer" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Heading" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/TitleRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "현재 장착"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+size_flags_horizontal = 3
+
+[node name="SlotCount" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/TitleRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "2 / 5"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Slots" type="HBoxContainer" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+custom_minimum_size = Vector2(0, 56)
+
+[node name="Slot0" type="Button" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 56)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "volley_drive"
+is_part = true
+small = true
+visible = true
+offset_bottom = -16.0
+
+[node name="CoreBadge" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot0"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+text = "코어"
+horizontal_alignment = 1
+visible = true
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="Slot1" type="Button" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 56)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "radiator"
+is_part = true
+small = true
+visible = true
+offset_bottom = 0.0
+
+[node name="CoreBadge" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot1"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+text = "코어"
+horizontal_alignment = 1
+visible = false
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="Slot2" type="Button" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots"]
+layout_mode = 2
+text = "+"
+custom_minimum_size = Vector2(0, 56)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "none"
+is_part = true
+small = true
+visible = false
+offset_bottom = 0.0
+
+[node name="CoreBadge" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot2"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+text = "코어"
+horizontal_alignment = 1
+visible = false
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="Slot3" type="Button" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots"]
+layout_mode = 2
+text = "+"
+custom_minimum_size = Vector2(0, 56)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot3"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "none"
+is_part = true
+small = true
+visible = false
+offset_bottom = 0.0
+
+[node name="CoreBadge" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot3"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+text = "코어"
+horizontal_alignment = 1
+visible = false
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="Slot4" type="Button" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots"]
+layout_mode = 2
+text = "+"
+custom_minimum_size = Vector2(0, 56)
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+
+[node name="Icon" type="Control" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot4"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "none"
+is_part = true
+small = true
+visible = false
+offset_bottom = 0.0
+
+[node name="CoreBadge" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content/Slots/Slot4"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+text = "코어"
+horizontal_alignment = 1
+visible = false
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="PartName" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "코어 · 연쇄 구동핵"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+
+[node name="Weapon" type="Label" parent="Safe/Layout/Rows/Overview/Inspector/Loadout/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "래칫   탄창 4   열 한계 17"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="Detail" type="PanelContainer" parent="Safe/Layout/Rows/SelectionRow"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("shop_invoice")
+custom_minimum_size = Vector2(452, 324)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.0
+
+[node name="Inset" type="MarginContainer" parent="Safe/Layout/Rows/SelectionRow/Detail"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 14
+
+[node name="Content" type="VBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Eyebrow" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "선택한 물건"
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+visible = false
+
+[node name="ItemHeading" type="HBoxContainer" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ItemName" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content/ItemHeading"]
+layout_mode = 2
+mouse_filter = 2
+text = "연타탄"
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+size_flags_horizontal = 3
+
+[node name="Details" type="Button" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content/ItemHeading"]
+layout_mode = 2
+text = "상세"
+custom_minimum_size = Vector2(76, 48)
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="DetailText" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "같은 적에게 두 번 타격합니다."
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+autowrap_mode = 2
+visible = false
+
+[node name="ChangeTitle" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "구매 시 변화"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+visible = false
+
+[node name="Change" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "코어 적용 · 타격당 피해 +1"
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+autowrap_mode = 2
+
+[node name="AffinityTitle" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "내 장비와의 연결"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.75, 0.65, 0.47, 1)
+visible = false
+
+[node name="Affinity" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+autowrap_mode = 2
+visible = false
+
+[node name="Cost" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.80, 0.57, 0.43, 1)
+autowrap_mode = 2
+visible = false
+
+[node name="Space" type="Control" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Feedback" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+custom_minimum_size = Vector2(0, 22)
+autowrap_mode = 2
+
+[node name="Buy" type="Button" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+text = "12 Cr · 한 장 추가"
+custom_minimum_size = Vector2(0, 56)
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = ExtResource("shop_buy_normal")
+theme_override_styles/hover = ExtResource("shop_buy_hover")
+theme_override_styles/pressed = ExtResource("shop_buy_pressed")
+theme_override_styles/disabled = ExtResource("shop_buy_disabled")
+theme_override_colors/font_color = Color(0.13, 0.20, 0.20, 1)
+theme_override_colors/font_hover_color = Color(0.13, 0.20, 0.20, 1)
+theme_override_colors/font_pressed_color = Color(0.13, 0.20, 0.20, 1)
+theme_override_font_sizes/font_size = 26
+
+[node name="Replace" type="Button" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+text = "보유 탄과 교체"
+custom_minimum_size = Vector2(0, 44)
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 22
+
+[node name="Balance" type="Label" parent="Safe/Layout/Rows/SelectionRow/Detail/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "구매 후 63 Cr"
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+horizontal_alignment = 2
+
+[node name="ExitSpace" type="Control" parent="Safe/Layout/Rows/Footer/InspectorFooter"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Exit" type="Button" parent="Safe/Layout/Rows/Footer/InspectorFooter"]
+layout_mode = 2
+text = "시안 닫기  →"
+custom_minimum_size = Vector2(0, 58)
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 24
+
+[node name="Overlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+color = Color(0.025, 0.045, 0.055, 0.92)
+mouse_filter = 0
+
+[node name="Center" type="CenterContainer" parent="Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Modal" type="PanelContainer" parent="Overlay/Center"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("panel_normal")
+custom_minimum_size = Vector2(720, 500)
+
+[node name="Inset" type="MarginContainer" parent="Overlay/Center/Modal"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="Content" type="VBoxContainer" parent="Overlay/Center/Modal/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ModalTitle" type="Label" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "탄환 가방"
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.84, 0.81, 0.71, 1)
+
+[node name="ModalHint" type="Label" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+mouse_filter = 2
+text = "시안 전용 탄약 · 실제 저장에는 반영되지 않습니다."
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.57, 0.64, 0.60, 1)
+
+[node name="AmmoRow0" type="Button" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 62)
+mouse_default_cursor_shape = 2
+
+[node name="AmmoRow1" type="Button" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 62)
+mouse_default_cursor_shape = 2
+
+[node name="AmmoRow2" type="Button" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 62)
+mouse_default_cursor_shape = 2
+
+[node name="AmmoRow3" type="Button" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+text = ""
+custom_minimum_size = Vector2(0, 62)
+mouse_default_cursor_shape = 2
+
+[node name="RulesText" type="RichTextLabel" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 280)
+size_flags_vertical = 3
+visible = false
+autowrap_mode = 2
+text = ""
+theme_override_font_sizes/normal_font_size = 23
+theme_override_colors/default_color = Color(0.84, 0.81, 0.71, 1)
+
+[node name="NextPage" type="Button" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+text = "다음 탄약 보기"
+custom_minimum_size = Vector2(0, 50)
+mouse_default_cursor_shape = 2
+visible = false
+
+[node name="CloseOverlay" type="Button" parent="Overlay/Center/Modal/Inset/Content"]
+layout_mode = 2
+text = "돌아가기"
+custom_minimum_size = Vector2(0, 56)
+mouse_default_cursor_shape = 2

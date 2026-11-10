@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3]
 [ext_resource type="PackedScene" path="res://redesign/service_location.tscn" id="1"]
-[ext_resource type="Texture2D" path="res://assets/art/service_layers_20261011/supply_background.png" id="2"]
-[ext_resource type="Resource" path="res://redesign/service_actor_supply_work.tres" id="3"]
+[ext_resource type="Texture2D" path="res://assets/art/service_background_grouped_20261025/supply.png" id="2"]
+[ext_resource type="Resource" path="res://redesign/service_actor_supply_work_cohesive.tres" id="3"]
 [node name="ServiceLocation" instance=ExtResource("1")]
 place_kind = "supply"
 [node name="PlaceArt" parent="." index="0"]

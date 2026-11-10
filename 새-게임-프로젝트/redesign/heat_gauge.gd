@@ -15,6 +15,19 @@ var response := 0.0
 var reload_temperature := 0
 var reload_preview := false
 var cooling_receipt := ""
+var gate_note := ""
+var sustained_active := false
+var sustained_count := 0
+
+func show_sustained(count_value: int) -> void:
+	sustained_count = count_value
+	queue_redraw()
+
+func sustained_note() -> String:
+	if not sustained_active: return ""
+	var extra := mini(2,sustained_count/2)
+	if not gate_note.is_empty(): return "연속 %d (+%d열) · %s" % [sustained_count,extra,gate_note]
+	return "연속 %d · 다음 공격 +%d열" % [sustained_count,extra]
 
 func preview_reload(enabled: bool) -> void:
 	reload_preview = enabled
@@ -27,13 +40,21 @@ func _ready() -> void:
 	set_process(false)
 
 func sync(state: Dictionary, forecast: Dictionary) -> void:
+	sustained_active = Content.Sustained.enabled(state)
+	sustained_count = Content.Sustained.count(state)
 	current = int(state.get("heat", 0))
 	previous_value = current
 	response = 0.0
 	limit = Content.heat_limit(state)
-	threshold = Content.hot_threshold(state) if Content.has_part(state, "ember_core") or state.get("deck", []).has("thermal") else 0
+	threshold = Content.hot_threshold(state) if Content.uses_hot_effect(state) else 0
 	tooltip_text = "장전 중 화살표: 현재 열 → 사격 중 예상 최고 열 (냉각 후 수치 아님)\n열 한계 %d · 도달하면 남은 사격 중단과 강제 재장전\n일반 재장전: 열 −%d · 잔열 유지 / 강제 재장전: 열 0" % [limit, Content.reload_cooling(state)]
+	if Content.reactor_enabled(state): tooltip_text = "열 한계 %d · 도달 후 다음 탄 1발 강행\n강행 후에도 과열이면 기본 재장전 + 냉각 2턴\n강행 탄이 열을 한계 아래로 내리면 강제 재장전 없이 종료 · 잔탄 보존\n일반 재장전: 열 −%d" % [limit, Content.reload_cooling(state)]
+	if Content.pressure_combat(state) and Content.reactor_enabled(state): tooltip_text += "\n강행 공격은 직접 피해 ×2 · 장갑 적용 전"
 	if threshold > 0: tooltip_text += "\n고열 효과 조건: 발사 직전 열 %d 이상" % threshold
+	if sustained_active: tooltip_text += "\n" + Content.Sustained.rules()
+	var gates = preload("res://redesign/gate_upgrades.gd")
+	show_gate_values(state,int(state.get("gate_charge",0)),gates.chain_percent(state))
+	if not gate_note.is_empty(): tooltip_text += "\n관문 개조 · "+gates.active_summary(state)+"\n"+gate_note
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	prediction = forecast.get("heat", {}).duplicate(true)
 	cooling_receipt = ""
@@ -43,6 +64,14 @@ func sync(state: Dictionary, forecast: Dictionary) -> void:
 		var detail: Dictionary = last.get("detail", {})
 		if last.get("action", "") == "fire" and not detail.get("forced_reload", {}).is_empty():
 			cooling_receipt = "과열 %d → %d · 강제 냉각" % [int(detail.get("heat_peak", 0)), current]
+	queue_redraw()
+
+func show_gate_values(state: Dictionary, charge: int, percent: int) -> void:
+	var gates = preload("res://redesign/gate_upgrades.gd")
+	var notes: PackedStringArray = []
+	if gates.level(state,"thermal")>0: notes.append("축열 +%d" % charge)
+	if gates.level(state,"chain")>0: notes.append("연쇄 ×%.2f" % (percent/100.0))
+	gate_note = " · ".join(notes)
 	queue_redraw()
 
 func show_value(value: int) -> void:
@@ -71,7 +100,8 @@ func reading_text() -> String:
 
 func reading_font_size() -> int:
 	var font_size := 30
-	while font_size > 20 and FONT.get_string_size(reading_text(), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > size.x - READING_LEFT - 30:
+	var note_space := FONT.get_string_size(sustained_note(),HORIZONTAL_ALIGNMENT_LEFT,-1,16).x + 16 if sustained_active else 220.0 if not gate_note.is_empty() else 0.0
+	while font_size > 20 and FONT.get_string_size(reading_text(), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > size.x - READING_LEFT - 46 - note_space:
 		font_size -= 1
 	return font_size
 
@@ -144,6 +174,7 @@ func _draw() -> void:
 	elif response>0 and previous_value>current:
 		note="냉각 −%d" % (previous_value-current)
 		ink=Color("98c5cf")
+	if note.is_empty(): note=sustained_note() if sustained_active else gate_note
 	var title_width:=READING_LEFT+FONT.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,title_size).x
 	var note_width:=maxf(0,size.x-title_width-46)
 	var note_size:=21

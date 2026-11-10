@@ -65,19 +65,19 @@ func setup(id: String, current_state: Dictionary, is_equipped: bool = false, is_
 	equipped = is_equipped
 	compact = is_compact
 	mini = is_mini
-	tooltip_text = Content.part_grade_summary(part_id) + "\n" + str(Content.PARTS[part_id].text)
+	tooltip_text = Content.part_grade_summary(part_id) + "\n" + str(Content.part_spec(part_id,state).text)
 	var progress := preload("res://redesign/damage_engines.gd").progress(state,part_id)
 	if not progress.is_empty(): tooltip_text += "\n" + progress
 	queue_redraw()
 
 func effect_title() -> String:
-	return str(Content.PARTS[part_id].get("effect", "장착 슬롯"))
+	return str(Content.part_spec(part_id,state).get("effect", "장착 슬롯"))
 
 func effect_value() -> String:
-	return preload("res://redesign/damage_engines.gd").value(state,part_id) if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.PARTS[part_id].get("value", "비어 있음"))
+	return preload("res://redesign/damage_engines.gd").value(state,part_id) if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.part_spec(part_id,state).get("value", "비어 있음"))
 
 func role_text() -> String:
-	return "성장 %d/8" % preload("res://redesign/damage_engines.gd").level(state,part_id) if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.PARTS[part_id].get("role", "전투 사이 무료 교체"))
+	return "성장 %d/%d" % [preload("res://redesign/damage_engines.gd").level(state,part_id),preload("res://redesign/core_growth.gd").limit(state)] if preload("res://redesign/damage_engines.gd").IDS.has(part_id) else str(Content.part_spec(part_id,state).get("role", "전투 사이 무료 교체"))
 
 func _draw() -> void:
 	if not Content.PARTS.has(part_id): return
@@ -118,7 +118,7 @@ func _draw() -> void:
 		Tag.text(self,title,Vector2(icon_w+9,28+y),w-icon_w-21,17 if mini else 21,Color("e9e2cc"))
 		Tag.text(self,effect_value(),Vector2(icon_w+9,50+y),w-icon_w-21,15 if mini else 24,accent)
 		if not mini:
-			var downside := str(Content.PARTS[part_id].get("downside",""))
+			var downside := str(Content.part_spec(part_id,state).get("downside",""))
 			var note := "대가 · "+downside if not downside.is_empty() else effect_title()
 			Tag.text(self,note,Vector2(icon_w+9,h-15+y),w-icon_w-21,15,Color("e6a580") if not downside.is_empty() else Color("a5b4ac"))
 
@@ -191,6 +191,15 @@ func _draw_effect_icon(center: Vector2, color: Color, scale_factor: float) -> vo
 			for x in [-6.0, 2.0, 10.0]: draw_rect(Rect2(x - 2, -7, 4, 14), color, true)
 		"opening":
 			draw_colored_polygon(PackedVector2Array([Vector2(-10, -8), Vector2(11, 0), Vector2(-10, 8)]), color)
+		"third_striker":
+			for x in [-9, -2, 5]: draw_rect(Rect2(x, -7, 5, 14), color if x == 5 else Color(color, 0.35))
+			draw_rect(Rect2(4, -10, 7, 20), color, false, 1)
+		"resonator":
+			for i in range(3): draw_rect(Rect2(-9 + i * 7, 6 - 4 * (i + 1), 5, 4 * (i + 1)), color if i == 2 else Color(color, 0.5))
+		"tally":
+			draw_rect(Rect2(-10, -8, 20, 16), color, false, 1)
+			for x in [-6, -3, 0]: draw_line(Vector2(x, -5), Vector2(x, 5), color, 1.0)
+			draw_line(Vector2(-7, 3), Vector2(2, -3), color, 1.0)
 		"afterburner":
 			draw_line(Vector2(-11, 0), Vector2(7, 0), color, 3.0)
 			draw_colored_polygon(PackedVector2Array([Vector2(5, -6), Vector2(12, 0), Vector2(5, 6)]), color)

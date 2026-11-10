@@ -3,7 +3,8 @@ param(
     [string]$NotesFile = '',
     [string]$GodotPath = 'D:\ProjectLoB\.tmp\godot-4.7\Godot_v4.7-stable_win64_console.exe',
     [string]$AndroidSdk = '',
-    [ValidateSet('universal', 'arm64')][string]$Architecture = 'universal'
+    [ValidateSet('universal', 'arm64')][string]$Architecture = 'universal',
+    [ValidateSet('campaign', 'weapon-magazine', 'magazine-journey')][string]$PlayMode = 'campaign'
 )
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
@@ -32,7 +33,7 @@ try {
     if (Test-Path -LiteralPath $release) { throw 'Build ID already exists; wait one second and retry.' }
     New-Item -ItemType Directory -Path $release | Out-Null
     Write-Output "Building $buildId"
-    $exportOptions = @{ GodotPath = $GodotPath; VersionCode = $versionCode; VersionName = $VersionName; OutputDirectory = $release; Architecture = $Architecture }
+    $exportOptions = @{ GodotPath = $GodotPath; VersionCode = $versionCode; VersionName = $VersionName; OutputDirectory = $release; Architecture = $Architecture; PlayMode = $PlayMode }
     if ($AndroidSdk) { $exportOptions.AndroidSdk = $AndroidSdk }
     & (Join-Path $PSScriptRoot 'export_city_android.ps1') @exportOptions
     $manifestFile = Join-Path $release 'build_manifest.json'

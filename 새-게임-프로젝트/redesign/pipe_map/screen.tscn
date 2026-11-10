@@ -1,0 +1,809 @@
+[gd_scene format=3]
+[ext_resource type="Theme" path="res://redesign/pipe_map/theme.tres" id="theme"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/combat.png" id="combat"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/elite.png" id="elite"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/gate_detail_closed.png" id="boss"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/gate_closed.png" id="boss_small"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/shop.png" id="shop"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/workshop.png" id="workshop"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/supply.png" id="supply"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/event.png" id="event"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/bypass.png" id="bypass"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_20261101/pm_home.png" id="home"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_20261101/pm_control.png" id="control"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/valve_closed.png" id="valve"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/elite_detail.png" id="elite_detail"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_residential_current.png" id="region0"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_foundry_closed.png" id="region1"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_garden_closed.png" id="region2"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_noble_closed.png" id="region3"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_central_closed.png" id="region4"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/panel.tres" id="panel"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/button.tres" id="slate"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/primary.tres" id="fire"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/gate.tres" id="reload"]
+[ext_resource type="Script" path="res://redesign/pipe_map/screen.gd" id="logic"]
+[ext_resource type="Script" path="res://redesign/pipe_map/graph.gd" id="graph"]
+[ext_resource type="Script" path="res://redesign/pipe_map/rail.gd" id="rail"]
+[ext_resource type="Script" path="res://redesign/pipe_map/gate.gd" id="gate"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/board.tres" id="board"]
+[ext_resource type="PackedScene" path="res://redesign/pipe_map/place.tscn" id="place"]
+[ext_resource type="Script" path="res://redesign/pipe_map/state_key.gd" id="state_key"]
+[ext_resource type="Script" path="res://redesign/equipment/edge.gd" id="button_edge"]
+[node name="PipeMapScreen" type="VBoxContainer"]
+offset_right = 1280.0
+offset_bottom = 800.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_filter = 1
+theme = ExtResource("theme")
+script = ExtResource("logic")
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0,48)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Location" type="VBoxContainer" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="RunLocation" type="Label" parent="Header/Location"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 32
+text = "주거 통로"
+theme_override_colors/font_color = Color(0.882353, 0.862745, 0.8, 1)
+
+text_overrun_behavior = 3
+[node name="RunStatusBar" type="Label" parent="Header/Location"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "탄약 10/30 · 난도 0"
+
+[node name="RunCredits" type="Label" parent="Header"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.745098, 0.639216, 0.419608, 1)
+text = "75 Cr"
+
+[node name="city_deck" type="Button" parent="Header"]
+custom_minimum_size = Vector2(60,44)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 16
+text = "빌드"
+
+[node name="city_archive" type="Button" parent="Header"]
+custom_minimum_size = Vector2(60,44)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 16
+text = "기록"
+
+[node name="settings" type="Button" parent="Header"]
+custom_minimum_size = Vector2(60,44)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 16
+text = "설정"
+
+[node name="menu" type="Button" parent="Header"]
+custom_minimum_size = Vector2(60,44)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_font_sizes/font_size = 16
+text = "메뉴"
+
+[node name="Notice" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = ""
+visible = false
+
+[node name="MapLegend" type="HFlowContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 0
+
+[node name="LegendCombat" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendCombat"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("combat")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendCombat"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "전투"
+
+[node name="LegendElite" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendElite"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("elite_detail")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendElite"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "정예"
+
+[node name="LegendShop" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendShop"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("shop")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendShop"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "상점"
+
+[node name="LegendWorkshop" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendWorkshop"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("workshop")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendWorkshop"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "공방"
+
+[node name="LegendSupply" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendSupply"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("supply")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendSupply"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "탄약고"
+
+[node name="LegendEvent" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendEvent"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("event")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendEvent"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "조우"
+
+[node name="LegendGate" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendGate"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("boss_small")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendGate"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "관문"
+
+[node name="LegendBypass" type="HBoxContainer" parent="MapLegend"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="MapLegend/LegendBypass"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("bypass")
+expand_mode = 1
+stretch_mode = 5
+
+modulate = Color(0.647059, 0.635294, 0.580392, 1)
+[node name="Text" type="Label" parent="MapLegend/LegendBypass"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "샛길"
+
+[node name="MapWorkspace" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="RegionRail" type="VBoxContainer" parent="MapWorkspace"]
+custom_minimum_size = Vector2(128,0)
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("rail")
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="ControlRoom" type="HBoxContainer" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/RegionRail/ControlRoom"]
+custom_minimum_size = Vector2(28,28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("control")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/RegionRail/ControlRoom"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MapWorkspace/RegionRail/ControlRoom/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "중앙 제어실"
+
+[node name="State" type="Label" parent="MapWorkspace/RegionRail/ControlRoom/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "차단 명령"
+theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+
+[node name="Space0" type="Control" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Zone4" type="HBoxContainer" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/RegionRail/Zone4"]
+custom_minimum_size = Vector2(28,28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("region4")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/RegionRail/Zone4"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone4/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "중앙 통제구"
+
+[node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone4/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "닫힘"
+theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+
+[node name="Space1" type="Control" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Zone3" type="HBoxContainer" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/RegionRail/Zone3"]
+custom_minimum_size = Vector2(28,28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("region3")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/RegionRail/Zone3"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone3/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "귀족 거주구"
+
+[node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone3/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "닫힘"
+theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+
+[node name="Space2" type="Control" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Zone2" type="HBoxContainer" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/RegionRail/Zone2"]
+custom_minimum_size = Vector2(28,28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("region2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/RegionRail/Zone2"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone2/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "우수 정원"
+
+[node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone2/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "닫힘"
+theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+
+[node name="Space3" type="Control" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Zone1" type="HBoxContainer" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/RegionRail/Zone1"]
+custom_minimum_size = Vector2(28,28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("region1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/RegionRail/Zone1"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone1/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "축열 주조장"
+
+[node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone1/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "닫힘"
+theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+
+[node name="Space4" type="Control" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Zone0" type="HBoxContainer" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/RegionRail/Zone0"]
+custom_minimum_size = Vector2(28,28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("region0")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/RegionRail/Zone0"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MapWorkspace/RegionRail/Zone0/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "주거 통로"
+
+[node name="State" type="Label" parent="MapWorkspace/RegionRail/Zone0/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "지금 여기"
+theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+
+[node name="Space5" type="Control" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Home" type="HBoxContainer" parent="MapWorkspace/RegionRail"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/RegionRail/Home"]
+custom_minimum_size = Vector2(28,28)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("home")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/RegionRail/Home"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MapWorkspace/RegionRail/Home/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "우리 동네"
+
+[node name="State" type="Label" parent="MapWorkspace/RegionRail/Home/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "공급 차단"
+theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1)
+
+[node name="MapBoard" type="PanelContainer" parent="MapWorkspace"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("board")
+
+[node name="Board" type="VBoxContainer" parent="MapWorkspace/MapBoard"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Gate" type="Button" parent="MapWorkspace/MapBoard/Board"]
+custom_minimum_size = Vector2(0,48)
+layout_mode = 2
+script = ExtResource("gate")
+theme_override_styles/normal = ExtResource("reload")
+
+[node name="Face" type="HBoxContainer" parent="MapWorkspace/MapBoard/Board/Gate"]
+layout_mode = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="MapWorkspace/MapBoard/Board/Gate/Face"]
+custom_minimum_size = Vector2(32,32)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("boss_small")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GateTitle" type="Label" parent="MapWorkspace/MapBoard/Board/Gate/Face"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "구역 관문"
+vertical_alignment = 1
+
+[node name="MapScroll" type="ScrollContainer" parent="MapWorkspace/MapBoard/Board"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="CityMap" type="Control" parent="MapWorkspace/MapBoard/Board/MapScroll"]
+custom_minimum_size = Vector2(260,458)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("graph")
+
+[node name="Example0" parent="MapWorkspace/MapBoard/Board/MapScroll/CityMap" instance=ExtResource("place")]
+offset_left = 70.0
+offset_top = 360.0
+offset_right = 130.0
+offset_bottom = 404.0
+
+[node name="Example1" parent="MapWorkspace/MapBoard/Board/MapScroll/CityMap" instance=ExtResource("place")]
+offset_left = 200.0
+offset_top = 360.0
+offset_right = 260.0
+offset_bottom = 404.0
+
+[node name="Example2" parent="MapWorkspace/MapBoard/Board/MapScroll/CityMap" instance=ExtResource("place")]
+offset_left = 330.0
+offset_top = 360.0
+offset_right = 390.0
+offset_bottom = 404.0
+
+[node name="Example3" parent="MapWorkspace/MapBoard/Board/MapScroll/CityMap" instance=ExtResource("place")]
+offset_left = 460.0
+offset_top = 360.0
+offset_right = 520.0
+offset_bottom = 404.0
+
+[node name="SideColumn" type="VBoxContainer" parent="MapWorkspace"]
+custom_minimum_size = Vector2(216,0)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="MapWorkspace/SideColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="StateKey" type="Control" parent="MapWorkspace/SideColumn/Spacer"]
+layout_mode = 1
+anchor_right = 1.0
+offset_top = 8.0
+offset_bottom = 104.0
+mouse_filter = 2
+script = ExtResource("state_key")
+
+[node name="State0" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 36.0
+offset_top = 4.0
+offset_bottom = 20.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "현재 위치"
+
+[node name="State1" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 36.0
+offset_top = 28.0
+offset_bottom = 44.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "지나온 길"
+
+[node name="State2" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 36.0
+offset_top = 52.0
+offset_bottom = 68.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "선택한 장소"
+
+[node name="State3" type="Label" parent="MapWorkspace/SideColumn/Spacer/StateKey"]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 36.0
+offset_top = 76.0
+offset_bottom = 92.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "이동 가능"
+
+[node name="MapRouteSheet" type="PanelContainer" parent="MapWorkspace/SideColumn"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("panel")
+
+[node name="Copy" type="VBoxContainer" parent="MapWorkspace/SideColumn/MapRouteSheet"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SelectionMode" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "이동할 장소"
+
+[node name="SelectedPlace" type="HBoxContainer" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+layout_mode = 2
+
+[node name="SelectionIcon" type="TextureRect" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/SelectedPlace"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("combat")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Text" type="VBoxContainer" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/SelectedPlace"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="MapSelectionPrompt" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/SelectedPlace/Text"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "순찰 구역"
+autowrap_mode = 3
+
+[node name="SelectionKind" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/SelectedPlace/Text"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "전투"
+theme_override_colors/font_color = Color(0.745098, 0.639216, 0.419608, 1)
+
+[node name="MapRouteDetail" type="Label" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "연결된 길로만 갈 수 있음"
+visible = false
+autowrap_mode = 3
+
+[node name="Actions" type="HBoxContainer" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MapKey" type="Button" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions"]
+custom_minimum_size = Vector2(60,44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "범례"
+
+[node name="city_map_details" type="Button" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions"]
+custom_minimum_size = Vector2(60,44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "자세히"
+
+[node name="Enter" type="Button" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
+custom_minimum_size = Vector2(60,44)
+layout_mode = 2
+theme_type_variation = &"MapPrimary"
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "이동"
+
+
+[node name="MaterialEdge" type="Control" parent="Header/city_deck"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("button_edge")
+primary_variation = &"MapPrimary"
+
+[node name="MaterialEdge" type="Control" parent="Header/city_archive"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("button_edge")
+primary_variation = &"MapPrimary"
+
+[node name="MaterialEdge" type="Control" parent="Header/settings"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("button_edge")
+primary_variation = &"MapPrimary"
+
+[node name="MaterialEdge" type="Control" parent="Header/menu"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("button_edge")
+primary_variation = &"MapPrimary"
+
+[node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions/MapKey"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("button_edge")
+primary_variation = &"MapPrimary"
+
+[node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions/city_map_details"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("button_edge")
+primary_variation = &"MapPrimary"
+
+[node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Enter"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("button_edge")
+primary_variation = &"MapPrimary"

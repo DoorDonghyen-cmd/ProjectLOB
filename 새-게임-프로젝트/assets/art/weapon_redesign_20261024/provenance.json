@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-24",
+  "tool": "built-in image_gen.imagegen",
+  "status": "director proposals; two prototypes only; production names/art unchanged",
+  "primary_design_reference": {
+    "url": "https://tahirtanis.artstation.com/projects/Ez6Xa8",
+    "author": "Tahir Tanis / Embark",
+    "observations": [
+      "Cold War prototype and homemade firearm construction language",
+      "large distinct component groups; restrained salvaged materials"
+    ],
+    "imported_assets": false
+  },
+  "jobs": [
+    {
+      "id": "single",
+      "name": "빗장",
+      "prompt": "Use case: stylized-concept. Asset: original pixel-art firearm sprite for ORVASK, a dystopian tower scavenger game. Output one gun only, pure side elevation facing right, transparent RGBA background, fully in frame with generous clear margins, no hands/character, no labels or text, no bullets, smoke, glow or drop shadow. Image 1 is ONLY the existing weapon's broad attachment geometry; change its visual design substantially. Image 2 is the approved character material/pixel style: big low-contrast color clusters, selective dark contours, very sparse highlights. Image 3 is gameplay context ONLY, do not draw it. Our new language is repaired industrial tower machinery used as firearms: stamped plates, restrained cast shapes, dark gunmetal, one faded paint panel and one repair wrap. Original design, not any existing game's specific gun. Make genuine coarse pixel art with crisp stepped silhouettes and grouped shadows as if a ~100px-wide sprite enlarged nearest-neighbor, NOT a high-resolution painting with a pixel filter. No fine surface noise or decorative gears/brass. Flat side view, no perspective. Preserve functional-looking trigger grip access and front hand support where applicable; these are visual anchors, not a technical diagram.\nBOLT-LATCH / 빗장: a compact one-handed work revolver. Distinctive large squared D-shaped closed receiver around a squat six-lobed cylinder, short broad barrel with a blunt rectangular muzzle, small hinge at the front of cylinder, heavy diagonal dark brown resin grip with a single dirty cloth patch. Muted olive-grey main casing, a small old ivory repair cover on the upper rear, dark desaturated steel barrel. Remove the old gold fittings and bright red wraps. The cylindrical chamber must be one readable mass framed by a sturdy U-shaped body, with no thin exposed rods. Shorten the old long barrel, make it practical, familiar and weighty rather than ornate. Keep the grip left/bottom and muzzle right, no shoulder stock. Useful bounding silhouette approximately x140..1390, y250..880 in a1536x1024 canvas; barrel horizontal. Plenty of negative space under the short barrel. Keep the whole gun to roughly 6 large color/value regions.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/single_v3.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_live_2026-10-24/boss_idle_1280.png"
+      ],
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-2c288d68-363c-4f12-bbfa-69f8789817dd.png",
+      "project_file": "single_latch_v1.png",
+      "reference_metadata": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/single_v3.png",
+          "sha256": "47ebc67583766c8d07b85a7724314c7762c4412f36403c960d7309679d96b47a"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+          "sha256": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_live_2026-10-24/boss_idle_1280.png",
+          "sha256": "6ff364435da010be8f86785765fd3e308f3839956fe75229bfd920bbdc223c29"
+        }
+      ],
+      "output": {
+        "sha256": "7969a2d9c1c09415425039ca9d62497401a03ef12e30e5af80c331e54c63d437",
+        "matches_generated_original": true,
+        "size": [
+          1536,
+          1024
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          254
+        ],
+        "bounds_a128": [
+          91,
+          149,
+          1458,
+          953
+        ],
+        "alpha_presentation": "Existing Godot alpha cutout shader at 0.5; original PNG unchanged"
+      }
+    },
+    {
+      "id": "burst",
+      "name": "래칫",
+      "prompt": "Use case: stylized-concept. Asset: original pixel-art firearm sprite for ORVASK, a dystopian tower scavenger game. Output one gun only, pure side elevation facing right, transparent RGBA background, fully in frame with generous clear margins, no hands/character, no labels or text, no bullets, smoke, glow or drop shadow. Image 1 is ONLY the existing weapon's broad attachment geometry; change its visual design substantially. Image 2 is the approved character material/pixel style: big low-contrast color clusters, selective dark contours, very sparse highlights. Image 3 is gameplay context ONLY, do not draw it. Our new language is repaired industrial tower machinery used as firearms: stamped plates, restrained cast shapes, dark gunmetal, one faded paint panel and one repair wrap. Original design, not any existing game's specific gun. Make genuine coarse pixel art with crisp stepped silhouettes and grouped shadows as if a ~100px-wide sprite enlarged nearest-neighbor, NOT a high-resolution painting with a pixel filter. No fine surface noise or decorative gears/brass. Flat side view, no perspective. Preserve functional-looking trigger grip access and front hand support where applicable; these are visual anchors, not a technical diagram.\nRATCHET / 래칫: a compact two-handed automatic carbine adapted from a tower maintenance actuator. Distinctive low rectangular stepped receiver with one large rectangular service recess and a half-round dark ratchet housing at the rear; a thin triangular open stock at left, main pistol grip below left-middle, short straight dark box magazine below center, long low front handguard at right-middle with exactly three large oblong ventilation gaps, short plain muzzle extending right. Keep total silhouette low, do not put giant cans or scopes on top. A single faded clay-red pressed-metal receiver cover with a small aged cream repair patch, subdued dark grey/olive fore-end and stock, dark rubber grips. No gold, no shiny silver trim. Preserve two hand anchors: rear hand near the upper pistol-grip area at approximately35% width/63% height, support hand below fore-end at75% width/50% height. Stock should not reach higher than the receiver. A mechanical repeated/staccato shape in the three vent gaps suggests the gun's repeated-hit role without glowing parts or extra barrels. Unlike the old gun, prefer patched stamped planes over blue steel blocks, reduce magazine length and front bulk. All shapes coarse, matte and low contrast, 6 large value/color groups.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/burst_v4.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_live_2026-10-24/boss_idle_1280.png"
+      ],
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-dae3e422-b9cd-4369-8421-0333c1c1d3b3.png",
+      "project_file": "burst_ratchet_v1.png",
+      "reference_metadata": [
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/weapons_mass_20261013/burst_v4.png",
+          "sha256": "7a533b253b3d1937c696cf3ce3de51cfc2a23bb279a882cd1817da51a2b49bee"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+          "sha256": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85"
+        },
+        {
+          "path": "D:/ProjectLoB/worktrees/core-redesign/docs/qa/reports/assets/garden_live_2026-10-24/boss_idle_1280.png",
+          "sha256": "6ff364435da010be8f86785765fd3e308f3839956fe75229bfd920bbdc223c29"
+        }
+      ],
+      "output": {
+        "sha256": "46a619e8f3af21e7a9666c29d18bec55ed1593abb996753b8c01c4f723c914a8",
+        "matches_generated_original": true,
+        "size": [
+          1774,
+          887
+        ],
+        "mode": "RGBA",
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "bounds_a128": [
+          42,
+          216,
+          1734,
+          728
+        ],
+        "alpha_presentation": "Existing Godot alpha cutout shader at 0.5; original PNG unchanged"
+      }
+    }
+  ],
+  "registration": "res://redesign/weapon_concept_actor.gd",
+  "viewer": "res://redesign/weapon_concept_preview.tscn",
+  "validation": "docs/qa/reports/weapon_concepts_2026-10-24.md",
+  "presentation_revision": {
+    "date": "2026-10-24",
+    "single_display_name": "리벳 / Rivet",
+    "original_png_modified": false,
+    "single_actor_scale_before": 0.13,
+    "single_actor_scale_after": 0.1,
+    "catalog_scale": 0.82,
+    "grip_and_body_unchanged": true,
+    "reference_render": "docs/qa/reports/assets/weapon_concepts_refine_2026-10-24/concept_aim_1280.png",
+    "scope": "concept viewer only; weapon ability redesign remains proposal"
+  }
+}

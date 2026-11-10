@@ -13,9 +13,13 @@ const MUTED := Color("a5b4ac")
 
 static func text(c: Control, value: String, at: Vector2, width: float, pixels: int, color: Color, center: bool = false) -> void:
 	# Clip/shrink only the individual live field, never resize the card or its parent.
-	var font_size := pixels
-	while font_size > 13 and FONT.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
-		font_size -= 1
+	var font_size := preload("res://redesign/ui_readability.gd").font_size(pixels)
+	if font_size > 16 and FONT.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
+		font_size = 16
+	if FONT.get_string_size(value,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
+		while value.length() > 1 and FONT.get_string_size(value+"…",HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width:
+			value = value.left(-1)
+		value += "…"
 	c.draw_string(FONT,at.round(),value,HORIZONTAL_ALIGNMENT_CENTER if center else HORIZONTAL_ALIGNMENT_LEFT,maxf(0,width),font_size,color)
 
 static func surface(c: Control, r: Rect2, selected: bool, disabled: bool) -> void:
@@ -72,7 +76,9 @@ static func draw(c: Control) -> void:
 		text(c,str(stat.label),Vector2(left,54+y),w-left-12,15,muted)
 		text(c,str(stat.value),Vector2(left,91+y),w-left-12,34 if c.showcase_ui else 30,ink)
 	var pen:=Ammo.penetration(id,s)
-	if pen>0 and h>=198: text(c,"관통 %d"%pen,Vector2(left,114+y),w-left-12,17,accent)
+	if h>=198:
+		if str(Ammo.AMMO[id].effect)=="burn": text(c,"직접 피해 %d"%Ammo.damage(id,s),Vector2(left,114+y),w-left-12,17,accent)
+		elif pen>0: text(c,"관통 %d"%pen,Vector2(left,114+y),w-left-12,17,accent)
 	var thermal:=Color("96bac4") if Ammo.heat_delta(id,s)<0 or str(Ammo.AMMO[id].effect)=="vent" else Color("d29b78")
 	var footer_y:=h-32.0 if h>=164 else h-14.0
 	Visual.heat_icon(c,Vector2(20,footer_y-5+y),0.7,thermal)

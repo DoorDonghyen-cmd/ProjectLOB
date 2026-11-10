@@ -1,0 +1,44 @@
+[gd_resource type="Theme" load_steps=11 format=3]
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/panel.tres" id="panel"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/button.tres" id="button"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/button_hover.tres" id="button_hover"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/button_pressed.tres" id="button_pressed"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/button_disabled.tres" id="button_disabled"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/button_focus.tres" id="button_focus"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/primary.tres" id="primary"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/primary_hover.tres" id="primary_hover"]
+[ext_resource type="StyleBox" path="res://redesign/pipe_map/primary_pressed.tres" id="primary_pressed"]
+[resource]
+default_font = ExtResource("font")
+default_font_size = 16
+Label/colors/font_color = Color(0.882353, 0.862745, 0.8, 1.0)
+Label/colors/font_shadow_color = Color(0.031373, 0.047059, 0.027451, 1.0)
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+PanelContainer/styles/panel = ExtResource("panel")
+Button/styles/normal = ExtResource("button")
+Button/styles/hover = ExtResource("button_hover")
+Button/styles/pressed = ExtResource("button_pressed")
+Button/styles/hover_pressed = ExtResource("button_pressed")
+Button/styles/disabled = ExtResource("button_disabled")
+Button/styles/focus = ExtResource("button_focus")
+Button/colors/font_color = Color(0.882353, 0.862745, 0.8, 1.0)
+Button/colors/font_hover_color = Color(0.882353, 0.862745, 0.8, 1.0)
+Button/colors/font_pressed_color = Color(0.882353, 0.862745, 0.8, 1.0)
+Button/colors/font_hover_pressed_color = Color(0.882353, 0.862745, 0.8, 1.0)
+Button/colors/font_focus_color = Color(0.882353, 0.862745, 0.8, 1.0)
+Button/colors/font_disabled_color = Color(0.47451, 0.498039, 0.423529, 1.0)
+MapPrimary/base_type = &"Button"
+MapPrimary/styles/normal = ExtResource("primary")
+MapPrimary/styles/hover = ExtResource("primary_hover")
+MapPrimary/styles/pressed = ExtResource("primary_pressed")
+MapPrimary/styles/hover_pressed = ExtResource("primary_pressed")
+MapPrimary/styles/disabled = ExtResource("button_disabled")
+MapPrimary/styles/focus = ExtResource("button_focus")
+MapPrimary/colors/font_color = Color(0.094118, 0.105882, 0.082353, 1.0)
+MapPrimary/colors/font_hover_color = Color(0.094118, 0.105882, 0.082353, 1.0)
+MapPrimary/colors/font_pressed_color = Color(0.094118, 0.105882, 0.082353, 1.0)
+MapPrimary/colors/font_hover_pressed_color = Color(0.094118, 0.105882, 0.082353, 1.0)
+MapPrimary/colors/font_focus_color = Color(0.094118, 0.105882, 0.082353, 1.0)
+MapPrimary/colors/font_disabled_color = Color(0.47451, 0.498039, 0.423529, 1.0)

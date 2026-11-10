@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/samples/hud/combat_hud.tscn" id="hud"]
+[ext_resource type="Script" path="res://redesign/campaign_hud/combat.gd" id="controller"]
+
+[node name="CampaignCombatHUD" instance=ExtResource("hud")]
+script = ExtResource("controller")
+
+[node name="BudgetRow" type="HBoxContainer" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="1"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BudgetLess" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(44,44)
+theme_override_font_sizes/font_size = 16
+text = "−"
+
+[node name="BudgetMore" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(44,44)
+theme_override_font_sizes/font_size = 16
+text = "+"
+
+[node name="BudgetValue" type="Label" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "이번 사격 최대 2발"
+mouse_filter = 2
+
+[editable path="MenuLayer"]

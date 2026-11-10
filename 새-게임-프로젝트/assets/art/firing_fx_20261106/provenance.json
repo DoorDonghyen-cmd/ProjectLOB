@@ -1,0 +1,33 @@
+{
+  "source": "https://github.com/patch-gg/pixelfx",
+  "version": "0.3.0",
+  "commit": "a84159688af3ca37a4be05a0d422b94451b2e24e",
+  "recipe": "src/fx/projectiles/_lib.js flashShape/flash",
+  "build": "node tools/build_firing_fx.mjs",
+  "frames": 30,
+  "seed": 17,
+  "pivot": [
+    20,
+    32
+  ],
+  "profiles": [
+    "single",
+    "burst",
+    "scatter",
+    "heavy",
+    "amplifier"
+  ],
+  "sha256": {
+    "atlas": "7eee955c84c4480b2e1a8a48a1d7280aca3a243a3a5ab6f8b63f849550b2bdfd",
+    "metadata": "1f942db5ecfb2c35a391cc6d9ec9c16c20755de7a29fe6b5e6fe2783d4b597b9",
+    "builder": "ccd993b0c179214a314c74024b47725bae70bf0a711590e51111670fe94123ae",
+    "upstream_recipe": "8a4de1f310ac63d72e887a3a1170adff5ce889deee4bf8899d4ba4cee0ceda35"
+  },
+  "exclusions": [
+    "stock actor",
+    "smoke",
+    "casing",
+    "projectiles",
+    "runtime JavaScript"
+  ]
+}

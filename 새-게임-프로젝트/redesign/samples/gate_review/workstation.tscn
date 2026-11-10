@@ -1,0 +1,356 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/gate_review/preview.gd" id="logic"]
+[ext_resource type="Script" path="res://redesign/samples/gate_review/door.gd" id="door"]
+[ext_resource type="Script" path="res://redesign/samples/gate_review/option_icon.gd" id="icon"]
+[ext_resource type="Theme" path="res://redesign/workbench/theme.tres" id="theme"]
+[ext_resource type="Texture2D" path="res://assets/art/gate_review_20261105/workstation.png" id="background"]
+
+[sub_resource type="StyleBoxFlat" id="rule"]
+bg_color = Color(0.29, 0.252, 0.194, 1)
+content_margin_top = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[node name="GateWorkstation" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("theme")
+texture_filter = 1
+script = ExtResource("logic")
+
+[node name="Gate" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+clip_contents = true
+script = ExtResource("door")
+backdrop = ExtResource("background")
+threshold = Rect2(0.167, 0.31, 0.307, 0.455)
+operator_visible = true
+operator_position = Vector2(0.553, 0.817)
+
+[node name="HeaderShade" type="ColorRect" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+offset_bottom = 109.0
+color = Color(0.036, 0.029, 0.022, 0.91)
+mouse_filter = 2
+
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 24.0
+offset_right = -24.0
+offset_top = 12.0
+offset_bottom = 56.0
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"SectionTitle"
+text = "구역 관문"
+
+[node name="Region" type="Label" parent="Header"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Caption"
+text = "축열 주조장"
+
+[node name="RouteArrow" type="Label" parent="Header"]
+layout_mode = 2
+theme_type_variation = &"Caption"
+text = "→"
+
+[node name="Destination" type="Label" parent="Header"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "우수 정원"
+
+[node name="Stages" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+offset_left = 24.0
+offset_right = -24.0
+offset_top = 60.0
+offset_bottom = 104.0
+theme_override_constants/separation = 4
+
+[node name="ModifyStep" type="Label" parent="Stages"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(114, 44)
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "01  개조"
+
+[node name="Line" type="ColorRect" parent="Stages/ModifyStep"]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -2.0
+offset_right = -12.0
+mouse_filter = 2
+color = Color(0.78, 0.65, 0.43, 1)
+
+[node name="ServiceStep" type="Label" parent="Stages"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(114, 44)
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "02  재정비"
+
+[node name="Line" type="ColorRect" parent="Stages/ServiceStep"]
+visible = false
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -2.0
+offset_right = -12.0
+mouse_filter = 2
+color = Color(0.78, 0.65, 0.43, 1)
+
+[node name="DepartStep" type="Label" parent="Stages"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(114, 44)
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "03  출발"
+
+[node name="Line" type="ColorRect" parent="Stages/DepartStep"]
+visible = false
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -2.0
+offset_right = -12.0
+mouse_filter = 2
+color = Color(0.78, 0.65, 0.43, 1)
+
+[node name="Space" type="Control" parent="Stages"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="GateState" type="Label" parent="Stages"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.80, 0.66, 0.45, 1)
+text = "차단문 잠김"
+
+[node name="Inspector" type="PanelContainer" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -388.0
+offset_top = 124.0
+offset_right = -24.0
+theme_type_variation = &"Inspector"
+
+[node name="Content" type="VBoxContainer" parent="Inspector"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="SelectionTitle" type="Label" parent="Inspector/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SectionTitle"
+text = "급탄 기구 확장"
+text_overrun_behavior = 3
+
+[node name="Receipt" type="Label" parent="Inspector/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.88, 0.73, 0.46, 1)
+text = "급탄 기구 확장 · 사격 상한 +1발"
+
+[node name="Shelf" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -116.0
+color = Color(0.045, 0.035, 0.027, 0.91)
+
+[node name="ShelfContent" type="VBoxContainer" parent="Shelf"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_right = -24.0
+offset_top = 7.0
+offset_bottom = -8.0
+theme_override_constants/separation = 5
+
+[node name="Condition" type="Label" parent="Shelf/ShelfContent"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"Caption"
+text = "무료 개조 1회"
+
+[node name="OptionsScroll" type="ScrollContainer" parent="Shelf/ShelfContent"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 82)
+horizontal_scroll_mode = 1
+vertical_scroll_mode = 0
+follow_focus = true
+
+[node name="Options" type="HBoxContainer" parent="Shelf/ShelfContent/OptionsScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Template" type="Button" parent="Shelf/ShelfContent/OptionsScroll/Options"]
+layout_mode = 2
+custom_minimum_size = Vector2(148, 72)
+size_flags_vertical = 0
+toggle_mode = true
+button_pressed = true
+
+[node name="Icon" type="Control" parent="Shelf/ShelfContent/OptionsScroll/Options/Template"]
+layout_mode = 0
+offset_top = 3.0
+offset_right = 148.0
+offset_bottom = 43.0
+mouse_filter = 2
+script = ExtResource("icon")
+
+[node name="Caption" type="Label" parent="Shelf/ShelfContent/OptionsScroll/Options/Template"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 44.0
+offset_right = 142.0
+offset_bottom = 68.0
+mouse_filter = 2
+text_overrun_behavior = 3
+horizontal_alignment = 1
+text = "급탄 기구 확장"
+
+[node name="Sample" type="Button" parent="Shelf/ShelfContent/OptionsScroll/Options"]
+layout_mode = 2
+custom_minimum_size = Vector2(148, 72)
+size_flags_vertical = 0
+text = "저발열 약실"
+
+
+[node name="Effect" type="PanelContainer" parent="Inspector/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("empty")
+
+[node name="Readouts" type="VBoxContainer" parent="Inspector/Content/Effect"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Compare" type="HBoxContainer" parent="Inspector/Content/Effect/Readouts"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Before" type="VBoxContainer" parent="Inspector/Content/Effect/Readouts/Compare"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="BeforeLabel" type="Label" parent="Inspector/Content/Effect/Readouts/Compare/Before"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.70, 0.60, 1)
+text = "현재"
+
+[node name="BeforeValue" type="Label" parent="Inspector/Content/Effect/Readouts/Compare/Before"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "사격 상한 +0발"
+
+[node name="Arrow" type="Label" parent="Inspector/Content/Effect/Readouts/Compare"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.61, 0.55, 0.41, 1)
+text = "→"
+
+[node name="After" type="VBoxContainer" parent="Inspector/Content/Effect/Readouts/Compare"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="AfterLabel" type="Label" parent="Inspector/Content/Effect/Readouts/Compare/After"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.70, 0.60, 1)
+text = "적용 후"
+
+[node name="AfterValue" type="Label" parent="Inspector/Content/Effect/Readouts/Compare/After"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.95, 0.79, 0.52, 1)
+text = "사격 상한 +1발"
+
+[node name="EffectRule" type="HSeparator" parent="Inspector/Content/Effect/Readouts"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("rule")
+
+[node name="Explanation" type="Label" parent="Inspector/Content/Effect/Readouts"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.78, 0.74, 0.65, 1)
+text = "탄창 크기와 열 한계 유지"
+
+[node name="Footer" type="HBoxContainer" parent="Inspector/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Back" type="Button" parent="Inspector/Content/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "개조 보류"
+
+[node name="Spacer" type="Control" parent="Inspector/Content/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Secondary" type="Button" parent="Inspector/Content/Footer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "정비 없이 출발"
+
+[node name="Apply" type="Button" parent="Inspector/Content/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_type_variation = &"PrimaryButton"
+text = "개조 적용"
+
+[node name="Departure" type="Button" parent="Inspector/Content/Footer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_type_variation = &"PrimaryButton"
+text = "출발"

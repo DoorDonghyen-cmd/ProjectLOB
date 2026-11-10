@@ -23,9 +23,9 @@ static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array
 				var direct_hits := int(shot.hits)
 				for impact in shot.get("secondary",[]):
 					if impact.get("kind","") == "relay": direct_hits += 1
-				if Content.source_id(id) == "precise" and direct_hits > int(spec.get("hits", 2)): label = "타격 +1"
+				if Content.source_id(id) == "precise" and direct_hits > int(spec.get("hits", 2)): label = "타격 +%d" % mini(Content.duplex_bonus(state), direct_hits - int(spec.get("hits",2)))
 			"sequencer":
-				if spec.effect == "boost" and int(spec.get("boost_factor", 1)) == 1: label = "증폭 +1"
+				if spec.effect == "boost" and int(spec.get("boost_factor", 1)) == 1: label = "증폭 +%d" % Content.sequencer_bonus(state)
 			"coil", "inferno":
 				var bonus := 1 if part == "coil" else 2
 				# A capped or killed target must not claim extra burn duration.
@@ -37,6 +37,18 @@ static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array
 				if spec.effect == "arc" and not shot.secondary.is_empty(): label = "전이 강화"
 			"rammer", "momentum":
 				if int(shot.push) > 0: label = "밀기 %dm" % int(shot.push)
+		if Content.Roles.builds(state):
+			if spec.effect=="burn" and not shot.get("fire_zones",[]).is_empty():
+				if part=="inferno":label="불길 %d행동 · 앞뒤 3m"%Content.Roles.fire_duration([part],state)
+				elif part=="coil":label="불길 피해 +%d"%Content.Roles.coil_ground_bonus(state)
+				elif part=="thermal_drive" and Content.Roles.burn_growth(state,[part])>0:label="성장 화상 %d"%int(shot.burn_tick)
+			if part=="momentum" and int(shot.get("slowed",0))>0:label="경직 %d행동"%int(shot.slowed)
+			if part=="rammer" and not effects.any(func(effect):return effect.id=="rammer") and shot.get("secondary",[]).any(func(impact):return int(impact.get("control_bonus",0))>0):label="경직 피해 +2"
+			if part=="capacitor":
+				var reached: Array=[]
+				for impact in shot.get("secondary",[]):
+					if impact.get("kind","") in ["relay","overflow"] and not reached.has(impact.target):reached.append(impact.target)
+				if reached.size()>1+Content.Roles.level(state,"conduction"):label="처치 전이 +1기"
 		if not label.is_empty(): effects.append({"id": part, "label": label})
 	return effects
 

@@ -4,16 +4,16 @@ const OUTFIT_IDS := ["heatworker", "hoist", "recovery", "expedition"]
 const ServiceCatalog = preload("res://redesign/service_actor_catalog.gd")
 const SKIN = preload("res://redesign/combat_pixel_skin.gd")
 const CONCEPTS := [
-	preload("res://assets/art/outfit_preview_20261011/07_heatworker_v1.png"),
-	preload("res://assets/art/outfit_preview_20261011/08_hoist_v1.png"),
-	preload("res://assets/art/outfit_preview_20261011/09_recovery_v1.png"),
-	preload("res://assets/art/outfit_preview_20261011/10_expedition_v3.png")
+	preload("res://assets/art/outfits_unified_20261025/heatworker_idle.png"),
+	preload("res://assets/art/outfits_unified_20261025/hoist_idle.png"),
+	preload("res://assets/art/outfits_unified_20261025/recovery_idle.png"),
+	preload("res://assets/art/outfits_unified_20261025/expedition_idle.png")
 ]
 const TITLES := ["배관공 방열복", "승강로 인양 장구", "봉쇄구역 회수 장구", "밀폐형 원정복"]
 const ROOM_IMAGES := [
-	preload("res://assets/art/service_layers_20261011/shop_background.png"),
-	preload("res://assets/art/service_layers_20261011/supply_background.png"),
-	preload("res://assets/art/service_layers_20261011/workshop_background.png")
+	preload("res://assets/art/service_background_grouped_20261025/shop.png"),
+	preload("res://assets/art/service_background_grouped_20261025/supply.png"),
+	preload("res://assets/art/service_background_grouped_20261025/workshop.png")
 ]
 const ROOM_FEET := [Vector2(0.409, 0.9), Vector2(0.402, 0.833), Vector2(0.49, 0.852)]
 const ROOM_HEIGHTS := [0.643, 0.51, 0.535]

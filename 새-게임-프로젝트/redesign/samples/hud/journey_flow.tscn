@@ -1,0 +1,451 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://redesign/samples/hud/combat_hud_theme.tres" id="theme"]
+
+[ext_resource type="Script" path="res://redesign/samples/shop_preview_icon.gd" id="icon"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_panel.png" id="modal"]
+
+[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_slate.png" id="cool"]
+
+[ext_resource type="PackedScene" path="res://redesign/samples/hud/journey_route.tscn" id="route"]
+
+[ext_resource type="Script" path="res://redesign/line_frame.gd" id="line_frame"]
+
+[node name="JourneyPanel" type="ColorRect"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("theme")
+color = Color(0.00392,0.03922,0.05098,0.74)
+
+[node name="FlowSafe" type="MarginContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="FlowColumn" type="VBoxContainer" parent="FlowSafe"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="JourneyEyebrow" type="Label" parent="FlowSafe/FlowColumn"]
+layout_mode = 2
+mouse_filter = 2
+text = "첫 관문까지 / 탄창 여정"
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+
+[node name="JourneyTitle" type="Label" parent="FlowSafe/FlowColumn"]
+layout_mode = 2
+mouse_filter = 2
+text = "다음 전투에 가져갈 탄"
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+
+[node name="FlowScroll" type="ScrollContainer" parent="FlowSafe/FlowColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="FlowBody" type="VBoxContainer" parent="FlowSafe/FlowColumn/FlowScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="JourneyBody" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "하나를 골라 덱에 추가합니다."
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+
+[node name="JourneyGun" type="OptionButton" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+visible = false
+
+
+[node name="RewardWorkspace" type="HBoxContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,220)
+theme_override_constants/separation = 12
+
+[node name="RewardRow" type="VBoxContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace"]
+layout_mode = 2
+custom_minimum_size = Vector2(240,0)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
+theme_override_constants/separation = 8
+
+[node name="RewardPick0" type="Button" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,68)
+mouse_filter = 1
+toggle_mode = true
+
+[node name="RewardPick0Frame" type="NinePatchRect" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick0"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+scale = Vector2(1,1)
+texture = ExtResource("modal")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "standby"
+
+[node name="RewardIcon0" type="Control" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick0"]
+offset_left = 14
+offset_top = 8
+offset_right = 54
+offset_bottom = 58
+mouse_filter = 2
+script = ExtResource("icon")
+small = true
+
+[node name="RewardTag0" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick0"]
+mouse_filter = 2
+text = "공격탄 · 피해 3"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 66
+offset_right = -12
+offset_top = 9
+offset_bottom = 29
+text_overrun_behavior = 3
+
+[node name="RewardName0" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick0"]
+mouse_filter = 2
+text = "철갑탄"
+theme_override_font_sizes/font_size = 24
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 66
+offset_right = -12
+offset_top = 32
+offset_bottom = 57
+text_overrun_behavior = 3
+theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+
+[node name="RewardScroll0" type="ScrollContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick0"]
+visible = false
+mouse_filter = 2
+
+[node name="RewardText0" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick0/RewardScroll0"]
+layout_mode = 2
+mouse_filter = 2
+text = "효과 설명"
+theme_override_font_sizes/font_size = 16
+
+[node name="RewardPick1" type="Button" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,68)
+mouse_filter = 1
+toggle_mode = true
+
+[node name="RewardPick1Frame" type="NinePatchRect" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick1"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+scale = Vector2(1,1)
+texture = ExtResource("modal")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "standby"
+
+[node name="RewardIcon1" type="Control" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick1"]
+offset_left = 14
+offset_top = 8
+offset_right = 54
+offset_bottom = 58
+mouse_filter = 2
+script = ExtResource("icon")
+small = true
+
+[node name="RewardTag1" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick1"]
+mouse_filter = 2
+text = "공격탄 · 피해 3"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 66
+offset_right = -12
+offset_top = 9
+offset_bottom = 29
+text_overrun_behavior = 3
+
+[node name="RewardName1" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick1"]
+mouse_filter = 2
+text = "전격탄"
+theme_override_font_sizes/font_size = 24
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 66
+offset_right = -12
+offset_top = 32
+offset_bottom = 57
+text_overrun_behavior = 3
+theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+
+[node name="RewardScroll1" type="ScrollContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick1"]
+visible = false
+mouse_filter = 2
+
+[node name="RewardText1" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick1/RewardScroll1"]
+layout_mode = 2
+mouse_filter = 2
+text = "효과 설명"
+theme_override_font_sizes/font_size = 16
+
+[node name="RewardPick2" type="Button" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,68)
+mouse_filter = 1
+toggle_mode = true
+
+[node name="RewardPick2Frame" type="NinePatchRect" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick2"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+scale = Vector2(1,1)
+texture = ExtResource("modal")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "standby"
+
+[node name="RewardIcon2" type="Control" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick2"]
+offset_left = 14
+offset_top = 8
+offset_right = 54
+offset_bottom = 58
+mouse_filter = 2
+script = ExtResource("icon")
+small = true
+
+[node name="RewardTag2" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick2"]
+mouse_filter = 2
+text = "공격탄 · 피해 3"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 66
+offset_right = -12
+offset_top = 9
+offset_bottom = 29
+text_overrun_behavior = 3
+
+[node name="RewardName2" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick2"]
+mouse_filter = 2
+text = "파쇄탄"
+theme_override_font_sizes/font_size = 24
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 66
+offset_right = -12
+offset_top = 32
+offset_bottom = 57
+text_overrun_behavior = 3
+theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+
+[node name="RewardScroll2" type="ScrollContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick2"]
+visible = false
+mouse_filter = 2
+
+[node name="RewardText2" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardRow/RewardPick2/RewardScroll2"]
+layout_mode = 2
+mouse_filter = 2
+text = "효과 설명"
+theme_override_font_sizes/font_size = 16
+
+[node name="RewardDetail" type="Panel" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2
+
+[node name="RewardDetailFrame" type="NinePatchRect" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+scale = Vector2(1,1)
+texture = ExtResource("modal")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "panel"
+
+[node name="RewardDetailMargin" type="MarginContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="RewardDetailScroll" type="ScrollContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail/RewardDetailMargin"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="RewardDetailBody" type="VBoxContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail/RewardDetailMargin/RewardDetailScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="RewardDetailTop" type="HBoxContainer" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail/RewardDetailMargin/RewardDetailScroll/RewardDetailBody"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RewardDetailIcon" type="Control" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail/RewardDetailMargin/RewardDetailScroll/RewardDetailBody/RewardDetailTop"]
+layout_mode = 2
+custom_minimum_size = Vector2(40,50)
+mouse_filter = 2
+script = ExtResource("icon")
+small = true
+
+[node name="RewardDetailName" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail/RewardDetailMargin/RewardDetailScroll/RewardDetailBody/RewardDetailTop"]
+layout_mode = 2
+mouse_filter = 2
+text = "철갑탄"
+theme_override_font_sizes/font_size = 24
+size_flags_horizontal = 3
+autowrap_mode = 2
+vertical_alignment = 1
+theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+
+[node name="RewardDelta" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail/RewardDetailMargin/RewardDetailScroll/RewardDetailBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "철갑탄 1발 추가
+보유 탄 20 ▶ 21발
+다음 전투부터 덱에 섞입니다"
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+theme_override_colors/font_color = Color(0.95294,0.81176,0.45098,1)
+
+[node name="RewardDescription" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody/RewardWorkspace/RewardDetail/RewardDetailMargin/RewardDetailScroll/RewardDetailBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "높은 관통으로 장갑을 뚫습니다."
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+
+[node name="RouteOverview" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody" instance=ExtResource("route")]
+visible = false
+layout_mode = 2
+
+[node name="JourneySummary" type="Label" parent="FlowSafe/FlowColumn/FlowScroll/FlowBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "보유20발 · 코어0개"
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+
+[node name="FlowActions" type="HBoxContainer" parent="FlowSafe/FlowColumn"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="JourneyCancel" type="Button" parent="FlowSafe/FlowColumn/FlowActions"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+text = "현재 덱 유지"
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+
+[node name="JourneyCancelFrame" type="NinePatchRect" parent="FlowSafe/FlowColumn/FlowActions/JourneyCancel"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+scale = Vector2(1,1)
+texture = ExtResource("cool")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "slate"
+
+[node name="JourneyConfirm" type="Button" parent="FlowSafe/FlowColumn/FlowActions"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+text = "덱에 추가"
+mouse_default_cursor_shape = 2
+size_flags_horizontal = 3
+
+theme_override_colors/font_color = Color(0.1098,0.0353,0.01176,1)
+theme_override_colors/font_hover_color = Color(0.1098,0.0353,0.01176,1)
+theme_override_colors/font_pressed_color = Color(0.1098,0.0353,0.01176,1)
+theme_override_colors/font_focus_color = Color(0.1098,0.0353,0.01176,1)
+
+[node name="JourneyConfirmFrame" type="NinePatchRect" parent="FlowSafe/FlowColumn/FlowActions/JourneyConfirm"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+scale = Vector2(1,1)
+texture = ExtResource("cool")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "fire"
+

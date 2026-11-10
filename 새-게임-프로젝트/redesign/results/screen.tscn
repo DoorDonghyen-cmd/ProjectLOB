@@ -1,0 +1,351 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/results/screen.gd" id="preview"]
+[ext_resource type="Script" path="res://redesign/results/stage.gd" id="stage"]
+[ext_resource type="Script" path="res://redesign/results/core_icon.gd" id="core"]
+[ext_resource type="Script" path="res://redesign/ammo_art_view.gd" id="ammo"]
+[ext_resource type="Theme" path="res://redesign/results/theme.tres" id="theme"]
+
+[sub_resource type="StyleBoxEmpty" id="empty"]
+
+[node name="CampaignResults" type="PanelContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = ExtResource("theme")
+theme_override_styles/panel = SubResource("empty")
+script = ExtResource("preview")
+
+[node name="Base" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.082, 0.067, 0.078, 1)
+
+[node name="Frame" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Stage" type="Control" parent="Frame"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+clip_contents = true
+mouse_filter = 2
+script = ExtResource("stage")
+
+[node name="Caption" type="VBoxContainer" parent="Frame/Stage"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1
+anchor_bottom = 1
+offset_left = 42
+offset_top = -154
+anchor_right = 1.0
+offset_right = -16
+offset_bottom = -37
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="CaptionMark" type="ColorRect" parent="Frame/Stage/Caption"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 3)
+size_flags_horizontal = 0
+mouse_filter = 2
+color = Color(0.79, 0.59, 0.53, 1)
+
+[node name="SceneLabel" type="Label" parent="Frame/Stage/Caption"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.79, 0.59, 0.53, 1)
+text = "귀환 지점"
+
+[node name="SceneTitle" type="Label" parent="Frame/Stage/Caption"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.84, 1)
+theme_override_font_sizes/font_size = 32
+text = "우리 동네"
+
+[node name="SceneSub" type="Label" parent="Frame/Stage/Caption"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = "주거 구역"
+autowrap_mode = 3
+
+[node name="Seam" type="ColorRect" parent="Frame"]
+layout_mode = 2
+custom_minimum_size = Vector2(2, 0)
+mouse_filter = 2
+color = Color(0.29, 0.23, 0.25, 1)
+
+[node name="Record" type="MarginContainer" parent="Frame"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(562, 0)
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_right = 42
+theme_override_constants/margin_top = 55
+theme_override_constants/margin_bottom = 27
+
+[node name="Stack" type="VBoxContainer" parent="Frame/Record"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="Outcome" type="VBoxContainer" parent="Frame/Record/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="RecordLabel" type="Label" parent="Frame/Record/Stack/Outcome"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = "도전 결과"
+
+[node name="ResultTitle" type="Label" parent="Frame/Record/Stack/Outcome"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.965, 0.867, 0.706, 1)
+theme_override_font_sizes/font_size = 64
+text = "탑 돌파"
+
+[node name="ResultLine" type="Label" parent="Frame/Record/Stack/Outcome"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.84, 1)
+text = "기상 설비 재가동 · 현장 제어권 복구"
+autowrap_mode = 3
+
+[node name="Achievement" type="Label" parent="Frame/Record/Stack/Outcome"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = "30회 통과"
+
+[node name="OutcomeRule" type="ColorRect" parent="Frame/Record/Stack"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 2)
+mouse_filter = 2
+color = Color(0.29, 0.23, 0.25, 1)
+
+[node name="Body" type="VBoxContainer" parent="Frame/Record/Stack"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Summary" type="VBoxContainer" parent="Frame/Record/Stack/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="EquipmentHeader" type="Label" parent="Frame/Record/Stack/Body/Summary"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = "마지막 장비"
+
+[node name="Loadout" type="Label" parent="Frame/Record/Stack/Body/Summary"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.84, 1)
+theme_override_font_sizes/font_size = 32
+text = "대구경  /  운반복"
+autowrap_mode = 3
+
+[node name="Core" type="HBoxContainer" parent="Frame/Record/Stack/Body/Summary"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="IconWell" type="ColorRect" parent="Frame/Record/Stack/Body/Summary/Core"]
+layout_mode = 2
+custom_minimum_size = Vector2(62, 62)
+mouse_filter = 2
+color = Color(0.14, 0.113, 0.127, 1)
+
+[node name="CoreIcon" type="Control" parent="Frame/Record/Stack/Body/Summary/Core/IconWell"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("core")
+
+[node name="Copy" type="VBoxContainer" parent="Frame/Record/Stack/Body/Summary/Core"]
+layout_mode = 2
+theme_override_constants/separation = 4
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="CoreCaption" type="Label" parent="Frame/Record/Stack/Body/Summary/Core/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = "장착 코어"
+
+[node name="CoreName" type="Label" parent="Frame/Record/Stack/Body/Summary/Core/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.93, 0.88, 0.84, 1)
+text = "화상 증폭 코어"
+autowrap_mode = 3
+
+[node name="Round" type="HBoxContainer" parent="Frame/Record/Stack/Body/Summary"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="IconWell" type="ColorRect" parent="Frame/Record/Stack/Body/Summary/Round"]
+layout_mode = 2
+custom_minimum_size = Vector2(62, 62)
+mouse_filter = 2
+color = Color(0.14, 0.113, 0.127, 1)
+
+[node name="RoundIcon" type="Control" parent="Frame/Record/Stack/Body/Summary/Round/IconWell"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("ammo")
+ammo_id = "bore_c"
+
+[node name="Copy" type="VBoxContainer" parent="Frame/Record/Stack/Body/Summary/Round"]
+layout_mode = 2
+theme_override_constants/separation = 4
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="RoundCaption" type="Label" parent="Frame/Record/Stack/Body/Summary/Round/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = "기록 내 최고 단발 피해"
+
+[node name="RoundName" type="Label" parent="Frame/Record/Stack/Body/Summary/Round/Copy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.93, 0.88, 0.84, 1)
+text = "압축 소이탄"
+autowrap_mode = 3
+
+
+[node name="RoundDamage" type="Label" parent="Frame/Record/Stack/Body/Summary/Round"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(0.94, 0.75, 0.60, 1)
+text = "피해 46"
+
+[node name="Details" type="VBoxContainer" parent="Frame/Record/Stack/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+theme_override_constants/separation = 9
+
+[node name="DetailsHeading" type="Label" parent="Frame/Record/Stack/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.84, 1)
+theme_override_font_sizes/font_size = 32
+text = "도전 기록"
+
+[node name="Travel" type="Label" parent="Frame/Record/Stack/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "방문  35곳    ·    전투 통과  30회"
+
+[node name="Actions" type="Label" parent="Frame/Record/Stack/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "행동  409턴    ·    사격  393발    ·    재장전  40회"
+autowrap_mode = 3
+
+[node name="Heat" type="Label" parent="Frame/Record/Stack/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "최고 열  12    ·    과열  2회"
+autowrap_mode = 3
+
+[node name="DeckRule" type="ColorRect" parent="Frame/Record/Stack/Body/Details"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 2)
+mouse_filter = 2
+color = Color(0.29, 0.23, 0.25, 1)
+
+[node name="Deck" type="Label" parent="Frame/Record/Stack/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.84, 1)
+text = "최종 덱  27발"
+
+[node name="DeckSummary" type="Label" parent="Frame/Record/Stack/Body/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = "기본탄 · 소이탄 · 기폭탄"
+autowrap_mode = 3
+
+[node name="DetailsButton" type="Button" parent="Frame/Record/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+custom_minimum_size = Vector2(132, 46)
+text = "상세 기록  +"
+
+[node name="ActionRule" type="ColorRect" parent="Frame/Record/Stack"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 2)
+mouse_filter = 2
+color = Color(0.29, 0.23, 0.25, 1)
+
+[node name="ActionsBar" type="HBoxContainer" parent="Frame/Record/Stack"]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="NewRun" type="Button" parent="Frame/Record/Stack/ActionsBar"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(109, 50)
+theme_type_variation = &"MainAction"
+text = "새 도전"
+
+[node name="Archive" type="Button" parent="Frame/Record/Stack/ActionsBar"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(97, 50)
+text = "기록실"
+
+[node name="ActionNote" type="Label" parent="Frame/Record/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.60, 1)
+text = ""
+autowrap_mode = 3
+custom_minimum_size = Vector2(0, 20)
+

@@ -9,6 +9,22 @@ const REGION_ART := {
 	0: [FALLBACK,
 		{"path": "res://assets/art/residential_ascent_20261011/middle_v1.png", "floor_y": 728.0},
 		{"path": "res://assets/art/residential_ascent_20261011/upper_v1.png", "floor_y": 772.0}],
+	1: [
+		{"path": "res://assets/art/foundry_ascent_20261023/lower_v1.png", "floor_y": 702.0},
+		{"path": "res://assets/art/foundry_ascent_20261023/middle_v1.png", "floor_y": 713.0},
+		{"path": "res://assets/art/foundry_ascent_20261023/upper_v1.png", "floor_y": 713.0}],
+	2: [
+		{"path": "res://assets/art/garden_ascent_20261023/lower_v1.png", "floor_y": 663.0},
+		{"path": "res://assets/art/garden_ascent_20261023/middle_v1.png", "floor_y": 698.0},
+		{"path": "res://assets/art/garden_ascent_20261023/upper_v2.png", "floor_y": 687.0}],
+	3: [
+		{"path": "res://assets/art/noble_ascent_20261024/lower_v1.png", "floor_y": 686.0},
+		{"path": "res://assets/art/noble_ascent_20261024/middle_v1.png", "floor_y": 686.0},
+		{"path": "res://assets/art/noble_ascent_20261024/upper_v1.png", "floor_y": 687.0}],
+	4: [
+		{"path": "res://assets/art/central_ascent_20261024/lower_v1.png", "floor_y": 686.0},
+		{"path": "res://assets/art/central_ascent_20261024/middle_v1.png", "floor_y": 687.0},
+		{"path": "res://assets/art/central_ascent_20261024/upper_v1.png", "floor_y": 687.0}],
 }
 static var textures: Dictionary = {}
 

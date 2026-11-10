@@ -1,12 +1,12 @@
 [gd_scene load_steps=14 format=3]
 [ext_resource type="Script" path="res://redesign/outfit_preview.gd" id="1"]
 [ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="2"]
-[ext_resource type="StyleBox" path="res://assets/ui/console/button_normal.tres" id="3"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/console_button_normal.tres" id="3"]
 [ext_resource type="Texture2D" path="res://assets/art/outfit_preview_20261011/10_expedition_v3.png" id="4"]
 [ext_resource type="Script" path="res://redesign/outfit_preview_stage.gd" id="5"]
 [ext_resource type="PackedScene" path="res://redesign/weapon_actor.tscn" id="6"]
 [ext_resource type="Script" path="res://redesign/outfit_preview_actor.gd" id="7"]
-[ext_resource type="Texture2D" path="res://assets/art/service_layers_20261011/shop_background.png" id="8"]
+[ext_resource type="Texture2D" path="res://assets/art/service_background_grouped_20261025/shop.png" id="8"]
 [ext_resource type="Script" path="res://redesign/service_actor_layer.gd" id="9"]
 [ext_resource type="Resource" path="res://redesign/outfit_preview_shop.tres" id="10"]
 [ext_resource type="Shader" path="res://redesign/monster_alpha_cutout.gdshader" id="11"]
@@ -51,7 +51,7 @@ layout_mode = 2
 [node name="Title" type="Label" parent="Margin/Layout/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 32
 text = "복장 작업실"
 
 [node name="Close" type="Button" parent="Margin/Layout/Header"]
@@ -64,7 +64,7 @@ text = "닫기"
 [node name="Notice" type="Label" parent="Margin/Layout"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65,0.72,0.72,1)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 16
 text = "외형 미리보기 · 획득·가방·성능은 바뀌지 않습니다."
 [node name="Outfits" type="HFlowContainer" parent="Margin/Layout"]
 layout_mode = 2
@@ -106,7 +106,7 @@ text = "밀폐형 원정복"
 [node name="Status" type="Label" parent="Margin/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.71,0.77,0.75,1)
 text = "채택 시안 · 전투·장소용 외형 검토"
 [node name="Modes" type="HFlowContainer" parent="Margin/Layout"]
@@ -209,35 +209,35 @@ unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(96, 44)
 toggle_mode = true
-text = "보행자"
+text = "리벳"
 
 [node name="Burst" type="Button" parent="Margin/Layout/CombatControls/Guns"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(96, 44)
 toggle_mode = true
-text = "쇄도"
+text = "래칫"
 
 [node name="Scatter" type="Button" parent="Margin/Layout/CombatControls/Guns"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(96, 44)
 toggle_mode = true
-text = "산개"
+text = "스플린터"
 
 [node name="Heavy" type="Button" parent="Margin/Layout/CombatControls/Guns"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(96, 44)
 toggle_mode = true
-text = "압쇄"
+text = "리액터"
 
 [node name="Amplifier" type="Button" parent="Margin/Layout/CombatControls/Guns"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(96, 44)
 toggle_mode = true
-text = "증강"
+text = "스파이크"
 
 [node name="Poses" type="HFlowContainer" parent="Margin/Layout/CombatControls"]
 layout_mode = 2

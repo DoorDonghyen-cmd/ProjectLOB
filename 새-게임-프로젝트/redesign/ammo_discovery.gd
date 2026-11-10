@@ -4,11 +4,14 @@ const VERSION := 3
 const PAUSED_AMMO := ["prepare", "disrupt"]
 const PAUSED_PARTS := ["indexer"]
 const LINKS := {
+	"third_striker": ["charge", "charge_hot", "precise", "pierce", "vent"],
+	"resonator": ["precise", "charge"],
+	"tally": ["precise", "charge"],
 	"volley_drive": ["precise", "charge", "shatter", "chase"],
-	"thermal_drive": ["thermal", "charge_heat", "cool", "vent", "charge_hot"],
+	"thermal_drive": ["bore", "charge_heat", "cool", "vent", "charge_hot"],
 	"siege_drive": ["pierce", "charge_hot", "bypass", "sequence", "charge"],
 	"cooling_breech": ["charge_hot", "cool"],
-	"ember_core": ["thermal", "charge_heat", "precise", "vent"],
+	"ember_core": ["bore", "charge_heat", "precise", "vent"],
 	"inferno": ["bore", "detonate", "spread", "push"],
 	"arc_splitter": ["arc", "chase"],
 	"momentum": ["push", "bore"],
@@ -25,7 +28,7 @@ const LINKS := {
 	"lens": ["pierce", "bypass"],
 	"executioner": ["precise", "chase"],
 	"reclaimer": ["chase", "precise", "arc"],
-	"radiator": ["charge_hot", "precise", "thermal"],
+	"radiator": ["charge_hot", "precise", "bore"],
 	"chain_sink": ["sequence", "charge", "precise"],
 	"supply": ["charge", "charge_hot", "cool", "sequence"],
 	"ordinary_chain": ["precise", "pierce", "chase", "sequence"],

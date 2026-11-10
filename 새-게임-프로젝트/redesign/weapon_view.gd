@@ -1,7 +1,7 @@
 @tool
 extends Control
 ## Native mechanical weapon illustrations; the silhouette is the weapon identity.
-const COLORS := {"single": Color("a9dfbf"), "burst": Color("f3ba75"), "scatter": Color("87c9df"), "heavy": Color("c4ace5"), "amplifier": Color("e6c176")}
+const COLORS := {"single": Color("a9dfbf"), "burst": Color("f3ba75"), "scatter": Color("87c9df"), "heavy": Color("c4ace5"), "amplifier": Color("e6c176"), "rewinder":Color("c3b58c"), "deadbolt":Color("c6a17b")}
 var gun_id := "single"
 var display_scale := 1.0
 

@@ -1,0 +1,79 @@
+{
+  "status": "director_implemented_user_preference_pending",
+  "feedback": "Previous pixel craft improved mood; incoherent construction and generic ammunition cards remain.",
+  "tool": "built-in image_gen",
+  "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a1789c-be59-7010-8fa6-bc275448732f\\exec-b387da84-0da0-4a2d-9cf1-728e4859151a.png",
+  "source_sha256": "8aa2bf95ff8a6fc684e84fe53f175f0781b9cb703ae9290ac5b3620e2a3f47f4",
+  "output_sha256": "8aa2bf95ff8a6fc684e84fe53f175f0781b9cb703ae9290ac5b3620e2a3f47f4",
+  "prompt": "Use case: stylized-concept. Production transparent sprite atlas for LoB's pixel-art combat HUD. Create ONE COHERENT FAMILY of eight components of a reclaimed ammunition feed console.\nINPUT ROLES: image1 current hero = approved coarse pixel clusters/material colors; image2 environment = world palette and quiet geometry; image3 actual HUD = only layout, target sizes and blank text zones; its disjoint cloth, paper and assorted buttons are precisely what we are replacing. Do NOT reproduce that visual mismatch.\nDESIGN LANGUAGE: all eight pieces made by the same workshop from dark desaturated slate steel, with the same thin stepped bevel, one broad top-left highlight and lower-right shadow, same clipped upper-right corner, same short paired extractor grooves and small aged-brass contact at the lower-left. Interior shapes big, matte and quiet. Restrained selected pixel contour, no glows, no grain, no dithering, no gradients, no little rivets everywhere. Match hero's chunky grouped pixels. UI objects seen straight-on, flat orthographic. 2D game sprites, not photoreal or rounded app panels.\nCARD IDENTITY: ammunition feed-tile, NOT paper, trading card or fantasy parchment. An ivory ceramic-coated steel insert with a clearly stepped right edge, a short narrow rust-red extractor tongue centered ABOVE its top edge, dark two-prong lower-left connection that seats into a rail. It should look removable/reorderable, a recognizable shaped cartridge carrier. Quiet ivory face must remain empty for native name at top and tiny bullet on lower-left and result on lower-right. No bullet baked into it. The corresponding standby tile has IDENTICAL silhouette and fittings but its face is dark slate so it recedes; never emboss a spurious number.\nATLAS: 1536x1024 transparent canvas, 4 columns x 2 rows. Every cell 384x512, sprites isolated with at least 30 transparent px gap, centered in its cell. Row1: (1) wide low dark STEEL FEED RAIL base, 330x120, subdued two horizontal channels near lower edge, no straps or cloth; (2) ACTIVE FEED TILE described above, about280x220; (3) FIRE KEY,330x136, matte dark brick-red face, steel bezel from same kit, no extra motifs; (4) COOL KEY,330x136, matte deep faded blue face, identical bezel and paired extractor grooves to fire key. Row2: (1) RELOAD KEY,330x136, warm dark ochre-brown enamel face, IDENTICAL bezel/shape to other keys; (2) HEAT METER,330x64, empty dark narrow slot surrounded by exact same steel bezel; (3) STANDBY FEED TILE,280x220, identical to active tile with dark slate face and subdued fittings; (4) MODAL LID,330x220, dark slate steel face with same corner and paired groove construction.\nGAME SCALE: tiles about120-170x108 on screen; buttons208-336x72. Faces must remain visually quiet at those sizes. Art will be nine-sliced: all identifiable hardware must be in corners/top-bottom ends, never the stretchable center. Tile tongue stays within fixed top-left cap area (near left quarter rather than exactly center if needed); do not put hardware in the center of a horizontal edge.\nPALETTE/HIERARCHY: shared slate structure for unity, ivory active tiles as the main readable accent, rusty red fire face, muted blue cooling face, ochre reload face. Dark key faces intended for CREAM text, active ivory tile intended for DARK text. Colors differ in function but construction is visibly identical.\nSTRICT: transparent background all around. NO background color, shadow halos, floor, labels, letters, numbers, bullets, arrows, symbols, charts or text. No paper, fabric, leather, gold fantasy borders, shields, chrome shine. Eight complete separate sprites, no cropped parts.\n",
+  "references": [
+    {
+      "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+      "role": "Approved actor: broad pixel masses and restrained material treatment",
+      "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+    },
+    {
+      "path": "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png",
+      "role": "Approved environment palette and quiet geometry",
+      "sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b"
+    },
+    {
+      "path": "docs/qa/reports/combat_pixelcraft_2026-10-31_assets/fired.png",
+      "role": "Layout context and the disjoint previous UI being replaced; not approved as a family",
+      "sha256": "226d21ad9c92d6884998cf1ccc9cef6b17eee2bdedb1201b5c1b5ae3cb20612a"
+    }
+  ],
+  "regions": {
+    "tray": [
+      27,
+      337,
+      442,
+      141
+    ],
+    "active": [
+      494,
+      253,
+      261,
+      225
+    ],
+    "fire": [
+      776,
+      336,
+      356,
+      141
+    ],
+    "cool": [
+      1156,
+      336,
+      355,
+      141
+    ],
+    "reload": [
+      28,
+      676,
+      372,
+      139
+    ],
+    "heat": [
+      432,
+      711,
+      365,
+      92
+    ],
+    "standby": [
+      834,
+      591,
+      262,
+      225
+    ],
+    "modal": [
+      1146,
+      592,
+      365,
+      224
+    ]
+  },
+  "usage": "Eight unmodified RGBA sprites through native Godot AtlasTexture and NinePatchRect; scene owns margins/scales. No image processing.",
+  "display": "108px-high cards, 28x44px ammunition image, 72px-high keys, 18px-high heat bezel. Active ivory carrier, subdued slate standby carrier; same workshop casing throughout.",
+  "limits": "Generated high-resolution pixel-like masses, not an exact indexed low-resolution grid. Tight opaque bounds exclude transparent halo. Actual display and interaction reviewed separately; user preference and mobile remain unconfirmed."
+}

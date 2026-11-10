@@ -1,0 +1,363 @@
+{
+  "date": "2026-10-31",
+  "tool": "image_gen.imagegen (built-in)",
+  "status": "Integrated after user's repeated request for an emotional pixel-art UI; user visual approval remains pending.",
+  "prompt": "USE CASE: stylized-concept, production sprite atlas for a pixel-art game's combat HUD.\nCreate ONE cohesive eight-piece interface sprite kit, on a truly transparent RGBA background. This is usable isolated game artwork, not a screenshot, presentation board, or concept sheet with labels.\nREFERENCES: input 1 is the APPROVED player sprite: match its broad blocky pixel clusters, selective dark outlines, dusty blue workwear, worn brown equipment and rusty red scarf. Input 2 is the CURRENT game screenshot: use ONLY for the actual interface scale and hierarchy, do NOT copy its rejected flat rectangular UI styling. Input 3 is the approved residential industrial environment: use its quiet cold metal and small warm habitation accents.\nDESIGN INTENT: a worker's repaired ammunition field kit, personal and slightly weathered, made of old painted enamel, dark canvas, folded inventory tags, and simple steel catches. The user wants the human charm of hand-drawn pixel GAME props. Every silhouette and edge must be sprite-drawn rather than a perfect modern UI rectangle. Keep the composition very clean and gameplay-readable: broad empty centers for future live text, only a few purposeful large pixel chips at selected edges. No embellishment in the readable center.\nSTYLE: STRICT visibly stepped pixel-art geometry, matte surface, 3-4 broad values per material, low color count, no optical blur. Each logical pixel roughly 3-5 source pixels on a 1536px canvas; draw connected irregular pixel clusters, not grain or random noise. Upper-left subdued illumination. Frontal orthographic, axis-aligned rectangles with shallow sprite-drawn lower lips; no perspective. No shiny full white outline. Each part has distinctive silhouette and material, while clearly sharing a family.\nLAYOUT: canvas 1536x1024, four columns by two rows, every cell 384x512. Exactly one isolated complete object per cell, centered with generous transparent margins; do not cross cells. No touching objects.\nROW 1 LEFT TO RIGHT:\n1. AMMO TRAY: horizontal dark charcoal olive CANVAS ammunition mat, aspect about 3:1, broad dark empty center, folded cloth rim with a few widely spaced repair stitches ONLY near upper-left and lower-right corners, a small flat brown strap tab at each end. No slots, bullets, icons, or internal divisions. Will stretch to a long shallow tray in game, so keep the middle 65% completely quiet and uniform.\n2. ACTIVE ROUND LABEL: upright pale buff stiff fabric inventory tag, aspect about 1.25:1 (slightly landscape), in a simple thin dark steel clip at its upper-left. One folded lower-right corner and subtly irregular stepped perimeter. Large clean ivory central face. No marks, stamps, lines, holes in center, text or symbols. This is a small resting ammunition label, not a large fantasy card frame.\n3. FIRE CONTROL: horizontal worn oxide-red enamel push plate, aspect about 3.5:1. Broad deep muted red empty face for two lines of light text. A little grey-blue exposed steel at two corners, a shallow dark lower lip, and ONE blocky worn patch confined to the far-left rim. Dark enough for pale lettering. No icon, arrows or switch drawn in center.\n4. COOL CONTROL: horizontal dusty blue-grey enamel push plate, aspect about 2.5:1, empty dark blue center. Two or three broad cooling-vent slits confined to the leftmost edge and a quiet steel lower lip. Do not place a knob or anything over the main reading face.\nROW 2 LEFT TO RIGHT:\n5. RELOAD CONTROL: horizontal dark brown/olive tool-clasp plate, aspect about 3:1. Empty dark center, two dull brass latch tabs only at the far left/right rims, shallow edge shadow. Clearly a reusable hand-operated mechanical part rather than flat website button.\n6. HEAT METER HOUSING: very slim horizontal dark blue-grey recessed meter frame, aspect about 6:1, completely empty black center for a dynamic heat bar, a short dull brass cap at its left end and one tiny rusty warning notch at the right edge. No filled bar, numbers, ticks or symbols.\n7. SMALL HEADER TAB: horizontal faded dark brown cloth equipment label, aspect about 4:1, irregular stepped ends and one large visible sewn corner, flat dark blank center for a live title. No printed letters, markings or decorative ornaments.\n8. QUIET PANEL: broad dark desaturated charcoal-blue metal field-case lid, aspect about 2.2:1, front facing. Very thin handmade stepped rim with a flat steel fastener at the lower-left only. Almost uniform dark center (85% area) to hold a modal's real text. No knobs, grid, seams, scenery or machinery in the center.\nTECHNICAL: Every object must remain fully opaque within its broad reading face; genuine transparency outside, no drop shadows outside silhouette. Clean isolated alpha edges. Consistent sharp pixels, no smooth gradients, photographic texture, dense scratches, dithering, repeated bolts, neon, gold fantasy trim, cyberpunk glows, SVG-flat perfect corners, opaque backdrop, floor, contact sheet border, typography, pseudo-writing, characters, ammunition, illustration scene, labels, numbers or UI mockup. Artwork only. Do not reproduce any reference image inside the output.",
+  "source": "C:/Users/mdyt7/.codex/generated_images/01a1789c-be59-7010-8fa6-bc275448732f/exec-93fced30-8eaa-4166-8399-ca304698ae81.png",
+  "references": [
+    {
+      "path": "assets/art/hero_contours_20261025/work_pistol.png",
+      "role": "Approved actor style: broad clusters, workwear and repaired equipment colors."
+    },
+    {
+      "path": "docs/qa/reports/combat_identity_2026-10-31_assets/journey.png",
+      "role": "Current screen scale/composition only; flat UI styling was rejected."
+    },
+    {
+      "path": "assets/art/tower_sample_20261003/residential_tower.png",
+      "role": "Existing industrial environment and localized warm accents."
+    }
+  ],
+  "processing": "Original RGBA PNG copied byte-for-byte. Alpha examined read-only to select 8 actual sprite regions (generation did not follow equal cells). Native AtlasTexture regions and serialized NinePatchRect scaling/patch margins are used; no bitmap cropping, downsampling, recoloring or Python raster editing.",
+  "usage": {
+    "tray": "Shared ammo mat",
+    "active": "Next-shot inventory tags; runtime dark tint for ejection",
+    "fire": "Fire key",
+    "cool": "Cooling key",
+    "reload": "Reload and ejection confirmation keys",
+    "heat": "Live heat gauge housing",
+    "header": "Reserved source sprite, not placed in HUD",
+    "modal": "Menu and detail surfaces"
+  },
+  "runtime": "Nearest filtering. Atlas remains original size. Nine-patch nodes render at 0.5, 0.4 or 1/3 scale as serialized. Active tag mirrored horizontally to keep its clip outside the text area. Press feedback uses 2px transient offset and tint, never changes interaction geometry.",
+  "rights": "Generated using project-owned references. No external stock artwork.",
+  "asset": {
+    "file": "kit.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "sha256": "40b7e198c790bfc9a23e9b41f54a38f5f9c7ddd60ea6b60a00823adf7af296e3",
+    "byte_identical": true
+  },
+  "regions": {
+    "tray": [
+      28,
+      289,
+      447,
+      144
+    ],
+    "active": [
+      498,
+      234,
+      250,
+      200
+    ],
+    "fire": [
+      787,
+      288,
+      398,
+      143
+    ],
+    "cool": [
+      1213,
+      284,
+      296,
+      151
+    ],
+    "reload": [
+      35,
+      660,
+      368,
+      133
+    ],
+    "heat": [
+      437,
+      695,
+      315,
+      72
+    ],
+    "header": [
+      779,
+      675,
+      333,
+      109
+    ],
+    "modal": [
+      1140,
+      616,
+      372,
+      202
+    ]
+  },
+  "geometry_checks": [
+    {
+      "sprite": "tray",
+      "region": [
+        28,
+        289,
+        447,
+        144
+      ],
+      "center_alpha": 253
+    },
+    {
+      "sprite": "active",
+      "region": [
+        498,
+        234,
+        250,
+        200
+      ],
+      "center_alpha": 253
+    },
+    {
+      "sprite": "fire",
+      "region": [
+        787,
+        288,
+        398,
+        143
+      ],
+      "center_alpha": 253
+    },
+    {
+      "sprite": "cool",
+      "region": [
+        1213,
+        284,
+        296,
+        151
+      ],
+      "center_alpha": 253
+    },
+    {
+      "sprite": "reload",
+      "region": [
+        35,
+        660,
+        368,
+        133
+      ],
+      "center_alpha": 253
+    },
+    {
+      "sprite": "heat",
+      "region": [
+        437,
+        695,
+        315,
+        72
+      ],
+      "center_alpha": 253
+    },
+    {
+      "sprite": "header",
+      "region": [
+        779,
+        675,
+        333,
+        109
+      ],
+      "center_alpha": 253
+    },
+    {
+      "sprite": "modal",
+      "region": [
+        1140,
+        616,
+        372,
+        202
+      ],
+      "center_alpha": 253
+    },
+    {
+      "node": "HeatArt",
+      "asset": "heat",
+      "patch_margins": {
+        "left": 52,
+        "top": 21,
+        "right": 38,
+        "bottom": 22
+      },
+      "valid": true
+    },
+    {
+      "node": "TrayArt",
+      "asset": "tray",
+      "patch_margins": {
+        "left": 100,
+        "top": 36,
+        "right": 100,
+        "bottom": 48
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt0",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt1",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt2",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt3",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt4",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt5",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt6",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt7",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "RoundArt8",
+      "asset": "active",
+      "patch_margins": {
+        "left": 70,
+        "top": 82,
+        "right": 38,
+        "bottom": 40
+      },
+      "valid": true
+    },
+    {
+      "node": "CoolArt",
+      "asset": "cool",
+      "patch_margins": {
+        "left": 82,
+        "top": 26,
+        "right": 35,
+        "bottom": 28
+      },
+      "valid": true
+    },
+    {
+      "node": "ReloadArt",
+      "asset": "reload",
+      "patch_margins": {
+        "left": 66,
+        "top": 24,
+        "right": 64,
+        "bottom": 28
+      },
+      "valid": true
+    },
+    {
+      "node": "FireArt",
+      "asset": "fire",
+      "patch_margins": {
+        "left": 55,
+        "top": 24,
+        "right": 30,
+        "bottom": 28
+      },
+      "valid": true
+    },
+    {
+      "node": "EjectApplyArt",
+      "asset": "reload",
+      "patch_margins": {
+        "left": 66,
+        "top": 24,
+        "right": 64,
+        "bottom": 28
+      },
+      "valid": true
+    },
+    {
+      "node": "MenuSurfaceArt",
+      "asset": "modal",
+      "patch_margins": {
+        "left": 82,
+        "top": 34,
+        "right": 32,
+        "bottom": 90
+      },
+      "valid": true
+    },
+    {
+      "node": "DetailSurfaceArt",
+      "asset": "modal",
+      "patch_margins": {
+        "left": 82,
+        "top": 34,
+        "right": 32,
+        "bottom": 90
+      },
+      "valid": true
+    }
+  ]
+}

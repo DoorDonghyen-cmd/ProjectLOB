@@ -23,9 +23,27 @@ func _draw_enemy_actor(index: int, foot: Vector2, lift: float, stride: float) ->
 		super._draw_enemy_actor(index, foot, lift, stride)
 		return
 	var spec: Dictionary = CONCEPTS[kind]
-	draw_texture_rect_region(spec.texture, actor_rect(index, concept_rect(index)), spec.source, actor_tint(index))
+	if not creature_sprites.has(index):
+		var created := Sprite2D.new()
+		created.centered = false
+		created.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var cutout := ShaderMaterial.new()
+		cutout.shader = CUTOUT
+		created.material = cutout
+		add_child(created)
+		creature_sprites[index] = created
+	var sprite: Sprite2D = creature_sprites[index]
+	var rect := actor_rect(index, concept_rect(index))
+	sprite.texture = spec.texture
+	sprite.region_enabled = true
+	sprite.region_rect = spec.source
+	sprite.position = (finish_camera() * rect.position).round()
+	sprite.scale = finish_camera().get_scale() * rect.size / spec.source.size
+	sprite.z_index = actor_layer(index)
+	sprite.modulate = actor_tint(index)
+	ActorArtStyle.apply(sprite.material, float(spec.size.y / spec.source.size.y), cohesive_actor_art)
+	sprite.show()
 
-func _enemy_at(point: Vector2) -> int:
-	for i in range(enemies.size()):
-		if int(enemies[i].hp) > 0 and CONCEPTS.has(str(enemies[i].kind)) and concept_rect(i).has_point(point): return i
-	return super._enemy_at(point)
+func actor_pick_rect(index: int) -> Rect2:
+	if int(enemies[index].hp) > 0 and CONCEPTS.has(str(enemies[index].kind)): return concept_rect(index)
+	return super.actor_pick_rect(index)

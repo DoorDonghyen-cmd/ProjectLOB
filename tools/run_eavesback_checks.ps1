@@ -8,8 +8,10 @@ $env:LOCALAPPDATA = Join-Path $runtime 'Local'
 $env:QA_OUTPUT_DIR = $runtime
 New-Item -ItemType Directory -Force -Path $runtime,$env:APPDATA,$env:LOCALAPPDATA | Out-Null
 $engine = 'D:\ProjectLoB\.tmp\godot-4.7\Godot_v4.7-stable_win64_console.exe'
-& $engine --headless --path $project --editor --import --quit 2>&1 | Out-File -LiteralPath (Join-Path $runtime 'import.log') -Encoding utf8
-if ($LASTEXITCODE -ne 0) { throw 'Godot import failed' }
+$importArgs = @('--headless','--path',('"{0}"' -f $project),'--editor','--import','--quit')
+$importProcess = Start-Process -FilePath $engine -ArgumentList $importArgs -WindowStyle Hidden -PassThru -Wait -RedirectStandardOutput (Join-Path $runtime 'import.log') -RedirectStandardError (Join-Path $runtime 'import.stderr.log')
+$importErrors = Get-Content -LiteralPath (Join-Path $runtime 'import.stderr.log') -Raw -Encoding UTF8
+if ($importProcess.ExitCode -ne 0 -or $importErrors -match 'SCRIPT ERROR|Parse Error|Assertion failed') { throw "Godot import failed: $importErrors" }
 $runner = if ($Mode -eq 'hud') { 'enemy_hud_ui_runner' } elseif ($Mode -eq 'layout') { 'combat_layout_ui_runner' } elseif ($Mode -eq 'family') { 'residential_creatures_ui_runner' } else { 'eavesback_ui_runner' }
 $arguments = @('--path',('"{0}"' -f $project),'--script',"res://tests/$runner.gd",'--rendering-method','gl_compatibility','--position','-2000,-2000')
 $stdout = Join-Path $runtime 'stdout.log'

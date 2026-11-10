@@ -27,7 +27,7 @@ func first_region(gun: String, seed_value: int, route: String, difficulty: int =
 				visits[selected.kind] += 1
 				if not command(campaign, {"action": "enter", "id": selected.id}): break
 			"combat":
-				var path := solver.solve(campaign.model)
+				var path: Array = solver.solve(campaign.model)
 				if path.is_empty(): path = solver.solve(campaign.model, 12, 10)
 				if path.is_empty():
 					# A failed bounded search is not proof that the encounter is unwinnable.

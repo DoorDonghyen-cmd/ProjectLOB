@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-06",
+  "tool": "pixelfx",
+  "version": "0.3.0",
+  "commit": "a84159688af3ca37a4be05a0d422b94451b2e24e",
+  "effect": "impacts/crit-hit",
+  "runtime_meaning": "applied damage multiplication; resolved packet chooses hue and tier",
+  "options": {
+    "palette": [
+      "#15171d",
+      "#292d37",
+      "#474e5a",
+      "#737c89",
+      "#a8b3c0",
+      "#c7d0da",
+      "#e4e5dc",
+      "#fff8e4"
+    ],
+    "height": 26,
+    "aim": 0.0,
+    "seed": 3,
+    "light": 0.15
+  },
+  "export": {
+    "fps": 24,
+    "frames": 23,
+    "columns": 4,
+    "frame_size": [
+      216,
+      136
+    ],
+    "sheet_size": [
+      864,
+      816
+    ],
+    "source_floor_pivot": [
+      84,
+      106
+    ],
+    "hit_contact": [
+      84,
+      80
+    ],
+    "transparent_last_frame": true
+  },
+  "runtime": {
+    "texture": "multiplier.png",
+    "script": "redesign/impact_sprite.gd",
+    "frame_selection": "normalised existing impact pulse, no additional action delay",
+    "colors": "redesign/impact_style.gd",
+    "reduced_motion": "number colour and static corner marks only",
+    "particles_or_js_runtime": false
+  },
+  "attribution": "pixelfx MIT; impact source adapted from Hugo Duprez / Sprite Fusion, copyright 2026; see LICENSE.txt and NOTICE.md",
+  "selected": "neutral colour sheet tinted per applied effect; ordinary hit-spark candidate retained only in QA",
+  "sha256": {
+    "multiplier.png": "040c992a562fd318f26c6dbde7bc7ddaedc1cfe2388426787902178e76adb5e4",
+    "multiplier_source.json": "e5f62be5f7e4b71c0f75ba49d2d18c6653d605e08d58835c753c0cbd9795b318"
+  }
+}

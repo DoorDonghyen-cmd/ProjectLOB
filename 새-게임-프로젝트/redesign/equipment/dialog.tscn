@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3]
+[ext_resource type="PackedScene" path="res://redesign/console_dialog.tscn" id="base"]
+[ext_resource type="Script" path="res://redesign/equipment/dialog.gd" id="logic"]
+[ext_resource type="Theme" path="res://redesign/equipment/theme.tres" id="theme"]
+[ext_resource type="StyleBox" path="res://redesign/equipment/dialog_panel.tres" id="panel"]
+[sub_resource type="StyleBoxFlat" id="button"]
+bg_color = Color(0.105882, 0.117647, 0.105882, 0.909804)
+border_color = Color(0.333333, 0.360784, 0.298039, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 2
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
+corner_detail = 1
+anti_aliasing = false
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+[node name="ConsoleDialog" instance=ExtResource("base")]
+script = ExtResource("logic")
+theme = ExtResource("theme")
+[node name="Shade" parent="." index="0"]
+color = Color(0.031373,0.047059,0.027451,0.8)
+[node name="Frame" parent="." index="1"]
+theme_override_styles/panel = ExtResource("panel")
+[node name="Title" parent="Frame/Margin/Layout/Header" index="0"]
+theme_override_colors/font_color = Color(0.882353,0.862745,0.8,1)
+text = "시작 탄환 · 리벳"
+[node name="DialogClose" parent="Frame/Margin/Layout/Header" index="1"]
+theme_override_styles/normal = SubResource("button")
+[node name="Rule" parent="Frame/Margin/Layout" index="1"]
+color = Color(0.333333,0.360784,0.298039,1)
+[node name="Preview" parent="Frame/Margin/Layout/DialogScroll/DialogContent" index="0"]
+theme_override_colors/font_color = Color(0.647059,0.635294,0.580392,1)
+text = "운반용 외투 · 탄약 최대 32발\n최소 유지 12발 · 정비 후 최대 38발"
+[node name="DialogActions" parent="Frame/Margin/Layout" index="3"]
+visible = false
+[node name="DialogCancel" parent="Frame/Margin/Layout/DialogActions" index="0"]
+theme_override_styles/normal = SubResource("button")
+[node name="DialogConfirm" parent="Frame/Margin/Layout/DialogActions" index="1"]
+theme_override_styles/normal = SubResource("button")
+theme_override_colors/font_color = Color(0.882353,0.862745,0.8,1)

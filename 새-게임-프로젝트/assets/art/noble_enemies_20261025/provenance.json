@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-25",
+  "purpose": "ORVASK fourth-region live enemy production",
+  "tool": "OpenAI native image_gen",
+  "source_pixels": "Preserved verbatim. No raster processing or hand compositing. Alpha cutout, atlas polygons, positioning and rendering are in Godot.",
+  "measurement": "tools/register_noble_art.py reads source alpha only; registration.json and noble_art.gd define per-pose bounds/feet/scale.",
+  "art_decisions": "C hero/reference noble background; ivory/cupric trim, muted plum and teal. Four shield actors each have closed/open/rearm poses; workers use static art with engine motion.",
+  "validation": "Godot actual battle captures at 1008x630, 1280x900, 1440x630. Author visual review complete; user and Galaxy device review pending.",
+  "records": [
+    {
+      "key": "shield_noble_v2",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-b8c9a805-a535-4d8c-b134-5b14a09da798.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/shield_noble_v2.png",
+      "prompt": "Use case: style-transfer. Redraw image1 as MUCH COARSER pixel clusters like image2's body, which is the actual approved game style. Preserve the three left-facing human noble identities, crescent emitter, plum overcoat, ivory mechanical arm, all three respective poses and foot baselines of image1. Image3 environment palette only. Turn small shading and faces into broad stair-step clusters about 12-16 source pixels across. 2-3 tones per material. Face should be a few broad shapes not delicate portrait. Less dense than image1 by a factor of 3. Flatten metallic specular lines, no tiny gears, no thin uniform dark perimeter. Three separate figures in a horizontal row, fit each 512-wide cell with broad clear separation and full limbs; SAME total height across poses except slight lean. Genuine transparent 1536x1024. No glowing halo, optical blur, backdrop, shadows, lettering, weapons other than existing cane.",
+      "references": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/shield_noble_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/middle_v1.png"
+      ],
+      "tool": "built-in image_gen",
+      "status": "integrated; human art review pending"
+    },
+    {
+      "key": "double_door_servant_v2",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-c40726eb-9a4c-40b0-80ba-2144266cdc1b.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/double_door_servant_v2.png",
+      "prompt": "Use case: style-transfer. Preserve design and three LEFT-facing poses in image1, transform to coarse low-detail pixel clusters like image2 and3. 1536x1024 transparent atlas THREE figures ONE horizontal row. Figure1 within x45-450, figure2 x560-970, figure3 x1080-1490 (do NOT extend arm into previous cell). Soles y850. Reduce density strongly: broad roughly12px stepped clusters, only3 shades per material. Tiny faceless ivory mask, lean teal mechanical legs, long arms, two cream door panels and muted brass badge stay recognizable. Panels remain closed pose1/open pose2/swept back pose3. No delicate bolts/cables, thin shiny outlines, glows or castshadow. No perspective change, no new objects, no text. Large forms only.",
+      "references": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/double_door_servant_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_concepts_20261022/labor_effigy_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png"
+      ],
+      "tool": "built-in image_gen",
+      "status": "integrated; human art review pending"
+    },
+    {
+      "key": "chief_servant_v1",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-01856802-905e-498c-a3e4-f214b4cb0f24.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/chief_servant_v1.png",
+      "prompt": "Use case: stylized-concept. Transparent production sprite atlas for ORVASK Godot pixel game. 1536x1024, THREE fullbody poses in one horizontal row facing LEFT, feet on same baseline y850. Separate figures with wide transparent gutters, no cross-cell limb overlap. Fit each full figure within a 460px wide cell, largest figure about650px tall. Keep SAME scale, shape, palette across poses. Very COARSE pixel clusters as supplied reference, as if 55px tall nearest-neighbor enlarged, 10-16px blocks, not refined illustration. 2-3 broad values per material, selective subdued edges, no black perimeter, antialias, tiny bolts, seams, bloom, grain, texture, labels, panels, floor or shadow. Background completely transparent. Only structural body silhouettes; no energy shield or HUD baked into artwork. Reference1 shows the lower-rank double-door servant family; create an ORIGINAL superior CHIEF SERVANT pure machine. Larger broad shoulders, very tiny ivory oval face, FOUR folded ivory door panels stacked in pairs like a ceremonial screen on long elbow joints, heavy dusty TEAL long apron with one large muted brass diamond, very thin visible lower legs. Distinct top-heavy but tall silhouette, not human nor knight. Three poses: 1 closed plate stack braced in front; 2 exposed thin chest with plates folded out/back while hands lowered, clear body opening; 3 forward thrust of long arm toward LEFT while plates fold behind. Keep limbs within separated cells, body orientation left, only2feet.",
+      "references": [
+        "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-c40726eb-9a4c-40b0-80ba-2144266cdc1b.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/middle_v1.png"
+      ],
+      "tool": "built-in image_gen",
+      "status": "superseded: silhouette too close to ordinary noble"
+    },
+    {
+      "key": "cupronickel_marquis_v1",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-b80a97c9-ec76-4818-9b7a-268c3717c13e.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/cupronickel_marquis_v1.png",
+      "prompt": "Use case: stylized-concept. Transparent production sprite atlas for ORVASK Godot pixel game. 1536x1024, THREE fullbody poses in one horizontal row facing LEFT, feet on same baseline y850. Separate figures with wide transparent gutters, no cross-cell limb overlap. Fit each full figure within a 460px wide cell, largest figure about650px tall. Keep SAME scale, shape, palette across poses. Very COARSE pixel clusters as supplied reference, as if 55px tall nearest-neighbor enlarged, 10-16px blocks, not refined illustration. 2-3 broad values per material, selective subdued edges, no black perimeter, antialias, tiny bolts, seams, bloom, grain, texture, labels, panels, floor or shadow. Background completely transparent. Only structural body silhouettes; no energy shield or HUD baked into artwork. Reference1 is the lesser noble's visual family. Create the district BOSS WHITE-BRONZE MARQUIS, an older mechanized aristocratic HUMAN with a tiny pale human face and sweptback silver hair; tall slender exposed metal waist and shins. Huge architectural fan-shaped white-bronze collar/coat with FOUR broad dark-backed ivory vanes fanning behind shoulders like a portable aristocratic throne. Dusty deep PLUM drapery hangs in TWO asymmetrical tails. One long elegant mechanical arm ending in a cane/scepter, the other missing hand replaced by curved plate. No crown, no medieval sword, no robothead. Pose1 upright closed metal mantle covering chest; pose2 mantle opened to the rear showing frail narrow torso, cane held low; pose3 body leans into LEFTward cane thrust, rear fan swept backward. Strong distinctive fan silhouette, major plates not decorative fine feathers. Each figure narrower than460px so isolated.",
+      "references": [
+        "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-b8c9a805-a535-4d8c-b134-5b14a09da798.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/middle_v1.png"
+      ],
+      "tool": "built-in image_gen",
+      "status": "integrated; human art review pending"
+    },
+    {
+      "key": "house_workers_v1",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-a4e8c523-d979-4caf-aed8-b45ab67a8737.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/house_workers_v1.png",
+      "prompt": "Use case: identity-preserve. Create a TRANSPARENT 1536x1024 production sprite atlas with TWO full-body figures in TWO clearly separated horizontal cells, left-facing. Image1 is LABOR AUTOMATON identity; image2 PRESSURE WORKER identity; image3 coarse shading/style. Preserve the original machines' slumped heads, very long mechanical arms, winding-key backs, anatomy and calm large pixel color masses. Variant costumes for wealthy noble household: LEFT labor servant wears long dusty TEAL apron with one ivory diamond, ivory shoulder cap, cleaner brass cuffs; RIGHT pressure guard keeps the broad pressure drum and thick leftward nozzle/hose, now muted bluegray shell with one IVORY large shoulder plate and house diamond on chest. No shields; familiar shapes reused in new service. Each figure fully contained in its own half, soles samebaseline y870. COARSE 12-18px blocks with only3values, no dense detail, no black outlines, no shiny spots, no optical blur or backdrop/shadows, no extra figures, no text. LEFT slim servant, RIGHT bulky drum guard. Match reference low-detail cluster density exactly.",
+      "references": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_concepts_20261022/labor_effigy_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_concepts_20261022/pressure_worker_v1.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png"
+      ],
+      "tool": "built-in image_gen",
+      "status": "integrated; human art review pending"
+    },
+    {
+      "key": "chief_servant_v2",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-223af14c-2694-4707-b093-5fe78c85468a.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/chief_servant_v2.png",
+      "prompt": "Use case: stylized-concept. Create a NEW enemy sprite atlas for dystopian pixel game ORVASK. Reference1 is approved coarse pixel shading ONLY. Reference2 environment colors only. Do not draw the reference human. Pure mechanical CHIEF STEWARD, visually unique: short tiny featureless oval ivory mask sitting in a LARGE horizontal rectangular shoulder yoke, barrel-shaped dull bluegray waist, long thin legs, dark muted plum ceremonial apron, two long folding forearms ending in mitten-like mechanical hands. FOUR broad overlapping ivory shielding panels carried across his upper back in a stepped horizontal SCREEN (NOT just two vertical doors). A single large aged brass diamond on the wide yoke. Top-heavy silhouette like a walking folding screen, total width about70% of height. No horns, helmet, cape, human skin, glowing core, spikes, fine mechanisms. 3 distinct poses in THREE equal horizontal cells of a transparent1536x1024 atlas: closed screen arms folded over chest; all screen panels hinged to sides exposing narrow waist/central torso and lowered hands; left arm extended in forward strike with screen swept back. All bodies face LEFT and have SAME size and foot baseline850, clear100px gutters and full limbs inside own cell. Coarse 12-16px stepped pixel clusters, 3 tones per material, no inkblack perimeter or fine lines, no reflections/halos/text/ground/shadows/antialias.",
+      "references": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/middle_v1.png"
+      ],
+      "tool": "image_gen native",
+      "status": "integrated; human art review pending"
+    },
+    {
+      "key": "shield_noble_v1",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-e9bc6e1c-26d1-45d7-b109-ea8dc2cb7fbe.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/shield_noble_v1.png",
+      "prompt": "Use case: stylized-concept. Production sprite atlas for the pixel-art Godot game ORVASK. Reference1 gives the accepted coarse pixel-cluster size, restrained colors and simple grouped shading ONLY; do NOT copy the hero costume or body. Reference2 gives the noble district's material palette ONLY; do NOT reproduce environment. Create a genuinely transparent 1536x1024 sprite atlas, THREE evenly spaced full body poses in ONE HORIZONTAL ROW centered in thirds, all facing LEFT, all soles at y~850. Each figure must fit inside its own 512px wide cell with at least 35px clear margins. SAME identity, size and foot baseline across three poses. Mature proportions and unusual industrial dystopian design. Pixel art: big blocky color clusters, muted desaturated materials, only 3 tonal masses per material, selective dark edge shadows NOT thick black perimeter. NO fine bolts, noise, dense seams, outlines around each detail, glow haze, antialias, text, label, UI, grid, ground or cast shadows. A 110px tall in-game figure must retain silhouette.\nSUBJECT: a wealthy human whose frail face and neck remain visible above an elegantly elongated mechanical body. Heavy asymmetric dusty PLUM overcoat, pale oxidized white bronze torso, very thin mechanical shins, broad single ivory crescent device attached behind one shoulder, one oversized prosthetic arm holding an elegant cane pointed downward. No medieval armor, no crown, no rifle. Three poses left to right: 1 poised upright with oversized forearm folded over chest, crescent emitter braced forward; 2 barrier broken: forearm lowered away, overcoat split showing slender dull chest mechanism, slightly bent exposed stance; 3 prepares a forward cane lunge, torso leaning toward left, feet still grounded. The physical crescent persists in all poses but is retracted behind shoulder in poses 2/3. Do NOT paint energy shield rings or counts; software draws them.",
+      "references": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/middle_v1.png"
+      ],
+      "tool": "image_gen native",
+      "status": "superseded: refined for production"
+    },
+    {
+      "key": "double_door_servant_v1",
+      "source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-b0447a49-3d49-4a8f-a6da-72302e05a0c4.png",
+      "file": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_enemies_20261025/double_door_servant_v1.png",
+      "prompt": "Use case: stylized-concept. Production sprite atlas for the pixel-art Godot game ORVASK. Reference1 gives the accepted coarse pixel-cluster size, restrained colors and simple grouped shading ONLY; do NOT copy the hero costume or body. Reference2 gives the noble district's material palette ONLY; do NOT reproduce environment. Create a genuinely transparent 1536x1024 sprite atlas, THREE evenly spaced full body poses in ONE HORIZONTAL ROW centered in thirds, all facing LEFT, all soles at y~850. Each figure must fit inside its own 512px wide cell with at least 35px clear margins. SAME identity, size and foot baseline across three poses. Mature proportions and unusual industrial dystopian design. Pixel art: big blocky color clusters, muted desaturated materials, only 3 tonal masses per material, selective dark edge shadows NOT thick black perimeter. NO fine bolts, noise, dense seams, outlines around each detail, glow haze, antialias, text, label, UI, grid, ground or cast shadows. A 110px tall in-game figure must retain silhouette.\nSUBJECT: entirely mechanical, faceless porcelain oval mask very small, dark teal slender automaton limbs and ankle pivots. Two large tall folding IVORY service-door plates attached to forearms, narrow dusty teal apron with one broad bronze lozenge. Plate backs plain muted bluegray. Identity is a walking double door, NOT a knight carrying a shield, NOT a human in clothes. Three poses left to right: 1 plates folded toward each other in front of narrow chest; 2 doors swung apart exposing thin unarmored mechanism in center; 3 both doors swept back, one long narrow arm reaching LEFT in a pushing action. Keep leg height and body volume consistent. No energy glow, software will overlay protection segments.",
+      "references": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/noble_ascent_20261024/middle_v1.png"
+      ],
+      "tool": "image_gen native",
+      "status": "superseded: refined for production"
+    }
+  ]
+}

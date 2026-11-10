@@ -1,0 +1,223 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://redesign/samples/combat_weapon_magazine.tscn" id="base"]
+[ext_resource type="Script" path="res://redesign/samples/combat_magazine_journey.gd" id="logic"]
+[ext_resource type="Script" path="res://redesign/samples/shop_preview_icon.gd" id="icon"]
+[sub_resource type="StyleBoxFlat" id="card"]
+bg_color = Color(0.10,0.17,0.18,1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.28,0.40,0.39,1)
+[sub_resource type="StyleBoxFlat" id="chosen"]
+bg_color = Color(0.18,0.25,0.24,1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 4
+border_color = Color(0.88,0.73,0.48,1)
+[node name="MagazineJourney" instance=ExtResource("base")]
+script = ExtResource("logic")
+[node name="JourneyPanel" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035,0.075,0.085,0.97)
+z_index = 40
+visible = false
+[node name="JourneyEyebrow" type="Label" parent="JourneyPanel"]
+offset_left = 48.0
+offset_top = 30.0
+offset_right = 1000.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.68,0.77,0.72,1)
+[node name="JourneyTitle" type="Label" parent="JourneyPanel"]
+offset_left = 48.0
+offset_top = 76.0
+anchor_right = 1.0
+offset_right = -48.0
+offset_bottom = 132.0
+theme_override_font_sizes/font_size = 36
+theme_override_colors/font_color = Color(0.95,0.87,0.71,1)
+[node name="JourneyBody" type="Label" parent="JourneyPanel"]
+offset_left = 48.0
+offset_top = 142.0
+anchor_right = 1.0
+offset_right = -48.0
+offset_bottom = 212.0
+theme_override_font_sizes/font_size = 22
+autowrap_mode = 2
+[node name="RewardRow" type="HBoxContainer" parent="JourneyPanel"]
+offset_left = 48.0
+offset_top = 234.0
+anchor_right = 1.0
+offset_right = -48.0
+offset_bottom = 594.0
+theme_override_constants/separation = 24
+[node name="RewardPick0" type="Button" parent="JourneyPanel/RewardRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+theme_override_styles/normal = SubResource("card")
+theme_override_styles/hover = SubResource("chosen")
+theme_override_styles/pressed = SubResource("chosen")
+[node name="RewardIcon0" type="Control" parent="JourneyPanel/RewardRow/RewardPick0"]
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 104.0
+offset_bottom = 108.0
+mouse_filter = 2
+script = ExtResource("icon")
+[node name="RewardTag0" type="Label" parent="JourneyPanel/RewardRow/RewardPick0"]
+offset_left = 24.0
+offset_top = 116.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 146.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.70,0.82,0.75,1)
+[node name="RewardName0" type="Label" parent="JourneyPanel/RewardRow/RewardPick0"]
+offset_left = 24.0
+offset_top = 146.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 190.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.95,0.87,0.71,1)
+[node name="RewardScroll0" type="ScrollContainer" parent="JourneyPanel/RewardRow/RewardPick0"]
+offset_left = 24.0
+offset_top = 202.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 338.0
+horizontal_scroll_mode = 0
+[node name="RewardText0" type="Label" parent="JourneyPanel/RewardRow/RewardPick0/RewardScroll0"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 20
+[node name="RewardPick1" type="Button" parent="JourneyPanel/RewardRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+theme_override_styles/normal = SubResource("card")
+theme_override_styles/hover = SubResource("chosen")
+theme_override_styles/pressed = SubResource("chosen")
+[node name="RewardIcon1" type="Control" parent="JourneyPanel/RewardRow/RewardPick1"]
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 104.0
+offset_bottom = 108.0
+mouse_filter = 2
+script = ExtResource("icon")
+[node name="RewardTag1" type="Label" parent="JourneyPanel/RewardRow/RewardPick1"]
+offset_left = 24.0
+offset_top = 116.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 146.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.70,0.82,0.75,1)
+[node name="RewardName1" type="Label" parent="JourneyPanel/RewardRow/RewardPick1"]
+offset_left = 24.0
+offset_top = 146.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 190.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.95,0.87,0.71,1)
+[node name="RewardScroll1" type="ScrollContainer" parent="JourneyPanel/RewardRow/RewardPick1"]
+offset_left = 24.0
+offset_top = 202.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 338.0
+horizontal_scroll_mode = 0
+[node name="RewardText1" type="Label" parent="JourneyPanel/RewardRow/RewardPick1/RewardScroll1"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 20
+[node name="RewardPick2" type="Button" parent="JourneyPanel/RewardRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+theme_override_styles/normal = SubResource("card")
+theme_override_styles/hover = SubResource("chosen")
+theme_override_styles/pressed = SubResource("chosen")
+[node name="RewardIcon2" type="Control" parent="JourneyPanel/RewardRow/RewardPick2"]
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 104.0
+offset_bottom = 108.0
+mouse_filter = 2
+script = ExtResource("icon")
+[node name="RewardTag2" type="Label" parent="JourneyPanel/RewardRow/RewardPick2"]
+offset_left = 24.0
+offset_top = 116.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 146.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.70,0.82,0.75,1)
+[node name="RewardName2" type="Label" parent="JourneyPanel/RewardRow/RewardPick2"]
+offset_left = 24.0
+offset_top = 146.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 190.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.95,0.87,0.71,1)
+[node name="RewardScroll2" type="ScrollContainer" parent="JourneyPanel/RewardRow/RewardPick2"]
+offset_left = 24.0
+offset_top = 202.0
+anchor_right = 1.0
+offset_right = -24.0
+offset_bottom = 338.0
+horizontal_scroll_mode = 0
+[node name="RewardText2" type="Label" parent="JourneyPanel/RewardRow/RewardPick2/RewardScroll2"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 20
+[node name="JourneySummary" type="Label" parent="JourneyPanel"]
+offset_left = 48.0
+offset_top = 614.0
+anchor_right = 1.0
+offset_right = -48.0
+offset_bottom = 678.0
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.70,0.82,0.75,1)
+[node name="JourneyConfirm" type="Button" parent="JourneyPanel"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -472.0
+offset_top = 690.0
+offset_right = -48.0
+offset_bottom = 766.0
+theme_override_font_sizes/font_size = 24
+[node name="JourneyCancel" type="Button" parent="JourneyPanel"]
+offset_left = 48.0
+offset_top = 690.0
+offset_right = 336.0
+offset_bottom = 766.0
+theme_override_font_sizes/font_size = 22
+[node name="JourneyGun" type="OptionButton" parent="JourneyPanel"]
+offset_left = 48.0
+offset_top = 270.0
+offset_right = 580.0
+offset_bottom = 346.0
+theme_override_font_sizes/font_size = 26

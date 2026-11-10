@@ -1,4 +1,6 @@
 extends SceneTree
+## RETIRED 2026-11-08 as a run target: checks replays the whole climb through the pre-November place, shop, gate and build buttons. Replaced by: gate_live_ui, supply_live_ui, event_live_ui, build_live_ui, common_windows_ui, story_scenes_ui, shop_terminal_live_runner, reward_live_runner.
+## Current UI suites: docs/qa/ui-test-suites.md
 ## Replay successful full-city real commands through the visible Godot controls.
 const Campaign = preload("res://redesign/campaign.gd")
 const Ammo = preload("res://redesign/content.gd")
@@ -204,17 +206,15 @@ func replay(expected: Dictionary) -> void:
 	await capture("city_complete_" + str(expected.gun))
 	if not await click("story_restore"): return
 	if not await click("story_results"): return
-	if await click("city_archive"):
+	if await click("Archive"):
 		await capture("city_archive_" + str(expected.gun))
 		await click("city_unlock_thermal")
 		check(screen.campaign.profile.unlocks.has("thermal"), "UI unlocks next-run loadout")
-		for child in screen.get_children():
-			if child is AcceptDialog or child.name == "WorkspaceOverlay": child.queue_free()
-		await settle()
-	if await click("retry"):
-		check(screen.campaign.s.phase == "map" and screen.campaign.absolute_floor() == 0 and screen.model.s.turns == 0, "retry resets whole city")
-		check(int(screen.campaign.s.seed) == int(expected.seed), "retry keeps route seed")
-		check(screen.campaign.profile.unlocks.has("thermal"), "retry retains profile unlock")
+		await click("workspace_close")
+	check(screen.find_child("retry", true, false) == null, "result omits same-route restart")
+	if await click("NewRun"):
+		check(screen.page == "loadout" and screen.campaign.s.phase == "won", "new challenge opens setup with the prior run intact")
+		check(screen.campaign.profile.unlocks.has("thermal"), "setup retains profile unlock")
 	print("CITY UI RUN " + str(expected.gun) + " complete")
 
 func developer() -> void:
@@ -458,6 +458,7 @@ func six_slot_layout(expected: Dictionary) -> void:
 			"enter": accepted = campaign.enter(int(command.id))
 			"reward": accepted = campaign.reward(str(command.id))
 			"gate": accepted = campaign.gate(str(command.id), str(command.get("ammo", "")))
+			"gate_depart": accepted = campaign.depart_gate()
 			"buy": accepted = campaign.buy(int(command.id))
 			"reroll": accepted = campaign.reroll()
 			"resolve": accepted = campaign.resolve(str(command.id), str(command.get("ammo", "")))

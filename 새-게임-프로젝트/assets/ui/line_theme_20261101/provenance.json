@@ -1,0 +1,67 @@
+{
+  "source": "tools/build_line_theme_assets.py and approved local HTML px_*.png",
+  "scale": 2,
+  "frames": {
+    "px_active.png": {
+      "sha256": "39aecbd64df99325b59ca525c70ff2d3c60e8c61d465ce52d7c811ca1cbc64df",
+      "exact_nearest_2x": true
+    },
+    "px_chip.png": {
+      "sha256": "6fe8fc34dc3d3ce48fdc6ce2dd5d257e7d34d90e078bf4cf4bd1846dd8b1fee4",
+      "exact_nearest_2x": true
+    },
+    "px_chip_on.png": {
+      "sha256": "514727e6412283d6df4d283c0a4c659ab7643266e40738655a0297ce757e800e",
+      "exact_nearest_2x": true
+    },
+    "px_cool.png": {
+      "sha256": "f9a80a70f5d4e81b873fcb930d3aaa9123ab47438f648f5bbc84ad1321c33f29",
+      "exact_nearest_2x": true
+    },
+    "px_danger.png": {
+      "sha256": "7cd45ac294080c7ab00756253ae51890c2b591689efc4e6488f879eda6446c24",
+      "exact_nearest_2x": true
+    },
+    "px_disabled.png": {
+      "sha256": "1cbcc2a1f3ff3be69cffaa0a2a6d1aec4c28b24544f208322fb7c81aad56dd02",
+      "exact_nearest_2x": true
+    },
+    "px_fire.png": {
+      "sha256": "af0300e849efa5c5737ac391be365efad71810e024cf7014f6a54ad5fe7d9bb5",
+      "exact_nearest_2x": true
+    },
+    "px_heat.png": {
+      "sha256": "49a04cdfaf1db0f73a5d02826245008c057868c90ccb378b7cc5028a02ebb595",
+      "exact_nearest_2x": true
+    },
+    "px_panel.png": {
+      "sha256": "11fdecdc3cbfb479d019484cbc399f4bd41bd74cffe5b8795660840bb95472de",
+      "exact_nearest_2x": true
+    },
+    "px_reload.png": {
+      "sha256": "903654210ef0c904f21eb53cf79ea175cc3ece392fcf3c5936669e79a94ce844",
+      "exact_nearest_2x": true
+    },
+    "px_slate.png": {
+      "sha256": "798e7d1de22df382cc3b3c251062c1a864957ee339cc67ff59a613c61f5c2f5e",
+      "exact_nearest_2x": true
+    },
+    "px_standby.png": {
+      "sha256": "a20b7d711dadba93e3b8169a679e39de0d53faee3f1510f51e60db5543587146",
+      "exact_nearest_2x": true
+    },
+    "px_tag.png": {
+      "sha256": "8671d19a1e5c9342a5c24070572f80c98bcb5335c01064c8ceb1ca9b3c1dbda8",
+      "exact_nearest_2x": true
+    },
+    "px_tag_named.png": {
+      "sha256": "22adc5fa7005d0870710480342c97f47b2aad43904e76be5e2613d0f0aa11cda",
+      "exact_nearest_2x": true
+    },
+    "px_tag_reach.png": {
+      "sha256": "3081224e2be860d63a812e8c72f9da0f75a2a4833daebf5697156e36334036de",
+      "exact_nearest_2x": true
+    }
+  },
+  "additional_rules": "tools/build_line_rules.py; 2px dashes, 2px gaps"
+}

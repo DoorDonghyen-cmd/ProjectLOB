@@ -1,0 +1,219 @@
+[gd_scene format=3]
+[ext_resource type="Theme" path="res://redesign/pipe_map/theme.tres" id="theme"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/combat.png" id="combat"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/elite.png" id="elite"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/gate_detail_closed.png" id="boss"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/gate_closed.png" id="boss_small"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/shop.png" id="shop"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/workshop.png" id="workshop"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/supply.png" id="supply"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/event.png" id="event"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/bypass.png" id="bypass"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_20261101/pm_home.png" id="home"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_20261101/pm_control.png" id="control"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/valve_closed.png" id="valve"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/elite_detail.png" id="elite_detail"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_residential_current.png" id="region0"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_foundry_closed.png" id="region1"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_garden_closed.png" id="region2"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_noble_closed.png" id="region3"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_central_closed.png" id="region4"]
+[node name="MapKeyContent" type="VBoxContainer"]
+offset_right = 760.0
+offset_bottom = 420.0
+size_flags_horizontal = 3
+theme = ExtResource("theme")
+theme_override_constants/separation = 14
+
+[node name="Kinds" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 4
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 8
+
+[node name="combat" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/combat"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("combat")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/combat"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "전투"
+
+[node name="elite" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/elite"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("elite_detail")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/elite"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "정예"
+
+[node name="shop" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/shop"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("shop")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/shop"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "상점"
+
+[node name="workshop" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/workshop"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("workshop")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/workshop"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "공방"
+
+[node name="supply" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/supply"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("supply")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/supply"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "탄약고"
+
+[node name="event" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/event"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("event")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/event"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "조우"
+
+[node name="bypass" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/bypass"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("bypass")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/bypass"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "샛길"
+
+[node name="boss" type="HBoxContainer" parent="Kinds"]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Kinds/boss"]
+custom_minimum_size = Vector2(36,36)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("boss")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="Kinds/boss"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "관문"
+
+[node name="Line0" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "황동 실선 · 지나온 길"
+autowrap_mode = 3
+
+[node name="Line1" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "밝은 황동 선 · 선택한 길"
+autowrap_mode = 3
+
+[node name="Line2" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "아이보리 모서리 · 지금 갈 수 있는 장소"
+autowrap_mode = 3
+
+[node name="Line3" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "옅은 실선 · 후속 갈래 / 점선 · 막힌 갈래"
+autowrap_mode = 3
+
+[node name="Line4" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "샛길 · 전투 한 곳 생략, 그 보상과 코어 성장 없음"
+autowrap_mode = 3
+
+[node name="Line5" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+text = "+ · 시작 거리 감소 등 추가 위험"
+autowrap_mode = 3
+

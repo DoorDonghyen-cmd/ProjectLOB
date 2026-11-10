@@ -1,0 +1,20 @@
+{
+  "campaign": {
+    "main_scene": "res://redesign/main.tscn",
+    "entry_script": "res://redesign/screen.gd",
+    "install": "docs/mobile_install.md",
+    "game_loop": "five regions; 35 floors; map/shop/events/progression; separate seven-combat training"
+  },
+  "weapon-magazine": {
+    "main_scene": "res://redesign/samples/combat_weapon_magazine.tscn",
+    "entry_script": "res://redesign/samples/combat_weapon_magazine.gd",
+    "install": "docs/mobile_comparison_install.md",
+    "game_loop": "A-layout comparison: five weapons, four earned encounters, whole magazines and selective ejection; separate comparison save"
+  },
+  "magazine-journey": {
+    "main_scene": "res://redesign/samples/hud/combat_journey_hud.tscn",
+    "entry_script": "res://redesign/samples/hud/combat_journey_hud.gd",
+    "install": "docs/mobile_journey_install.md",
+    "game_loop": "line-and-dot HUD; five connected battles to the first gate; earned core/ammo rewards and two workshops; separate magazine_journey_v1 save"
+  }
+}

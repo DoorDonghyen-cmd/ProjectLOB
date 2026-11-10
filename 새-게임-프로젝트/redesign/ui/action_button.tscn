@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://redesign/ui/standard_theme.tres" id="theme"]
+[ext_resource type="Script" path="res://redesign/ui/action_button.gd" id="script"]
+
+[node name="Action" type="Button"]
+custom_minimum_size = Vector2(96, 44)
+size_flags_horizontal = 8
+size_flags_vertical = 4
+theme = ExtResource("theme")
+theme_type_variation = &"ActionButton"
+texture_filter = 1
+text = "탄 선택"
+autowrap_mode = 2
+script = ExtResource("script")
+

@@ -1,4 +1,4 @@
-param([ValidateSet('rules','ui','balance','campaign')][string]$Mode = 'rules')
+param([ValidateSet('rules','ui','balance','campaign','armor')][string]$Mode = 'rules')
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 $project = (Get-ChildItem -LiteralPath $repo -Directory | Where-Object { Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot') } | Select-Object -First 1).FullName

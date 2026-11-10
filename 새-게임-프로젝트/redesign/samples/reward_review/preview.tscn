@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/rewards/screen.tscn" id="screen"]
+[ext_resource type="Script" path="res://redesign/samples/reward_review/preview.gd" id="preview"]
+
+[node name="RewardPreview" instance=ExtResource("screen")]
+script = ExtResource("preview")

@@ -3,21 +3,31 @@ const Data = preload("res://redesign/campaign_content.gd")
 const Ammo = preload("res://redesign/content.gd")
 const ChartView = preload("res://redesign/city_map_chart_view.gd")
 const ChartSymbols = preload("res://redesign/map_chart_symbols.gd")
+const PipeMapScreen = preload("res://redesign/pipe_map/screen.tscn")
 const Card = preload("res://redesign/ammo_card_view.gd")
 const COLLECTION_CARD_SIZE := Vector2(230, 164)
 const OFFER_CARD_SIZE := Vector2(230, 196)
 const AmmoOffer = preload("res://redesign/ammo_offer.tscn")
+const FocusOffer = preload("res://redesign/focus_ammo_offer.tscn")
 const AcquisitionView = preload("res://redesign/ammo_acquisition_view.tscn")
 const PartCard = preload("res://redesign/part_card_view.gd")
 const BuildGuide = preload("res://redesign/build_guide.gd")
 const UpgradeChoice = preload("res://redesign/upgrade_choice_view.gd")
 const CompressionChoice = preload("res://redesign/compression_choice_view.gd")
 const ShopOffer = preload("res://redesign/shop_offer.tscn")
+const PartChoice=preload("res://redesign/part_choice.gd")
 const PartInspection = preload("res://redesign/part_inspector.tscn")
 const ShopWorkbench = preload("res://redesign/shop_workbench.tscn")
+const ShopScreen = preload("res://redesign/shop_screen.tscn")
+const TerminalShopScreen = preload("res://redesign/shop_terminal_live.tscn")
 const DeckLoadout = preload("res://redesign/deck_loadout.tscn")
+const GateScreen = preload("res://redesign/samples/gate_review/threshold_preview.tscn")
+const DepotScreen = preload("res://redesign/samples/supply_review/preview.tscn")
+const EventScreen = preload("res://redesign/samples/event_review/preview.tscn")
+const BuildWorkshop = preload("res://redesign/build/workshop.gd")
 const Insight = preload("res://redesign/run_insight.gd")
 const Lore = preload("res://redesign/city_story.gd")
+const ArchiveRoom = preload("res://redesign/common/archive.gd")
 const CompressorGlyph = preload("res://redesign/field_compressor_view.gd")
 const ServicePlaces := {
 	"shop": preload("res://redesign/location_shop.tscn"),
@@ -25,6 +35,8 @@ const ServicePlaces := {
 	"workshop": preload("res://redesign/location_workshop.tscn")
 }
 const SceneBanner = preload("res://redesign/scene_banner.gd")
+const ResultsScreen = preload("res://redesign/results/screen.tscn")
+const RewardScreen = preload("res://redesign/rewards/campaign_screen.tscn")
 const StoryUI = preload("res://redesign/story_ui.gd")
 var ui
 var campaign
@@ -33,7 +45,10 @@ var selected_part_id := ""
 var replacement_part_id := ""
 var shop_selection := 0
 var results_for_campaign = null
+var results_details_open := false
 var place_body: VBoxContainer
+var map_memory: Dictionary = {}
+var workbench_memory: Dictionary = {}
 
 func render(screen) -> void:
 	ui = screen
@@ -49,6 +64,32 @@ func render(screen) -> void:
 	if state.phase == "won" and results_for_campaign != campaign:
 		StoryUI.homecoming(ui, _show_results)
 		return
+	if state.phase in ["won", "lost"]:
+		ending()
+		return
+	if state.phase == "shop":
+		shop()
+		return
+	if state.phase == "map":
+		map_screen()
+		return
+	if state.phase == "reward" and campaign.modern_places():
+		var screen_view := RewardScreen.instantiate()
+		screen_view.configure(ui)
+		ui.body.add_child(screen_view)
+		return
+	if state.phase == "supply" and campaign.modern_places() and campaign.node().get("workshop", false):
+		modern_workshop()
+		return
+	if state.phase == "gate" and campaign.modern_gates():
+		modern_gate()
+		return
+	if state.phase == "supply" and campaign.modern_places() and not campaign.node().get("workshop", false):
+		modern_depot()
+		return
+	if state.phase == "event" and campaign.modern_places():
+		modern_event()
+		return
 	_run_shell(state)
 	if ui.debug_session: ui._label(ui.body, "개발자 연습 · 실제 진행 저장 보존", 18, ui.DANGER)
 	if not ui.save_error.is_empty(): ui._label(ui.body, ui.save_error, 18, ui.DANGER)
@@ -58,23 +99,33 @@ func render(screen) -> void:
 		"reward": reward()
 		"supply", "event", "bypass": service()
 		"gate": gate()
-		"won", "lost": ending()
 
 func action(name: String, value: Variant = "", extra: String = "", replacement: String = "") -> void:
 	ui._campaign_action(name, value, extra, replacement)
 
 func _show_results() -> void:
+	results_details_open = false
 	results_for_campaign = campaign
 	ui.redraw()
+
+func shows_results(run) -> bool:
+	return run.s.phase == "lost" or (run.s.phase == "won" and results_for_campaign == run and not run.restoration_pending())
+
+func close_results_details() -> bool:
+	if not results_details_open:
+		return false
+	var view = ui.body.get_node_or_null("CampaignResults")
+	if view == null:
+		return false
+	view.set_details(false)
+	return true
 
 func _run_shell(state: Dictionary) -> void:
 	var shell := PanelContainer.new()
 	shell.name = "CampaignShellHeader"
-	var shell_style: StyleBoxFlat = ui._style(Color("17242c"))
+	var shell_style: StyleBoxTexture = ui._console_style("panel")
 	shell_style.content_margin_top = 8
 	shell_style.content_margin_bottom = 8
-	shell_style.border_color = Color("38515d")
-	shell_style.set_border_width_all(1)
 	shell.add_theme_stylebox_override("panel", shell_style)
 	ui.body.add_child(shell)
 	var column := VBoxContainer.new()
@@ -89,16 +140,16 @@ func _run_shell(state: Dictionary) -> void:
 		button.size_flags_horizontal = Control.SIZE_SHRINK_END
 		button.custom_minimum_size = Vector2(78, 40)
 		button.autowrap_mode = TextServer.AUTOWRAP_OFF
-		button.add_theme_font_size_override("font_size", ui._scaled(17))
+		button.add_theme_font_size_override("font_size", ui._font_scaled(17))
 	var stats := HFlowContainer.new()
 	stats.name = "RunStatusBar"
 	stats.add_theme_constant_override("h_separation", 20)
 	stats.add_theme_constant_override("v_separation", 4)
 	column.add_child(stats)
 	_shell_metric(stats, "● %d Cr" % int(state.credits), ui.ACCENT)
-	_shell_metric(stats, "◆ %d/%d" % [state.compressor_charges, campaign.MAX_COMPRESSOR_CHARGES], Color("63dce8"))
+	if not campaign.magazine_enabled(): _shell_metric(stats, "◆ %d/%d" % [state.compressor_charges, campaign.MAX_COMPRESSOR_CHARGES], Color("5cdddc"))
 	_shell_metric(stats, "⌁ %s · %d칸" % [Ammo.GUNS[state.gun].name, ui.model.capacity()], ui.INK)
-	_shell_metric(stats, "▤ %d/14" % ui.model.s.deck.size(), ui.INK)
+	_shell_metric(stats, "▤ %d/%d" % [ui.model.s.deck.size(), ui.model.deck_limit()], ui.INK)
 	_shell_metric(stats, "▲ 난도 %d%s" % [state.difficulty, " · 거리−2m" if int(state.pressure) > 0 else ""], ui.DANGER if int(state.pressure) > 0 else ui.MUTED)
 
 func _shell_metric(parent: Node, text: String, color: Color) -> void:
@@ -111,7 +162,7 @@ func _phase_intro(marker: String, title: String, question: String, color: Color,
 	panel.name = "PhaseHeader"
 	panel.custom_minimum_size.y = ui._scaled(height)
 	panel.clip_contents = true
-	var style: StyleBoxFlat = ui._style(Color("142129"))
+	var style: StyleBoxFlat = ui._style(Color("04181e"))
 	style.set_content_margin_all(0)
 	style.border_color = color.darkened(0.25)
 	style.border_width_bottom = 2
@@ -162,16 +213,33 @@ func part_card(parent: Node, id: String, compact: bool = false, equipped: bool =
 	parent.add_child(view)
 	return view
 
+## Part details (2026-11-08): common window, opened from the build workshop, rewards and
+## the shop terminal. Same content as before.
 func part_details(id: String) -> void:
-	var panel = ui._dialog(str(Ammo.PARTS[id].name))
+	var panel: VBoxContainer = ui.CommonWindows.open(ui, str(Ammo.PARTS[id].name), Ammo.part_grade_summary(id), Vector2(780, 600))
 	panel.name = "PartDetails"
-	ui._label(panel, Ammo.part_grade_summary(id), 18, Ammo.part_grade_color(id))
-	ui._label(panel, "등급 막대 1 / 2 / 3개: 일반 / 고급 / 희귀 · 코어는 별도 장착 제한", 15, ui.MUTED)
-	var view := part_card(panel, id, false, campaign.is_equipped(id))
-	view.custom_minimum_size.y = 132
-	ui._label(panel, "장착 효과 · " + Insight.reward_impact(id, ui.model.s, []), 20, ui.INK)
-	ui._label(panel, BuildGuide.connection(id, ui.model.s), 18, ui.ACCENT)
-	ui._label(panel, str(Ammo.PARTS[id].text), 17, ui.MUTED)
+	panel.get_meta("dialog").get_node("%Subtitle").add_theme_color_override("font_color", Ammo.part_grade_color(id))
+	# The part's pixel icon (as on the mount) beside its effect, instead of the old teal card.
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 16)
+	panel.add_child(top)
+	var plate := PanelContainer.new()
+	plate.theme_type_variation = &"Inspector"
+	top.add_child(plate)
+	var icon := preload("res://redesign/results/core_icon.gd").new()
+	icon.name = "PartDetailIcon"
+	icon.part_id = id
+	icon.custom_minimum_size = Vector2(96, 72)
+	plate.add_child(icon)
+	var copy := VBoxContainer.new()
+	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	copy.alignment = BoxContainer.ALIGNMENT_CENTER
+	top.add_child(copy)
+	ui.CommonWindows.text(copy, ("장착 중" if campaign.is_equipped(id) else "보관 중") if campaign.s.parts.has(id) else "미보유", &"Caption")
+	ui.CommonWindows.text(copy, "장착 효과 · " + Insight.reward_impact(id, ui.model.s, []), &"", ui.CommonWindows.IVORY)
+	ui.CommonWindows.text(copy, BuildGuide.connection(id, ui.model.s), &"", ui.CommonWindows.GOLD)
+	ui.CommonWindows.text(panel, str(Ammo.part_spec(id,ui.model.s).text), &"", ui.CommonWindows.MUTED)
+	ui.CommonWindows.text(panel, "등급 막대 1 / 2 / 3개: 일반 / 고급 / 희귀 · 코어는 별도 장착 제한", &"Caption")
 
 func _purchase_will_equip(id: String) -> bool:
 	var proposed: Array = campaign.equipped_parts()
@@ -214,7 +282,7 @@ func equipped_strip(parent: Node) -> void:
 		cell.add_theme_constant_override("separation", 2)
 		strip.add_child(cell)
 		var id := str(equipped[slot]) if slot < equipped.size() else "none"
-		ui._label(cell, "%02d%s" % [slot + 1, " · CORE" if Ammo.is_core_part(id) else ""], 12, Color("ffd86b") if Ammo.is_core_part(id) else ui.MUTED)
+		ui._label(cell, "%02d%s" % [slot + 1, " · CORE" if Ammo.is_core_part(id) else ""], 12, Color("f3cf73") if Ammo.is_core_part(id) else ui.MUTED)
 		part_card(cell, id, true, id != "none", true)
 
 func upgrade_card(button: Button, kind: String, values: Dictionary = {}) -> void:
@@ -225,128 +293,9 @@ func upgrade_card(button: Button, kind: String, values: Dictionary = {}) -> void
 	button.add_child(view)
 
 func map_screen() -> void:
-	var heading: HBoxContainer = ui._row(ui.body)
-	heading.name = "MapHeading"
-	heading.custom_minimum_size.y = ui._scaled(64)
-	var title: Label = ui._label(heading, "탑 탐사도", 26, ui.ACCENT)
-	title.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	title.autowrap_mode = TextServer.AUTOWRAP_OFF
-	var legend := HFlowContainer.new()
-	legend.name = "MapLegend"
-	legend.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	legend.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	legend.alignment = FlowContainer.ALIGNMENT_END
-	legend.add_theme_constant_override("h_separation", 14)
-	legend.add_theme_constant_override("v_separation", 4)
-	heading.add_child(legend)
-	for role in ["combat", "elite", "boss", "shop", "workshop", "supply", "event", "bypass"]:
-		var entry: HBoxContainer = ui._row(legend)
-		entry.add_theme_constant_override("separation", 4)
-		var icon := TextureRect.new()
-		icon.custom_minimum_size = Vector2(32, 30)
-		icon.texture = ChartSymbols.role_texture(role)
-		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		entry.add_child(icon)
-		var caption: Label = ui._label(entry, "샛길 · 전투 생략" if role == "bypass" and campaign.modern_places() else Data.kind_name(role), 16, ui.MUTED)
-		caption.autowrap_mode = TextServer.AUTOWRAP_OFF
-		caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	var risk_entry: HBoxContainer = ui._row(legend)
-	risk_entry.add_theme_constant_override("separation", 4)
-	var risk_icon: Label = ui._label(risk_entry, "+", 20, ui.DANGER)
-	risk_icon.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	risk_icon.autowrap_mode = TextServer.AUTOWRAP_OFF
-	risk_icon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	var risk_caption: Label = ui._label(risk_entry, "추가 위험", 16, ui.MUTED)
-	risk_caption.autowrap_mode = TextServer.AUTOWRAP_OFF
-	risk_caption.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	var map := ChartView.new()
-	map.feedback_scale = 0.0 if str(ui.preferences.data.motion) == "instant" else ui.preferences.motion_scale()
-	map.name = "CityMap"
-	map.setup(campaign)
-	var workspace := VBoxContainer.new()
-	workspace.name = "MapWorkspace"
-	workspace.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	workspace.add_theme_constant_override("separation", 8)
-	ui.body.add_child(workspace)
-	var map_scroll := ScrollContainer.new()
-	map_scroll.name = "MapScroll"
-	map_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	map_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	map_scroll.custom_minimum_size.y = 300
-	map_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	map_scroll.follow_focus = true
-	workspace.add_child(map_scroll)
-	map_scroll.add_child(map)
-	var route_sheet := PanelContainer.new()
-	route_sheet.name = "MapRouteSheet"
-	route_sheet.add_theme_stylebox_override("panel", ui._style(Color("17242c")))
-	workspace.add_child(route_sheet)
-	var strip := HBoxContainer.new()
-	strip.add_theme_constant_override("separation", 16)
-	route_sheet.add_child(strip)
-	var copy := VBoxContainer.new()
-	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	strip.add_child(copy)
-	var selection_label: Label = ui._label(copy, "목적지를 선택하세요", 24, ui.INK)
-	selection_label.name = "MapSelectionPrompt"
-	var route_detail: Label = ui._label(copy, "", 17, ui.MUTED)
-	route_detail.name = "MapRouteDetail"
-	var selection := {"id": 0}
-	var details: Button = ui._button(strip, "자세히", "city_map_details", func(): inspect_node(int(selection.id)))
-	details.custom_minimum_size.x = 110
-	details.size_flags_horizontal = Control.SIZE_SHRINK_END
-	var row := HBoxContainer.new()
-	row.size_flags_horizontal = Control.SIZE_SHRINK_END
-	strip.add_child(row)
-	var choice_buttons: Dictionary = {}
-	var choice_items: Dictionary = {}
-	for item in campaign.choices():
-		var enter_button: Button = ui._button(row, "이동", "city_enter_" + str(item.id), action.bind("enter", int(item.id)), true)
-		enter_button.custom_minimum_size.x = 180
-		enter_button.visible = false
-		choice_buttons[int(item.id)] = enter_button
-		choice_items[int(item.id)] = item
-	var show_room := func(id: int):
-		var selected_item: Dictionary = {}
-		for item in campaign.current_nodes():
-			if int(item.id) == id: selected_item = item
-		if selected_item.is_empty(): return
-		selection.id = id
-		map.select_room(id)
-		selection_label.text = ("샛길 → " if campaign.is_shortcut(id) else "") + str(selected_item.name) + (" · 미리보기" if not choice_items.has(id) else "")
-		var brief: PackedStringArray = []
-		if campaign.is_shortcut(id): brief.append("전투 한 곳 건너뜀 · 그 전투의 보상과 코어 성장 포기")
-		if selected_item.get("elite", false): brief.append("강한 적 · 파츠 보상")
-		elif selected_item.get("workshop", false): brief.append("무료 정비 1회")
-		if selected_item.route == "duct":
-			brief.append("시작 거리 −2m · Cr 선택 시 +%d" % Data.ROUTE_REWARD_BONUS if selected_item.kind in ["combat", "boss"] else "다음 전투 시작 거리 −2m")
-		elif selected_item.kind in ["combat", "boss"] and choice_items.has(id) and int(campaign.s.pressure) > 0:
-			brief.append("이전 선택으로 시작 거리 −2m")
-		route_detail.text = " · ".join(brief)
-		route_detail.visible = not brief.is_empty()
-		route_detail.modulate = Color("f2a38d") if selected_item.route == "duct" else Color.WHITE
-		for button_id in choice_buttons:
-			var button := choice_buttons[button_id] as Button
-			button.disabled = int(button_id) != id
-			button.visible = int(button_id) == id
-			if int(button_id) == id:
-				button.text = "전투 건너뛰기" if campaign.is_shortcut(id) else "이동"
-				ui._primary_button(button)
-	map.selected.connect(show_room)
-	map.inspected.connect(show_room)
-	if not campaign.choices().is_empty():
-		show_room.call(int(campaign.choices()[0].id))
-		_reveal_map_choice.call_deferred(map_scroll, map, int(campaign.choices()[0].id))
-
-func _reveal_map_choice(scroll: ScrollContainer, map: Control, id: int) -> void:
-	# Scroll limits are only correct after the outer responsive containers have settled.
-	for i in range(3): await ui.get_tree().process_frame
-	if not is_instance_valid(scroll) or not is_instance_valid(map): return
-	var button := map.find_child("map_node_" + str(id), true, false) as Control
-	if button != null: scroll.ensure_control_visible(button)
+	var map := PipeMapScreen.instantiate()
+	ui.body.add_child(map)
+	map.bind(ui, self)
 
 func inspect_node(id: int) -> void:
 	var item: Dictionary = {}
@@ -359,7 +308,7 @@ func inspect_node(id: int) -> void:
 	ui._label(panel, "\uacc4\ub2e8 \u00b7 \ubb34\ub8cc" if item.route == "stairs" else "\ud658\uae30\uad6c \u00b7 \ub2e4\uc74c \uc804\ud22c \uc2dc\uc791 \uac70\ub9ac -2m", 18, ui.ACCENT)
 	if item.route == "duct" and item.kind in ["combat", "boss"]: ui._label(panel, "크레딧 보상 +%dCr" % Data.ROUTE_REWARD_BONUS, 19, ui.ACCENT)
 	if item.kind in ["combat", "boss"]:
-		var pack := Data.encounter_pack(item, int(campaign.s.seed), str(campaign.s.gun), int(campaign.s.difficulty), 2 if item.route == "duct" or (campaign.choices().any(func(n): return int(n.id) == id) and int(campaign.s.pressure) > 0) else 0, int(campaign.s.get("roster_version", 1)))
+		var pack := Data.encounter_pack(item, int(campaign.s.seed), str(campaign.s.gun), int(campaign.s.difficulty), 2 if item.route == "duct" or (campaign.choices().any(func(n): return int(n.id) == id) and int(campaign.s.pressure) > 0) else 0, int(campaign.s.get("roster_version", 1)), int(campaign.s.get("combat_revision",0)))
 		var all_enemies: Array = pack.active + pack.reserve
 		ui._label(panel, Insight.threat_line(all_enemies), 18)
 		var count_label: Label = ui._label(panel, "\uc804\uc5f4 %d  \u00b7  \uc99d\uc6d0 %d  \u00b7  \ucd1d %d" % [pack.active.size(), pack.reserve.size(), pack.total], 20, ui.ACCENT)
@@ -374,7 +323,7 @@ func inspect_node(id: int) -> void:
 		if not pack.reserve.is_empty():
 			var reserve_names: PackedStringArray = []
 			for enemy in pack.reserve: reserve_names.append(str(enemy.name))
-			ui._label(panel, "\ub300\uae30  " + "  >  ".join(reserve_names), 16, Color("63dce8"))
+			ui._label(panel, "\ub300\uae30  " + "  >  ".join(reserve_names), 16, Color("5cdddc"))
 		var lesson := Data.lesson(item, ui.model.s)
 		if not lesson.is_empty(): ui._label(panel, lesson, 18, ui.MUTED)
 	elif item.kind == "shop":
@@ -383,47 +332,72 @@ func inspect_node(id: int) -> void:
 	ui._label(panel, campaign.route_outlook(id), 18, ui.MUTED)
 func reward() -> void:
 	var first_ammo: bool = campaign.first_ammo_reward()
+	var focus: bool = campaign.Model.FocusBuild.enabled(campaign.s)
+	var package_choice: bool = focus and first_ammo
+	var boss_loot: bool = campaign.boss_loot()
 	var opening: bool = int(campaign.s.get("discovery_version",0)) >= 3 and campaign.engine_reward()
-	_phase_intro("◆", "첫 특수탄 선택 · 2/2" if first_ammo else ("성장 코어 선택 · 1/2" if opening else str(campaign.node().name) + " 통과"), "원하는 한 장을 골라 기본탄과 교체하거나 추가하세요." if first_ammo else ("코어를 고른 다음 첫 특수탄을 선택합니다." if opening else ("이번 등반의 화력 성장 방식을 고르세요." if campaign.engine_reward() else "전투 결과를 하나의 다음 선택으로 바꾸세요.")), Color("ffd86b"))
+	_phase_intro("◆", "주력 탄 선택 · 2/2" if package_choice else "첫 특수탄 선택 · 2/2" if first_ammo else ("성장 코어 선택 · 1/2" if opening else str(campaign.node().name) + " 통과"), "키울 주력 탄과 함께 쓸 지원 탄을 고르세요." if package_choice else "원하는 한 장을 골라 기본탄과 교체하거나 추가하세요." if first_ammo else ("코어를 고른 다음 첫 특수탄을 선택합니다." if opening else ("이번 등반의 화력 성장 방식을 고르세요." if campaign.engine_reward() else "전투 결과를 하나의 다음 선택으로 바꾸세요.")), Color("f3cf73"))
+	if package_choice:
+		ui._label(ui.body, "주력 2장 + 지원 1장 · 위력이 낮은 기본탄 3장과 교체 · 총 탄약 유지", 18, ui.ACCENT)
 	var reward_frame := VBoxContainer.new()
 	reward_frame.name = "RewardFrame"
 	reward_frame.add_theme_constant_override("separation",14)
 	ui.body.add_child(reward_frame)
+	if boss_loot:
+		var loot_header := HBoxContainer.new()
+		loot_header.add_theme_constant_override("separation",12)
+		reward_frame.add_child(loot_header)
+		var receipt: Label = ui._label(loot_header,"보스 전리품 · +%d Cr 수령 완료" % campaign.boss_credits(),24,ui.ACCENT)
+		receipt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var continue_button: Button = ui._button(loot_header,"탄환 없이 관문 개조로" if int(campaign.s.region)<4 else "정상으로 이동","city_reward_skip",action.bind("reward","skip"))
+		continue_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+		continue_button.custom_minimum_size.x = 260
+		ui._label(reward_frame,"고급탄 포함 · 탄환 하나를 선택한 뒤 관문 개조로 이동합니다." if int(campaign.s.region)<4 else "마지막 전리품 · 선택 후 정상으로 이동합니다.",18,ui.MUTED)
 	if campaign.s.get("encounter", {}).get("stage", "") == "cleared":
 		ui._label(reward_frame, str(campaign.s.message) + " · 별도 보상 수령 완료", 20, ui.ACCENT)
-	if not first_ammo: ui._encounter_debrief(reward_frame, campaign.encounter_report_state())
+	if not first_ammo: ui._encounter_debrief(reward_frame, campaign.encounter_report_state(),boss_loot)
 	var row := GridContainer.new()
 	row.name = "RewardGrid"
 	row.columns = 3
+	if focus and ui.get_tree().root.content_scale_mode == Window.CONTENT_SCALE_MODE_DISABLED:
+		row.columns = clampi(int((ui.get_tree().root.size.x - 56) / (297 if campaign.engine_reward() or not campaign.part_rewards().is_empty() else 242)),1,3)
 	row.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	row.add_theme_constant_override("h_separation", 12)
 	row.add_theme_constant_override("v_separation", 12)
 	reward_frame.add_child(row)
 	for id in campaign.reward_options():
-		var take: Button = AmmoOffer.instantiate()
+		var package_panel: VBoxContainer = FocusOffer.instantiate() if package_choice else null
+		var take: Button = package_panel.get_node("Offer") if package_choice else AmmoOffer.instantiate()
 		take.name = "city_reward_" + id
-		take.disabled = not can_take_ammo(id) or ui.busy
+		take.disabled = (campaign.Model.FocusBuild.replace_opening(ui.model.s.deck,id).is_empty() if package_choice else not can_take_ammo(id)) or ui.busy
 		take.custom_minimum_size = OFFER_CARD_SIZE
 		take.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		take.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 		var face: Control = take.get_node("CardInfo")
 		var ownership := "새 탄종" if Insight.family_count(ui.model.s,Ammo.source_id(id))==0 else "동일 성능 %d장 보유" % ui.model.s.deck.count(id)
-		face.setup(id,1,ui.model.s,take.disabled,false,ownership)
+		if focus: ownership = "주력 탄 2장" if package_choice else campaign.Model.FocusBuild.offer_label(ui.model.s,id)
+		face.setup(id,2 if package_choice else 1,ui.model.s,take.disabled,false,ownership)
 		take.pressed.connect(func(): ui.feedback.play("click"))
-		take.pressed.connect(acquire_ammo.bind(id,"reward",id))
-		row.add_child(take)
+		if package_choice:
+			take.tooltip_text = campaign.Model.FocusBuild.package_text(id) + " · 기본탄 3장 교체"
+			take.pressed.connect(action.bind("reward",id))
+			row.add_child(package_panel)
+			package_panel.get_node("Package").text = campaign.Model.FocusBuild.package_text(id)
+		else:
+			take.pressed.connect(acquire_ammo.bind(id,"reward",id))
+			row.add_child(take)
 	for id in campaign.part_rewards():
 		var panel = ui._panel(row)
 		panel.get_parent().custom_minimum_size.x = 285
 		part_card(panel, id, false, false)
 		if preload("res://redesign/damage_engines.gd").IDS.has(id):
 			var summary: Dictionary = {
-				"volley_drive":["남은 타격으로 다음 적 공격", "3회 피해 타격 후 승리 → 타격 +1"],
-				"thermal_drive":["고열 배율 · 열 한계 도달 시 충격파", "고열 피해 후 승리 → 배율 +0.25"],
-				"siege_drive":["한 발의 초과 피해를 다음 적에게", "한 발로 8피해 후 승리 → 배율 +0.25"]
+				"volley_drive":"남은 타격으로 다음 적 공격",
+				"thermal_drive":"고열 배율 · 열 한계 도달 시 충격파",
+				"siege_drive":"한 발의 초과 피해를 다음 적에게"
 			}
-			ui._label(panel, summary[id][0], 18, ui.INK)
-			ui._label(panel, summary[id][1], 16, ui.MUTED)
+			ui._label(panel, summary[id], 18, ui.INK)
+			ui._label(panel, preload("res://redesign/damage_engines.gd").growth_rule(ui.model.s,id), 16, ui.MUTED)
 			var spacer := Control.new()
 			spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 			panel.add_child(spacer)
@@ -432,16 +406,16 @@ func reward() -> void:
 			panel.add_child(actions)
 			var info: Button = ui._button(actions,"상세","city_core_detail_"+id,part_details.bind(id))
 			info.autowrap_mode = TextServer.AUTOWRAP_OFF
-			info.add_theme_font_size_override("font_size",ui._scaled(17))
+			info.add_theme_font_size_override("font_size",ui._font_scaled(17))
 			info.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 			info.custom_minimum_size.x = 88
 			ui._primary_button(ui._button(actions,"이 코어 선택","city_reward_"+id,action.bind("reward",id)))
 			continue
-		ui._label(panel, str(Ammo.PARTS[id].text), 17, ui.MUTED)
+		ui._label(panel, str(Ammo.part_spec(id,ui.model.s).text), 17, ui.MUTED)
 		ui._label(panel, ("성장 코어 · 1개 선택\n" if campaign.engine_reward() else "정예 보상 · 파츠 1개\n") + ("빈 슬롯에 자동 장착" if campaign.can_equip_reward(id) else "획득 후 보관함에서 교체"), 17, ui.MUTED)
-		ui._primary_button(ui._button(panel, "파츠 가져가기", "city_reward_" + id, action.bind("reward", id)), Color("ffd86b"))
+		ui._primary_button(ui._button(panel, "파츠 가져가기", "city_reward_" + id, action.bind("reward", id)), Color("f3cf73"))
 	if campaign.engine_reward() or first_ammo:
-		ui._label(reward_frame,"한 장 선택 · 다음 전투부터 사용" if first_ammo else "한 개 선택 · 이번 등반에 유지 · 코어는 동시에 하나만 장착",16,ui.MUTED)
+		ui._label(reward_frame,"한 묶음 선택 · 다음 전투부터 사용" if package_choice else "한 장 선택 · 다음 전투부터 사용" if first_ammo else "한 개 선택 · 이번 등반에 유지 · 코어는 동시에 하나만 장착",16,ui.MUTED)
 		var alternatives := HBoxContainer.new()
 		alternatives.alignment = BoxContainer.ALIGNMENT_END
 		reward_frame.add_child(alternatives)
@@ -449,22 +423,24 @@ func reward() -> void:
 			var button: Button = ui._button(alternatives,choice[0],"city_reward_"+choice[1],action.bind("reward",choice[1]))
 			button.size_flags_horizontal = Control.SIZE_SHRINK_END
 			button.autowrap_mode = TextServer.AUTOWRAP_OFF
-			button.add_theme_font_size_override("font_size",ui._scaled(17))
+			button.add_theme_font_size_override("font_size",ui._font_scaled(17))
 			button.custom_minimum_size.x = 240
+		return
+	if boss_loot:
 		return
 	var wallet = ui._panel(row)
 	wallet.get_parent().custom_minimum_size.x = 285
 	ui._label(wallet, "+%d Cr" % campaign.credit_reward(), 42, ui.ACCENT)
 	ui._label(wallet, ("정예 고정 배급" if campaign.node().get("elite", false) else "전투 소모가 적을수록 배급 증가") + "\n상점 일반 12Cr · 고급 24Cr", 18, ui.MUTED)
 	if campaign.node().route == "duct": ui._label(wallet, "환기구 보너스 +%dCr 포함" % Data.ROUTE_REWARD_BONUS, 16, ui.ACCENT)
-	ui._primary_button(ui._button(wallet, "크레딧 받기", "city_reward_credits", action.bind("reward", "credits")), Color("ffd86b"))
+	ui._primary_button(ui._button(wallet, "크레딧 받기", "city_reward_credits", action.bind("reward", "credits")), Color("f3cf73"))
 	var skip: Button = ui._button(reward_frame, "선택 없이 계속", "city_reward_skip", action.bind("reward", "skip"))
 	skip.size_flags_horizontal = Control.SIZE_SHRINK_END
 	skip.custom_minimum_size.x = 190
 
 func can_take_ammo(id: String) -> bool:
 	if campaign.can_acquire_ammo(id): return true
-	for source in campaign.replaceable_basics():
+	for source in campaign.replaceable_ammo():
 		if campaign.can_acquire_ammo(id, source): return true
 	return false
 
@@ -489,9 +465,22 @@ func acquire_ammo(id: String, command: String, value: Variant, extra: String = "
 		choices.remove_child(child)
 		child.queue_free()
 	var count: int = ui.model.s.deck.size()
+	var refit: bool = command == "resolve" and value == "refit"
+	var owned_replacement: bool = ui.model.Reserve.inventory_enabled(ui.model.s)
+	layout.get_node("%ReplaceHeading").text = "보유 탄환 한 장과 교체" if owned_replacement else "기본탄 한 장과 교체"
 	layout.get_node("%DeckCount").text = "덱 %d장 유지 · 내보낼 탄을 선택하세요" % count
+	var finite: bool = ui.model.Reserve.enabled(ui.model.s)
+	if finite:
+		layout.get_node("%DeckCount").text = "휴대 %d/%d장 · 교체해도 총량은 유지됩니다" % [count, ui.model.deck_limit()]
+		var add_host: Control = layout.get_node("%AddHost")
+		add_host.get_parent().move_child(add_host, 0)
+		layout.get_node("%Alternative").text = "추가: 전투 총량 증가 · 교체: 필요한 탄의 비중 조정"
+		layout.get_node("%Alternative").autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if refit:
+		layout.get_node("%Alternative").text = "무료 정비 1회 사용 · 한 장을 내보내고 한 장 획득"
+		layout.get_node("%AddHost").hide()
 	var offered := 0
-	for source in campaign.replaceable_basics():
+	for source in campaign.replaceable_ammo():
 		if not campaign.can_acquire_ammo(id, source): continue
 		offered += 1
 		var button: Button=preload("res://redesign/ammo_change_choice.tscn").instantiate()
@@ -507,13 +496,13 @@ func acquire_ammo(id: String, command: String, value: Variant, extra: String = "
 			dialog.close()
 			_acquire_and_notice(command,value,extra,id,source)
 		)
-		button.tooltip_text="기본탄 한 장을 %s으로 교체합니다. 덱 %d장은 유지됩니다."%[Ammo.AMMO[id].name,count]
+		button.tooltip_text="%s 한 장을 %s으로 교체합니다. 총 %d장은 유지되며 내보낸 탄은 돌아오지 않습니다."%[Ammo.AMMO[source].name,Ammo.AMMO[id].name,count]
 
-	if offered==0: ui._label(choices,"교체할 일반 기본탄이 없습니다.",17,ui.MUTED)
-	ui._button(layout.get_node("%AddHost"),"그대로 추가 · %d → %d장" % [count,count+1] if count<14 else "덱이 가득함 · 14/14장","ammo_acquire_add",func():
+	if offered==0: ui._label(choices,"교체할 다른 탄환이 없습니다.",17,ui.MUTED)
+	ui._button(layout.get_node("%AddHost"),"탄약 추가 · %d → %d장" % [count,count+1] if count<ui.model.deck_limit() else "탄약 가득함 · %d/%d장" % [count,ui.model.deck_limit()],"ammo_acquire_add",func():
 		dialog.close()
 		_acquire_and_notice(command,value,extra,id)
-	,not campaign.can_acquire_ammo(id))
+	,refit or not campaign.can_acquire_ammo(id))
 	# Count only the rows actually offered (an identical card is not a replacement).
 	dialog.set_meta("preferred_size", Vector2(980, clampf(280 + 108 * offered, 390, 720)))
 	dialog._fit()
@@ -548,7 +537,7 @@ func _place_action(parent: Node, title: String, key: String, callback: Callable,
 	button.custom_minimum_size = Vector2(width, 52)
 	button.size_flags_horizontal = Control.SIZE_SHRINK_END
 	button.autowrap_mode = TextServer.AUTOWRAP_OFF
-	button.add_theme_font_size_override("font_size", ui._scaled(18))
+	button.add_theme_font_size_override("font_size", ui._font_scaled(18))
 	return button
 
 func _place_footer() -> HBoxContainer:
@@ -575,7 +564,7 @@ func _footer_button(row: HBoxContainer, title: String, key: String, callback: Ca
 
 func _collection_workspace(parent: VBoxContainer, width: float) -> VBoxContainer:
 	var column := VBoxContainer.new()
-	column.custom_minimum_size.x = width
+	column.custom_minimum_size.x = minf(width, maxf(280, ui.size.x - 56))
 	column.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	column.add_theme_constant_override("separation", 12)
 	parent.add_child(column)
@@ -596,6 +585,11 @@ func _place_section(title: String) -> void:
 
 
 func shop() -> void:
+	var view := TerminalShopScreen.instantiate() if campaign.modern_places() else ShopScreen.instantiate()
+	view.configure(ui)
+	ui.body.add_child(view)
+
+func _legacy_shop_layout() -> void:
 	var host: VBoxContainer = _place_frame(1200) if campaign.modern_places() else ui.body
 	var resident: Dictionary = Lore.SHOPS[int(campaign.s.region)]
 	var place := _service_place(host, "shop", str(campaign.node().name), str(resident.greeting))
@@ -655,7 +649,7 @@ func shop() -> void:
 		var price: Label = tile.get_node("%Price")
 		price.name = "ShopPrice_"+str(i)
 		price.text = "구매 완료" if offer.sold else "%d Cr"%int(offer.price)
-		price.add_theme_color_override("font_color",ui.MUTED if offer.sold else Color("e4d2a5"))
+		price.add_theme_color_override("font_color",ui.MUTED if offer.sold else Color("f3cf73"))
 		var status: Label = tile.get_node("%Status")
 		status.text = ("동일 성능 %d장 보유"%ui.model.s.deck.count(id)) if offer.type=="ammo" else Ammo.part_grade_name(id)+(" · 코어" if Ammo.is_core_part(id) else " · 파츠")
 		status.add_theme_color_override("font_color",ui.MUTED)
@@ -678,6 +672,7 @@ func shop() -> void:
 	glyph.position = Vector2(5, 8)
 	glyph.size = Vector2(50, 36)
 	glyph.setup(int(campaign.s.compressor_charges), not core_button.disabled)
+	core_button.visible = not campaign.magazine_enabled()
 	if (workbench.get_node("%ShopHint") as Label).text.is_empty():
 		(workbench.get_node("%ShopHint") as Label).text = "파츠는 빈 슬롯에 자동 장착됩니다. 교체는 빌드 작업실에서 할 수 있습니다."
 
@@ -700,7 +695,7 @@ func _layout_shop(workbench: Control, reroll: Button, compressor: Button) -> voi
 	reroll.reparent(heading)
 	reroll.custom_minimum_size = Vector2(180, 44)
 	reroll.size_flags_horizontal = Control.SIZE_SHRINK_END
-	reroll.add_theme_font_size_override("font_size", ui._scaled(17))
+	reroll.add_theme_font_size_override("font_size", ui._font_scaled(17))
 	workbench.get_node("%WalletStatus").hide() # Credits already stay in the run header.
 	var footer := _place_footer()
 	place_body.get_node("PlaceFooterSpace").hide()
@@ -710,7 +705,7 @@ func _layout_shop(workbench: Control, reroll: Button, compressor: Button) -> voi
 	var build: Button = ui._button(footer, "파츠 관리", "city_shop_build", deck)
 	build.custom_minimum_size = Vector2(136, 52)
 	build.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	build.add_theme_font_size_override("font_size", ui._scaled(17))
+	build.add_theme_font_size_override("font_size", ui._font_scaled(17))
 	_footer_button(footer, "맵으로 계속  ›", "city_leave", action.bind("leave"))
 	workbench.get_node("%TopActions").hide()
 	# A quiet shop has no instructional paragraph. Actual purchase/reroll feedback remains.
@@ -729,7 +724,7 @@ func _shop_feedback(workbench: Control) -> void:
 		"purchase":
 			var id := str(detail.get("id", ""))
 			if Ammo.PARTS.has(id): message = str(campaign.s.message)
-			elif Ammo.AMMO.has(id): message = "%s 구매 · %s · 덱 %d장" % [Ammo.AMMO[id].name,"기본탄과 교체" if not str(detail.get("removed","")).is_empty() else "한 장 추가",ui.model.s.deck.size()]
+			elif Ammo.AMMO.has(id): message = "%s 구매 · %s · 덱 %d장" % [Ammo.AMMO[id].name,"보유 탄과 교체" if not str(detail.get("removed","")).is_empty() else "한 장 추가",ui.model.s.deck.size()]
 		"purchase_compressor", "shop_compress", "tune": message = str(campaign.s.message)
 		"reroll": message = "새 진열 도착 · %dCr 사용 · 다음 교체 %dCr" % [int(detail.get("cost", 3)), campaign.reroll_cost()]
 	if message.is_empty(): return
@@ -761,20 +756,20 @@ func _show_shop_offer_compare(workbench: Control, offer: Dictionary, offer_index
 	var rules: Callable
 	if str(offer.type)=="ammo":
 		title.text=str(Ammo.AMMO[id].name)
-		status.text="구매 완료" if sold else "기본탄과 교체 또는 한 장 추가"
+		status.text="구매 완료" if sold else "보유 탄과 교체 또는 한 장 추가"
 		var face:=Card.new()
 		face.setup(id,1,ui.model.s)
 		body.text=face.effect_text()
 		face.free()
 		cost.text="발열 "+Ammo.heat_label(id,ui.model.s)
 		if Ammo.is_compressed(id): cost.text+=" · "+Ammo.compression_cost_text(id,ui.model.s)
-		change.text="동일 성능 %d장 보유 · 덱 %d/14장"%[ui.model.s.deck.count(id),ui.model.s.deck.size()]
+		change.text="동일 성능 %d장 보유 · 탄약 %d/%d장"%[ui.model.s.deck.count(id),ui.model.s.deck.size(),ui.model.deck_limit()]
 		rules=func():
 			var dialog=ui._dialog(str(Ammo.AMMO[id].name),true)
 			ammo_card(dialog,id)
 			ui._label(dialog,preload("res://redesign/readability.gd").description(id,ui.model.s),18)
 	else:
-		var part: Dictionary=Ammo.PARTS[id]
+		var part: Dictionary=Ammo.part_spec(id,ui.model.s)
 		title.text=str(part.name)
 		body.text=str(part.upside)
 		cost.text="대가 · "+str(part.downside) if not str(part.downside).is_empty() else ""
@@ -797,16 +792,16 @@ func _show_shop_offer_compare(workbench: Control, offer: Dictionary, offer_index
 	cost.visible=not cost.text.is_empty()
 	var detail: Button=ui._button(actions,"상세 규칙","city_offer_detail_"+str(offer_index),rules)
 	detail.custom_minimum_size.y=44
-	detail.add_theme_font_size_override("font_size",ui._scaled(16))
+	detail.add_theme_font_size_override("font_size",ui._font_scaled(16))
 	var callback: Callable=acquire_ammo.bind(id,"buy",offer_index) if str(offer.type)=="ammo" else action.bind("buy",offer_index)
 	var unavailable:=sold or int(campaign.s.credits)<int(offer.price) or (str(offer.type)=="ammo" and not can_take_ammo(id))
 	var label:="구매 완료" if sold else "%dCr 구매 · 잔액 %d"%[int(offer.price),int(campaign.s.credits)-int(offer.price)]
 	if not sold and int(campaign.s.credits)<int(offer.price): label="%dCr 부족"%(int(offer.price)-int(campaign.s.credits))
-	elif not sold and str(offer.type)=="ammo" and not can_take_ammo(id): label="덱이 가득함 · 교체할 기본탄 없음"
+	elif not sold and str(offer.type)=="ammo" and not can_take_ammo(id): label="가방이 가득함 · 교체할 탄 없음"
 	var purchase: Button=ui._button(actions,label,"city_compare_buy_"+str(offer_index),callback,unavailable)
 	ui._primary_button(purchase)
 	purchase.custom_minimum_size=Vector2(180,48)
-	purchase.add_theme_font_size_override("font_size",ui._scaled(18))
+	purchase.add_theme_font_size_override("font_size",ui._font_scaled(18))
 	if campaign.modern_places():
 		detail.size_flags_horizontal = Control.SIZE_SHRINK_END
 		detail.custom_minimum_size.x = 140
@@ -817,10 +812,10 @@ func _part_stat_changes(before: Dictionary, after: Dictionary) -> PackedStringAr
 	var projection=ui.model.get_script().new()
 	projection.s=after
 	var changes: PackedStringArray=[]
-	if Ammo.reload_cooling(before)!=Ammo.reload_cooling(after): changes.append("재장전 냉각  %d → %d"%[Ammo.reload_cooling(before),Ammo.reload_cooling(after)])
+	if Ammo.replacement_cooling(before)!=Ammo.replacement_cooling(after): changes.append("재장전 냉각  %d → %d"%[Ammo.replacement_cooling(before),Ammo.replacement_cooling(after)])
 	if Ammo.hand_capacity(before)!=Ammo.hand_capacity(after): changes.append("선택 패  %d → %d장"%[Ammo.hand_capacity(before),Ammo.hand_capacity(after)])
 	if Ammo.heat_limit(before)!=Ammo.heat_limit(after): changes.append("열 한계  %d → %d"%[Ammo.heat_limit(before),Ammo.heat_limit(after)])
-	if Ammo.hot_threshold(before)!=Ammo.hot_threshold(after) and (before.deck.has("thermal") or Ammo.has_part(before,"ember_core") or Ammo.has_part(after,"ember_core")):
+	if Ammo.hot_threshold(before)!=Ammo.hot_threshold(after) and (Ammo.uses_hot_effect(before) or Ammo.uses_hot_effect(after)):
 		changes.append("고열 조건  %d → %d"%[Ammo.hot_threshold(before),Ammo.hot_threshold(after)])
 	if Ammo.capacity(before)!=Ammo.capacity(after): changes.append("탄창  %d → %d칸"%[Ammo.capacity(before),Ammo.capacity(after)])
 	if ui.model.reload_cost()!=projection.reload_cost(): changes.append("재장전  %d → %d턴"%[ui.model.reload_cost(),projection.reload_cost()])
@@ -829,10 +824,10 @@ func _part_stat_changes(before: Dictionary, after: Dictionary) -> PackedStringAr
 func _style_shop_workbench(workbench: Control) -> void:
 	var panel: PanelContainer=workbench.get_node("%OfferComparePanel")
 	panel.add_theme_stylebox_override("panel",ui._console_style("panel"))
-	workbench.get_node("%OfferCompareTitle").add_theme_color_override("font_color",Color("e9e2cc"))
-	workbench.get_node("%OfferCompareStatus").add_theme_color_override("font_color",Color("adc7af"))
-	workbench.get_node("%OfferCompareCost").add_theme_color_override("font_color",Color("e6a580"))
-	workbench.get_node("%OfferCompareChange").add_theme_color_override("font_color",Color("a5b4ac"))
+	workbench.get_node("%OfferCompareTitle").add_theme_color_override("font_color",Color("e4f2ee"))
+	workbench.get_node("%OfferCompareStatus").add_theme_color_override("font_color",Color("5cdddc"))
+	workbench.get_node("%OfferCompareCost").add_theme_color_override("font_color",Color("ff9a6a"))
+	workbench.get_node("%OfferCompareChange").add_theme_color_override("font_color",Color("8fb0b0"))
 
 func equipment(parent: Node, hosts: Dictionary = {}) -> void:
 	var panel: Node
@@ -891,7 +886,7 @@ func service() -> void:
 		workshop()
 		return
 	var question := "공개된 탄환 한 장을 보급하세요." if campaign.s.phase == "supply" else "얻는 것과 다음 전투의 비용을 함께 확인하세요."
-	var service_color: Color = Color("63dce8") if campaign.s.phase == "supply" else ui.DANGER
+	var service_color: Color = Color("5cdddc") if campaign.s.phase == "supply" else ui.DANGER
 	var service_marker := "□" if campaign.s.phase == "supply" else "!"
 	if campaign.node().get("workshop", false):
 		_service_place(ui.body, "workshop", "정비 공방" if campaign.modern_places() else "정비 작업대", "작업을 마쳤습니다.")
@@ -941,16 +936,16 @@ func workshop() -> void:
 	var trim = ui._panel(row)
 	ui._label(trim, "덱 정리", 26)
 	ui._label(trim, "선택한 탄 1장 제거\n최소 8장을 유지합니다.", 18, ui.MUTED)
-	ui._button(trim, "제거할 탄 선택", "city_workshop_trim", workshop_choices.bind("remove"), ui.model.s.deck.size() <= campaign.MIN_DECK)
+	ui._button(trim, "제거할 탄 선택", "city_workshop_trim", workshop_choices.bind("remove"), ui.model.s.deck.size() <= campaign.minimum_deck())
 	var core = ui._panel(row)
 	ui._label(core, "압축 코어", 26)
-	ui._label(core, "%d → %d / 2" % [campaign.s.compressor_charges, mini(2, int(campaign.s.compressor_charges) + 1)], 36, Color("d6bb84"))
+	ui._label(core, "%d → %d / 2" % [campaign.s.compressor_charges, mini(2, int(campaign.s.compressor_charges) + 1)], 36, Color("f3cf73"))
 	ui._label(core, "전투 중 압축 +1회\n미사용 기회 유지", 18, ui.MUTED)
 	ui._button(core, "코어 충전", "city_workshop_core", action.bind("resolve", "core"), int(campaign.s.compressor_charges) >= 2)
 	var bag = ui._panel(row)
 	ui._label(bag, "가방 확장", 26)
 	var bag_before := Ammo.hand_capacity(ui.model.s)
-	ui._label(bag, "%d → %d장" % [bag_before, bag_before + (1 if campaign.can_grow_bag() else 0)], 36, Color("d6bb84"))
+	ui._label(bag, "%d → %d장" % [bag_before, bag_before + (1 if campaign.can_grow_bag() else 0)], 36, Color("f3cf73"))
 	ui._label(bag, campaign.bag_growth_hint(), 18, ui.MUTED)
 	ui._button(bag, "가방 +1장", "city_workshop_bag", action.bind("resolve", "bag"), not campaign.can_grow_bag())
 	ui._button(ui.body, "정비 없이 계속", "city_service_skip", action.bind("resolve", "skip"))
@@ -999,7 +994,10 @@ func remove_choices(choice: String, title: String, prefix: String) -> void:
 	ui._label(ui.body, "분해 뒤에도 덱 8장을 유지합니다.", 17, ui.MUTED)
 
 func gate() -> void:
-	_phase_intro("▲", "구역 관문 통과", "다음 구역까지 유지할 성장 하나를 선택하세요.", Color("ffd86b"))
+	if campaign.modern_gates():
+		preload("res://redesign/gate_reward_ui.gd").render(self)
+		return
+	_phase_intro("▲", "구역 관문 통과", "다음 구역까지 유지할 성장 하나를 선택하세요.", Color("f3cf73"))
 	ui._label(ui.body, Data.info(int(campaign.s.region) + 1).name + " / " + Data.info(int(campaign.s.region) + 1).brief, 21, ui.MUTED)
 	var row := GridContainer.new()
 	row.name = "GateUpgradeGrid"
@@ -1100,92 +1098,39 @@ func compression_dialog(context: String = "gate") -> void:
 		, context == "shop" and (int(campaign.s.credits) < campaign.COMPRESSION_PRICE or bool(campaign.s.shop_refined)))
 
 func ending() -> void:
-	var won: bool = campaign.s.phase == "won"
-	_phase_intro("◆" if won else "×", "돌아갈 곳에 불이 켜졌다." if won else "등반은 여기서 멈췄다.", "기상 설비 재가동 · 중앙 차단 해제 · 각 구역 현장 제어 복구" if won else "적이 닿기 전에 완성할 순서를 다시 설계해 보세요.", ui.ACCENT if won else ui.DANGER, 120)
-	if won:
-		ui._label(ui.body, "정비소로 돌아오니, 동료가 식탁에 그릇을 하나 더 놓는다.\n“왔네. 손부터 녹여.”", 23)
-	var summary = ui._row(ui.body)
-	ui._stat(summary, "▥", "이동 경로", "%d곳 통과" % campaign.s.visited.size(), ui.ACCENT)
-	ui._stat(summary, "×", "전투", "%d회 통과" % int(campaign.s.clears))
-	ui._stat(summary, "⌛", "행동", "%d턴" % int(ui.model.s.turns))
-	ui._stat(summary, "›", "발사", "%d발" % int(ui.model.s.shots))
-	ui._stat(summary, "↻", "재장전", "%d회" % int(ui.model.s.reloads))
-	ui._label(ui.body, Insight.combat_report_line(ui.model.s), 19, ui.ACCENT)
-	ui._heat_report(ui.body, ui.model.s)
-	if not campaign.equipped_parts().is_empty(): equipped_strip(ui.body)
-	ui._label(ui.body, str(campaign.s.message), 22)
-	if not won:
-		var advice = ui._panel(ui.body)
-		ui._label(advice, "다음 설계", 20, ui.ACCENT)
-		ui._label(advice, Insight.loss_advice(ui.model.s), 18)
-	ui._label(ui.body, "최종 덱 / " + Insight.deck_summary(ui.model.s.deck), 19)
-	var row = ui._row(ui.body)
-	ui._button(row, "같은 경로로 다시 등반", "retry", ui._start.bind(str(campaign.s.gun), true))
-	ui._button(row, "기록실", "city_archive", archive)
-	ui._button(row, "새 등반 선택", "new_run", ui._to_menu)
+	var motion := 0.0
+	if results_for_campaign != campaign:
+		results_for_campaign = campaign
+		results_details_open = false
+		if ui.preferences.data.motion != "instant":
+			motion = ui.preferences.motion_scale()
+	var view := ResultsScreen.instantiate()
+	ui.body.add_child(view)
+	view.present(campaign, motion, ui.save_error)
+	view.fit_available(ui.ReadableUI.available(ui).size)
+	view.set_details(results_details_open)
+	view.details_changed.connect(func(open: bool): results_details_open = open)
+	view.archive_requested.connect(archive)
+	view.new_run_requested.connect(_new_challenge)
 
+func _new_challenge() -> void:
+	if ui.busy:
+		return
+	ui.preparation_seed = ""
+	ui._open_preparation()
+
+## 빌드 작업실 (reworked 2026-11-08): redesign/build/workshop.gd, registered as the
+## screen's workspace overlay so 닫기/Esc/focus return behave as before.
 func deck(initial_tab: String = "parts") -> void:
-	var panel = ui._workspace("빌드 작업실", "파츠를 선택하면 효과와 교체 결과를 확인할 수 있습니다.")
-	var view := DeckLoadout.instantiate()
-	panel.add_child(view)
-	view.tab_changed.connect(ui._workspace_focus_chain.call_deferred)
-	for path in ["%SummaryPanel", "%EquipmentPanel", "%InventoryPanel", "%DeckPanel"]:
-		(view.get_node(path) as PanelContainer).add_theme_stylebox_override("panel", StyleBoxEmpty.new())
-	(view.get_node("%PartInspector") as PanelContainer).add_theme_stylebox_override("panel",ui._console_style("panel"))
-	(view.get_node("%DeckSummary") as Label).text = "%s   ·   탄창 %d칸   ·   재장전 %d턴   ·   탄환 %d/14" % [Ammo.GUNS[campaign.s.gun].name, ui.model.capacity(), ui.model.reload_cost(), ui.model.s.deck.size()]
-	(view.get_node("%DeckSummary") as Label).text += "   ·   가방 %d장 / 교환 %d" % [Ammo.hand_capacity(ui.model.s), Ammo.exchange_capacity(ui.model.s)]
-	(view.get_node("%DeckSummary") as Label).tooltip_text = Ammo.outfit_name(ui.model.s)
-	var feedback: Label = view.get_node("%BuildFeedback")
-	feedback.text = workspace_feedback if not workspace_feedback.is_empty() else ("전투 사이에는 무료로 교체할 수 있습니다." if campaign.can_manage_parts() else "전투 중에는 열람만 가능합니다.")
+	ui._close_workspace()
+	var prior: Control = ui.get_viewport().gui_get_focus_owner()
+	if prior != null: ui.workspace_return_focus = weakref(prior)
+	var view: Control = BuildWorkshop.new()
+	view.name = "WorkspaceOverlay"
+	view.configure(ui, self, initial_tab, workspace_feedback)
 	workspace_feedback = ""
-	var equipped: Array = campaign.equipped_parts()
-	var cores := 0
-	for id in equipped:
-		if Ammo.is_core_part(str(id)): cores += 1
-	(view.get_node("%LoadoutStatus") as Label).text = "장착대 %d/5   ·   코어 %d/1" % [equipped.size(), cores]
-	var grid: GridContainer = view.get_node("%EquippedPartGrid")
-	for preview in grid.get_children():
-		grid.remove_child(preview)
-		preview.queue_free()
-	for slot in range(campaign.MAX_EQUIPPED_PARTS):
-		var id := str(equipped[slot]) if slot < equipped.size() else "none"
-		var cell: Button = ui._button(grid, "", "equipped_part_detail_" + str(slot), _inspect_part.bind(view, id), id == "none")
-		cell.custom_minimum_size = Vector2(0, 180)
-		var card := part_card(cell, id, false, id != "none")
-		card.custom_minimum_size = Vector2.ZERO
-		card.portrait = true
-		card.slot_number = slot + 1
-	var inventory: GridContainer = view.get_node("%InventoryGrid")
-	for preview in inventory.get_children():
-		inventory.remove_child(preview)
-		preview.queue_free()
-	inventory.columns=2
-	var stored := 0
-	for id_value in campaign.s.parts:
-		var id := str(id_value)
-		if equipped.has(id): continue
-		stored += 1
-		var cell: Button = ui._button(inventory, "", "city_part_select_" + id, _inspect_part.bind(view, id))
-		cell.custom_minimum_size = Vector2(0, 72)
-		var card := part_card(cell, id, true, false, true)
-		card.custom_minimum_size = Vector2.ZERO
-	(view.get_node("%InventoryHint") as Label).text = "보관함 · %d개" % stored
-	if stored == 0: ui._label(inventory, "상점과 보상에서 새 파츠를 모으세요.", 17, ui.MUTED)
-	if selected_part_id.is_empty() or not campaign.s.parts.has(selected_part_id):
-		selected_part_id = str(campaign.s.parts[0]) if not campaign.s.parts.is_empty() else "none"
-	_inspect_part(view, selected_part_id)
-	view.show_tab(initial_tab)
-	var ammo_grid: GridContainer = view.get_node("%DeckGrid")
-	ammo_grid.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var seen: Array = []
-	for value in ui.model.s.deck:
-		var id := str(value)
-		if seen.has(id): continue
-		seen.append(id)
-		var cell = ui._panel(ammo_grid)
-		var card := ammo_card(cell, id)
-		card.custom_minimum_size = COLLECTION_CARD_SIZE
-		ui._label(cell, "%s · %d장 · 덱의 %d%%" % [Ammo.grade_name(id), ui.model.s.deck.count(id), roundi(float(ui.model.s.deck.count(id)) / float(ui.model.s.deck.size()) * 100.0)], 16, ui.MUTED)
+	ui.add_child(view)
+	ui.workspace_overlay = view
 
 func _inspect_part(view: Control, id: String) -> void:
 	if not is_instance_valid(view): return
@@ -1194,7 +1139,7 @@ func _inspect_part(view: Control, id: String) -> void:
 	for child in column.get_children(): column.remove_child(child);child.queue_free()
 	var detail: Control=PartInspection.instantiate()
 	column.add_child(detail)
-	var data: Dictionary=Ammo.PARTS[id]
+	var data: Dictionary=Ammo.part_spec(id,ui.model.s)
 	var active: bool=campaign.is_equipped(id)
 	var status: Label=detail.get_node("Status")
 	status.text=Ammo.part_grade_name(id)+" · "+("장착 중" if active else ("코어 · 1개만 장착" if Ammo.is_core_part(id) else "보관 파츠"))
@@ -1259,17 +1204,20 @@ func _inspect_part(view: Control, id: String) -> void:
 		var lines: PackedStringArray=[]
 		var costs: PackedStringArray=[]
 		if not active:
-			lines.append("얻음  "+str(data.upside))
+			lines.append("얻음  "+PartChoice.effect(id,after))
 			if not str(data.downside).is_empty(): costs.append("대가  "+str(data.downside))
 		var removed_id:=id if active else outgoing
 		if not removed_id.is_empty():
-			var removed: Dictionary=Ammo.PARTS[removed_id]
-			lines.append("잃음  "+str(removed.upside))
+			var removed: Dictionary=Ammo.part_spec(removed_id,ui.model.s)
+			lines.append("잃음  "+PartChoice.effect(removed_id,before))
 			if not str(removed.downside).is_empty(): costs.append("해제  "+str(removed.downside))
+		var fit:=PartChoice.fit(id,after)
+		if not fit.is_empty():lines.append(fit)
 		effects.text="\n".join(lines)
 		cost.text="\n".join(costs)
 		cost.visible=not cost.text.is_empty()
 		var changes:=_part_stat_changes(before,after)
+		changes.append_array(PartChoice.deltas(before,after))
 		var projection=ui.model.get_script().new();projection.s=after
 		delta.text="\n".join(changes) if not changes.is_empty() else "탄창 %d칸 · 재장전 %d턴 유지"%[Ammo.capacity(after),projection.reload_cost()]
 		var command:="replace_part" if not outgoing.is_empty() else "equip"
@@ -1299,57 +1247,64 @@ func _apply_part_change(command: String, value: String, selected: String) -> voi
 	deck.call_deferred("parts")
 
 
-func archive() -> void:
-	var panel = ui._workspace("기록실", "발견한 이야기와 다음 등반의 준비")
-	var profile: Dictionary = campaign.profile
-	ui._label(panel, "전술 데이터 %d · 완주%d / 등반%d · 최고 난도%d" % [profile.cores, profile.wins, profile.runs, profile.ascension], 24, ui.ACCENT)
-	ui._label(panel, "첫 특수탄 보급 선호 해금 · 첫 승리 후 선택 후보를 바꿉니다", 20)
-	for id in Data.LOADOUTS:
-		var owned: bool = profile.unlocks.has(id)
-		ui._button(panel, Data.LOADOUTS[id].name + (" · 해금됨" if owned else " · 30데이터"), "city_unlock_" + id, func():
-			if campaign.unlock(id):
-				ui._persist()
-				archive.call_deferred()
-		, owned or int(profile.cores) < 30)
-	ui._label(panel, "도시 기록 %d / 20 · 발견한 기록만 열람할 수 있습니다" % profile.lore.size(), 24, ui.ACCENT)
-	var lore_grid := GridContainer.new()
-	lore_grid.columns = 5
-	lore_grid.add_theme_constant_override("h_separation", 8)
-	lore_grid.add_theme_constant_override("v_separation", 8)
-	panel.add_child(lore_grid)
-	for id in range(1, 21):
-		if profile.lore.has(id):
-			var entry := Lore.entry(id)
-			ui._button(lore_grid, "%02d\n%s" % [id, entry.title], "city_lore_" + str(id), func():
-				var detail = ui._workspace(entry.title, "발견한 기록 · %02d / 20" % id)
-				var prose: Label = ui._label(detail, entry.text, 24)
-				prose.name = "StoryRecordText"
-				ui._button(detail, "기록 목록으로", "story_record_back", archive)
-			)
-		else:
-			ui._button(lore_grid, "%02d\n미복원" % id, "city_lore_locked_" + str(id), func(): pass, true)
+## 기록실 (2026-11-08): records by region with a reading panel, and the supply
+## preferences, in the workshop/gate/depot theme. Registered as the workspace overlay.
+func archive(initial_tab: String = "records") -> void:
+	ui._close_workspace()
+	var prior: Control = ui.get_viewport().gui_get_focus_owner()
+	if prior != null: ui.workspace_return_focus = weakref(prior)
+	var view = ArchiveRoom.new()
+	view.name = "WorkspaceOverlay"
+	view.configure(ui, self, initial_tab)
+	ui.add_child(view)
+	ui.workspace_overlay = view
+
+## Gate scene (approved 2026-11-05 threshold review), linked to the live run 2026-11-07.
+## Older gate rules keep gate() below.
+func modern_gate() -> void:
+	var view := GateScreen.instantiate()
+	view.name = "GateScreen"
+	# Fill the screen exactly (no 540 floor): the scene is a fixed stage, not a scroll page.
+	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
+	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	view.configure(ui, self)
+	ui.body.add_child(view)
+
+## Depot scene (3rd draft, approved 2026-11-08): offers on the bottom shelf, swap
+## switches the shelf to owned stacks. Saves without the place revision keep service().
+func modern_depot() -> void:
+	var view := DepotScreen.instantiate()
+	view.name = "DepotScreen"
+	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
+	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	view.configure(ui, self)
+	ui.body.add_child(view)
+
+## Event scene (approved 2026-11-08): corridor art, story panel with clue choices,
+## result plus one action; found rounds add or swap on the bottom shelf.
+func modern_event() -> void:
+	var view := EventScreen.instantiate()
+	view.name = "EventScreen"
+	view.custom_minimum_size.y = ui.ReadableUI.available(ui).size.y
+	view.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	view.configure(ui, self)
+	ui.body.add_child(view)
 
 func modern_workshop() -> void:
-	var host := _place_frame()
-	_service_place(host, "workshop", "정비 공방", "이번 방문에 무료 작업 한 번.\n탄환을 다듬거나 가방을 확장하세요.")
-	var grid := GridContainer.new()
-	grid.name = "WorkshopOperations"
-	grid.columns = 2
-	grid.add_theme_constant_override("h_separation", 12)
-	grid.add_theme_constant_override("v_separation", 12)
-	host.add_child(grid)
-	var can_tune: bool = ui.model.s.deck.any(func(id): return not Ammo.Variants.tuned(id, Ammo.AMMO, "power").is_empty())
-	var specs := [
-		["탄환 압축", "동일 성능 일반 2장 → 고급 1장", "압축할 탄 선택", "city_workshop_press", workshop_choices.bind("compress"), campaign.compressible_ids().is_empty()],
-		["탄환 개조", "한 장의 화력 +1 또는 발열 −1", "개조할 탄 선택", "city_workshop_tune", tune_choices, not can_tune],
-		["덱 정리", "탄환 한 장 제거 · 최소 8장 유지", "제거할 탄 선택", "city_workshop_trim", workshop_choices.bind("remove"), ui.model.s.deck.size() <= campaign.MIN_DECK],
-		["가방 확장", campaign.bag_growth_hint(), "가방 %d → %d장" % [Ammo.hand_capacity(ui.model.s), Ammo.hand_capacity(ui.model.s) + (1 if campaign.can_grow_bag() else 0)], "city_workshop_bag", action.bind("resolve", "bag"), not campaign.can_grow_bag()]]
-	for spec in specs:
+	var view := preload("res://redesign/workbench/screen.tscn").instantiate()
+	view.custom_minimum_size.y = maxf(540, ui.ReadableUI.available(ui).size.y)
+	ui.body.add_child(view)
+	view.configure(ui, self)
+
+func workshop_refit() -> void:
+	var panel = ui._workspace("탄종 교체", "후보를 고른 뒤 내보낼 탄 한 장을 선택합니다. 확정하면 이번 무료 정비를 사용합니다.")
+	panel = _collection_workspace(panel, 870)
+	var grid := _service_ammo_grid(panel)
+	for id in campaign.workshop_ammo_options():
 		var cell = ui._panel(grid)
-		ui._label(cell, str(spec[0]), 23)
-		_choice_note(cell, str(spec[1]))
-		_place_action(cell, str(spec[2]), str(spec[3]), spec[4], bool(spec[5]))
-	_footer_button(_place_footer(), "작업 없이 계속", "city_service_skip", action.bind("resolve", "skip"))
+		ammo_card(cell, id)
+		var replaceable: bool = campaign.replaceable_ammo().any(func(source): return campaign.can_acquire_ammo(id, source))
+		ui._button(cell, "내보낼 탄 선택", "city_refit_" + id, acquire_ammo.bind(id, "resolve", "refit", id), not replaceable)
 
 func modern_supply() -> void:
 	var host := _place_frame()
@@ -1407,7 +1362,7 @@ func encounter_service() -> void:
 
 func _service_ammo_grid(parent: Node) -> GridContainer:
 	var grid := GridContainer.new()
-	grid.columns = 3
+	grid.columns = 3 if ui.size.x >= 900 else 2 if ui.size.x >= 620 else 1
 	grid.size_flags_horizontal = Control.SIZE_FILL
 	grid.add_theme_constant_override("h_separation", 12)
 	grid.add_theme_constant_override("v_separation", 12)

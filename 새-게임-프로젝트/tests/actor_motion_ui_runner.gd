@@ -100,11 +100,11 @@ func check_rendered_mechanics() -> void:
 	# Compare both render paths after live gun switches, including disabled cache.
 	for gun in actor.WEAPONS:
 		actor.configure(gun, "aim", 0.0, -1.0, 0.0)
-		actor.coarse_burst = false
+		actor.coarse_weapons = false
 		var original: int = await rendered_actor(viewport)
-		actor.coarse_burst = true
+		actor.coarse_weapons = true
 		var coarse: int = await rendered_actor(viewport)
-		check(original != coarse if gun == "burst" else original == coarse, "density changes only burst pixels " + gun)
+		check(original != coarse, "shared density changes weapon pixels " + gun)
 	actor.configure("burst", "aim", 0.0, -1.0, 0.0)
 	var cold: int = await rendered_actor(viewport)
 	actor.configure("burst", "aim", 0.0, -1.0, 1.0)

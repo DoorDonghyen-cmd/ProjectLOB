@@ -1,0 +1,116 @@
+{
+  "source": "https://github.com/patch-gg/pixelfx",
+  "version": "0.3.0",
+  "commit": "a84159688af3ca37a4be05a0d422b94451b2e24e",
+  "build": "node tools/build_surface_fx.mjs",
+  "assets": {
+    "shield": {
+      "recipe": "impacts/shield-block",
+      "options": {
+        "seed": 12,
+        "palette": [
+          "#18272e",
+          "#263d48",
+          "#365362",
+          "#527786",
+          "#8aafb2",
+          "#b1c9c8",
+          "#d1ddd4",
+          "#ede9d2"
+        ],
+        "sparks": [
+          "#f0ddab",
+          "#d0b67a",
+          "#ae875a",
+          "#765c47"
+        ]
+      },
+      "pivot": [
+        65.71970716703163,
+        66.90527630141507
+      ],
+      "frames": 23,
+      "cell": [
+        148,
+        104
+      ],
+      "columns": 5,
+      "size": {
+        "w": 740,
+        "h": 520
+      },
+      "sha256": "ae44dd1265bc7fc20a4498152cd658df42b055a77572c7fb35192ed93f7acc6b"
+    },
+    "metal": {
+      "recipe": "impacts/bullet-impact",
+      "options": {
+        "seed": 6,
+        "height": 24,
+        "stone": "#5a6466",
+        "palette": [
+          "#25343b",
+          "#546160",
+          "#8c8b76",
+          "#b3a579",
+          "#d0bd86",
+          "#e7d5a9",
+          "#f1ead0"
+        ]
+      },
+      "pivot": [
+        116,
+        60
+      ],
+      "frames": 29,
+      "cell": [
+        152,
+        100
+      ],
+      "columns": 5,
+      "size": {
+        "w": 760,
+        "h": 600
+      },
+      "sha256": "23cd04f195d350d19a479a74c66521f8e68081d3807ee4882b379dc480b2a23a"
+    },
+    "fire": {
+      "recipe": "lob/fire-only (fire/_lib.js burn)",
+      "options": {
+        "seed": 29,
+        "palette": [
+          "#2a2522",
+          "#563c31",
+          "#81503b",
+          "#ab6544",
+          "#d48b54",
+          "#e5ac6e",
+          "#f1c890",
+          "#f4dfb0",
+          "#f5e9cf"
+        ]
+      },
+      "pivot": [
+        32,
+        56
+      ],
+      "frames": 12,
+      "cell": [
+        64,
+        64
+      ],
+      "columns": 4,
+      "size": {
+        "w": 256,
+        "h": 192
+      },
+      "sha256": "1417002f4de9e47fe6b3b002dbe3eec15bdd0c67fb5bbcb5126fa3d193b6a80a"
+    }
+  },
+  "excluded": [
+    "stock actor",
+    "torch bracket/handle",
+    "runtime JavaScript",
+    "runtime particles/RNG"
+  ],
+  "builder_sha256": "f47e7f2b93b24c37aff11a927982629b492a80c366a3c2a77309f0560af0bcbe"
+}

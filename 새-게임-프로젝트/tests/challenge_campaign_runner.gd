@@ -21,7 +21,7 @@ func _run() -> void:
 		for gun in ["burst","amplifier"]:
 			print("CHALLENGE CAMPAIGN START ",core," ",gun)
 			await first_region(gun,731042,"safe")
-			check(reports.back().state.roster_version == 5,"campaign retains new roster")
+			check(reports.back().state.roster_version == Data.Residential.VERSION,"campaign retains current roster")
 			check(reports.back().combat.enemies[0].get("species","") == "closure_watch","real route reaches new boss")
 	var file := FileAccess.open(output.path_join("campaign.json"),FileAccess.WRITE)
 	file.store_string(JSON.stringify({"checks":checks,"failures":failures,"runs":reports,"wider_searches":wider_searches},"  "));file.close()

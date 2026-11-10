@@ -41,9 +41,9 @@ func refresh(selected: bool) -> void:
 	set_pressed_no_signal(selected)
 	$Picture.modulate = Color.WHITE if selected or can_enter or is_current else Color(0.73, 0.79, 0.82, 1.0)
 	if chart_mode:
-		$Picture.modulate = Color("edc47a") if selected else (Color.WHITE if can_enter or is_current else (Color("a8b7b3") if on_route else Color("465c64")))
+		$Picture.modulate = Color.WHITE if selected or can_enter or is_current else (Color("8fb0b0") if on_route else Color("56777a"))
 		$Risk.modulate.a = 1.0 if selected or can_enter else 0.65
-	$Status.add_theme_color_override("font_color", Color("edc47a") if is_current else Color("a4b6b7"))
+	$Status.add_theme_color_override("font_color", Color("e4f2ee") if is_current else Color("8fb0b0"))
 	if newly_selected and chart_mode and is_inside_tree() and feedback_scale > 0.0:
 		var resting: Color = $Picture.modulate
 		$Picture.modulate = Color("fff1c9")
@@ -52,13 +52,17 @@ func refresh(selected: bool) -> void:
 	queue_redraw()
 
 func _draw() -> void:
-	if not button_pressed and not has_focus(): return
-	# The full transparent button remains touchable. Only the picture gets
-	# short corner marks; facility names live in the shared map legend.
-	var color := Color("edc47a") if button_pressed else Color("a4b6b7")
 	var left := floorf((size.x - 82.0) * 0.5)
-	for point in [Vector2(left, 12), Vector2(left + 82, 12), Vector2(left, 64), Vector2(left + 82, 64)]:
-		var horizontal := 6.0 if point.x == left else -6.0
-		var vertical := 6.0 if point.y == 12 else -6.0
-		draw_line(point, point + Vector2(horizontal, 0), color, 2, false)
-		draw_line(point, point + Vector2(0, vertical), color, 2, false)
+	var rect := Rect2(left, 12, 82, 52)
+	if button_pressed:
+		draw_rect(rect, Color("0d3a40"))
+		draw_rect(rect, Color("5cdddc"), false, 2)
+	elif can_enter: draw_rect(rect, Color("f3cf73"), false, 2)
+	if is_current:
+		for x in range(int(left), int(left+82), 8):
+			draw_rect(Rect2(x,12,mini(4,int(left+82)-x),2),Color("e4f2ee"))
+			draw_rect(Rect2(x,62,mini(4,int(left+82)-x),2),Color("e4f2ee"))
+		for y in range(12,64,8):
+			draw_rect(Rect2(left,y,2,mini(4,64-y)),Color("e4f2ee"))
+			draw_rect(Rect2(left+80,y,2,mini(4,64-y)),Color("e4f2ee"))
+	if has_focus():draw_rect(rect.grow(4),Color("5cdddc"),false,2)

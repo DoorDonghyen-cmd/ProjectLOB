@@ -1,4 +1,6 @@
 extends "res://tests/ammo_risk_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old ServiceLocation screens. Replaced by: supply_live_ui, event_live_ui, shop_terminal_live_runner.
+## Current UI suites: docs/qa/ui-test-suites.md
 
 func finger(point: Vector2, down: bool) -> void:
 	var event := InputEventScreenTouch.new()

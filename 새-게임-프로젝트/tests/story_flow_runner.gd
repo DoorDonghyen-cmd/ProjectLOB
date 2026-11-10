@@ -1,4 +1,7 @@
 extends SceneTree
+## RETIRED 2026-11-08 as a run target: checks story and archive flow through the old story layout and archive workspace. Replaced by: story_scenes_ui, common_windows_ui.
+## Still the base class of route_map_ui_runner; do not delete.
+## Current UI suites: docs/qa/ui-test-suites.md
 ## Isolated narrative navigation/save coverage; combat completion below is a fixture.
 const Campaign = preload("res://redesign/campaign.gd")
 const Data = preload("res://redesign/campaign_content.gd")

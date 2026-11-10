@@ -57,9 +57,14 @@ func _run() -> void:
 	for gun in Actor.WEAPONS:
 		for pose in Actor.POSES[Actor.family(gun)]:
 			baseline.configure(gun,pose,0.7,0.3,0.8)
-			check(baseline.body_texture() == Actor.BODIES[Actor.family(gun)], "live body fallback intact")
-			check(baseline.registered_transform() == Actor.weapon_transform(gun,pose,0.7), "live weapon registration intact")
-			check(baseline.registered_hands() == Actor.foreground_hands(gun,pose), "live hand registration intact")
+			check(baseline.body_texture() == Actor.body_for("work",gun,pose), "live work source follows registered pose")
+			if Actor.family(gun) == "pistol":
+				check(baseline.registered_transform().is_equal_approx(Actor.weapon_transform(gun,pose,0.7)), "approved C weapon registration preserved")
+				check(baseline.registered_hands() == Actor.foreground_hands(gun,pose), "approved C hand registration preserved")
+			else:
+				var frame := Actor.frame_for("work",gun,pose)
+				var hand: Vector2 = Actor.FOOT+(frame.grip-frame.foot)*frame.scale
+				check((baseline.registered_transform()*Actor.WEAPONS[gun].grip).distance_to(hand)<0.01, "updated long gun pinned to measured hand")
 	baseline.free()
 	preview = load("res://redesign/outfit_preview.tscn").instantiate()
 	root.add_child(preview)

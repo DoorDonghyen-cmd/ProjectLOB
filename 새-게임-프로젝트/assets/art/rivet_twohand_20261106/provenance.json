@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-06",
+  "tool": "built-in image_gen",
+  "intent": "new two-handed Rivet sprite using existing identity/style references",
+  "prompt": "Create ONE production sprite of a compact two-handed scavenger carbine for the existing LoB pixel-styled game, pointing exactly RIGHT in a flat side view, barrel horizontal. This is a NEW proposed two-handed Rivet, a reliable basic weapon. Input 1 = current Rivet identity: olive metal rectangular open revolver-cylinder frame, a recognizable large dark cylinder, warm ivory repair plate above the rear grip, brown worn grip. Preserve that identity in a compact carbine with a short simple solid skeletal shoulder stock extending left, rear pistol grip under the cylinder, and a long enough plain fore-end ahead of the cylinder for the other hand to support. Input 2 = an existing long weapon for matching chunky graphic treatment and mechanical plausibility ONLY; do not copy its red paint, drum rear, three oval vents, rectangular magazine or long silhouette. Input 3 = approved character STYLE: very large quiet color planes, low interior contrast, broad stepped pixel clusters. Input 4 = background atmosphere/palette context ONLY, no scenery. The new Rivet should have a short exposed dark steel barrel with a modest collar, muted olive frame and fore-end, a small warm ivory repair plate over the rear of the cylinder, a dull brown stock pad and grip. Total length about three times maximum height including pistol grip. Two-handed grip contacts should be clear and distinct. No giant revolver trigger guard. No flashy decals, no patterned tape everywhere, no sci-fi glowing tubes, no optics, no laser, no spikes, no extra knobs or tiny screws. Strong functional silhouette, quiet blocky texture with only 2 or 3 broad values per material, restrained discontinuous dark contour, no noisy weathering or thin scratch lines, no photorealistic texture, no blurry shading. True transparent background with clean hard alpha; NO dark background, glow, shadow, labels, letters, hands, arms, people, muzzle flash, smoke, bullets, UI, border, or multiple views. Entire gun fully visible with clear margin. Match the existing hand-painted chunky pixel-art look rather than introducing a different high-frequency pixel grid. Output a single horizontal sprite.",
+  "transparent_background": true,
+  "references": [
+    {
+      "path": "assets/art/weapon_redesign_20261024/single_latch_v1.png",
+      "role": "current Rivet identity",
+      "sha256": "7969a2d9c1c09415425039ca9d62497401a03ef12e30e5af80c331e54c63d437"
+    },
+    {
+      "path": "assets/art/weapon_redesign_20261024/burst_ratchet_v1.png",
+      "role": "matching long-weapon graphic treatment; excluded red/drum/vents identity",
+      "sha256": "46a619e8f3af21e7a9666c29d18bec55ed1593abb996753b8c01c4f723c914a8"
+    },
+    {
+      "path": "assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+      "role": "approved character style",
+      "sha256": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85"
+    },
+    {
+      "path": "assets/art/tower_sample_20261003/residential_tower.png",
+      "role": "environment palette context",
+      "sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b"
+    }
+  ],
+  "outputs": {
+    "generated": "rivet_carbine_v1.png",
+    "selected": "rivet_carbine_v1_pixel.png",
+    "selected_processing": "PixelOE 1.0.1 quiet RGB pilot, 96x32 / 40 colors / outline thickness0, original canvas/alpha restored; see ../style_pilot_20261106/provenance.json"
+  },
+  "status": "director selected; production art integrated; user aesthetic acceptance and Android device validation pending",
+  "retained_legacy": "../../../art_source/rivet_twohand_20261106/legacy_weapon_art.gd",
+  "sha256": {
+    "rivet_carbine_v1.png": "08efda3457c831945ea22d0f72cf7c3f4971da1a4223823c938b3bf177542195",
+    "rivet_carbine_v1_pixel.png": "8644713cce39339d304dcd4639eec1756bb44db058987cf4a95653b003676cfc"
+  }
+}

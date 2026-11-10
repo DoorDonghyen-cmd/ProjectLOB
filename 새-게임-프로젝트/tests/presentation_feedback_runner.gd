@@ -1,4 +1,6 @@
 extends "res://tests/combat_hierarchy_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks sound cues through the old hand-loading combat and old shop/reward buttons (settings part updated 2026-11-08). Replaced by: none yet for magazine-combat sound cues; settings in common_windows_ui.
+## Current UI suites: docs/qa/ui-test-suites.md
 
 var recorded: Array[String] = []
 var mix_capture: AudioEffectCapture
@@ -131,18 +133,17 @@ func _run() -> void:
 	# Settings route: real dropdown, saved mute, immediate stopping of active voices.
 	screen._settings()
 	await settle()
-	var volume_option := screen.find_child("EffectsVolumeSetting", true, false) as OptionButton
+	# Settings are choice buttons since 2026-11-08 (common window); 글자 크기 is fixed at 100%.
+	var volume_option := screen.find_child("EffectsVolumeSetting", true, false)
 	check(volume_option != null, "volume control present")
-	volume_option.select(0)
-	volume_option.item_selected.emit(0)
+	(screen.find_child("EffectsVolumeSetting_0", true, false) as Button).pressed.emit()
 	check(screen.feedback.volume == 0 and screen.feedback.players.all(func(p): return not p.playing), "mute immediately stops all voices")
 	recorded.clear()
 	screen.feedback.play("fire")
 	check(recorded.is_empty(), "muted actions do not play")
 	var prefs = load("res://redesign/preferences.gd").new()
 	check(prefs.load_preferences() and prefs.data.effects_volume == 0, "settings mute persisted")
-	volume_option.select(2)
-	volume_option.item_selected.emit(2)
+	(screen.find_child("EffectsVolumeSetting_2", true, false) as Button).pressed.emit()
 	check(recorded.has("load"), "volume choice previews sound")
 	root.size = Vector2i(1008, 630)
 	await settle()

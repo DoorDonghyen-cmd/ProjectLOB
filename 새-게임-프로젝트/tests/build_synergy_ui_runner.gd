@@ -1,4 +1,6 @@
 extends "res://tests/ammo_expansion_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old hand-loading combat cards and reward cards. Replaced by: weapon_live_ui, reward_live_runner, build_live_ui.
+## Current UI suites: docs/qa/ui-test-suites.md
 
 func _run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/build_synergy/"):

@@ -1,0 +1,34 @@
+{
+  "created": "2026-10-20",
+  "tool": "built-in image_gen",
+  "purpose": "Equipment selection portraits for all seven existing outfits; not combat or service pose replacement",
+  "active_asset": "outfits_v4.png",
+  "draft_asset": "outfits_v2.png",
+  "registration": "res://redesign/equipment_screen.gd OUTFIT_REGIONS and 300x500 AtlasTexture margin canvas",
+  "references_in_order": [
+    "../equipment_20261011/outfits_v1.png",
+    "../outfits_live_20261013/heatworker_pistol.png",
+    "../outfits_live_20261013/hoist_pistol.png",
+    "../outfits_live_20261013/recovery_pistol.png",
+    "../outfit_preview_20261011/expedition_pistol.png"
+  ],
+  "generation_prompt": "Use case: identity-preserve game sprite atlas. Make a production equipment-selection portrait sheet containing exactly SEVEN full-body pixel characters, all the SAME person wearing the seven existing costumes in the inputs. Wide canvas 1536x1024, exact 4 columns x 2 rows, each cell384x512. Last cell bottom-right empty transparent. No text, no labels, no UI, no floor or shadows or haze. All figures equal scale, feet on cell y=480, top of helmet near y=48, centered x=192 within each cell. IDENTICAL neutral standing pose in all seven: three-quarter facing RIGHT, both arms resting down beside hips, both hands empty, slight natural separation of feet. No aiming hands, no guns, no battle stance. Consistent body proportions, identical lighting top-left, muted large stepped pixel clusters and very restrained internal contrast as the NEWER outfits in inputs2-5, not smooth painting, no glow, no blurry edge. The old sheet input1 is COSTUME IDENTITY reference only; replace its oversimplified flat stiff style with the understated grouped pixel mass of inputs2-5. Row1 left to right: 1 work costume from input1 LEFT (blue long work coat, red scarf, dark helmet lamp, small backpack); 2 carrier from input1 CENTER (brown long coat, larger canvas pack and pouches); 3 scout from input1 RIGHT (short olive-gray jacket, small satchel); 4 heatworker input2 (ochre shoulder cape, blue coat, rectangular cooling pack). Row2 left to right: 5 hoist input3 (blue coat, off-white load straps, mechanical reel backpack); 6 recovery input4 (olive coat, cream asymmetrical chest shield with ochre mark, heavy pack); 7 expedition input5 (sealed dark visor olive helmet, respirator, olive coat, ochre shoulder and blue-gray survival pack). Keep these recognizable silhouettes and major costume details, but unify pose and mark-making deliberately. Actual transparent background and isolated non-overlapping figures with generous transparent margins inside each grid cell. This is a NEW equipment menu artwork, not reused battle frames.",
+  "revision_input": "outfits_v2.png",
+  "revision_prompt": "Precise object edit of this exact 1536x1024 transparent seven-character sprite atlas. KEEP all seven costumes, heads, feet, body sizes, grid positions, colors, pixel cluster style and the blank bottom-right cell. Change only the left/near arm of the SECOND and THIRD characters on the BOTTOM row (the olive recovery costume and sealed-helmet expedition costume). Currently that arm is bent across the chest, a combat pose. Straighten it into the identical RELAXED ARM DOWN BESIDE HIP pose used by the three characters at the top-left. The shoulder follows the side of the torso, the elbow is almost straight, and the empty hand hangs at the upper thigh. Both arms must rest downward on all seven, none bent toward the chest, none raised, none carrying weapons. Preserve the unique cream chest plate and olive survival suit and ochre shoulder, but show the forearm down along the outside of the body. First FIVE characters must remain unchanged. Preserve transparent alpha; remove diffuse haze outside silhouettes. This sheet must read as seven costume swaps on the same equipment-selection idle pose, not a mixture of combat and neutral poses. Do not add labels, shadows, background, UI or weapons. Do not shift or crop any character.",
+  "review": {
+    "actual_output": "1536x1024 RGBA. Diffuse alpha fringe remains; existing Godot cutout shader removes it at render time. Regions registered from measured opaque bounds rather than assuming requested grid alignment.",
+    "pose": "v2 retained bent arms in recovery/expedition; v3 corrected to relaxed arms. Heatworker near hand also changed during generation, accepted for common pose.",
+    "implementation": "All seven dedicated portraits replace mixed old portrait/battle-frame crops in equipment selection only.",
+    "user_art_approval": "pending"
+  },
+  "outline_revision": {
+    "date": "2026-10-21",
+    "input": "outfits_v3.png",
+    "prompt": "Edit input1 seven outfit atlas. Inputs2 and3 are STYLE references only. Preserve all SEVEN costumes and their exact distinctive equipment, identical relaxed empty-hand standing pose facing right, their 4 top / 3 bottom grid placement and equal height, 1536x1024 canvas, no weapons. Main change: remove thick near-black cartoon outlines, replacing silhouettes with material-colored dark blue gray or brown edges and broken edge highlights like input2. Softer tonal contrast through broad grouped square pixel clusters, like the monster in input3. No continuous black sticker contour, no black borders between every limb/strap/pouch. Simplify internal partitions, use only 3 restrained tones per material and chunky stepped clusters. Keep red scarf muted brick red; cream/ochre cloth subdued. No blur, no glossy lighting, no anti-aliased illustration, no dither/noise, no high frequency detail. Preserve each readable silhouette, shared helmet proportions, outfit colors and baseline registration. Actual transparent background, crisp cutout without glow, shadows, halo or haze. This is production pixel art, not a presentation sheet. Bottom-right cell empty.",
+    "style_references": [
+      "../actor_cohesion_20261005/reclaimer_grouped_v2.png",
+      "../monster_concept_20261009/eavesback_v1.png"
+    ],
+    "review": "Seven selection portraits rendered at3 viewport ratios; material-colored contours replace thick black edge. Common pose/identity retained. User preference pending."
+  }
+}

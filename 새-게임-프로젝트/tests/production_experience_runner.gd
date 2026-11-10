@@ -1,4 +1,6 @@
 extends SceneTree
+## RETIRED 2026-11-08 as a run target: checks old shop compare buttons (ShopPrice_*, city_compare_buy_*). Replaced by: shop_terminal_live_runner.
+## Current UI suites: docs/qa/ui-test-suites.md
 const Art = preload("res://redesign/world_art.gd")
 const Content = preload("res://redesign/content.gd")
 var screen: Control
@@ -83,8 +85,8 @@ func _run() -> void:
 	await settle()
 	(screen.find_child("story_results", true, false) as Button).pressed.emit()
 	await capture("ending_phone")
-	visible_bounds("retry")
-	visible_bounds("EquippedPartStrip")
+	visible_bounds("NewRun")
+	visible_bounds("CoreName")
 	# Real model output drives presentation; stable firing positions do not shift.
 	screen._debug_weapon("single")
 	screen.model.s.plan = []

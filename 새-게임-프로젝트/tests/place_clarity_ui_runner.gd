@@ -1,4 +1,6 @@
 extends "res://tests/place_layout_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old service place layout (_service_place). Replaced by: supply_live_ui, event_live_ui, shop_terminal_live_runner, workshop_standard_ui.
+## Current UI suites: docs/qa/ui-test-suites.md
 const CardFace = preload("res://redesign/ammo_card_view.gd")
 const Lore = preload("res://redesign/city_story.gd")
 

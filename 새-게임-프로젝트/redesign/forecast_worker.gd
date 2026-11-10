@@ -25,10 +25,11 @@ class Ticket extends RefCounted:
 		return result
 
 func request(state: Dictionary) -> Dictionary:
-	wanted_key = JSON.stringify(state)
+	var snapshot := Forecast.Model.simulation_state(state)
+	wanted_key = JSON.stringify(snapshot)
 	if ticket != null and running_key != wanted_key: ticket.cancel()
 	if wanted_key == ready_key: return ready_result
-	queued_state = state.duplicate(true)
+	queued_state = snapshot
 	if thread == null: _start()
 	return {}
 

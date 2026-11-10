@@ -1,0 +1,112 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/workshop_screen.gd" id="script"]
+[ext_resource type="Theme" path="res://redesign/ui/standard_theme.tres" id="theme"]
+[ext_resource type="PackedScene" path="res://redesign/location_workshop.tscn" id="place"]
+[ext_resource type="PackedScene" path="res://redesign/ui/operation_card.tscn" id="card"]
+[ext_resource type="PackedScene" path="res://redesign/ui/action_button.tscn" id="action"]
+
+[node name="WorkshopScreen" type="VBoxContainer"]
+custom_minimum_size = Vector2(900, 0)
+size_flags_horizontal = 3
+theme = ExtResource("theme")
+theme_type_variation = &"WorkshopBody"
+texture_filter = 1
+script = ExtResource("script")
+
+[node name="ServiceLocation" parent="." instance=ExtResource("place")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 165)
+decision_layout = true
+theme_override_constants/separation = 24
+theme = ExtResource("theme")
+
+[node name="PlaceArt" parent="ServiceLocation" index="0"]
+custom_minimum_size = Vector2(495, 165)
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Copy" parent="ServiceLocation" index="1"]
+custom_minimum_size = Vector2(320, 0)
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="PlaceTitle" parent="ServiceLocation/Copy" index="0"]
+theme_type_variation = &"PlaceTitle"
+text = "정비 공방"
+
+[node name="PlaceHint" parent="ServiceLocation/Copy" index="1"]
+theme_type_variation = &"Caption"
+text = "무료 작업 1회"
+
+[node name="WorkshopOperations" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 2
+theme_type_variation = &"OperationGrid"
+
+[node name="Refit" parent="WorkshopOperations" instance=ExtResource("card")]
+layout_mode = 2
+[node name="Title" parent="WorkshopOperations/Refit/Content" index="0"]
+text = "탄종 교체"
+[node name="Description" parent="WorkshopOperations/Refit/Content" index="1"]
+text = "새 후보 3종 중 한 장 ↔ 보유 탄 한 장"
+[node name="Action" parent="WorkshopOperations/Refit/Content/Actions" index="1"]
+text = "교체 후보 보기"
+
+[node name="Compress" parent="WorkshopOperations" instance=ExtResource("card")]
+layout_mode = 2
+[node name="Action" parent="WorkshopOperations/Compress/Content/Actions" index="1"]
+text = "압축할 탄 선택"
+
+[node name="Tune" parent="WorkshopOperations" instance=ExtResource("card")]
+layout_mode = 2
+[node name="Title" parent="WorkshopOperations/Tune/Content" index="0"]
+text = "탄환 개조"
+[node name="Description" parent="WorkshopOperations/Tune/Content" index="1"]
+text = "한 장의 화력 +1 또는 발열 −1"
+[node name="Action" parent="WorkshopOperations/Tune/Content/Actions" index="1"]
+text = "개조할 탄 선택"
+
+[node name="Trim" parent="WorkshopOperations" instance=ExtResource("card")]
+layout_mode = 2
+[node name="Title" parent="WorkshopOperations/Trim/Content" index="0"]
+text = "덱 정리"
+[node name="Description" parent="WorkshopOperations/Trim/Content" index="1"]
+text = "탄환 한 장 제거 · 최소 12장 유지"
+[node name="Action" parent="WorkshopOperations/Trim/Content/Actions" index="1"]
+text = "제거할 탄 선택"
+
+[node name="Bag" parent="WorkshopOperations" instance=ExtResource("card")]
+layout_mode = 2
+[node name="Title" parent="WorkshopOperations/Bag/Content" index="0"]
+text = "가방 확장"
+[node name="Description" parent="WorkshopOperations/Bag/Content" index="1"]
+text = "휴대 상한 32 → 34발 · 탄약 지급 없음"
+[node name="Action" parent="WorkshopOperations/Bag/Content/Actions" index="1"]
+text = "확장"
+
+[node name="PlaceFooterSpace" type="Control" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 2)
+mouse_filter = 2
+
+[node name="PlaceFooter" type="HBoxContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 52)
+
+[node name="Space" type="Control" parent="PlaceFooter"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="city_service_skip" parent="PlaceFooter" instance=ExtResource("action")]
+layout_mode = 2
+text = "작업 없이 계속"
+
+[editable path="WorkshopOperations/Refit"]
+[editable path="WorkshopOperations/Compress"]
+[editable path="WorkshopOperations/Tune"]
+[editable path="WorkshopOperations/Trim"]
+[editable path="WorkshopOperations/Bag"]
+[editable path="ServiceLocation"]
+

@@ -1,6 +1,6 @@
 extends RefCounted
 ## Species presentation is separate from stable combat-role IDs.
-const VERSION := 5
+const VERSION := 12
 const SPECIES := {
 	"runner": {"id": "foldrunner", "name": "숨접이", "rule": "긴 뒷다리로 빠르게 접근합니다. 충격탄으로 밀어내거나 먼저 처치하세요."},
 	"wall": {"id": "eavesback", "name": "처마등", "rule": "겹등판이 매 타격의 피해를 줄입니다. 철갑탄의 관통이나 소이탄의 화상으로 대응하세요."},

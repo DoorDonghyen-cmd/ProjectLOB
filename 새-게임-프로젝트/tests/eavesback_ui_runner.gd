@@ -87,7 +87,7 @@ func _run() -> void:
 	screen.model = screen.campaign.model
 	screen.redraw()
 	await settle()
-	check(screen.battle_view.get_script().resource_path.ends_with("/residential_battle_view.gd"), "new residential run uses production art after preview")
+	check(screen.battle_view.get_script().resource_path.ends_with("/slum_battle_view.gd"), "new residential run uses production art after preview")
 	await capture("normal_after_preview")
 	screen.queue_free()
 	await process_frame

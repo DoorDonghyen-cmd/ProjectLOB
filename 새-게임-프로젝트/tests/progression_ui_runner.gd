@@ -1,4 +1,6 @@
 extends "res://tests/build_feedback_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old route preview and first-encounter teaching flow. Replaced by: line_world_ui, weapon_live_ui.
+## Current UI suites: docs/qa/ui-test-suites.md
 const Campaign = preload("res://redesign/campaign.gd")
 const Data = preload("res://redesign/campaign_content.gd")
 

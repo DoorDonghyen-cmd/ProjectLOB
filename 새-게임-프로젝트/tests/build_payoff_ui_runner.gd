@@ -63,7 +63,7 @@ func production_roster(width: int) -> void:
 	screen.page="run";screen.debug_session=true;screen.hand_layout_key=""
 	screen.redraw()
 	await settle()
-	check(screen.battle_view.get_script().resource_path=="res://redesign/residential_battle_view.gd","new roster uses production residential art")
+	check(screen.battle_view.get_script().resource_path=="res://redesign/slum_battle_view.gd","new roster uses production residential art")
 	check(screen.model.s.enemies.all(func(e):return e.has("species")),"new campaign actors have residential identity")
 	await capture("new_campaign_%d" % width)
 	# Layout fixture populated through the same production encounter generator.

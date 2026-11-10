@@ -1,0 +1,152 @@
+{
+  "created_on": "2026-10-22",
+  "tool": "built-in image_gen",
+  "status": "generated_concepts_pending_user_review",
+  "purpose": "Four foundry ordinary enemy static concept sprites, no campaign replacement.",
+  "seed_prompt": "Use case: stylized-concept. Asset type: ONE static side-view enemy concept sprite for the pixel-art Godot game ORVASK.\nReference 1 is the approved hero: copy ONLY its broad, quiet pixel clusters, muted material colors and restrained selective contours, NOT costume or human anatomy. Reference 2 is the approved creature: use its big grouped masses and low internal detail, not its anatomy. Reference 3 is the approved environment: palette/context only; do not include architecture.\nSUBJECT: the Labor Effigy, a purely mechanical humanoid foundry worker, no human flesh inside. A small round sealed dull metal mask bows down over a stooped workman's chest. Two disproportionately long hanging arms end in simple heavy work grippers. A battered dark ochre leather-like INDUSTRIAL APRON covers only the chest and upper thighs; a CLEAR HOLLOW GAP at the waist exposes two simple struts, showing that this is an empty automaton. Thick worn work boots are actually metal. One broad flat wound-spring housing on the upper back, a single large winding key/ratchet, no tiny cogs. A weary, unsettling human working posture without a face, spikes or soldier armor. Arms and two legs separated in silhouette. Distinct tall, narrow, bowed-down silhouette.\nVIEW: full body, orthographic side-on with a very slight three-quarter visibility, FACE AND WALK TOWARD IMAGE LEFT. Idle standing pose, both feet share a horizontal baseline. No foreshortening, no isometric floor. Center the complete single character with at least 12% transparent space around its silhouette, no cropping.\nSTYLE: clearly pixel-art with chunky deliberate stepped contours, large connected color patches and quiet shadows. Apparent character resolution roughly 60–75 pixels tall, enlarged in a clean nearest-neighbor manner. Keep enough blocky anatomy to read at 110 screen pixels tall. Muted slate gray iron, dirty gray-brown apron, faded rust on one shoulder, tiny dull brass spring housing. Use subdued edges colored from the local material; no continuous jet-black outline. No glossy metal strips, no white specular shine, no texture noise, no photorealism, no airbrush blur, no dense seams, wires, rivets or tiny details.\nOUTPUT: one character on a genuinely transparent RGBA background, square canvas. No ground, shadow, smoke, glow, scenery, text, words, letters, labels, title, frame or reference characters. This is a concept sprite, not an animation sheet.",
+  "seed_references": [
+    "새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+    "새-게임-프로젝트/assets/art/monster_concept_20261009/eavesback_v1.png",
+    "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png"
+  ],
+  "family_references": [
+    "새-게임-프로젝트/assets/art/foundry_concepts_20261022/labor_effigy_v1.png",
+    "새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+    "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png"
+  ],
+  "family_prompts": [
+    {
+      "id": "mold_worker",
+      "prompt": "Use case: stylized-concept. ONE static enemy concept sprite for the pixel-art Godot game ORVASK. Reference 1 is the newly chosen LABOR EFFIGY family seed: keep its dull iron/rust/dirty brass materials, chunky stepped pixel contours, bowed faceless mechanical-worker character, low internal contrast and broad color masses. Reference 2 is the approved hero for overall pixel-cluster scale ONLY; do not copy the hero. Reference 3 is palette/environment only. This subject belongs to the same foundry worker family as image 1, but has its OWN completely distinct silhouette and anatomy. Pure empty mechanical automaton, not an armored human, not a cyborg.\nFull body, orthographic side-on with slight three-quarter visibility, facing LEFT, planted feet share a flat baseline. Idle pose. One character centered on a truly transparent RGBA background. At least 10% clear margin around the whole silhouette; no cropping, no ground or cast shadow. No scenery, UI, letters, labels, words, frame, glow, particles, smoke, duplicated characters or animation sheet.\nSTYLE: muted slate-gray iron, weathered dark ochre and rust patches, restrained dull brass. Broad coherent pixel clusters and quiet connected shadows. Clear large steps, apparent resolution 60–80 pixels tall, enlarged nearest-neighbor. Softer grouping comes from large patches and lower local contrast, never optical blur. Avoid tiny cogs, busy mechanisms, repeated small rivets, texture noise, dithering, shiny white edges, continuous black outlines, glossy digital painting and cute toy proportions. No flesh, skulls, horns or glowing eyes.\nSUBJECT: MOLD WORKER / 금형공. A squat EXTREMELY WIDE humanoid foundry automaton, visually the heavy high-HP worker. Tiny bowed sealed round mask above a HUGE RECTANGULAR CASTING MOLD hanging as its central chest/body. The mold is weathered iron with one large recessed rectangular cavity, heavy flat surfaces, no magical shield or energy barrier. Massive body extends widely to both sides; two thick short load-bearing legs with broad flat feet. Heavy hanging clamp arms, asymmetrical shoulder block and one broad exposed wound spring/key at the upper rear. Empty frame visible only in a few large gaps. Small apron fragment may hang under the mold, not cover it. The low center of mass, huge rectangular belly and short legs MUST contrast with the tall narrow long-armed reference worker. At runtime silhouette should read around 140 pixels wide and 125 tall. Emphasize weight and a tired industrial posture, not a combat tank or futuristic armored soldier."
+    },
+    {
+      "id": "pressure_worker",
+      "prompt": "Use case: stylized-concept. ONE static enemy concept sprite for the pixel-art Godot game ORVASK. Reference 1 is the newly chosen LABOR EFFIGY family seed: keep its dull iron/rust/dirty brass materials, chunky stepped pixel contours, bowed faceless mechanical-worker character, low internal contrast and broad color masses. Reference 2 is the approved hero for overall pixel-cluster scale ONLY; do not copy the hero. Reference 3 is palette/environment only. This subject belongs to the same foundry worker family as image 1, but has its OWN completely distinct silhouette and anatomy. Pure empty mechanical automaton, not an armored human, not a cyborg.\nFull body, orthographic side-on with slight three-quarter visibility, facing LEFT, planted feet share a flat baseline. Idle pose. One character centered on a truly transparent RGBA background. At least 10% clear margin around the whole silhouette; no cropping, no ground or cast shadow. No scenery, UI, letters, labels, words, frame, glow, particles, smoke, duplicated characters or animation sheet.\nSTYLE: muted slate-gray iron, weathered dark ochre and rust patches, restrained dull brass. Broad coherent pixel clusters and quiet connected shadows. Clear large steps, apparent resolution 60–80 pixels tall, enlarged nearest-neighbor. Softer grouping comes from large patches and lower local contrast, never optical blur. Avoid tiny cogs, busy mechanisms, repeated small rivets, texture noise, dithering, shiny white edges, continuous black outlines, glossy digital painting and cute toy proportions. No flesh, skulls, horns or glowing eyes.\nSUBJECT: PRESSURE WORKER / 압력공. A purely mechanical pneumatic foundry worker. Instead of a human ribcage, one LARGE OVAL/VERTICAL PRESSURE VESSEL makes the round chest, suspended over a visible empty hip frame. A small bowed metal disk head sits offset above the tank. ONE elbow/nozzle arm projects a short broad pipe toward the LEFT, with a clearly visible hollow muzzle; the other arm braces the tank. A single thick hose loops from the pressure vessel to the pipe. One simple broad wound spring/key at the rear, thin but sturdy legs with industrial feet. Show a calm tucked-in idle stance, not firing. The big OVAL CHEST, single pipe muzzle and hose loop are the three readable shape masses; do not build a humanoid wearing a backpack or holding a modern rifle. Distinct from the reference's long hanging arms and from a square block-shaped heavy worker. Around 110–125 pixels wide and 115 tall in the game."
+    },
+    {
+      "id": "ash_catcher",
+      "prompt": "Use case: stylized-concept. ONE static enemy concept sprite for the pixel-art Godot game ORVASK. Reference 1 is the newly chosen LABOR EFFIGY family seed: keep its dull iron/rust/dirty brass materials, chunky stepped pixel contours, bowed faceless mechanical-worker character, low internal contrast and broad color masses. Reference 2 is the approved hero for overall pixel-cluster scale ONLY; do not copy the hero. Reference 3 is palette/environment only. This subject belongs to the same foundry worker family as image 1, but has its OWN completely distinct silhouette and anatomy. Pure empty mechanical automaton, not an armored human, not a cyborg.\nFull body, orthographic side-on with slight three-quarter visibility, facing LEFT, planted feet share a flat baseline. Idle pose. One character centered on a truly transparent RGBA background. At least 10% clear margin around the whole silhouette; no cropping, no ground or cast shadow. No scenery, UI, letters, labels, words, frame, glow, particles, smoke, duplicated characters or animation sheet.\nSTYLE: muted slate-gray iron, weathered dark ochre and rust patches, restrained dull brass. Broad coherent pixel clusters and quiet connected shadows. Clear large steps, apparent resolution 60–80 pixels tall, enlarged nearest-neighbor. Softer grouping comes from large patches and lower local contrast, never optical blur. Avoid tiny cogs, busy mechanisms, repeated small rivets, texture noise, dithering, shiny white edges, continuous black outlines, glossy digital painting and cute toy proportions. No flesh, skulls, horns or glowing eyes.\nSUBJECT: ASH CATCHER / 재받이. A SMALL LOW CROUCHING purely mechanical work effigy, under half the visual height of the reference labor worker. Tiny bowed sealed mask and hunched back above an oversized shallow ASH COLLECTION BASIN held in two large cupped mitten-like metal hands. The wide dark bowl is a single simple shape, containing just one quiet mass of dull ash, no particles. The bowl is wider than the crouched torso. Long thin elbow struts and short folded knees leave clear large negative gaps. Two small industrial metal feet planted apart. One small broad key/wound spring sits high on the back, readable but not decorated. This is a frail light helper between heavy foundry machines, not a rolling trash can, not a floating drone, not an animal, not a cute mascot. It should read as a low wide humanoid carrying a bowl at roughly 90 pixels wide and 70 tall in game. Its crouched silhouette MUST clearly differ from a standing human and the seed labor worker."
+    }
+  ],
+  "normalization": "Original RGBA files preserved. Measured alpha>=128 bounds, feet and aspect-preserving preview scales registered. Existing monster_alpha_cutout shader suppresses faint alpha fringe at render time.",
+  "original_outputs": {
+    "labor_effigy": "exec-3005fdeb-a163-4913-92d1-6376eceaeed9.png",
+    "mold_worker": "exec-ba2c9695-3c2d-4aa1-ab25-45d94c92e18e.png",
+    "pressure_worker": "exec-261dc833-8a8d-4ce6-b8d5-09ac714f103c.png",
+    "ash_catcher": "exec-aab56868-a527-4ac7-a3b9-5a2eb8c3f978.png"
+  },
+  "limits": [
+    "Static idle concepts only",
+    "No new foundry environment",
+    "No new gameplay or stats",
+    "No user visual approval yet"
+  ],
+  "reference_sha256": {
+    "새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85",
+    "새-게임-프로젝트/assets/art/foundry_concepts_20261022/labor_effigy_v1.png": "d1fbf2323bd4ac9d7126da012678514f1fbfe241bc4159a25dc63b0d6f00645f",
+    "새-게임-프로젝트/assets/art/monster_concept_20261009/eavesback_v1.png": "2ea86267030096b47a43779ebdb39fe755bb75ba950c7155ad3dc78623602edc",
+    "새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b"
+  },
+  "assets": [
+    {
+      "id": "labor_effigy",
+      "file": "labor_effigy_v1.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "opaque_bbox": [
+        315,
+        86,
+        939,
+        1184
+      ],
+      "sha256": "d1fbf2323bd4ac9d7126da012678514f1fbfe241bc4159a25dc63b0d6f00645f",
+      "native_occupied_height": 112,
+      "feet": [
+        660,
+        1184
+      ]
+    },
+    {
+      "id": "mold_worker",
+      "file": "mold_worker_v1.png",
+      "dimensions": [
+        1341,
+        1173
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "opaque_bbox": [
+        79,
+        125,
+        1258,
+        1088
+      ],
+      "sha256": "a3d71b1b69fd4156124f14f12e078d59aa03d00c2aa97a7661e4e110f236fad2",
+      "native_occupied_height": 132,
+      "feet": [
+        701,
+        1088
+      ]
+    },
+    {
+      "id": "pressure_worker",
+      "file": "pressure_worker_v1.png",
+      "dimensions": [
+        1305,
+        1206
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "opaque_bbox": [
+        169,
+        104,
+        1128,
+        1155
+      ],
+      "sha256": "eadfe5238f3b1a666155cc2c1e50f180add97c5a477e396e7a9d1f4e64e9b6dc",
+      "native_occupied_height": 112,
+      "feet": [
+        844,
+        1155
+      ]
+    },
+    {
+      "id": "ash_catcher",
+      "file": "ash_catcher_v1.png",
+      "dimensions": [
+        1422,
+        1106
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "opaque_bbox": [
+        301,
+        210,
+        1098,
+        1017
+      ],
+      "sha256": "f227211ae7cf0a10a07eebab82ad06162ea124952df2ee8efa0fdced6071d187",
+      "native_occupied_height": 72,
+      "feet": [
+        811,
+        1017
+      ]
+    }
+  ]
+}

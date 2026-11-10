@@ -1,9 +1,9 @@
 extends RefCounted
 ## Shared pixel construction for the whole combat console, not an image filter.
 const FONT = preload("res://redesign/combat_pixel_font.tres")
-const INK := Color("d4ddd5")
-const MUTED := Color("8dabae")
-const SELECT := Color("b8d4bf")
+const INK := Color("e4f2ee")
+const MUTED := Color("8fb0b0")
+const SELECT := Color("5cdddc")
 const HEAT := Color("e39b79")
 const COOL := Color("9abdc8")
 static var cache := {}
@@ -11,7 +11,7 @@ static var cache := {}
 static func box(kind: String = "card", state: String = "normal") -> StyleBoxTexture:
 	var key := kind + "_" + state
 	if not cache.has(key):
-		cache[key] = load("res://assets/ui/console/%s.tres" % key)
+		cache[key] = load("res://assets/ui/line_theme_20261101/console_%s.tres" % key)
 	# Callers can retain their existing hit-area/content margins independently.
 	return cache[key].duplicate() as StyleBoxTexture
 

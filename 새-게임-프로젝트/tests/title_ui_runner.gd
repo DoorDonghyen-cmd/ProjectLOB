@@ -110,6 +110,14 @@ func run() -> void:
 	quit(1 if failures else 0)
 
 func winning_fixture():
+	# Since 2026-11-08 the ending uses the earned win of the 2026-11-06 full climb
+	# (QA_BUILD_DIR/won_single_17.json, restoration pending). The walk below no longer
+	# reaches the end with newer phases and is kept only as a fallback.
+	var earned_path := OS.get_environment("QA_BUILD_DIR").path_join("won_single_17.json")
+	if FileAccess.file_exists(earned_path):
+		var earned = Campaign.new()
+		check(earned.restore_state(JSON.parse_string(FileAccess.get_file_as_string(earned_path))) and earned.s.phase == "won" and earned.restoration_pending(), "valid ending fixture reached through actual campaign flow")
+		return earned
 	var fixture = Campaign.new()
 	fixture.start("single", 731042)
 	fixture.advance_departure(true)

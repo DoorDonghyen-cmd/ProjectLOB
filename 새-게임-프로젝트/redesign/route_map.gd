@@ -1,13 +1,16 @@
 extends RefCounted
 ## Version 2: deterministic, non-crossing branching graphs. Version 1 lives in campaign_content.
-const VERSION := 3
+const VERSION := 4
 const LENGTHS := [8, 9, 9, 9, 10]
+static var _density_cache: Dictionary={}
 
 static func generate(region: int, seed_value: int, version: int = VERSION) -> Array:
+	var key:="%d/%d"%[region,seed_value]
+	if version>=4 and _density_cache.has(key):return _density_cache[key].duplicate(true)
 	var rooms := generate_v2(region, seed_value)
 	if version == 2: return rooms
 	for room in rooms:
-		room.map_version = VERSION
+		room.map_version = 3
 		room.shortcuts = []
 		if room.kind == "bypass":
 			room.kind = "event"
@@ -31,6 +34,11 @@ static func generate(region: int, seed_value: int, version: int = VERSION) -> Ar
 		var path: Array = candidates[random.randi_range(0, candidates.size() - 1)]
 		_link(path[0], path[1])
 		path[0].shortcuts.append(path[1].id)
+	if version >= 4:
+		_ensure_density(rooms)
+		for room in rooms:room.map_version=4
+		if _density_cache.size()>=32:_density_cache.erase(_density_cache.keys()[0])
+		_density_cache[key]=rooms.duplicate(true)
 	return rooms
 
 # Frozen algorithm: existing v2 saves must regenerate their original graph.
@@ -105,3 +113,33 @@ static func _shuffle(values: Array, random: RandomNumberGenerator) -> void:
 		var value = values[i]
 		values[i] = values[j]
 		values[j] = value
+
+# Repair only optional event rooms on deficient paths. Facilities, every edge,
+# the one-room shortcut and the frozen v2/v3 graphs retain their identities.
+static func _density_violation(rooms: Array, shortcuts: bool)->Array:
+	var states: Dictionary={}
+	for room in rooms:
+		var cost:=1 if room.kind=="combat" else 0
+		var value:={"min":999,"path":[],"rest":0,"rest_path":[]}
+		if int(room.floor)==1:value={"min":cost,"path":[room],"rest":0,"rest_path":[]}
+		for prior in rooms:
+			if not prior.next.has(room.id) or (not shortcuts and prior.get("shortcuts",[]).has(room.id)):continue
+			var before: Dictionary=states[prior.id]
+			if int(before.min)+cost<int(value.min):value.min=int(before.min)+cost;value.path=before.path+[room]
+			var rest:=0 if room.kind in ["combat","boss"] else int(before.rest)+1
+			if rest>int(value.rest):value.rest=rest;value.rest_path=before.rest_path+[room]
+		if int(value.rest)>=3:return value.rest_path
+		states[room.id]=value
+	var final: Dictionary=states[rooms.back().id]
+	return final.path if int(final.min)<(3 if shortcuts else 4) else []
+
+static func _ensure_density(rooms: Array)->void:
+	for unused in range(rooms.size()):
+		var path:=_density_violation(rooms,false)
+		if path.is_empty():path=_density_violation(rooms,true)
+		if path.is_empty():return
+		var candidates: Array=path.filter(func(room):return room.kind=="event" and not room.get("workshop",false) and int(room.floor)<LENGTHS[int(room.region)]-1)
+		assert(not candidates.is_empty(),"A route must retain enough optional rooms for density repair")
+		if candidates.is_empty():return
+		var room: Dictionary=candidates[candidates.size()/2]
+		room.kind="combat";room.name="순찰 구역";room.event="";room.route="stairs"

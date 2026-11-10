@@ -38,6 +38,7 @@ func command(campaign, item: Dictionary) -> bool:
 		"enter": accepted = campaign.enter(int(item.id))
 		"reward": accepted = campaign.reward(str(item.id))
 		"gate": accepted = campaign.gate(str(item.id), str(item.get("ammo", "")))
+		"gate_depart": accepted = campaign.depart_gate()
 		"buy": accepted = campaign.buy(int(item.id))
 		"buy_compressor": accepted = campaign.buy_compressor_charge()
 		"reroll": accepted = campaign.reroll()
@@ -50,6 +51,7 @@ func command(campaign, item: Dictionary) -> bool:
 		"confirm": accepted = campaign.model.confirm()
 		"fire": accepted = campaign.model.fire()
 		"reload": accepted = campaign.model.reload_magazine()
+		"emergency": accepted = campaign.model.emergency_resupply()
 	campaign.sync_combat()
 	if not check(accepted, "real command " + JSON.stringify(item)): return false
 	if not roundtrip(campaign): return false

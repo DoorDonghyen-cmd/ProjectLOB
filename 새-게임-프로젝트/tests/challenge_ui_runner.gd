@@ -5,7 +5,7 @@ const CombatModel = preload("res://redesign/model.gd")
 func visible_challenge(label: String) -> void:
 	await settle()
 	var view = screen.battle_view
-	check(view.get_script().resource_path.ends_with("residential_battle_view.gd"),"production challenge view")
+	check(view.get_script().resource_path.ends_with("slum_battle_view.gd"),"production challenge view")
 	check(Challenges.named(view.enemies[0]),"actual challenge actor")
 	var frame := Rect2(Vector2.ZERO,view.size)
 	var actor: Rect2 = view.concept_rect(0)
@@ -16,15 +16,20 @@ func visible_challenge(label: String) -> void:
 			if other != index: check(not view.enemy_plaque(index).intersects(view.enemy_plaque(other)),"distinct enemy HUD columns " + label)
 		check(not actor.intersects(view.enemy_plaque(index)),"challenge body clear of HUD " + label)
 		check(not actor.intersects(view.distance_label_rect(index)),"challenge clear of distance " + label)
-	check(view.creature_sprites.has(0) and view.creature_sprites[0].visible,"new alpha cutout shown")
-	check(view.creature_sprites[0].texture.resource_path.contains("elite_boss_20261018"),"new atlas not ordinary placeholder")
-	check(view.creature_sprites[0].material.shader.resource_path.ends_with("monster_alpha_cutout.gdshader"),"generated diffuse fringe rejected")
+	var sprites: Dictionary=view.human_sprites if str(view.enemies[0].species)=="slum_leader" else view.creature_sprites
+	check(sprites.has(0) and sprites[0].visible,"new alpha cutout shown")
+	check(sprites[0].texture.resource_path.contains("slum_20261021" if str(view.enemies[0].species)=="slum_leader" else "elite_boss_20261018"),"new atlas not ordinary placeholder")
+	check(sprites[0].material.shader.resource_path.ends_with("monster_alpha_cutout.gdshader"),"generated diffuse fringe rejected")
 	print("FRAME ",label," board=",view.size," actor=",actor," hud=",view.enemy_plaque(0))
 	await capture(label)
 
 func replay_reload() -> void:
 	var oracle = CombatModel.new()
-	check(oracle.restore_state(screen.model.s),"UI fixture is valid owned state")
+	var restored:bool=oracle.restore_state(screen.model.s)
+	check(restored,"UI fixture is valid owned state")
+	if not restored:
+		FileAccess.open(OS.get_environment("QA_OUTPUT_DIR").path_join("invalid_reload.json"),FileAccess.WRITE).store_string(JSON.stringify(screen.model.s,"  "))
+		return
 	check(oracle.reload_magazine(),"oracle real reload")
 	await tap("reload")
 	await settle()
@@ -71,8 +76,12 @@ func _run() -> void:
 		for kind in ["elite","boss"]:
 			screen._debug_challenge(kind)
 			await visible_challenge("%s_idle_%d" % [kind,resolution.x])
+			if kind=="boss":
+				check(screen.battle_view.challenge_intent(0).contains("장갑 5"),"closed boss intent displays reinforced armor")
 			await begin_touch("enemy_info_0");await settle()
 			check(screen.find_child("EnemyDetails",true,false) != null,"touch opens named threat details")
+			if kind=="boss":
+				check(Data.Ammo.enemy_rule(screen.model.s.enemies[0]).contains("문판 장갑 5"),"boss detail uses current armor")
 			screen._close_workspace();await settle()
 			await replay_reload();await replay_reload()
 			await visible_challenge("%s_open_%d" % [kind,resolution.x])
@@ -82,7 +91,7 @@ func _run() -> void:
 				check(screen.model.s.projectiles.size() == 1,"boss launches through UI reload")
 				await capture("boss_projectile_%d" % resolution.x)
 			else:
-				check(screen.last_presentation.events.any(func(event): return event.kind == "resonance"),"elite has distinct release presentation")
+				check(screen.last_presentation.events.any(func(event): return event.kind == "command"),"elite has distinct release presentation")
 		await finish_check()
 	# Extra status effects must not push the large body into its overhead HUD.
 	root.size = Vector2i(1008,630)

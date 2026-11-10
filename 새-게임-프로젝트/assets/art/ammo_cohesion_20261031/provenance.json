@@ -1,0 +1,200 @@
+{
+  "tool": "image_gen built-in; reference-guided redesign; transparent_background=true",
+  "date": "2026-10-31",
+  "status": "Implemented and creator-reviewed in native game screens. HUD 13056, current shop 1295, shared art review 346 checks passed. User aesthetic confirmation and Android real-device checks pending.",
+  "core": {
+    "prompt": "Use case: style-transfer. Production game sprite atlas, transparent background. Redesign the SIX ammunition icons from input 1 to belong to the industrial pixel-art world in input 2 (the actual game screenshot). Input 1 is an identity/role reference only; REPLACE its crude oversized colored tips and blurry flat slabs. Input 2 is palette, material, pixel-cluster and UI-scale reference only; do not redraw the screenshot.\nDeliver one clean landscape sprite atlas with exactly 3 columns x 2 rows, equally spaced cells, one isolated upright ammunition unit per cell, no text or grid lines. Transparent RGBA outside all six objects, NO glow, ground shadows, haze, boxes, pedestals or background.\nOrder left to right:\nTop: BASIC — conventional compact brass cartridge with a narrow muted copper projectile and dark steel collar; ARMOR PIERCING — tall slim pointed cold steel penetrator, restrained brass lower casing; DOUBLE SHOT — two slender steel-tipped rounds side-by-side joined by one dark mechanical clip.\nBottom: AMPLIFIER — capped industrial power cartridge with ochre ceramic inset and two broad steel clamps; COOLING — flat-capped blue-grey cylinder, two thick cooling fins and a small muted teal inspection window; ELECTRIC — two stout copper electrode prongs separated by a clean dark gap, blue-grey insulating base and small desaturated teal band.\nUnified world: salvaged precision hardware used by the small worker character, dusty blue-grey steel (#40535a), aged brass (#94815a), muted copper (#9b654b), deep selective shadows (#23343b), off-white tiny edge accents. Clear silhouettes and physically plausible manufactured construction. 3-4 broad value clusters per material, stepped pixel edges, compact chunky clusters matching the character. Restrained local highlight from upper left. Surfaces show wear only as 1-2 big chips, not scratches or scattered noise. More tangible material and nuanced forms than the old primitives, but no dense micro-detail, no smooth vector look, no shiny photorealistic 3D.\nThese will display roughly 28-48 px wide and 68-80 px tall in the tray. Silhouettes must read at that scale. All bases align within each row; 15% safe transparent margin per cell; complete objects never touch or crop. Equal apparent scale, single objects not huge hero props. Suggested output 1536x1024. No lettering, numbers, labels, icons painted on top, decorative magic, lens effects, or transparency checkerboard.",
+    "source": "C:/Users/mdyt7/.codex/generated_images/01a1789c-be59-7010-8fa6-bc275448732f/exec-68cbd106-ecfe-4c6e-86a6-85af8af64f2c.png",
+    "references": [
+      "assets/art/ammo_recast_20261017/cartridges_v4.png",
+      "docs/qa/reports/combat_hud_cohesion_2026-10-31_assets/journey_1280x800.png"
+    ]
+  },
+  "special": {
+    "prompt": "Use case: style-transfer. Redesign the TWELVE special ammunition sprites in input 1. Input 2 is the NEW six-round family to match exactly in pixel scale, steel/brass colors, upper-left light and 3-4 value clusters; input 3 is actual game environment context. Produce one transparent RGBA sprite atlas, 4 columns x 3 rows, evenly spaced cells, twelve complete isolated upright ammunition units, all bases aligned per row, no labels. Match input 2's tangible reclaimed metal hardware, crisp stepped edges, broad material masses and restrained wear. Do NOT copy input 1's blurry background, colored haze, broad toy-like slabs, or glow. No shadow or opaque background.\nRequired row-major order and distinguishing silhouette:\nRow 1: IMPACT broad blunt steel piston head on short brass case; INCENDIARY narrow red-orange ceramic fuel capsule enclosed by two steel side straps; SHATTER split chisel-tipped steel penetrator on brass cartridge; DETONATOR squat rust-red charge cylinder with flat steel fuse cap and one brass safety belt.\nRow 2: PURSUIT narrow copper-pointed dart with two small rear stabilizer fins; BYPASS asymmetric bent steel nozzle with a small side-mounted muted teal reservoir; THERMAL stout dark steel canister with one broad muted orange inspection slit; HEAT VENT open brass-mouthed exhaust cartridge with two broad steel cooling ribs.\nRow 3: FIRE TRANSFER two unequal small rust/copper fuel capsules joined side-by-side by a single steel band; RESIDUAL HEAT capped ochre power cartridge with steel brackets and one distinct insulated copper return tube on its right; MULTIPLIER tall ochre ceramic power cartridge with two heavy steel clamps and a steel safety cap, no side tube; SEQUENCE stack of three short brass chambers linked on one steel spine with a square flat cap.\nEach must be a distinct legible manufactured mechanism. Aged brass, dusty blue-grey steel, muted copper/rust and very small desaturated teal or ochre functional accents. No entire bright neon colored body. Display size approximately 30-48px wide and 70px tall; avoid miniature bolts, fine grain, thin wires, many tiny shiny lines. Silhouettes and broad bands convey role. Transparent 15% margins around every individual object, no cropping/overlap. Suggested canvas 1536x1024. No text, digits, UI, grids, magic, explosions, halos, cast shadows, blur, checkerboard, or background.",
+    "source": "C:/Users/mdyt7/.codex/generated_images/01a1789c-be59-7010-8fa6-bc275448732f/exec-54c71057-010a-491d-9fc9-43bcaca5a695.png",
+    "references": [
+      "assets/art/ammo_recast_20261018/special_rounds_v1.png",
+      "assets/art/ammo_cohesion_20261031/core_rounds.png",
+      "docs/qa/reports/combat_hud_cohesion_2026-10-31_assets/journey_1280x800.png"
+    ]
+  },
+  "legacy": {
+    "prompt": "Use case: style-transfer. Create a TWO-SPRITE companion atlas to the ammunition family in the reference. Same industrial game, same muted brass and blue-grey steel, same broad stepped pixel clusters, identical upper-left lighting and worn material. This is additional ammunition for older saved decks.\nLandscape canvas, two equally sized cells in one row. Two isolated upright mechanisms, complete bases aligned, plenty of transparent separation.\nLEFT = PREPARATION: a compact rectangular steel cartridge with a flat square top, one muted sage-green inset near its head, two small stacked broad rectangular brass windows on the main body, and a short mechanical side latch on the right. Looks like a timed feed-control cartridge, not a battery or grenade.\nRIGHT = DISRUPTION: a squat blue-grey interruption cartridge with two broad flat vertical steel prongs making a deep U at the top, joined by a muted pale-teal insulated crossbar halfway down. Short brass lower case. Prongs are flat and wider than the pointed electric contacts in the reference, with no copper tips.\nTiny UI objects shown about 28-42px wide and 70px high. Keep silhouette and broad role shapes clear. Roughly 3-4 values per material, no repeated bolts, thin wires, scratches, or fine detail. Small chips only on edges. No excessive highlights. No text, digits, UI symbols, labels, scene, floor, drop shadow, glow, haze, optical blur, checkerboard or opaque background. True transparent RGBA outside both sprites. Match the provided NEW reference family rather than inventing another visual style.",
+    "source": "C:/Users/mdyt7/.codex/generated_images/01a1789c-be59-7010-8fa6-bc275448732f/exec-465d0db5-f2d0-43bf-929a-586e4d2fdc23.png",
+    "references": [
+      "assets/art/ammo_cohesion_20261031/core_rounds.png"
+    ]
+  },
+  "processing": "Original generated PNG files copied byte-for-byte. Alpha analyzed read-only; UV regions registered in Godot. No bitmap editing, scaling or post-generation recoloring.",
+  "assets": [
+    {
+      "file": "core_rounds.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "49fea8e99eabb4dd544530f787d98485cea38201aa5daed3be9ac1be849dfae5",
+      "transparent_pixels": 1113050,
+      "visible_alpha_range": [
+        0,
+        254
+      ],
+      "byte_identical_to_generated_source": true
+    },
+    {
+      "file": "special_rounds.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "dba4afc93a59ce736ce6dba27e95acdea676584c4555a9d3bdc13f254e93f95f",
+      "transparent_pixels": 1015768,
+      "visible_alpha_range": [
+        0,
+        254
+      ],
+      "byte_identical_to_generated_source": true
+    },
+    {
+      "file": "legacy_rounds.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "sha256": "fd7f94c0001b31ca542ead73ae2e4d79f8bda044a12b08d405810e419052a0ae",
+      "transparent_pixels": 1140136,
+      "visible_alpha_range": [
+        0,
+        254
+      ],
+      "byte_identical_to_generated_source": true
+    }
+  ],
+  "regions": {
+    "basic": [
+      253,
+      90,
+      182,
+      396
+    ],
+    "pierce": [
+      684,
+      37,
+      168,
+      449
+    ],
+    "precise": [
+      1059,
+      96,
+      253,
+      390
+    ],
+    "charge": [
+      237,
+      551,
+      217,
+      411
+    ],
+    "cool": [
+      649,
+      566,
+      239,
+      396
+    ],
+    "arc": [
+      1062,
+      566,
+      246,
+      396
+    ],
+    "push": [
+      149,
+      46,
+      215,
+      291
+    ],
+    "bore": [
+      511,
+      22,
+      157,
+      315
+    ],
+    "shatter": [
+      866,
+      24,
+      150,
+      313
+    ],
+    "detonate": [
+      1196,
+      49,
+      168,
+      288
+    ],
+    "chase": [
+      169,
+      359,
+      173,
+      292
+    ],
+    "bypass": [
+      510,
+      369,
+      165,
+      282
+    ],
+    "thermal": [
+      845,
+      372,
+      193,
+      279
+    ],
+    "vent": [
+      1166,
+      390,
+      226,
+      261
+    ],
+    "spread": [
+      131,
+      712,
+      228,
+      266
+    ],
+    "charge_heat": [
+      493,
+      676,
+      207,
+      302
+    ],
+    "charge_hot": [
+      854,
+      678,
+      175,
+      300
+    ],
+    "sequence": [
+      1205,
+      685,
+      159,
+      293
+    ],
+    "prepare": [
+      264,
+      192,
+      402,
+      655
+    ],
+    "disrupt": [
+      872,
+      256,
+      409,
+      591
+    ]
+  },
+  "legacy_alias": "Content.source_id maps thermal to bore. Preserve this existing alias; thermal atlas frame is an unused alternative, not a newly distinct ammo rule."
+}

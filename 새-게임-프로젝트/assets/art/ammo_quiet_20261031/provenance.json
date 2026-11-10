@@ -1,0 +1,148 @@
+{
+  "date": "2026-10-31",
+  "tool": "image_gen.imagegen",
+  "status": "Integrated revision after user rejected the previous large, glossy-looking ammo treatment; user preference not yet revalidated.",
+  "prompt": "Use case: style-transfer. The user rejected the ammunition's glossy detailed style and oversized appearance. REDRAW the ammunition as SMALL, MATTE, LOW-DETAIL pixel sprites that truly match the WORKER CHARACTER in input 1 and the environment in input 5. Input 1 is the PRIMARY STYLE reference: observe its broad quiet flat colors, very sparse highlights, chunky imperfect pixel clusters, subdued steel and cloth. Inputs 2,3,4 are ONLY silhouette/identity references for the ammunition; DO NOT preserve their glossy highlights, shiny brass, continuous black outlines, beveled 3D shading, fine detail or product-render lighting.\nDeliver ONE transparent RGBA atlas, EXACTLY 5 columns by 4 rows, 20 individually separated upright sprites, equal-size cells, no background or labels. Each sprite should look authored at about 18-26 pixels wide and 32-40 pixels tall, enlarged with nearest-neighbor blocks for delivery. A handful of big solid clusters, at most 2-3 values per material. NO smooth shading. NO white highlights. NO continuous black outline. No cracks, rivets, thin stripes, chrome, scratches, reflected light or glowing windows. Material colors: dusty slate blue-grey, dull olive brass, desaturated rust and very small dark teal/ochre/sage accents. Similar muted local contrast to the worker's boots and pouch, NOT a showcase item icon. Basic cartridges should feel like tiny carried supplies.\nEXACT row-major order:\n1 basic: short copper point on dull brass case.\n2 pierce: narrow steel point, brass foot.\n3 precise: two small narrow rounds joined by a dark clip.\n4 charge: simple ochre power tube with two broad dark straps.\n5 cool: short flat steel cap, two broad fins, small muted teal band.\n6 arc: two short copper contacts, dark blue insulating U body.\n7 push: broad flat piston top, dull brass case.\n8 bore: muted rust fuel tube, two dark straps.\n9 shatter: split chisel steel tip, brass case.\n10 detonate: short rust cylinder with flat steel cap and single brass belt.\n11 chase: narrow rust dart with two small fins.\n12 bypass: bent steel neck and small dark teal side bottle.\n13 thermal: squat flat-capped steel canister with one dull rust window.\n14 vent: open olive-brass mouth, stout dark steel body.\n15 spread: two unequal rust capsules tied together.\n16 charge_heat: ochre tube with a single rust return pipe on its right.\n17 charge_hot: ochre tube with wide dark safety band and small flat cap.\n18 sequence: three short dull-brass segments on a steel spine.\n19 prepare: square flat-topped dark cartridge, sage band, two brass blocks and a side latch.\n20 disrupt: two broad flat steel prongs separated by a deep gap, muted teal crossbar and short brass base.\nAll objects fully contained, bases aligned within rows, 15% transparent cell margin, no overlap, identical tiny-object scale. The sprites must remain recognizable when displayed only 40 pixels tall inside the game. Transparent outside sprites, absolutely no halos, shadow, ground, scenery, UI, baked text or checkerboard. Suggested output 1536x1024.",
+  "source": "C:/Users/mdyt7/.codex/generated_images/01a1789c-be59-7010-8fa6-bc275448732f/exec-2b3913fb-0cf7-4ee0-b0ee-42b2113ef3c5.png",
+  "references": [
+    "assets/art/hero_contours_20261025/work_pistol.png",
+    "assets/art/ammo_cohesion_20261031/core_rounds.png",
+    "assets/art/ammo_cohesion_20261031/special_rounds.png",
+    "assets/art/ammo_cohesion_20261031/legacy_rounds.png",
+    "docs/qa/reports/ammo_cohesion_2026-10-31_assets/battle.png"
+  ],
+  "processing": "Generated RGBA PNG copied byte-for-byte. Read-only alpha measurement (threshold 128, padding 2px) used to select Godot UV rectangles. No bitmap recoloring, cropping, rescaling or post-processing. Nearest-filtered gameplay display in a 28x44 maximum area. All 20 authored frames preserved; the existing thermal -> bore content alias remains unchanged.",
+  "license_note": "Project-owned reference assets with generated original output. No downloaded third-party art.",
+  "asset": {
+    "file": "rounds.png",
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "mode": "RGBA",
+    "sha256": "57e60bdd484adf7cbfee5daf013d9e5650f7f36ddd3e0101533899b11ea59dba",
+    "byte_identical_to_generated_source": true
+  },
+  "regions": {
+    "basic": [
+      201,
+      80,
+      99,
+      185
+    ],
+    "pierce": [
+      462,
+      55,
+      96,
+      210
+    ],
+    "precise": [
+      698,
+      79,
+      141,
+      186
+    ],
+    "charge": [
+      963,
+      46,
+      112,
+      219
+    ],
+    "cool": [
+      1201,
+      95,
+      166,
+      171
+    ],
+    "arc": [
+      179,
+      315,
+      144,
+      177
+    ],
+    "push": [
+      452,
+      314,
+      125,
+      177
+    ],
+    "bore": [
+      709,
+      287,
+      118,
+      204
+    ],
+    "shatter": [
+      976,
+      300,
+      109,
+      192
+    ],
+    "detonate": [
+      1224,
+      314,
+      120,
+      177
+    ],
+    "chase": [
+      185,
+      519,
+      129,
+      203
+    ],
+    "bypass": [
+      457,
+      519,
+      145,
+      206
+    ],
+    "thermal": [
+      693,
+      536,
+      150,
+      186
+    ],
+    "vent": [
+      945,
+      536,
+      161,
+      186
+    ],
+    "spread": [
+      1206,
+      530,
+      160,
+      192
+    ],
+    "charge_heat": [
+      179,
+      751,
+      160,
+      212
+    ],
+    "charge_hot": [
+      459,
+      749,
+      115,
+      211
+    ],
+    "sequence": [
+      718,
+      757,
+      111,
+      203
+    ],
+    "prepare": [
+      952,
+      759,
+      176,
+      204
+    ],
+    "disrupt": [
+      1215,
+      769,
+      141,
+      192
+    ]
+  }
+}

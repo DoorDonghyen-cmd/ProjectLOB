@@ -25,9 +25,9 @@ func load_preferences(path: String = SAVE) -> bool:
 	if not parsed is Dictionary:
 		return false
 	var source: Dictionary = parsed
-	var scale := float(source.get("text_scale", 1.0))
-	if scale not in [0.9, 1.0, 1.1]:
-		scale = 1.0
+	# 글자 크기(2026-11-08 디렉터 결정): 픽셀 글꼴은 16 단위, 화면은 정수 배율로 커져 90/110%가
+	# 실제로 바뀌지 않거나 흐려진다. 설정에서 빼고 저장값도 100%로 읽는다.
+	var scale := 1.0
 	var motion := str(source.get("motion", "normal"))
 	if motion not in ["normal", "fast", "instant"]:
 		motion = "normal"

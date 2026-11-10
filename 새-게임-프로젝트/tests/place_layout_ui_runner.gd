@@ -1,4 +1,7 @@
 extends "res://tests/place_revision_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old service place layout (_service_place). Replaced by: supply_live_ui, event_live_ui, workshop_standard_ui.
+## Still the base class of place_clarity_ui_runner; do not delete.
+## Current UI suites: docs/qa/ui-test-suites.md
 
 func layout_check(tag: String) -> void:
 	fit_check()

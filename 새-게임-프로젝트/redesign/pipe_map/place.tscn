@@ -1,0 +1,50 @@
+[gd_scene format=3]
+[ext_resource type="Script" path="res://redesign/pipe_map/place.gd" id="logic"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/combat.png" id="combat"]
+
+[sub_resource type="StyleBoxEmpty" id="clear"]
+[node name="PipePlace" type="Button"]
+custom_minimum_size = Vector2(60,44)
+offset_right = 60.0
+offset_bottom = 44.0
+texture_filter = 1
+script = ExtResource("logic")
+toggle_mode = true
+theme_override_styles/normal = SubResource("clear")
+theme_override_styles/hover = SubResource("clear")
+theme_override_styles/pressed = SubResource("clear")
+theme_override_styles/disabled = SubResource("clear")
+theme_override_styles/focus = SubResource("clear")
+
+[node name="Picture" type="TextureRect" parent="."]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -18.0
+offset_right = 18.0
+offset_bottom = 18.0
+mouse_filter = 2
+texture = ExtResource("combat")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Risk" type="Label" parent="."]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -12.0
+offset_top = -4.0
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.78,0.43,0.32,1)
+theme_override_font_sizes/font_size = 16
+text = "+"
+
+[node name="Status" type="Label" parent="."]
+visible = false
+mouse_filter = 2
+

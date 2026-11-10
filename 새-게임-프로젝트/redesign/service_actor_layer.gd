@@ -9,6 +9,10 @@ extends Control
 @export var room_height := 0.535
 
 func _ready() -> void:
+	var cutout := ShaderMaterial.new()
+	cutout.shader = preload("res://redesign/monster_alpha_cutout.gdshader")
+	cutout.set_shader_parameter("shadow_lift", 0.65)
+	material = cutout
 	resized.connect(queue_redraw)
 
 func image_rect() -> Rect2:

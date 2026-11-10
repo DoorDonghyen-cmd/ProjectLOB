@@ -10,9 +10,13 @@ static var cached_key := ""
 static var cached_result: Dictionary = {}
 
 static func analyze(state: Dictionary, next_action_only: bool = false, include_reload: bool = false, cancelled: Callable = Callable()) -> Dictionary:
-	if state.gun == "scatter" and state.phase in ["plan", "ready"]: return random_analyze(state, include_reload, cancelled)
+	# Weapon-magazine trials expose one decision at a time. Continuing the
+	# magazine is a new player choice after enemy movement, not one salvo.
+	var weapon_trial := Model.MagazineTrial.weapons_enabled(state)
+	if weapon_trial: next_action_only = true
+	if state.gun == "scatter" and state.phase in ["plan", "ready"]: return random_analyze(state, include_reload, cancelled, Model.MagazineTrial.pulse(state) if weapon_trial else 0)
 	var copy = Model.new()
-	copy.s = state.duplicate(true)
+	copy.s = Model.simulation_state(state)
 	var shots: Array = []
 	var advance_events: Array = []
 	var deployments: Array = []
@@ -27,32 +31,51 @@ static func analyze(state: Dictionary, next_action_only: bool = false, include_r
 		heat_peak = maxi(heat_peak, int(detail.get("heat_peak", 0)))
 		overheat = overheat or bool(detail.get("overheated", false))
 		forced_cost += int(detail.get("forced_reload", {}).get("cost", 0))
+		forced_cost += int(detail.get("forced_cooling", {}).get("cost", 0))
 		for result in copy.s.history.back().detail.results:
 			var shot: Dictionary = result.duplicate(true)
 			shot.action = action
 			shots.append(shot)
-		for event_value in copy.s.history.back().detail.get("advance_events", []):
+		# The same fire input may include forced cooling; its burn ticks belong to this result.
+		var events: Array = detail.get("advance_events", []).duplicate(true)
+		events.append_array(detail.get("forced_reload", {}).get("advance_events", []))
+		events.append_array(detail.get("forced_cooling", {}).get("advance_events", []))
+		for event_value in events:
 			var event: Dictionary = event_value.duplicate(true)
 			event.action = action
 			advance_events.append(event)
-		for deployment_value in copy.s.history.back().detail.get("deployments", []):
+		var action_deployments: Array = detail.get("deployments", []).duplicate(true)
+		action_deployments.append_array(detail.get("forced_cooling", {}).get("deployments", []))
+		for deployment_value in action_deployments:
 			var deployment: Dictionary = deployment_value.duplicate(true)
 			deployment.action = action
 			deployments.append(deployment)
 	var result := {"shots": shots, "advance_events": advance_events, "deployments": deployments, "phase": copy.s.phase, "remaining": copy.s.magazine.duplicate(), "turns": int(copy.s.turns) - initial_turns, "enemies": copy.s.enemies.duplicate(true), "reserve": copy.s.get("reinforcements", []).duplicate(true), "wave": int(copy.s.get("wave", 1))}
+	if weapon_trial: result.scope = "next_action"
 	result.heat = _heat_ranges(state, [{"p": 1.0, "peak": heat_peak, "end": int(copy.s.get("heat", 0)), "overheated": overheat, "forced_cost": forced_cost, "fired": shots.size(), "turns": int(copy.s.turns) - initial_turns}])
 	result.projectiles = copy.s.get("projectiles", []).duplicate(true)
+	result.loss_reason = copy.s.get("loss_reason", "")
 	if include_reload: result.reload = reload_now(copy.s)
 	return result
 
-static func random_analyze(state: Dictionary, include_reload: bool = false, cancelled: Callable = Callable()) -> Dictionary:
+static func random_analyze(state: Dictionary, include_reload: bool = false, cancelled: Callable = Callable(), action_rounds: int = 0) -> Dictionary:
 	var stack: Array = state.plan if state.phase == "plan" else state.magazine
 	var source_model = Model.new()
 	source_model.s = state
 	var recent: Array = source_model._recent_part_sources() if state.phase == "ready" else []
 	var rounds: Array = source_model._recent_part_rounds() if state.phase == "ready" else []
 	var previous_round: String = str(rounds.back()) if not rounds.is_empty() else ""
-	var key := JSON.stringify([state.get("ammo_cycle", 0), state.gun, Content.equipped_parts(state), state.get("capacity_bonus", 0), state.get("prepared", []), state.floor, state.phase, state.enemies, state.get("reinforcements", []), state.buff, state.push_left, stack, recent, previous_round, state.get("heat", 0), state.get("legacy_reload_penalty", 0), state.get("projectiles", []), state.get("projectile_serial", 0), state.get("previous_kill", false), state.get("engine",{}), include_reload])
+	var key := JSON.stringify([state.get("combat_revision", 0), state.get("ammo_cycle", 0), state.gun, Content.equipped_parts(state), state.get("capacity_bonus", 0), state.get("prepared", []), state.floor, state.phase, state.enemies, state.get("reinforcements", []), state.buff, state.push_left, stack, recent, previous_round, state.get("heat", 0), state.get("legacy_reload_penalty", 0), state.get("projectiles", []), state.get("projectile_serial", 0), state.get("previous_kill", false), state.get("engine",{}), include_reload])
+	key += JSON.stringify([state.get("reserve_version",0),state.get("emergency_version",0),state.get("emergency_uses",0),state.get("hand",[]),state.get("draw",[])])
+	key += JSON.stringify([state.get("gate_mods",{}),state.get("gate_charge",0),state.get("gate_chain",0),state.get("growth_version",0)])
+	key += JSON.stringify([state.get("sustained_version",0),state.get("sustained_attacks",0)])
+	key += JSON.stringify([state.get("magazine_trial_version",0), state.get("weapon_magazine_version",0), action_rounds])
+	key += JSON.stringify([state.get("magazine_build_version",0), state.get("magazine_loaded",[])])
+	key += JSON.stringify(state.get("fire_heat_trial",{}))
+	key += JSON.stringify([state.get("focus_build_version",0),state.get("combat_roles_version",0),state.get("specialist_core_version",0),state.get("fire_zones",[])])
+	key += JSON.stringify(state.get("balance_version",0))
+	key += JSON.stringify(state.get("enemy_pattern_version",0))
+	key += JSON.stringify(state.get("boss_skills_version",0))
 	cache_lock.lock()
 	if key == cached_key:
 		var cached := cached_result.duplicate(true)
@@ -60,16 +83,17 @@ static func random_analyze(state: Dictionary, include_reload: bool = false, canc
 		return cached
 	cache_lock.unlock()
 	var prepared = Model.new()
-	prepared.s = state.duplicate(true)
+	prepared.s = Model.simulation_state(state)
 	if prepared.s.phase == "plan": prepared.confirm()
 	prepared.s.history = []
 	var initial: Dictionary = prepared.s
 	var heat_limit := Content.heat_limit(state)
 	var branches: Array = [{"state": initial, "p": 1.0, "peak": int(state.get("heat", 0))}]
 	var shots: Array = []
-	for id in stack:
+	for id in stack.slice(0, mini(stack.size(), action_rounds) if action_rounds > 0 else stack.size()):
 		var source := Content.source_id(str(id))
 		var context := {"first": recent.is_empty(), "last": shots.size() == stack.size() - 1, "triad": recent.size() >= 2 and recent[-1] != recent[-2] and source != recent[-1] and source != recent[-2]}
+		if action_rounds > 0: context.last_attack = not stack.slice(shots.size()+1).any(func(round_id): return Content.is_attack(str(round_id)))
 		context.previous_round = previous_round
 		context.fired_count = recent.size()
 		context.sequence_count = Content.prior_kind_count(recent, str(id))
@@ -78,8 +102,11 @@ static func random_analyze(state: Dictionary, include_reload: bool = false, canc
 		var merged: Dictionary = {}
 		var shot := {"id": id, "random": true, "target": -1, "damage": 0, "damage_min": 1000000, "damage_max": 0, "expected_damage": 0.0, "hp": -1, "hits": Content.hit_count(str(id), state), "targets": [], "secondary": [], "used_probability": 0.0, "overheat_probability": 0.0, "heat_min": 1000000, "heat_max": 0, "part_probabilities": {"reclaimer": 0.0, "ember_core": 0.0}}
 		var target_stats: Dictionary = {}
+		shot.burn_tick = int(context.profile.burn_tick)
+		shot.burn_duration = int(context.profile.burn)
 		shot.effect_probability = 0.0
 		shot.prepared_rounds = []
+		shot.sustained_active = Content.Sustained.enabled(state)
 		for branch in branches:
 			if cancelled.is_valid() and cancelled.call(): return {}
 			var targets_model = Model.new()
@@ -98,6 +125,9 @@ static func random_analyze(state: Dictionary, include_reload: bool = false, canc
 				var applied_boost := preload("res://redesign/attack_boosts.gd").resolve(copy.s.buff, int(copy.s.get("heat",0)), Content.hot_threshold(copy.s))
 				if Content.is_attack(str(id)) and (int(applied_boost.dmg) > 0 or int(applied_boost.factor) > 1): shot.boosted = true
 				var actual: Dictionary = copy._shot(str(id), int(target), context)
+				shot.sustained_heat = actual.sustained_heat
+				shot.sustained_before = actual.sustained_before
+				shot.sustained_after = actual.sustained_after
 				copy._discard_fired_round(str(id))
 				var probability: float = float(branch.p) / alive.size()
 				shot.damage_min = mini(int(shot.damage_min), int(actual.damage))
@@ -161,7 +191,7 @@ static func random_analyze(state: Dictionary, include_reload: bool = false, canc
 		var fired: int = stack.size() - copy.s.magazine.size()
 		var hot := int(copy.s.get("heat", 0)) >= heat_limit
 		var detail: Dictionary = copy.finish_fire() if not stack.is_empty() else {}
-		var forced: Dictionary = detail.get("forced_reload", {})
+		var forced: Dictionary = detail.get("forced_cooling", {}) if Model.MagazineTrial.enabled(state) else detail.get("forced_reload", {})
 		var deployed: int = detail.get("deployments", []).size() + forced.get("deployments", []).size()
 		heat_branches.append({"p": branch.p, "peak": int(branch.peak), "end": int(copy.s.get("heat", 0)), "overheated": hot, "forced_cost": int(forced.get("cost", 0)), "fired": fired, "turns": int(copy.s.turns) - turns_before})
 		deployment_min = mini(deployment_min, deployed)
@@ -184,6 +214,7 @@ static func random_analyze(state: Dictionary, include_reload: bool = false, canc
 			if int(e.hp) <= 0: enemies[i].kill_probability += float(branch.p)
 	if deployment_min == 99999: deployment_min = 0
 	var result := {"random": true, "shots": shots, "advance_events": [], "deployments": [], "deployment_min": deployment_min, "deployment_max": deployment_max, "expected_deployments": expected_deployments, "phase": "uncertain", "remaining": [], "turns": 1 if not stack.is_empty() else 0, "enemies": enemies, "reserve": state.get("reinforcements", []).duplicate(true), "win_probability": win_probability, "lost_probability": lost_probability, "branches": branches.size()}
+	if action_rounds > 0: result.scope = "next_action"
 	result.heat = _heat_ranges(state, heat_branches)
 	result.turns = result.heat.turns_max
 	result.projectiles = _projectile_ranges(hazard_branches)
@@ -208,6 +239,8 @@ static func _fork_shot_state(state: Dictionary) -> Dictionary:
 	copy.field_compression = state.get("field_compression", {}).duplicate(false)
 	copy.prepared = state.get("prepared", []).duplicate(false)
 	copy.engine = state.get("engine",Model.Engines.fresh()).duplicate(true)
+	# Each random target owns its zones; a sibling branch must not inherit its fire.
+	if state.has("fire_zones"): copy.fire_zones = state.fire_zones.duplicate(true)
 	return copy
 
 # Within one bullet step, gun, parts, target order, reserves, deck and the
@@ -217,9 +250,14 @@ static func _fork_shot_state(state: Dictionary) -> Dictionary:
 static func _shot_branch_key(state: Dictionary) -> Array:
 	var key: Array = [state.magazine.size(), int(state.push_left), int(state.get("heat", 0)), int(state.get("legacy_reload_penalty", 0)), bool(state.get("previous_kill", false)), int(state.buff.get("dmg", 0)), int(state.buff.get("dmg_left", 0)), bool(state.buff.get("persistent", false)), JSON.stringify(state.buff)]
 	key.append(state.get("prepared", []).duplicate())
+	key.append_array([state.get("sustained_version",0),state.get("sustained_attacks",0)])
 	key.append(JSON.stringify(state.get("engine",{})))
+	key.append(JSON.stringify(state.get("fire_zones",[])))
+	key.append_array([int(state.get("gate_charge",0)),int(state.get("gate_chain",0))])
 	for enemy in state.enemies:
 		key.append_array([int(enemy.hp), int(enemy.def), int(enemy.distance), int(enemy.get("burn", 0)), int(enemy.get("focus_hits", 0)), int(enemy.get("barrier", 0)), int(enemy.get("stance_def", 0)), int(enemy.get("jammed", 0)), bool(enemy.get("disrupted", false))])
+		key.append(int(enemy.get("exposure_left",0)))
+		key.append_array([int(enemy.get("slow_left",0)),bool(enemy.get("slow_used",false))])
 	for projectile in state.get("projectiles", []):
 		key.append_array([int(projectile.uid), int(projectile.hp), int(projectile.distance), int(projectile.get("burn", 0))])
 	return key
@@ -227,21 +265,29 @@ static func _shot_branch_key(state: Dictionary) -> Array:
 ## The same real reload command drives both costs and post-reload positions.
 ## Calling it on a duplicate also includes burn, stance, charge and deployment.
 static func reload_now(state: Dictionary, allow_plan: bool = false) -> Dictionary:
+	return _reload_now(state, allow_plan, false)
+
+static func emergency_now(state: Dictionary) -> Dictionary:
+	return _reload_now(state, true, true)
+
+static func _reload_now(state: Dictionary, allow_plan: bool, emergency: bool) -> Dictionary:
 	var copy = Model.new()
 	copy.forecast_only = true
-	copy.s = state.duplicate(true)
-	var cost: int = copy.reload_cost()
-	var base: int = copy.base_reload_cost()
-	var heat := cost - base
+	copy.s = Model.simulation_state(state)
+	var cost: int = copy.emergency_cost() if emergency else copy.reload_cost()
+	var base: int = copy.reload_cost() if Model.MagazineTrial.enabled(state) else copy.base_reload_cost()
+	var heat: int = copy.reload_cost() - base
 	var before := int(copy.s.turns)
-	var required: bool = copy.reload_magazine() if copy.s.phase == "ready" or allow_plan else false
-	return {"temperature_after": int(copy.s.get("heat", 0)), "required": required, "cost": cost if required else 0, "base": base, "heat": heat if required else 0, "phase": copy.s.phase, "turns": int(copy.s.turns) - before, "enemies": copy.s.enemies.duplicate(true), "projectiles": copy.s.get("projectiles", []).duplicate(true), "loss_reason": copy.s.get("loss_reason", ""), "launches": int(copy.s.get("projectile_serial", 0)) - int(state.get("projectile_serial", 0))}
+	var required: bool = copy.emergency_resupply() if emergency else copy.reload_magazine() if copy.s.phase == "ready" or allow_plan else false
+	return {"temperature_after": int(copy.s.get("heat", 0)), "gate_charge": int(copy.s.get("gate_charge",0)), "required": required, "cost": cost if required else 0, "base": base, "heat": heat if required else 0, "phase": copy.s.phase, "turns": int(copy.s.turns) - before, "enemies": copy.s.enemies.duplicate(true), "projectiles": copy.s.get("projectiles", []).duplicate(true), "loss_reason": copy.s.get("loss_reason", ""), "launches": int(copy.s.get("projectile_serial", 0)) - int(state.get("projectile_serial", 0))}
 
 static func reload_consequence(result: Dictionary) -> String:
 	# Read the real simulated outcome: burning shooters, jams and existing shots
 	# must not produce a warning based only on a countdown comparison.
 	if not result.get("required", false): return ""
-	if result.get("phase", "") == "lost": return "피격 위험" if result.get("loss_reason", "") == "projectile" else "접촉 위험"
+	if result.get("phase", "") == "lost":
+		if result.get("loss_reason","") == "ammo": return "탄약 소진"
+		return "피격 위험" if result.get("loss_reason", "") == "projectile" else "접촉 위험"
 	if result.get("phase", "") in ["won", "reward"]: return ""
 	if int(result.get("launches", 0)) > 0: return "적 발사"
 	for shot in result.get("projectiles", []):
@@ -357,6 +403,8 @@ static func note(forecast: Dictionary, shot_index: int) -> String:
 	if int(shot.get("detonation", 0)) > 0: return "화상 기폭 %d" % shot.detonation
 	if int(shot.get("chase_bonus", 0)) > 0: return "처치 연계 +%d" % shot.chase_bonus
 	if int(shot.get("blocked_hits", 0)) > 0:
+		if int(shot.get("burn_added", 0)) > 0:
+			return "보호막 너머 화상 %d/턴 · %d턴" % [int(shot.burn_tick), int(shot.burn)]
 		return "배리어 −%d%s" % [int(shot.blocked_hits), " · HP −%d" % int(shot.damage) if int(shot.damage) > 0 else ""]
 	if int(shot.get("focus_damage", 0)) > 0: return "집중 +%d" % shot.focus_damage
 	var boosted := int(shot.get("math", {}).get("boost", 0)) > 0 or int(shot.get("math", {}).get("factor", 1)) > 1
@@ -401,7 +449,7 @@ static func summary(forecast: Dictionary) -> String:
 			var e: Dictionary = forecast.enemies[i]
 			ranges.append("%s HP%d~%d" % [tag(i, forecast.enemies), e.hp_min, e.hp_max])
 		ranges.append("전멸 %d%%" % floori(minf(1.0, float(forecast.win_probability) + 0.0000001) * 100))
-		if float(forecast.lost_probability) > 0: ranges.append("접촉 %d%%" % ceili(float(forecast.lost_probability) * 100 - 0.0000001))
+		if float(forecast.lost_probability) > 0: ranges.append("패배 %d%%" % ceili(float(forecast.lost_probability) * 100 - 0.0000001))
 		return " · ".join(ranges)
 	var parts: PackedStringArray = []
 	var nearest := 99999
@@ -415,7 +463,7 @@ static func summary(forecast: Dictionary) -> String:
 			parts.append("%s %sHP %d" % [tag(i, forecast.enemies), "◆%d · " % int(enemy.get("barrier", 0)) if int(enemy.get("barrier", 0)) > 0 else "", enemy.hp])
 			nearest = mini(nearest, int(enemy.distance))
 	if str(forecast.get("phase", "")) == "lost":
-		parts.append("접촉 위험")
+		parts.append("탄약 소진" if forecast.get("loss_reason","") == "ammo" else "접촉 위험")
 	elif nearest < 99999:
 		parts.append("안전 %dm" % nearest)
 	else:
@@ -429,7 +477,7 @@ static func compact_summary(forecast: Dictionary) -> String:
 		if int(forecast.get("deployment_max", 0)) > 0:
 			random_text += " · 증원 +%d~%d" % [int(forecast.get("deployment_min", 0)), int(forecast.get("deployment_max", 0))]
 		if float(forecast.get("lost_probability", 0.0)) > 0.0:
-			random_text += " · 충돌 %d%%" % ceili(float(forecast.lost_probability) * 100.0 - 0.0000001)
+			random_text += " · 패배 %d%%" % ceili(float(forecast.lost_probability) * 100.0 - 0.0000001)
 		return random_text
 	var kills := 0
 	var survivors := 0
@@ -444,7 +492,12 @@ static func compact_summary(forecast: Dictionary) -> String:
 	for shot in forecast.get("shots",[]):
 		dealt += int(shot.damage)
 		for other in shot.get("secondary",[]): dealt += int(other.get("damage",0))
-	var result_text := "피해 %d · 처치 %d · 전열 %d" % [dealt, kills, survivors]
+	var burn_damage := 0
+	for event in forecast.get("advance_events", []):
+		if event.get("kind", "") == "burn": burn_damage += int(event.get("damage", 0))
+	var damage_text := "피해 %d" % (dealt + burn_damage)
+	if burn_damage > 0: damage_text += "(화상 %d)" % burn_damage
+	var result_text := "%s · 처치 %d · 전열 %d" % [damage_text, kills, survivors]
 	var incoming := Ranged.active(forecast)
 	if not incoming.is_empty():
 		result_text += " · 압력탄 %d턴" % Ranged.arrival(incoming[0])
@@ -452,7 +505,7 @@ static func compact_summary(forecast: Dictionary) -> String:
 	if not forecast.get("deployments", []).is_empty():
 		result_text += " · 증원 +%d" % forecast.deployments.size()
 	if str(forecast.get("phase", "")) == "lost":
-		result_text += " · 충돌"
+		result_text += " · 탄약 소진" if forecast.get("loss_reason","") == "ammo" else " · 충돌"
 	elif nearest < 99999:
 		result_text += " · 최근접 %dm" % nearest
 	else:

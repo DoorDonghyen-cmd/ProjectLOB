@@ -1,0 +1,178 @@
+[gd_resource type="Theme" format=3]
+
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
+[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_slate.png" id="button"]
+[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_disabled.png" id="disabled"]
+[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_fire.png" id="primary"]
+
+[sub_resource type="StyleBoxTexture" id="action"]
+texture = ExtResource("button")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="hover"]
+texture = ExtResource("button")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(1.25, 1.25, 1.25, 1)
+
+[sub_resource type="StyleBoxTexture" id="pressed"]
+texture = ExtResource("button")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(0.8, 0.8, 0.8, 1)
+
+[sub_resource type="StyleBoxTexture" id="disabled"]
+texture = ExtResource("disabled")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxFlat" id="focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.360784, 0.866667, 0.862745, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="quiet"]
+bg_color = Color(0.015686, 0.098039, 0.121569, 0.35)
+border_width_bottom = 2
+border_color = Color(0.113725, 0.309804, 0.337255, 1)
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+anti_aliasing = false
+
+[sub_resource type="StyleBoxTexture" id="primary"]
+texture = ExtResource("primary")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="StyleBoxTexture" id="primary_hover"]
+texture = ExtResource("primary")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(1.25, 1.25, 1.25, 1)
+
+[sub_resource type="StyleBoxTexture" id="primary_pressed"]
+texture = ExtResource("primary")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+modulate_color = Color(0.8, 0.8, 0.8, 1)
+
+[resource]
+default_font = ExtResource("font")
+default_font_size = 16
+Label/colors/font_color = Color(0.894118, 0.94902, 0.933333, 1)
+Button/colors/font_color = Color(0.894118, 0.94902, 0.933333, 1)
+Button/colors/font_hover_color = Color(0.894118, 0.94902, 0.933333, 1)
+Button/colors/font_pressed_color = Color(0.894118, 0.94902, 0.933333, 1)
+Button/colors/font_focus_color = Color(0.894118, 0.94902, 0.933333, 1)
+Button/colors/font_disabled_color = Color(0.337255, 0.466667, 0.478431, 1)
+Button/styles/normal = SubResource("action")
+Button/styles/hover = SubResource("hover")
+Button/styles/pressed = SubResource("pressed")
+Button/styles/disabled = SubResource("disabled")
+Button/styles/focus = SubResource("focus")
+SectionTitle/base_type = &"Label"
+SectionTitle/font_sizes/font_size = 32
+PlaceTitle/base_type = &"Label"
+PlaceTitle/font_sizes/font_size = 32
+PlaceTitle/colors/font_color = Color(0.360784, 0.866667, 0.862745, 1)
+Body/base_type = &"Label"
+Body/font_sizes/font_size = 16
+Caption/base_type = &"Label"
+Caption/font_sizes/font_size = 16
+Caption/colors/font_color = Color(0.560784, 0.690196, 0.690196, 1)
+KeyValue/base_type = &"Label"
+KeyValue/font_sizes/font_size = 32
+ActionButton/base_type = &"Button"
+ActionButton/font_sizes/font_size = 16
+ActionButton/constants/min_width = 96
+ActionButton/constants/max_width = 216
+ActionButton/constants/touch_height = 44
+PrimaryButton/base_type = &"Button"
+PrimaryButton/font_sizes/font_size = 16
+PrimaryButton/constants/min_width = 96
+PrimaryButton/constants/max_width = 216
+PrimaryButton/constants/touch_height = 44
+PrimaryButton/colors/font_color = Color(0.109804, 0.035294, 0.011765, 1)
+PrimaryButton/colors/font_hover_color = Color(0.109804, 0.035294, 0.011765, 1)
+PrimaryButton/colors/font_pressed_color = Color(0.109804, 0.035294, 0.011765, 1)
+PrimaryButton/colors/font_focus_color = Color(0.109804, 0.035294, 0.011765, 1)
+PrimaryButton/styles/normal = SubResource("primary")
+PrimaryButton/styles/hover = SubResource("primary_hover")
+PrimaryButton/styles/pressed = SubResource("primary_pressed")
+IconButton/base_type = &"Button"
+IconButton/constants/min_width = 44
+IconButton/constants/max_width = 44
+IconButton/constants/touch_height = 44
+QuietPanel/base_type = &"PanelContainer"
+QuietPanel/styles/panel = SubResource("quiet")
+OperationContent/base_type = &"VBoxContainer"
+OperationContent/constants/separation = 4
+OperationGrid/base_type = &"GridContainer"
+OperationGrid/constants/h_separation = 12
+OperationGrid/constants/v_separation = 12
+WorkshopBody/base_type = &"VBoxContainer"
+WorkshopBody/constants/separation = 16
+

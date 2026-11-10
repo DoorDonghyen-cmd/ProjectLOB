@@ -14,6 +14,24 @@ func _fit_art() -> void:
 	var factor := maxf(size.x / native.x, size.y / native.y)
 	%ArtFrame.size = (native * factor).ceil()
 	%ArtFrame.position = ((size - %ArtFrame.size) * 0.5).floor()
+	_fit_hero()
+
+## Short landscape phones (844x390): with a saved run the resume / new run / settings
+## stack ran under the footer and settings left the screen (found 2026-11-08). Tighten
+## the stack and end it above the footer; taller screens keep the authored layout.
+func _fit_hero() -> void:
+	var short := size.y < 560
+	var hero := $TitleHero as VBoxContainer
+	hero.anchor_top = 0.06 if short else 0.145
+	hero.anchor_bottom = 1.0 if short else 0.79
+	hero.offset_top = 0.0
+	hero.offset_bottom = -88.0 if short else 0.0
+	hero.add_theme_constant_override("separation", 6 if short else 12)
+	$TitleHero/Wordmark.custom_minimum_size.y = 56 if short else 84
+	$TitleHero/KoreanTitle.visible = not short
+	$TitleHero/BreathingRoom.visible = not short
+	for id in ["resume", "new_run_setup"]: (hero.get_node(id) as Control).custom_minimum_size.y = 48 if short else 60
+	(hero.get_node("settings") as Control).custom_minimum_size.y = 44 if short else 52
 
 func bind_screen(owner_screen: Control, saved_run, has_save: bool, training_saved: bool) -> void:
 	host = owner_screen

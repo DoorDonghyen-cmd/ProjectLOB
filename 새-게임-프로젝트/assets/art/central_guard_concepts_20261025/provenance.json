@@ -1,0 +1,112 @@
+{
+  "date": "2026-10-25",
+  "status": "director_concepts_user_review_pending",
+  "scope": "Four stationary ordinary guards; no encounter, stats, animation or campaign changes",
+  "reference_roles": "Each prompt explicitly states the input image role and order.",
+  "items": [
+    {
+      "id": "guard_rusher",
+      "output": "guard_rusher_v1.png",
+      "output_sha256": "84e91594a76a014b4ff20f2e35ad3bcd381de3337ca74e1bbf551c2cdf5b21cc",
+      "generated_source": "exec-b2563a29-dd6b-476b-b3c3-769645764d9a.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Production game sprite for ORVASK, fifth region Central Control.\nINPUTS: image 1 approved current hero sheet, use only its broad pixel cluster scale / restrained internal detail, NOT costume or anatomy. Image 2 central-control background, palette and atmosphere ONLY. Image 3 existing clockwork mold worker, pure mechanical family and sealed face ONLY.\nCreate ONE new Royal Guard Rusher machine (친위 돌격병), a standalone full-body enemy facing LEFT in side/three-quarter game view. It is a pure clockwork automaton, no person inside. Lean forward, small smooth wedge-shaped helmet with sealed dull ivory faceplate and ONE narrow dark vertical slit, narrow dark blue-gray torso, long mechanical legs with long shins and visible open space between them. Both feet grounded in a staggered poised stride, NOT running in midair. Compact blunt ram-like forearms folded close to torso aimed left, no sword or modern rifle. A small flat brass twin-bar badge on chest unifies this regiment. One modest partly recessed wind-up mechanism behind shoulder suggests industrial ancestry; do not let it dominate. The silhouette is slender, forward, fast, noticeably distinct from the broad square foundry machine.\nMuted slate-blue armor, desaturated steel, small dull brass joints, restrained ivory mask. Broad quiet color planes like reference hero, grouped shadows, few clear stepped pixel edges, low local contrast. Target readable at 112 screen pixels high. No tiny bolts, no wiring spaghetti, no repeated trim, no surface grain, no gloss, no continuous black outline, no blur. No human clothing or face. No red glowing eyes, no fantasy horns.\nOUTPUT one sprite, not sheet, full body with 8% generous transparent margins, both feet complete, genuinely transparent background. No ground plane or cast shadow, no glow halo, no words, labels, numbers, UI or border. Keep large confident pixel clusters.\n",
+      "reference_order": [
+        {
+          "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+          "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_ascent_20261024/lower_v1.png",
+          "sha256": "90409edf6bd91d8d13330458e5a3ada858b328cf73cf5bc645452838cc6a779a"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/foundry_concepts_20261022/mold_worker_v1.png",
+          "sha256": "a3d71b1b69fd4156124f14f12e078d59aa03d00c2aa97a7661e4e110f236fad2"
+        }
+      ]
+    },
+    {
+      "id": "guard_heavy",
+      "output": "guard_heavy_v1.png",
+      "output_sha256": "9e9f617590f02295be45946bdcd611efa52d5ef667962654b925b016c8c5b192",
+      "generated_source": "exec-9053cb50-1c5b-4de0-ad44-bf7220237f1f.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. ORVASK fifth-region Royal Guard HEAVY (친위 중장병), ONE full body game enemy sprite.\nREFERENCE INPUTS: 1 new guard rusher is the regiment's uniform, sealed ivory slit mask, dull brass twin-bar insignia and quiet slate-blue color style. 2 existing mold worker gives the reusable industrial BODY CONSTRUCTION, not its rust. 3 approved hero sheet gives broad pixel clusters and calm edges only. 4 central-control environment provides muted palette only.\nCreate the militarized, standardized version of the mold worker. Same tiny head, wide squared mold torso, low very broad heavy legs, long thick hands down at sides, a visible mechanical waist, a small restrained wind-up key behind upper right shoulder. Facing LEFT in side/three-quarter view with both feet firmly grounded. Keep a single large rectangular recessed front armor surface that recalls the mold block, now closed by a smooth slate-blue armored slab with one dull brass twin-bar regiment insignia. No hot furnace or open glowing hole. Small sealed ivory face mask within a simple flat navy helmet, one dark vertical slit matching reference 1. Wide stable silhouette is about as wide as tall, clearly much broader than the rusher. All pure mechanism, no human anatomy or person inside.\nQuiet blue-gray steel masses, few muted brass hinges/joints, no rust speckling, no ornate noble decorations. Broad coherent stepped pixel clusters, grouped shadows, fewer internal seams than reference 2, no small bolts, shiny metal rims, black enclosing outline or texture noise. Readable at 132 screen px occupied height, its square torso is the visual priority. No colored glow or bloom or optical blur.\nOUTPUT exactly one sprite, not sheet. Fully transparent background, no ground, no shadow, no halos, no text or UI. 8% transparent clear margin, whole key/hands/feet inside canvas.\n",
+      "reference_order": [
+        {
+          "path": "새-게임-프로젝트/assets/art/central_guard_concepts_20261025/guard_rusher_v1.png",
+          "sha256": "84e91594a76a014b4ff20f2e35ad3bcd381de3337ca74e1bbf551c2cdf5b21cc"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/foundry_concepts_20261022/mold_worker_v1.png",
+          "sha256": "a3d71b1b69fd4156124f14f12e078d59aa03d00c2aa97a7661e4e110f236fad2"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+          "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_ascent_20261024/lower_v1.png",
+          "sha256": "90409edf6bd91d8d13330458e5a3ada858b328cf73cf5bc645452838cc6a779a"
+        }
+      ]
+    },
+    {
+      "id": "guard_shield",
+      "output": "guard_shield_v1.png",
+      "output_sha256": "bffbceb4b86dc3b7f32845490e2b8762dca2d9252bdd3a567340fc53705573cb",
+      "generated_source": "exec-159e8750-6ecd-49ce-8d6d-d851dfb09c07.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. ORVASK fifth-region Royal Guard SHIELD (친위 방패병), ONE full body enemy sprite.\nREFERENCE INPUTS: 1 new guard rusher locks regiment uniform, sealed ivory single-slit mask, dull brass twin-bar badge and restrained slate-blue pixel planes. 2 three poses of existing double-door servant defines mechanical body and two hinged door-shields ONLY; use its leftmost closed guard stance, reduce ornate ivory/gold decoration. 3 approved hero sheet is style reference ONLY, not clothing or human body. 4 central-control background is palette/space context ONLY.\nCreate a standardized military version of the double-door servant. Pure machinery, no human inside. A small matching wedge navy helmet and dull ivory sealed slit face above two tall FOLDING DOOR PANELS, closed toward LEFT/front. Three-quarter left-facing game view, slim mechanical legs planted and visible below the panels. The two large RECTANGULAR blue-gray panels are mounted to forearms with simple brass hinge blocks, each knee-to-chin height, forming the clearest silhouette. They are separate parallel rectangular leaves with a narrow vertical join; do not become a round shield. One restrained twin-bar brass mark on a panel. No long heraldic coat, no filigree, no blade, no crown. Same industrial clockwork family as rusher with a restrained wind-up key peeking behind shoulder. Average height, noticeably narrow upright column compared with heavy's wide box and rusher's forward stride. Both feet at same ground height and not covered by shields.\nBroad quiet color planes, stepped pixel clusters, muted navy/slate steel, gray-metal panel front, small brass hardware, ivory face. Inner surface detail sparse and subordinate to silhouette. At only 116 screen pixels high, two hinged leaves must remain clear. No noise, fine bolts, glint stripes, continuous black contour, optical blur, glow or reflection halo.\nOUTPUT exactly one standing sprite, not multiple poses. True transparent background, no scenery, no ground/cast shadow, no text or UI. Full body, complete feet and shields, generous 8% transparent margin.\n",
+      "reference_order": [
+        {
+          "path": "새-게임-프로젝트/assets/art/central_guard_concepts_20261025/guard_rusher_v1.png",
+          "sha256": "84e91594a76a014b4ff20f2e35ad3bcd381de3337ca74e1bbf551c2cdf5b21cc"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/noble_enemies_20261025/double_door_servant_v2.png",
+          "sha256": "94a77520dadcb0bfaa8a6af0e513d0c50784186c9d1520c05b475ce115ea2528"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+          "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_ascent_20261024/lower_v1.png",
+          "sha256": "90409edf6bd91d8d13330458e5a3ada858b328cf73cf5bc645452838cc6a779a"
+        }
+      ]
+    },
+    {
+      "id": "guard_artillery",
+      "output": "guard_artillery_v1.png",
+      "output_sha256": "9740bbcabd05c0f44474a3dce9f5f85d7ef78ee8f846d202e497ecbcd43160c6",
+      "generated_source": "exec-135d784b-77fb-4639-996c-dedc0a414b29.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. ORVASK fifth-region Royal Guard ARTILLERY (친위 포격병), ONE full body enemy sprite.\nREFERENCES: 1 new guard rusher locks the uniform family: muted slate-blue armor, dull brass twin-bar badge, small wedge-shaped helmet and sealed ivory mask with one vertical slit. 2 existing pressure worker defines oval pressure-tank torso, low horizontal nozzle/cannon arm, one thick curved hose, compact legs, and visible winding key; preserve these functional placements. 3 approved hero sheet supplies quiet large pixel clusters, NOT human anatomy. 4 central-control background is the setting and palette ONLY.\nMake the orderly militarized pressure worker, pure machinery. Full body in left-facing three-quarter side game view. Keep one LARGE oval upright pressure vessel in torso, a compact LEFT-pointing thick cylindrical cannon nozzle carried at waist level, one broad U-shaped pressure hose connecting nozzle to tank, short sturdy jointed legs planted on the same baseline. No oversized modern weapon or double barrel. Small matching sealed ivory slit mask beneath a slate wedge helmet on top of tank, looking left. Dull brass bands and one small twin-bar unit badge on the broad blue-gray tank. Restrained wind-up key at rear shoulder matching guard rusher. The silhouette reads tank + forward short wide nozzle + curved hose, wider and lower than shield guard. Remove all rust patches, apron and ornamental embellishment from worker reference. Complete nozzle and feet remain visible.\nCalm broad color planes, 2-3 major shadow values per material, grouped stepped pixel clusters, selective contours, slate/navy steel with muted gray cap surfaces and dull brass connectors. Aim readable at 108 screen pixels high, minimal internal seams. NO tiny bolts, grain, repeated highlights, glossy shading, continuous black outline, blur or glow halo. No human body/face, no fantasy decoration.\nOUTPUT ONE sprite, no pose sheet, transparent background, no shadow/ground/scenery/text/UI. Full figure with generous transparent margins, nozzle does not touch canvas edge.\n",
+      "reference_order": [
+        {
+          "path": "새-게임-프로젝트/assets/art/central_guard_concepts_20261025/guard_rusher_v1.png",
+          "sha256": "84e91594a76a014b4ff20f2e35ad3bcd381de3337ca74e1bbf551c2cdf5b21cc"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/foundry_concepts_20261022/pressure_worker_v1.png",
+          "sha256": "eadfe5238f3b1a666155cc2c1e50f180add97c5a477e396e7a9d1f4e64e9b6dc"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+          "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_ascent_20261024/lower_v1.png",
+          "sha256": "90409edf6bd91d8d13330458e5a3ada858b328cf73cf5bc645452838cc6a779a"
+        }
+      ]
+    }
+  ]
+}

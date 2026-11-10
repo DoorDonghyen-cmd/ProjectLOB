@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-21",
+  "tool": "built-in image_gen",
+  "jobs": [
+    {
+      "key": "outfits_v4",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/equipment_portraits_20261020/outfits_v3.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/eavesback_v1.png"
+      ],
+      "prompt": "Edit input1 seven outfit atlas. Inputs2 and3 are STYLE references only. Preserve all SEVEN costumes and their exact distinctive equipment, identical relaxed empty-hand standing pose facing right, their 4 top / 3 bottom grid placement and equal height, 1536x1024 canvas, no weapons. Main change: remove thick near-black cartoon outlines, replacing silhouettes with material-colored dark blue gray or brown edges and broken edge highlights like input2. Softer tonal contrast through broad grouped square pixel clusters, like the monster in input3. No continuous black sticker contour, no black borders between every limb/strap/pouch. Simplify internal partitions, use only 3 restrained tones per material and chunky stepped clusters. Keep red scarf muted brick red; cream/ochre cloth subdued. No blur, no glossy lighting, no anti-aliased illustration, no dither/noise, no high frequency detail. Preserve each readable silhouette, shared helmet proportions, outfit colors and baseline registration. Actual transparent background, crisp cutout without glow, shadows, halo or haze. This is production pixel art, not a presentation sheet. Bottom-right cell empty."
+    },
+    {
+      "key": "slum_thief",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/monster_concept_20261009/eavesback_v1.png"
+      ],
+      "prompt": "Production pixel game sprite atlas for ONE original human slum enemy, a hungry route thief, in THREE distinct poses across one wide transparent 1536x1024 image, 3 equal512px columns. References STYLE only: match input1 broad low-resolution square clusters and input2 soft material contours, no thick black outline, no glossy rendering. Entire body visible in each cell, same scale and foot baseline y=930, top near y=160. All face LEFT toward player. Pose1 alert stooped idle with crowbar lowered, pose2 clear leftward stride, pose3 lunging left with crowbar raised. Human, slender adult with low olive hood, cloth half-mask, charcoal short patched jacket, ochre armband on forearm, small canvas satchel, wrapped shins, scuffed brown boots. Not the hero: no blue helmet/lamp/red scarf, no huge backpack. Industrial dystopia with worn hand-me-down gear. Only about45x75 logical pixel silhouette per figure upscaled into big hard-edged clusters, restrained muted gray olive brown palette, sparse internal detail. Different limb positions in3 poses, recognizable consistent identity. Feet fully inside each cell, generous blank margins, no overlaps. No text/labels/UI/floor/contact shadows/background/glow/haze. Actual transparent alpha cutout."
+    },
+    {
+      "key": "slum_plate",
+      "prompt": "Production pixel game sprite atlas of ONE original HUMAN slum raider in THREE poses, one 1536x1024 transparent canvas, three equal512px columns. Reference1 is exact visual style and atlas layout reference: chunky stepped low-resolution color masses, subtle edges, no thick black outline. Reference2 is palette/style only, do NOT copy protagonist's helmet, red scarf or blue coat. Each figure full body facing LEFT, same scale, feet baseline y930. About45x75 logical pixels enlarged into coherent square clusters. Muted charcoal/olive/dirty brown/gray palette, ochre gang cloth marker. Industrial slum scavenger, actual human, not robot, no futuristic power armor. Sparse big gear shapes, no tiny busy seams/bolts. No labels/text/UI/floor/shadows/haze/glow. Real transparent alpha. Distinct poses, consistent costume in all3, all limbs entirely inside each cell with blank margins. Enemy: a stocky scrap-plate marauder. Asymmetrical tall gray scrap plate covers near shoulder and chest, leather straps, dull brown sleeveless coat over charcoal clothes, bald crown with cloth half-mask, sturdy boots, heavy short demolition hammer. Far arm mostly unarmored. Three poses left to right: idle guarded holding hammer low; trudging left leg forward with armor leaning; overhead hammer attack leaning left. Head top around y200, taller and broader than thief. The enormous shoulder slab must be easily identifiable at tiny game scale.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/slum_20261021/thief_states.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png"
+      ]
+    },
+    {
+      "key": "slum_battery",
+      "prompt": "Production pixel game sprite atlas of ONE original HUMAN slum raider in THREE poses, one 1536x1024 transparent canvas, three equal512px columns. Reference1 is exact visual style and atlas layout reference: chunky stepped low-resolution color masses, subtle edges, no thick black outline. Reference2 is palette/style only, do NOT copy protagonist's helmet, red scarf or blue coat. Each figure full body facing LEFT, same scale, feet baseline y930. About45x75 logical pixels enlarged into coherent square clusters. Muted charcoal/olive/dirty brown/gray palette, ochre gang cloth marker. Industrial slum scavenger, actual human, not robot, no futuristic power armor. Sparse big gear shapes, no tiny busy seams/bolts. No labels/text/UI/floor/shadows/haze/glow. Real transparent alpha. Distinct poses, consistent costume in all3, all limbs entirely inside each cell with blank margins. Enemy: a wiry accumulator scavenger. Cropped dark hair and tight battered goggles, narrow olive coverall, visible orange cloth tied at waist, asymmetric huge gray cylindrical battery on back, thick sagging insulated cable running to a short prod held in near hand. ONE small dull teal vent stripe on battery (not glow) is electrical vulnerability. THREE poses idle with prod down; stepping left in cautious sideways stride; thrusting prod left. Human silhouette with backpack larger than torso, head top y230. No pipes resembling gun barrel around belt, no lamp helmet, no red scarf.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/slum_20261021/thief_states.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png"
+      ]
+    },
+    {
+      "key": "slum_gunner",
+      "prompt": "Production pixel game sprite atlas of ONE original HUMAN slum raider in THREE poses, one 1536x1024 transparent canvas, three equal512px columns. Reference1 is exact visual style and atlas layout reference: chunky stepped low-resolution color masses, subtle edges, no thick black outline. Reference2 is palette/style only, do NOT copy protagonist's helmet, red scarf or blue coat. Each figure full body facing LEFT, same scale, feet baseline y930. About45x75 logical pixels enlarged into coherent square clusters. Muted charcoal/olive/dirty brown/gray palette, ochre gang cloth marker. Industrial slum scavenger, actual human, not robot, no futuristic power armor. Sparse big gear shapes, no tiny busy seams/bolts. No labels/text/UI/floor/shadows/haze/glow. Real transparent alpha. Distinct poses, consistent costume in all3, all limbs entirely inside each cell with blank margins. Enemy: a pressure rifle ambusher. Weathered cloth wrapped head and half face, muted ochre hooded poncho over charcoal long pants, squat dull gray pressure tank on back. A LARGE crude long single pipe rifle, valves and thick hose in simple masses, held in BOTH HANDS points LEFT. Three poses: idle rifle angled slightly down; preparing/aiming rifle horizontal left with body braced; firing with backward recoil and faint tiny muzzle puff, NO projectile baked into image. Same boots and tank all3 poses. Head top y230. Rifle muzzle must stay within own512px cell and separated from body silhouette.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/slum_20261021/thief_states.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png"
+      ]
+    },
+    {
+      "key": "slum_leader",
+      "prompt": "Production pixel game sprite atlas of ONE original HUMAN slum raider in THREE poses, one 1536x1024 transparent canvas, three equal512px columns. Reference1 is exact visual style and atlas layout reference: chunky stepped low-resolution color masses, subtle edges, no thick black outline. Reference2 is palette/style only, do NOT copy protagonist's helmet, red scarf or blue coat. Each figure full body facing LEFT, same scale, feet baseline y930. About45x75 logical pixels enlarged into coherent square clusters. Muted charcoal/olive/dirty brown/gray palette, ochre gang cloth marker. Industrial slum scavenger, actual human, not robot, no futuristic power armor. Sparse big gear shapes, no tiny busy seams/bolts. No labels/text/UI/floor/shadows/haze/glow. Real transparent alpha. Distinct poses, consistent costume in all3, all limbs entirely inside each cell with blank margins. Enemy: elite gang foreman, a tall adult human. Asymmetrical heavy brown coat with broad ochre shoulder cloth, dark cap with NO lamp, patchy gray metal chest plates, belt satchels, one heavy work glove, compact hand-cranked signal horn in near hand. Three poses: stern braced idle with signal horn at chest; command preparation raising horn and far arm; issuing attack command with horn to face, far arm pointing LEFT. Broad adult build, head top y180, no hero red scarf or miner lamp. Distinct long coat split, mechanical horn squared opening and shoulder marker easily readable at tiny scale. No banners/text. This is commanding allies, not casting magic.",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/slum_20261021/thief_states.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png"
+      ]
+    }
+  ],
+  "registration": "res://redesign/slum_art.gd; polygon atlas registration avoids adjacent pose overlap; original alpha preserved, existing cutout shader at runtime",
+  "review": "Integrated into Godot. Three display ratios and full/thumbnail appearance reviewed; atlas neighbor bleed corrected with polygon UV registration, fixed HUD clearance for raised weapons. User art preference pending. Fifteen keyed poses with existing procedural playback, not full frame-by-frame animation.",
+  "outputs": {
+    "outfits_v4": "../equipment_portraits_20261020/outfits_v4.png",
+    "slum_thief": "thief_states.png",
+    "slum_plate": "plate_states.png",
+    "slum_battery": "battery_states.png",
+    "slum_gunner": "gunner_states.png",
+    "slum_leader": "leader_states.png"
+  },
+  "evidence": "../../../../docs/qa/reports/slum_outfits_2026-10-21.md"
+}

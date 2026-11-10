@@ -19,7 +19,7 @@ static func secondary(id: String, state: Dictionary) -> String:
 			if spec.get("boost_hot",false): return "열%d↑"%Content.hot_threshold(state)
 			if Content.is_compressed(id): return "다음 탄창"
 			return "다음%d발"%Content.boost_rounds(id)
-		"burn": return "화상%d"%Content.burn_amount(id,state)
+		"burn": return "%d턴 지속"%Content.burn_amount(id,state)
 		"arc": return "전이%d"%Content.effect_value(id,state)
 		"push": return "+%dm"%Content.effect_value(id,state)
 		"thermal": return "열%d↑"%Content.hot_threshold(state)

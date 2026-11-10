@@ -1,4 +1,7 @@
 extends "res://tests/ammo_risk_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old shop/supply/workshop place buttons. Replaced by: supply_live_ui, shop_terminal_live_runner, workshop_standard_ui.
+## Still the base class of place_layout_ui_runner; do not delete.
+## Current UI suites: docs/qa/ui-test-suites.md
 const Campaign = preload("res://redesign/campaign.gd")
 const Data = preload("res://redesign/campaign_content.gd")
 const Ammo = preload("res://redesign/content.gd")

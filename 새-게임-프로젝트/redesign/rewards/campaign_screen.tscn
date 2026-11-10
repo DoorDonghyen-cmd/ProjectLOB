@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/rewards/screen.tscn" id="screen"]
+[ext_resource type="Script" path="res://redesign/rewards/campaign_screen.gd" id="logic"]
+
+[node name="CampaignReward" instance=ExtResource("screen")]
+custom_minimum_size = Vector2(0, 454)
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("logic")
+
+[node name="Receipt" type="Label" parent="Layout/Stack/Tray/Content/Header" index="1"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text_overrun_behavior = 3
+size_flags_horizontal = 3
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(0.84, 0.73, 0.55, 1)
+
+[node name="RewardDetails" type="Button" parent="Layout/Stack/Tray/Content/Actions" index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "상세"
+
+[node name="RewardRecord" type="Button" parent="Layout/Stack/Tray/Content/Actions" index="3"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "교전 기록"
+
+[node name="RewardTools" type="Button" parent="Layout/Stack/Tray/Content/Actions" index="4"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "메뉴"
+
+[node name="Trade" type="Button" parent="Layout/Stack/Tray/Content/Actions" index="7"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "보유 탄과 교체"

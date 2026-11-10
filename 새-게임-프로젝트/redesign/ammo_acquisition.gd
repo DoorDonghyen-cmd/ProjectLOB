@@ -1,7 +1,7 @@
 extends RefCounted
 ## New-run foundation and earned discoveries. Existing saved decks stay untouched.
 const Ammo = preload("res://redesign/content.gd")
-const FIRST_POOL := ["pierce", "precise", "charge", "bore", "arc", "push", "thermal"]
+const FIRST_POOL := ["pierce", "precise", "charge", "bore", "arc", "push"]
 
 static func start_deck() -> Array:
 	return ["basic_p1", "basic_p1", "basic_p2", "basic_p2", "basic_p2", "basic_p2", "basic_p2", "basic_p2", "basic_p3", "basic_p3"]
@@ -11,10 +11,10 @@ static func first_options(seed_value: int, gun: String, parts: Array, loadout: S
 	random.seed = seed_value + 81439
 	var preferred := "charge"
 	if parts.has("volley_drive"): preferred = "precise"
-	elif parts.has("thermal_drive"): preferred = "thermal"
+	elif parts.has("thermal_drive"): preferred = "bore"
 	elif parts.has("siege_drive"): preferred = "pierce"
 	preferred = str({"amplify":"precise", "thermal":"bore", "voltage":"arc"}.get(loadout, preferred))
-	var weapon_choices: Array = {"single":["charge","pierce"], "burst":["precise","charge"], "scatter":["arc","pierce"], "heavy":["bore","arc"], "amplifier":["charge","pierce"]}[gun].duplicate()
+	var weapon_choices: Array = {"single":["charge","pierce"], "burst":["precise","charge"], "scatter":["arc","pierce"], "heavy":["bore","arc"], "amplifier":["charge","pierce"], "rewinder":["precise","charge"], "deadbolt":["pierce","charge"]}[gun].duplicate()
 	var families: Array = [preferred]
 	for candidate in weapon_choices:
 		if not families.has(candidate): families.append(candidate);break
@@ -27,6 +27,14 @@ static func replaceable(deck: Array) -> Array:
 	for id in deck:
 		if Ammo.source_id(str(id)) == "basic" and not Ammo.is_compressed(str(id)) and not result.has(id): result.append(id)
 	result.sort_custom(func(a,b): return Ammo.AMMO[a].dmg < Ammo.AMMO[b].dmg)
+	return result
+
+static func replaceable_owned(deck: Array) -> Array:
+	# Keep familiar basic profiles first, then every other owned permanent card.
+	# Replacement removes one exact profile, never every copy or temporary ammo.
+	var result := replaceable(deck)
+	for id in deck:
+		if Ammo.AMMO.has(id) and not Ammo.is_temporary(str(id)) and not result.has(id): result.append(id)
 	return result
 
 static func opening_rows(node: Dictionary, fallback: Array) -> Array:

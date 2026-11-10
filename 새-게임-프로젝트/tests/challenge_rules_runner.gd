@@ -17,7 +17,7 @@ func _run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\","/").contains("/qa_runtime/elite_boss/"): quit(1);return
 	var run = Campaign.new()
 	run.start("single",731042)
-	check(run.s.roster_version == 5,"new runs use challenge roster")
+	check(run.s.roster_version == Data.Residential.VERSION,"new runs use current challenge roster")
 	for kind in ["elite","boss"]:
 		var node := {"region":0,"kind":"boss" if kind == "boss" else "combat","elite":kind == "elite","floor":8,"id":801,"name":"test"}
 		var legacy := Data.encounter_pack(node,731042,"single",0,0,4)
@@ -30,10 +30,11 @@ func _run() -> void:
 			node.region = region
 			check(Data.encounter_pack(node,731042,"single",0,0,4) == Data.encounter_pack(node,731042,"single",0,0,5),"later region unchanged")
 	var m = challenge_model("boss")
+	check(m.s.enemies[0].def == 5 and m.s.enemies[0].guard_armor == 5,"new closed boss has reinforced armor")
 	for phase in ["guard","prepare","prepare","waiting"]:
 		reload_exact(m)
 		check(m.s.enemies[0].ranged_phase == phase,"guard/open/launch tick " + phase)
-		check(m.s.enemies[0].def == (2 if phase == "guard" else 0),"armor matches body state")
+		check(m.s.enemies[0].def == (5 if phase == "guard" else 0),"armor matches body state")
 	check(m.s.projectiles[0].distance == 32,"projectile does not move on birth turn")
 	# Kill by burn after launch: the independent projectile still prevents victory.
 	m.s.enemies[0].hp = 1;m.s.enemies[0].burn = 1
@@ -47,14 +48,14 @@ func _run() -> void:
 	check(shots[0].target >= Ranged.TARGET_BASE and Ranged.active(m.s).is_empty(),"any direct hit intercepts boss shot")
 	check(m.s.enemies[0].ranged_phase == "recover" and m.s.enemies[0].ranged_left == 2,"interception starts two-turn open recovery")
 	reload_exact(m);check(m.s.enemies[0].ranged_phase == "recover","first recovery tick open")
-	reload_exact(m);check(m.s.enemies[0].ranged_phase == "guard" and m.s.enemies[0].def == 2,"second recovery tick closes")
+	reload_exact(m);check(m.s.enemies[0].ranged_phase == "guard" and m.s.enemies[0].def == 5,"second recovery tick closes")
 	# Two-turn reload cannot skip state transitions or invalidate armor damage.
 	m = challenge_model("boss",["shatter"],"burst")
 	reload_exact(m)
 	check(m.s.enemies[0].ranged_phase == "prepare" and m.s.enemies[0].ranged_left == 2,"burst two-turn reload opens gate")
 	m = challenge_model("boss",["shatter"])
 	shots = fire(m,["shatter"])
-	check(m.s.enemies[0].guard_armor == 0,"shatter permanently reduces door armor")
+	check(m.s.enemies[0].guard_armor == 2,"ordinary shatter leaves two armor on reinforced door")
 	for tick in range(3): reload_exact(m)
 	var invalid: Dictionary = m.s.duplicate(true)
 	invalid.enemies[0].guard_armor = -1
@@ -63,6 +64,15 @@ func _run() -> void:
 	check(not Model.new().restore_state(invalid),"invalid gate clock rejected")
 	invalid = m.s.duplicate(true);invalid.enemies[0].def = 2
 	check(not Model.new().restore_state(invalid),"closed armor cannot exist in open state")
+	for armor in [0,2,5]:
+		m = challenge_model("boss",["basic"])
+		m.s.enemies[0].ranged_phase="recover";m.s.enemies[0].ranged_left=1
+		m.s.enemies[0].guard_armor=armor;m.s.enemies[0].def=0
+		var copy=Model.new()
+		check(copy.restore_state(JSON.parse_string(JSON.stringify(m.s))),"old and damaged door state restores")
+		reload_exact(copy)
+		check(copy.s.enemies[0].def==armor,"closing preserves saved remaining armor without upgrading or regrowing it")
+		check(Ammo.enemy_rule(copy.s.enemies[0]).contains("문판 장갑 %d"%armor),"inspection uses actual remaining door armor")
 	m = challenge_model("boss",["disrupt"])
 	m.s.enemies[0].ranged_phase = "prepare";m.s.enemies[0].ranged_left = 2;m.s.enemies[0].def = 0
 	fire(m,["disrupt"])

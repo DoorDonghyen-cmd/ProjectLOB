@@ -95,10 +95,10 @@ func effect_text() -> String:
 	var spec: Dictionary = Content.AMMO[ammo_id]
 	match str(spec.effect):
 		"prepare": return "뒤 %d장 → 다음 패" % Content.effect_value(ammo_id, state)
-		"disrupt": return "준비 정지 %d턴" % Content.effect_value(ammo_id, state)
+		"disrupt": return "접근 감속 %d행동"%Content.Roles.slow_duration(state,Content.is_compressed(ammo_id),Content.equipped_parts(state)) if Content.Roles.enabled(state) else "준비 정지 %d턴" % Content.effect_value(ammo_id, state)
 		"spread": return "화상 이동 최대 %d" % Content.effect_value(ammo_id, state)
 		"sequence": return "탄종×%d · 최대3" % Content.effect_value(ammo_id, state)
-		"burn": return "매 턴 %d · %d턴" % [Content.burn_damage(state), Content.burn_amount(ammo_id, state)]
+		"burn": return "지역 불길 %d행동"%Content.Roles.fire_duration(Content.equipped_parts(state)) if Content.Roles.enabled(state) else "%d턴 · 보호막 무시" % Content.burn_amount(ammo_id, state)
 		"boost":
 			if bool(spec.get("boost_hot",false)): return "공격 직전 열 %d↑" % Content.hot_threshold(state)
 			if int(spec.get("boost_heat",0)) > 0: return "강화 공격 열 +%d" % int(spec.boost_heat)

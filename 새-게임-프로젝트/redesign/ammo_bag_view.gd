@@ -61,9 +61,7 @@ func select_tab(key: String) -> void:
 		button.set_pressed_no_signal(id==key)
 		preload("res://redesign/combat_treatment.gd").finish_button(button)
 		if id==key:
-			var selected: StyleBoxFlat=button.get_theme_stylebox("normal").duplicate()
-			selected.bg_color=Color("354a46")
-			selected.border_color=Color("b8c7ad")
+			var selected := preload("res://redesign/combat_pixel_skin.gd").box("button","selected")
 			button.add_theme_stylebox_override("normal",selected)
 			button.add_theme_stylebox_override("pressed",selected)
 			button.add_theme_color_override("font_pressed_color",Color("cfdec5"))
@@ -71,6 +69,10 @@ func select_tab(key: String) -> void:
 	cards.clear()
 	var ids: Array=inventory[key]
 	get_node("Hint").text=HINTS[key]
+	if preload("res://redesign/ammo_reserve.gd").enabled(state):
+		if key == "discard": get_node("Hint").text = "발사·교환·재장전으로 배출한 탄 · 이번 전투에 다시 나오지 않으며 다음 전투에 복구됩니다."
+		elif key == "draw": get_node("Hint").text = "아직 쓰지 않은 예비 탄약 · 재장전은 남은 손패를 보존하고 빈자리만 채웁니다."
+		elif key == "all": get_node("Hint").text = "보유 특수탄이 있으면 무작위 1장을 첫 손패에 포함합니다. 사용한 탄은 다음 전투에 복구됩니다."
 	details.text="탄환을 누르면 효과를 확인합니다."
 	get_node("Inspection/bag_details").disabled=true
 	var next_row: HBoxContainer=get_node("NextDraw")
@@ -82,11 +84,23 @@ func select_tab(key: String) -> void:
 	var status: Label=get_node("StateHint")
 	status.text=""
 	if not state.get("field_compression",{}).is_empty(): status.text="임시 압축 · 원본 2장은 장전한 압축탄에 포함되며 사용 후 돌아옵니다."
+	if not state.get("field_compression",{}).is_empty() and preload("res://redesign/ammo_reserve.gd").enabled(state): status.text="임시 압축 · 개별 회수 불가 · 재장전 배출 시 원본 2장은 사용함으로, 코어 반환 없음"
 	if not Content.uses_ammo_cards(state): status.text+=" 이전 등반 · 기본탄 %d발 별도 보급"%int(state.get("supply",0))
+	if preload("res://redesign/ammo_reserve.gd").enabled(state):
+		var reserve = preload("res://redesign/ammo_reserve.gd")
+		var remaining: int = reserve.remaining(state)
+		var summary := "휴대 %d/%d장 · 손패 상한 %d장 · 이번 전투 남은 탄 %d장" % [state.deck.size(), reserve.limit(state), Content.hand_capacity(state), remaining]
+		if reserve.emergency_enabled(state):
+			summary += "\n공격탄 소진 시 비상 기본탄 4발 · 보급마다 추가 대기 +1턴 · 이번 전투 보급 %d회" % int(state.get("emergency_uses",0))
+			summary += "\n보급탄은 이번 전투 한정 · 전체 보유에 추가되지 않음 · 사용함 재사용 없음"
+		else: summary += "\n사용함 재사용 없음 · 전부 소진하면 패배, 남은 화상은 끝까지 진행"
+		status.text = summary + ("\n" + status.text if not status.text.is_empty() else "")
 	status.visible=not status.text.is_empty()
 	var empty: Label=get_node("BagScroll/Content/bag_empty")
 	empty.visible=ids.is_empty()
 	empty.text="뽑을 더미가 비었습니다. 다음 추첨은 사용한 탄을 섞어서 이어갑니다." if key=="draw" else "이곳에는 아직 탄환이 없습니다."
+	if key == "draw" and preload("res://redesign/ammo_reserve.gd").enabled(state): empty.text = "예비 탄약 소진 · 남은 손패와 장전된 탄으로 마무리하세요."
+	if key == "draw" and preload("res://redesign/ammo_reserve.gd").emergency_enabled(state): empty.text = "예비 탄약 소진 · 손패와 탄창의 공격탄까지 소진하면 비상 보급을 선택할 수 있습니다."
 	grid.visible=not ids.is_empty()
 	var order: Array=[]
 	if key=="loaded": order=ids.duplicate()

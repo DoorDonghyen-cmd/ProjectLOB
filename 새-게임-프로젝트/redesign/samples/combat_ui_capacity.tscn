@@ -1,0 +1,1057 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/combat_ui_capacity.gd" id="logic"]
+
+[ext_resource type="PackedScene" path="res://redesign/slum_battle_view.tscn" id="battle"]
+
+[ext_resource type="Script" path="res://redesign/samples/combat_ui_capacity_icon.gd" id="icon"]
+
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
+
+[sub_resource type="StyleBoxFlat" id="button"]
+bg_color = Color(0.14902, 0.21961, 0.23137, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.35686, 0.4549, 0.45882, 1)
+
+[sub_resource type="StyleBoxFlat" id="hover"]
+bg_color = Color(0.21176, 0.31373, 0.32157, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.66275, 0.74902, 0.70196, 1)
+
+[sub_resource type="StyleBoxFlat" id="pressed"]
+bg_color = Color(0.07843, 0.14118, 0.15294, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.47059, 0.6, 0.54902, 1)
+
+[sub_resource type="StyleBoxFlat" id="disabled"]
+bg_color = Color(0.0902, 0.14118, 0.15294, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.18824, 0.26275, 0.27451, 1)
+
+[sub_resource type="StyleBoxFlat" id="primary"]
+bg_color = Color(0.83529, 0.69804, 0.46667, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.94902, 0.86667, 0.7098, 1)
+
+[sub_resource type="StyleBoxFlat" id="primary_hover"]
+bg_color = Color(0.93725, 0.80392, 0.57647, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(1.0, 0.94118, 0.80784, 1)
+
+[sub_resource type="StyleBoxFlat" id="primary_pressed"]
+bg_color = Color(0.63137, 0.50588, 0.31765, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.86667, 0.74902, 0.53725, 1)
+
+[sub_resource type="StyleBoxFlat" id="tray"]
+bg_color = Color(0.0902, 0.14902, 0.16863, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.33725, 0.40784, 0.40392, 1)
+
+[sub_resource type="StyleBoxFlat" id="support"]
+bg_color = Color(0.14118, 0.19608, 0.18431, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.71373, 0.68627, 0.47451, 1)
+
+[sub_resource type="StyleBoxFlat" id="well"]
+bg_color = Color(0.03922, 0.08235, 0.10588, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="fill"]
+bg_color = Color(0.74118, 0.5451, 0.3451, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="detail"]
+bg_color = Color(0.0902, 0.15294, 0.18039, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+border_width_bottom = 2
+border_color = Color(0.72157, 0.63137, 0.47451, 1)
+
+[sub_resource type="StyleBoxFlat" id="focus"]
+bg_color = Color(0,0,0,0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.93333, 0.83922, 0.63529, 1)
+
+[sub_resource type="Theme" id="theme"]
+default_font = ExtResource("font")
+default_font_size = 22
+Label/colors/font_color = Color(0.9098, 0.89412, 0.80784, 1)
+Button/colors/font_color = Color(0.9098, 0.89412, 0.80784, 1)
+Button/colors/font_hover_color = Color(1.0, 1.0, 1.0, 1)
+Button/colors/font_pressed_color = Color(1.0, 1.0, 1.0, 1)
+Button/colors/font_disabled_color = Color(0.54902, 0.61176, 0.59608, 1)
+Button/styles/normal = SubResource("button")
+Button/styles/hover = SubResource("hover")
+Button/styles/pressed = SubResource("pressed")
+Button/styles/disabled = SubResource("disabled")
+Button/styles/focus = SubResource("focus")
+
+[node name="CombatCapacityStudy" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = SubResource("theme")
+script = ExtResource("logic")
+composition = "A"
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.04314, 0.0902, 0.1098, 1)
+
+[node name="Battle" parent="." instance=ExtResource("battle")]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 72.0
+offset_right = 0.0
+offset_bottom = 432.0
+anchor_right = 1.0
+offset_right = 0.0
+
+[node name="Location" type="Label" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 8.0
+offset_right = 354.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.71373, 0.78824, 0.76471, 1)
+theme_override_font_sizes/font_size = 20
+text = "승강장 주거 통로"
+vertical_alignment = 1
+
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 34.0
+offset_right = 394.0
+offset_bottom = 68.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.9098, 0.89412, 0.80784, 1)
+theme_override_font_sizes/font_size = 28
+text = "교대 방패 진지"
+vertical_alignment = 1
+
+
+[node name="PreviewLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 7.0
+offset_right = 810.0
+offset_bottom = 37.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.7451, 0.66275, 0.50196, 1)
+theme_override_font_sizes/font_size = 18
+text = "A안 · 탄창 용량 비교"
+vertical_alignment = 1
+anchor_left = 0.0
+anchor_right = 0.0
+
+[node name="Reset" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -376.0
+offset_top = 4.0
+offset_right = -276.0
+offset_bottom = 68.0
+text = "초기화"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="Pressure" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -268.0
+offset_top = 4.0
+offset_right = -140.0
+offset_bottom = 68.0
+text = "근접 상황"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="Other" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -132.0
+offset_top = 4.0
+offset_right = -24.0
+offset_bottom = 68.0
+text = "B안 보기"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="HeaderRule" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 70.0
+offset_right = 0.0
+offset_bottom = 72.0
+mouse_filter = 2
+color = Color(0.20784, 0.29412, 0.31373, 1)
+anchor_right = 1.0
+offset_right = 0.0
+
+[node name="IntentTitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 128.0
+offset_right = 678.0
+offset_bottom = 172.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.94118, 0.87451, 0.72549, 1)
+theme_override_font_sizes/font_size = 30
+text = "지금이 돌파할 틈입니다"
+vertical_alignment = 1
+anchor_left = 0.0
+anchor_right = 0.0
+
+[node name="IntentHint" type="Label" parent="."]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 174.0
+offset_right = 708.0
+offset_bottom = 206.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.80784, 0.85882, 0.81569, 1)
+theme_override_font_sizes/font_size = 20
+text = "방패 개방 · 장갑 없이 공격할 수 있습니다"
+vertical_alignment = 1
+anchor_left = 0.0
+anchor_right = 0.0
+
+[node name="Bench" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 432.0
+offset_right = 0.0
+offset_bottom = 800.0
+anchor_right = 1.0
+offset_right = 0.0
+theme_override_styles/panel = SubResource("well")
+
+[node name="MagazineTitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 440.0
+offset_right = 524.0
+offset_bottom = 478.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.9098, 0.89412, 0.80784, 1)
+theme_override_font_sizes/font_size = 26
+text = "이번 탄창  3 / 3"
+vertical_alignment = 1
+anchor_left = 0.0
+anchor_right = 0.0
+
+[node name="SequenceHint" type="Label" parent="."]
+layout_mode = 0
+offset_left = -300.0
+offset_top = 446.0
+offset_right = -24.0
+offset_bottom = 478.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.67843, 0.73333, 0.70588, 1)
+theme_override_font_sizes/font_size = 18
+text = "왼쪽부터 발사"
+vertical_alignment = 1
+anchor_left = 1.0
+anchor_right = 1.0
+
+[node name="RoundRow" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 488.0
+offset_right = -24.0
+offset_bottom = 650.0
+anchor_right = 1.0
+offset_right = -24.0
+theme_override_constants/separation = 10
+
+[node name="Round0" type="Panel" parent="RoundRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(176,162)
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("support")
+
+[node name="Number0" type="Label" parent="RoundRow/Round0"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 35.0
+mouse_filter = 2
+text = "1"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.68,0.54,1)
+vertical_alignment = 1
+
+[node name="Name0" type="Label" parent="RoundRow/Round0"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 7.0
+offset_right = 190.0
+offset_bottom = 37.0
+mouse_filter = 2
+text = "증폭탄"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.91,0.89,0.81,1)
+vertical_alignment = 1
+
+[node name="Icon0" type="Control" parent="RoundRow/Round0"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 46.0
+offset_right = 66.0
+offset_bottom = 142.0
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "charge"
+
+[node name="Role0" type="Label" parent="RoundRow/Round0"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 45.0
+offset_right = 188.0
+offset_bottom = 71.0
+mouse_filter = 2
+text = "다음 공격"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.78,0.74,1)
+vertical_alignment = 1
+
+[node name="Value0" type="Label" parent="RoundRow/Round0"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 72.0
+offset_right = 188.0
+offset_bottom = 114.0
+mouse_filter = 2
+text = "+3"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.95,0.86,0.67,1)
+vertical_alignment = 1
+
+[node name="Cost0" type="Label" parent="RoundRow/Round0"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 112.0
+offset_right = 188.0
+offset_bottom = 136.0
+mouse_filter = 2
+text = "열 +3"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.84,0.67,0.52,1)
+vertical_alignment = 1
+
+[node name="Gain0" type="Label" parent="RoundRow/Round0"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 160.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85,0.74,0.51,1)
+vertical_alignment = 1
+
+[node name="Round1" type="Panel" parent="RoundRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(176,162)
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("tray")
+
+[node name="Number1" type="Label" parent="RoundRow/Round1"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 35.0
+mouse_filter = 2
+text = "2"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.68,0.54,1)
+vertical_alignment = 1
+
+[node name="Name1" type="Label" parent="RoundRow/Round1"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 7.0
+offset_right = 190.0
+offset_bottom = 37.0
+mouse_filter = 2
+text = "기본탄"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.91,0.89,0.81,1)
+vertical_alignment = 1
+
+[node name="Icon1" type="Control" parent="RoundRow/Round1"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 46.0
+offset_right = 66.0
+offset_bottom = 142.0
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "basic_p3"
+
+[node name="Role1" type="Label" parent="RoundRow/Round1"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 45.0
+offset_right = 188.0
+offset_bottom = 71.0
+mouse_filter = 2
+text = "총 피해"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.78,0.74,1)
+vertical_alignment = 1
+
+[node name="Value1" type="Label" parent="RoundRow/Round1"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 72.0
+offset_right = 188.0
+offset_bottom = 114.0
+mouse_filter = 2
+text = "14"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.95,0.86,0.67,1)
+vertical_alignment = 1
+
+[node name="Cost1" type="Label" parent="RoundRow/Round1"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 112.0
+offset_right = 188.0
+offset_bottom = 136.0
+mouse_filter = 2
+text = "열 +3"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.84,0.67,0.52,1)
+vertical_alignment = 1
+
+[node name="Gain1" type="Label" parent="RoundRow/Round1"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 160.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85,0.74,0.51,1)
+vertical_alignment = 1
+
+[node name="Round2" type="Panel" parent="RoundRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(176,162)
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("tray")
+
+[node name="Number2" type="Label" parent="RoundRow/Round2"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 35.0
+mouse_filter = 2
+text = "3"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.68,0.54,1)
+vertical_alignment = 1
+
+[node name="Name2" type="Label" parent="RoundRow/Round2"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 7.0
+offset_right = 190.0
+offset_bottom = 37.0
+mouse_filter = 2
+text = "기본탄"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.91,0.89,0.81,1)
+vertical_alignment = 1
+
+[node name="Icon2" type="Control" parent="RoundRow/Round2"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 46.0
+offset_right = 66.0
+offset_bottom = 142.0
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "basic_p3"
+
+[node name="Role2" type="Label" parent="RoundRow/Round2"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 45.0
+offset_right = 188.0
+offset_bottom = 71.0
+mouse_filter = 2
+text = "총 피해"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.78,0.74,1)
+vertical_alignment = 1
+
+[node name="Value2" type="Label" parent="RoundRow/Round2"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 72.0
+offset_right = 188.0
+offset_bottom = 114.0
+mouse_filter = 2
+text = "14"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.95,0.86,0.67,1)
+vertical_alignment = 1
+
+[node name="Cost2" type="Label" parent="RoundRow/Round2"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 112.0
+offset_right = 188.0
+offset_bottom = 136.0
+mouse_filter = 2
+text = "열 +3"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.84,0.67,0.52,1)
+vertical_alignment = 1
+
+[node name="Gain2" type="Label" parent="RoundRow/Round2"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 160.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85,0.74,0.51,1)
+vertical_alignment = 1
+
+[node name="Round3" type="Panel" parent="RoundRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(176,162)
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("tray")
+
+[node name="Number3" type="Label" parent="RoundRow/Round3"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 35.0
+mouse_filter = 2
+text = "4"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.68,0.54,1)
+vertical_alignment = 1
+
+[node name="Name3" type="Label" parent="RoundRow/Round3"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 7.0
+offset_right = 190.0
+offset_bottom = 37.0
+mouse_filter = 2
+text = "기본탄"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.91,0.89,0.81,1)
+vertical_alignment = 1
+
+[node name="Icon3" type="Control" parent="RoundRow/Round3"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 46.0
+offset_right = 66.0
+offset_bottom = 142.0
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "basic_p3"
+
+[node name="Role3" type="Label" parent="RoundRow/Round3"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 45.0
+offset_right = 188.0
+offset_bottom = 71.0
+mouse_filter = 2
+text = "총 피해"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.78,0.74,1)
+vertical_alignment = 1
+
+[node name="Value3" type="Label" parent="RoundRow/Round3"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 72.0
+offset_right = 188.0
+offset_bottom = 114.0
+mouse_filter = 2
+text = "14"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.95,0.86,0.67,1)
+vertical_alignment = 1
+
+[node name="Cost3" type="Label" parent="RoundRow/Round3"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 112.0
+offset_right = 188.0
+offset_bottom = 136.0
+mouse_filter = 2
+text = "열 +3"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.84,0.67,0.52,1)
+vertical_alignment = 1
+
+[node name="Gain3" type="Label" parent="RoundRow/Round3"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 160.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85,0.74,0.51,1)
+vertical_alignment = 1
+
+[node name="Round4" type="Panel" parent="RoundRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(176,162)
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("tray")
+
+[node name="Number4" type="Label" parent="RoundRow/Round4"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 35.0
+mouse_filter = 2
+text = "5"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.68,0.54,1)
+vertical_alignment = 1
+
+[node name="Name4" type="Label" parent="RoundRow/Round4"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 7.0
+offset_right = 190.0
+offset_bottom = 37.0
+mouse_filter = 2
+text = "기본탄"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.91,0.89,0.81,1)
+vertical_alignment = 1
+
+[node name="Icon4" type="Control" parent="RoundRow/Round4"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 46.0
+offset_right = 66.0
+offset_bottom = 142.0
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "basic_p3"
+
+[node name="Role4" type="Label" parent="RoundRow/Round4"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 45.0
+offset_right = 188.0
+offset_bottom = 71.0
+mouse_filter = 2
+text = "총 피해"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.78,0.74,1)
+vertical_alignment = 1
+
+[node name="Value4" type="Label" parent="RoundRow/Round4"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 72.0
+offset_right = 188.0
+offset_bottom = 114.0
+mouse_filter = 2
+text = "14"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.95,0.86,0.67,1)
+vertical_alignment = 1
+
+[node name="Cost4" type="Label" parent="RoundRow/Round4"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 112.0
+offset_right = 188.0
+offset_bottom = 136.0
+mouse_filter = 2
+text = "열 +3"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.84,0.67,0.52,1)
+vertical_alignment = 1
+
+[node name="Gain4" type="Label" parent="RoundRow/Round4"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 160.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85,0.74,0.51,1)
+vertical_alignment = 1
+
+[node name="Round5" type="Panel" parent="RoundRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(176,162)
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_styles/panel = SubResource("tray")
+
+[node name="Number5" type="Label" parent="RoundRow/Round5"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 7.0
+offset_right = 32.0
+offset_bottom = 35.0
+mouse_filter = 2
+text = "6"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.68,0.54,1)
+vertical_alignment = 1
+
+[node name="Name5" type="Label" parent="RoundRow/Round5"]
+layout_mode = 0
+offset_left = 34.0
+offset_top = 7.0
+offset_right = 190.0
+offset_bottom = 37.0
+mouse_filter = 2
+text = "기본탄"
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.91,0.89,0.81,1)
+vertical_alignment = 1
+
+[node name="Icon5" type="Control" parent="RoundRow/Round5"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 46.0
+offset_right = 66.0
+offset_bottom = 142.0
+mouse_filter = 2
+script = ExtResource("icon")
+item_id = "basic_p3"
+
+[node name="Role5" type="Label" parent="RoundRow/Round5"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 45.0
+offset_right = 188.0
+offset_bottom = 71.0
+mouse_filter = 2
+text = "총 피해"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72,0.78,0.74,1)
+vertical_alignment = 1
+
+[node name="Value5" type="Label" parent="RoundRow/Round5"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 72.0
+offset_right = 188.0
+offset_bottom = 114.0
+mouse_filter = 2
+text = "14"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.95,0.86,0.67,1)
+vertical_alignment = 1
+
+[node name="Cost5" type="Label" parent="RoundRow/Round5"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 112.0
+offset_right = 188.0
+offset_bottom = 136.0
+mouse_filter = 2
+text = "열 +3"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.84,0.67,0.52,1)
+vertical_alignment = 1
+
+[node name="Gain5" type="Label" parent="RoundRow/Round5"]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 160.0
+mouse_filter = 2
+text = ""
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85,0.74,0.51,1)
+vertical_alignment = 1
+
+[node name="Prediction" type="Label" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 388.0
+offset_right = 1024.0
+offset_bottom = 426.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.9451, 0.83137, 0.60392, 1)
+theme_override_font_sizes/font_size = 24
+text = "적 2명 처치 예상  ·  최고 열 8 / 12"
+vertical_alignment = 1
+anchor_left = 0.0
+anchor_right = 0.0
+
+[node name="HeatLabel" type="Label" parent="."]
+layout_mode = 0
+anchor_left = 0.0
+anchor_right = 0.0
+offset_left = 24.0
+offset_top = 674.0
+offset_right = 234.0
+offset_bottom = 704.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.84314, 0.7451, 0.59608, 1)
+theme_override_font_sizes/font_size = 22
+text = "발열  0 / 12"
+vertical_alignment = 1
+
+
+[node name="HeatBar" type="ProgressBar" parent="."]
+layout_mode = 0
+anchor_left = 0.0
+anchor_right = 0.0
+offset_left = 24.0
+offset_top = 716.0
+offset_right = 234.0
+offset_bottom = 726.0
+max_value = 12.0
+show_percentage = false
+mouse_filter = 2
+theme_override_styles/background = SubResource("tray")
+theme_override_styles/fill = SubResource("fill")
+
+[node name="Fire" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -336.0
+offset_top = 674.0
+offset_right = -24.0
+offset_bottom = 752.0
+text = "장전하고 발사"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("primary")
+theme_override_styles/hover = SubResource("primary_hover")
+theme_override_styles/pressed = SubResource("primary_pressed")
+theme_override_colors/font_color = Color(0.0902, 0.13725, 0.14902, 1)
+theme_override_colors/font_hover_color = Color(0.0902, 0.13725, 0.14902, 1)
+theme_override_colors/font_pressed_color = Color(0.0902, 0.13725, 0.14902, 1)
+
+[node name="Reload" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -670.0
+offset_top = 674.0
+offset_right = -358.0
+offset_bottom = 752.0
+text = "다시 장전 · 적 1행동"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+
+[node name="StatusNote" type="Label" parent="."]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 39.0
+offset_right = 890.0
+offset_bottom = 65.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.70588, 0.76863, 0.73333, 1)
+theme_override_font_sizes/font_size = 17
+text = "선택 중에는 적이 움직이지 않습니다"
+vertical_alignment = 1
+
+
+[node name="FooterRule" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 662.0
+offset_right = -24.0
+offset_bottom = 663.0
+mouse_filter = 2
+color = Color(0.20784, 0.29412, 0.31373, 1)
+anchor_right = 1.0
+
+[node name="Bag" type="Button" parent="."]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 674.0
+offset_right = 394.0
+offset_bottom = 752.0
+text = "남은 탄 22장"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 18
+anchor_left = 0.0
+anchor_right = 0.0
+
+[node name="Parts" type="Button" parent="."]
+layout_mode = 0
+offset_left = 406.0
+offset_top = 674.0
+offset_right = 558.0
+offset_bottom = 752.0
+text = "돌파 코어"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 18
+anchor_left = 0.0
+anchor_right = 0.0
+
+[node name="Weapon" type="Label" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -354.0
+offset_top = 760.0
+offset_right = -24.0
+offset_bottom = 796.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.71765, 0.78039, 0.7451, 1)
+theme_override_font_sizes/font_size = 20
+text = "리벳  ·  운반용 외투"
+vertical_alignment = 1
+horizontal_alignment = 2
+
+[node name="Detail" type="Panel" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -572.0
+offset_top = 354.0
+offset_right = -24.0
+offset_bottom = 742.0
+visible = false
+z_index = 30
+mouse_filter = 0
+theme_override_styles/panel = SubResource("detail")
+
+[node name="DetailTitle" type="Label" parent="Detail"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 16.0
+offset_right = 404.0
+offset_bottom = 62.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.9098, 0.89412, 0.80784, 1)
+theme_override_font_sizes/font_size = 30
+text = "탄약"
+vertical_alignment = 1
+
+
+[node name="DetailBody" type="Label" parent="Detail"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 82.0
+offset_right = 524.0
+offset_bottom = 284.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.9098, 0.89412, 0.80784, 1)
+theme_override_font_sizes/font_size = 22
+text = "남은 탄약과 장비 상세"
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="CloseDetail" type="Button" parent="Detail"]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 302.0
+offset_right = 524.0
+offset_bottom = 366.0
+text = "닫기"
+mouse_default_cursor_shape = 2
+theme_override_font_sizes/font_size = 20
+[node name="CapacityNote" type="Label" parent="."]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 758.0
+offset_right = 874.0
+offset_bottom = 794.0
+mouse_filter = 2
+text = "6발 탄창 비교"
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.73,0.8,0.76,1)
+vertical_alignment = 1
+

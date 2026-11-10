@@ -50,7 +50,7 @@ static func evaluate(state: Dictionary, order: Array, index: int) -> Dictionary:
 	if link.is_empty(): return {}
 	if link.kind == "armor" and not state.enemies.any(func(e): return int(e.hp) > 0 and int(e.def) > 0): return {}
 	if link.kind == "cool" and index == 0 and int(state.get("heat",0)) == 0: return {}
-	var copy := state.duplicate(true)
+	var copy := Model.simulation_state(state)
 	copy.plan = order.duplicate()
 	copy.plan_load_order = Content.loading_order(order)
 	# Scatter candidates are possibilities, not predictions from a secret RNG.

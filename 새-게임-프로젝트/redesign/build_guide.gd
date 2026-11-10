@@ -2,6 +2,9 @@ extends RefCounted
 ## Public build relationships; suggestions are not an automatic loadout choice.
 const Ammo = preload("res://redesign/content.gd")
 const FAMILIES := {
+	"third_striker":"순서 보상",
+	"resonator":"연타 배율",
+	"tally":"등반 성장",
 	"volley_drive":"화력 성장", "thermal_drive":"화력 성장", "siege_drive":"화력 성장",
 	"lens": "조합 보상",
 	"coil": "조합 보상",
@@ -33,8 +36,8 @@ const FAMILIES := {
 	"compression_sink": "압축·탄창",
 }
 const LINKS := {
-	"cooling_breech": ["prepare", "thermal"], "chain_sink": ["sequence", "charge", "precise"], "indexer": ["prepare"], "supply": ["sequence", "prepare", "charge"],
-	"radiator": ["charge_hot", "precise", "thermal"], "reclaimer": ["chase", "precise", "arc"], "ember_core": ["thermal", "vent", "precise"],
+	"cooling_breech": ["prepare", "bore"], "chain_sink": ["sequence", "charge", "precise"], "indexer": ["prepare"], "supply": ["sequence", "prepare", "charge"],
+	"radiator": ["charge_hot", "precise", "bore"], "reclaimer": ["chase", "precise", "arc"], "ember_core": ["bore", "vent", "precise"],
 	"coil": ["bore", "detonate", "spread"], "inferno": ["bore", "push", "detonate", "spread"], "igniter": ["bore", "precise", "detonate", "spread"],
 	"capacitor": ["arc"], "arc_splitter": ["arc"], "rammer": ["push"], "momentum": ["push", "bore"],
 	"sequencer": ["charge", "precise"], "duplex": ["precise"], "breaker": ["precise"],
@@ -45,12 +48,26 @@ static func family(id: String) -> String:
 	return str(FAMILIES.get(id, "빌드"))
 
 static func connection(id: String, state: Dictionary) -> String:
+	if id == "resonator": return "증폭 → 연타 · 복열로 타격이 늘수록 ×n이 커짐 · 제3 격발기와 곱해짐"
+	if id == "tally": return "연타 처치로 성장 · 공명기의 모든 타격에 더해져 함께 곱해짐"
+	if Ammo.Roles.builds(state):
+		match id:
+			"inferno":return "화상 +%d · 넓은 불길 4행동 · 냉각/교체 중에도 피해"%Ammo.Roles.burn_growth(state,[id])
+			"momentum":return "차단탄 경직 3/4행동 · 밀기로 접근 시간 확보"
+			"rammer":return "차단 → 경직 중 주력 탄 · 타격마다 +2"
+			"capacitor":return "전격 강화 · 연쇄/돌파와 함께 장착해 전이 대상 +1"
+			"arc_splitter":return "전격 전이 대상 +1 · 성장 코어와 교체하는 선택"
+			"coil":return "화상 +1행동 · 불길 피해 +2 · 소이/기폭 연결"
+	if id == "third_striker": return "지원탄도 한 발 · 주력 탄을 세 번째 발사에 맞춰 ×3"
+	if int(state.get("focus_build_version",0)) == 1:
+		if id == "opening": return "첫 발 ×2 · 앞 탄을 빼내 주력 탄으로 시작"
+		if id == "afterburner": return "실제 증폭 → 마지막 단타 ×3 · 지원탄 보유만으로 발동하지 않음"
 	if preload("res://redesign/damage_engines.gd").IDS.has(id): return preload("res://redesign/damage_engines.gd").progress(state,id)
 	var counts: Dictionary = {}
 	for round_id in state.get("deck", []):
 		var source := Ammo.source_id(str(round_id))
 		counts[source] = int(counts.get(source, 0)) + 1
-	var uses_heat := counts.has("thermal") or Ammo.has_part(state, "ember_core")
+	var uses_heat := Ammo.uses_hot_effect(state)
 	if id == "ordinary_chain":
 		var kinds: Array = []
 		for round_id in state.get("deck", []):
@@ -84,7 +101,8 @@ static func connection(id: String, state: Dictionary) -> String:
 			pairs += int(state.get("deck", []).count(source)) / 2
 		return "압축 후보 %d쌍 · 두 발을 동시에 손에 모아 사용" % pairs
 	if id == "reserve": return "패 교환 %d → %d회 · 덱의 다른 탄을 찾아 조합" % [Ammo.exchange_capacity(state), Ammo.exchange_capacity(state) if Ammo.has_part(state, id) else Ammo.exchange_capacity(state) + 1]
-	if not LINKS.has(id): return str(Ammo.PARTS[id].role) + " · 특정 탄종 없이 적용"
+	if id == "afterburner" and Ammo.revised_combat(state): return "증폭·배율 → 마지막 단타 ×2 · 뒤의 지원탄은 허용 · 연타 제외"
+	if not LINKS.has(id): return str(Ammo.part_spec(id,state).role) + " · 특정 탄종 없이 적용"
 	var found: PackedStringArray = []
 	for source in LINKS[id]:
 		if int(counts.get(source, 0)) > 0: found.append("%s %d장" % [Ammo.AMMO[source].name, counts[source]])

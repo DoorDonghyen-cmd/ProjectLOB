@@ -89,7 +89,9 @@ func _run() -> void:
 		invalid.heat = temperature
 		check(not restored.restore_state(invalid), "invalid temperature rejected")
 	# Burn, reserves and already-fired projectiles continue during compulsory cooling.
-	model = fixture(["bore"], [["runner", 7, 0, 1, 20]], "heavy")
+	# Incendiary now ticks for 4 on Heavy: survive two ticks, die on the third.
+	model = fixture(["bore"], [["runner", 13, 0, 1, 20]], "heavy")
+	model.s.weapon_version = 0 # This regression is explicitly the legacy 4-damage burn.
 	model.load_round("bore")
 	model.confirm()
 	model.s.heat = 11

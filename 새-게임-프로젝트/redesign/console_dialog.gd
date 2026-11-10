@@ -30,13 +30,13 @@ func setup(owner_screen: Control, title: String, small: bool) -> VBoxContainer:
 	var previous := get_viewport().gui_get_focus_owner()
 	if previous != null: return_focus = weakref(previous)
 	%Title.text = title
-	%Title.add_theme_font_size_override("font_size", host._scaled(26))
+	%Title.add_theme_font_size_override("font_size", host._font_scaled(32))
 	var skin = preload("res://redesign/combat_pixel_skin.gd")
 	for button in [%DialogClose, %DialogCancel, %DialogConfirm]:
 		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
 			button.add_theme_stylebox_override(state, skin.box("primary" if button == %DialogConfirm else "button", state))
 		button.add_theme_font_override("font", skin.FONT)
-		button.add_theme_font_size_override("font_size", host._scaled(20))
+		button.add_theme_font_size_override("font_size", host._font_scaled(20))
 		button.pressed.connect(func(): host.feedback.play("click"))
 	%DialogContent.set_meta("dialog", self)
 	_fit()
@@ -54,11 +54,13 @@ func _fit() -> void:
 	if not is_node_ready(): return
 	var desired: Vector2 = get_meta("preferred_size", Vector2(660, 480) if compact else Vector2(960, 660))
 	if confirmation: desired.y = 330
-	var extent := desired.min((size - Vector2(32, 32)).max(Vector2(1, 1)))
-	%Frame.offset_left = -floorf(extent.x / 2)
-	%Frame.offset_right = ceilf(extent.x / 2)
-	%Frame.offset_top = -floorf(extent.y / 2)
-	%Frame.offset_bottom = ceilf(extent.y / 2)
+	var safe := preload("res://redesign/ui_readability.gd").available(self)
+	var extent := desired.min((safe.size - Vector2(32, 32)).max(Vector2(1, 1)))
+	var shift := safe.get_center() - size * 0.5
+	%Frame.offset_left = shift.x-floorf(extent.x / 2)
+	%Frame.offset_right = shift.x+ceilf(extent.x / 2)
+	%Frame.offset_top = shift.y-floorf(extent.y / 2)
+	%Frame.offset_bottom = shift.y+ceilf(extent.y / 2)
 
 func _topmost() -> bool:
 	if not is_visible_in_tree() or is_queued_for_deletion(): return false

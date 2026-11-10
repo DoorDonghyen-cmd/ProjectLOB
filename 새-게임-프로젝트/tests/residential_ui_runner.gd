@@ -32,7 +32,7 @@ func _run() -> void:
 		for depth in [1, 2, 3, 4, 6, 8]:
 			await show_depth(depth)
 			fit()
-			check(not screen.debug_session and screen.battle_view.get_script().resource_path.ends_with("/residential_battle_view.gd"), "production view outside developer mode")
+			check(not screen.debug_session and screen.battle_view.get_script().resource_path.ends_with("/slum_battle_view.gd"), "production view outside developer mode")
 			for i in range(screen.model.s.enemies.size()):
 				var rect: Rect2 = screen.battle_view.toad_rect(i) if screen.model.s.enemies[i].kind == "spitter" else screen.battle_view.concept_rect(i)
 				check(Rect2(Vector2.ZERO, screen.battle_view.size).encloses(rect), "actor within battlefield")

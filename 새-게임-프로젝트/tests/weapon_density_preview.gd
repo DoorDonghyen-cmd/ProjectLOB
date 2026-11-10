@@ -21,7 +21,7 @@ func _run() -> void:
 			for column in range(2):
 				var viewport = load("res://redesign/weapon_actor.tscn").instantiate()
 				var actor = viewport.get_node("Actor")
-				actor.coarse_burst = column == 1
+				actor.coarse_weapons = column == 1
 				actor.set_outfit(outfit)
 				actor.configure("burst", pose, 0.0, 0.4, 0.0)
 				board.add_child(viewport)

@@ -1,0 +1,136 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/samples/gate_review/workstation.tscn" id="base"]
+[ext_resource type="Script" path="res://redesign/samples/gate_review/threshold_preview.gd" id="logic"]
+[ext_resource type="Resource" path="res://redesign/service_actor_workshop_carrier_cohesive.tres" id="pose"]
+
+[sub_resource type="StyleBoxFlat" id="plaque"]
+bg_color = Color(0.102, 0.081, 0.061, 0.98)
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color(0.58, 0.426, 0.282, 1)
+content_margin_left = 13.0
+content_margin_right = 13.0
+content_margin_top = 5.0
+content_margin_bottom = 7.0
+anti_aliasing = false
+
+[node name="GateThresholdPreview" instance=ExtResource("base")]
+script = ExtResource("logic")
+
+[node name="Gate" parent="." index="0"]
+work_profile = ExtResource("pose")
+station_indicator = Vector2(0.689, 0.539)
+
+[node name="DoorPlaque" type="PanelContainer" parent="Gate" index="0"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 258.0
+offset_top = 162.0
+offset_right = 564.0
+offset_bottom = 230.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("plaque")
+
+[node name="PlateRow" type="HBoxContainer" parent="Gate/DoorPlaque"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 9
+
+[node name="AlarmLeft" type="ColorRect" parent="Gate/DoorPlaque/PlateRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(10, 24)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+color = Color(1, 0.62, 0.24, 1)
+
+[node name="Text" type="VBoxContainer" parent="Gate/DoorPlaque/PlateRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="DoorDestination" type="Label" parent="Gate/DoorPlaque/PlateRow/Text"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SectionTitle"
+horizontal_alignment = 1
+text_overrun_behavior = 3
+text = "우수 정원"
+
+[node name="State" type="HBoxContainer" parent="Gate/DoorPlaque/PlateRow/Text"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+theme_override_constants/separation = 6
+
+[node name="DoorLamp" type="ColorRect" parent="Gate/DoorPlaque/PlateRow/Text/State"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(7, 7)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+color = Color(0.64, 0.45, 0.30, 1)
+
+[node name="DoorStatus" type="Label" parent="Gate/DoorPlaque/PlateRow/Text/State"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77, 0.67, 0.53, 1)
+text = "차단문 잠김"
+
+[node name="AlarmRight" type="ColorRect" parent="Gate/DoorPlaque/PlateRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(10, 24)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+color = Color(1, 0.62, 0.24, 1)
+
+[node name="GateExit" type="Button" parent="Gate/DoorPlaque/PlateRow"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(96, 44)
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"PrimaryButton"
+text = "출발  ›"
+
+[node name="RouteArrow" parent="Header" index="2"]
+visible = false
+
+[node name="Destination" parent="Header" index="3"]
+visible = false
+
+[node name="GateState" parent="Stages" index="4"]
+visible = false
+
+[node name="Blackout" type="ColorRect" parent="." index="6"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+modulate = Color(1, 1, 1, 0)
+color = Color(0, 0, 0, 1)
+
+[node name="Replay" type="Button" parent="." index="7"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(124, 44)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -148.0
+offset_top = -68.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "시안 다시 보기"

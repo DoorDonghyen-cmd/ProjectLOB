@@ -1,4 +1,6 @@
 extends "res://tests/ammo_grade_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old shop part buttons, replaced by the shop terminal 2026-11-04. Replaced by: shop_terminal_live_runner.
+## Current UI suites: docs/qa/ui-test-suites.md
 
 func shop_fixture() -> void:
 	screen._debug_city("shop")

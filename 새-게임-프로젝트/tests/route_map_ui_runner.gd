@@ -42,7 +42,7 @@ func check_map_fill() -> void:
 	var sheet: Control = screen.find_child("MapRouteSheet", true, false)
 	var map_scroll: Control = screen.find_child("MapScroll", true, false)
 	check(absf(sheet.get_global_rect().end.y - screen.body.get_global_rect().end.y) < 2.0, "destination strip fills body to safe bottom margin")
-	check(map_scroll.get_global_rect().end.y <= sheet.get_global_rect().position.y, "expanded map does not overlap destination controls")
+	check(not map_scroll.get_global_rect().intersects(sheet.get_global_rect()), "expanded map does not overlap destination controls")
 
 func run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/maps/"):
@@ -68,7 +68,7 @@ func run() -> void:
 		var scroll: Control = screen.find_child("MapScroll", true, false)
 		check(scroll.get_global_rect().encloses(screen.find_child("map_node_101", true, false).get_global_rect()), "first available room visible on entry")
 		for child in map.get_children():
-			check(child.size.x >= 48 and child.size.y >= 48, "map target size")
+			check(child.size.x >= 48 and child.size.y >= 44, "map target size")
 			check(Rect2(Vector2.ZERO, map.size).encloses(child.get_rect()), "node inside map")
 		await tap("map_node_104")
 		check(screen.find_child("city_enter_104", true, false).visible, "fourth branch selection")

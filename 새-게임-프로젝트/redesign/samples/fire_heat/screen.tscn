@@ -1,0 +1,75 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://redesign/samples/hud/combat_hud.tscn" id="hud"]
+[ext_resource type="Script" path="res://redesign/samples/fire_heat/screen.gd" id="logic"]
+[ext_resource type="StyleBox" path="res://assets/ui/line_theme_20261101/slate.tres" id="slate"]
+[node name="FireHeatComparison" instance=ExtResource("hud")]
+script = ExtResource("logic")
+
+[node name="TrialRules" type="Label" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="6"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+text = "조건을 바꾸면 같은 진입 상태로 재시작합니다."
+
+[node name="TrialInput" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="1"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,44)
+theme_override_font_sizes/font_size = 16
+text = "사격 · 앞줄 범위 선택"
+theme_override_styles/normal = ExtResource("slate")
+theme_override_styles/hover = ExtResource("slate")
+theme_override_styles/pressed = ExtResource("slate")
+
+[node name="TrialReload" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="2"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,44)
+theme_override_font_sizes/font_size = 16
+text = "탄창 교체 · 열 유지"
+theme_override_styles/normal = ExtResource("slate")
+theme_override_styles/hover = ExtResource("slate")
+theme_override_styles/pressed = ExtResource("slate")
+
+[node name="TrialDamage" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="3"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,44)
+theme_override_font_sizes/font_size = 16
+text = "고열 위력 · 기존 유지"
+theme_override_styles/normal = ExtResource("slate")
+theme_override_styles/hover = ExtResource("slate")
+theme_override_styles/pressed = ExtResource("slate")
+
+[node name="TrialBaseline" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="4"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,44)
+theme_override_font_sizes/font_size = 16
+text = "기준 조건으로 되돌리기"
+theme_override_styles/normal = ExtResource("slate")
+theme_override_styles/hover = ExtResource("slate")
+theme_override_styles/pressed = ExtResource("slate")
+
+[node name="BudgetRow" type="HBoxContainer" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList" index="5"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BudgetLess" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(44,44)
+theme_override_font_sizes/font_size = 16
+text = "−"
+
+[node name="BudgetMore" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(44,44)
+theme_override_font_sizes/font_size = 16
+text = "+"
+
+[node name="BudgetValue" type="Label" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 16
+text = "이번 사격 최대 2발"
+mouse_filter = 2
+
+[editable path="MenuLayer"]

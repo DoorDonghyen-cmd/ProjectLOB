@@ -3,6 +3,7 @@ extends Node
 signal cue_played(cue: String)
 const CUES := ["click", "load", "confirm", "fire", "fire_power", "hit", "armor", "overheat", "reload", "cool", "ready", "reward"]
 const VOICES := 6
+const AUDIO_DIR := "res://assets/audio/feedback"
 var players: Array[AudioStreamPlayer] = []
 var streams: Dictionary = {}
 var last_played: Dictionary = {}
@@ -17,7 +18,7 @@ var next_voice := 0
 
 func _ready() -> void:
 	for cue in CUES:
-		streams[cue] = load("res://assets/audio/feedback/%s.wav" % cue)
+		streams[cue] = load("%s/%s.wav" % [AUDIO_DIR, cue])
 	for index in range(VOICES):
 		var player := AudioStreamPlayer.new()
 		add_child(player)

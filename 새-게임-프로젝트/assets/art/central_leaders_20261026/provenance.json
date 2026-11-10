@@ -1,0 +1,94 @@
+{
+  "date": "2026-10-26",
+  "status": "director_temporary_live_art_user_preference_pending",
+  "approved_family": "B ordinary guards approved by user",
+  "items": [
+    {
+      "species": "guard_captain",
+      "output": "captain_v1.png",
+      "sha256": "f71e6dbb5574e40457a5504fc32cb221dfa97ca9a7d98dd9fdf09e5385ddb673",
+      "generated_source": "exec-24d42b99-c93c-46f7-bf6d-a661e73cec9c.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Production game sprite for ORVASK, the ELITE CENTRAL GUARD CAPTAIN. Use imagegen skill.\nINPUT 1 approved B heavy guard = sage-gray sealed casing, flush brass winding hubs, narrow ivory horizontal visor and single rust-red stripe. INPUT 2 approved B shield guard = hinged door equipment and shape vocabulary. INPUT 3 hero sheet = quiet clustered pixel style only, not anatomy or clothes. INPUT 4 central control architecture = palette/environment only.\nDesign a distinctive pure mechanical CAPTAIN with broad high rectangular shoulder yoke and two large hinged command vanes rising from the back, like folded railway signal panels. Tall solid torso, narrower waist, two sturdy bent mechanical legs and broad grounded feet. Head recessed inside torso shoulders, single dark sight slit facing LEFT, no human face. Front LEFT mechanical forearm extends a short blunt signaling baton downward; rear arm carries a folded flat command plate. No gun, cape, hat, crown, separate exposed key, spikes or decorative heraldry. Same sage-gray, charcoal green, warm dull brass and muted red vertical unit stripe as B regiment. Captain silhouette taller than heavy, with large shoulder yoke and signal vanes, not another square heavy.\nFull body LEFT-facing three-quarter side game view, neutral grounded pose. Exactly ONE sprite. Large quiet pixel clusters, deliberate stepped edges, 2-3 broad tone groups per material. The target is 148 screen pixels high, so suppress tiny bolts, rivets, seams, shiny edges and outlines. No optical blur, dense grime or thin cables.\nTransparent background with 8% margins all around, no ground shadow, scenery, labels, words, UI or extra poses.\n",
+      "reference_order": [
+        {
+          "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_heavy_b.png",
+          "sha256": "fc68f06b9220978eef555390cfab2d00f221ceb091193413de40c270f89b8db3"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_shield_b.png",
+          "sha256": "2184bbc93dbad056ce095b89646945ef955d38b3e7baf88dbed9aada91d709ea"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+          "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_ascent_20261024/upper_v1.png",
+          "sha256": "ffddead3d9b0f06d02ab77f4ffbaea4a31b97157a1e6201a09a38c29b3170fc5"
+        }
+      ],
+      "dimensions": [
+        1042,
+        1510
+      ],
+      "mode": "RGBA",
+      "source": [
+        39,
+        65,
+        968,
+        1385
+      ],
+      "feet": [
+        575.5,
+        1450
+      ],
+      "height": 148
+    },
+    {
+      "species": "tower_ruler",
+      "output": "ruler_v1.png",
+      "sha256": "4e10d7921bffd05fb261fe4fa99c3c24dfe6b6c92eda3cd6b3d0d5637c67c4ee",
+      "generated_source": "exec-c2870767-8759-49f1-8821-cde69dd7057a.png",
+      "tool": "built-in image_gen",
+      "transparent_background": true,
+      "prompt": "Production game sprite for ORVASK, final boss THE TOWER RULER attached to a supply control frame. Existing concept is a small humanlike central figure and huge machine frame, biological identity deliberately ambiguous. One full body transparent sprite.\nINPUT 1 approved B heavy guard = sage-gray, charcoal-green, muted brass, red stripe and quiet pixel planes only. INPUT 2 B shield guard = broad hinged machinery. INPUT 3 current hero = coherent large pixel clusters/edge treatment, NOT costume/anatomy. INPUT 4 central control architecture = monumental circular valve/pipe vocabulary, not scenery to copy.\nMake a distinct boss, NOT an enlarged guard robot. A SMALL PALE HEAD AND SLENDER HUMANOID TORSO sit recessed in a tall dark central cradle. No visible flesh wounds, no crown, no helmet with a guard's visor. The face is an indistinct small ivory plane turned LEFT, the upper body draped in a very simple dark desaturated maroon mantle with two huge folds. Surround this figure with an upright open U-shaped industrial control frame, two wide gray-green vertical buttresses and one large semicircular brass-rimmed distribution valve behind shoulders. Only THREE broad brass pipes connect cradle and side pillars. Two huge bent articulated support legs beneath the frame end in broad industrial feet on a shared ground baseline. Lower LEFT frame carries a large blunt horizontal control arm extending forward at waist height; other side has a folded slab shutter. All equipment is part of the body. No floating effects, wires, armies, throne room or background.\nSilhouette: a tall open-backed frame with readable negative space around the tiny central person, wide lower legs. Fewer large shapes, width no more than 1.1 times height. Left-facing three-quarter SIDE game view. Threatening gravity, no heroic pose or decorations. Target displayed height 165px, frame should be readable alongside 112px guard.\nSTYLE: same broad clustered pixel art as references, sparse interior detail, 2-3 quiet values per material, subdued selective edges. No tiny rivets, thin circuitry, grain, scratches, glossy bevels, bloom, dithering, optical blur, continuous black outline. Preserve clean big forms.\nOUTPUT: exactly ONE full-body boss sprite on transparent background, 8% margin, no floor/cast shadow, text, UI, extra poses or labels.\n",
+      "reference_order": [
+        {
+          "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_heavy_b.png",
+          "sha256": "fc68f06b9220978eef555390cfab2d00f221ceb091193413de40c270f89b8db3"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_guard_alt_20261025/guard_shield_b.png",
+          "sha256": "2184bbc93dbad056ce095b89646945ef955d38b3e7baf88dbed9aada91d709ea"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/hero_contours_20261025/work_pistol.png",
+          "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+        },
+        {
+          "path": "새-게임-프로젝트/assets/art/central_ascent_20261024/upper_v1.png",
+          "sha256": "ffddead3d9b0f06d02ab77f4ffbaea4a31b97157a1e6201a09a38c29b3170fc5"
+        }
+      ],
+      "dimensions": [
+        988,
+        1592
+      ],
+      "mode": "RGBA",
+      "source": [
+        39,
+        66,
+        914,
+        1458
+      ],
+      "feet": [
+        494.0,
+        1524
+      ],
+      "height": 148
+    }
+  ],
+  "processing": "Original pixels preserved. Alpha threshold/foot measurement only; runtime cutout 0.5."
+}

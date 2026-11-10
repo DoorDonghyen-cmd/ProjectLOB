@@ -59,7 +59,10 @@ func solve(model, width: int = 3, max_depth: int = 7) -> Array:
 		for branch in beam:
 			var base = clone(branch.model)
 			var prefix: Array = branch.path.duplicate(true)
-			if base.s.phase == "ready":
+			if base.can_emergency_resupply():
+				base.emergency_resupply()
+				prefix.append({"action":"emergency"})
+			elif base.s.phase == "ready":
 				base.reload_magazine()
 				prefix.append({"action": "reload"})
 			if base.s.phase in ["reward", "won"]: return prefix
@@ -80,7 +83,7 @@ func solve(model, width: int = 3, max_depth: int = 7) -> Array:
 					path.append({"action": "fire"})
 					if simulation.s.phase in ["reward", "won"]: return path
 					if simulation.s.phase == "lost": break
-					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state, simulation.s.target_rng_state, simulation.s.buff, simulation.s.push_left, simulation.s.get("reinforcements", []), simulation.s.get("heat", 0), simulation.s.get("legacy_reload_penalty", 0), simulation.s.get("projectiles", []), simulation.s.get("projectile_serial", 0), simulation.s.get("previous_kill", false)])
+					var key := JSON.stringify([simulation.s.enemies, simulation.s.hand, simulation.s.draw, simulation.s.magazine, simulation.s.rng_state, simulation.s.target_rng_state, simulation.s.buff, simulation.s.push_left, simulation.s.get("reinforcements", []), simulation.s.get("heat", 0), simulation.s.get("sustained_version",0), simulation.s.get("sustained_attacks",0), simulation.s.get("legacy_reload_penalty", 0), simulation.s.get("projectiles", []), simulation.s.get("projectile_serial", 0), simulation.s.get("previous_kill", false), simulation.s.get("emergency_uses",0)])
 					if seen.has(key): continue
 					seen[key] = true
 					next.append({"model": clone(simulation), "path": path.duplicate(true), "score": score(simulation)})

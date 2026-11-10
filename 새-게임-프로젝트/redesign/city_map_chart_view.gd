@@ -4,11 +4,11 @@ var accessible: Array = []
 var feedback_scale := 1.0
 var region_index := 0
 const THEMES := [
-	{"paper": "1b3038", "edge": "506264", "tint": Color(1, 1, 1)},
-	{"paper": "322b29", "edge": "786458", "tint": Color(1, 0.82, 0.70)},
-	{"paper": "20332e", "edge": "59736a", "tint": Color(0.76, 1, 0.85)},
-	{"paper": "202d3d", "edge": "546d8a", "tint": Color(0.74, 0.86, 1)},
-	{"paper": "2a2939", "edge": "706681", "tint": Color(0.91, 0.83, 1)}
+	{"paper": "04181e", "edge": "2c7a80", "tint": Color(1, 1, 1)},
+	{"paper": "04181e", "edge": "2c7a80", "tint": Color(1, 0.82, 0.70)},
+	{"paper": "04181e", "edge": "2c7a80", "tint": Color(0.76, 1, 0.85)},
+	{"paper": "04181e", "edge": "2c7a80", "tint": Color(0.74, 0.86, 1)},
+	{"paper": "04181e", "edge": "2c7a80", "tint": Color(0.91, 0.83, 1)}
 ]
 
 func setup(campaign) -> void:
@@ -49,7 +49,7 @@ func _draw() -> void:
 	var width := minf(940, size.x * 0.88)
 	var chart := Rect2(Vector2((size.x - width) * 0.5, 0), Vector2(width, size.y))
 	draw_rect(Rect2(chart.position + Vector2(5, 0), chart.size), Color(0, 0, 0, 0.40))
-	draw_rect(chart, Color(palette.paper))
+	draw_style_box(preload("res://redesign/line_skin.gd").surface("panel"), chart)
 	draw_line(chart.position + Vector2(2, 0), chart.position + Vector2(2, size.y), Color(palette.edge), 2, false)
 	draw_line(chart.position + Vector2(width - 3, 0), chart.position + Vector2(width - 3, size.y), Color(palette.edge), 2, false)
 	# Sparse edge registration marks frame the chart without fake floors/grids.
@@ -68,7 +68,7 @@ func _draw() -> void:
 			var direction := (destination - origin).normalized()
 			var start := origin + direction * 34
 			var end := destination - direction * 34
-			var color := Color("d2b479") if active else (Color("8e987f") if preview else (Color("718887") if traveled else (Color("4a6974") if possible else Color("2e454d"))))
+			var color := Color("f3cf73") if active else (Color("5cdddc") if preview else (Color("8fb0b0") if traveled else (Color("4a6974") if possible else Color("2e454d"))))
 			if item.get("shortcuts", []).has(target.id):
 				_draw_shortcut(origin, destination, chart, active, traveled, possible)
 				continue
@@ -91,7 +91,7 @@ func shortcut_path(origin: Vector2, destination: Vector2) -> PackedVector2Array:
 
 func _draw_shortcut(origin: Vector2, destination: Vector2, _chart: Rect2, active: bool, traveled: bool, possible: bool) -> void:
 	var points := shortcut_path(origin, destination)
-	var color := Color("d2b479") if active else Color("718887") if traveled else Color("648990") if possible else Color("3c565c")
+	var color := Color("f3cf73") if active else Color("8fb0b0") if traveled else Color("648990") if possible else Color("3c565c")
 	for i in range(points.size() - 1):
 		draw_dashed_line(points[i], points[i + 1], color, 3 if active else 2, 4, false)
 	var end := points[points.size() - 1]

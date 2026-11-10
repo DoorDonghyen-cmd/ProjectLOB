@@ -40,7 +40,7 @@ func exercise(kind: String, expected_finish: bool, skip: bool=false) -> void:
 	await fixture(kind)
 	print("FINISH CASE ",kind," ",root.size," ",screen.preferences.data.motion," skip=",skip)
 	check(screen.battle_view.visual_clock_scale()==1.0,"fresh battle has no slow clock")
-	if kind=="production": check(screen.battle_view.get_script().resource_path=="res://redesign/residential_battle_view.gd","production residential adapter")
+	if kind=="production": check(screen.battle_view.get_script().resource_path=="res://redesign/slum_battle_view.gd","production residential adapter")
 	var oracle=load("res://redesign/model.gd").new()
 	oracle.s=screen.model.s.duplicate(true)
 	check(oracle.reload_magazine() if kind=="burn" else oracle.fire(),"fixture resolves "+kind)

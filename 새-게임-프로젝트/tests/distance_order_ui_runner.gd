@@ -9,7 +9,7 @@ func observe_movement() -> void:
 	observed_frames += 1
 	for a in view._alive_indices():
 		for b in view._alive_indices():
-			if float(view.enemies[a].distance) < float(view.enemies[b].distance) and view.enemy_feet(a).x >= view.enemy_feet(b).x:
+			if float(view.enemies[a].distance) < float(view.enemies[b].distance) and view.enemy_feet(a).x > view.enemy_feet(b).x:
 				inverted_frames += 1
 
 func fixture(distances: Array) -> void:
@@ -42,14 +42,14 @@ func verify_order(label: String) -> void:
 			if float(view._visual_entity(a).distance) < float(view._visual_entity(b).distance):
 				check(at.x < view.enemy_position(b).x, label + " nearer threat draws nearer")
 		if not view.Ranged.is_projectile(a):
-			check(view.enemy_feet(a).y == view.player_feet().y, label + " stable ground")
-			check(view._enemy_at(at) == a, label + " actor inspection")
+			check(view.enemy_feet(a).y == view.player_feet().y, label + " shared walkway baseline")
+			check(view._enemy_at(view.enemy_plaque(a).get_center()) == a, label + " separated inspection through overlap")
 			for b in view._alive_indices():
 				if a == b: continue
 				check(not view.enemy_plaque(a).intersects(view.enemy_plaque(b)), label + " readable plaques")
 				if float(view.enemies[a].distance) < float(view.enemies[b].distance):
 					check(view.enemy_plaque(a).position.x < view.enemy_plaque(b).position.x, label + " plaque order")
-	check(leftmost == screen.model.target_index(), label + " leftmost matches real target")
+	check(is_equal_approx(view.enemy_position(screen.model.target_index()).x, left_x) and view._nearest() == screen.model.target_index(), label + " nearest anchor and tie priority match real target")
 
 func _run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/distance_order/"):
@@ -97,7 +97,7 @@ func _run() -> void:
 		check(screen.model.target_index() == 1, "actual push changes nearest enemy")
 		verify_order("after actual push and movement")
 		await capture("after_push")
-		await combat(["pierce", "cool", "disrupt"], "single", true)
+		await combat(["basic", "cool", "disrupt"], "single", true)
 		await fixture([13, 24, 28, 9])
 		screen.model.s.enemies[0].speed = 7
 		screen.redraw()

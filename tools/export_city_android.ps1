@@ -4,6 +4,7 @@
     [string]$JavaSdk = 'C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot',
     [string]$BuildToolsVersion = '36.1.0',
     [ValidateSet('universal', 'arm64')][string]$Architecture = 'universal',
+    [ValidateSet('campaign', 'weapon-magazine', 'magazine-journey')][string]$PlayMode = 'campaign',
     [int]$VersionCode = [int](Get-Date -Format 'yyyyMMdd'),
     [string]$VersionName = ('0.5.' + (Get-Date -Format 'yyyyMMdd.HHmmss')),
     [string]$OutputDirectory = ''
@@ -26,6 +27,16 @@ New-Item -ItemType Directory -Force -Path $build | Out-Null
 $presetPath = Join-Path $project 'export_presets.cfg'
 $hadPreset = Test-Path -LiteralPath $presetPath
 $original = if ($hadPreset) { [IO.File]::ReadAllBytes($presetPath) } else { [byte[]]@() }
+$projectSettingsPath = Join-Path $project 'project.godot'
+$originalProjectSettings = [IO.File]::ReadAllBytes($projectSettingsPath)
+$projectSettingsText = [Text.Encoding]::UTF8.GetString($originalProjectSettings)
+$playModes = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'mobile_play_modes.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$modeSpec = $playModes.$PlayMode
+if (-not $modeSpec) { throw 'Unsupported mobile play mode.' }
+$mainScene = $modeSpec.main_scene
+if (-not (Test-Path -LiteralPath (Join-Path $project $mainScene.Substring(6)))) { throw 'Requested entry scene is missing.' }
+if ([regex]::Matches($projectSettingsText, '(?m)^run/main_scene="[^"]*"').Count -ne 1) { throw 'Expected one main scene setting.' }
+$temporaryProjectSettings = [regex]::Replace($projectSettingsText, '(?m)^run/main_scene="[^"]*"', ('run/main_scene="' + $mainScene + '"'))
 $existing = if ($hadPreset) { [Text.Encoding]::UTF8.GetString($original) } else { '' }
 $indices = [regex]::Matches($existing, '\[preset\.(\d+)\]') | ForEach-Object { [int]$_.Groups[1].Value }
 $index = if ($indices) { ($indices | Measure-Object -Maximum).Maximum + 1 } else { 0 }
@@ -35,6 +46,20 @@ $presetName = "Android City Test $VersionCode"
 # Keep retired source art on disk; exclude only the reviewed, explicit paths.
 $exclusions = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'mobile_export_exclusions.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $excludeFilter = (@('tests/*') + @($exclusions.files)) -join ','
+$includeFilter = 'assets/fonts/*OFL*.txt'
+if ($PlayMode -eq 'weapon-magazine') { $includeFilter += ',redesign/samples/combat_weapon_*.json' }
+$exportFilter = 'all_resources'
+$exportFilesLine = ''
+$comparisonResources = @()
+if ($PlayMode -ne 'campaign') {
+    $resourceList = Join-Path $build 'comparison_resources.json'
+    & python (Join-Path $PSScriptRoot 'mobile_comparison_resources.py') --project $project --play-mode $PlayMode --output $resourceList
+    if ($LASTEXITCODE -ne 0) { throw 'Comparison dependency selection failed.' }
+    $comparisonResources = Get-Content -Raw -Encoding UTF8 -LiteralPath $resourceList | ConvertFrom-Json
+    if ($comparisonResources.Count -lt 2 -or $comparisonResources[0] -isnot [string]) { throw 'Expected a flat comparison resource list.' }
+    $exportFilter = 'resources'
+    $exportFilesLine = 'export_files=PackedStringArray(' + (($comparisonResources | ForEach-Object { '"' + $_ + '"' }) -join ', ') + ')'
+}
 $armv7Enabled = if ($Architecture -eq 'universal') { 'true' } else { 'false' }
 $abis = if ($Architecture -eq 'universal') { @('arm64-v8a', 'armeabi-v7a') } else { @('arm64-v8a') }
 $preset = @"
@@ -45,8 +70,9 @@ platform="Android"
 runnable=true
 dedicated_server=false
 custom_features=""
-export_filter="all_resources"
-include_filter="assets/fonts/*OFL*.txt"
+export_filter="$exportFilter"
+$exportFilesLine
+include_filter="$includeFilter"
 exclude_filter="$excludeFilter"
 export_path="$exportPath"
 script_export_mode=2
@@ -79,12 +105,16 @@ $utf8 = New-Object Text.UTF8Encoding($false)
 $previousAppData = $env:APPDATA
 $previousLocalAppData = $env:LOCALAPPDATA
 $previousJavaHome = $env:JAVA_HOME
+$previousTemp = $env:TEMP
+$previousTmp = $env:TMP
 try {
     $env:APPDATA = Join-Path $build 'qa-profile\Roaming'
     $env:LOCALAPPDATA = Join-Path $build 'qa-profile\Local'
     $env:JAVA_HOME = $JavaSdk
+    $env:TEMP = Join-Path $build 'qa-profile\Temp'
+    $env:TMP = $env:TEMP
     $settingsRoot = Join-Path $env:APPDATA 'Godot'
-    New-Item -ItemType Directory -Force -Path $settingsRoot,$env:LOCALAPPDATA | Out-Null
+    New-Item -ItemType Directory -Force -Path $settingsRoot,$env:LOCALAPPDATA,$env:TEMP | Out-Null
     $settings = @"
 [gd_resource type="EditorSettings" format=3]
 
@@ -99,6 +129,7 @@ export/android/debug_keystore_pass="android"
     # Android's standard local debug certificate; never a release signing key.
     [IO.File]::WriteAllText((Join-Path $settingsRoot 'editor_settings-4.7.tres'), $settings, $utf8)
     [IO.File]::WriteAllText($presetPath, $temporaryContent, $utf8)
+    [IO.File]::WriteAllText($projectSettingsPath, $temporaryProjectSettings, $utf8)
     $arguments = @('--headless', '--path', ('"{0}"' -f $project), '--export-debug', ('"{0}"' -f $presetName), ('"{0}"' -f $apk))
     $process = Start-Process -FilePath $GodotPath -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $build 'export.stdout.log') -RedirectStandardError (Join-Path $build 'export.stderr.log')
     $null = $process.Handle
@@ -134,10 +165,14 @@ export/android/debug_keystore_pass="android"
         package = 'com.lastonboard.prototype'
         version_code = $VersionCode
         version_name = $VersionName
-        game_loop = 'five regions; 35 floors; map/shop/events/progression; separate seven-combat training'
+        game_loop = $modeSpec.game_loop
+        play_mode = $PlayMode
+        comparison_resources = @($comparisonResources)
+        entry_script_sha256 = (Get-FileHash -LiteralPath (Join-Path $project $modeSpec.entry_script.Substring(6)) -Algorithm SHA256).Hash
+        journey_sha256 = if ($PlayMode -eq 'magazine-journey') { (Get-FileHash -LiteralPath (Join-Path $project 'redesign/magazine_journey.gd') -Algorithm SHA256).Hash } else { $null }
         field_compression = 'run-owned compression cores; shop recharge; part-defined exceptions'
         content_sha256 = (Get-FileHash -LiteralPath (Join-Path $project 'redesign/content.gd') -Algorithm SHA256).Hash
-        main_scene = 'res://redesign/main.tscn'
+        main_scene = $mainScene
         weapons = @('single','burst','scatter','heavy','amplifier')
         orientation = 'user landscape; Android screenOrientation 11'
         architectures = @($abis)
@@ -147,7 +182,8 @@ export/android/debug_keystore_pass="android"
         android_runtime = 'not tested on a device or emulator'
     }
     $manifest | ConvertTo-Json | Set-Content -Encoding UTF8 -LiteralPath (Join-Path $build 'build_manifest.json')
-    Copy-Item -LiteralPath (Join-Path $repo 'docs/mobile_install.md') -Destination (Join-Path $build 'INSTALL.md') -Force
+    $installSource = $modeSpec.install
+    Copy-Item -LiteralPath (Join-Path $repo $installSource) -Destination (Join-Path $build 'INSTALL.md') -Force
     Add-Content -LiteralPath (Join-Path $build 'INSTALL.md') -Encoding UTF8 -Value ("`nThis package: " + ($abis -join ', '))
     Get-Item -LiteralPath $apk | Select-Object FullName, Length
     Write-Output "SHA256: $($manifest.sha256)"
@@ -155,6 +191,11 @@ export/android/debug_keystore_pass="android"
     $env:APPDATA = $previousAppData
     $env:LOCALAPPDATA = $previousLocalAppData
     $env:JAVA_HOME = $previousJavaHome
+    $env:TEMP = $previousTemp
+    $env:TMP = $previousTmp
+    if ([IO.File]::ReadAllText($projectSettingsPath) -eq $temporaryProjectSettings) {
+        [IO.File]::WriteAllBytes($projectSettingsPath, $originalProjectSettings)
+    } else { Write-Warning 'Project settings changed during export; preserved the newer contents.' }
     if ((Test-Path -LiteralPath $presetPath) -and [IO.File]::ReadAllText($presetPath) -eq $temporaryContent) {
         if ($hadPreset) { [IO.File]::WriteAllBytes($presetPath, $original) }
         else { Remove-Item -LiteralPath $presetPath }

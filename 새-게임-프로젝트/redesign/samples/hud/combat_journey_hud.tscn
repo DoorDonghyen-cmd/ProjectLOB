@@ -1,0 +1,9 @@
+[gd_scene format=3]
+[ext_resource type="PackedScene" path="res://redesign/samples/hud/combat_hud.tscn" id="base"]
+[ext_resource type="Script" path="res://redesign/samples/hud/combat_journey_hud.gd" id="logic"]
+[ext_resource type="PackedScene" path="res://redesign/samples/hud/journey_flow.tscn" id="flow"]
+[node name="CombatJourneyHud" instance=ExtResource("base")]
+script = ExtResource("logic")
+[node name="JourneyPanel" parent="." instance=ExtResource("flow")]
+z_index = 50
+visible = false

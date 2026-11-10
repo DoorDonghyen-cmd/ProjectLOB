@@ -1,4 +1,6 @@
 extends "res://tests/ammo_cycle_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old supply/reward ammo replacement panel. Replaced by: supply_live_ui, event_live_ui, reward_live_runner.
+## Current UI suites: docs/qa/ui-test-suites.md
 
 func _run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\","/").contains("/qa_runtime/earned_ammo/"): quit(1);return

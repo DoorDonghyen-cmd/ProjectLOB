@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-23",
+  "status": "static_concepts_preview_only",
+  "tool": "built-in image_gen",
+  "references": [
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_concepts_20261022/mold_worker_v1.png",
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png",
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png"
+  ],
+  "prompts": [
+    {
+      "id": "mold_guard",
+      "prompt": "Use case: stylized-concept. Create ONE new full-body static sprite in the same pixel-art enemy family for ORVASK. Reference 1 is the ordinary mold worker FAMILY AND MATERIAL reference, not the final silhouette. Reference 2 is approved hero for chunky cluster scale and restraint ONLY, do not copy its anatomy or costume. Reference 3 is world palette and quiet value grouping ONLY, do not include background.\nPure machine, NO human inside. Faceless old labor automaton built of dull slate iron, gray-blue shadow masses, broad rust patches, restrained dirty brass. Same coarse pixel look as the reference: connected broad color masses, large deliberate stair steps, low internal contrast, sparse functional detail. Around 75–90 apparent pixels tall enlarged as pixel art, not a highly detailed painting or tiny pixel noise. Keep main working mechanism readable in miniature. NO continuous near-black outline, white rim lights, glossy surfaces, tiny bolts, dense gear teeth, texture grain, dithering, optical blur, fantasy ornaments, skulls, horns or red glowing eyes.\nOrthographic side-on with slight three-quarter visibility, face and action direction LEFT. Both feet planted at one baseline. Entire silhouette inside frame with 8–12% empty margins. One character, transparent RGBA, no shadow or floor, no background, no text, no UI, no numbers, no frames or multiple views. This is idle pose. Keep arms legible and largely separated from torso.\nSUBJECT: MOLD GUARD / 금형 파수꾼, elite upgraded mold worker. A squat massively WIDE mechanical body, small low bowed disk-like sealed head, broad short load-bearing legs and flat feet. Instead of one simple box chest, TWO OFFSET THICK RECTANGULAR CASTING MOLD HALVES are layered across its body like heavy jaws of an industrial press; the farther plate is raised slightly. A large off-center open gap exposes ONE broad toothed RATCHET WHEEL with only six coarse visible teeth and a heavy stop pawl. This ratchet is the single readable action organ, not a decorative glowing core. Thick forearm clamp hands hang near the ground. One short subdued winding key at rear, much less visually dominant than the overlapping mold body. Body tilted forward with immense weight. Preserve family identity from reference1 but make torso layered, asymmetrical and broad rather than copying the original chest. At runtime occupied height about150px and width180–210px. Shape priority: staggered double mold silhouette, exposed large ratchet, short heavy legs."
+    },
+    {
+      "id": "casting_overseer",
+      "prompt": "Use case: stylized-concept. Create ONE new full-body static sprite in the same pixel-art enemy family for ORVASK. Reference 1 is the ordinary mold worker FAMILY AND MATERIAL reference, not the final silhouette. Reference 2 is approved hero for chunky cluster scale and restraint ONLY, do not copy its anatomy or costume. Reference 3 is world palette and quiet value grouping ONLY, do not include background.\nPure machine, NO human inside. Faceless old labor automaton built of dull slate iron, gray-blue shadow masses, broad rust patches, restrained dirty brass. Same coarse pixel look as the reference: connected broad color masses, large deliberate stair steps, low internal contrast, sparse functional detail. Around 75–90 apparent pixels tall enlarged as pixel art, not a highly detailed painting or tiny pixel noise. Keep main working mechanism readable in miniature. NO continuous near-black outline, white rim lights, glossy surfaces, tiny bolts, dense gear teeth, texture grain, dithering, optical blur, fantasy ornaments, skulls, horns or red glowing eyes.\nOrthographic side-on with slight three-quarter visibility, face and action direction LEFT. Both feet planted at one baseline. Entire silhouette inside frame with 8–12% empty margins. One character, transparent RGBA, no shadow or floor, no background, no text, no UI, no numbers, no frames or multiple views. This is idle pose. Keep arms legible and largely separated from torso.\nSUBJECT: CASTING OVERSEER / 주조 감독, the foundry boss. A huge bowed humanoid-shaped INDUSTRIAL CRUCIBLE AUTOMATON, unmistakably different from a rectangular mold worker. Its giant torso is a broad ROUND DEEP TAPERED CRUCIBLE pot, wide thick rim at shoulders, heavy curved belly tapering toward hips, supported by two short thick piston legs and flat feet. A small sealed oval mask/head hangs LOW from the front collar on a short neck under the rim, like a supervisor bowed over work. Two long heavy asymmetrical articulated WORKING ARMS: front LEFT arm ends in a great clamp; rear/right arm carries a blunt press block. One enormous circular WINDING SPRING DRUM behind and above its shoulder shows only two broad spiral bands and a short winding handle; it is integrated into the back, not a halo. This single spring assembly expresses accumulated force. A restrained narrow warm rust-orange slit inside crucible rim, no bright molten lava, flames, smoke or glow. Worn apron remnant under lower crucible. Shape priority: round crucible belly, low hanging mask, heavy working arms, single giant back spring. It should feel like a tired gigantic industrial foreman machine, not a fantasy golem, not a suit of armor, not a vehicle. At runtime occupied height190px and width220–250px. Proportions clearly taller and larger than the elite but manageable for a side-view battle."
+    }
+  ],
+  "original_outputs": {
+    "mold_guard": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-b5cf8b26-8350-48a5-b496-ab7f33652b65.png",
+    "casting_overseer": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-3f23fdab-3ef2-47f6-816c-8bf8e11383a4.png"
+  },
+  "normalization": "Original RGBA files copied without pixel editing; alpha>=128 bounds and feet measured for existing runtime alpha cutout and aspect-preserving nearest rendering.",
+  "limits": [
+    "No new combat stats or patterns",
+    "No campaign replacement",
+    "No animation states",
+    "User visual preference pending"
+  ],
+  "assets": [
+    {
+      "file": "casting_overseer_v1.png",
+      "dimensions": [
+        1341,
+        1173
+      ],
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "bbox": [
+        44,
+        64,
+        1314,
+        1117
+      ],
+      "sha256": "05169237ec17b2818cdc93a03a120bf1a56fa20fe10b42a14b778ee754c1f8cd",
+      "source": [
+        44,
+        64,
+        1270,
+        1053
+      ],
+      "feet": [
+        773,
+        1117
+      ],
+      "preview_height": 190
+    },
+    {
+      "file": "mold_guard_v1.png",
+      "dimensions": [
+        1402,
+        1122
+      ],
+      "mode": "RGBA",
+      "alpha": [
+        0,
+        255
+      ],
+      "bbox": [
+        44,
+        195,
+        1364,
+        1063
+      ],
+      "sha256": "09ce60f9ea05aeb061ab7b4e27e64ed6246ad894bdf207ce90f2450205de9e9d",
+      "source": [
+        44,
+        195,
+        1320,
+        868
+      ],
+      "feet": [
+        758,
+        1063
+      ],
+      "preview_height": 150
+    }
+  ],
+  "reference_sha256": {
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_concepts_20261022/mold_worker_v1.png": "a3d71b1b69fd4156124f14f12e078d59aa03d00c2aa97a7661e4e110f236fad2",
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/actor_cohesion_20261005/reclaimer_grouped_v2.png": "794255f7bde3c96b7af766498546bf0ee29af55f2e67cd1a62672bee27eb2f85",
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/tower_sample_20261003/residential_tower.png": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b"
+  }
+}

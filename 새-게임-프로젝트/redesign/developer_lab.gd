@@ -127,7 +127,7 @@ func _detail() -> void:
 		var card = preload("res://redesign/part_card_view.gd").new()
 		%Card.add_child(card)
 		card.setup(selected_id, m.s, lab.parts.has(selected_id), true)
-		%Description.text = str(Data.PARTS[selected_id].text)
+		%Description.text = str(Data.part_spec(selected_id,m.s).text)
 		%Add.text = "이 파츠 해제" if lab.parts.has(selected_id) else "이 파츠 장착"
 
 func _add() -> void:

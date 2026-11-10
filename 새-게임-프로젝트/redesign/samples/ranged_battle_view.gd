@@ -23,11 +23,15 @@ func projectile_label_rect(projectile: Dictionary) -> Rect2:
 	var point := enemy_position(Ranged.target_id(projectile))
 	var baseline := point.y - 22 if point.y >= 142 else point.y + 34
 	var rect := Rect2(Vector2(clampf(point.x - 74, 8, size.x - 156), baseline - 21), Vector2(148, 28))
-	for y in [rect.position.y, 12.0, size.y - 70.0]:
+	var rows: Array = [rect.position.y, 12.0, size.y - 70.0]
+	if projectiles.filter(func(p):return int(p.hp)>0).size()>1: rows.insert(1,maxf(4.0,rect.position.y-34.0))
+	for y in rows:
 		rect.position.y = y
 		var clear := true
 		for index in _alive_indices():
 			if rect.intersects(enemy_plaque(index)): clear = false
+		for other in projectiles:
+			if int(other.hp)>0 and int(other.uid)<int(projectile.uid) and rect.intersects(projectile_label_rect(other)): clear=false
 		if clear: return rect
 	return rect
 
@@ -36,6 +40,7 @@ func enemy_head_y(index: int) -> float:
 	return super.enemy_head_y(index)
 
 func projectile_caption(projectile: Dictionary) -> String:
+	if Ranged.arrival(projectile) <= 1: return "다음 적 행동 도달!"
 	return ("요격 · 도달 %d턴" if _nearest() == Ranged.target_id(projectile) else "압력탄 · %d턴") % Ranged.arrival(projectile)
 
 func toad_frame(enemy: Dictionary) -> int:
@@ -53,32 +58,29 @@ func _draw_enemy_actor(index: int, foot: Vector2, lift: float, stride: float) ->
 	source.position.x += (TOAD_CELL_WIDTH + TOAD_CHARGED_OFFSET) * toad_frame(enemies[index])
 	draw_texture_rect_region(TOAD_ATLAS, toad_rect(index), source, actor_tint(index))
 
-func _draw() -> void:
-	super._draw()
-	draw_set_transform_matrix(finish_camera())
+func _draw_projectiles(canvas: CanvasItem) -> void:
 	for projectile in projectiles:
 		if int(projectile.hp) <= 0: continue
 		var index := Ranged.target_id(projectile)
 		var point := enemy_position(index)
-		Pixel.shadow(self, Vector2(point.x, player_feet().y), 30)
+		Pixel.shadow(canvas, Vector2(point.x, player_feet().y), 30)
 		for i in range(3):
-			draw_rect(Rect2(point + Vector2(15 + i * 8, -2), Vector2(5, 4)), Color(PRESSURE, 0.5 - i * 0.12))
-		draw_rect(Rect2(point - Vector2(12, 6), Vector2(24, 12)), Color("916444"))
-		draw_rect(Rect2(point - Vector2(7, 11), Vector2(14, 22)), Color("c89856"))
-		draw_rect(Rect2(point - Vector2(7, 6), Vector2(15, 12)), PRESSURE)
-		draw_rect(Rect2(point - Vector2(7, 4), Vector2(5, 5)), Color("fff0ce"))
+			canvas.draw_rect(Rect2(point + Vector2(15 + i * 8, -2), Vector2(5, 4)), Color(PRESSURE, 0.5 - i * 0.12))
+		canvas.draw_rect(Rect2(point - Vector2(12, 6), Vector2(24, 12)), Color("916444"))
+		canvas.draw_rect(Rect2(point - Vector2(7, 11), Vector2(14, 22)), Color("c89856"))
+		canvas.draw_rect(Rect2(point - Vector2(7, 6), Vector2(15, 12)), PRESSURE)
+		canvas.draw_rect(Rect2(point - Vector2(7, 4), Vector2(5, 5)), Color("fff0ce"))
 		if index == target:
 			for side in [-1, 1]:
-				draw_rect(Rect2(point + Vector2(side * 17 - 1, -13), Vector2(2, 26)), Color("fff0ce"))
+				canvas.draw_rect(Rect2(point + Vector2(side * 17 - 1, -13), Vector2(2, 26)), Color("fff0ce"))
 		var rect := projectile_label_rect(projectile)
-		draw_rect(rect, Color("101e27", 0.9))
-		draw_string(FONT, rect.position + Vector2(4, 21), projectile_caption(projectile), HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 8, 18, PRESSURE)
-	draw_set_transform_matrix(Transform2D.IDENTITY)
+		canvas.draw_rect(rect, Color("101e27", 0.9))
+		canvas.draw_string(FONT, rect.position + Vector2(4, 21), projectile_caption(projectile), HORIZONTAL_ALIGNMENT_CENTER, rect.size.x - 8, 16, Color("f29780") if Ranged.arrival(projectile) <= 1 else PRESSURE)
 
 func _get_tooltip(at_position: Vector2) -> String:
 	for projectile in projectiles:
 		if int(projectile.hp) > 0 and (enemy_position(Ranged.target_id(projectile)).distance_to(at_position) <= 24 or projectile_label_rect(projectile).has_point(at_position)):
-			return "압력탄 · %dm · 도달 %d턴\n가장 가까워지면 다음 탄으로 요격합니다. 산개도 확정 요격.\n증폭·전이는 요격해도 발동합니다. 0m에 닿으면 패배합니다." % [projectile.distance, Ranged.arrival(projectile)]
+			return "압력탄 · %dm · 도달 %d턴\n가장 가까워지면 다음 탄으로 요격합니다. 스플린터도 확정 요격.\n증폭·전이는 요격해도 발동합니다. 0m에 닿으면 패배합니다." % [projectile.distance, Ranged.arrival(projectile)]
 	return super._get_tooltip(at_position)
 
 func _gui_input(event: InputEvent) -> void:
@@ -99,7 +101,7 @@ func _after_advance_tick(events: Array) -> void:
 				await _animate(0.28, func(t: float): projectile.distance = lerpf(float(event.from), float(event.to), t * t * (3.0 - 2.0 * t)))
 				visual_events.append(event.duplicate(true))
 			"projectile_launch":
-				projectiles = [event.projectile.duplicate(true)]
+				projectiles = event.projectiles.duplicate(true) if event.has("projectiles") else [event.projectile.duplicate(true)]
 				enemies[int(event.source)].ranged_phase = "waiting"
 				enemies[int(event.source)].ranged_left = 0
 				caption = "압력탄 발사 · 도달 %d턴" % Ranged.arrival(event.projectile)

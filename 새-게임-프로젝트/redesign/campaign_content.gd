@@ -8,8 +8,13 @@ const Residential = preload("res://redesign/residential_roster.gd")
 const Discovery = preload("res://redesign/ammo_discovery.gd")
 const START_CREDITS := 30
 const Acquisition = preload("res://redesign/ammo_acquisition.gd")
+const Rhythm = preload("res://redesign/combat_rhythm.gd")
 const ROUTE_REWARD_BONUS := 6
 const REGIONS := ["section_a", "section_b", "section_c", "section_d", "section_e"]
+## 보급 선호(2026-11-08 디렉터 결정): 현재 탄창 등반은 첫 보상에서 다섯 계열을 모두 보여
+## 주므로 선호가 후보를 바꾸지 못한다(11-06 비교에서 4선호 결과 동일). 정식 해금을 다시 설계할
+## 때까지 기록실·등반 설정·무기 상세에서 숨긴다. 데이터·해금 기록은 저장에 그대로 남는다.
+const SUPPLY_PREFERENCE_VISIBLE := false
 const LOADOUTS := {
 	"balanced": {"name": "코어·무기 맞춤", "deck": Ammo.START_DECK},
 	"amplify": {"name": "연타 보급", "deck": ["charge", "charge", "charge", "precise", "precise", "precise", "pierce", "pierce", "push", "push"]},
@@ -20,8 +25,8 @@ const LOADOUTS := {
 static func info(region: int, map_version: int = 1) -> Dictionary:
 	var data: Dictionary = City.section_info(REGIONS[region]).duplicate(true)
 	if map_version >= 2: data.floors = RouteMap.LENGTHS[region]
-	data.name = ["승강장·주거 통로", "축열 주조장", "우수 정원", "송전 회랑", "관측대·제어실"][region]
-	data.brief = ["우리 동네를 다시 잠그는 명령은 정상에서 내려옵니다.", "열은 충분합니다. 닫힌 분기로는 닿지 않을 뿐입니다.", "열린 격리문 너머에도 사람이 남아 있습니다.", "공급 목록 밖의 불빛을 따라 정상으로 향하세요.", "중앙의 차단 명령을 해제하고 현장 제어권을 여세요."][region]
+	data.name = ["승강장·주거 통로", "축열 주조장", "우수 정원", "귀족 거주구", "중앙 통제구"][region]
+	data.brief = ["우리 동네를 다시 잠그는 명령은 정상에서 내려옵니다.", "열은 충분합니다. 닫힌 분기로는 닿지 않을 뿐입니다.", "열린 격리문 너머에도 사람이 남아 있습니다.", "닫힌 저택의 불빛 아래, 중앙으로 통하는 길을 찾으세요.", "중앙의 차단 명령을 해제하고 현장 제어권을 여세요."][region]
 	return data
 
 static func rng(seed_value: int, salt: int) -> RandomNumberGenerator:
@@ -95,6 +100,8 @@ static func kind_name(kind: String) -> String:
 	return {"combat": "전투", "elite": "정예", "workshop": "공방", "boss": "관문", "shop": "상점", "supply": "탄약고", "bypass": "샛길", "event": "조우"}.get(kind, kind)
 
 static func hint(node: Dictionary) -> String:
+	var rhythm := Rhythm.hint(node)
+	if not rhythm.is_empty(): return rhythm
 	if int(node.get("map_version", 1)) >= 3:
 		if node.get("workshop", false): return "무료 작업 1회 · 압축 / 개조 / 제거 / 가방 확장"
 		if node.kind == "shop": return "파츠·탄환·전투용 압축 충전 구매"
@@ -143,7 +150,7 @@ static func _enemy(row: Array, boss_name: String = "") -> Dictionary:
 			enemy.def = int(enemy.stance_def) if bool(enemy.stance_closed) else 0
 	return enemy
 
-static func encounter_pack(node: Dictionary, seed_value: int, gun: String, difficulty: int, pressure: int, roster_version: int = 1) -> Dictionary:
+static func encounter_pack(node: Dictionary, seed_value: int, gun: String, difficulty: int, pressure: int, roster_version: int = 1, combat_revision: int = 0) -> Dictionary:
 	var region := int(node.region)
 	var local_floor := int(node.floor)
 	var random := rng(seed_value, int(node.id))
@@ -205,12 +212,27 @@ static func encounter_pack(node: Dictionary, seed_value: int, gun: String, diffi
 	if roster_version >= 3: rows = preload("res://redesign/assault_roster.gd").rows(node,random,rows)
 	if roster_version >= 4: rows = Acquisition.opening_rows(node, rows)
 	if roster_version >= 5: rows = preload("res://redesign/residential_challenges.gd").rows(node, rows)
+	if roster_version >= 6: rows = preload("res://redesign/foundry_roster.gd").rows(node, random, rows)
+	if roster_version >= 7: rows = preload("res://redesign/garden_roster.gd").rows(node, random, rows)
+	if roster_version >= 8: rows = preload("res://redesign/foundry_workers.gd").rows(node, random, rows)
+	if roster_version >= 9: rows = preload("res://redesign/garden_hunters.gd").rows(node, rows)
+	if roster_version >= 10: rows = preload("res://redesign/noble_house.gd").rows(node, random, rows)
+	if roster_version >= 11:
+		rows = preload("res://redesign/provisional_balance.gd").rows(node, rows)
+		rows = preload("res://redesign/central_guard.gd").rows(node, random, rows)
+	if combat_revision>=2:
+		rows=preload("res://redesign/foundry_workers.gd").revise(rows)
+		rows=preload("res://redesign/central_guard.gd").revise(rows)
+	if roster_version >= Rhythm.VERSION: rows = Rhythm.rows(node, rows)
 	var enemies: Array = []
 	for i in range(rows.size()):
 		var row: Array = rows[i]
 		var enemy := _enemy(row, str(node.name) if boss and i == 0 else "")
 		if residential: Residential.identify(enemy, boss and i == 0)
 		if roster_version >= 5: preload("res://redesign/residential_challenges.gd").identify(enemy, row)
+		if roster_version >= 7:
+			if region == 0: preload("res://redesign/slum_roster.gd").identify(enemy)
+			elif region == 2: preload("res://redesign/garden_roster.gd").identify(enemy)
 		if node.get("elite", false) and i == 0 and not enemy.has("rank"):
 			enemy.hp = ceili(float(enemy.hp) * 1.35)
 			enemy.max_hp = enemy.hp
@@ -252,10 +274,10 @@ static func rewards(node: Dictionary, seed_value: int, deck: Array = [], equippe
 	for id in deck:
 		var source := Ammo.source_id(str(id))
 		if not families.has(source): families.append(source)
-	var links := {"bore": ["detonate", "push", "spread", "disrupt"], "charge": ["precise", "charge_hot", "chase", "prepare"], "precise": ["shatter", "charge", "chase", "prepare"], "arc": ["bypass", "chase", "sequence"], "pierce": ["chase", "bypass", "sequence"], "cool": ["charge_hot", "thermal", "sequence"], "thermal": ["charge_heat", "vent"], "charge_heat": ["thermal", "vent", "precise"], "vent": ["charge_hot", "thermal"], "prepare": ["charge", "precise", "sequence"], "disrupt": ["bore", "bypass"], "spread": ["bore", "detonate"], "sequence": ["shatter", "cool", "prepare"]}
+	var links := {"bore": ["detonate", "push", "spread", "disrupt"], "charge": ["precise", "charge_hot", "chase", "prepare"], "precise": ["shatter", "charge", "chase", "prepare"], "arc": ["bypass", "chase", "sequence"], "pierce": ["chase", "bypass", "sequence"], "cool": ["charge_hot", "bore", "sequence"], "charge_heat": ["bore", "vent", "precise"], "vent": ["charge_hot", "bore"], "prepare": ["charge", "precise", "sequence"], "disrupt": ["bore", "bypass"], "spread": ["bore", "detonate"], "sequence": ["shatter", "cool", "prepare"]}
 	var partners: Array = families.duplicate()
 	if deck.has("charge_hot"):
-		partners.append_array(["charge", "precise", "cool", "vent", "thermal"])
+		partners.append_array(["charge", "precise", "cool", "vent", "bore"])
 	for family in families:
 		for id in links.get(family, []):
 			if not partners.has(id): partners.append(id)
@@ -296,6 +318,7 @@ static func prepare_opening_hand(model) -> void:
 			break
 
 static func lesson(node: Dictionary, state: Dictionary) -> String:
+	if not Rhythm.hint(node).is_empty(): return ""
 	if int(node.get("region", -1)) != 0: return ""
 	match int(node.get("floor", 0)):
 		1: return "충격 → 소이 장전 · 소이가 먼저 발사" if opening_pair(state) == ["bore", "push"] else "연타 → 증폭 장전 · 증폭이 먼저 발사"
@@ -305,10 +328,11 @@ static func lesson(node: Dictionary, state: Dictionary) -> String:
 		6: return "전열 뒤에도 증원 · 다음 탄창과 압축 자원을 남겨두세요"
 	return ""
 
-static func eligible_parts(gun: String, discovery_version: int = 0) -> Array:
+static func eligible_parts(gun: String, discovery_version: int = 0, focus_version: int = 0) -> Array:
 	var result: Array = []
 	for id in Ammo.PARTS:
 		if id == "none": continue
+		if id == "third_striker" and focus_version == 0: continue
 		if Ammo.accepts_part(gun, id): result.append(id)
 	return Discovery.parts(result) if discovery_version >= 1 else result
 
@@ -333,7 +357,9 @@ static func pick_part(candidates: Array, node: Dictionary, random: RandomNumberG
 		if ticket <= 0: return str(pools[grade][random.randi_range(0, pools[grade].size() - 1)])
 	return str(candidates[0])
 
-static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = [], seen_ammo: Array = [], equipped: Array = [], discovery_version: int = 0) -> Array:
+static func offers(node: Dictionary, seed_value: int, revision: int, gun: String, owned: Array, seen: Array = [], seen_ammo: Array = [], equipped: Array = [], discovery_version: int = 0, focus_version: int = 0, state: Dictionary = {}) -> Array:
+	var builds:=Ammo.Roles.builds(state)
+	var choices=preload("res://redesign/build_choices.gd")
 	var random := rng(seed_value, int(node.id) + 1900 + revision * 37)
 	var ammo_choices := shuffle(ammo_pool(node, discovery_version), random)
 	var seen_families := seen_ammo.map(func(id): return Ammo.source_id(str(id))) if discovery_version >= 2 else seen_ammo
@@ -341,7 +367,9 @@ static func offers(node: Dictionary, seed_value: int, revision: int, gun: String
 	var ammo_id: String = unseen_ammo[0] if not unseen_ammo.is_empty() else ammo_choices[0]
 	ammo_id = advanced_offer(ammo_id, node, rng(seed_value, int(node.id) + 2900 + revision * 37))
 	if discovery_version >= 2: ammo_id = Ammo.Variants.offer(ammo_id, Ammo.AMMO, rng(seed_value, int(node.id) + 4700 + revision * 37), node)
-	var parts: Array = eligible_parts(gun, discovery_version)
+	var parts: Array = eligible_parts(gun, discovery_version, focus_version)
+	# Build engine parts appear only in runs started with it (build_engine.gd).
+	if not preload("res://redesign/build_engine.gd").enabled(state): parts = parts.filter(func(id): return not preload("res://redesign/build_engine.gd").NEW_PARTS.has(id))
 	for id in owned: parts.erase(id)
 	var unseen: Array = []
 	var repeated: Array = []
@@ -360,11 +388,16 @@ static func offers(node: Dictionary, seed_value: int, revision: int, gun: String
 			var modules := candidates.filter(func(id): return not Ammo.is_core_part(id))
 			if not modules.is_empty(): candidates = modules
 		if not selected.is_empty():
-			var different := candidates.filter(func(id): return BuildGuide.family(id) != BuildGuide.family(str(selected[0])))
+			var different := candidates.filter(func(id): return choices.role(id) != choices.role(str(selected[0])) if builds else BuildGuide.family(id) != BuildGuide.family(str(selected[0])))
 			if not different.is_empty(): candidates = different
 		else:
-			var compatible := Discovery.modules(candidates, equipped) if discovery_version >= 1 else preload("res://redesign/build_affinity.gd").candidates(candidates,equipped,true)
+			var compatible := choices.modules(candidates,state) if builds else Discovery.modules(candidates, equipped) if discovery_version >= 1 else preload("res://redesign/build_affinity.gd").candidates(candidates,equipped,true)
 			if not compatible.is_empty(): candidates = compatible
+		# An early public offer exposes the positional build; later shops keep the pool.
+		if builds and selected.is_empty() and revision==0 and int(node.get("region",0))==0 and candidates.has(choices.signature(state)) and not seen.has(choices.signature(state)):
+			candidates=[choices.signature(state)]
+		elif not builds and focus_version == 1 and selected.is_empty() and revision == 0 and int(node.get("region", 0)) == 0 and pool.has("third_striker") and not seen.has("third_striker"):
+			candidates = ["third_striker"]
 		var picked: String = pick_part(candidates, node, random)
 		selected.append(picked)
 		pool.erase(picked)

@@ -1,0 +1,538 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/preview.gd" id="logic"]
+[ext_resource type="Theme" path="res://redesign/samples/shop_terminal_review/theme.tres" id="theme"]
+[ext_resource type="PackedScene" path="res://redesign/samples/shop_terminal_review/offer.tscn" id="offer"]
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/chassis.gd" id="case"]
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/item_glyph.gd" id="icon"]
+[ext_resource type="Script" path="res://redesign/pipe_map/graph.gd" id="graph"]
+[ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/shop.png" id="shop"]
+
+[sub_resource type="StyleBoxFlat" id="window"]
+bg_color = Color(0.125, 0.114, 0.10, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.41, 0.33, 0.25, 1)
+content_margin_left = 24.0
+content_margin_right = 24.0
+content_margin_top = 16.0
+content_margin_bottom = 16.0
+anti_aliasing = false
+
+[node name="TradeTerminalPreview" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = ExtResource("theme")
+script = ExtResource("logic")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.077, 0.076, 0.073, 1)
+
+[node name="Composition" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -552.0
+offset_top = -302.0
+offset_right = 552.0
+offset_bottom = 302.0
+
+[node name="Map" type="VBoxContainer" parent="Composition"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(210, 0)
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="MapCaption" type="Label" parent="Composition/Map"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "탐사도"
+
+[node name="Region" type="Label" parent="Composition/Map"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "축열 주조장"
+
+[node name="MapRule" type="ColorRect" parent="Composition/Map"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 1)
+mouse_filter = 2
+color = Color(0.33, 0.30, 0.26, 1)
+
+[node name="Survey" type="Control" parent="Composition/Map"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+mouse_filter = 2
+
+[node name="Graph" type="Control" parent="Composition/Map/Survey"]
+unique_name_in_owner = true
+offset_right = 348.0
+offset_bottom = 600.0
+mouse_filter = 2
+modulate = Color(0.80, 0.75, 0.66, 1)
+script = ExtResource("graph")
+
+[node name="LocationRow" type="HBoxContainer" parent="Composition/Map"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MapMarker" type="TextureRect" parent="Composition/Map/LocationRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(22, 22)
+mouse_filter = 2
+texture = ExtResource("shop")
+expand_mode = 1
+stretch_mode = 5
+modulate = Color(0.93, 0.70, 0.44, 1)
+
+[node name="MapLocation" type="Label" parent="Composition/Map/LocationRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.70, 0.44, 1)
+text = "현재 · 주조장 고물상"
+vertical_alignment = 1
+
+[node name="Reset" type="Button" parent="Composition/Map"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "단말 시안 다시 열기"
+size_flags_horizontal = 0
+
+[node name="Terminal" type="Control" parent="Composition"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Chassis" type="Control" parent="Composition/Terminal"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("case")
+
+[node name="Display" type="VBoxContainer" parent="Composition/Terminal"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+offset_left = 34.0
+offset_top = 26.0
+offset_right = -34.0
+offset_bottom = -80.0
+theme_override_constants/separation = 8
+
+[node name="Header" type="HBoxContainer" parent="Composition/Terminal/Display"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Sign" type="VBoxContainer" parent="Composition/Terminal/Display/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="Station" type="Label" parent="Composition/Terminal/Display/Header/Sign"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "축열 주조장 · 물자 거래"
+
+[node name="Title" type="Label" parent="Composition/Terminal/Display/Header/Sign"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "주조장 고물상"
+
+[node name="Funds" type="VBoxContainer" parent="Composition/Terminal/Display/Header"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="BalanceTitle" type="Label" parent="Composition/Terminal/Display/Header/Funds"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "보유금"
+horizontal_alignment = 2
+
+[node name="Wallet" type="Label" parent="Composition/Terminal/Display/Header/Funds"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.93, 0.70, 0.44, 1)
+text = "54 Cr"
+horizontal_alignment = 2
+
+[node name="HeaderRule" type="ColorRect" parent="Composition/Terminal/Display"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 1)
+mouse_filter = 2
+color = Color(0.39, 0.32, 0.25, 1)
+
+[node name="Stock" type="HBoxContainer" parent="Composition/Terminal/Display"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 25
+
+[node name="Inventory" type="VBoxContainer" parent="Composition/Terminal/Display/Stock"]
+layout_mode = 2
+custom_minimum_size = Vector2(272, 0)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
+theme_override_constants/separation = 5
+
+[node name="Columns" type="HBoxContainer" parent="Composition/Terminal/Display/Stock/Inventory"]
+layout_mode = 2
+
+[node name="Product" type="Label" parent="Composition/Terminal/Display/Stock/Inventory/Columns"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "판매품"
+size_flags_horizontal = 3
+
+[node name="Cost" type="Label" parent="Composition/Terminal/Display/Stock/Inventory/Columns"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "가격"
+
+[node name="Stage" type="VBoxContainer" parent="Composition/Terminal/Display/Stock/Inventory"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Offer0" parent="Composition/Terminal/Display/Stock/Inventory/Stage" instance=ExtResource("offer")]
+layout_mode = 2
+button_pressed = true
+
+[node name="Offer1" parent="Composition/Terminal/Display/Stock/Inventory/Stage" instance=ExtResource("offer")]
+layout_mode = 2
+
+[node name="Offer2" parent="Composition/Terminal/Display/Stock/Inventory/Stage" instance=ExtResource("offer")]
+layout_mode = 2
+
+[node name="Divider" type="ColorRect" parent="Composition/Terminal/Display/Stock"]
+layout_mode = 2
+custom_minimum_size = Vector2(1, 0)
+mouse_filter = 2
+color = Color(0.32, 0.28, 0.22, 1)
+
+[node name="Checkout" type="VBoxContainer" parent="Composition/Terminal/Display/Stock"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2
+theme_override_constants/separation = 7
+
+[node name="SpecTitle" type="HBoxContainer" parent="Composition/Terminal/Display/Stock/Checkout"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ItemArt" type="Control" parent="Composition/Terminal/Display/Stock/Checkout/SpecTitle"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(100, 84)
+mouse_filter = 2
+script = ExtResource("icon")
+showcase = true
+
+[node name="SpecName" type="VBoxContainer" parent="Composition/Terminal/Display/Stock/Checkout/SpecTitle"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="Kind" type="Label" parent="Composition/Terminal/Display/Stock/Checkout/SpecTitle/SpecName"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "탄환"
+
+[node name="ItemName" type="Label" parent="Composition/Terminal/Display/Stock/Checkout/SpecTitle/SpecName"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "압축 소이탄"
+text_overrun_behavior = 3
+
+[node name="Effect" type="Label" parent="Composition/Terminal/Display/Stock/Checkout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "화상 / 턴 6 · 열 +7\n지역 불길 2행동"
+autowrap_mode = 3
+line_spacing = 3
+
+[node name="Owned" type="Label" parent="Composition/Terminal/Display/Stock/Checkout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "보유 2장 · 가방 25 / 32"
+
+[node name="TradeResult" type="VBoxContainer" parent="Composition/Terminal/Display/Stock/Checkout"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/separation = 5
+
+[node name="Outcome" type="Label" parent="Composition/Terminal/Display/Stock/Checkout/TradeResult"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "가방에 한 장 추가"
+
+[node name="Balance" type="Label" parent="Composition/Terminal/Display/Stock/Checkout/TradeResult"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.89, 0.85, 0.73, 1)
+theme_override_font_sizes/font_size = 32
+text = "결제 후 30 Cr"
+
+[node name="CheckoutActions" type="HBoxContainer" parent="Composition/Terminal/Display/Stock/Checkout"]
+layout_mode = 2
+theme_override_constants/separation = 7
+alignment = 2
+
+[node name="Replace" type="Button" parent="Composition/Terminal/Display/Stock/Checkout/CheckoutActions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "교체 선택"
+
+[node name="Record" type="VBoxContainer" parent="Composition/Terminal/Display"]
+unique_name_in_owner = true
+layout_mode = 2
+visible = false
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="RecordScroll" type="ScrollContainer" parent="Composition/Terminal/Display/Record"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+size_flags_vertical = 3
+
+[node name="RecordCopy" type="VBoxContainer" parent="Composition/Terminal/Display/Record/RecordScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(660, 0)
+theme_override_constants/separation = 14
+
+[node name="RecordTitle" type="Label" parent="Composition/Terminal/Display/Record/RecordScroll/RecordCopy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "난방 코일 반려"
+autowrap_mode = 3
+
+[node name="RecordRule" type="ColorRect" parent="Composition/Terminal/Display/Record/RecordScroll/RecordCopy"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 1)
+mouse_filter = 2
+color = Color(0.39, 0.32, 0.25, 1)
+
+[node name="Greeting" type="Label" parent="Composition/Terminal/Display/Record/RecordScroll/RecordCopy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.70, 0.44, 1)
+text = "“손부터 녹여요. 뜨거운 물은 아직 나와.”"
+autowrap_mode = 3
+
+[node name="Memo" type="Label" parent="Composition/Terminal/Display/Record/RecordScroll/RecordCopy"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "장부에는 수리비 대신 문 수선, 아이 업어 주기, 다음번 차 한 잔이 적혀 있다."
+autowrap_mode = 3
+line_spacing = 6
+
+[node name="Transcript" type="Label" parent="Composition/Terminal/Display/Record/RecordScroll/RecordCopy"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "“상층용 관절 냉각관은 늘 새것이 오지. 여기 난방 코일은 아직도 반려야. 오래 버티는 몸도 결국 누가 부품을 대 주느냐더라고.”"
+autowrap_mode = 3
+line_spacing = 7
+
+[node name="FooterRule" type="ColorRect" parent="Composition/Terminal/Display"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 1)
+mouse_filter = 2
+color = Color(0.39, 0.32, 0.25, 1)
+
+[node name="Actions" type="HBoxContainer" parent="Composition/Terminal/Display"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Reroll" type="Button" parent="Composition/Terminal/Display/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "새 진열 · 3 Cr"
+
+[node name="Charge" type="Button" parent="Composition/Terminal/Display/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "압축 충전 · 18 Cr"
+visible = false
+
+[node name="Feedback" type="Label" parent="Composition/Terminal/Display/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = ""
+size_flags_horizontal = 3
+text_overrun_behavior = 3
+vertical_alignment = 1
+
+[node name="RecordSpacer" type="Control" parent="Composition/Terminal/Display/Actions"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="ModeKeys" type="BoxContainer" parent="Composition/Terminal"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 34.0
+offset_top = -61.0
+offset_right = 258.0
+offset_bottom = -17.0
+theme_override_constants/separation = 8
+
+[node name="Buy" type="Button" parent="Composition/Terminal/ModeKeys"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(88, 44)
+size_flags_horizontal = 3
+text = "구매"
+theme_type_variation = &"ConsolePurchase"
+
+[node name="StockTab" type="Button" parent="Composition/Terminal/Display/Actions"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(96, 44)
+text = "판매 물품"
+toggle_mode = true
+
+[node name="LogTab" type="Button" parent="Composition/Terminal/Display/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(120, 44)
+text = "현장 기록"
+toggle_mode = true
+
+[node name="Leave" type="Button" parent="Composition/Terminal/Display/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "지도로"
+
+[node name="ReplaceOverlay" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+
+[node name="Backdrop" type="ColorRect" parent="ReplaceOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.025, 0.021, 0.018, 0.84)
+
+[node name="Center" type="CenterContainer" parent="ReplaceOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Window" type="PanelContainer" parent="ReplaceOverlay/Center"]
+layout_mode = 2
+custom_minimum_size = Vector2(465, 0)
+theme_override_styles/panel = SubResource("window")
+
+[node name="Contents" type="VBoxContainer" parent="ReplaceOverlay/Center/Window"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ReplaceTitle" type="Label" parent="ReplaceOverlay/Center/Window/Contents"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "보유 탄과 교체"
+
+[node name="ReplaceSummary" type="Label" parent="ReplaceOverlay/Center/Window/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
+text = "압축 소이탄 한 장 구매 · 24 Cr"
+
+[node name="Options" type="ScrollContainer" parent="ReplaceOverlay/Center/Window/Contents"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 155)
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Candidates" type="VBoxContainer" parent="ReplaceOverlay/Center/Window/Contents/Options"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Choices" type="HBoxContainer" parent="ReplaceOverlay/Center/Window/Contents"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Confirm" type="Button" parent="ReplaceOverlay/Center/Window/Contents/Choices"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "이 탄과 교체"
+theme_type_variation = &"BuyAction"
+disabled = true
+
+[node name="Cancel" type="Button" parent="ReplaceOverlay/Center/Window/Contents/Choices"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "취소"
+

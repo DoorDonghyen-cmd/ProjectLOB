@@ -25,19 +25,24 @@ func run() -> void:
 		for id in Content.GUNS:
 			await touch("weapon_select_" + id)
 			check(screen.selected_weapon_id == id, "touch selects gun " + id)
+			var preview = screen.find_child("OutfitPortrait", true, false)
+			check(preview.actor.gun_id == id and preview.actor.pose_id == "idle", "preview holds selected gun in combat idle pose")
 			bounds("start_" + id)
 			bounds("SelectedWeaponPanel")
 			check((screen.find_child("Heat", true, false) as Label).text.ends_with(str(Content.GUNS[id].heat_limit)), "gun heat binding")
 			await touch("starting_deck")
-			for ammo in Content.start_deck(id):
+			var actual_run = Campaign.new()
+			actual_run.start(id,817263)
+			for ammo in ["basic_p1","basic_p2","basic_p3"]:
 				var caption := screen.find_child("StartingRound_" + str(ammo), true, false) as Label
-				check(caption != null and caption.text.ends_with("×%d" % Content.start_deck(id).count(ammo)), "deck matches actual gun")
+				check(caption != null and caption.text.ends_with("×%d" % actual_run.model.s.deck.count(ammo)), "deck matches actual gun")
 			await close_dialog()
 		for id in Content.OUTFITS:
 			await touch("outfit_select_" + id)
 			check(screen.selected_outfit_id == id, "touch selects outfit " + id)
-			var atlas: AtlasTexture = screen.find_child("OutfitPortrait", true, false).texture
-			check(atlas.atlas == screen.find_child("EquipmentScreen", true, false)._outfit_portrait(id).atlas, "outfit portrait changes")
+			var preview = screen.find_child("OutfitPortrait", true, false)
+			check(preview.actor.outfit_id == id, "combat preview outfit changes")
+			check(preview.actor.body_texture() == preload("res://redesign/weapon_actor.gd").body_for(id, screen.selected_weapon_id), "preview uses combat body asset")
 			bounds("OutfitSelection")
 			bounds("weapon_select_amplifier")
 			await capture("equipment_%s_%s" % [resolution.x, id])
@@ -56,6 +61,11 @@ func run() -> void:
 			await settle()
 			await touch("weapon_select_" + gun)
 			await touch("outfit_select_" + outfit)
+			var preview = screen.find_child("OutfitPortrait", true, false)
+			check(preview.actor.gun_id == gun and preview.actor.outfit_id == outfit, "preview matches complete selected pair")
+			await RenderingServer.frame_post_draw
+			var occupied: Rect2i = preview.actor_viewport.get_texture().get_image().get_used_rect()
+			check(occupied.size.y > 200 and preview.SOURCE_RECT.encloses(Rect2(occupied)), "whole selected actor and weapon visible: " + gun + "/" + outfit)
 			await touch("start_" + gun)
 			check(screen.page == "run" and screen.campaign.s.gun == gun, "launch selected gun")
 			check(screen.campaign.s.outfit == outfit and screen.model.s.outfit == outfit, "launch selected outfit")
@@ -74,7 +84,7 @@ func run() -> void:
 	screen.difficulty_option.value = 2
 	await close_dialog()
 	await touch("starting_deck")
-	check(screen.find_child("StartingRound_bore", true, false) != null, "thermal deck rendered")
+	check(screen.find_child("StartingRound_bore", true, false) == null and screen.find_child("StartingRound_basic_p1", true, false) != null, "special preference does not grant opening special rounds")
 	await close_dialog()
 	await touch("start_" + screen.selected_weapon_id)
 	check(screen.find_child("NewRunConfirmation", true, false) != null, "existing run protected")

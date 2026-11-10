@@ -40,6 +40,9 @@ func _run() -> void:
 	await check_surface_heat()
 	await combat(["basic", "cool"], "single", true)
 	await set_enemies([["runner", 60, 0, 1, 20]])
+	# Navigation fades use elapsed time; a few uncapped frames do not finish
+	# them. Compare stable background pixels, while keeping the bar assertion.
+	screen.feedback.finish_transition()
 	var view = screen.battle_view
 	view.reduced_feedback = true
 	view.hero_action = "idle"

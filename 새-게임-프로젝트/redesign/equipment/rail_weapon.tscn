@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/equipment_weapon.tscn" id="1"]
+
+[node name="Art" instance=ExtResource("1")]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -36.0
+art_limit = Vector2(150, 40)

@@ -13,6 +13,7 @@ var loaded: Array = []
 func fixture() -> RefCounted:
 	var m = Model.new()
 	m.start(gun, run_seed)
+	m.s.combat_revision = Data.COMBAT_REVISION
 	m.s.floor = encounter
 	m.s.equipped_parts = parts.duplicate()
 	m.begin_encounter(0)

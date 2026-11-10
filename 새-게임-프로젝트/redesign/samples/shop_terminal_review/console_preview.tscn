@@ -1,0 +1,98 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/samples/shop_terminal_review/preview.tscn" id="base"]
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/console_preview.gd" id="logic"]
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/console_chassis.gd" id="case"]
+[ext_resource type="Shader" path="res://redesign/samples/shop_terminal_review/console_glass.gdshader" id="glass"]
+[ext_resource type="PackedScene" path="res://redesign/samples/shop_terminal_review/part_mount.tscn" id="mount"]
+
+[sub_resource type="ShaderMaterial" id="glass_material"]
+resource_local_to_scene = true
+shader = ExtResource("glass")
+
+[node name="TradeConsolePreview" instance=ExtResource("base")]
+script = ExtResource("logic")
+
+[node name="Composition" parent="." index="1"]
+offset_top = -274.0
+offset_bottom = 274.0
+
+[node name="Chassis" parent="Composition/Terminal" index="0"]
+script = ExtResource("case")
+
+[node name="Display" parent="Composition/Terminal" index="1"]
+offset_left = 38.0
+offset_right = -273.0
+offset_bottom = -30.0
+
+[node name="Funds" parent="Composition/Terminal/Display/Header" index="1"]
+visible = false
+
+[node name="PartsPane" parent="Composition/Terminal/Display" index="4" instance=ExtResource("mount")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="PartsButton" type="Button" parent="Composition/Terminal/ModeKeys" index="1"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "파츠 장착"
+theme_type_variation = &"TerminalTab"
+focus_neighbor_top = NodePath("../Buy")
+
+[node name="ModeKeys" parent="Composition/Terminal" index="2"]
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -205.0
+offset_top = 207.0
+offset_right = -25.0
+offset_bottom = 313.0
+theme_override_constants/separation = 10
+vertical = true
+
+[node name="Buy" parent="Composition/Terminal/ModeKeys" index="0"]
+custom_minimum_size = Vector2(96, 48)
+focus_neighbor_right = NodePath("")
+focus_neighbor_bottom = NodePath("../PartsButton")
+
+[node name="ConsoleFunds" type="VBoxContainer" parent="Composition/Terminal" index="3"]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -193.0
+offset_top = 113.0
+offset_right = -37.0
+offset_bottom = 175.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Caption" type="Label" parent="Composition/Terminal/ConsoleFunds"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.72, 0.64, 1)
+text = "보유금"
+
+[node name="ConsoleWallet" type="Label" parent="Composition/Terminal/ConsoleFunds"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.90, 0.77, 1)
+theme_override_font_sizes/font_size = 32
+text = "54 Cr"
+horizontal_alignment = 2
+
+[node name="ScreenGlass" type="ColorRect" parent="Composition/Terminal" index="4"]
+unique_name_in_owner = true
+material = SubResource("glass_material")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 16.0
+offset_right = -263.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

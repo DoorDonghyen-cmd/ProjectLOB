@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-25",
+  "tool": "image_gen",
+  "purpose": "Indoor conversation and work pose restoration with quieter pixel clustering. Generated PNGs copied unchanged; registration measures only.",
+  "records": [
+    {
+      "id": "work",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/work_service.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png"
+      ],
+      "prompt": "Production pixel-art sprite EDIT for ORVASK.\nINPUT1 is the EDIT TARGET and costume identity. Preserve this costume's distinctive silhouette and hardware: WORK coat: dark dusty navy long worker coat, small olive backpack, rust-red scarf, dark brimmed miner cap with small square lamp. Keep coat hem at knees.\nINPUT2 is the corrected SERVICE POSE and PIXEL STYLE TEMPLATE. Replace INPUT1's side/combat-like stances with the exact THREE back-three-quarter poses of INPUT2. Also match INPUT2's natural human proportions, smaller pixel clusters, grouped shading and restrained outlines. Do NOT copy its taupe costume or cargo pack.\nINPUT3 is the room's lighting and color-density reference ONLY; do not draw the room.\nLEFT: SHOP visitor, predominantly back toward us, face turned slightly right toward unseen shopkeeper. Relaxed shoulders, right forearm/hand resting flat on unseen counter, other arm relaxed or concealed. No open raised palm, no two fists spaced like weapon grips. No weapon pose.\nCENTER: SUPPLY, back-three-quarter looking slightly down into unseen waist-height storage chest, relaxed low arms with a small reaching gesture.\nRIGHT: WORKBENCH, shoulders turned further away from viewer and slight forward lean, hands closely together working at unseen bench. Distinguishable from shop.\nExactly three full-body figures in1536x1024 transparent RGBA atlas, 3equal512px columns, >=32px blank alpha gutter from each cell edge, head about y190-220 and boots y880. All three same human scale. Every hand/hat/backpack stays within column. Match reference2 silhouette proportions and muted medium-sized pixel cluster density at game display about120px high, NOT giant flat pixel-icon blocks.\nKeep colored edges thin and selective, no continuous black outline. Dusty bluegray shadows, little warm rim on shoulder/hand, no stark white headlamp. Broad coherent cloth planes with a few smaller restrained clusters. No blur, airbrush, grain, random texture, dither, glossy illustration or dramatic glowing outlines.\nOUTPUT only the three clothed figures on genuine transparent background. No furniture, objects, weapons, tools, floor shadows, panels, text, floor, UI or checkerboard. Do not add extra figures.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-c78162ef-355a-4e8b-b1e7-1fe973557021.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/work.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/work_service.png": "96014258fa158c86d6878a62bd9861e2849de4a390f933b64abd625375d6a062",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab"
+      },
+      "output_sha256": "ce663103bc0e655f25b6d78698a93d389452d957350478251b1cba7234d495ad"
+    },
+    {
+      "id": "carrier",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/carrier_service.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png"
+      ],
+      "prompt": "Production sprite EDIT for ORVASK pixel-art game, transparent PNG atlas.\nINPUT1 is current CARRIER costume identity only: dusty taupe long cargo coat, tall rectangular pack with broad strapped modules, dark cap/headlamp, muted rust scarf. Do not copy its side-on combat-like poses, thick black edges, giant flat coarse blocks or bright colors.\nINPUT2 is the approved SHOP POSE: camera sees predominantly the BACK and backpack, head turned a little to the right toward shopkeeper, shoulders relaxed, slight comfortable lean forward, right forearm resting on unseen countertop. NO raised open palm, NO two separated hands held like a gun grip. Let near arm rest at the counter, other arm relaxed/mostly concealed. Restore this exact back-three-quarter orientation.\nINPUT3 is SUPPLY pose, looking into an unseen low locker, hands at waist level, slight reach.\nINPUT4 is WORKBENCH pose, back predominantly toward viewer, small forward lean, hands together doing delicate work on unseen bench.\nINPUT5 is environment STYLE and LIGHTING anchor ONLY. Draw NO background or furniture. Character must belong in that dark blue-gray pixel room: quiet grouped shadows, restrained dusty colors, warm reflected light only on small shoulder/hand planes. Medium-sized pixel clusters like INPUT2, roughly 120-150 logical pixels tall at full figure rather than chunky 40px icon style. Thin selective material-colored contours; eliminate continuous near-black outline, white lamp shine, glossy broad highlights. Readable discrete pixel steps, no blur, no noise, no airbrush halos, no dithering. Same natural adult human body proportions as pose refs.\nOUTPUT exactly THREE full-body figures side by side in a1536x1024 RGBA transparent atlas, each confined to its512px-wide column with >=32px clear alpha gutter. Pose order SHOP / SUPPLY / WORKSHOP. Heads around y200 and feet around y880, identical human scale. Keep all boots, hats, hands and backpacks inside cells. Preserve costume identity across all3. No guns, tools, counters, floors, shadows, lettering, UI, panels or checkerboard. Only character pixels, all outside alpha truly zero.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-8ceb2d08-9d23-4cd9-9e8f-b49dd6cc4f6a.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/carrier_service.png": "4884d94b06c778f93d1754a40257de6dd893c1ce064db9b4db054fa6e492926d",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_work.png": "859aef9225e166f98168b386497260be9c2e6d624160406025299877063dab9b",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_work.png": "3ca1b8526dc59e8f74fa89b233021684a2ce182306bb8295fd4e41eaeb4b1533",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_work.png": "52e2478d420e25754a642675c4d41eb6081a7ac73f45fb1baf53f617926b5366",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab"
+      },
+      "output_sha256": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe"
+    },
+    {
+      "id": "scout",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/scout_service.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png"
+      ],
+      "prompt": "Production pixel-art sprite EDIT for ORVASK.\nINPUT1 is the EDIT TARGET and costume identity. Preserve this costume's distinctive silhouette and hardware: SCOUT: short muted sage jacket ending exactly at hips (NOT a longcoat), dark navy exposed thighs, compact small flat green backpack, brown diagonal strap, dark cap and rust scarf.\nINPUT2 is the corrected SERVICE POSE and PIXEL STYLE TEMPLATE. Replace INPUT1's side/combat-like stances with the exact THREE back-three-quarter poses of INPUT2. Also match INPUT2's natural human proportions, smaller pixel clusters, grouped shading and restrained outlines. Do NOT copy its taupe costume or cargo pack.\nINPUT3 is the room's lighting and color-density reference ONLY; do not draw the room.\nLEFT: SHOP visitor, predominantly back toward us, face turned slightly right toward unseen shopkeeper. Relaxed shoulders, right forearm/hand resting flat on unseen counter, other arm relaxed or concealed. No open raised palm, no two fists spaced like weapon grips. No weapon pose.\nCENTER: SUPPLY, back-three-quarter looking slightly down into unseen waist-height storage chest, relaxed low arms with a small reaching gesture.\nRIGHT: WORKBENCH, shoulders turned further away from viewer and slight forward lean, hands closely together working at unseen bench. Distinguishable from shop.\nExactly three full-body figures in1536x1024 transparent RGBA atlas, 3equal512px columns, >=32px blank alpha gutter from each cell edge, head about y190-220 and boots y880. All three same human scale. Every hand/hat/backpack stays within column. Match reference2 silhouette proportions and muted medium-sized pixel cluster density at game display about120px high, NOT giant flat pixel-icon blocks.\nKeep colored edges thin and selective, no continuous black outline. Dusty bluegray shadows, little warm rim on shoulder/hand, no stark white headlamp. Broad coherent cloth planes with a few smaller restrained clusters. No blur, airbrush, grain, random texture, dither, glossy illustration or dramatic glowing outlines.\nOUTPUT only the three clothed figures on genuine transparent background. No furniture, objects, weapons, tools, floor shadows, panels, text, floor, UI or checkerboard. Do not add extra figures.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-1f6ceb80-a86b-47a7-8e39-a562b37fff1e.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/scout.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/scout_service.png": "11b001f7ecd8a409f8b1cf2a48ef75f3a9f02455134a28492b4e82f8ba01a5b0",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab"
+      },
+      "output_sha256": "ef6dc6ad6e2af2012aad17492ee6bfef83b7677efc7ae1ddcced0465881a4206"
+    },
+    {
+      "id": "heatworker",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/heatworker_service.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png"
+      ],
+      "prompt": "Production pixel-art sprite EDIT for ORVASK.\nINPUT1 is the EDIT TARGET and costume identity. Preserve this costume's distinctive silhouette and hardware: HEATWORKER: navy longcoat, muted ochre shoulder mantle, compact dark cooling canister on back with THREE broad dull silver horizontal vents. Rust scarf and miner cap. Do not turn its back canister into cargo pouches.\nINPUT2 is the corrected SERVICE POSE and PIXEL STYLE TEMPLATE. Replace INPUT1's side/combat-like stances with the exact THREE back-three-quarter poses of INPUT2. Also match INPUT2's natural human proportions, smaller pixel clusters, grouped shading and restrained outlines. Do NOT copy its taupe costume or cargo pack.\nINPUT3 is the room's lighting and color-density reference ONLY; do not draw the room.\nLEFT: SHOP visitor, predominantly back toward us, face turned slightly right toward unseen shopkeeper. Relaxed shoulders, right forearm/hand resting flat on unseen counter, other arm relaxed or concealed. No open raised palm, no two fists spaced like weapon grips. No weapon pose.\nCENTER: SUPPLY, back-three-quarter looking slightly down into unseen waist-height storage chest, relaxed low arms with a small reaching gesture.\nRIGHT: WORKBENCH, shoulders turned further away from viewer and slight forward lean, hands closely together working at unseen bench. Distinguishable from shop.\nExactly three full-body figures in1536x1024 transparent RGBA atlas, 3equal512px columns, >=32px blank alpha gutter from each cell edge, head about y190-220 and boots y880. All three same human scale. Every hand/hat/backpack stays within column. Match reference2 silhouette proportions and muted medium-sized pixel cluster density at game display about120px high, NOT giant flat pixel-icon blocks.\nKeep colored edges thin and selective, no continuous black outline. Dusty bluegray shadows, little warm rim on shoulder/hand, no stark white headlamp. Broad coherent cloth planes with a few smaller restrained clusters. No blur, airbrush, grain, random texture, dither, glossy illustration or dramatic glowing outlines.\nOUTPUT only the three clothed figures on genuine transparent background. No furniture, objects, weapons, tools, floor shadows, panels, text, floor, UI or checkerboard. Do not add extra figures.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-c23fc813-e763-4fbc-9906-ef1506cdf091.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/heatworker.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/heatworker_service.png": "986c753ab3a4b14553c655e2b084c1f9427ae1021e7d9253b0d0457a161a6e47",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab"
+      },
+      "output_sha256": "816bddbeedb20cfb47108b47d17cd416d56c193bf000cd7f7c1c6de8c3f14375"
+    },
+    {
+      "id": "hoist",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/hoist_service.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png"
+      ],
+      "prompt": "Production pixel-art sprite EDIT for ORVASK.\nINPUT1 is the EDIT TARGET and costume identity. Preserve this costume's distinctive silhouette and hardware: HOIST: navy longcoat, ivory canvas harness straps subdued into bone-gray (not white), one LARGE ROUND olive cable reel on the back with recognizable circular silhouette and inner winding, two olive hip pouches. Rust scarf and dark miner cap.\nINPUT2 is the corrected SERVICE POSE and PIXEL STYLE TEMPLATE. Replace INPUT1's side/combat-like stances with the exact THREE back-three-quarter poses of INPUT2. Also match INPUT2's natural human proportions, smaller pixel clusters, grouped shading and restrained outlines. Do NOT copy its taupe costume or cargo pack.\nINPUT3 is the room's lighting and color-density reference ONLY; do not draw the room.\nLEFT: SHOP visitor, predominantly back toward us, face turned slightly right toward unseen shopkeeper. Relaxed shoulders, right forearm/hand resting flat on unseen counter, other arm relaxed or concealed. No open raised palm, no two fists spaced like weapon grips. No weapon pose.\nCENTER: SUPPLY, back-three-quarter looking slightly down into unseen waist-height storage chest, relaxed low arms with a small reaching gesture.\nRIGHT: WORKBENCH, shoulders turned further away from viewer and slight forward lean, hands closely together working at unseen bench. Distinguishable from shop.\nExactly three full-body figures in1536x1024 transparent RGBA atlas, 3equal512px columns, >=32px blank alpha gutter from each cell edge, head about y190-220 and boots y880. All three same human scale. Every hand/hat/backpack stays within column. Match reference2 silhouette proportions and muted medium-sized pixel cluster density at game display about120px high, NOT giant flat pixel-icon blocks.\nKeep colored edges thin and selective, no continuous black outline. Dusty bluegray shadows, little warm rim on shoulder/hand, no stark white headlamp. Broad coherent cloth planes with a few smaller restrained clusters. No blur, airbrush, grain, random texture, dither, glossy illustration or dramatic glowing outlines.\nOUTPUT only the three clothed figures on genuine transparent background. No furniture, objects, weapons, tools, floor shadows, panels, text, floor, UI or checkerboard. Do not add extra figures.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-aacb28d4-5bec-489f-b1fa-223afa513542.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/hoist.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/hoist_service.png": "fe18e749c3a99434975f6794b0f5c2821089485ac288336a2fb27b047cc13788",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab"
+      },
+      "output_sha256": "fc0044c48bbd23813ffc424e7510b9185474ff7590999195daa4d7a5dee89486"
+    },
+    {
+      "id": "recovery",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/recovery_service.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png"
+      ],
+      "prompt": "Production pixel-art sprite EDIT for ORVASK.\nINPUT1 is the EDIT TARGET and costume identity. Preserve this costume's distinctive silhouette and hardware: RECOVERY: sage-gray longcoat, asymmetric dull ivory shoulder armor with ochre mark, rectangular stacked recovery modules on back with small muted ochre inset plates, rust scarf, miner cap. Preserve irregular utilitarian silhouette.\nINPUT2 is the corrected SERVICE POSE and PIXEL STYLE TEMPLATE. Replace INPUT1's side/combat-like stances with the exact THREE back-three-quarter poses of INPUT2. Also match INPUT2's natural human proportions, smaller pixel clusters, grouped shading and restrained outlines. Do NOT copy its taupe costume or cargo pack.\nINPUT3 is the room's lighting and color-density reference ONLY; do not draw the room.\nLEFT: SHOP visitor, predominantly back toward us, face turned slightly right toward unseen shopkeeper. Relaxed shoulders, right forearm/hand resting flat on unseen counter, other arm relaxed or concealed. No open raised palm, no two fists spaced like weapon grips. No weapon pose.\nCENTER: SUPPLY, back-three-quarter looking slightly down into unseen waist-height storage chest, relaxed low arms with a small reaching gesture.\nRIGHT: WORKBENCH, shoulders turned further away from viewer and slight forward lean, hands closely together working at unseen bench. Distinguishable from shop.\nExactly three full-body figures in1536x1024 transparent RGBA atlas, 3equal512px columns, >=32px blank alpha gutter from each cell edge, head about y190-220 and boots y880. All three same human scale. Every hand/hat/backpack stays within column. Match reference2 silhouette proportions and muted medium-sized pixel cluster density at game display about120px high, NOT giant flat pixel-icon blocks.\nKeep colored edges thin and selective, no continuous black outline. Dusty bluegray shadows, little warm rim on shoulder/hand, no stark white headlamp. Broad coherent cloth planes with a few smaller restrained clusters. No blur, airbrush, grain, random texture, dither, glossy illustration or dramatic glowing outlines.\nOUTPUT only the three clothed figures on genuine transparent background. No furniture, objects, weapons, tools, floor shadows, panels, text, floor, UI or checkerboard. Do not add extra figures.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-1b253d35-110f-4f17-8fe2-f2206c867850.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/recovery.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/recovery_service.png": "97917b6c97c9e2db49b6b6f0c4d36bc48fdea30f95f77a6d48a244b6831b0632",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab"
+      },
+      "output_sha256": "263439f81548e10aa00fc66d50415faee8ca25700fff966f6a40f5aae30c9caf"
+    },
+    {
+      "id": "expedition",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/expedition_service.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png"
+      ],
+      "prompt": "Production pixel-art sprite EDIT for ORVASK.\nINPUT1 is the EDIT TARGET and costume identity. Preserve this costume's distinctive silhouette and hardware: EXPEDITION: sealed olive/khaki helmet with dark FULL FACE respirator/visor, broad breathing collar and hose, dusty khaki longcoat, muted ochre shoulder patch, BLUEGRAY LIFE SUPPORT CYLINDER on back. No exposed face, no generic miner cap. Preserve protective equipment.\nINPUT2 is the corrected SERVICE POSE and PIXEL STYLE TEMPLATE. Replace INPUT1's side/combat-like stances with the exact THREE back-three-quarter poses of INPUT2. Also match INPUT2's natural human proportions, smaller pixel clusters, grouped shading and restrained outlines. Do NOT copy its taupe costume or cargo pack.\nINPUT3 is the room's lighting and color-density reference ONLY; do not draw the room.\nLEFT: SHOP visitor, predominantly back toward us, face turned slightly right toward unseen shopkeeper. Relaxed shoulders, right forearm/hand resting flat on unseen counter, other arm relaxed or concealed. No open raised palm, no two fists spaced like weapon grips. No weapon pose.\nCENTER: SUPPLY, back-three-quarter looking slightly down into unseen waist-height storage chest, relaxed low arms with a small reaching gesture.\nRIGHT: WORKBENCH, shoulders turned further away from viewer and slight forward lean, hands closely together working at unseen bench. Distinguishable from shop.\nExactly three full-body figures in1536x1024 transparent RGBA atlas, 3equal512px columns, >=32px blank alpha gutter from each cell edge, head about y190-220 and boots y880. All three same human scale. Every hand/hat/backpack stays within column. Match reference2 silhouette proportions and muted medium-sized pixel cluster density at game display about120px high, NOT giant flat pixel-icon blocks.\nKeep colored edges thin and selective, no continuous black outline. Dusty bluegray shadows, little warm rim on shoulder/hand, no stark white headlamp. Broad coherent cloth planes with a few smaller restrained clusters. No blur, airbrush, grain, random texture, dither, glossy illustration or dramatic glowing outlines.\nOUTPUT only the three clothed figures on genuine transparent background. No furniture, objects, weapons, tools, floor shadows, panels, text, floor, UI or checkerboard. Do not add extra figures.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-cab1fe02-cfac-46d1-afad-a15cf3593cfa.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/expedition.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/outfits_unified_20261025/expedition_service.png": "6e2b80c57f204285a7ff1671bc02037f076e5751469ea348edf721149d558bf7",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab"
+      },
+      "output_sha256": "11c3f242aa7dd4d9906e12a1e13f8e75044dace6b519def48f5ec1ae0ae01aa7"
+    }
+  ]
+}

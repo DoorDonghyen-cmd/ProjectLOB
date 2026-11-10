@@ -1,0 +1,386 @@
+[gd_scene format=3]
+[ext_resource type="Theme" path="res://redesign/samples/hud/combat_hud_theme.tres" id="theme"]
+[ext_resource type="Texture2D" path="res://assets/ui/line_theme_20261101/px_panel.png" id="modal"]
+
+[ext_resource type="Script" path="res://redesign/line_frame.gd" id="line_frame"]
+
+[node name="RouteOverview" type="HBoxContainer"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("theme")
+theme_override_constants/separation = 12
+custom_minimum_size = Vector2(0,220)
+
+[node name="RouteScroll" type="ScrollContainer" parent="."]
+layout_mode = 2
+custom_minimum_size = Vector2(280,0)
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="RouteList" type="VBoxContainer" parent="RouteScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="RouteStop0" type="Button" parent="RouteScroll/RouteList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+mouse_filter = 1
+toggle_mode = true
+theme_type_variation = &"LineRouteRow"
+
+[node name="RouteType0" type="Label" parent="RouteScroll/RouteList/RouteStop0"]
+mouse_filter = 2
+text = "전투"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+offset_left = 12
+offset_top = 5
+offset_right = 52
+offset_bottom = 25
+
+[node name="RouteName0" type="Label" parent="RouteScroll/RouteList/RouteStop0"]
+mouse_filter = 2
+text = "순찰 구역"
+theme_override_font_sizes/font_size = 16
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 4
+offset_right = -12
+offset_bottom = 26
+text_overrun_behavior = 3
+
+[node name="RouteState0" type="Label" parent="RouteScroll/RouteList/RouteStop0"]
+mouse_filter = 2
+text = "현재"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 27
+offset_right = -12
+offset_bottom = 46
+
+[node name="RouteStop1" type="Button" parent="RouteScroll/RouteList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+mouse_filter = 1
+toggle_mode = true
+theme_type_variation = &"LineRouteRow"
+
+[node name="RouteType1" type="Label" parent="RouteScroll/RouteList/RouteStop1"]
+mouse_filter = 2
+text = "전투"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+offset_left = 12
+offset_top = 5
+offset_right = 52
+offset_bottom = 25
+
+[node name="RouteName1" type="Label" parent="RouteScroll/RouteList/RouteStop1"]
+mouse_filter = 2
+text = "흩어진 약탈단"
+theme_override_font_sizes/font_size = 16
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 4
+offset_right = -12
+offset_bottom = 26
+text_overrun_behavior = 3
+
+[node name="RouteState1" type="Label" parent="RouteScroll/RouteList/RouteStop1"]
+mouse_filter = 2
+text = "다음"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 27
+offset_right = -12
+offset_bottom = 46
+
+[node name="RouteStop2" type="Button" parent="RouteScroll/RouteList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+mouse_filter = 1
+toggle_mode = true
+theme_type_variation = &"LineRouteRow"
+
+[node name="RouteType2" type="Label" parent="RouteScroll/RouteList/RouteStop2"]
+mouse_filter = 2
+text = "전투"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+offset_left = 12
+offset_top = 5
+offset_right = 52
+offset_bottom = 25
+
+[node name="RouteName2" type="Label" parent="RouteScroll/RouteList/RouteStop2"]
+mouse_filter = 2
+text = "교대 방패 진지"
+theme_override_font_sizes/font_size = 16
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 4
+offset_right = -12
+offset_bottom = 26
+text_overrun_behavior = 3
+
+[node name="RouteState2" type="Label" parent="RouteScroll/RouteList/RouteStop2"]
+mouse_filter = 2
+text = "예정"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 27
+offset_right = -12
+offset_bottom = 46
+
+[node name="RouteStop3" type="Button" parent="RouteScroll/RouteList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+mouse_filter = 1
+toggle_mode = true
+theme_type_variation = &"LineRouteRow"
+
+[node name="RouteType3" type="Label" parent="RouteScroll/RouteList/RouteStop3"]
+mouse_filter = 2
+text = "정비"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+offset_left = 12
+offset_top = 5
+offset_right = 52
+offset_bottom = 25
+
+[node name="RouteName3" type="Label" parent="RouteScroll/RouteList/RouteStop3"]
+mouse_filter = 2
+text = "무료 정비"
+theme_override_font_sizes/font_size = 16
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 4
+offset_right = -12
+offset_bottom = 26
+text_overrun_behavior = 3
+
+[node name="RouteState3" type="Label" parent="RouteScroll/RouteList/RouteStop3"]
+mouse_filter = 2
+text = "예정"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 27
+offset_right = -12
+offset_bottom = 46
+
+[node name="RouteStop4" type="Button" parent="RouteScroll/RouteList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+mouse_filter = 1
+toggle_mode = true
+theme_type_variation = &"LineRouteRow"
+
+[node name="RouteType4" type="Label" parent="RouteScroll/RouteList/RouteStop4"]
+mouse_filter = 2
+text = "전투"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+offset_left = 12
+offset_top = 5
+offset_right = 52
+offset_bottom = 25
+
+[node name="RouteName4" type="Label" parent="RouteScroll/RouteList/RouteStop4"]
+mouse_filter = 2
+text = "모여든 약탈단"
+theme_override_font_sizes/font_size = 16
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 4
+offset_right = -12
+offset_bottom = 26
+text_overrun_behavior = 3
+
+[node name="RouteState4" type="Label" parent="RouteScroll/RouteList/RouteStop4"]
+mouse_filter = 2
+text = "예정"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 27
+offset_right = -12
+offset_bottom = 46
+
+[node name="RouteStop5" type="Button" parent="RouteScroll/RouteList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+mouse_filter = 1
+toggle_mode = true
+theme_type_variation = &"LineRouteRow"
+
+[node name="RouteType5" type="Label" parent="RouteScroll/RouteList/RouteStop5"]
+mouse_filter = 2
+text = "정비"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+offset_left = 12
+offset_top = 5
+offset_right = 52
+offset_bottom = 25
+
+[node name="RouteName5" type="Label" parent="RouteScroll/RouteList/RouteStop5"]
+mouse_filter = 2
+text = "관문 앞 정비"
+theme_override_font_sizes/font_size = 16
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 4
+offset_right = -12
+offset_bottom = 26
+text_overrun_behavior = 3
+
+[node name="RouteState5" type="Label" parent="RouteScroll/RouteList/RouteStop5"]
+mouse_filter = 2
+text = "예정"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 27
+offset_right = -12
+offset_bottom = 46
+
+[node name="RouteStop6" type="Button" parent="RouteScroll/RouteList"]
+layout_mode = 2
+custom_minimum_size = Vector2(0,48)
+mouse_filter = 1
+toggle_mode = true
+theme_type_variation = &"LineRouteRow"
+
+[node name="RouteType6" type="Label" parent="RouteScroll/RouteList/RouteStop6"]
+mouse_filter = 2
+text = "관문"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+offset_left = 12
+offset_top = 5
+offset_right = 52
+offset_bottom = 25
+
+[node name="RouteName6" type="Label" parent="RouteScroll/RouteList/RouteStop6"]
+mouse_filter = 2
+text = "구역 관문"
+theme_override_font_sizes/font_size = 16
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 4
+offset_right = -12
+offset_bottom = 26
+text_overrun_behavior = 3
+
+[node name="RouteState6" type="Label" parent="RouteScroll/RouteList/RouteStop6"]
+mouse_filter = 2
+text = "예정"
+theme_override_font_sizes/font_size = 12
+layout_mode = 0
+anchor_right = 1.0
+offset_left = 58
+offset_top = 27
+offset_right = -12
+offset_bottom = 46
+
+[node name="RouteInfo" type="Panel" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2
+
+[node name="RouteInfoFrame" type="NinePatchRect" parent="RouteInfo"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+scale = Vector2(1,1)
+texture = ExtResource("modal")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "panel"
+
+[node name="RouteMargin" type="MarginContainer" parent="RouteInfo"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="RouteInfoScroll" type="ScrollContainer" parent="RouteInfo/RouteMargin"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="RouteInfoBody" type="VBoxContainer" parent="RouteInfo/RouteMargin/RouteInfoScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="RouteHint" type="Label" parent="RouteInfo/RouteMargin/RouteInfoScroll/RouteInfoBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "다음 이동 구간"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.95294,0.81176,0.45098,1)
+
+[node name="RoutePlace" type="Label" parent="RouteInfo/RouteMargin/RouteInfoScroll/RouteInfoBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "흩어진 약탈단"
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+theme_override_colors/font_shadow_color = Color(0.00392,0.03137,0.03922,1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+
+[node name="RouteDescription" type="Label" parent="RouteInfo/RouteMargin/RouteInfoScroll/RouteInfoBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "흩어진 적을 정리하고 새 탄의 역할을 확인합니다."
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2
+
+[node name="RouteBuildLabel" type="Label" parent="RouteInfo/RouteMargin/RouteInfoScroll/RouteInfoBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "현재 준비"
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.95294,0.81176,0.45098,1)
+
+[node name="RouteBuild" type="Label" parent="RouteInfo/RouteMargin/RouteInfoScroll/RouteInfoBody"]
+layout_mode = 2
+mouse_filter = 2
+text = "리벳 · 보유 탄 20발
+탄창 7칸 · 발열 한계 12
+다음 전투에 사용·빼낸 탄 전체 복구"
+theme_override_font_sizes/font_size = 16
+autowrap_mode = 2

@@ -1,0 +1,154 @@
+{
+  "tool": "Pinned PixelOE 1.0.1 CPU, contrast, 32 colors, no outline expansion",
+  "reference": "Carrier E / long aim from hero_style_2026-11-07",
+  "treatment": "Pose-specific material groups on helmet, rear gear and trousers. Contrasting original material edges are protected. RGB only; original alpha and hand contacts.",
+  "outputs": [
+    {
+      "source": "hero_contours_20261025/work_pistol.png",
+      "source_sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5",
+      "output": "work_pistol.png",
+      "output_sha256": "191a3ddf36c81236b8a76379d360a63ce444797698f3b80f2a5e4678b2889b64",
+      "pose_count": 5
+    },
+    {
+      "source": "outfits_unified_20261025/work_idle.png",
+      "source_sha256": "6d1c79ada5abff1123ff908ee16fc6c3075f35ded55c6d401e66959fb66f862b",
+      "output": "work_idle.png",
+      "output_sha256": "ac62b64884d7f3bda8f3e8949627ba46c9c76390a20d34c65cf6b8386f9f0892",
+      "pose_count": 1
+    },
+    {
+      "source": "outfits_unified_20261025/work_long.png",
+      "source_sha256": "2bc837e41b267b59f7f70ad1cc4bb716e7744cc2eaf41588ef2a830021e4e9bf",
+      "output": "work_long.png",
+      "output_sha256": "2fade9192ebe57fa2fc67dcc5854ff4c73edaba2a657a68016505fa8bb8483f4",
+      "pose_count": 5
+    },
+    {
+      "source": "outfits_unified_20261025/carrier_idle.png",
+      "source_sha256": "9e0cade87f03c3f2c0f61822c96f2c5821e97bd2b62e2340fb24ced73ccc49ab",
+      "output": "carrier_idle.png",
+      "output_sha256": "f6186084f361a6e5df294989a966a999efd3677518959c9f8f7f0d5523160c5e",
+      "pose_count": 2
+    },
+    {
+      "source": "outfits_unified_20261025/carrier_pistol.png",
+      "source_sha256": "af534dd666096be4eea055701def94f2c96edf745972674c665b9eb1df2d6fc5",
+      "output": "carrier_pistol.png",
+      "output_sha256": "46f867080cc11a9e8b689d56eecd08c89da75f357476b68a016e348274572f80",
+      "pose_count": 4
+    },
+    {
+      "source": "outfits_unified_20261025/carrier_long.png",
+      "source_sha256": "7c5bfdabb167a992ba9d9f8a25cb47dba3730f71243e4e7a13e8810e04455326",
+      "output": "carrier_long.png",
+      "output_sha256": "6769eb9795e1d877eb621c8fb6c36e3da8f859a1deb14b03882cfe1538393edf",
+      "pose_count": 5
+    },
+    {
+      "source": "outfits_unified_20261025/scout_idle.png",
+      "source_sha256": "2cf6a59e9cc09df88c8c7832b7dae0e511b95e9fd24296b1d7f555436a847676",
+      "output": "scout_idle.png",
+      "output_sha256": "2342d11845b3ab153753a52b895bf36dc9ee2c28f90aee12102c39192e924cd4",
+      "pose_count": 2
+    },
+    {
+      "source": "outfits_unified_20261025/scout_pistol.png",
+      "source_sha256": "7f8eab97cbf651c272076e208f4d4ecde321319dede483db70f6e88eef1d4bd2",
+      "output": "scout_pistol.png",
+      "output_sha256": "21c836a4ce4135aafe4ffa3c594c9d2df6b478a8b03211b61d711ccbfd9233e2",
+      "pose_count": 4
+    },
+    {
+      "source": "outfits_unified_20261025/scout_long_v2.png",
+      "source_sha256": "c14fdc82d7a51cacdeeed0f71bf887a544d22771e826ad79f336f99be0bc81a6",
+      "output": "scout_long_v2.png",
+      "output_sha256": "39a8b359a2c59902006c62667b1b1b975b35c3ecc6ef859b040b170541213e24",
+      "pose_count": 5
+    },
+    {
+      "source": "outfits_unified_20261025/heatworker_idle.png",
+      "source_sha256": "3bfdc0b1b6d609605447aa909944cd992d8833511b9e76e764315f3b1731c676",
+      "output": "heatworker_idle.png",
+      "output_sha256": "3070aa3165a186df6c94f42a58a3846ed1a7e497de42e91fffe3966cddcf9591",
+      "pose_count": 2
+    },
+    {
+      "source": "outfits_unified_20261025/heatworker_pistol.png",
+      "source_sha256": "44b5cf24ffdb24361053d7265c5ff540c843637a973ae3753ddddc38aa703c68",
+      "output": "heatworker_pistol.png",
+      "output_sha256": "7ea22b43fe1ef4f31780d8ea24ab34346e4e96b968ad50c49a42f19230bb82c9",
+      "pose_count": 4
+    },
+    {
+      "source": "outfits_unified_20261025/heatworker_long.png",
+      "source_sha256": "d3149faa214bcb4f1f5b901643353f4bc60d99968521b29c22bc6bda8bcd83e2",
+      "output": "heatworker_long.png",
+      "output_sha256": "2fc64705e5cb018b0baf5db7637962345636f517d62b536cf1e3ec0e22f52ce5",
+      "pose_count": 5
+    },
+    {
+      "source": "outfits_unified_20261025/hoist_idle.png",
+      "source_sha256": "ec4b9deb90f4f68eef6b9869e134cc5b78a293f9d0aff84a851c940d18480e4c",
+      "output": "hoist_idle.png",
+      "output_sha256": "5b8d93f3712e2caa562cbab0017fc600161683a010aff49c8cfb147fb447c591",
+      "pose_count": 2
+    },
+    {
+      "source": "outfits_unified_20261025/hoist_pistol.png",
+      "source_sha256": "24b0075992e60a0db29d0011225004f40960866b2311d51c6dbae6d14f7d65c8",
+      "output": "hoist_pistol.png",
+      "output_sha256": "519ce9d48d506ae2b87eb1c5b1f835b5850c9eaaf8be9885358c79999e891aad",
+      "pose_count": 4
+    },
+    {
+      "source": "outfits_unified_20261025/hoist_long_v2.png",
+      "source_sha256": "1bab5eaf3622a93e03604182fde04ac2de60c4b8190a92b1931948c9574dc249",
+      "output": "hoist_long_v2.png",
+      "output_sha256": "9bcd1511c8c5474609e938fadf446494f286f7dee3a4c8bdabdd7c11406d4ca9",
+      "pose_count": 5
+    },
+    {
+      "source": "outfits_unified_20261025/recovery_idle.png",
+      "source_sha256": "787c559fe95464b926c6b972ecd7259e87fb4a8d08c28b309107e6b4c8def59e",
+      "output": "recovery_idle.png",
+      "output_sha256": "933af9268fba7c59caaf0f4a7e809f5bfdcfbcf855d047b837fb3a515a6f8993",
+      "pose_count": 2
+    },
+    {
+      "source": "outfits_unified_20261025/recovery_pistol.png",
+      "source_sha256": "11d2efef8089f3c4248e64392b6f04244e86932bf4e2e68d79177a6ec61b0f42",
+      "output": "recovery_pistol.png",
+      "output_sha256": "817eee09e3113ccf2d8bf5b6060656a4d2d751bce9e9502f220a0f5c2714f256",
+      "pose_count": 4
+    },
+    {
+      "source": "outfits_unified_20261025/recovery_long.png",
+      "source_sha256": "949b01c4703c9d6a9658ff4880cce4e2d909faee3bf317824a6ddf7ba5cfe9a3",
+      "output": "recovery_long.png",
+      "output_sha256": "22c126e4587baa9160bd0644ad885b06990dd6671d57a8c593cd7592f3886ec7",
+      "pose_count": 5
+    },
+    {
+      "source": "outfits_unified_20261025/expedition_idle.png",
+      "source_sha256": "27f3563df47ff3c33ed7273e0881630072ea03a43e1c6e348303bec7bb5c2f0c",
+      "output": "expedition_idle.png",
+      "output_sha256": "7678ca3f67fdfc4e6b730cb8d7217b87d56823900d9c1b13113ef9d88935584c",
+      "pose_count": 2
+    },
+    {
+      "source": "outfits_unified_20261025/expedition_pistol.png",
+      "source_sha256": "aa204364243d54c29ffdda544b41d75b8347ddcc3b1cabcdd79bac98419951ab",
+      "output": "expedition_pistol.png",
+      "output_sha256": "82fc96d0cc7610dc6e0bc20c1a1526004b470590708719f93d09286ebf9078ca",
+      "pose_count": 4
+    },
+    {
+      "source": "outfits_unified_20261025/expedition_long.png",
+      "source_sha256": "7de463d8ee83ac573f6958e50e9be63cc928806bd8c09cf174c665465d2f9737",
+      "output": "expedition_long.png",
+      "output_sha256": "b5ac07f466b426ff69c67faba7794cc27af7cb1b50432cc4d594edbacde75403",
+      "pose_count": 5
+    }
+  ]
+}

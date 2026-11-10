@@ -1,4 +1,7 @@
 extends SceneTree
+## RETIRED 2026-11-08 as a run target: checks old preparation page, build workshop and combat hand. Replaced by: equipment_live_ui, build_live_ui, weapon_live_ui.
+## Still the base class of equipment_dialog_ui, equipment_live_ui, equipment_ui_runner, outfits_live_runner, playtest_revision_render_ui_runner, title_ui_runner; do not delete.
+## Current UI suites: docs/qa/ui-test-suites.md
 ## Real touch/keyboard input, isolated saves, and atomic part replacement.
 const Campaign = preload("res://redesign/campaign.gd")
 const Content = preload("res://redesign/content.gd")

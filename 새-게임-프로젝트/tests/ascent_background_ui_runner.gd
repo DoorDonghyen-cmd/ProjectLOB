@@ -6,6 +6,7 @@ func check_bands() -> void:
 		for i in range(example[0]):
 			check(Ascent.stage_index(i+1,example[0]) == example[1][i], "height band %d/%d" % [i+1,example[0]])
 	check(Ascent.stage_index(0,8) == 0 and Ascent.stage_index(99,8) == 2, "entry and endpoint clamp")
+	check(not Ascent.profile(5,1,10).ready, "unregistered region remains an explicit fallback")
 	for version in [1,2]:
 		for region in range(5):
 			var length := int(Data.info(region,version).floors)
@@ -15,7 +16,7 @@ func check_bands() -> void:
 				if per_height.has(node.floor): check(per_height[node.floor] == selected, "branches at same height share art")
 				per_height[node.floor] = selected
 				check(selected.stage >= 0 and selected.stage < 3, "all regions use shared three bands")
-				check(selected.ready == (region == 0), "unproduced region art is explicitly fallback")
+				check(selected.ready, "all five regions have their own three backgrounds")
 		var original := Campaign.new()
 		original.start("single",731042,0,"balanced",version)
 		check(original.enter(int(original.choices()[0].id)), "enter real route for save check")

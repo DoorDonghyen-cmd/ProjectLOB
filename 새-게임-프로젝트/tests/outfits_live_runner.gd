@@ -1,4 +1,6 @@
 extends "res://tests/navigation_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks starting hand per outfit in the old hand-loading combat (map version 1); fails since before 2026-11-08. Replaced by: equipment_live_ui.
+## Current UI suites: docs/qa/ui-test-suites.md
 const Actor = preload("res://redesign/weapon_actor.gd")
 const OutfitArt = preload("res://redesign/outfit_art.gd")
 const Model = preload("res://redesign/model.gd")
@@ -15,7 +17,8 @@ func run() -> void:
 	screen.save_enabled = false
 	root.add_child(screen)
 	await settle()
-	check(screen.selected_outfit_id == "scout", "fresh menu defaults to four-card scout")
+	check(screen.selected_outfit_id == "carrier", "fresh menu keeps current carrier default")
+	var before_scroll: String = screen.selected_outfit_id
 	screen._open_preparation(false)
 	await settle()
 	var rail: ScrollContainer = screen.find_child("OutfitScroll", true, false)
@@ -44,7 +47,7 @@ func run() -> void:
 	Input.parse_input_event(down)
 	await create_timer(0.4).timeout
 	check(rail.scroll_vertical > 30, "finger swipe scrolls costume rail")
-	check(screen.selected_outfit_id == "scout", "scroll gesture does not select costume")
+	check(screen.selected_outfit_id == before_scroll, "scroll gesture does not select costume")
 	bounds("start_" + screen.selected_weapon_id)
 	for id in IDS:
 		for gun in Content.GUNS:
@@ -91,7 +94,7 @@ func run() -> void:
 			var view: Control = screen.battle_view
 			var actor: Node2D = view.weapon_viewport.get_node("Actor")
 			check(actor.outfit_id == id, "live campaign selects body " + id)
-			check(actor.body_texture() == OutfitArt.BODIES[id].pistol, "live body is distinct")
+			check(actor.body_texture() == Actor.body_for(id, "single", actor.pose_id), "live body is distinct")
 			await capture("battle_%s_%d" % [id,resolution.x])
 			# Use the production viewport and compositing code for every gun/key pose.
 			for gun in Content.GUNS:
@@ -102,7 +105,7 @@ func run() -> void:
 					await settle()
 					var pixels: Image = view.weapon_viewport.get_texture().get_image()
 					check(not pixels.is_invisible(), "costume renders " + id + gun + pose)
-					check(actor.body_texture() == OutfitArt.BODIES[id][Actor.family(gun)], "correct weapon family")
+					check(actor.body_texture() == Actor.body_for(id, gun, pose), "correct weapon family and pose source")
 					var used := pixels.get_used_rect()
 					check(used.position.x > 0 and used.position.y > 0 and used.end.x < 768 and used.end.y <= 512, "no actor clipping " + id + gun + pose)
 					if resolution.x == 1280 and pose == "aim":

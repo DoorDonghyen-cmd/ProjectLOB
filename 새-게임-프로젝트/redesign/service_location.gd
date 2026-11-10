@@ -3,7 +3,7 @@ extends HBoxContainer
 const Actors = preload("res://redesign/service_actor_catalog.gd")
 @export_enum("workshop", "shop", "supply") var place_kind := "workshop"
 @export var compact_counter := false
-var decision_layout := false
+@export var decision_layout := false
 var narrative_layout := false
 var requested_outfit := "work"
 var displayed_outfit := "work"
@@ -15,7 +15,11 @@ func _ready() -> void:
 
 func _fit_height() -> void:
 	if decision_layout:
-		custom_minimum_size.y = 200 if place_kind == "shop" else 184
+		var width := maxf(280, size.x)
+		var art_width := minf(552, maxf(220, width * 0.55))
+		%PlaceArt.custom_minimum_size = Vector2(art_width, art_width / 3.0)
+		$Copy.custom_minimum_size.x = minf(320, maxf(180,width-art_width-24))
+		custom_minimum_size.y = maxf(144, art_width / 3.0)
 		return
 	if compact_counter:
 		custom_minimum_size.y = 168
@@ -50,7 +54,7 @@ func use_decision_layout(text_scale: float = 1.0, narrative: bool = false) -> vo
 	copy.custom_minimum_size.x = 320
 	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	copy.add_theme_constant_override("separation", 10)
-	%PlaceTitle.add_theme_font_size_override("font_size", roundi(28 * text_scale))
-	%PlaceHint.add_theme_font_size_override("font_size", roundi(19 * text_scale))
+	%PlaceTitle.add_theme_font_size_override("font_size", preload("res://redesign/line_skin.gd").font_step(roundi(28 * text_scale)))
+	%PlaceHint.add_theme_font_size_override("font_size", preload("res://redesign/line_skin.gd").font_step(roundi(19 * text_scale)))
 	%PlaceActions.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	_fit_height()

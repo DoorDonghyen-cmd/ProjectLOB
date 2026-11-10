@@ -1,4 +1,6 @@
 extends "res://tests/parts_revision_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old workshop bag buttons (city_workshop_*), replaced by the workbench 2026-11-04. Replaced by: workshop_standard_ui, build_live_ui.
+## Current UI suites: docs/qa/ui-test-suites.md
 
 func setup_service(region: int, upgrades: int = 0) -> void:
 	screen.campaign = Campaign.new()

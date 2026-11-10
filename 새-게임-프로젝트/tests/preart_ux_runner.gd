@@ -55,7 +55,8 @@ func _run() -> void:
 	check(preferences.save_preferences(settings_path) == OK, "preferences save atomically")
 	var restored := Preferences.new()
 	check(restored.load_preferences(settings_path), "preferences reload")
-	check(restored.data.text_scale == 1.1 and restored.motion_scale() == 0.05 and not restored.data.hints, "preferences round trip")
+	# 글자 크기 is fixed at 100% since 2026-11-08; a stored 110% reads back as 100%.
+	check(restored.data.text_scale == 1.0 and restored.motion_scale() == 0.05 and not restored.data.hints, "preferences round trip")
 
 	await fresh()
 	for key in ["first_guide", "guide", "settings", "new_run_setup", "training_setup"]:
@@ -66,21 +67,17 @@ func _run() -> void:
 	await close_dialogs()
 	await press("settings")
 	check(screen.find_child("SettingsDialog", true, false) != null, "settings opens")
-	var scale := screen.find_child("TextScaleSetting", true, false) as OptionButton
-	var motion := screen.find_child("MotionSetting", true, false) as OptionButton
-	var hints := screen.find_child("ContextHintsSetting", true, false) as CheckButton
-	check(scale != null and motion != null and hints != null, "all accessibility controls visible")
-	scale.select(2)
-	scale.item_selected.emit(2)
-	motion.select(2)
-	motion.item_selected.emit(2)
-	hints.button_pressed = false
-	hints.toggled.emit(false)
+	# Settings are choice buttons since 2026-11-08 (common window); 글자 크기 is fixed at 100%.
+	var motion := screen.find_child("MotionSetting_2", true, false) as Button
+	var hints := screen.find_child("ContextHintsSetting_1", true, false) as Button
+	check(motion != null and hints != null and screen.find_child("EffectsVolumeSetting", true, false) != null, "all accessibility controls visible")
+	motion.pressed.emit()
+	hints.pressed.emit()
 	await settle()
-	check(screen.preferences.data.text_scale == 1.1 and is_equal_approx(screen.presentation_speed, 0.05) and not screen.preferences.data.hints, "settings apply immediately")
+	check(screen.preferences.data.text_scale == 1.0 and is_equal_approx(screen.presentation_speed, 0.05) and not screen.preferences.data.hints, "settings apply immediately")
 	await close_dialogs()
 	await fresh()
-	check(screen.preferences.data.text_scale == 1.1 and screen.preferences.data.motion == "instant" and not screen.preferences.data.hints, "screen restores accessibility settings")
+	check(screen.preferences.data.text_scale == 1.0 and screen.preferences.data.motion == "instant" and not screen.preferences.data.hints, "screen restores accessibility settings")
 
 	# Keep an unfinished run, then verify that choosing another weapon cannot silently replace it.
 	var active := Campaign.new()
@@ -102,7 +99,10 @@ func _run() -> void:
 		confirm.confirmed.emit()
 		await settle()
 	check(screen.page == "run" and screen.campaign != null and screen.campaign.s.gun == "burst", "confirm starts selected weapon")
-	check(screen.find_child("RunStatusBar", true, false) != null, "city state bar visible")
+	# A new run opens on the departure scene (2026-11-08); skip it to reach the map.
+	check(screen.find_child("StoryScreen", true, false) != null, "new run opens on the departure scene")
+	await press("story_skip")
+	check(screen.find_child("PipeMapScreen", true, false) != null, "city map visible")
 
 	# Android/system Back behavior closes a modal first, then returns to the title without deleting the run.
 	await press("settings")

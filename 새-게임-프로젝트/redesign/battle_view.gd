@@ -12,6 +12,7 @@ const Ranged = preload("res://redesign/ranged.gd")
 const Art = preload("res://redesign/world_art.gd")
 const Pixel = preload("res://redesign/pixel_art.gd")
 const ActorMotion = preload("res://redesign/actor_motion.gd")
+const EnemyThreat = preload("res://redesign/enemy_threat.gd")
 const EnemyStatusIcons = preload("res://redesign/enemy_status_icons.gd")
 const FINISH_MAX_ZOOM := 1.25
 const FINISH_DURATION := 2.5
@@ -20,7 +21,11 @@ const FINISH_APPROACH := 0.20
 const FINISH_RELEASE := 0.72
 const BOTTOM_STATUS_HEIGHT := 30.0
 var region := 0
+var cohesive_actor_art := true
+const ActorArtStyle = preload("res://redesign/actor_art_style.gd")
 const FONT = preload("res://redesign/combat_pixel_font.tres")
+var readout_layer: Node2D
+var threat_readouts: Dictionary = {}
 var display_state: Dictionary = {}
 var enemies: Array = []
 var projectiles: Array = []
@@ -39,7 +44,7 @@ var float_color := Color.WHITE
 var float_target := -1
 var damage_popups: Array = []
 var hit_hp_before: Dictionary = {}
-var damage_columns: Dictionary = {}
+var damage_anchors: Dictionary = {}
 var pulse := 0.0
 var deployment_flash := 0.0
 var new_enemy_indices: Array = []
@@ -60,6 +65,8 @@ var impact_attribute := "physical"
 var focus_flash := -1
 # Retain a defeated threat's last anchor for its impact text until sync finishes.
 var _last_threat_x: Dictionary = {}
+var _plaque_layout_key := PackedFloat64Array()
+var _plaque_lefts: Dictionary = {}
 var actor_clock := 0.0
 var moving_indices: Array = []
 var actor_hit_strength := 0.0
@@ -113,10 +120,15 @@ func _process(delta: float) -> void:
 	actor_clock = fmod(actor_clock + delta*visual_clock_scale(), 120.0)
 	if int(actor_clock * 8.0) != previous_frame: queue_redraw()
 
+@export var minimum_battle_height: float = 264.0
 func _ready() -> void:
-	custom_minimum_size.y = 264
+	custom_minimum_size.y = minimum_battle_height
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	readout_layer = preload("res://redesign/combat_readout_layer.gd").new()
+	readout_layer.board = self
+	readout_layer.z_index = 10
+	add_child(readout_layer)
 	resized.connect(_place_info_buttons)
 	mouse_exited.connect(func(): hovered = -1; queue_redraw())
 
@@ -129,11 +141,15 @@ func sync(state: Dictionary, prediction: Dictionary = {}) -> void:
 	finish_frame=Rect2()
 	damage_popups.clear()
 	hit_hp_before.clear()
-	damage_columns.clear()
-	display_state = {"course": state.get("course", false), "floor": state.floor, "gun": state.gun, "outfit": state.get("outfit", "work")}
+	damage_anchors.clear()
+	display_state = {"course": state.get("course", false), "floor": state.floor, "gun": state.gun, "outfit": state.get("outfit", "work"), "combat_revision": state.get("combat_revision",0)}
+	display_state.fire_zones=state.get("fire_zones",[]).duplicate(true)
+	threat_readouts = EnemyThreat.analyze(state)
 	enemies = state.enemies.duplicate(true)
 	projectiles = state.get("projectiles", []).duplicate(true)
 	_last_threat_x.clear()
+	_plaque_layout_key.clear()
+	_plaque_lefts.clear()
 	moving_indices.clear()
 	actor_hit_strength = 0.0
 	reinforcements = state.get("reinforcements", []).duplicate(true)
@@ -183,7 +199,7 @@ func _rebuild_info_buttons() -> void:
 		button.flat = true
 		for button_state in ["normal", "hover", "pressed", "disabled"]:
 			button.add_theme_stylebox_override(button_state, StyleBoxEmpty.new())
-		button.tooltip_text = "증원 %d · %s\nHP %d · 장갑 %d · 진입 거리 %dm\n%s" % [i + 1, reinforcements[i].name, reinforcements[i].hp, reinforcements[i].def, reinforcements[i].distance, Content.enemy_rule(reinforcements[i])]
+		button.tooltip_text = "증원 %d · %s\nHP %d · 장갑 %d · 진입 거리 %dm\n%s" % [i + 1, reinforcements[i].name, reinforcements[i].hp, reinforcements[i].def, reinforcements[i].distance, Content.enemy_rule(reinforcements[i],display_state)]
 		button.disabled = not inspection_enabled
 		button.pressed.connect(func():
 			if inspection_enabled: reinforcement_inspected.emit(i)
@@ -208,16 +224,27 @@ func reinforcement_strip_rect() -> Rect2:
 	var width := 148.0 + reinforcements.size() * 28.0
 	return Rect2(Vector2(size.x - width - 8, size.y - BOTTOM_STATUS_HEIGHT).round(), Vector2(width, 28))
 
+func _inspection_order() -> Array:
+	var order := _alive_indices()
+	order.sort_custom(func(a, b): return actor_layer(a) > actor_layer(b))
+	return order
+
+func actor_pick_rect(index: int) -> Rect2:
+	return Rect2(enemy_position(index) - Vector2(50, 55), Vector2(100, 100))
+
 func _enemy_at(point: Vector2) -> int:
+	# Separated HP controls always win over an overlapping body.
 	for i in _alive_indices():
-		if enemy_plaque(i).has_point(point) or distance_label_rect(i).has_point(point) or Rect2(enemy_position(i) - Vector2(50, 55), Vector2(100, 100)).has_point(point): return i
+		if enemy_plaque(i).has_point(point): return i
+	for i in _inspection_order():
+		if actor_pick_rect(i).has_point(point): return i
 	return -1
 
 func _enemy_text(index: int) -> String:
 	var e: Dictionary = enemies[index]
 	var weakness := " · 전기 약점 +2" if str(e.get("weakness", "")) == "electric" else ""
-	var focus := "\n집중 %d/3 · 3회 적중마다 추가 피해 4" % int(e.get("focus_hits", 0)) if str(display_state.get("gun", "")) == "burst" else ""
-	return "%s\nHP %d/%d · 장갑 %d · 화상 %d%s\n거리 %dm · 접근 %dm\n%s%s\n누르면 상세 정보를 엽니다" % [e.name, e.hp, e.max_hp, e.def, e.burn, weakness, roundi(e.distance), e.speed, Content.enemy_rule(e), focus]
+	var focus := "\n집중 %d/3 · 3회 적중마다 추가 피해 4" % int(e.get("focus_hits", 0)) if str(display_state.get("gun", "")) == "burst" and not Content.WeaponRoles.enabled(display_state) else ""
+	return "%s\nHP %d/%d · 장갑 %d · 화상 %d%s\n거리 %dm · 기본 접근 %dm\n%s%s\n누르면 상세 정보를 엽니다" % [e.name, e.hp, e.max_hp, e.def, e.burn, weakness, roundi(e.distance), e.speed, Content.enemy_rule(e,display_state) + "\n" + str(threat_readouts.get(index, {}).get("detail", "")), focus]
 
 func _get_tooltip(at_position: Vector2) -> String:
 	var index := _enemy_at(at_position)
@@ -250,14 +277,19 @@ func _nearest() -> int:
 func _visual_entity(index: int) -> Dictionary:
 	return Ranged.entity({"enemies": enemies, "projectiles": projectiles}, index)
 
+func _actor_hit(index: int) -> float:
+	return actor_hit_strength * (1.0 - pulse) if index == float_target else 0.0
+
 func actor_rect(index: int, rect: Rect2) -> Rect2:
 	if not actor_motion_enabled(): return rect
-	var hit := actor_hit_strength * (1.0 - pulse) if index == float_target else 0.0
 	var death := pulse if int(enemies[index].hp) <= 0 else 0.0
-	return ActorMotion.enemy_rect(rect, str(enemies[index].kind), actor_clock + index * 0.7, march_phase if moving_indices.has(index) else 0.0, hit, death)
+	return ActorMotion.enemy_rect(rect, str(enemies[index].kind), actor_clock + index * 0.7, march_phase if moving_indices.has(index) else 0.0, _actor_hit(index), death)
+
+func actor_layer(index: int) -> int:
+	return 6 if index == hovered else 5 if index == target else 1 + _lane(index)
 
 func actor_tint(index: int) -> Color:
-	var hit := actor_hit_strength * (1.0 - pulse) if index == float_target and actor_motion_enabled() else 0.0
+	var hit := _actor_hit(index) if index == float_target and actor_motion_enabled() else (0.4 if index == hovered else 0.0)
 	return Color(1.0 + hit * 0.3, 1.0 + hit * 0.2, 1.0 + hit * 0.1, 1.0 - pulse if int(enemies[index].hp) <= 0 else 1.0)
 
 func _draw_enemy_actor(index: int, foot: Vector2, lift: float, _stride: float) -> void:
@@ -266,6 +298,13 @@ func _draw_enemy_actor(index: int, foot: Vector2, lift: float, _stride: float) -
 	if texture == null: return
 	var rect := Pixel.sprite_rect(kind, foot - Vector2(0, lift) + _actor_offset(index))
 	draw_texture_rect(texture, actor_rect(index, rect), false, actor_tint(index))
+
+func _draw_reinforcement_actor(index: int, rect: Rect2) -> void:
+	var art := Pixel.texture(str(reinforcements[index].kind))
+	if art == null: return
+	var extent := art.get_size()
+	var fitted := extent * minf(24.0 / extent.x,22.0 / extent.y)
+	draw_texture_rect(art,Rect2(rect.position+(rect.size-fitted)*0.5,fitted),false,Color("869ea8"))
 
 func ground_y() -> float:
 	return size.y - 76.0 - BOTTOM_STATUS_HEIGHT
@@ -285,35 +324,23 @@ func _threat_order() -> Array:
 	return order
 
 func _distance_x(distance: float) -> float:
-	return 186.0 + clampf(distance / 32.0, 0.0, 1.0) * maxf(0.0, size.x - 266.0)
+	# One fixed axis: other actors, deaths and deployments never move this anchor.
+	# Compress only the distant tail instead of clamping pushed actors at 32m.
+	var span := maxf(0.0, size.x - 426.0)
+	return 186.0 + minf(maxf(distance, 0.0), 32.0) / 32.0 * span + (80.0 * (1.0 - exp(-(distance - 32.0) / 24.0)) if distance > 32.0 else 0.0)
 
 func _threat_radius(index: int) -> float:
 	return 28.0 if Ranged.is_projectile(index) else 75.0
 
 func _threat_x(index: int) -> float:
-	# Project every threat onto one distance axis, then separate overlapping bodies
-	# in that same order. Persistent lane IDs must never override actual distance.
-	var order := _threat_order()
-	var positions: Dictionary = {}
-	var previous := -1
-	for id in order:
-		var x := _distance_x(float(_visual_entity(id).distance))
-		if previous >= 0:
-			x = maxf(x, float(positions[previous]) + _threat_radius(previous) + _threat_radius(id) + 16.0)
-		positions[id] = x
-		previous = id
-	# Fit crowded/equal-distance groups back from the far edge without swapping.
-	var edge := size.x - 5.0
-	order.reverse()
-	for id in order:
-		positions[id] = minf(float(positions[id]), edge - _threat_radius(id))
-		edge = float(positions[id]) - _threat_radius(id) - 16.0
-		_last_threat_x[id] = roundf(float(positions[id]))
-	return float(_last_threat_x.get(index, _distance_x(float(_visual_entity(index).get("distance", 0)))))
+	var entity := _visual_entity(index)
+	if int(entity.get("hp", 0)) > 0:
+		_last_threat_x[index] = _distance_x(float(entity.get("distance", 0)))
+	return float(_last_threat_x.get(index, _distance_x(float(entity.get("distance", 0)))))
 
 func enemy_feet(index: int) -> Vector2:
-	# Lane belongs to the enemy identity, never the current alive-list index.
-	return Vector2(_threat_x(index), ground_y() + 16.0 + _lane(index) * 12.0).round()
+	# All bodies share the illustrated walkway. Lane only controls drawing order.
+	return Vector2(_threat_x(index), player_feet().y).round()
 
 func enemy_position(index: int) -> Vector2:
 	return enemy_feet(index) - Vector2(0, 48)
@@ -346,9 +373,13 @@ func enemy_status_layout(index: int) -> Dictionary:
 		right -= cell_width + 8.0
 	return {"extra": row * 28.0, "cells": cells}
 
-func enemy_plaque(index: int) -> Rect2:
-	var width := enemy_hud_width(index)
+func _layout_plaques() -> void:
 	var order := _alive_indices()
+	var key := PackedFloat64Array([size.x])
+	for id in order:
+		key.append_array(PackedFloat64Array([id, enemy_feet(id).x, _lane(id), enemy_hud_width(id)]))
+	if key == _plaque_layout_key: return
+	_plaque_layout_key = key
 	order.sort_custom(func(a, b):
 		if is_equal_approx(enemy_feet(a).x, enemy_feet(b).x): return _lane(a) < _lane(b)
 		return enemy_feet(a).x < enemy_feet(b).x
@@ -364,8 +395,13 @@ func enemy_plaque(index: int) -> Rect2:
 	for i in order:
 		lefts[i] = minf(float(lefts[i]), edge - enemy_hud_width(i))
 		edge = float(lefts[i]) - 8
-	var height := 50.0 + float(enemy_status_layout(index).extra)
-	return Rect2(Vector2(float(lefts.get(index, 238)), maxf(12, enemy_head_y(index) - height - 12)).round(), Vector2(width, height).floor())
+	_plaque_lefts = lefts
+
+func enemy_plaque(index: int) -> Rect2:
+	_layout_plaques()
+	var width := enemy_hud_width(index)
+	var height := 74.0 + float(enemy_status_layout(index).extra)
+	return Rect2(Vector2(float(_plaque_lefts.get(index, 238)), maxf(12, enemy_head_y(index) - height - 12)).round(), Vector2(width, height).floor())
 
 func _draw_backdrop() -> void:
 	Pixel.backdrop(self, Rect2(Vector2.ZERO, size), ground_y())
@@ -380,18 +416,28 @@ func _draw_player(player_foot: Vector2) -> void:
 	Pixel.shadow(self, player_foot, 64)
 	Pixel.sprite(self, "reclaimer", player_foot - Vector2(roundf(flash * 4), 0))
 
+func _draw_fire_zones()->void:
+	for zone in display_state.get("fire_zones",[]):
+		var from:=roundf(_distance_x(maxf(0,float(zone.center)-float(zone.radius))))
+		var to:=roundf(_distance_x(float(zone.center)+float(zone.radius)))
+		var foot:=roundf(player_feet().y)
+		draw_rect(Rect2(from,foot-3,maxf(6,to-from),4),Color("a55435"))
+		for x in range(int(from),int(to)+1,10):
+			draw_rect(Rect2(x,foot-7-(x%3)*2,4,7+(x%3)*2),Color("c38748"))
+		for tick in range(int(zone.left)):draw_rect(Rect2(from+tick*6,foot+4,4,2),Color("e5b46f"))
+
 func _draw() -> void:
 	draw_set_transform_matrix(finish_camera())
 	_draw_backdrop()
 	_draw_finish_shade()
+	_draw_fire_zones()
 	var muzzle := player_muzzle()
 	_draw_player(player_feet())
 	# The threshold is painted on the floor instead of a tall UI wall.
 	for y in range(int(ground_y()) + 8, int(size.y - BOTTOM_STATUS_HEIGHT) - 18, 8):
 		draw_rect(Rect2(170, y, 8, 4), Color("c57a62"))
 	if flash > 0:
-		draw_rect(Rect2(muzzle - Vector2(2, 4), Vector2(14, 8)), Color(1, 0.83, 0.43, flash))
-		draw_rect(Rect2(muzzle + Vector2(12, -2), Vector2(6, 4)), Color(1, 0.96, 0.79, flash))
+		_draw_muzzle_flash(muzzle)
 	# Fixed depth order; defeated enemies do not reshuffle the surviving sprites.
 	var ordered := _alive_indices()
 	if float_target >= 0 and float_target < enemies.size() and int(enemies[float_target].hp) <= 0:
@@ -399,64 +445,61 @@ func _draw() -> void:
 	for entry in damage_popups:
 		var index:=int(entry.target)
 		if entry.kill and index>=0 and index<enemies.size() and not ordered.has(index): ordered.append(index)
-	ordered.sort_custom(func(a, b): return _lane(a) < _lane(b))
+	ordered.sort_custom(func(a, b): return actor_layer(a) < actor_layer(b))
 	for i in ordered:
 		var e: Dictionary = enemies[i]
 		var foot := enemy_feet(i)
 		var floating := str(e.kind) in ["caster", "absorber", "stance"]
 		var defeated := int(e.hp) <= 0
 		Pixel.shadow(self, foot, maxf(12.0, (76 if str(e.kind) == "wall" else 64) * (1.0 - pulse if defeated else 1.0)))
+		if not defeated: _draw_enemy_ground(i, foot)
 		var lift := 18.0 if floating else 0.0
 		var stride := roundf(sin(march_phase + i) * 2.0) if march_phase != 0.0 else 0.0
 		_draw_enemy_actor(i, foot, lift, stride)
 		if defeated: continue
-		if i == hovered or i == target or preview_targets.has(i):
-			var c := Color("f2eee3") if preview_targets.has(i) or i == hovered else Color("edc47a")
-			for side in [-1, 1]:
-				draw_rect(Rect2(foot + Vector2(side * 50 - 2, -8), Vector2(4, 12)), c)
-				draw_rect(Rect2(foot + Vector2(side * 50 - (10 if side > 0 else 0), 0), Vector2(12, 4)), c)
 		if new_enemy_indices.has(i) and deployment_flash > 0:
 			draw_rect(Rect2(foot - Vector2(48, 116), Vector2(96, 116)), Color(0.47, 0.79, 0.93, deployment_flash * 0.32), false, 2)
-		_draw_enemy_plaque(i)
-		var distance_rect := distance_label_rect(i)
-		_draw_hud_text(distance_rect.position + Vector2(0, 2 + FONT.get_ascent(20)), "%dm" % roundi(e.distance), HORIZONTAL_ALIGNMENT_CENTER, distance_rect.size.x, 20, Color("d7ddd1"))
+	if is_instance_valid(readout_layer): readout_layer.queue_redraw()
 	if not reinforcements.is_empty():
 		var reserve_rect := reinforcement_strip_rect()
 		draw_rect(reserve_rect, Color("101e27"))
 		draw_string(FONT, reserve_rect.position + Vector2(10, 21), "후속 %d기" % reinforcements.size(), HORIZONTAL_ALIGNMENT_LEFT, 126, 16, Color("acbbc1"))
 		for i in range(reinforcements.size()):
-			var art := Pixel.texture(str(reinforcements[i].kind))
-			if art != null:
-				var extent := art.get_size()
-				var fitted := extent * minf(24.0 / extent.x, 22.0 / extent.y)
-				draw_texture_rect(art, Rect2(reserve_rect.position + Vector2(145 + i * 28, 2) + (Vector2(24, 24) - fitted) * 0.5, fitted), false, Color("869ea8"))
+			_draw_reinforcement_actor(i,Rect2(reserve_rect.position+Vector2(145+i*28,2),Vector2(24,24)))
 	if not bullet.is_empty() and not _visual_entity(projectile_target).is_empty():
 		var to := enemy_position(projectile_target)
-		var point := muzzle.lerp(to, bullet_progress).round()
-		draw_line((point - (to - muzzle).normalized() * 28).round(), point, Ammo.COLORS[bullet], 4, false)
-		draw_rect(Rect2(point - Vector2(3, 2), Vector2(6, 4)), Color.WHITE)
+		_draw_projectile(projectile_origin(),to,bullet_progress)
 	if not _visual_entity(float_target).is_empty():
 		var point := enemy_position(float_target)
 		for secondary in chain_targets:
 			if _visual_entity(int(secondary.target)).is_empty(): continue
 			var other_point := enemy_position(int(secondary.target))
-			var spread: bool = str(secondary.get("kind", "arc")) in ["spread", "burn_transfer"]
-			_draw_secondary_link(muzzle if spread else point, other_point, str(secondary.get("kind", "arc")))
+			_draw_secondary_packet(point,other_point,secondary)
 		_draw_impact(point)
-		_draw_damage_readouts()
+		if not is_instance_valid(readout_layer): _draw_damage_readouts()
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 	if show_caption and not caption.is_empty():
 		var caption_width := 210.0
 		for index in _alive_indices(): caption_width = minf(caption_width, distance_label_rect(index).position.x - 18)
 		draw_string(FONT, Vector2(10, size.y - 1), caption, HORIZONTAL_ALIGNMENT_LEFT, maxf(0, caption_width), 12, Color("acbbc1"))
 
+func _draw_enemy_ground(_index: int, _foot: Vector2) -> void:
+	pass
+
+func _draw_surface_overlay(_canvas: CanvasItem) -> void:
+	pass
+
+func _draw_secondary_packet(from: Vector2, to: Vector2, packet: Dictionary) -> void:
+	var kind:=str(packet.get("kind","arc"))
+	_draw_secondary_link(player_muzzle() if kind in ["spread","burn_transfer"] else from,to,kind)
+
 func _draw_secondary_link(from: Vector2, to: Vector2, kind: String) -> void:
 	var color: Color = Color("dfb674") if kind in ["relay","overflow"] else Ammo.COLORS.arc if kind == "arc" else Color("87c9df")
 	draw_line(from, to, Color(color, 1.0-pulse), 2, false)
 
-func _capture_damage_columns() -> void:
-	damage_columns.clear()
-	for index in _alive_indices(): damage_columns[index] = enemy_plaque(index)
+func _capture_damage_anchors() -> void:
+	damage_anchors.clear()
+	for index in _alive_indices(): damage_anchors[index] = enemy_position(index)
 
 func _set_damage_popups(result: Dictionary) -> void:
 	damage_popups = _damage_entries(result)
@@ -485,21 +528,13 @@ func damage_popup_layout(entries: Array = [], defeated: Array = []) -> Array:
 	for entry in (damage_popups if entries.is_empty() else entries):
 		var index := int(entry.target)
 		if _visual_entity(index).is_empty(): continue
-		var width := 144.0
-		var left := clampf(enemy_position(index).x-width*0.5,4,size.x-width-4)
-		if index >= 0 and index < enemies.size():
-			var plaque: Rect2 = damage_columns.get(index,enemy_plaque(index))
-			width = plaque.size.x-8
-			left = plaque.position.x+4
-		var top := 4.0
-		for other in _alive_indices():
-			if defeated.has(other): continue
-			var hud := enemy_plaque(other)
-			if left < hud.end.x and left+width > hud.position.x: top = maxf(top,hud.end.y+4)
-		# Larger kill/heavy numbers reserve space upward, staying clear of head stats.
+		# Impact text follows the struck body, independently of the HP-card layout.
+		# Retain the impact point through death/reflow and subsequent knockback.
+		var point: Vector2 = damage_anchors.get(index,enemy_position(index))
+		var width := minf(160.0,size.x-8.0)
+		var left := clampf(point.x-width*0.5,4,size.x-width-4)
 		var emphasis:=int(entry.get("emphasis",0))
-		top = maxf(top,enemy_position(index).y-(76 if emphasis>=2 else 54))
-		var available := size.y-34-top
+		var available := size.y-8
 		var font_size := int([36,44,56,64][emphasis])
 		if finish_active and entry.kill: font_size=72
 		var pop := 0 if not actor_motion_enabled() else int((8 if emphasis>=2 else 4)*(1.0-clampf(pulse/0.25,0,1)))
@@ -507,8 +542,10 @@ func damage_popup_layout(entries: Array = [], defeated: Array = []) -> Array:
 		while font_size > 24 and FONT.get_height(font_size)+22 > available: font_size -= 2
 		while font_size > 24 and FONT.get_string_size(entry.number,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width: font_size -= 2
 		var rise := 0.0 if not actor_motion_enabled() else roundf(4.0*(1.0-pulse)*(1.0-pulse))
+		var height:=FONT.get_height(font_size)+rise+18+(16 if not str(entry.get("ledger","")).is_empty() else 0)
+		var top:=clampf(point.y-height*0.5,4,maxf(4,size.y-height-4))
 		var baseline := Vector2(left,top+rise+FONT.get_ascent(font_size))
-		var bounds := Rect2(left,top, width, FONT.get_height(font_size)+rise+18)
+		var bounds := Rect2(left,top, width, height-rise)
 		output.append({"entry":entry,"baseline":baseline.round(),"font_size":font_size,"bounds":bounds})
 	return output
 
@@ -521,6 +558,7 @@ func _draw_damage_readouts(canvas: CanvasItem = null) -> void:
 		var at: Vector2 = item.baseline
 		var width := float(item.bounds.size.x)
 		var font_size := int(item.font_size)
+		preload("res://redesign/impact_style.gd").number_marks(canvas,item,FONT,alpha)
 		canvas.draw_string_outline(FONT,at,entry.number,HORIZONTAL_ALIGNMENT_CENTER,width,font_size,5,Color("11222a",alpha))
 		canvas.draw_string(FONT,at+Vector2(2,3),entry.number,HORIZONTAL_ALIGNMENT_CENTER,width,font_size,Color("11222a",alpha))
 		canvas.draw_string(FONT,at,entry.number,HORIZONTAL_ALIGNMENT_CENTER,width,font_size,color)
@@ -531,7 +569,17 @@ func _draw_damage_readouts(canvas: CanvasItem = null) -> void:
 			var label_size := 16
 			while label_size>12 and FONT.get_string_size(label,HORIZONTAL_ALIGNMENT_LEFT,-1,label_size).x>width: label_size-=1
 			canvas.draw_string_outline(FONT,label_at,label,HORIZONTAL_ALIGNMENT_CENTER,width,label_size,3,Color("11222a",alpha))
-			canvas.draw_string(FONT,label_at,label,HORIZONTAL_ALIGNMENT_CENTER,width,label_size,color)
+			canvas.draw_string(FONT,label_at,label,HORIZONTAL_ALIGNMENT_CENTER,width,label_size,Color(entry.get("label_color",entry.color),alpha))
+		var ledger := str(entry.get("ledger",""))
+		if not ledger.is_empty():
+			# Calculation line under the label: base + additions, then multipliers.
+			# Pixel font at 16; the line may be wider than the number, centred on it.
+			var ledger_size := 16
+			var ledger_width := minf(maxf(width, FONT.get_string_size(ledger,HORIZONTAL_ALIGNMENT_LEFT,-1,ledger_size).x+8), size.x-8)
+			var ledger_left := clampf(at.x+width*0.5-ledger_width*0.5, 4, size.x-ledger_width-4)
+			var ledger_at := Vector2(ledger_left, at.y+18+(16 if not str(entry.label).is_empty() else 0))
+			canvas.draw_string_outline(FONT,ledger_at,ledger,HORIZONTAL_ALIGNMENT_CENTER,ledger_width,ledger_size,5,Color("11222a",alpha))
+			canvas.draw_string(FONT,ledger_at,ledger,HORIZONTAL_ALIGNMENT_CENTER,ledger_width,ledger_size,Color("f1cf8a",alpha))
 		if entry.kill and pulse < 0.45 and actor_motion_enabled():
 			var center := Vector2(at.x+width*0.5,at.y-12)
 			var spread := 26+roundf(pulse*18)
@@ -539,7 +587,48 @@ func _draw_damage_readouts(canvas: CanvasItem = null) -> void:
 				canvas.draw_rect(Rect2(center+Vector2(sign_x*spread,-8),Vector2(4,4)),color)
 				canvas.draw_rect(Rect2(center+Vector2(sign_x*(spread+4),0),Vector2(6,2)),color)
 
-func _draw_enemy_plaque(index: int) -> void:
+func _draw_projectiles(_canvas: CanvasItem) -> void:
+	pass
+
+func crowded_groups() -> Array:
+	# Do not displace physical anchors to expose a hidden silhouette. Surface the
+	# size of a heavily occluded group; each member still has its own HP control.
+	var remaining := _alive_indices()
+	var groups: Array = []
+	while not remaining.is_empty():
+		var members: Array = [remaining.pop_front()]
+		var cursor := 0
+		while cursor < members.size():
+			var body := actor_pick_rect(int(members[cursor]))
+			for other in remaining.duplicate():
+				var next := actor_pick_rect(int(other))
+				var common := body.intersection(next)
+				if common.size.x >= minf(body.size.x, next.size.x) * 0.7 and common.size.y > 0:
+					members.append(other)
+					remaining.erase(other)
+			cursor += 1
+		if members.size() < 2: continue
+		var center := 0.0
+		for index in members: center += enemy_feet(int(index)).x
+		center /= members.size()
+		groups.append({"members": members, "rect": Rect2(clampf(center - 48, 4, size.x - 100), player_feet().y + 12, 96, 22)})
+	return groups
+
+func _draw_crowding(canvas: CanvasItem) -> void:
+	for group in crowded_groups():
+		var rect: Rect2 = group.rect
+		_draw_hud_text(rect.position + Vector2(0, 17), "적 %d기 겹침" % group.members.size(), HORIZONTAL_ALIGNMENT_CENTER, rect.size.x, 15, Color("b3c1b8"), canvas)
+
+func _draw_enemy_marker(index: int, canvas: CanvasItem) -> void:
+	if index != hovered and index != target and not preview_targets.has(index): return
+	var foot := enemy_feet(index)
+	var color := Color("f2eee3") if index == hovered or preview_targets.has(index) else Color("edc47a")
+	for side in [-1, 1]:
+		canvas.draw_rect(Rect2(foot + Vector2(side * 50 - 2, -8), Vector2(4, 12)), color)
+		canvas.draw_rect(Rect2(foot + Vector2(side * 50 - (10 if side > 0 else 0), 0), Vector2(12, 4)), color)
+
+func _draw_enemy_plaque(index: int, canvas: CanvasItem = null) -> void:
+	if canvas == null: canvas = self
 	var e: Dictionary = enemies[index]
 	var rect := enemy_plaque(index)
 	var p := rect.position
@@ -548,33 +637,38 @@ func _draw_enemy_plaque(index: int) -> void:
 	var ink := Color("e5e4d5")
 	var accent := Color("dfbd7e")
 	# The hit area stays generous, but has no visible panel or enclosing frame.
-	_draw_hud_text(baseline + Vector2(7, 24), "HP", HORIZONTAL_ALIGNMENT_LEFT, 23, 13, Color("b3c1b8"))
-	_draw_hud_text(baseline + Vector2(31, 25), str(int(e.hp)), HORIZONTAL_ALIGNMENT_LEFT, 64, 26, ink)
+	_draw_hud_text(baseline + Vector2(7, 24), "HP", HORIZONTAL_ALIGNMENT_LEFT, 23, 13, Color("b3c1b8"), canvas)
+	_draw_hud_text(baseline + Vector2(31, 25), str(int(e.hp)), HORIZONTAL_ALIGNMENT_LEFT, 64, 26, ink, canvas)
 	var bar := Rect2(baseline + Vector2(7, 33), Vector2(rect.size.x - 14, 8))
-	draw_rect(bar.grow(1), Color("15242b"))
-	draw_rect(bar, Color("354b50"))
+	canvas.draw_rect(bar.grow(1), Color("15242b"))
+	canvas.draw_rect(bar, Color("354b50"))
 	if hit_hp_before.has(index) and int(hit_hp_before[index]) > int(e.hp):
 		var old_ratio := clampf(float(hit_hp_before[index])/maxf(1,e.max_hp),0,1)
-		draw_rect(Rect2(bar.position,Vector2(floorf(bar.size.x*old_ratio),8)),Color("edc47a",1.0-pulse))
-	draw_rect(Rect2(bar.position, Vector2(bar.size.x * clampf(float(e.hp) / maxf(1, e.max_hp), 0, 1), 8)), Color("a0b79b"))
-	if str(display_state.get("gun", "")) == "burst":
+		canvas.draw_rect(Rect2(bar.position,Vector2(floorf(bar.size.x*old_ratio),8)),Color("edc47a",1.0-pulse))
+	canvas.draw_rect(Rect2(bar.position, Vector2(bar.size.x * clampf(float(e.hp) / maxf(1, e.max_hp), 0, 1), 8)), Color("a0b79b"))
+	if str(display_state.get("gun", "")) == "burst" and not Content.WeaponRoles.enabled(display_state):
 		for pip in range(3):
 			var lit := pip < int(e.get("focus_hits", 0)) or focus_flash == index
-			draw_rect(Rect2(baseline + Vector2(rect.size.x - 30 + pip * 8, 43), Vector2(5, 5)), accent if lit else Color("3b5055"))
+			canvas.draw_rect(Rect2(baseline + Vector2(rect.size.x - 30 + pip * 8, 43), Vector2(5, 5)), accent if lit else Color("3b5055"))
 	for placement in status_layout.cells:
 		var entry: Dictionary = placement.entry
 		var cell := baseline + Vector2(float(placement.x), 4.0 - int(placement.row) * 28.0)
-		EnemyStatusIcons.draw_icon(self, cell, str(entry.icon), 3, true)
-		_draw_hud_text(cell + Vector2(25, 18), str(entry.value), HORIZONTAL_ALIGNMENT_LEFT, 42, 18, EnemyStatusIcons.COLORS[entry.icon])
+		EnemyStatusIcons.draw_icon(canvas, cell, str(entry.icon), 3, true)
+		_draw_hud_text(cell + Vector2(25, 18), str(entry.value), HORIZONTAL_ALIGNMENT_LEFT, 42, 18, EnemyStatusIcons.COLORS[entry.icon], canvas)
+	var threat: Dictionary = threat_readouts.get(index, {})
+	var warning := str(threat.get("text", "")) if inspection_enabled else ""
+	if not warning.is_empty():
+		_draw_hud_text(baseline + Vector2(7, 68), warning, HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 14, 18, EnemyThreat.COLORS.get(threat.get("tone", "quiet"), Color.WHITE), canvas)
 	# Only packed neighbours need a short connector; the repeated floor tag is gone.
 	if absf(rect.get_center().x - enemy_feet(index).x) > 12:
-		draw_line(Vector2(rect.get_center().x, rect.end.y).round(), Vector2(enemy_feet(index).x, enemy_head_y(index) - 3).round(), Color("718e99") if index == hovered else Color("425a62"), 1, false)
+		canvas.draw_line(Vector2(rect.get_center().x, rect.end.y).round(), Vector2(enemy_feet(index).x, enemy_head_y(index) - 3).round(), Color("dfbd7e") if index == hovered else Color("718e99"), 2 if index == hovered else 1, false)
 
-func _draw_hud_text(position: Vector2, text: String, alignment: int, width: float, font_size: int, color: Color) -> void:
+func _draw_hud_text(position: Vector2, text: String, alignment: int, width: float, font_size: int, color: Color, canvas: CanvasItem = null) -> void:
+	if canvas == null: canvas = self
 	# A narrow dark contour protects glyphs on bright architecture without a box.
-	draw_string(FONT, position + Vector2(1, 2), text, alignment, width, font_size, Color("102028"))
-	draw_string_outline(FONT, position, text, alignment, width, font_size, 2, Color("102028"))
-	draw_string(FONT, position, text, alignment, width, font_size, color)
+	canvas.draw_string(FONT, position + Vector2(1, 2), text, alignment, width, font_size, Color("102028"))
+	canvas.draw_string_outline(FONT, position, text, alignment, width, font_size, 2, Color("102028"))
+	canvas.draw_string(FONT, position, text, alignment, width, font_size, color)
 
 func _draw_impact(point: Vector2) -> void:
 	# Fixed geometry keeps visual effects independent from targeting RNG.
@@ -601,6 +695,21 @@ func _damage_font_size() -> int:
 
 func _damage_position(point: Vector2) -> Vector2:
 	return point + Vector2(-40, -46 - roundf(pulse * 12))
+
+func _draw_muzzle_flash(muzzle: Vector2) -> void:
+	draw_rect(Rect2(muzzle-Vector2(2,4),Vector2(14,8)),Color(1,0.83,0.43,flash))
+	draw_rect(Rect2(muzzle+Vector2(12,-2),Vector2(6,4)),Color(1,0.96,0.79,flash))
+
+func projectile_origin() -> Vector2:
+	return player_muzzle()
+
+func _draw_projectile(origin: Vector2, to: Vector2, progress: float) -> void:
+	var point:=origin.lerp(to,progress).round()
+	draw_line((point-(to-origin).normalized()*minf(28,origin.distance_to(point))).round(),point,Ammo.COLORS[bullet],4,false)
+	draw_rect(Rect2(point-Vector2(3,2),Vector2(6,4)),Color.WHITE)
+
+func _launch_shot(_result: Dictionary) -> void:
+	pass
 
 func _prepare_shot(_result: Dictionary) -> void:
 	pass
@@ -661,7 +770,7 @@ func _fly_shot(result: Dictionary) -> void:
 	if fast_forward:
 		await _animate(0.19 * 0.2, func(t: float): bullet_progress = lerpf(0.8, 1.0, t); flash = 1.0 - bullet_progress)
 		return
-	_capture_damage_columns()
+	_capture_damage_anchors()
 	_begin_finish(_damage_entries(result))
 	visual_events.append({"kind":"finish_approach","target":int(result.target)})
 	await _animate(FINISH_DURATION * FINISH_APPROACH, func(t: float):
@@ -719,18 +828,23 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 		visual_events.append({"kind": "shot", "id": bullet, "target": target})
 		await _prepare_shot(result)
 		flash = 1.0
+		_launch_shot(result)
 		await _fly_shot(result)
 		bullet = ""
-		_capture_damage_columns()
+		_capture_damage_anchors()
 		var enemy := _visual_entity(target)
 		hit_hp_before[target] = int(enemy.hp)
 		enemy.hp = result.hp
 		enemy.burn = result.get("burn", 0)
+		if result.has("fire_zones"):display_state.fire_zones=result.fire_zones.duplicate(true)
+		if result.has("slow_left"):enemy.slow_left=result.slow_left;enemy.slow_used=result.slow_used
 		enemy.def = int(result.get("armor", enemy.get("def", 0)))
 		if result.has("guard_armor"): enemy.guard_armor = int(result.guard_armor)
+		if result.has("shell_armor"): enemy.shell_armor = int(result.shell_armor)
 		if bool(enemy.get("stance", false)): enemy.stance_def = int(result.get("stance_def", enemy.stance_def))
 		enemy.focus_hits = result.get("focus_after", 0)
 		enemy.barrier = result.get("barrier", enemy.get("barrier", 0))
+		if result.has("exposure_left"): enemy.exposure_left=int(result.exposure_left)
 		if int(result.get("interrupted", 0)) > 0:
 			enemy.jammed = int(result.interrupted)
 			enemy.disrupted = true
@@ -739,12 +853,15 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 			if not hit_hp_before.has(int(secondary.target)): hit_hp_before[int(secondary.target)] = int(_visual_entity(int(secondary.target)).hp)
 			_visual_entity(int(secondary.target)).hp = secondary.hp
 			if secondary.has("barrier"): _visual_entity(int(secondary.target)).barrier = secondary.barrier
+			if secondary.has("exposure_left"): _visual_entity(int(secondary.target)).exposure_left=int(secondary.exposure_left)
 			if secondary.has("focus_hits"): _visual_entity(int(secondary.target)).focus_hits = secondary.focus_hits
 			if secondary.has("burn"): _visual_entity(int(secondary.target)).burn = secondary.burn
 			visual_events.append({"kind": "secondary", "target": secondary.target, "damage": secondary.damage, "hp": secondary.hp})
 		float_target = target
 		impact_attribute = str(Content.AMMO[str(result.id)].attribute)
 		float_text = "막힘" if int(result.get("blocked_hits", 0)) > 0 and result.damage == 0 else ("방어" if result.damage == 0 else "-%d" % result.damage)
+		if result.has("exposure_left") and int(result.get("blocked_hits",0))>0 and result.damage==0:
+			float_text="차폐 파손" if int(result.barrier)==0 else "차폐 −%d"%int(result.barrier_removed)
 		if result.get("intercept", false): float_text = "요격"
 		elif result.hp == 0: float_text += "  처치"
 		elif not result.get("prepared_rounds", []).is_empty(): float_text = "다음 패 %d장 예약" % result.prepared_rounds.size()
@@ -790,7 +907,7 @@ func _play_advance(_before: Dictionary, after: Dictionary, advance_events: Array
 		if str(event.kind) != "burn": continue
 		var burn_target := int(event.target)
 		if burn_target < 0 or burn_target >= enemies.size(): continue
-		_capture_damage_columns()
+		_capture_damage_anchors()
 		enemies[burn_target].hp = event.hp
 		enemies[burn_target].burn = event.burn
 		float_target = burn_target

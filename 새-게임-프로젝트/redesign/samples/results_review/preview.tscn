@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/results/screen.tscn" id="screen"]
+[ext_resource type="Script" path="res://redesign/samples/results_review/preview.gd" id="preview"]
+
+[node name="ResultsReview" instance=ExtResource("screen")]
+script = ExtResource("preview")

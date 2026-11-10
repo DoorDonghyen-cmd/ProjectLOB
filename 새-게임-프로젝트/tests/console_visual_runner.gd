@@ -26,25 +26,15 @@ func _run() -> void:
 		await capture("title_%d" % resolution.x)
 		await click("settings")
 		var settings = screen.find_child("SettingsDialog", true, false)
-		var text_scale = screen.find_child("TextScaleSetting", true, false) as OptionButton
-		var motion = screen.find_child("MotionSetting", true, false) as OptionButton
-		var hints = screen.find_child("ContextHintsSetting", true, false) as CheckButton
-		check(text_scale.get_theme_stylebox("normal") is StyleBoxTexture, "settings uses console option face")
-		check(hints.get_theme_icon("checked").get_size() == Vector2(40,24), "settings uses pixel toggle")
+		# Settings are choice buttons since 2026-11-08 (common window); 글자 크기 is fixed at 100%.
+		check(settings != null and settings.get_meta("dialog").get_script() == preload("res://redesign/common/window.gd"), "settings uses the common window")
+		check(screen.find_child("TextScaleSetting", true, false) == null and screen.find_child("MotionSetting_0", true, false) is Button, "settings shows choice buttons")
 		check(screen.main_scroll.get_v_scroll_bar().get_theme_stylebox("grabber") is StyleBoxFlat, "scrollbar uses console palette")
 		await capture("settings_%d" % resolution.x)
-		text_scale.show_popup()
-		await capture("settings_options_%d" % resolution.x)
-		text_scale.get_popup().hide()
-		text_scale.select(2)
-		text_scale.item_selected.emit(2)
-		await settle()
-		check(is_equal_approx(float(screen.preferences.data.text_scale), 1.1), "font scale setting remains bound")
-		motion.select(2)
-		motion.item_selected.emit(2)
+		(screen.find_child("MotionSetting_2", true, false) as Button).pressed.emit()
 		check(screen.preferences.data.motion == "instant", "motion setting remains bound")
-		var was_enabled: bool = hints.button_pressed
-		hints.button_pressed = not was_enabled
+		var was_enabled: bool = screen.preferences.data.hints
+		(screen.find_child("ContextHintsSetting_1" if was_enabled else "ContextHintsSetting_0", true, false) as Button).pressed.emit()
 		check(bool(screen.preferences.data.hints) == not was_enabled, "toggle remains bound")
 		screen.preferences.reset()
 		settings.get_meta("dialog").queue_free()
@@ -52,23 +42,9 @@ func _run() -> void:
 		await settle()
 		await click("new_run_setup")
 		await capture("weapons_%d" % resolution.x)
-		screen._debug_city("shop")
-		await settle()
-		await click("city_part_info_1")
-		await capture("shop_%d" % resolution.x)
-		var credits: int = screen.campaign.s.credits
-		var price: int = screen.campaign.s.offers[1].price
-		await click("city_compare_buy_1")
-		check(screen.campaign.s.credits == credits-price,"purchase debits exactly displayed price")
-		check(not screen.campaign.buy(1),"sold state rejects duplicate purchase")
-		await capture("shop_bought_%d" % resolution.x)
-		screen._debug_city("deck")
-		await settle()
-		await click("city_part_select_overbore")
-		await capture("parts_%d" % resolution.x)
-		await click("city_deck_equip_overbore")
-		check(screen.campaign.is_equipped("overbore") and not screen.campaign.is_equipped("field_press"),"replacement action remains bound")
-		screen._close_workspace()
+		# Shop and build workshop checks retired 2026-11-08: those screens were replaced
+		# (shop terminal 11-04, build workshop 11-08); see shop_terminal_live_runner.gd
+		# and build_live_ui.gd.
 		screen._debug_city("map")
 		await settle()
 		await capture("map_%d" % resolution.x)

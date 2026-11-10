@@ -6,18 +6,18 @@ class LayerActor extends "res://redesign/weapon_actor.gd":
 		if layer == 3:
 			super._draw()
 			return
-		var frame := pose(gun_id, pose_id)
-		var body: Texture2D = BODIES[family(gun_id)]
-		var offset: Vector2 = FOOT - frame.foot
-		var cell: Vector2 = frame.cell * CELL
+		var frame := frame_for(outfit_id, gun_id, pose_id)
+		var body: Texture2D = body_texture()
+		var offset: Vector2 = FOOT - frame.foot * frame.scale
+		var source: Rect2 = frame.source
 		if layer == 0:
-			draw_texture_rect_region(body, Rect2(offset, CELL), Rect2(cell, CELL))
+			draw_texture_rect_region(body, Rect2(offset, source.size * frame.scale), source)
 		elif layer == 1:
-			draw_set_transform_matrix(weapon_transform(gun_id, pose_id))
+			draw_set_transform_matrix(registered_transform())
 			draw_texture(WEAPONS[gun_id].image, Vector2.ZERO)
 		elif layer == 2:
-			for hand: Rect2 in foreground_hands(gun_id, pose_id):
-				draw_texture_rect_region(body, Rect2(offset + hand.position, hand.size), Rect2(cell + hand.position, hand.size))
+			for hand: Rect2 in registered_hands():
+				draw_texture_rect_region(body, Rect2(offset + hand.position * frame.scale, hand.size * frame.scale), Rect2(source.position + hand.position, hand.size))
 
 func _initialize() -> void:
 	_run.call_deferred()

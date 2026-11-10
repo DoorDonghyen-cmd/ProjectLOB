@@ -1,4 +1,6 @@
 extends "res://tests/ammo_expansion_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old hand-loading combat and reward flow. Replaced by: weapon_live_ui, reward_live_runner.
+## Current UI suites: docs/qa/ui-test-suites.md
 const Insight = preload("res://redesign/run_insight.gd")
 
 func visible_report() -> void:

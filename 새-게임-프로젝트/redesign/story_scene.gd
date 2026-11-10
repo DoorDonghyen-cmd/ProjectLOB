@@ -4,6 +4,8 @@ const Art = preload("res://redesign/world_art.gd")
 const BACKGROUND = preload("res://assets/art/tower_sample_20261003/residential_tower.png")
 var supplied := false
 var released := false
+## The story scene (2026-11-08) draws the art full screen and places this diagram on top.
+var backdrop := true
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -12,8 +14,9 @@ func _ready() -> void:
 	resized.connect(queue_redraw)
 
 func _draw() -> void:
-	Art.cover(self, BACKGROUND, Rect2(Vector2.ZERO, size))
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.045, 0.06, 0.45))
+	if backdrop:
+		Art.cover(self, BACKGROUND, Rect2(Vector2.ZERO, size))
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0.02, 0.045, 0.06, 0.45))
 	var warm := Color("e4bd72")
 	var cold := Color("607787")
 	var feed := warm if supplied else cold

@@ -1,4 +1,6 @@
 extends "res://tests/parts_revision_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old build workshop part details (equipped_part_detail_*). Replaced by: build_live_ui, story_scenes_ui (part details).
+## Current UI suites: docs/qa/ui-test-suites.md
 
 func _run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/part_grade/ui"):

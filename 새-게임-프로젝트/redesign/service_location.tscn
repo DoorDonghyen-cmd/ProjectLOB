@@ -1,10 +1,12 @@
 [gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://redesign/service_location.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/art/service_layers_20261011/workshop_background.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/service_background_grouped_20261025/workshop.png" id="2"]
 
 [ext_resource type="Script" path="res://redesign/service_actor_layer.gd" id="3"]
-[ext_resource type="Resource" path="res://redesign/service_actor_workshop_work.tres" id="4"]
+[ext_resource type="Resource" path="res://redesign/service_actor_workshop_work_cohesive.tres" id="4"]
+
+[ext_resource type="Theme" path="res://redesign/samples/hud/combat_hud_theme.tres" id="line_theme"]
 
 [node name="ServiceLocation" type="HBoxContainer"]
 custom_minimum_size = Vector2(0, 240)
@@ -12,6 +14,8 @@ size_flags_horizontal = 3
 mouse_filter = 2
 theme_override_constants/separation = 18
 script = ExtResource("1")
+theme = ExtResource("line_theme")
+texture_filter = 1
 
 [node name="PlaceArt" type="TextureRect" parent="."]
 unique_name_in_owner = true
@@ -50,8 +54,8 @@ theme_override_constants/separation = 14
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.84, 0.73, 0.52, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.36078,0.86667,0.86275,1)
+theme_override_font_sizes/font_size = 32
 text = "정비 작업대"
 autowrap_mode = 2
 
@@ -59,8 +63,8 @@ autowrap_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.71, 0.76, 0.76, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.56078,0.6902,0.6902,1)
+theme_override_font_sizes/font_size = 16
 text = "하나만 선택
 이번 정비는 무료입니다."
 autowrap_mode = 2

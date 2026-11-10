@@ -2,7 +2,7 @@ extends RefCounted
 ## Discovery bias, not recipe bonuses or a locked reward pool.
 const AMMO := {
 	"volley_drive":["precise","charge","shatter","prepare"],
-	"thermal_drive":["thermal","charge_heat","cool","vent","charge_hot"],
+	"thermal_drive":["bore","charge_heat","cool","vent","charge_hot"],
 	"siege_drive":["pierce","charge_hot","bypass","sequence","charge"]
 }
 const PARTS := {

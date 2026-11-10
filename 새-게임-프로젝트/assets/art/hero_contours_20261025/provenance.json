@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-25",
+  "tool": "built-in image_gen",
+  "scope": "Base combat body outline C plus shared actual combat actor in equipment selection. Other four unique combat outfits kept; carrier/scout retain existing work-body fallback.",
+  "user_decision": "C approved; equipment must show current combat actor itself, not separately redrawn selection portraits.",
+  "assets": [
+    {
+      "file": "work_pistol.png",
+      "source": "docs/art/concepts/2026-10-25-hero-outline/pistol_body_outline_v5.png",
+      "status": "user_selected_C_exact_copy",
+      "prompt_file": "work_pistol_prompt.txt",
+      "sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "source_sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5"
+    },
+    {
+      "file": "work_long.png",
+      "source": "새-게임-프로젝트/assets/art/weapon_motion_20261011/long_body_v2.png",
+      "status": "C_style_adaptation_same_long_grip_poses",
+      "prompt_file": "work_long_prompt.txt",
+      "generated_source": "C:/Users/mdyt7/.codex/generated_images/01a08ee0-4c35-7ff2-9bab-7f2f85848986/exec-b781d7f3-63b2-4d9c-a3e7-296fbc2ddb42.png",
+      "sha256": "3979806a08d65611dba3a871a65f7e69d902be196a2da15ce7df30fdabbab1b6",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_range": [
+        0,
+        254
+      ],
+      "source_sha256": "b7d18ffa90eae753633e6fed5d34047b7f50dcb66cbf5a09d6c2257053e21f5b"
+    }
+  ],
+  "style_reference": "docs/art/concepts/2026-10-25-hero-outline/pistol_body_outline_v5.png",
+  "pose_layout": "1536x1024 RGBA, 3x2 512px cells: idle, aim, recoil, reload_open, reload_seat, cooling",
+  "registration": "Existing weapon_actor.POSES, weapon_art.PROFILES, hand and foot anchors preserved.",
+  "integration": [
+    "redesign/weapon_actor.gd",
+    "redesign/equipment_actor.gd",
+    "redesign/equipment_screen.gd",
+    "redesign/equipment_screen.tscn"
+  ],
+  "discarded": {
+    "asset": "docs/art/concepts/2026-10-25-hero-outline/unused_selection_portraits.png",
+    "reason": "Separate portrait edit was completed before user clarified to reuse combat actor; it is not used in the game."
+  },
+  "verification_report": "docs/qa/reports/hero_contour_live_2026-10-25.md",
+  "style_reference_sha256": "6839d9d15b1e1793e242e19ddcb7709cf9b8e6c07d8ab5053568bb71d2f298d5",
+  "verification": {
+    "equipment_checks": 650,
+    "actor_motion_checks": 509,
+    "catalog_checks": 210,
+    "same_render_checks": 8,
+    "failures": 0,
+    "selection_combat_equal_pixel_hashes": 4,
+    "real_device": "not run"
+  }
+}

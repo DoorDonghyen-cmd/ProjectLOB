@@ -1,0 +1,175 @@
+{
+  "tool": "PixelOE 1.0.1, pinned legacy CPU backend",
+  "opencv_seed": 0,
+  "rgb_preparation": "nearest opaque edge padding",
+  "alpha_policy": "original alpha and canvas preserved, no resampled collision/contact geometry",
+  "status": "comparison only; not production references",
+  "outputs": [
+    {
+      "asset": "rivet",
+      "variant": "quiet",
+      "source": "새-게임-프로젝트\\assets\\art\\rivet_twohand_20261106\\rivet_carbine_v1.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\rivet_quiet.png",
+      "source_sha256": "08efda3457c831945ea22d0f72cf7c3f4971da1a4223823c938b3bf177542195",
+      "output_sha256": "8644713cce39339d304dcd4639eec1756bb44db058987cf4a95653b003676cfc",
+      "source_size": [
+        2172,
+        724
+      ],
+      "logical_size": [
+        96,
+        32
+      ],
+      "colors": 40,
+      "thickness": 0,
+      "alpha_unchanged": true,
+      "alpha_sha256": "d603712d3a6f58f52fd5f505719d6ba3018d5567a7f489656a4635baff5c5ceb"
+    },
+    {
+      "asset": "rivet",
+      "variant": "coarse",
+      "source": "새-게임-프로젝트\\assets\\art\\rivet_twohand_20261106\\rivet_carbine_v1.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\rivet_coarse.png",
+      "source_sha256": "08efda3457c831945ea22d0f72cf7c3f4971da1a4223823c938b3bf177542195",
+      "output_sha256": "62998ddb8435460dbe3c380b36be7d168e02ad5691856f3e1668f6613101ef1b",
+      "source_size": [
+        2172,
+        724
+      ],
+      "logical_size": [
+        64,
+        21
+      ],
+      "colors": 24,
+      "thickness": 1,
+      "alpha_unchanged": true,
+      "alpha_sha256": "d603712d3a6f58f52fd5f505719d6ba3018d5567a7f489656a4635baff5c5ceb"
+    },
+    {
+      "asset": "hero",
+      "variant": "quiet",
+      "source": "새-게임-프로젝트\\assets\\art\\outfits_unified_20261025\\work_long.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\hero_quiet.png",
+      "source_sha256": "2bc837e41b267b59f7f70ad1cc4bb716e7744cc2eaf41588ef2a830021e4e9bf",
+      "output_sha256": "f69444a74cf610151757a0e32c55a62357c40807723e85d13232ef3b88bf8798",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "logical_size": [
+        288,
+        192
+      ],
+      "colors": 40,
+      "thickness": 0,
+      "alpha_unchanged": true,
+      "alpha_sha256": "a124b6a27ad4684395a16d1eb2be29d23d0dcc220c2a00b1c2f5a582036c22b4"
+    },
+    {
+      "asset": "hero",
+      "variant": "coarse",
+      "source": "새-게임-프로젝트\\assets\\art\\outfits_unified_20261025\\work_long.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\hero_coarse.png",
+      "source_sha256": "2bc837e41b267b59f7f70ad1cc4bb716e7744cc2eaf41588ef2a830021e4e9bf",
+      "output_sha256": "03b110daa2d15428a943d0653e41337a008a580127ed509239967030dd0e1093",
+      "source_size": [
+        1536,
+        1024
+      ],
+      "logical_size": [
+        192,
+        128
+      ],
+      "colors": 24,
+      "thickness": 1,
+      "alpha_unchanged": true,
+      "alpha_sha256": "a124b6a27ad4684395a16d1eb2be29d23d0dcc220c2a00b1c2f5a582036c22b4"
+    },
+    {
+      "asset": "hero_idle",
+      "variant": "quiet",
+      "source": "새-게임-프로젝트\\assets\\art\\outfits_unified_20261025\\work_idle.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\hero_idle_quiet.png",
+      "source_sha256": "6d1c79ada5abff1123ff908ee16fc6c3075f35ded55c6d401e66959fb66f862b",
+      "output_sha256": "6612b8d5928a4f4767740a2a935857f18d21efaa14893d0d4833aa968065004e",
+      "source_size": [
+        1774,
+        887
+      ],
+      "logical_size": [
+        332,
+        166
+      ],
+      "colors": 40,
+      "thickness": 0,
+      "alpha_unchanged": true,
+      "alpha_sha256": "22f9ad6caca69135edc9d11671601f1ebd33b3e29dd8193f2bf24980bd0ce087"
+    },
+    {
+      "asset": "hero_idle",
+      "variant": "coarse",
+      "source": "새-게임-프로젝트\\assets\\art\\outfits_unified_20261025\\work_idle.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\hero_idle_coarse.png",
+      "source_sha256": "6d1c79ada5abff1123ff908ee16fc6c3075f35ded55c6d401e66959fb66f862b",
+      "output_sha256": "df80122bc0e18ab095a2a45bffabe5adf1e000eb18b7084ca26297afe44c1eed",
+      "source_size": [
+        1774,
+        887
+      ],
+      "logical_size": [
+        222,
+        111
+      ],
+      "colors": 24,
+      "thickness": 1,
+      "alpha_unchanged": true,
+      "alpha_sha256": "22f9ad6caca69135edc9d11671601f1ebd33b3e29dd8193f2bf24980bd0ce087"
+    },
+    {
+      "asset": "background",
+      "variant": "quiet",
+      "source": "새-게임-프로젝트\\assets\\art\\tower_sample_20261003\\residential_tower.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\background_quiet.png",
+      "source_sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b",
+      "output_sha256": "f979d334cfaa3bbce0deca9eae0457417a64b9c6b0cd8eacb84d695190f21624",
+      "source_size": [
+        1672,
+        941
+      ],
+      "logical_size": [
+        418,
+        235
+      ],
+      "colors": 40,
+      "thickness": 0,
+      "alpha_unchanged": true,
+      "alpha_sha256": "01d47491cbeb600913ad9b969c467a20eee08ef528805ef7ff455d14d0b926e6"
+    },
+    {
+      "asset": "background",
+      "variant": "coarse",
+      "source": "새-게임-프로젝트\\assets\\art\\tower_sample_20261003\\residential_tower.png",
+      "output": "새-게임-프로젝트\\assets\\art\\style_pilot_20261106\\background_coarse.png",
+      "source_sha256": "fc7cd0b2764ad02cd7245b6a5131a20bf09e2b2a7136f912356a59d972ed6f6b",
+      "output_sha256": "b91e1e2c8c1bb96c8a0133b3960dd397d3788b4159501bc7fdb0fdf38ee65831",
+      "source_size": [
+        1672,
+        941
+      ],
+      "logical_size": [
+        334,
+        188
+      ],
+      "colors": 24,
+      "thickness": 1,
+      "alpha_unchanged": true,
+      "alpha_sha256": "01d47491cbeb600913ad9b969c467a20eee08ef528805ef7ff455d14d0b926e6"
+    }
+  ],
+  "wrapper": {
+    "path": "tools/art_pixel_pilot.py",
+    "sha256": "c073d838b7f9001c281d56341f012994759ba42f346b65d7f08721f1b25637bc"
+  },
+  "selected_copy": "새-게임-프로젝트/assets/art/rivet_twohand_20261106/rivet_carbine_v1_pixel.png",
+  "selection": "rivet quiet only; hero/idle/background candidates rejected for production"
+}

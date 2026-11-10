@@ -29,7 +29,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 autowrap_mode = 2
-text = "쇄도 · 탄창 5칸 · 재장전 1턴 · 탄환 10/14"
+text = "래칫 · 탄창 5칸 · 재장전 1턴 · 탄환 10/14"
 
 [node name="TabActions" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
@@ -58,7 +58,7 @@ theme_override_font_sizes/font_size = 17
 autowrap_mode = 2
 vertical_alignment = 1
 
-[node name="PartsWorkspace" type="HBoxContainer" parent="."]
+[node name="PartsWorkspace" type="BoxContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 12

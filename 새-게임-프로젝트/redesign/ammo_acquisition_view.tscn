@@ -51,11 +51,19 @@ theme_override_colors/font_color = Color(0.65,0.71,0.67,1)
 text = "덱 10장 유지 · 아래에서 내보낼 탄 선택"
 autowrap_mode = 2
 
-[node name="ReplaceList" type="VBoxContainer" parent="Choices"]
+[node name="ReplaceScroll" type="ScrollContainer" parent="Choices"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0,240)
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="ReplaceList" type="VBoxContainer" parent="Choices/ReplaceScroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
 theme_override_constants/separation = 8
 
-[node name="Preview" type="Button" parent="Choices/ReplaceList"]
+[node name="Preview" type="Button" parent="Choices/ReplaceScroll/ReplaceList"]
 custom_minimum_size = Vector2(0,62)
 text = "기본탄  피해 1 · 발열 +1  → 교체"
 

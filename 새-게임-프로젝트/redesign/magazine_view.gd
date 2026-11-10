@@ -218,9 +218,8 @@ func _draw_fit_edges(rect: Rect2, id: String) -> void:
 		"last":
 			draw_line(Vector2(rect.end.x - 2, rect.position.y + 8), Vector2(rect.end.x - 2, rect.end.y - 8), color, 4.0)
 
-func _draw_forecast(entry: Dictionary, x: float, card_width: float) -> void:
-	if forecast.is_empty(): return
-	var logical := int(entry.index)
+func forecast_readout(logical: int) -> Dictionary:
+	if forecast.is_empty(): return {"value":"","note":"","color":Color("899ea6")}
 	var value := "중단" if forecast.phase == "lost" else "보존"
 	var note := ""
 	var color := Color("899ea6")
@@ -234,6 +233,12 @@ func _draw_forecast(entry: Dictionary, x: float, card_width: float) -> void:
 			value = "%d회째 · %s" % [int(shot.get("action", 0)) + 1, value]
 		note = compact_lines(forecast, logical)[2]
 		if shot.get("random", false): note = "%d~%d 피해" % [shot.damage_min, shot.damage_max]
+		if int(shot.get("burn_added",0)) > 0:
+			value = "화상 %d/턴" % int(shot.burn_tick)
+			note = "%d턴 · 보호막 무시" % int(shot.burn)
+		elif shot.get("random", false) and int(shot.get("burn_duration",0)) > 0 and float(shot.get("intercept_probability",0)) < 0.999999:
+			value = "무작위 화상"
+			note = "생존 시 %d/턴 · %d턴" % [int(shot.burn_tick),int(shot.burn_duration)]
 		color = Color("edc47a") if bool(shot.get("boosted", false)) else Color("c0d5ce")
 		if not shot.get("random", false) and not Content.is_attack(str(shot.id)):
 			var effect := preload("res://redesign/damage_readout.gd").entry(shot)
@@ -244,8 +249,29 @@ func _draw_forecast(entry: Dictionary, x: float, card_width: float) -> void:
 
 			if shot.get("boost_replaced",false): note = "기존 강화 교체"
 
-	draw_string(FONT, Vector2(x + 48, 50), value, HORIZONTAL_ALIGNMENT_LEFT, card_width - 55, 18, color)
-	if not note.is_empty(): draw_string(FONT, Vector2(x + 8, 72), note, HORIZONTAL_ALIGNMENT_CENTER, card_width - 16, 16, Color("edc47a"))
+	return {"value":value,"note":note,"color":color}
+
+func _draw_forecast(entry: Dictionary, x: float, card_width: float) -> void:
+	var readout := forecast_readout(int(entry.index))
+	var heat_note := sustained_note(int(entry.index))
+	if not heat_note.is_empty():
+		var combined := str(readout.note) + " · " + heat_note if not str(readout.note).is_empty() else heat_note
+		readout.note = combined if FONT.get_string_size(combined,HORIZONTAL_ALIGNMENT_LEFT,-1,13).x <= card_width-16 else heat_note
+	var value_size := 18
+	var note_size := 16
+	while value_size>13 and FONT.get_string_size(readout.value,HORIZONTAL_ALIGNMENT_LEFT,-1,value_size).x>card_width-55: value_size-=1
+	while note_size>13 and FONT.get_string_size(readout.note,HORIZONTAL_ALIGNMENT_LEFT,-1,note_size).x>card_width-16: note_size-=1
+	draw_string(FONT, Vector2(x + 48, 50), readout.value, HORIZONTAL_ALIGNMENT_LEFT, card_width - 55, value_size, readout.color)
+	if not readout.note.is_empty(): draw_string(FONT, Vector2(x + 8, 72), readout.note, HORIZONTAL_ALIGNMENT_CENTER, card_width - 16, note_size, Color("edc47a"))
+
+func sustained_note(index: int) -> String:
+	var shots: Array = forecast.get("shots", [])
+	if index >= shots.size(): return ""
+	var shot: Dictionary = shots[index]
+	if not shot.get("sustained_active",false) or float(shot.get("used_probability",1.0)) <= 0: return ""
+	if str(Content.AMMO[str(shot.id)].effect) in ["cool","vent"]: return "연속 초기화"
+	var extra := int(shot.get("sustained_heat",0))
+	return "연속 열 +%d" % extra if extra > 0 else ""
 
 func _can_move(from: int, to: int) -> bool:
 	if from < 0 or from >= stack.size() or to < 0 or to >= stack.size() or from == to: return false
@@ -257,7 +283,12 @@ func _can_move(from: int, to: int) -> bool:
 static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArray:
 	var shot: Dictionary = prediction.shots[index]
 	if float(shot.get("intercept_probability", 0)) >= 0.999999: return PackedStringArray(["확정 요격", "압력탄 제거", "증폭" if shot.get("boosted", false) else ""])
-	if shot.get("random", false): return PackedStringArray(["무작위", "%d~%d" % [shot.damage_min, shot.damage_max], "증폭" if shot.get("boosted", false) else "분산"])
+	if shot.get("random", false):
+		if int(shot.get("burn_duration", 0)) > 0:
+			return PackedStringArray(["무작위 · 화상 %d/턴" % int(shot.burn_tick), "생존 시 +%d턴" % int(shot.burn_duration), "보호막 무시"])
+		return PackedStringArray(["무작위", "%d~%d" % [shot.damage_min, shot.damage_max], "증폭" if shot.get("boosted", false) else "분산"])
+	if int(shot.get("burn_added", 0)) > 0:
+		return PackedStringArray(["화상 %d/턴" % int(shot.burn_tick), "%d턴 지속" % int(shot.burn), "보호막 무시"])
 	if Content.AMMO.has(str(shot.get("id", ""))) and not Content.is_attack(str(shot.id)):
 		var label := preload("res://redesign/damage_readout.gd").entry(shot)
 		return PackedStringArray([str(label.number), str(label.label), "강화 보존" if not shot.get("pending_boost", {}).is_empty() else ""])
@@ -281,6 +312,8 @@ static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArr
 	elif int(shot.get("push", 0)) > 0: result[2] = "+%dm" % int(shot.push)
 	elif int(shot.get("focus_damage", 0)) > 0: result[2] = "집중+%d" % shot.focus_damage
 	elif int(shot.get("relay_damage",0))>0: result[2] = "후속 전달 +%d" % int(shot.relay_damage)
+	elif int(shot.get("overdrive_percent",100))>100: result[2] = "강행 ×%.2f" % (int(shot.overdrive_percent)/100.0)
+	elif int(shot.get("part_factor",1))>1: result[2] = "후미 결산 ×%d" % int(shot.part_factor)
 	elif int(shot.get("engine_percent",100))>100: result[2] = "코어 ×%.2f" % (int(shot.engine_percent)/100.0)
 	elif boosted: result[2] = "%d회 강화 적용" % int(shot.hits) if int(shot.hits) > 1 else "강화 +%d ×%d" % [int(shot.math.boost), int(shot.math.get("factor", 1))]
 	elif int(shot.get("hits", 1)) > 1: result[2] = "×%d" % int(shot.hits)
@@ -291,6 +324,8 @@ static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArr
 	if int(shot.get("vent_bonus", 0)) > 0: result[2] = "열→피해+%d" % shot.vent_bonus
 	if shot.get("boost_hot_failed",false): result[2] = "잔열 부족"
 	elif int(shot.get("boost_heat_paid",0)) > 0: result[2] = "배율 ×%d · 열 +%d" % [int(shot.math.factor),int(shot.boost_heat_paid)]
+	if int(shot.get("gate_charge",0))>0: result[2] = "축열 첫 타격 +%d" % int(shot.gate_charge)
+	elif int(shot.get("gate_percent",100))>100: result[2] = "연쇄 ×%.2f" % (int(shot.gate_percent)/100.0)
 	return result
 
 func _box(color: Color) -> StyleBoxFlat:

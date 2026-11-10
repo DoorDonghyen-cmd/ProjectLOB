@@ -1,0 +1,384 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/shop_counter_review/preview.gd" id="preview"]
+[ext_resource type="Script" path="res://redesign/samples/shop_counter_review/stage.gd" id="stage"]
+[ext_resource type="Theme" path="res://redesign/samples/shop_counter_review/theme.tres" id="theme"]
+[ext_resource type="PackedScene" path="res://redesign/samples/shop_counter_review/offer.tscn" id="offer"]
+[ext_resource type="Texture2D" path="res://assets/art/service_background_grouped_20261025/shop.png" id="room"]
+
+[sub_resource type="Gradient" id="shade"]
+offsets = PackedFloat32Array(0, 0.23, 0.68, 1)
+colors = PackedColorArray(0.06, 0.04, 0.035, 0.93, 0.06, 0.04, 0.035, 0.02, 0.06, 0.04, 0.035, 0, 0.06, 0.04, 0.035, 0.80)
+
+[sub_resource type="GradientTexture2D" id="wash"]
+gradient = SubResource("shade")
+width = 2
+height = 256
+fill_from = Vector2(0, 0)
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="modal"]
+bg_color = Color(0.117, 0.086, 0.07, 1)
+border_width_bottom = 2
+border_width_top = 2
+border_width_left = 2
+border_width_right = 2
+border_color = Color(0.35, 0.26, 0.2, 1)
+content_margin_left = 22.0
+content_margin_right = 22.0
+anti_aliasing = false
+
+[node name="ShopCounterReview" type="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = ExtResource("theme")
+script = ExtResource("preview")
+
+[node name="Base" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.123, 0.096, 0.079, 1)
+
+[node name="Main" type="VBoxContainer" parent="."]
+layout_mode = 1
+theme_override_constants/separation = 0
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Stage" type="Control" parent="Main"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 315)
+size_flags_vertical = 3
+clip_contents = true
+script = ExtResource("stage")
+
+[node name="Room" type="TextureRect" parent="Main/Stage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("room")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="TextureRect" parent="Main/Stage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("wash")
+expand_mode = 1
+texture_filter = 2
+
+[node name="Offer0" instance=ExtResource("offer") parent="Main/Stage"]
+offset_left = 381
+offset_top = 158
+offset_right = 507
+offset_bottom = 286
+
+[node name="Offer1" instance=ExtResource("offer") parent="Main/Stage"]
+offset_left = 577
+offset_top = 158
+offset_right = 703
+offset_bottom = 286
+
+[node name="Offer2" instance=ExtResource("offer") parent="Main/Stage"]
+offset_left = 772
+offset_top = 158
+offset_right = 898
+offset_bottom = 286
+
+[node name="Top" type="MarginContainer" parent="Main/Stage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 0
+grow_horizontal = 2
+grow_vertical = 2
+offset_bottom = 100
+theme_override_constants/margin_left = 44
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 44
+theme_override_constants/margin_bottom = 0
+mouse_filter = 2
+
+[node name="Header" type="HBoxContainer" parent="Main/Stage/Top"]
+layout_mode = 2
+theme_override_constants/separation = 18
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Main/Stage/Top/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+text = "승강장 정비소"
+theme_override_font_sizes/font_size = 32
+
+[node name="Space" type="Control" parent="Main/Stage/Top/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="WalletBlock" type="VBoxContainer" parent="Main/Stage/Top/Header"]
+layout_mode = 2
+theme_override_constants/separation = 3
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="WalletLabel" type="Label" parent="Main/Stage/Top/Header/WalletBlock"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "소지금"
+horizontal_alignment = 2
+theme_override_colors/font_color = Color(0.68, 0.62, 0.54, 1)
+
+[node name="Wallet" type="Label" parent="Main/Stage/Top/Header/WalletBlock"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "18 Cr"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 32
+theme_override_colors/font_color = Color(0.96, 0.76, 0.5, 1)
+
+[node name="CounterEdge" type="ColorRect" parent="Main"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 2)
+mouse_filter = 2
+color = Color(0.35, 0.26, 0.2, 1)
+
+[node name="Checkout" type="MarginContainer" parent="Main"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 187)
+theme_override_constants/margin_left = 44
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 44
+theme_override_constants/margin_bottom = 14
+
+[node name="Columns" type="HBoxContainer" parent="Main/Checkout"]
+layout_mode = 2
+theme_override_constants/separation = 28
+
+[node name="Selected" type="VBoxContainer" parent="Main/Checkout/Columns"]
+layout_mode = 2
+theme_override_constants/separation = 7
+size_flags_horizontal = 3
+
+[node name="Kind" type="Label" parent="Main/Checkout/Columns/Selected"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "파츠"
+theme_override_colors/font_color = Color(0.68, 0.62, 0.54, 1)
+
+[node name="ItemName" type="Label" parent="Main/Checkout/Columns/Selected"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "열축전 코일"
+theme_override_font_sizes/font_size = 32
+autowrap_mode = 3
+
+[node name="Effect" type="Label" parent="Main/Checkout/Columns/Selected"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "화상 지속 +1턴"
+autowrap_mode = 3
+
+[node name="Owned" type="Label" parent="Main/Checkout/Columns/Selected"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "장착 슬롯 1 / 5"
+theme_override_colors/font_color = Color(0.68, 0.62, 0.54, 1)
+autowrap_mode = 3
+
+[node name="Sale" type="VBoxContainer" parent="Main/Checkout/Columns"]
+layout_mode = 2
+theme_override_constants/separation = 8
+custom_minimum_size = Vector2(316, 0)
+size_flags_vertical = 4
+
+[node name="Outcome" type="Label" parent="Main/Checkout/Columns/Sale"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "구매 후 장착"
+theme_override_font_sizes/font_size = 32
+autowrap_mode = 3
+
+[node name="Balance" type="Label" parent="Main/Checkout/Columns/Sale"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "결제 후 0 Cr"
+theme_override_colors/font_color = Color(0.96, 0.76, 0.5, 1)
+autowrap_mode = 3
+
+[node name="SaleActions" type="HBoxContainer" parent="Main/Checkout/Columns/Sale"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Buy" type="Button" parent="Main/Checkout/Columns/Sale/SaleActions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(104, 46)
+text = "구매"
+theme_type_variation = &"BuyAction"
+
+[node name="Replace" type="Button" parent="Main/Checkout/Columns/Sale/SaleActions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "보유 탄과 교체"
+visible = false
+
+[node name="FooterEdge" type="ColorRect" parent="Main"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 2)
+mouse_filter = 2
+color = Color(0.35, 0.26, 0.2, 1)
+
+[node name="Footer" type="MarginContainer" parent="Main"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 44
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 44
+theme_override_constants/margin_bottom = 8
+
+[node name="Actions" type="HBoxContainer" parent="Main/Footer"]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="Reroll" type="Button" parent="Main/Footer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "새 진열 · 3 Cr"
+
+[node name="Charge" type="Button" parent="Main/Footer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "압축 충전 · 18 Cr"
+visible = false
+
+[node name="Feedback" type="Label" parent="Main/Footer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ""
+size_flags_horizontal = 3
+vertical_alignment = 1
+theme_override_colors/font_color = Color(0.68, 0.62, 0.54, 1)
+autowrap_mode = 3
+
+[node name="Reset" type="Button" parent="Main/Footer/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "시안 초기화"
+tooltip_text = "현재 예시의 거래 전 상태로 돌아갑니다."
+
+[node name="ReplaceOverlay" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+visible = false
+mouse_filter = 0
+
+[node name="Backdrop" type="ColorRect" parent="ReplaceOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.014, 0.011, 0.83)
+
+[node name="Center" type="CenterContainer" parent="ReplaceOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Window" type="PanelContainer" parent="ReplaceOverlay/Center"]
+layout_mode = 2
+custom_minimum_size = Vector2(456, 0)
+theme_override_styles/panel = SubResource("modal")
+
+[node name="Inset" type="MarginContainer" parent="ReplaceOverlay/Center/Window"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 17
+
+[node name="Contents" type="VBoxContainer" parent="ReplaceOverlay/Center/Window/Inset"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ReplaceTitle" type="Label" parent="ReplaceOverlay/Center/Window/Inset/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "보유 탄과 교체"
+theme_override_font_sizes/font_size = 32
+
+[node name="ReplaceSummary" type="Label" parent="ReplaceOverlay/Center/Window/Inset/Contents"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "탄약 32 / 32  ·  구매 24 Cr"
+theme_override_colors/font_color = Color(0.68, 0.62, 0.54, 1)
+
+[node name="Options" type="ScrollContainer" parent="ReplaceOverlay/Center/Window/Inset/Contents"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 175)
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Candidates" type="VBoxContainer" parent="ReplaceOverlay/Center/Window/Inset/Contents/Options"]
+layout_mode = 2
+theme_override_constants/separation = 7
+unique_name_in_owner = true
+size_flags_horizontal = 3
+
+[node name="Choices" type="HBoxContainer" parent="ReplaceOverlay/Center/Window/Inset/Contents"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Confirm" type="Button" parent="ReplaceOverlay/Center/Window/Inset/Contents/Choices"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "이 탄과 교체"
+theme_type_variation = &"BuyAction"
+disabled = true
+
+[node name="Cancel" type="Button" parent="ReplaceOverlay/Center/Window/Inset/Contents/Choices"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 46)
+text = "취소"
+

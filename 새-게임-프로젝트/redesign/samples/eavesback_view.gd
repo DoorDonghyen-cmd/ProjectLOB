@@ -79,10 +79,11 @@ func _draw_enemy_actor(index: int, foot: Vector2, lift: float, stride: float) ->
 	var camera:=finish_camera()
 	sprite.position = (camera*MonsterAnimation.position(texture,foot + _actor_offset(index))).round()
 	sprite.scale = camera.get_scale() * MonsterAnimation.Data.SCALE
+	sprite.z_index = actor_layer(index)
 	sprite.modulate = actor_tint(index)
+	ActorArtStyle.apply(sprite.material, float(MonsterAnimation.Data.SCALE), cohesive_actor_art)
 	sprite.show()
 
-func _enemy_at(point: Vector2) -> int:
-	for i in range(enemies.size()):
-		if int(enemies[i].hp) > 0 and str(enemies[i].kind) == "wall" and concept_rect(i).has_point(point): return i
-	return super._enemy_at(point)
+func actor_pick_rect(index: int) -> Rect2:
+	if int(enemies[index].hp) > 0 and str(enemies[index].kind) == "wall": return concept_rect(index)
+	return super.actor_pick_rect(index)

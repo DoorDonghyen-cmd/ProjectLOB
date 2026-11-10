@@ -3,6 +3,7 @@ extends RefCounted
 const TARGET_BASE := 10000
 const PREPARE_TURNS := 2
 const PROJECTILE_SPEED := 6
+const BossSkills = preload("res://redesign/boss_skills.gd")
 
 static func is_gatekeeper(enemy: Dictionary) -> bool:
 	return str(enemy.get("species", "")) == "closure_watch"
@@ -30,10 +31,11 @@ static func intent(enemy: Dictionary) -> String:
 	if int(enemy.get("jammed", 0)) > 0: return "차단 %d턴 · 준비 정지" % int(enemy.jammed)
 	if is_gatekeeper(enemy):
 		match str(enemy.ranged_phase):
+			"burst": return "연속 발사 · 다음 압력탄 1턴"
 			"guard": return "개방까지 %d턴" % int(enemy.ranged_left)
 			"waiting": return "압력탄 비행 · 개방"
 			"recover": return "개방 유지 %d턴" % int(enemy.ranged_left)
-		return "압력탄 발사 %d턴" % int(enemy.ranged_left)
+		return ("압력탄 2연발 %d턴" if BossSkills.salvo(enemy) else "압력탄 발사 %d턴") % int(enemy.ranged_left)
 	match str(enemy.get("ranged_phase", "prepare")):
 		"waiting": return "탄 비행 중"
 		"recover": return "회복 1턴"
@@ -80,16 +82,25 @@ static func _launch(state: Dictionary, index: int, tick: int) -> Dictionary:
 	var enemy: Dictionary = state.enemies[index]
 	state.projectile_serial = int(state.get("projectile_serial", 0)) + 1
 	var projectile := {"uid": state.projectile_serial, "source": index, "kind": "pressure", "name": "압력탄", "hp": 1, "max_hp": 1, "def": 0, "speed": PROJECTILE_SPEED, "distance": int(enemy.distance), "burn": 0}
-	state.projectiles = [projectile]
+	if BossSkills.salvo(enemy):
+		state.projectiles = active(state)
+		state.projectiles.append(projectile)
+	else: state.projectiles = [projectile]
 	enemy.ranged_phase = "waiting"
 	enemy.ranged_left = 0
-	return {"kind":"projectile_launch","turn":tick,"target":target_id(projectile),"source":index,"projectile":projectile.duplicate(true)}
+	var event := {"kind":"projectile_launch","turn":tick,"target":target_id(projectile),"source":index,"projectile":projectile.duplicate(true)}
+	if BossSkills.salvo(enemy): event.projectiles = state.projectiles.duplicate(true)
+	return event
 
 static func _advance_gatekeeper(state: Dictionary, index: int, tick: int, record_events: bool) -> Array:
 	var enemy: Dictionary = state.enemies[index]
 	var events: Array = []
 	var phase := str(enemy.ranged_phase)
-	if phase == "waiting":
+	if phase == "burst" and BossSkills.salvo(enemy):
+		enemy.salvo_left = 0
+		var launch := _launch(state,index,tick)
+		if record_events: events.append(launch)
+	elif phase == "waiting":
 		if not active(state).is_empty(): return events
 		enemy.ranged_phase = "recover"
 		enemy.ranged_left = 2
@@ -105,45 +116,59 @@ static func _advance_gatekeeper(state: Dictionary, index: int, tick: int, record
 					enemy.ranged_phase = "guard"
 					enemy.ranged_left = 2
 					enemy.def = int(enemy.guard_armor)
+					if BossSkills.salvo(enemy): enemy.salvo_left = 2
 				"prepare":
 					if active(state).is_empty():
 						var launch := _launch(state,index,tick)
+						if BossSkills.salvo(enemy):
+							enemy.salvo_left = 1; enemy.ranged_phase = "burst"; enemy.ranged_left = 1
 						if record_events: events.append(launch)
 					else: enemy.ranged_left = 1
 	if record_events:
 		events.append({"kind":"gatekeeper_state","turn":tick,"target":index,"phase":enemy.ranged_phase,"left":enemy.ranged_left,"def":enemy.def})
+		if BossSkills.salvo(enemy): events[-1].salvo_left = int(enemy.salvo_left)
 	return events
 
 static func _integer(value: Variant, low: int, high: int) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and float(value) == floorf(float(value)) and float(value) >= low and float(value) <= high
 
 static func valid_state(state: Dictionary) -> bool:
-	if not state.get("projectiles", []) is Array or state.get("projectiles", []).size() > 1: return false
+	var salvo_source := -1
+	for i in range(state.enemies.size()):
+		if BossSkills.enabled(state) and BossSkills.salvo(state.enemies[i]): salvo_source = i
+	if not state.get("projectiles", []) is Array or state.get("projectiles", []).size() > (2 if salvo_source >= 0 else 1): return false
 	if not _integer(state.get("projectile_serial", 0), 0, 1000000): return false
-	if state.has("loss_reason") and state.loss_reason not in ["", "projectile"]: return false
+	if state.has("loss_reason") and state.loss_reason not in ["", "projectile", "ammo"]: return false
 	var shooters := 0
 	for enemy in state.enemies + state.get("reinforcements", []):
 		if str(enemy.kind) != "spitter": continue
 		shooters += 1
 		if is_gatekeeper(enemy):
-			if enemy.speed != 0 or enemy.get("ranged_phase", "") not in ["guard","prepare","waiting","recover"]: return false
+			var phases := ["guard","prepare","waiting","recover"]
+			if BossSkills.enabled(state) and BossSkills.salvo(enemy): phases.append("burst")
+			if enemy.speed != 0 or enemy.get("ranged_phase", "") not in phases: return false
 			var gate_phase := str(enemy.ranged_phase)
 			if not _integer(enemy.get("guard_armor", -1),0,9): return false
-			if not _integer(enemy.get("ranged_left", -1),0 if gate_phase == "waiting" else 1,0 if gate_phase == "waiting" else 2): return false
+			if not _integer(enemy.get("ranged_left", -1),0 if gate_phase == "waiting" else 1,0 if gate_phase == "waiting" else 1 if gate_phase == "burst" else 2): return false
 			if int(enemy.def) != (int(enemy.guard_armor) if gate_phase == "guard" else 0): return false
 			continue
 		if enemy.speed != 0 or enemy.get("ranged_phase", "") not in ["prepare", "waiting", "recover"]: return false
 		var phase := str(enemy.ranged_phase)
 		if not _integer(enemy.get("ranged_left", -1), 0 if phase == "waiting" else 1, 2 if phase == "prepare" else (0 if phase == "waiting" else 1)): return false
 	if shooters > 1: return false
+	var ids: Array = []
 	for projectile in state.get("projectiles", []):
 		if not projectile is Dictionary: return false
 		for key in ["uid", "source", "hp", "max_hp", "def", "speed", "distance", "burn"]:
 			if not _integer(projectile.get(key, null), 0, 1000000): return false
-		if projectile.uid < 1 or projectile.uid != state.get("projectile_serial", 0): return false
+		if projectile.uid < 1 or projectile.uid > state.get("projectile_serial", 0) or ids.has(int(projectile.uid)): return false
+		ids.append(int(projectile.uid))
+		if salvo_source < 0 and projectile.uid != state.get("projectile_serial", 0): return false
+		if salvo_source >= 0 and int(projectile.source) != salvo_source: return false
 		if projectile.source >= state.enemies.size() or str(state.enemies[int(projectile.source)].kind) != "spitter": return false
 		if projectile.hp > 1 or projectile.max_hp != 1 or projectile.def != 0 or projectile.speed != PROJECTILE_SPEED or projectile.burn != 0: return false
 		if projectile.get("kind", "") != "pressure" or not projectile.get("name") is String: return false
 		if not _integer(projectile.get("focus_hits", 0), 0, 2): return false
 		if int(projectile.hp) > 0 and (state.phase in ["reward", "won"] or (int(projectile.distance) == 0 and state.phase != "lost")): return false
+	if not ids.is_empty() and int(ids.max()) != int(state.get("projectile_serial",0)): return false
 	return true

@@ -95,6 +95,18 @@ class DeliveryTests(unittest.TestCase):
                 delivery.package(release)
         self.assertFalse((release / "delivery_request.json").exists())
 
+    def test_mode_cannot_change_between_verification_and_packaging(self):
+        release = self.root / "mislabeled"
+        release.mkdir()
+        apk = release / delivery.APK_NAME
+        apk.write_bytes(b"sample validated APK")
+        entry = delivery.PLAY_MODES["magazine-journey"]["main_scene"]
+        delivery.write_json(release / "validation.json", {"apk_sha256": delivery.digest(apk), "play_mode": "magazine-journey", "main_scene": entry})
+        delivery.write_json(release / "build_manifest.json", {"sha256": delivery.digest(apk), "play_mode": "campaign", "main_scene": delivery.PLAY_MODES["campaign"]["main_scene"]})
+        with self.assertRaisesRegex(ValueError, "Play mode changed"):
+            delivery.package(release)
+        self.assertFalse((release / "delivery_request.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

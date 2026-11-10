@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/workbench/screen.tscn" id="base"]
+
+[ext_resource type="Script" path="res://redesign/samples/ammo_upgrade/preview.gd" id="script"]
+
+
+[ext_resource type="PackedScene" path="res://redesign/samples/ammo_upgrade/grades.tscn" id="grades"]
+
+[node name="UpgradePreview" instance=ExtResource("base")]
+script = ExtResource("script")
+
+[node name="Menu" parent="Header" index="4"]
+visible = false
+
+[node name="Tab1" parent="Tabs" index="1"]
+text = "탄환 강화"
+
+[node name="ReviewLayer" type="CanvasLayer" parent="."]
+layer = 20
+
+[node name="GradeStudy" parent="ReviewLayer" instance=ExtResource("grades")]
+visible = false

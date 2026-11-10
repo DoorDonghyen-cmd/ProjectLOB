@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-23",
+  "tool": "built-in image_gen",
+  "scope": "Two key poses each for foundry elite, boss and pressure shooter; existing idle sources preserved",
+  "jobs": [
+    {
+      "id": "mold_guard",
+      "ref": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_leaders_20261023/mold_guard_v1.png",
+      "prompt": "Edit the supplied sprite into a TWO-CELL HORIZONTAL action-pose sheet for the same ORVASK pixel-art enemy. Preserve EXACT identity, silhouette family, coarse pixel cluster scale, muted slate iron/rust/dull brass palette, restrained edges and amount of detail from the reference. Do not redesign. Two full-body figures at the SAME scale and on the SAME foot baseline, each in its own half of a wide transparent RGBA canvas. At least 12% clear empty gutter between their silhouettes, 8% margins to outer edges. Facing LEFT as in reference. No cropping, no other subjects, no text, labels, numbers, frames, UI, floor, baked shadows, particles, smoke or energy effects. Body proportions/volume and material patches must remain consistent across both poses. Thick discrete pixel clusters, not smooth illustration, no new small bolts, no white edges, no heavy black outline. This is an animation key-pose asset, not a diagram.\nLEFT CELL = WINDUP: the huge heavy mold automaton has bent knees, lowered body, both clamp forearms tucked inward, the staggered mold jaws visibly pulled closer together around the large ratchet wheel. Its posture clearly stores force; large wheel/pawl still visible.\nRIGHT CELL = HEAVY STEP RELEASE: one broad foot planted far to the LEFT, the rear leg braced, torso leaned left, left clamp arm forward and low, right clamp arm counterbalancing behind, mold jaws slightly spread and ratchet released. Strong grounded step, NOT jumping/flying. Preserve small bowed sealed head and short rear winding key. All extremities inside each cell."
+    },
+    {
+      "id": "casting_overseer",
+      "ref": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_leaders_20261023/casting_overseer_v1.png",
+      "prompt": "Edit the supplied sprite into a TWO-CELL HORIZONTAL action-pose sheet for the same ORVASK pixel-art enemy. Preserve EXACT identity, silhouette family, coarse pixel cluster scale, muted slate iron/rust/dull brass palette, restrained edges and amount of detail from the reference. Do not redesign. Two full-body figures at the SAME scale and on the SAME foot baseline, each in its own half of a wide transparent RGBA canvas. At least 12% clear empty gutter between their silhouettes, 8% margins to outer edges. Facing LEFT as in reference. No cropping, no other subjects, no text, labels, numbers, frames, UI, floor, baked shadows, particles, smoke or energy effects. Body proportions/volume and material patches must remain consistent across both poses. Thick discrete pixel clusters, not smooth illustration, no new small bolts, no white edges, no heavy black outline. This is an animation key-pose asset, not a diagram.\nLEFT CELL = WINDUP: round crucible boss braces both feet wide, bends knees and lowers the pot body, its large rear circular winding spring tightened, clamp arm pulled inward toward rim, heavy press-block arm cocked slightly back. Small faceless mask still hangs under front rim. Preserve crucible rim, warm dull interior slit and giant spring as large simple masses.\nRIGHT CELL = HEAVY STEP RELEASE: boss leans to LEFT with one foot taking a long weighty planted step, rear foot braced, huge left clamp reaches low toward LEFT and right press-block swings down beside body; giant circular spring remains attached at upper rear. No jumping, no ground. Same round pot proportions, hanging mask, arms and single back spring in both poses. Do not replace body with rectangular armor."
+    },
+    {
+      "id": "pressure_worker",
+      "ref": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_concepts_20261022/pressure_worker_v1.png",
+      "prompt": "Edit the supplied sprite into a TWO-CELL HORIZONTAL action-pose sheet for the same ORVASK pixel-art enemy. Preserve EXACT identity, silhouette family, coarse pixel cluster scale, muted slate iron/rust/dull brass palette, restrained edges and amount of detail from the reference. Do not redesign. Two full-body figures at the SAME scale and on the SAME foot baseline, each in its own half of a wide transparent RGBA canvas. At least 12% clear empty gutter between their silhouettes, 8% margins to outer edges. Facing LEFT as in reference. No cropping, no other subjects, no text, labels, numbers, frames, UI, floor, baked shadows, particles, smoke or energy effects. Body proportions/volume and material patches must remain consistent across both poses. Thick discrete pixel clusters, not smooth illustration, no new small bolts, no white edges, no heavy black outline. This is an animation key-pose asset, not a diagram.\nLEFT CELL = AIM/PRESSURIZE: same slim pneumatic automaton braces its thin legs and raises its short broad nozzle horizontally toward LEFT, both arms tense around the large oval pressure tank, single thick hose forms clear loop. Bowed pipe-like mask and broad back winding key retained.\nRIGHT CELL = SHOT RECOIL: nozzle and supporting elbows pulled back toward oval tank by recoil, upper body tilts slightly back to RIGHT while both feet remain planted, hose loop compresses. No bullet, muzzle flash, smoke, projectile or glow; these are rendered in game. Tank remains same size. This is a machine with a nozzle arm, not a person holding a gun."
+    }
+  ],
+  "original_outputs": {
+    "mold_guard": "exec-b69aef9d-ad2d-4995-af9c-f2f54bdb9a05.png",
+    "casting_overseer": "exec-87511bf7-9f68-4a5f-8b04-aa4869eabdff.png",
+    "pressure_worker": "exec-2496f48c-7da5-41bc-95b9-c98367321ce7.png"
+  },
+  "normalization": "Original RGBA preserved. Measured atlas regions, feet, aspect-preserving scales, and a transparent separating polygon between the two boss poses. No pixel editing.",
+  "assets": [
+    {
+      "file": "casting_overseer_states.png",
+      "dimensions": [
+        1930,
+        815
+      ],
+      "mode": "RGBA",
+      "sha256": "6ef4f9e89b3cc9ec3f594ebe600a232d9cf139a93e926006a89c8d0de303f6ff"
+    },
+    {
+      "file": "mold_guard_states.png",
+      "dimensions": [
+        1983,
+        793
+      ],
+      "mode": "RGBA",
+      "sha256": "d007b6be73ee4c6527fd27abaaa8a48c1ae2a79d2c6f4f7395460a7992b9bbdc"
+    },
+    {
+      "file": "pressure_worker_states.png",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "mode": "RGBA",
+      "sha256": "db560b28c8a6b5a9a4bdc1139f1b94ad96a290ba43a35fc3fae96792575314ff"
+    }
+  ],
+  "reference_sha256": {
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_leaders_20261023/mold_guard_v1.png": "09ce60f9ea05aeb061ab7b4e27e64ed6246ad894bdf207ce90f2450205de9e9d",
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_leaders_20261023/casting_overseer_v1.png": "05169237ec17b2818cdc93a03a120bf1a56fa20fe10b42a14b778ee754c1f8cd",
+    "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/foundry_concepts_20261022/pressure_worker_v1.png": "eadfe5238f3b1a666155cc2c1e50f180add97c5a477e396e7a9d1f4e64e9b6dc"
+  }
+}

@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://redesign/ammo_offer.tscn" id="1"]
+[ext_resource type="FontVariation" path="res://redesign/combat_pixel_font.tres" id="2"]
+
+[node name="FocusAmmoOffer" type="VBoxContainer"]
+custom_minimum_size = Vector2(230, 224)
+theme_override_constants/separation = 8
+
+[node name="Offer" parent="." instance=ExtResource("1")]
+layout_mode = 2
+custom_minimum_size = Vector2(230, 196)
+
+[node name="Package" type="Label" parent="."]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.953, 0.812, 0.451, 1)
+theme_override_fonts/font = ExtResource("2")
+theme_override_font_sizes/font_size = 16
+text = "연타탄 2장 + 증폭탄 1장"
+autowrap_mode = 2

@@ -4,9 +4,9 @@
 [ext_resource type="FontVariation" path="res://redesign/combat_pixel_font.tres" id="2_font"]
 
 [ext_resource type="StyleBoxFlat" path="res://redesign/hand_surface_action.tres" id="skin_card"]
-[ext_resource type="StyleBoxTexture" path="res://assets/ui/console/well_normal.tres" id="skin_well"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/line_theme_20261101/console_well_normal.tres" id="skin_well"]
 [ext_resource type="StyleBoxFlat" path="res://redesign/hand_surface_button.tres" id="skin_button"]
-[ext_resource type="StyleBoxTexture" path="res://assets/ui/console/primary_normal.tres" id="skin_primary"]
+[ext_resource type="StyleBoxTexture" path="res://assets/ui/line_theme_20261101/console_primary_normal.tres" id="skin_primary"]
 [ext_resource type="StyleBoxEmpty" path="res://redesign/hand_surface_panel.tres" id="skin_panel"]
 [ext_resource type="StyleBoxEmpty" path="res://redesign/hand_surface_panel.tres" id="skin_tray"]
 
@@ -34,7 +34,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 210)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 16
 text = "거리 전장 · 전열과 증원 · 접근 위험"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -53,7 +53,7 @@ theme_override_constants/separation = 4
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
 text = "1  탄 선택"
 horizontal_alignment = 1
 
@@ -61,7 +61,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
 text = "2  순서 확인"
 horizontal_alignment = 1
 
@@ -69,7 +69,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
 text = "3  발사"
 horizontal_alignment = 1
 
@@ -100,7 +100,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 16
 text = "발사 순서 · 0/4칸"
 
 [node name="EditActions" type="HBoxContainer" parent="TacticalGrid/QueuePanel/QueueColumn/FiringRailHeader"]
@@ -124,7 +124,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 82)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 text = "①  ②  ③  ④\n마지막 장전 탄부터 발사"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -164,7 +164,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.643137, 0.705882, 0.729412, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 text = "선택 결과 · 탄환을 눌러 장전하세요"
 autowrap_mode = 2
 
@@ -189,7 +189,7 @@ theme_override_constants/v_separation = 6
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 text = "탄환 선택 · 6/6장"
 
 [node name="HandControls" type="HBoxContainer" parent="TacticalGrid/CandidatesPanel/CandidatesColumn/HandHeader"]
@@ -211,7 +211,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.662745, 0.87451, 0.74902, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 16
 text = "1. 탄을 고르세요 · 카드 아래에 이번 결과가 표시됩니다"
 autowrap_mode = 2
 
@@ -258,7 +258,7 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 16
 text = "선택한 탄환의 피해·관통·효과"
 autowrap_mode = 2
 

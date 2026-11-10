@@ -1,0 +1,346 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/gate_review/preview.gd" id="logic"]
+[ext_resource type="Script" path="res://redesign/samples/gate_review/door.gd" id="door"]
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
+[ext_resource type="Texture2D" path="res://assets/art/gate_review_20261105/airlock.png" id="background"]
+
+[sub_resource type="StyleBoxFlat" id="button"]
+bg_color = Color(0.147, 0.151, 0.145, 1)
+border_width_bottom = 2
+border_color = Color(0.29, 0.284, 0.237, 1)
+content_margin_left = 12.0
+content_margin_right = 12.0
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="hover"]
+bg_color = Color(0.229, 0.221, 0.178, 1)
+border_width_bottom = 2
+border_color = Color(0.63, 0.53, 0.36, 1)
+content_margin_left = 12.0
+content_margin_right = 12.0
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="selected"]
+bg_color = Color(0.249, 0.219, 0.158, 1)
+border_width_left = 3
+border_width_bottom = 2
+border_color = Color(0.78, 0.614, 0.36, 1)
+content_margin_left = 12.0
+content_margin_right = 12.0
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="primary"]
+bg_color = Color(0.80, 0.65, 0.40, 1)
+border_width_bottom = 3
+border_color = Color(0.48, 0.37, 0.23, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="primary_hover"]
+bg_color = Color(0.92, 0.77, 0.53, 1)
+border_width_bottom = 3
+border_color = Color(0.61, 0.48, 0.30, 1)
+content_margin_left = 16.0
+content_margin_right = 16.0
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="focus"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.94, 0.82, 0.59, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="rule"]
+bg_color = Color(0.30, 0.28, 0.225, 1)
+content_margin_top = 1.0
+
+[sub_resource type="StyleBoxFlat" id="meter"]
+bg_color = Color(0.133, 0.136, 0.124, 1)
+border_width_top = 1
+border_width_bottom = 1
+border_color = Color(0.29, 0.28, 0.233, 1)
+content_margin_left = 14.0
+content_margin_right = 14.0
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+anti_aliasing = false
+
+[sub_resource type="Theme" id="theme"]
+default_font = ExtResource("font")
+default_font_size = 16
+Label/colors/font_color = Color(0.91, 0.87, 0.77, 1)
+Button/colors/font_color = Color(0.91, 0.87, 0.77, 1)
+Button/colors/font_disabled_color = Color(0.51, 0.49, 0.43, 1)
+Button/styles/normal = SubResource("button")
+Button/styles/disabled = SubResource("button")
+Button/styles/hover = SubResource("hover")
+Button/styles/pressed = SubResource("selected")
+Button/styles/hover_pressed = SubResource("selected")
+Button/styles/focus = SubResource("focus")
+Primary/base_type = &"Button"
+Primary/colors/font_color = Color(0.105, 0.091, 0.068, 1)
+Primary/colors/font_hover_color = Color(0.105, 0.091, 0.068, 1)
+Primary/colors/font_focus_color = Color(0.105, 0.091, 0.068, 1)
+Primary/styles/normal = SubResource("primary")
+Primary/styles/hover = SubResource("primary_hover")
+HSeparator/styles/separator = SubResource("rule")
+
+[node name="GateReview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_filter = 1
+theme = SubResource("theme")
+script = ExtResource("logic")
+
+[node name="Composition" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 0
+
+[node name="Gate" type="Control" parent="Composition"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.14
+clip_contents = true
+mouse_filter = 2
+script = ExtResource("door")
+backdrop = ExtResource("background")
+threshold = Rect2(0.234, 0.313, 0.532, 0.44)
+
+[node name="Location" type="VBoxContainer" parent="Composition/Gate"]
+layout_mode = 0
+offset_left = 31.0
+offset_top = 26.0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="Region" type="Label" parent="Composition/Gate/Location"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.73, 0.46, 1)
+text = "축열 주조장"
+
+[node name="Place" type="Label" parent="Composition/Gate/Location"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "구역 관문"
+
+[node name="Arrival" type="VBoxContainer" parent="Composition/Gate"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 31.0
+offset_top = -111.0
+offset_right = -20.0
+offset_bottom = -25.0
+grow_vertical = 0
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 4
+
+[node name="GateState" type="Label" parent="Composition/Gate/Arrival"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.73, 0.46, 1)
+text = "다음 구역 · 차단문 잠김"
+
+[node name="Destination" type="Label" parent="Composition/Gate/Arrival"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text_overrun_behavior = 3
+text = "여과정원"
+
+[node name="Console" type="ColorRect" parent="Composition"]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.078, 0.082, 0.076, 1)
+
+[node name="Inset" type="MarginContainer" parent="Composition/Console"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="Content" type="VBoxContainer" parent="Composition/Console/Inset"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="Stages" type="HBoxContainer" parent="Composition/Console/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="ModifyStep" type="Label" parent="Composition/Console/Inset/Content/Stages"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "01 개조"
+
+[node name="ServiceStep" type="Label" parent="Composition/Console/Inset/Content/Stages"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "02 재정비"
+
+[node name="DepartStep" type="Label" parent="Composition/Console/Inset/Content/Stages"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "03 출발"
+
+[node name="StageRule" type="HSeparator" parent="Composition/Console/Inset/Content"]
+layout_mode = 2
+
+[node name="Condition" type="Label" parent="Composition/Console/Inset/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.70, 0.60, 1)
+text = "무료 개조 1회"
+
+[node name="Receipt" type="Label" parent="Composition/Console/Inset/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.88, 0.73, 0.46, 1)
+text = "급탄 기구 확장 · 사격 상한 +1발"
+
+[node name="OptionsScroll" type="ScrollContainer" parent="Composition/Console/Inset/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 146)
+horizontal_scroll_mode = 0
+follow_focus = true
+
+[node name="Options" type="GridContainer" parent="Composition/Console/Inset/Content/OptionsScroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 7
+columns = 2
+
+[node name="Template" type="Button" parent="Composition/Console/Inset/Content/OptionsScroll/Options"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+text_overrun_behavior = 3
+alignment = 0
+text = "급탄 기구 확장"
+
+[node name="Sample" type="Button" parent="Composition/Console/Inset/Content/OptionsScroll/Options"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+size_flags_horizontal = 3
+text = "저발열 약실"
+alignment = 0
+
+[node name="Effect" type="PanelContainer" parent="Composition/Console/Inset/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("meter")
+
+[node name="Readouts" type="VBoxContainer" parent="Composition/Console/Inset/Content/Effect"]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Compare" type="HBoxContainer" parent="Composition/Console/Inset/Content/Effect/Readouts"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Before" type="VBoxContainer" parent="Composition/Console/Inset/Content/Effect/Readouts/Compare"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="BeforeLabel" type="Label" parent="Composition/Console/Inset/Content/Effect/Readouts/Compare/Before"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.70, 0.60, 1)
+text = "현재"
+
+[node name="BeforeValue" type="Label" parent="Composition/Console/Inset/Content/Effect/Readouts/Compare/Before"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+text = "사격 상한 +0발"
+
+[node name="Arrow" type="Label" parent="Composition/Console/Inset/Content/Effect/Readouts/Compare"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.61, 0.55, 0.41, 1)
+text = "→"
+
+[node name="After" type="VBoxContainer" parent="Composition/Console/Inset/Content/Effect/Readouts/Compare"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="AfterLabel" type="Label" parent="Composition/Console/Inset/Content/Effect/Readouts/Compare/After"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.70, 0.60, 1)
+text = "적용 후"
+
+[node name="AfterValue" type="Label" parent="Composition/Console/Inset/Content/Effect/Readouts/Compare/After"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.95, 0.79, 0.52, 1)
+text = "사격 상한 +1발"
+
+[node name="EffectRule" type="HSeparator" parent="Composition/Console/Inset/Content/Effect/Readouts"]
+layout_mode = 2
+
+[node name="Explanation" type="Label" parent="Composition/Console/Inset/Content/Effect/Readouts"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.78, 0.74, 0.65, 1)
+text = "탄창 크기와 열 한계 유지"
+
+[node name="Footer" type="HBoxContainer" parent="Composition/Console/Inset/Content"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Back" type="Button" parent="Composition/Console/Inset/Content/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "개조 보류"
+
+[node name="Spacer" type="Control" parent="Composition/Console/Inset/Content/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Secondary" type="Button" parent="Composition/Console/Inset/Content/Footer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+text = "정비 없이 출발"
+
+[node name="Apply" type="Button" parent="Composition/Console/Inset/Content/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_type_variation = &"Primary"
+text = "개조 적용"

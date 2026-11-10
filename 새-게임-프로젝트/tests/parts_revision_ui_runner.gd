@@ -1,4 +1,7 @@
 extends "res://tests/ammo_grade_ui_runner.gd"
+## RETIRED 2026-11-08 as a run target: checks old combat grid and build workshop bounds. Replaced by: build_live_ui, weapon_live_ui.
+## Still the base class of bag_growth_ui_runner, outfit_bag_ui_runner, part_art_ui_runner, part_grade_ui_runner; do not delete.
+## Current UI suites: docs/qa/ui-test-suites.md
 const PartCard = preload("res://redesign/part_card_view.gd")
 const PartFeedback = preload("res://redesign/part_feedback.gd")
 

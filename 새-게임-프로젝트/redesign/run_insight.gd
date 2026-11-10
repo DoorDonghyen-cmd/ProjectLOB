@@ -1,4 +1,5 @@
 extends RefCounted
+const PartChoice=preload("res://redesign/part_choice.gd")
 ## Converts already-public combat state into compact debrief and reward guidance.
 ## It never predicts hidden rolls or mutates the run.
 const Content = preload("res://redesign/content.gd")
@@ -150,6 +151,10 @@ static func reward_impact(id: String, state: Dictionary, next_enemies: Array) ->
 			"arc":
 				return "전이 피해 %d · 다른 생존 적이 필요" % Content.effect_value(id, state)
 	elif Content.PARTS.has(id):
+		if PartChoice.Engines.IDS.has(id) or (Content.revised_combat(state) and Content.REVISED_PARTS.has(id)) or (int(state.get("magazine_build_version",0))>0 and Content.MAGAZINE_BUILD_PARTS.has(id)) or (int(state.get("focus_build_version",0))==1 and Content.FOCUS_PARTS.has(id)) or (Content.Roles.builds(state) and Content.BUILD_ROLE_PARTS.has(id)):
+			var effect:=PartChoice.effect(id,state)
+			var cost:=str(Content.part_spec(id,state).get("downside",""))
+			return effect+(" · "+cost if not cost.is_empty() else "")
 		var states := _part_states(id, state)
 		var before: Dictionary = states[0]
 		var after: Dictionary = states[1]
@@ -168,7 +173,7 @@ static func reward_impact(id: String, state: Dictionary, next_enemies: Array) ->
 			"lens":
 				return "관통 있는 탄만 관통 +2" + (" · 다음 장갑 최대 %d" % int(threat.max_armor) if not next_enemies.is_empty() else "")
 			"loader":
-				var base := int(Content.GUNS[state.get("gun", "single")].reload)
+				var base := int(Content.weapon_spec(state).reload)
 				return "기본 재장전 %d→%d턴 · 과열 시 추가 1턴" % [maxi(1, base + Content.reload_modifier(before)), maxi(1, base + Content.reload_modifier(after))]
 			"supply":
 				return "탄창 %d→%d칸 · 순서 1발 확장" % [Content.capacity(before), Content.capacity(after)]
@@ -199,7 +204,7 @@ static func reward_impact(id: String, state: Dictionary, next_enemies: Array) ->
 			"overbore":
 				return "2칸 공격탄 피해 +3·관통 +2 · 탄창 −1칸"
 			"inferno":
-				return "소이 화상 +2 · 재장전 +1턴"
+				return "화상 기간 +2턴 · 재장전 +1턴"
 			"arc_splitter":
 				return "전이 피해 +2·대상 +1 · 직접 피해 −1"
 			"momentum":
@@ -228,6 +233,8 @@ static func _summary_key(id: String) -> String:
 	return Content.source_id(id) + ("_c" if Content.is_compressed(id) else "") if Content.AMMO.get(id,{}).get("profile",false) else id
 
 static func loss_advice(state: Dictionary) -> String:
+	if state.get("loss_reason","") == "ammo":
+		return "사용한 탄은 이번 전투에 다시 나오지 않습니다. 장전한 구성을 포기하면 재장전으로 전부 배출합니다. 불필요한 교환·배출을 줄이고, 지원탄과 공격탄을 함께 사용하거나 다음 등반에서 탄약을 추가하세요."
 	var last: Dictionary = {}
 	var history: Array = state.get("history", [])
 	for index in range(history.size() - 1, -1, -1):

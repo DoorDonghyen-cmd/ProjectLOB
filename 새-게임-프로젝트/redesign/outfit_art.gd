@@ -1,20 +1,148 @@
 extends RefCounted
-## Costume assets only; rules and acquisition remain in Content/Campaign.
+## Combat material blocks on the approved sheets; keep measured frame geometry.
 const BODIES := {
-	"heatworker": {
-		"pistol": preload("res://assets/art/outfits_live_20261013/heatworker_pistol.png"),
-		"long": preload("res://assets/art/outfits_live_20261013/heatworker_long.png"),
+	"work":{"pistol":preload("res://assets/art/combat_outfit_blocks_20261107/work_pistol.png"),"long":preload("res://assets/art/combat_outfit_blocks_20261107/work_long.png")},
+	"carrier":{"pistol":preload("res://assets/art/combat_outfit_blocks_20261107/carrier_pistol.png"),"long":preload("res://assets/art/combat_outfit_blocks_20261107/carrier_long.png")},
+	"scout":{"pistol":preload("res://assets/art/combat_outfit_blocks_20261107/scout_pistol.png"),"long":preload("res://assets/art/combat_outfit_blocks_20261107/scout_long_v2.png")},
+	"heatworker":{"pistol":preload("res://assets/art/combat_outfit_blocks_20261107/heatworker_pistol.png"),"long":preload("res://assets/art/combat_outfit_blocks_20261107/heatworker_long.png")},
+	"hoist":{"pistol":preload("res://assets/art/combat_outfit_blocks_20261107/hoist_pistol.png"),"long":preload("res://assets/art/combat_outfit_blocks_20261107/hoist_long_v2.png")},
+	"recovery":{"pistol":preload("res://assets/art/combat_outfit_blocks_20261107/recovery_pistol.png"),"long":preload("res://assets/art/combat_outfit_blocks_20261107/recovery_long.png")},
+	"expedition":{"pistol":preload("res://assets/art/combat_outfit_blocks_20261107/expedition_pistol.png"),"long":preload("res://assets/art/combat_outfit_blocks_20261107/expedition_long.png")},
+}
+const IDLES := {
+	"work":preload("res://assets/art/combat_outfit_blocks_20261107/work_idle.png"),
+	"carrier":preload("res://assets/art/combat_outfit_blocks_20261107/carrier_idle.png"),
+	"scout":preload("res://assets/art/combat_outfit_blocks_20261107/scout_idle.png"),
+	"heatworker":preload("res://assets/art/combat_outfit_blocks_20261107/heatworker_idle.png"),
+	"hoist":preload("res://assets/art/combat_outfit_blocks_20261107/hoist_idle.png"),
+	"recovery":preload("res://assets/art/combat_outfit_blocks_20261107/recovery_idle.png"),
+	"expedition":preload("res://assets/art/combat_outfit_blocks_20261107/expedition_idle.png"),
+}
+const FRAMES := {
+	"work":{
+		"pistol":{
+			"idle":{"source":Rect2(0,0,512,512),"bounds":Rect2(193,36,223,451),"foot":Vector2(310.5,487),"grip":Vector2(347.5,225.0),"hands":[Rect2(328,207,39,36)],"scale":0.9911308,"angle":20},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(124,36,223,451),"foot":Vector2(241.5,487),"grip":Vector2(313.5,206.0),"hands":[Rect2(297,188,33,36)],"scale":0.9911308,"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(93,36,227,451),"foot":Vector2(211.5,487),"grip":Vector2(294.0,163.5),"hands":[Rect2(277,145,34,37)],"scale":0.9911308,"angle":-8},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(192,24,229,452),"foot":Vector2(311.0,476),"grip":Vector2(352.5,205.5),"hands":[Rect2(333,188,39,35),Rect2(378,158,34,35)],"scale":0.9889381,"angle":8},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(139,24,231,452),"foot":Vector2(262.5,476),"grip":Vector2(295.5,199.5),"hands":[Rect2(277,181,37,37),Rect2(303,217,37,33)],"scale":0.9889381,"angle":8},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(89,24,230,452),"foot":Vector2(212.5,476),"grip":Vector2(247.0,210.5),"hands":[Rect2(228,193,38,35)],"scale":0.9889381,"angle":18},
+		},
+		"long":{
+			"idle":{"source":Rect2(887,0,887,887),"bounds":Rect2(204,48,410,788),"grip":Vector2(459,384),"foot":Vector2(411.5,836),"hands":[Rect2(435,361,49,43),Rect2(542,440,44,47)],"scale":0.5672589,"angle":0,"support":Vector2(564,464)},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(129,32,247,455),"foot":Vector2(241.5,487),"grip":Vector2(262.5,195.0),"hands":[Rect2(246,177,33,36),Rect2(335,146,32,33)],"scale":0.9824176,"support":Vector2(351.0,162.5),"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(95,32,234,455),"foot":Vector2(208.5,487),"grip":Vector2(238.0,192.5),"hands":[Rect2(222,175,32,35),Rect2(289,146,32,33)],"scale":0.9824176,"support":Vector2(305.0,162.5),"angle":0},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(191,15,256,462),"foot":Vector2(312.5,477),"grip":Vector2(335.0,201.5),"hands":[Rect2(318,183,34,37),Rect2(405,251,33,35)],"scale":0.9675325,"angle":12},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(137,15,234,462),"foot":Vector2(259.5,477),"grip":Vector2(280.0,201.5),"hands":[Rect2(264,183,32,37),Rect2(288,210,34,34)],"scale":0.9675325,"angle":12},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(95,16,231,461),"foot":Vector2(215.0,477),"grip":Vector2(239.5,227.0),"hands":[Rect2(223,209,33,36),Rect2(283,239,33,35)],"scale":0.9696312,"support":Vector2(299.5,256.5),"angle":0},
+		},
 	},
-	"hoist": {
-		"pistol": preload("res://assets/art/outfits_live_20261013/hoist_pistol.png"),
-		"long": preload("res://assets/art/outfits_live_20261013/hoist_long.png"),
+	"carrier":{
+		"pistol":{
+			"idle":{"source":Rect2(0,0,887,887),"bounds":Rect2(346,81,386,745),"grip":Vector2(605,394),"foot":Vector2(549.0,826),"hands":[Rect2(582,374,45,39)],"scale":0.6,"angle":20},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(123,36,229,451),"foot":Vector2(242.5,487),"grip":Vector2(325.0,205.0),"hands":[Rect2(308,187,34,36)],"scale":0.9911308,"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(99,36,239,451),"foot":Vector2(216.0,487),"grip":Vector2(310.5,164.0),"hands":[Rect2(293,146,35,36)],"scale":0.9911308,"angle":-8},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(188,30,241,446),"foot":Vector2(304.5,476),"grip":Vector2(358.0,204.5),"hands":[Rect2(339,186,38,37),Rect2(385,157,34,36)],"scale":1.0022422,"angle":8},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(129,30,243,446),"foot":Vector2(256.5,476),"grip":Vector2(297.0,206.5),"hands":[Rect2(279,189,36,35),Rect2(309,219,36,35)],"scale":1.0022422,"angle":8},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(99,30,231,446),"foot":Vector2(218.5,476),"grip":Vector2(259.5,213.5),"hands":[Rect2(240,195,39,37)],"scale":1.0022422,"angle":18},
+		},
+		"long":{
+			"idle":{"source":Rect2(887,0,887,887),"bounds":Rect2(162,81,424,745),"grip":Vector2(412,407),"foot":Vector2(364.0,826),"hands":[Rect2(391,386,40,42),Rect2(523,461,43,46)],"scale":0.6,"angle":0,"support":Vector2(545,485)},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(117,33,262,453),"foot":Vector2(239.5,486),"grip":Vector2(266.5,192.5),"hands":[Rect2(250,173,33,39),Rect2(337,143,34,34)],"scale":0.986755,"support":Vector2(354.0,160.0),"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(84,33,247,453),"foot":Vector2(208.5,486),"grip":Vector2(240.5,194.0),"hands":[Rect2(225,176,31,36),Rect2(290,150,33,33)],"scale":0.986755,"support":Vector2(306.5,166.5),"angle":0},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(184,17,261,458),"foot":Vector2(307.5,475),"grip":Vector2(335.0,199.5),"hands":[Rect2(319,181,32,37),Rect2(401,245,35,39)],"scale":0.9759825,"angle":12},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(133,17,238,458),"foot":Vector2(257.5,475),"grip":Vector2(281.0,199.5),"hands":[Rect2(265,181,32,37),Rect2(284,211,37,37)],"scale":0.9759825,"angle":12},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(89,17,242,458),"foot":Vector2(212.0,475),"grip":Vector2(245.0,220.5),"hands":[Rect2(230,202,30,37),Rect2(287,239,35,39)],"scale":0.9759825,"support":Vector2(304.5,258.5),"angle":0},
+		},
 	},
-	"recovery": {
-		"pistol": preload("res://assets/art/outfits_live_20261013/recovery_pistol.png"),
-		"long": preload("res://assets/art/outfits_live_20261013/recovery_long.png"),
+	"scout":{
+		"pistol":{
+			"idle":{"source":Rect2(0,0,887,887),"bounds":Rect2(322,66,374,737),"grip":Vector2(589,377),"foot":Vector2(515.5,803),"hands":[Rect2(565,356,47,43)],"scale":0.6065129,"angle":20},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(127,40,230,449),"foot":Vector2(245.0,489),"grip":Vector2(318.0,206.0),"hands":[Rect2(301,188,34,36)],"scale":0.9955457,"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(93,40,232,449),"foot":Vector2(212.0,489),"grip":Vector2(297.0,164.5),"hands":[Rect2(280,146,34,37)],"scale":0.9955457,"angle":-8},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(190,23,240,454),"foot":Vector2(312.0,477),"grip":Vector2(354.0,204.0),"hands":[Rect2(335,186,38,36),Rect2(382,156,36,36)],"scale":0.9845815,"angle":8},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(138,23,240,454),"foot":Vector2(263.5,477),"grip":Vector2(295.0,199.0),"hands":[Rect2(277,180,36,38),Rect2(309,214,38,35)],"scale":0.9845815,"angle":8},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(89,24,236,454),"foot":Vector2(212.5,478),"grip":Vector2(247.5,210.0),"hands":[Rect2(229,192,37,36)],"scale":0.9845815,"angle":18},
+		},
+		"long":{
+			"idle":{"source":Rect2(887,0,887,887),"bounds":Rect2(244,66,392,737),"grip":Vector2(490,398),"foot":Vector2(438.0,803),"hands":[Rect2(471,376,37,42),Rect2(572,442,42,41)],"scale":0.6065129,"angle":0,"support":Vector2(593,463)},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(123,31,258,458),"foot":Vector2(244.0,489),"grip":Vector2(262.5,195.5),"hands":[Rect2(246,177,33,37),Rect2(336,145,34,35)],"scale":0.9759825,"support":Vector2(353.0,162.5),"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(91,31,245,458),"foot":Vector2(212.5,489),"grip":Vector2(237.0,192.0),"hands":[Rect2(221,174,32,36),Rect2(291,145,34,35)],"scale":0.9759825,"support":Vector2(308.0,162.5),"angle":0},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(187,19,265,459),"foot":Vector2(309.0,478),"grip":Vector2(333.5,204.0),"hands":[Rect2(317,186,33,36),Rect2(409,253,33,36)],"scale":0.9738562,"angle":12},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(129,19,243,459),"foot":Vector2(256.0,478),"grip":Vector2(277.0,202.5),"hands":[Rect2(261,184,32,37),Rect2(286,210,36,36)],"scale":0.9738562,"angle":12},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(91,19,243,459),"foot":Vector2(213.0,478),"grip":Vector2(237.5,227.0),"hands":[Rect2(221,209,33,36),Rect2(289,242,33,35)],"scale":0.9738562,"support":Vector2(305.5,259.5),"angle":0},
+		},
 	},
-	"expedition": {
-		"pistol": preload("res://assets/art/outfit_preview_20261011/expedition_pistol.png"),
-		"long": preload("res://assets/art/outfit_preview_20261011/expedition_long.png"),
+	"heatworker":{
+		"pistol":{
+			"idle":{"source":Rect2(0,0,887,887),"bounds":Rect2(299,48,388,789),"grip":Vector2(553,383),"foot":Vector2(497.0,837),"hands":[Rect2(529,360,48,46)],"scale":0.5665399,"angle":20},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(120,34,232,455),"foot":Vector2(241.0,489),"grip":Vector2(320.5,203.0),"hands":[Rect2(302,184,37,38)],"scale":0.9824176,"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(88,34,237,455),"foot":Vector2(212.0,489),"grip":Vector2(296.5,164.5),"hands":[Rect2(279,146,35,37)],"scale":0.9824176,"angle":-8},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(191,22,243,456),"foot":Vector2(314.0,478),"grip":Vector2(353.5,205.0),"hands":[Rect2(335,186,37,38),Rect2(388,151,36,43)],"scale":0.9802632,"angle":8},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(136,22,238,456),"foot":Vector2(260.0,478),"grip":Vector2(296.5,198.5),"hands":[Rect2(279,179,35,39),Rect2(307,216,41,36)],"scale":0.9802632,"angle":8},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(89,22,239,456),"foot":Vector2(214.0,478),"grip":Vector2(249.0,215.0),"hands":[Rect2(230,196,38,38)],"scale":0.9802632,"angle":18},
+		},
+		"long":{
+			"idle":{"source":Rect2(887,0,887,887),"bounds":Rect2(205,48,411,789),"grip":Vector2(461,383),"foot":Vector2(411.5,837),"hands":[Rect2(436,360,49,46),Rect2(543,438,45,49)],"scale":0.5665399,"angle":0,"support":Vector2(566,463)},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(133,31,260,459),"foot":Vector2(246.5,490),"grip":Vector2(270.5,194.5),"hands":[Rect2(252,176,37,37),Rect2(348,147,36,33)],"scale":0.9738562,"support":Vector2(366.0,163.5),"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(97,31,239,459),"foot":Vector2(214.0,490),"grip":Vector2(244.0,193.5),"hands":[Rect2(227,175,34,37),Rect2(293,146,33,34)],"scale":0.9738562,"support":Vector2(309.5,163.0),"angle":0},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(183,18,264,461),"foot":Vector2(306.5,479),"grip":Vector2(332.5,199.0),"hands":[Rect2(315,179,35,40),Rect2(404,252,34,36)],"scale":0.9696312,"angle":12},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(134,18,243,462),"foot":Vector2(259.5,480),"grip":Vector2(279.0,201.5),"hands":[Rect2(261,183,36,37),Rect2(289,212,40,38)],"scale":0.9675325,"angle":12},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(97,18,237,462),"foot":Vector2(218.0,480),"grip":Vector2(240.5,223.0),"hands":[Rect2(223,204,35,38),Rect2(288,238,34,37)],"scale":0.9675325,"support":Vector2(305.0,256.5),"angle":0},
+		},
+	},
+	"hoist":{
+		"pistol":{
+			"idle":{"source":Rect2(0,0,887,887),"bounds":Rect2(278,47,407,786),"grip":Vector2(557,379),"foot":Vector2(495.5,833),"hands":[Rect2(531,355,52,47)],"scale":0.5687023,"angle":20},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(120,27,245,463),"foot":Vector2(250.0,490),"grip":Vector2(330.0,202.0),"hands":[Rect2(311,182,38,40)],"scale":0.9654428,"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(88,29,250,461),"foot":Vector2(221.5,490),"grip":Vector2(309.0,161.0),"hands":[Rect2(289,142,40,38)],"scale":0.9696312,"angle":-8},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(170,14,262,466),"foot":Vector2(303.5,480),"grip":Vector2(350.0,203.0),"hands":[Rect2(329,183,42,40),Rect2(381,153,39,37)],"scale":0.9592275,"angle":8},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(120,16,260,465),"foot":Vector2(261.5,481),"grip":Vector2(298.0,205.0),"hands":[Rect2(278,185,40,40),Rect2(314,220,38,38)],"scale":0.9612903,"angle":8},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(86,17,251,464),"foot":Vector2(221.5,481),"grip":Vector2(264.0,213.5),"hands":[Rect2(244,195,40,37)],"scale":0.9633621,"angle":18},
+		},
+		"long":{
+			"idle":{"source":Rect2(887,0,887,887),"bounds":Rect2(192,47,426,786),"grip":Vector2(460,384),"foot":Vector2(411.5,833),"hands":[Rect2(435,360,50,47),Rect2(543,440,46,50)],"scale":0.5687023,"angle":0,"support":Vector2(566,465)},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(121,26,283,463),"foot":Vector2(256.0,489),"grip":Vector2(282.5,194.5),"hands":[Rect2(265,176,35,37),Rect2(358,144,34,35)],"scale":0.9654428,"support":Vector2(375.0,161.5),"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(75,26,275,463),"foot":Vector2(215.5,489),"grip":Vector2(250.0,191.5),"hands":[Rect2(234,173,32,37),Rect2(304,144,34,35)],"scale":0.9654428,"support":Vector2(321.0,161.5),"angle":0},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(179,20,285,459),"foot":Vector2(322.0,479),"grip":Vector2(351.5,212.5),"hands":[Rect2(334,195,35,35),Rect2(416,256,36,35)],"scale":0.9738562,"angle":12},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(118,20,259,459),"foot":Vector2(259.5,479),"grip":Vector2(286.0,208.0),"hands":[Rect2(269,190,34,36),Rect2(294,216,38,36)],"scale":0.9738562,"angle":12},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(72,20,264,459),"foot":Vector2(219.5,479),"grip":Vector2(247.5,230.5),"hands":[Rect2(231,213,33,35),Rect2(289,243,34,35)],"scale":0.9738562,"support":Vector2(306.0,260.5),"angle":0},
+		},
+	},
+	"recovery":{
+		"pistol":{
+			"idle":{"source":Rect2(0,0,887,887),"bounds":Rect2(285,49,400,786),"grip":Vector2(557,377),"foot":Vector2(494.5,835),"hands":[Rect2(531,353,52,47)],"scale":0.5687023,"angle":20},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(130,38,237,451),"foot":Vector2(248.5,489),"grip":Vector2(340.5,202.5),"hands":[Rect2(322,182,37,41)],"scale":0.9911308,"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(119,38,233,451),"foot":Vector2(239.0,489),"grip":Vector2(324.0,161.5),"hands":[Rect2(306,143,36,37)],"scale":0.9911308,"angle":-8},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(189,29,248,451),"foot":Vector2(310.0,480),"grip":Vector2(355.5,203.5),"hands":[Rect2(335,183,41,41),Rect2(387,153,39,39)],"scale":0.9911308,"angle":8},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(131,29,238,451),"foot":Vector2(254.5,480),"grip":Vector2(296.0,202.5),"hands":[Rect2(276,182,40,41),Rect2(308,219,37,36)],"scale":0.9911308,"angle":8},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(112,28,237,452),"foot":Vector2(234.0,480),"grip":Vector2(274.0,210.0),"hands":[Rect2(255,192,38,36)],"scale":0.9889381,"angle":18},
+		},
+		"long":{
+			"idle":{"source":Rect2(887,0,887,887),"bounds":Rect2(202,48,418,787),"grip":Vector2(468,381),"foot":Vector2(412.0,835),"hands":[Rect2(445,356,46,49),Rect2(547,439,46,52)],"scale":0.5679797,"angle":0,"support":Vector2(570,465)},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(113,18,268,474),"foot":Vector2(244.0,492),"grip":Vector2(265.5,190.5),"hands":[Rect2(248,171,35,39),Rect2(336,144,35,34)],"scale":0.943038,"support":Vector2(353.5,161.0),"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(80,18,252,474),"foot":Vector2(211.5,492),"grip":Vector2(237.0,188.5),"hands":[Rect2(220,169,34,39),Rect2(287,143,35,35)],"scale":0.943038,"support":Vector2(304.5,160.5),"angle":0},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(180,11,275,471),"foot":Vector2(308.0,482),"grip":Vector2(342.0,202.0),"hands":[Rect2(324,183,36,38),Rect2(407,249,37,37)],"scale":0.9490446,"angle":12},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(116,11,245,471),"foot":Vector2(244.5,482),"grip":Vector2(273.0,202.0),"hands":[Rect2(256,183,34,38),Rect2(281,212,38,37)],"scale":0.9490446,"angle":12},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(84,11,249,471),"foot":Vector2(212.0,482),"grip":Vector2(244.5,218.0),"hands":[Rect2(227,199,35,38),Rect2(286,241,36,35)],"scale":0.9490446,"support":Vector2(304.0,258.5),"angle":0},
+		},
+	},
+	"expedition":{
+		"pistol":{
+			"idle":{"source":Rect2(0,0,887,887),"bounds":Rect2(290,46,395,790),"grip":Vector2(564,384),"foot":Vector2(496.0,836),"hands":[Rect2(539,361,50,46)],"scale":0.5658228,"angle":20},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(136,38,242,451),"foot":Vector2(256.5,489),"grip":Vector2(348.5,205.5),"hands":[Rect2(330,186,37,39)],"scale":0.9911308,"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(105,37,253,452),"foot":Vector2(225.5,489),"grip":Vector2(329.0,165.5),"hands":[Rect2(310,147,38,37)],"scale":0.9889381,"angle":-8},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(181,30,250,452),"foot":Vector2(305.5,482),"grip":Vector2(353.5,214.5),"hands":[Rect2(334,195,39,39),Rect2(383,156,36,38)],"scale":0.9889381,"angle":8},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(137,30,244,452),"foot":Vector2(262.0,482),"grip":Vector2(313.0,214.5),"hands":[Rect2(295,195,36,39),Rect2(328,226,36,37)],"scale":0.9889381,"angle":8},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(100,30,249,452),"foot":Vector2(229.5,482),"grip":Vector2(273.5,214.0),"hands":[Rect2(254,195,39,38)],"scale":0.9889381,"angle":18},
+		},
+		"long":{
+			"idle":{"source":Rect2(887,0,887,887),"bounds":Rect2(207,47,419,789),"grip":Vector2(482,384),"foot":Vector2(412.0,836),"hands":[Rect2(457,361,50,46),Rect2(556,443,47,51)],"scale":0.5665399,"angle":0,"support":Vector2(580,469)},
+			"aim":{"source":Rect2(512,0,512,512),"bounds":Rect2(121,33,264,454),"foot":Vector2(241.5,487),"grip":Vector2(284.0,192.5),"hands":[Rect2(266,173,36,39),Rect2(341,147,36,36)],"scale":0.9845815,"support":Vector2(359.0,165.0),"angle":0},
+			"recoil":{"source":Rect2(1024,0,512,512),"bounds":Rect2(58,33,267,454),"foot":Vector2(186.5,487),"grip":Vector2(228.5,194.0),"hands":[Rect2(210,175,37,38),Rect2(280,142,37,36)],"scale":0.9845815,"support":Vector2(298.5,160.0),"angle":0},
+			"reload_open":{"source":Rect2(0,512,512,512),"bounds":Rect2(184,26,286,451),"foot":Vector2(315.0,477),"grip":Vector2(346.0,222.0),"hands":[Rect2(327,203,38,38),Rect2(422,258,39,39)],"scale":0.9911308,"angle":12},
+			"reload_seat":{"source":Rect2(512,512,512,512),"bounds":Rect2(124,26,257,451),"foot":Vector2(260.5,477),"grip":Vector2(285.0,221.5),"hands":[Rect2(267,204,36,35),Rect2(301,224,31,33)],"scale":0.9911308,"angle":12},
+			"cooling":{"source":Rect2(1024,512,512,512),"bounds":Rect2(68,26,258,451),"foot":Vector2(201.0,477),"grip":Vector2(226.5,244.5),"hands":[Rect2(206,225,41,39),Rect2(280,257,38,37)],"scale":0.9911308,"support":Vector2(299.0,275.5),"angle":0},
+		},
 	},
 }

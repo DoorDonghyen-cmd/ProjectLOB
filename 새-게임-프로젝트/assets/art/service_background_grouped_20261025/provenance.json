@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-25",
+  "tool": "image_gen",
+  "scope": "Simplify three indoor backgrounds, preserving composition and furniture contact points. Original art backed up; generated PNGs copied unchanged.",
+  "records": [
+    {
+      "id": "shop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png"
+      ],
+      "prompt": "Use case: style-transfer. Edit target is image 1, the empty dystopian shop background. Image 2 is ONLY the current character's simplified chunky pixel-cluster rendering reference, do NOT add any character to the output. Produce the SAME wide 3:1 scene as image 1 with noticeably quieter, softer grouped pixel art. Output landscape 2160x720 if possible, full composition edge-to-edge. Preserve camera, perspective, exact position and size of the left shutter, shelves, counter top at about 54% image height, curtain, central small grille, floor line, lights, furniture and all walkable space. This is a drop-in background behind separately rendered game characters; all major furniture contact points must remain unchanged. Style change: reduce fine detail density about 40%, merge shelf objects into simple larger pixel silhouettes, remove tiny rivets, scratches, sharp one-pixel outlines and speckled surface texture; use broad 3–4 tone clusters per material with roughly 4–6px pixel steps at output size. Preserve worn charcoal blue-green metal, muted rust cloth and small warm amber lamps, but reduce hard specular edges and background contrast. Soft-looking chunky low-resolution pixel artwork with legible pixel stair steps, NOT optical blur, smooth painting, bokeh, dithering or realistic high-definition microtexture. Keep rich depth and warm atmosphere with large shadow groups. No new objects, no new borders, no characters, no gun, no labels, no UI, no text, no exterior view.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-66d7933a-f882-450a-b269-26779a02a4ca.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_background_grouped_20261025/shop.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/shop_background.png": "f5ddd3018b6e416cf3b1da78982151c7883a17f80861faa15deac6454b552aab",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_cohesion_20261025/carrier.png": "23895930f578e4d94b3db8df43294c1c6998790a5a6574fcd59e569fa62562fe"
+      },
+      "output_sha256": "544264bb075b45e892796000d2877067001de5eb0a77b5b47ce81291f754197c",
+      "output_dimensions": [
+        2172,
+        724
+      ]
+    },
+    {
+      "id": "supply",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_background.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_background_grouped_20261025/shop.png"
+      ],
+      "prompt": "Use case: style-transfer. Image 1 is the edit target: the existing empty supply interior background. Image 2 is ONLY the approved simplified shop pixel style, NOT composition. Redraw image 1 to match image 2's grouped, muted, soft-looking chunky pixel artwork. Preserve the EXACT architecture, camera, crop, perspective and placement of the open supply trunk, its lid, front edge at about 60% image height, handles, side cabinets and empty floor; all furniture touch points and actor floor positions are locked. Same wide 3:1 output and full composition; preserve source dimensions/aspect closely. Simplify microdetail about 40%: remove rivet sparkles, scratches, intricate tiny object edges and mottled noise; group shelves and wall panels into larger 3–4 tone clusters, approx 4–6px pixel steps at 2160px width. A deliberate lower-resolution game backdrop with clear stairs and larger soft shadow groups, NOT Gaussian blur, gradients, vector illustration or photoreal surface detail. Preserve dark desaturated blue-green metal and warm ochre amber pools of lamplight, damp dark floor, small faded cloth accents. Reduce fine bright highlights and fine linework. Keep the space inhabited, aged and cozy within a dystopian tower. Do not simplify so much that furniture silhouettes or room purpose are lost. No added characters or people, no labels, no UI, no text, no frame, no outdoors. Change rendering only; no furniture rearrangement.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-10524f08-ab7a-48cb-ab12-2d27a573087e.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_background_grouped_20261025/supply.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/supply_background.png": "be5864206d6a34d8d3bfb9184cc1b2f12adeab89b5712ba3c62ac15c19e29884",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_background_grouped_20261025/shop.png": "544264bb075b45e892796000d2877067001de5eb0a77b5b47ce81291f754197c"
+      },
+      "output_sha256": "4b8e26d30641015417e98a1d6e8acd543b3c0eb0c538d22d786aaf38c8cb1990",
+      "output_dimensions": [
+        2172,
+        724
+      ]
+    },
+    {
+      "id": "workshop",
+      "refs": [
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_background.png",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_background_grouped_20261025/shop.png"
+      ],
+      "prompt": "Use case: style-transfer. Image 1 is the edit target: the existing empty workshop interior background. Image 2 is ONLY the approved simplified shop pixel style, NOT composition. Redraw image 1 to match image 2's grouped, muted, soft-looking chunky pixel artwork. Preserve the EXACT architecture, camera, crop, perspective and placement of the long workshop bench top at about 56% image height, the press on the right, drawer stacks and empty floor; all furniture touch points and actor floor positions are locked. Same wide 3:1 output and full composition; preserve source dimensions/aspect closely. Simplify microdetail about 40%: remove rivet sparkles, scratches, intricate tiny object edges and mottled noise; group shelves and wall panels into larger 3–4 tone clusters, approx 4–6px pixel steps at 2160px width. A deliberate lower-resolution game backdrop with clear stairs and larger soft shadow groups, NOT Gaussian blur, gradients, vector illustration or photoreal surface detail. Preserve dark desaturated blue-green metal and warm ochre amber pools of lamplight, damp dark floor, small faded cloth accents. Reduce fine bright highlights and fine linework. Keep the space inhabited, aged and cozy within a dystopian tower. Do not simplify so much that furniture silhouettes or room purpose are lost. No added characters or people, no labels, no UI, no text, no frame, no outdoors. Change rendering only; no furniture rearrangement.",
+      "source": "C:\\Users\\mdyt7\\.codex\\generated_images\\01a08ee0-4c35-7ff2-9bab-7f2f85848986\\exec-222503cc-9d42-4bed-9d16-7e7e8010dddd.png",
+      "output": "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_background_grouped_20261025/workshop.png",
+      "reference_sha256": {
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_layers_20261011/workshop_background.png": "ff2bf0afc5c8627645eb0de2910167e60b4fcd795e257aba6189b9749fdc38fc",
+        "D:/ProjectLoB/worktrees/core-redesign/새-게임-프로젝트/assets/art/service_background_grouped_20261025/shop.png": "544264bb075b45e892796000d2877067001de5eb0a77b5b47ce81291f754197c"
+      },
+      "output_sha256": "b9ca204cd4a485f98d8df8ccb9684b18855e549efa536be25c53fc74bce93b5a",
+      "output_dimensions": [
+        2169,
+        725
+      ]
+    }
+  ]
+}

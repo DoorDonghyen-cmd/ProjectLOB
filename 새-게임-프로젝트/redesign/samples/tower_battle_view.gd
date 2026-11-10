@@ -69,7 +69,7 @@ func _ready() -> void:
 		queue_redraw()
 
 func ground_y() -> float:
-	# Distances sit below the feet; the final 30px is a fixed arrival/status row.
+	# The final 30px remains reserved for reinforcements, below the walkway.
 	return size.y - 48.0 - BOTTOM_STATUS_HEIGHT
 
 func player_feet() -> Vector2:
@@ -77,7 +77,7 @@ func player_feet() -> Vector2:
 
 func enemy_feet(index: int) -> Vector2:
 	var position := super.enemy_feet(index)
-	position.y = ground_y() + 8
+	position.y = player_feet().y
 	return position.round()
 
 func character_scale() -> float:

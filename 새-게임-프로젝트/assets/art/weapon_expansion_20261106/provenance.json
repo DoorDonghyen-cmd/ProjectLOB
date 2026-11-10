@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-06",
+  "tool": "built-in image_gen",
+  "source_concepts": "docs/art/concepts/2026-11-06-new-weapons/provenance.json",
+  "status": {
+    "rewinder_v1": "user accepted appearance",
+    "deadbolt_break_v4": "user selected break-action direction; this rendered implementation awaits final aesthetic feedback"
+  },
+  "registration": "redesign/weapon_art.gd shared by equipment and held weapons",
+  "body_pipeline": "Reuse long-family registered six poses for seven outfits; no clothing/body PNG changes. Deadbolt front assembly rotates around registered hinge; Rewinder cassette translates during reload.",
+  "alpha": "Original RGBA preserved; bounds measured at alpha>=128, native cutout material suppresses low-alpha fringes.",
+  "processing": "No PixelOE recoloring selected for these generated clustered sprites. Existing 128-column equipment shader and held-weapon raster layer retained.",
+  "sha256": {
+    "deadbolt_break_v4.png": "6eceacd00fd804cf2de350cd8f2ad196b839ca46c7bb10914b7bd5c9a93ad364",
+    "rewinder_v1.png": "a564d82f74f16656e4bd683165bceae6baf2f5a5291742951ce4a82c76a00e42"
+  }
+}
