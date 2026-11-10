@@ -1,0 +1,148 @@
+{
+  "scope": "Static pixel mockup checks; not interactive Godot UI or mobile play validation",
+  "palette_colors": 19,
+  "states": {
+    "danger": {
+      "size": [
+        640,
+        400
+      ],
+      "display": [
+        1280,
+        800
+      ],
+      "integer_2x": true,
+      "palette_only_ui": true,
+      "battlefield_retained": true,
+      "ase_roundtrip": true,
+      "text_overflows": 0,
+      "capacity": 6,
+      "occupied": 2,
+      "active": 1,
+      "selected": [],
+      "heat": [
+        8,
+        12
+      ]
+    },
+    "ejection": {
+      "size": [
+        640,
+        400
+      ],
+      "display": [
+        1280,
+        800
+      ],
+      "integer_2x": true,
+      "palette_only_ui": true,
+      "battlefield_retained": true,
+      "ase_roundtrip": true,
+      "text_overflows": 0,
+      "capacity": 6,
+      "occupied": 6,
+      "active": 2,
+      "selected": [
+        1
+      ],
+      "heat": [
+        0,
+        12
+      ]
+    },
+    "loaded": {
+      "size": [
+        640,
+        400
+      ],
+      "display": [
+        1280,
+        800
+      ],
+      "integer_2x": true,
+      "palette_only_ui": true,
+      "battlefield_retained": true,
+      "ase_roundtrip": true,
+      "text_overflows": 0,
+      "capacity": 7,
+      "occupied": 7,
+      "active": 2,
+      "selected": [],
+      "heat": [
+        0,
+        12
+      ]
+    },
+    "nine": {
+      "size": [
+        640,
+        400
+      ],
+      "display": [
+        1280,
+        800
+      ],
+      "integer_2x": true,
+      "palette_only_ui": true,
+      "battlefield_retained": true,
+      "ase_roundtrip": true,
+      "text_overflows": 0,
+      "capacity": 9,
+      "occupied": 9,
+      "active": 3,
+      "selected": [],
+      "heat": [
+        0,
+        12
+      ]
+    },
+    "partial": {
+      "size": [
+        640,
+        400
+      ],
+      "display": [
+        1280,
+        800
+      ],
+      "integer_2x": true,
+      "palette_only_ui": true,
+      "battlefield_retained": true,
+      "ase_roundtrip": true,
+      "text_overflows": 0,
+      "capacity": 7,
+      "occupied": 5,
+      "active": 2,
+      "selected": [],
+      "heat": [
+        5,
+        12
+      ]
+    }
+  },
+  "files": {
+    "art_source/ui/combat_pixel_study_20261101/captures/danger_source.png": "4382f03451512bc63797656c8d5cfc87568028ac8aa505907a338c933eda665f",
+    "art_source/ui/combat_pixel_study_20261101/captures/ejection_source.png": "6dc27da0cc0a7f185c642462db7f9bc0c3588abcaa49c2c6f8165eda8fe61c23",
+    "art_source/ui/combat_pixel_study_20261101/captures/loaded_source.png": "e8d1b82777ab29e02eabcba0b92b8e7791406fee669f90ec1b811ecc04c32433",
+    "art_source/ui/combat_pixel_study_20261101/captures/nine_source.png": "ef5b5f2a0874b5e4ef84c635ab75362b9a0d09973cfc2b74c964146190b83c3a",
+    "art_source/ui/combat_pixel_study_20261101/captures/partial_source.png": "66d096d43cd852eae8c1f61a95732f06e60ea1aae8e114468856537c937ce87a",
+    "art_source/ui/combat_pixel_study_20261101/fonts/Galmuri11.bdf": "98716d08aa5762e6ce440d5a757d107cb5d3f32a53861878be06c00aacc23304",
+    "art_source/ui/combat_pixel_study_20261101/fonts/Galmuri9.bdf": "cc9b6d6f660d8391016be7691b3fc3f864bfa3b095f67bc5e830e9b03ce42162",
+    "art_source/ui/combat_pixel_study_20261101/fonts/OFL.md": "9a9e5a342c430c3fcf01a408b680f4405d5bf4ac659c931be35f8a1b27ea69c9",
+    "docs/art/combat-pixel-study-20261101/danger.ase": "21483d6205a7b8b69c42ba1a8088e43ef775c72f89434606f836318d76f57ca6",
+    "docs/art/combat-pixel-study-20261101/danger.png": "27353fdbdf5b17c85d891a40462f3697bbe0bcce9deb7e9bc0078785c6d074f6",
+    "docs/art/combat-pixel-study-20261101/danger_native.png": "149aca85d4097b3ed10dbf1da296749b1fb9935ee98b8b68f854e73091370bd2",
+    "docs/art/combat-pixel-study-20261101/ejection.ase": "074d5749a7f16dc5ee71444bd68b74098f335af966020d0a494e544b54e28e0b",
+    "docs/art/combat-pixel-study-20261101/ejection.png": "fb2975e561d53836171863d8a0d71f87346bb8634afd4ecac06e1bddf03e00b1",
+    "docs/art/combat-pixel-study-20261101/ejection_native.png": "bba2ff03fd05169ce7d1f0adf7130ad8978dc088d0bf70e5a9c772654ce813a7",
+    "docs/art/combat-pixel-study-20261101/loaded.ase": "afb3ee4795a0da7013db0d3e6f08f1dfc2dfcd6c373f417f221cea0a7eb8b76b",
+    "docs/art/combat-pixel-study-20261101/loaded.png": "3bfe23723cdbe3de005e717e6cb61cb63986577cccaa3fbd49eac52cc23e13c0",
+    "docs/art/combat-pixel-study-20261101/loaded_native.png": "46bde3f6c5a5b05166e004f7b41873e10cc321115e6e279af6884389b479caa9",
+    "docs/art/combat-pixel-study-20261101/nine.ase": "90f096e154210bc531c0dcbbd1677c018a8562f7e4c9dbef08e715a578b9c182",
+    "docs/art/combat-pixel-study-20261101/nine.png": "9d0b34d2e6bb41741d81783656ea72cf5f5545a43b60ffa3d0852b3498adee3d",
+    "docs/art/combat-pixel-study-20261101/nine_native.png": "d76d65664f32d1432fe800e74fd14a2f74afc98f28fe8ed50412ebdb740484f4",
+    "docs/art/combat-pixel-study-20261101/partial.ase": "29bad408c1e9a489bcea9b2d6f3cf6245c2397f0c534f01561de0c2a390ef2b6",
+    "docs/art/combat-pixel-study-20261101/partial.png": "ee9505ed4205a0d809c85a5048a3e886abb79c7c1696aea363b274fa33dcdc70",
+    "docs/art/combat-pixel-study-20261101/partial_native.png": "f96a6d645449384b7c7e78abf739f3deb706b577974065d9044c0dc57760e310"
+  }
+}

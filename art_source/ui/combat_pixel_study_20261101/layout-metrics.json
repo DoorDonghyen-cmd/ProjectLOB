@@ -1,0 +1,1772 @@
+{
+  "danger": {
+    "width": 640,
+    "height": 400,
+    "labels": [
+      {
+        "text": "교대 방패 진지",
+        "x": 12,
+        "y": 15,
+        "width": 82,
+        "font": "large"
+      },
+      {
+        "text": "리벳",
+        "x": 367,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "남은 18발",
+        "x": 430,
+        "y": 16,
+        "width": 44,
+        "font": "small"
+      },
+      {
+        "text": "코어 · 단타 ×2.00",
+        "x": 503,
+        "y": 16,
+        "width": 84,
+        "font": "small"
+      },
+      {
+        "text": "메뉴",
+        "x": 604,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "탄창 2 / 6",
+        "x": 20,
+        "y": 258,
+        "width": 61,
+        "font": "large"
+      },
+      {
+        "text": "발열 8 / 12",
+        "x": 244,
+        "y": 248,
+        "width": 52,
+        "font": "small"
+      },
+      {
+        "text": "과열",
+        "x": 482,
+        "y": 248,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "빼내기",
+        "x": 570,
+        "y": 252,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 582,
+        "y": 264,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "1",
+        "x": 25,
+        "y": 291,
+        "width": 4,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 37,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "3",
+        "x": 48,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 48,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 127,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "냉각",
+        "x": 272,
+        "y": 362,
+        "width": 24,
+        "font": "large"
+      },
+      {
+        "text": "열 −6 · 적 1행동",
+        "x": 246,
+        "y": 378,
+        "width": 76,
+        "font": "small"
+      },
+      {
+        "text": "탄창 교체",
+        "x": 377,
+        "y": 362,
+        "width": 53,
+        "font": "large"
+      },
+      {
+        "text": "적 2행동",
+        "x": 384,
+        "y": 378,
+        "width": 40,
+        "font": "small"
+      },
+      {
+        "text": "2발 사격",
+        "x": 521,
+        "y": 362,
+        "width": 49,
+        "font": "large"
+      },
+      {
+        "text": "도달 위험 · 패배 100%",
+        "x": 494,
+        "y": 378,
+        "width": 104,
+        "font": "small"
+      }
+    ],
+    "cards": [
+      {
+        "index": 0,
+        "x": 20,
+        "y": 285,
+        "w": 96,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 1,
+        "x": 120,
+        "y": 285,
+        "w": 97,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 2,
+        "x": 221,
+        "y": 285,
+        "w": 97,
+        "h": 64,
+        "occupied": false,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 3,
+        "x": 322,
+        "y": 285,
+        "w": 96,
+        "h": 64,
+        "occupied": false,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 4,
+        "x": 422,
+        "y": 285,
+        "w": 97,
+        "h": 64,
+        "occupied": false,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 5,
+        "x": 523,
+        "y": 285,
+        "w": 97,
+        "h": 64,
+        "occupied": false,
+        "selected": false,
+        "active": false
+      }
+    ],
+    "heat_cells": [
+      {
+        "x": 244,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 268,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 292,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 316,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 340,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 364,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 388,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 412,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 436,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 460,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 484,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 508,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      }
+    ],
+    "overflows": []
+  },
+  "ejection": {
+    "width": 640,
+    "height": 400,
+    "labels": [
+      {
+        "text": "첫 관문 · 보스",
+        "x": 12,
+        "y": 15,
+        "width": 79,
+        "font": "large"
+      },
+      {
+        "text": "리벳",
+        "x": 367,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "남은 24발",
+        "x": 430,
+        "y": 16,
+        "width": 47,
+        "font": "small"
+      },
+      {
+        "text": "코어 · 단타 ×2.15",
+        "x": 503,
+        "y": 16,
+        "width": 82,
+        "font": "small"
+      },
+      {
+        "text": "메뉴",
+        "x": 604,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "선택 1 / 2",
+        "x": 20,
+        "y": 258,
+        "width": 59,
+        "font": "large"
+      },
+      {
+        "text": "발열 0 / 12",
+        "x": 244,
+        "y": 248,
+        "width": 52,
+        "font": "small"
+      },
+      {
+        "text": "취소",
+        "x": 575,
+        "y": 252,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "1",
+        "x": 25,
+        "y": 291,
+        "width": 4,
+        "font": "small"
+      },
+      {
+        "text": "증폭탄",
+        "x": 37,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "+3",
+        "x": 48,
+        "y": 312,
+        "width": 16,
+        "font": "large"
+      },
+      {
+        "text": "강화",
+        "x": 48,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 127,
+        "y": 289,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "제외",
+        "x": 147,
+        "y": 314,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 226,
+        "y": 291,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 238,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "8",
+        "x": 249,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 249,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 329,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 429,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 530,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "냉각",
+        "x": 272,
+        "y": 362,
+        "width": 24,
+        "font": "large"
+      },
+      {
+        "text": "열 −6 · 적 1행동",
+        "x": 246,
+        "y": 378,
+        "width": 76,
+        "font": "small"
+      },
+      {
+        "text": "탄창 교체",
+        "x": 377,
+        "y": 362,
+        "width": 53,
+        "font": "large"
+      },
+      {
+        "text": "적 2행동",
+        "x": 384,
+        "y": 378,
+        "width": 40,
+        "font": "small"
+      },
+      {
+        "text": "1발 빼내기",
+        "x": 516,
+        "y": 362,
+        "width": 59,
+        "font": "large"
+      },
+      {
+        "text": "이번 전투에서 소모",
+        "x": 502,
+        "y": 378,
+        "width": 88,
+        "font": "small"
+      }
+    ],
+    "cards": [
+      {
+        "index": 0,
+        "x": 20,
+        "y": 285,
+        "w": 96,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 1,
+        "x": 120,
+        "y": 282,
+        "w": 97,
+        "h": 64,
+        "occupied": true,
+        "selected": true,
+        "active": false
+      },
+      {
+        "index": 2,
+        "x": 221,
+        "y": 285,
+        "w": 97,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 3,
+        "x": 322,
+        "y": 285,
+        "w": 96,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 4,
+        "x": 422,
+        "y": 285,
+        "w": 97,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 5,
+        "x": 523,
+        "y": 285,
+        "w": 97,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      }
+    ],
+    "heat_cells": [
+      {
+        "x": 244,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 268,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 292,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 316,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 340,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 364,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 388,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 412,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 436,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 460,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 484,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 508,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      }
+    ],
+    "overflows": []
+  },
+  "loaded": {
+    "width": 640,
+    "height": 400,
+    "labels": [
+      {
+        "text": "1 / 5 · 순찰 구역",
+        "x": 12,
+        "y": 15,
+        "width": 97,
+        "font": "large"
+      },
+      {
+        "text": "리벳",
+        "x": 367,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "덱 20발",
+        "x": 430,
+        "y": 16,
+        "width": 36,
+        "font": "small"
+      },
+      {
+        "text": "코어 없음",
+        "x": 503,
+        "y": 16,
+        "width": 44,
+        "font": "small"
+      },
+      {
+        "text": "메뉴",
+        "x": 604,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "탄창 7 / 7",
+        "x": 20,
+        "y": 258,
+        "width": 61,
+        "font": "large"
+      },
+      {
+        "text": "발열 0 / 12",
+        "x": 244,
+        "y": 248,
+        "width": 52,
+        "font": "small"
+      },
+      {
+        "text": "빼내기",
+        "x": 570,
+        "y": 252,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 582,
+        "y": 264,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "1",
+        "x": 25,
+        "y": 291,
+        "width": 4,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 37,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "4",
+        "x": 48,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 48,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 111,
+        "y": 291,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 123,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 134,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 134,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 199,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 285,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 372,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 458,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 544,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "냉각",
+        "x": 272,
+        "y": 362,
+        "width": 24,
+        "font": "large"
+      },
+      {
+        "text": "열 −6 · 적 1행동",
+        "x": 246,
+        "y": 378,
+        "width": 76,
+        "font": "small"
+      },
+      {
+        "text": "탄창 교체",
+        "x": 377,
+        "y": 362,
+        "width": 53,
+        "font": "large"
+      },
+      {
+        "text": "적 2행동",
+        "x": 384,
+        "y": 378,
+        "width": 40,
+        "font": "small"
+      },
+      {
+        "text": "2발 사격",
+        "x": 521,
+        "y": 362,
+        "width": 49,
+        "font": "large"
+      },
+      {
+        "text": "적 1행동",
+        "x": 527,
+        "y": 378,
+        "width": 38,
+        "font": "small"
+      }
+    ],
+    "cards": [
+      {
+        "index": 0,
+        "x": 20,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 1,
+        "x": 106,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 2,
+        "x": 192,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 3,
+        "x": 278,
+        "y": 285,
+        "w": 83,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 4,
+        "x": 365,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 5,
+        "x": 451,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 6,
+        "x": 537,
+        "y": 285,
+        "w": 83,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      }
+    ],
+    "heat_cells": [
+      {
+        "x": 244,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 268,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 292,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 316,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 340,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 364,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 388,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 412,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 436,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 460,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 484,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 508,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      }
+    ],
+    "overflows": []
+  },
+  "nine": {
+    "width": 640,
+    "height": 400,
+    "labels": [
+      {
+        "text": "첫 관문 · 보스",
+        "x": 12,
+        "y": 15,
+        "width": 79,
+        "font": "large"
+      },
+      {
+        "text": "리액터",
+        "x": 367,
+        "y": 16,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "남은 24발",
+        "x": 430,
+        "y": 16,
+        "width": 47,
+        "font": "small"
+      },
+      {
+        "text": "코어 · 고열 ×1.95",
+        "x": 503,
+        "y": 16,
+        "width": 82,
+        "font": "small"
+      },
+      {
+        "text": "메뉴",
+        "x": 604,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "탄창 9 / 9",
+        "x": 20,
+        "y": 258,
+        "width": 61,
+        "font": "large"
+      },
+      {
+        "text": "발열 0 / 12",
+        "x": 244,
+        "y": 248,
+        "width": 52,
+        "font": "small"
+      },
+      {
+        "text": "빼내기",
+        "x": 570,
+        "y": 252,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 582,
+        "y": 264,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "1",
+        "x": 25,
+        "y": 291,
+        "width": 4,
+        "font": "small"
+      },
+      {
+        "text": "냉각탄",
+        "x": 37,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "0",
+        "x": 48,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "냉각",
+        "x": 48,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 92,
+        "y": 291,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 104,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 115,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 115,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "3",
+        "x": 159,
+        "y": 291,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 171,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 182,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 182,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 228,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 295,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 362,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 429,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 496,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "냉각탄",
+        "x": 563,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "냉각",
+        "x": 272,
+        "y": 362,
+        "width": 24,
+        "font": "large"
+      },
+      {
+        "text": "열 −6 · 적 1행동",
+        "x": 246,
+        "y": 378,
+        "width": 76,
+        "font": "small"
+      },
+      {
+        "text": "탄창 교체",
+        "x": 377,
+        "y": 362,
+        "width": 53,
+        "font": "large"
+      },
+      {
+        "text": "적 2행동",
+        "x": 384,
+        "y": 378,
+        "width": 40,
+        "font": "small"
+      },
+      {
+        "text": "3발 사격",
+        "x": 521,
+        "y": 362,
+        "width": 49,
+        "font": "large"
+      },
+      {
+        "text": "적 1행동",
+        "x": 527,
+        "y": 378,
+        "width": 38,
+        "font": "small"
+      }
+    ],
+    "cards": [
+      {
+        "index": 0,
+        "x": 20,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 1,
+        "x": 87,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 2,
+        "x": 154,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 3,
+        "x": 221,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 4,
+        "x": 288,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 5,
+        "x": 355,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 6,
+        "x": 422,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 7,
+        "x": 489,
+        "y": 285,
+        "w": 63,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 8,
+        "x": 556,
+        "y": 285,
+        "w": 64,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      }
+    ],
+    "heat_cells": [
+      {
+        "x": 244,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 268,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 292,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 316,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 340,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 364,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 388,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 412,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 436,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 460,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 484,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      },
+      {
+        "x": 508,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      }
+    ],
+    "overflows": []
+  },
+  "partial": {
+    "width": 640,
+    "height": 400,
+    "labels": [
+      {
+        "text": "1 / 5 · 순찰 구역",
+        "x": 12,
+        "y": 15,
+        "width": 97,
+        "font": "large"
+      },
+      {
+        "text": "리벳",
+        "x": 367,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "덱 20발",
+        "x": 430,
+        "y": 16,
+        "width": 36,
+        "font": "small"
+      },
+      {
+        "text": "코어 없음",
+        "x": 503,
+        "y": 16,
+        "width": 44,
+        "font": "small"
+      },
+      {
+        "text": "메뉴",
+        "x": 604,
+        "y": 16,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "탄창 5 / 7",
+        "x": 20,
+        "y": 258,
+        "width": 61,
+        "font": "large"
+      },
+      {
+        "text": "발열 5 / 12",
+        "x": 244,
+        "y": 248,
+        "width": 52,
+        "font": "small"
+      },
+      {
+        "text": "빼내기",
+        "x": 570,
+        "y": 252,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 582,
+        "y": 264,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "1",
+        "x": 25,
+        "y": 291,
+        "width": 4,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 37,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "4",
+        "x": 48,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 48,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 111,
+        "y": 291,
+        "width": 6,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 123,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "2",
+        "x": 134,
+        "y": 312,
+        "width": 8,
+        "font": "large"
+      },
+      {
+        "text": "피해",
+        "x": 134,
+        "y": 330,
+        "width": 20,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 199,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 285,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "기본탄",
+        "x": 372,
+        "y": 292,
+        "width": 30,
+        "font": "small"
+      },
+      {
+        "text": "냉각",
+        "x": 272,
+        "y": 362,
+        "width": 24,
+        "font": "large"
+      },
+      {
+        "text": "열 −6 · 적 1행동",
+        "x": 246,
+        "y": 378,
+        "width": 76,
+        "font": "small"
+      },
+      {
+        "text": "탄창 교체",
+        "x": 377,
+        "y": 362,
+        "width": 53,
+        "font": "large"
+      },
+      {
+        "text": "적 2행동",
+        "x": 384,
+        "y": 378,
+        "width": 40,
+        "font": "small"
+      },
+      {
+        "text": "2발 사격",
+        "x": 521,
+        "y": 362,
+        "width": 49,
+        "font": "large"
+      },
+      {
+        "text": "적 1행동",
+        "x": 527,
+        "y": 378,
+        "width": 38,
+        "font": "small"
+      }
+    ],
+    "cards": [
+      {
+        "index": 0,
+        "x": 20,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 1,
+        "x": 106,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": true
+      },
+      {
+        "index": 2,
+        "x": 192,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 3,
+        "x": 278,
+        "y": 285,
+        "w": 83,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 4,
+        "x": 365,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": true,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 5,
+        "x": 451,
+        "y": 285,
+        "w": 82,
+        "h": 64,
+        "occupied": false,
+        "selected": false,
+        "active": false
+      },
+      {
+        "index": 6,
+        "x": 537,
+        "y": 285,
+        "w": 83,
+        "h": 64,
+        "occupied": false,
+        "selected": false,
+        "active": false
+      }
+    ],
+    "heat_cells": [
+      {
+        "x": 244,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 268,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 292,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 316,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 340,
+        "y": 264,
+        "w": 22,
+        "current": true,
+        "predicted": false
+      },
+      {
+        "x": 364,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 388,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 412,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 436,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 460,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 484,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": true
+      },
+      {
+        "x": 508,
+        "y": 264,
+        "w": 22,
+        "current": false,
+        "predicted": false
+      }
+    ],
+    "overflows": []
+  }
+}
