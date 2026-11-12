@@ -1,0 +1,317 @@
+{
+  "burst/current": {
+    "damage": 1100,
+    "equipped": [
+      "rammer",
+      "third_striker",
+      "duplex",
+      "sequencer",
+      "resonator"
+    ],
+    "fights": 14,
+    "parts": {
+      "breaker": 3,
+      "duplex": 56,
+      "rammer": 4,
+      "reclaimer": 21,
+      "resonator": 39,
+      "sequencer": 3,
+      "third_striker": 12,
+      "volley_drive": 71
+    },
+    "rounds": {
+      "charge": 6,
+      "charge_hot": 10,
+      "chase": 8,
+      "disrupt": 7,
+      "precise": 65,
+      "shatter": 3
+    },
+    "shots": 99,
+    "special_damage": 1100,
+    "special_shots": 99,
+    "special_touched": 76,
+    "touched": 76,
+    "turns": 111,
+    "won": 14
+  },
+  "burst/swap": {
+    "damage": 986,
+    "equipped": [
+      "third_striker",
+      "resonator",
+      "tag_multi_add",
+      "tag_control_mult",
+      "duplex"
+    ],
+    "fights": 14,
+    "parts": {
+      "duplex": 57,
+      "resonator": 36,
+      "tag_control_mult": 6,
+      "tag_multi_add": 61,
+      "third_striker": 12,
+      "volley_drive": 66
+    },
+    "rounds": {
+      "charge": 5,
+      "charge_hot": 8,
+      "chase": 5,
+      "disrupt": 7,
+      "precise": 62,
+      "shatter": 2
+    },
+    "shots": 89,
+    "special_damage": 986,
+    "special_shots": 89,
+    "special_touched": 67,
+    "touched": 67,
+    "turns": 110,
+    "won": 14
+  },
+  "burst/tags": {
+    "damage": 1456,
+    "equipped": [
+      "third_striker",
+      "resonator",
+      "tag_multi_add",
+      "tag_control_mult",
+      "tally"
+    ],
+    "fights": 14,
+    "parts": {
+      "resonator": 32,
+      "tag_control_mult": 7,
+      "tag_multi_add": 80,
+      "tally": 80,
+      "third_striker": 18,
+      "volley_drive": 96
+    },
+    "rounds": {
+      "basic": 20,
+      "charge": 16,
+      "charge_hot": 16,
+      "disrupt": 10,
+      "precise": 91,
+      "shatter": 9
+    },
+    "shots": 162,
+    "special_damage": 1316,
+    "special_shots": 142,
+    "special_touched": 80,
+    "touched": 96,
+    "turns": 188,
+    "won": 14
+  },
+  "heavy/current": {
+    "damage": 1217,
+    "equipped": [
+      "coil",
+      "igniter",
+      "rammer",
+      "compression_sink",
+      "radiator"
+    ],
+    "fights": 14,
+    "parts": {
+      "coil": 89,
+      "compression_sink": 39,
+      "igniter": 66,
+      "rammer": 16,
+      "thermal_drive": 99
+    },
+    "rounds": {
+      "basic": 159,
+      "bore": 98,
+      "cool": 12,
+      "detonate": 14,
+      "disrupt": 14
+    },
+    "shots": 297,
+    "special_damage": 430,
+    "special_shots": 138,
+    "special_touched": 103,
+    "touched": 186,
+    "turns": 268,
+    "won": 14
+  },
+  "heavy/swap": {
+    "damage": 1187,
+    "equipped": [
+      "tag_fire_add",
+      "tag_burning_mult",
+      "tag_fire_burn",
+      "tag_low_mult",
+      "compression_sink"
+    ],
+    "fights": 14,
+    "parts": {
+      "compression_sink": 39,
+      "tag_burning_mult": 37,
+      "tag_fire_add": 71,
+      "tag_fire_burn": 63,
+      "tag_low_mult": 12,
+      "thermal_drive": 92
+    },
+    "rounds": {
+      "basic": 134,
+      "bore": 98,
+      "cool": 11,
+      "detonate": 14,
+      "disrupt": 14
+    },
+    "shots": 271,
+    "special_damage": 592,
+    "special_shots": 137,
+    "special_touched": 87,
+    "touched": 152,
+    "turns": 270,
+    "won": 14
+  },
+  "heavy/tags": {
+    "damage": 1160,
+    "equipped": [
+      "tag_fire_add",
+      "tag_fire_burn",
+      "tag_low_mult",
+      "tag_fire_deck",
+      "compression_sink"
+    ],
+    "fights": 14,
+    "parts": {
+      "compression_sink": 18,
+      "tag_fire_add": 72,
+      "tag_fire_burn": 26,
+      "tag_fire_deck": 57,
+      "tag_low_mult": 21,
+      "tag_variety": 37,
+      "thermal_drive": 76
+    },
+    "rounds": {
+      "basic": 86,
+      "bore": 96,
+      "charge": 4,
+      "charge_hot": 14,
+      "detonate": 14,
+      "disrupt": 14
+    },
+    "shots": 228,
+    "special_damage": 823,
+    "special_shots": 142,
+    "special_touched": 76,
+    "touched": 113,
+    "turns": 216,
+    "won": 14
+  },
+  "single/current": {
+    "damage": 1418,
+    "equipped": [
+      "third_striker",
+      "opening",
+      "capacitor",
+      "afterburner",
+      "lens"
+    ],
+    "fights": 14,
+    "parts": {
+      "afterburner": 5,
+      "capacitor": 4,
+      "opening": 16,
+      "rammer": 3,
+      "sequencer": 21,
+      "siege_drive": 114,
+      "third_striker": 23
+    },
+    "rounds": {
+      "basic": 63,
+      "charge": 21,
+      "charge_heat": 13,
+      "charge_hot": 24,
+      "chase": 2,
+      "cool": 12,
+      "disrupt": 12,
+      "pierce": 96,
+      "shatter": 12
+    },
+    "shots": 255,
+    "special_damage": 799,
+    "special_shots": 192,
+    "special_touched": 87,
+    "touched": 135,
+    "turns": 259,
+    "won": 14
+  },
+  "single/swap": {
+    "damage": 1390,
+    "equipped": [
+      "third_striker",
+      "opening",
+      "tag_single_add",
+      "tag_single_mult",
+      "tag_copy"
+    ],
+    "fights": 14,
+    "parts": {
+      "opening": 16,
+      "siege_drive": 93,
+      "tag_copy": 56,
+      "tag_single_add": 56,
+      "tag_single_mult": 56,
+      "third_striker": 19
+    },
+    "rounds": {
+      "basic": 47,
+      "charge": 18,
+      "charge_heat": 11,
+      "charge_hot": 20,
+      "chase": 2,
+      "cool": 11,
+      "disrupt": 11,
+      "pierce": 91,
+      "shatter": 9
+    },
+    "shots": 220,
+    "special_damage": 939,
+    "special_shots": 173,
+    "special_touched": 56,
+    "touched": 93,
+    "turns": 216,
+    "won": 14
+  },
+  "single/tags": {
+    "damage": 1311,
+    "equipped": [
+      "third_striker",
+      "opening",
+      "tag_single_add",
+      "tag_single_mult",
+      "tag_copy"
+    ],
+    "fights": 14,
+    "parts": {
+      "afterburner": 2,
+      "opening": 13,
+      "siege_drive": 86,
+      "tag_copy": 45,
+      "tag_single_add": 63,
+      "tag_single_mult": 23,
+      "third_striker": 18
+    },
+    "rounds": {
+      "basic": 31,
+      "charge": 18,
+      "charge_hot": 19,
+      "chase": 12,
+      "cool": 9,
+      "disrupt": 10,
+      "pierce": 88
+    },
+    "shots": 187,
+    "special_damage": 996,
+    "special_shots": 156,
+    "special_touched": 63,
+    "touched": 86,
+    "turns": 182,
+    "won": 14
+  }
+}

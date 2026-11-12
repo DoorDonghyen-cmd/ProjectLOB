@@ -1,0 +1,2670 @@
+[
+  {
+    "current_magazine": [
+      "pierce_p2",
+      "charge",
+      "pierce_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p2",
+      "basic_p2"
+    ],
+    "deck": [
+      "pierce_p2",
+      "pierce_p2",
+      "charge",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "enemies": [
+      [
+        "압력총 사수",
+        18,
+        20
+      ],
+      [
+        "길목 도둑",
+        6,
+        36
+      ],
+      [
+        "길목 도둑",
+        6,
+        39
+      ]
+    ],
+    "gun": "single",
+    "node": 301,
+    "part": "third_striker",
+    "part_magazine": [
+      "pierce_p2",
+      "charge",
+      "pierce_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p2",
+      "basic_p2"
+    ],
+    "results": {
+      "eject_support": {
+        "actions": [
+          [
+            1
+          ],
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 1
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "keep_support": {
+        "actions": [
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            2
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 1
+            }
+          ],
+          "turns": 6
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_current": {
+        "actions": [
+          2,
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 5,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 1
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 7
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_part": {
+        "actions": [
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            2
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 1
+            }
+          ],
+          "turns": 6
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      }
+    },
+    "seed": 17
+  },
+  {
+    "current_magazine": [
+      "precise_p2",
+      "precise_p2",
+      "charge",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p2"
+    ],
+    "deck": [
+      "precise_p2",
+      "precise_p2",
+      "charge",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "enemies": [
+      [
+        "압력총 사수",
+        18,
+        20
+      ],
+      [
+        "길목 도둑",
+        6,
+        36
+      ],
+      [
+        "길목 도둑",
+        6,
+        39
+      ]
+    ],
+    "gun": "burst",
+    "node": 301,
+    "part": "resonator",
+    "part_magazine": [
+      "precise_p2",
+      "precise_p2",
+      "charge",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p2"
+    ],
+    "results": {
+      "burst_first": {
+        "actions": [
+          2,
+          1
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 8,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 10,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            2,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_current": {
+        "actions": [
+          2,
+          3,
+          3
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 6,
+          "shots": [
+            {
+              "damage": 8,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 10,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 6,
+          "shots": [
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        }
+      },
+      "search_part": {
+        "actions": [
+          2,
+          3,
+          3
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 6,
+          "shots": [
+            {
+              "damage": 8,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 10,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 6,
+          "shots": [
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        }
+      },
+      "short_first": {
+        "actions": [
+          1,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 8,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 10,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            2,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 1
+            }
+          ],
+          "turns": 2
+        }
+      }
+    },
+    "seed": 17
+  },
+  {
+    "current_magazine": [
+      "charge_heat",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p2",
+      "vent"
+    ],
+    "deck": [
+      "vent",
+      "vent",
+      "charge_heat",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "enemies": [
+      [
+        "압력총 사수",
+        18,
+        20
+      ],
+      [
+        "길목 도둑",
+        6,
+        36
+      ],
+      [
+        "길목 도둑",
+        6,
+        39
+      ]
+    ],
+    "gun": "heavy",
+    "node": 301,
+    "part": "cooling_breech",
+    "part_magazine": [
+      "charge_heat",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "vent"
+    ],
+    "results": {
+      "cool_then_fire": {
+        "actions": [
+          3,
+          "cool",
+          1
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 3,
+          "hp": [
+            14,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 1,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 10001
+            }
+          ],
+          "turns": 3
+        },
+        "part": {
+          "accepted": true,
+          "heat": 3,
+          "hp": [
+            14,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 1,
+              "effect": [
+                {
+                  "id": "cooling_breech",
+                  "label": "냉각 직후 +3"
+                }
+              ],
+              "round": "basic_p3",
+              "target": 10001
+            }
+          ],
+          "turns": 3
+        }
+      },
+      "fire_again": {
+        "actions": [
+          3,
+          1
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 9,
+          "hp": [
+            11,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 9,
+          "hp": [
+            11,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_current": {
+        "actions": [
+          4,
+          4
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_part": {
+        "actions": [
+          4,
+          4
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        }
+      }
+    },
+    "seed": 17
+  },
+  {
+    "current_magazine": [
+      "pierce_p2",
+      "charge",
+      "pierce_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p2"
+    ],
+    "deck": [
+      "pierce_p2",
+      "pierce_p2",
+      "charge",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "enemies": [
+      [
+        "압력총 사수",
+        18,
+        20
+      ],
+      [
+        "길목 도둑",
+        6,
+        36
+      ],
+      [
+        "길목 도둑",
+        6,
+        39
+      ]
+    ],
+    "gun": "single",
+    "node": 302,
+    "part": "third_striker",
+    "part_magazine": [
+      "pierce_p2",
+      "charge",
+      "pierce_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p2"
+    ],
+    "results": {
+      "eject_support": {
+        "actions": [
+          [
+            1
+          ],
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            3
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 1
+            }
+          ],
+          "turns": 6
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "keep_support": {
+        "actions": [
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            5
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            }
+          ],
+          "turns": 6
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_current": {
+        "actions": [
+          2,
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 5,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 7
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_part": {
+        "actions": [
+          2,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            5
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            }
+          ],
+          "turns": 6
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 12,
+              "effect": [
+                {
+                  "id": "third_striker",
+                  "label": "3번째 ×3"
+                }
+              ],
+              "round": "pierce_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            }
+          ],
+          "turns": 2
+        }
+      }
+    },
+    "seed": 23
+  },
+  {
+    "current_magazine": [
+      "charge",
+      "precise_p2",
+      "precise_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "deck": [
+      "precise_p2",
+      "precise_p2",
+      "charge",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "enemies": [
+      [
+        "압력총 사수",
+        18,
+        20
+      ],
+      [
+        "길목 도둑",
+        6,
+        36
+      ],
+      [
+        "길목 도둑",
+        6,
+        39
+      ]
+    ],
+    "gun": "burst",
+    "node": 302,
+    "part": "resonator",
+    "part_magazine": [
+      "charge",
+      "precise_p2",
+      "precise_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "results": {
+      "burst_first": {
+        "actions": [
+          2,
+          1
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            2,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 14,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            0,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 18,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 1
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_current": {
+        "actions": [
+          3,
+          3,
+          3
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 6,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 14,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 5,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 18,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        }
+      },
+      "search_part": {
+        "actions": [
+          3,
+          3,
+          3
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 6,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 14,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 5,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 18,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 1
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 2
+            }
+          ],
+          "turns": 8
+        }
+      },
+      "short_first": {
+        "actions": [
+          1,
+          2
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            2,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 14,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 4,
+              "effect": [],
+              "round": "precise_p2",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 13,
+          "hp": [
+            0,
+            0,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 3,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge",
+              "target": 0
+            },
+            {
+              "damage": 18,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 0
+            },
+            {
+              "damage": 6,
+              "effect": [
+                {
+                  "id": "resonator",
+                  "label": "공명 ×1~×2"
+                }
+              ],
+              "round": "precise_p2",
+              "target": 1
+            }
+          ],
+          "turns": 2
+        }
+      }
+    },
+    "seed": 23
+  },
+  {
+    "current_magazine": [
+      "charge_heat",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "vent"
+    ],
+    "deck": [
+      "vent",
+      "vent",
+      "charge_heat",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3",
+      "basic_p3"
+    ],
+    "enemies": [
+      [
+        "압력총 사수",
+        18,
+        20
+      ],
+      [
+        "길목 도둑",
+        6,
+        36
+      ],
+      [
+        "길목 도둑",
+        6,
+        39
+      ]
+    ],
+    "gun": "heavy",
+    "node": 302,
+    "part": "cooling_breech",
+    "part_magazine": [
+      "charge_heat",
+      "basic_p2",
+      "basic_p2",
+      "basic_p3",
+      "basic_p3",
+      "basic_p2",
+      "basic_p3",
+      "vent"
+    ],
+    "results": {
+      "cool_then_fire": {
+        "actions": [
+          3,
+          "cool",
+          1
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 3,
+          "hp": [
+            14,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 1,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 10001
+            }
+          ],
+          "turns": 3
+        },
+        "part": {
+          "accepted": true,
+          "heat": 3,
+          "hp": [
+            14,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 1,
+              "effect": [
+                {
+                  "id": "cooling_breech",
+                  "label": "냉각 직후 +3"
+                }
+              ],
+              "round": "basic_p3",
+              "target": 10001
+            }
+          ],
+          "turns": 3
+        }
+      },
+      "fire_again": {
+        "actions": [
+          3,
+          1
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 9,
+          "hp": [
+            11,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 9,
+          "hp": [
+            11,
+            6,
+            6
+          ],
+          "phase": "ready",
+          "rounds": 4,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_current": {
+        "actions": [
+          4,
+          4
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        }
+      },
+      "search_part": {
+        "actions": [
+          4,
+          4
+        ],
+        "current": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        },
+        "part": {
+          "accepted": true,
+          "heat": 0,
+          "hp": [
+            0,
+            0,
+            0
+          ],
+          "phase": "reward",
+          "rounds": 7,
+          "shots": [
+            {
+              "damage": 0,
+              "effect": [],
+              "round": "charge_heat",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 2,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 5,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p2",
+              "target": 0
+            },
+            {
+              "damage": 3,
+              "effect": [],
+              "round": "basic_p3",
+              "target": 0
+            }
+          ],
+          "turns": 2
+        }
+      }
+    },
+    "seed": 23
+  }
+]

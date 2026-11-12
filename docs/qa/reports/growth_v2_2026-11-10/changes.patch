@@ -1,0 +1,778 @@
+--- a/redesign/campaign.gd
++++ b/redesign/campaign.gd
+@@ -73,6 +73,8 @@
+ 		model.s.focus_build_version = Model.FocusBuild.VERSION
+ 		# Build engine trial (2026-11-08): 연타 공명기·타격 기록기 for new runs.
+ 		model.s.build_engine_version = Model.BuildEngine.VERSION
++		# Growth structure v2 (2026-11-10): special-first magazine, no forced first core, mastery.
++		model.s.growth_structure_version = Model.GrowthV2.VERSION
+ 	if magazine_mode and map_version>=4:
+ 		s.combat_roles_version=Model.Roles.VERSION;model.s.combat_roles_version=Model.Roles.VERSION
+ 		s.specialist_core_version=Model.Roles.SPECIALIST_VERSION;model.s.specialist_core_version=Model.Roles.SPECIALIST_VERSION
+@@ -262,6 +264,8 @@
+ 			s.encounter.stage = "cleared"
+ 			s.message = "현장 물자 확보 · +%dCr" % int(found.bonus)
+ 		s.clears += 1
++		# v2: the first win skips the growth-core pick and offers the main-round package.
++		if Model.GrowthV2.enabled(model.s) and int(s.clears) == 1 and int(s.get("opening_reward_step", 2)) == 0: s.opening_reward_step = 1
+ 		s.phase = "reward"
+ 		_log("clear", {"node": s.node, "shots": model.s.shots, "turns": model.s.turns})
+ 		if node().kind == "boss":
+@@ -281,7 +285,7 @@
+ 	return modern_gates() and node().get("kind","")=="boss" and s.phase=="reward"
+ 
+ func gate_options() -> Array:
+-	var late_growth: bool = int(s.region)>=1 and s.parts.any(func(id): return Model.Engines.IDS.has(id))
++	var late_growth: bool = int(s.region)>=1 and (s.parts.any(func(id): return Model.Engines.IDS.has(id)) or not Ammo.innate_engine(model.s).is_empty())
+ 	return Gates.options(model.s,late_growth) if modern_gates() and s.phase=="gate" and not s.resolved else []
+ 
+ func gate_ready() -> bool:
+@@ -431,7 +435,7 @@
+ 	return true
+ 
+ func engine_reward() -> bool:
+-	return s.get("phase", "") == "reward" and int(s.get("build_version",0))==1 and int(s.clears)==1 and (int(s.get("discovery_version",0)) < 3 or int(s.get("opening_reward_step",2)) == 0)
++	return s.get("phase", "") == "reward" and int(s.get("build_version",0))==1 and int(s.clears)==1 and (int(s.get("discovery_version",0)) < 3 or int(s.get("opening_reward_step",2)) == 0) and not Model.GrowthV2.enabled(model.s)
+ 
+ func first_ammo_reward() -> bool:
+ 	return s.get("phase", "") == "reward" and int(s.get("discovery_version",0)) >= 3 and int(s.clears)==1 and int(s.get("opening_reward_step",2)) == 1
+@@ -479,7 +483,7 @@
+ func can_equip_reward(id: String) -> bool:
+ 	var proposed: Array = equipped_parts()
+ 	proposed.append(id)
+-	return Ammo.valid_part_set(str(s.gun), proposed)
++	return Ammo.valid_part_set(str(s.gun), proposed, model.s)
+ 
+ func compressible_ids() -> Array:
+ 	var result: Array = []
+@@ -525,6 +529,8 @@
+ 	if modern_gates():
+ 		if choice=="skip": pass
+ 		elif not gate_options().has(choice): return false
++		elif choice=="mastery":
++			if not Model.GrowthV2.add_mastery(model.s): return false
+ 		elif choice=="production":
+ 			if not Gates.can_produce(model.s,ammo_id,sources): return false
+ 			for id in sources: model.s.deck.erase(id)
+@@ -709,7 +715,7 @@
+ 	if not s.parts.has(id) or is_equipped(id): return false
+ 	var proposed: Array = equipped_parts()
+ 	proposed.append(id)
+-	return Ammo.valid_part_set(str(s.gun), proposed)
++	return Ammo.valid_part_set(str(s.gun), proposed, model.s)
+ 
+ func can_manage_parts() -> bool:
+ 	return not str(s.get("phase", "")) in ["combat", "won", "lost"]
+@@ -733,7 +739,7 @@
+ 	if index < 0: return false
+ 	var proposed: Array = s.equipped_parts.duplicate()
+ 	proposed[index] = incoming
+-	if not Ammo.valid_part_set(str(s.gun), proposed): return false
++	if not Ammo.valid_part_set(str(s.gun), proposed, model.s): return false
+ 	s.equipped_parts = proposed
+ 	_sync_equipped_parts()
+ 	_log("replace_part", {"outgoing": outgoing, "incoming": incoming, "equipped": proposed.duplicate()})
+@@ -967,7 +973,7 @@
+ 	for id in state.parts:
+ 		if id == "none" or not Ammo.PARTS.has(id) or unique.has(id) or not Ammo.accepts_part(str(state.gun), str(id)): return false
+ 		unique.append(id)
+-	if not Ammo.valid_part_set(str(state.gun), state.equipped_parts): return false
++	if not Ammo.valid_part_set(str(state.gun), state.equipped_parts, data.get("combat", {})): return false
+ 	for id in state.equipped_parts:
+ 		if not state.parts.has(id): return false
+ 	unique = []
+--- a/redesign/campaign_content.gd
++++ b/redesign/campaign_content.gd
+@@ -370,6 +370,9 @@
+ 	var parts: Array = eligible_parts(gun, discovery_version, focus_version)
+ 	# Build engine parts appear only in runs started with it (build_engine.gd).
+ 	if not preload("res://redesign/build_engine.gd").enabled(state): parts = parts.filter(func(id): return not preload("res://redesign/build_engine.gd").NEW_PARTS.has(id))
++	# v2: the gun already carries its drive; do not offer the same drive as a part.
++	var innate := Ammo.innate_engine(state)
++	if not innate.is_empty(): parts.erase(innate)
+ 	for id in owned: parts.erase(id)
+ 	var unseen: Array = []
+ 	var repeated: Array = []
+--- a/redesign/campaign_ui.gd
++++ b/redesign/campaign_ui.gd
+@@ -216,7 +216,7 @@
+ ## Part details (2026-11-08): common window, opened from the build workshop, rewards and
+ ## the shop terminal. Same content as before.
+ func part_details(id: String) -> void:
+-	var panel: VBoxContainer = ui.CommonWindows.open(ui, str(Ammo.PARTS[id].name), Ammo.part_grade_summary(id), Vector2(780, 600))
++	var panel: VBoxContainer = ui.CommonWindows.open(ui, str(Ammo.PARTS[id].name), Ammo.part_grade_summary(id, ui.model.s), Vector2(780, 600))
+ 	panel.name = "PartDetails"
+ 	panel.get_meta("dialog").get_node("%Subtitle").add_theme_color_override("font_color", Ammo.part_grade_color(id))
+ 	# The part's pixel icon (as on the mount) beside its effect, instead of the old teal card.
+@@ -245,7 +245,7 @@
+ 	var proposed: Array = campaign.equipped_parts()
+ 	if proposed.has(id): return false
+ 	proposed.append(id)
+-	return Ammo.valid_part_set(str(campaign.s.gun), proposed)
++	return Ammo.valid_part_set(str(campaign.s.gun), proposed, campaign.model.s)
+ 
+ func _offer_destination(id: String) -> String:
+ 	if campaign.is_equipped(id): return "장착 중"
+@@ -1173,7 +1173,7 @@
+ 			for candidate in proposed:
+ 				var test:=proposed.duplicate()
+ 				test[test.find(candidate)]=id
+-				if Ammo.valid_part_set(str(campaign.s.gun),test): replacements.append(candidate)
++				if Ammo.valid_part_set(str(campaign.s.gun),test,campaign.model.s): replacements.append(candidate)
+ 			if replacements.is_empty():
+ 				effects.text="이 구성에는 장착할 수 없습니다."
+ 				cost.hide();delta.hide();apply.hide()
+--- a/redesign/content.gd
++++ b/redesign/content.gd
+@@ -438,8 +438,24 @@
+ 	if PARTS.has(legacy) and legacy != "none" and not result.has(legacy): result.append(legacy)
+ 	return result
+ 
++## Growth structure v2 (2026-11-10): each gun carries the growth drive its first-fight core
++## used to provide, so no core is forced mid-run. Climb comparison: removing the first core
++## alone failed the 리벳 and 리액터 climbs. Director mapping, before human play.
++const GUN_ENGINES := {"single": "siege_drive", "burst": "volley_drive", "heavy": "thermal_drive", "scatter": "volley_drive", "amplifier": "siege_drive", "rewinder": "thermal_drive", "deadbolt": "siege_drive"}
++
++static func innate_engine(state: Dictionary) -> String:
++	if int(state.get("growth_structure_version", 0)) != 1: return ""
++	return str(GUN_ENGINES.get(str(state.get("gun", "")), ""))
++
++## Equipped parts plus the gun's built-in drive (v2). Use for effects, never for slot limits.
++static func active_parts(state: Dictionary) -> Array:
++	var result := equipped_parts(state)
++	var engine := innate_engine(state)
++	if not engine.is_empty() and not result.has(engine): result.append(engine)
++	return result
++
+ static func has_part(state: Dictionary, id: String) -> bool:
+-	return equipped_parts(state).has(id)
++	return active_parts(state).has(id)
+ 
+ # Grade is acquisition rarity/build scope, independent from the core equipment limit.
+ static func part_grade(id: String) -> int:
+@@ -452,14 +468,17 @@
+ static func part_grade_color(id: String) -> Color:
+ 	return [Color("9aa9a0"), Color("94b7ce"), Color("c7a476")][maxi(0, part_grade(id))]
+ 
+-static func part_grade_summary(id: String) -> String:
++static func part_grade_summary(id: String, state: Dictionary = {}) -> String:
+ 	if part_grade(id) < 0: return "빈 슬롯"
+-	return part_grade_name(id) + (" · 코어 · 최대 1개 장착" if is_core_part(id) else " · 모듈")
++	# Growth structure v2 lifts the one-core limit (growth_structure.gd).
++	var core_line := " · 코어" if int(state.get("growth_structure_version", 0)) == 1 else " · 코어 · 최대 1개 장착"
++	return part_grade_name(id) + (core_line if is_core_part(id) else " · 모듈")
+ 
+ static func is_core_part(id: String) -> bool:
+ 	return PARTS.has(id) and str(PARTS[id].get("kind", "module")) == "core"
+ 
+-static func valid_part_set(gun: String, ids: Array) -> bool:
++## state: the run (model) state. Growth structure v2 (growth_structure.gd) lifts the one-core limit.
++static func valid_part_set(gun: String, ids: Array, state: Dictionary = {}) -> bool:
+ 	if ids.size() > MAX_EQUIPPED_PARTS: return false
+ 	var seen: Array = []
+ 	var cores := 0
+@@ -467,7 +486,7 @@
+ 		var id := str(value)
+ 		if id == "none" or seen.has(id) or not accepts_part(gun, id): return false
+ 		seen.append(id)
+-		if is_core_part(id): cores += 1
++		if is_core_part(id) and not int(state.get("growth_structure_version", 0)) == 1: cores += 1
+ 	return cores <= 1
+ 
+ static func damage(id: String, state: Dictionary) -> int:
+--- a/redesign/gate_upgrades.gd
++++ b/redesign/gate_upgrades.gd
+@@ -5,7 +5,8 @@
+ const Roles=preload("res://redesign/combat_roles.gd")
+ const MAX_LEVEL := 2
+ const Growth = preload("res://redesign/core_growth.gd")
+-const NAMES := {"thermal":"축열 변환기", "chain":"연쇄 격발기", "production":"전용 탄약 생산권", "growth":"코어 성장 확장", "cadence":"급탄 기구 확장", "efficiency":"저발열 약실", "conduction":"전이 회로 확장"}
++const GrowthV2 = preload("res://redesign/growth_structure.gd")
++const NAMES := {"thermal":"축열 변환기", "chain":"연쇄 격발기", "production":"전용 탄약 생산권", "growth":"코어 성장 확장", "cadence":"급탄 기구 확장", "efficiency":"저발열 약실", "conduction":"전이 회로 확장", "mastery":"탄종 숙련"}
+ 
+ static func level(state: Dictionary, id: String) -> int:
+ 	return int(state.get("gate_mods", {}).get(id, 0))
+@@ -43,10 +44,11 @@
+ 	var result: Array = []
+ 	for id in (["cadence","efficiency","conduction","chain"] if Roles.enabled(state) else ["thermal","chain"]):
+ 		if id=="cadence" and state.get("gun","")=="amplifier":continue
+-		if id=="conduction" and Roles.builds(state) and not Ammo.equipped_parts(state).any(func(part):return part in ["volley_drive","siege_drive"]):continue
++		if id=="conduction" and Roles.builds(state) and not Ammo.active_parts(state).any(func(part):return part in ["volley_drive","siege_drive"]):continue
+ 		if level(state,id)<MAX_LEVEL: result.append(id)
++	if GrowthV2.can_master(state): result.append("mastery")
+ 	if basics(state.deck).size()>=3 and not specimens(state.deck).is_empty(): result.append("production")
+-	if late_growth and Growth.enabled(state) and level(state,"growth")<Growth.MAX_UPGRADES and (not Roles.builds(state) or Ammo.equipped_parts(state).any(func(part):return part in ["volley_drive","siege_drive","thermal_drive"])): result.append("growth")
++	if late_growth and Growth.enabled(state) and level(state,"growth")<Growth.MAX_UPGRADES and (not Roles.builds(state) or Ammo.active_parts(state).any(func(part):return part in ["volley_drive","siege_drive","thermal_drive"])): result.append("growth")
+ 	return result
+ 
+ static func can_produce(state: Dictionary, specimen: String, sources: Array) -> bool:
+@@ -62,6 +64,9 @@
+ 	copy.gate_mods = state.get("gate_mods",{}).duplicate()
+ 	if next and id!="production": copy.gate_mods[id] = mini(Growth.MAX_UPGRADES if id=="growth" else MAX_LEVEL,level(state,id)+1)
+ 	match id:
++		"mastery":
++			var now := GrowthV2.mastery(state, GrowthV2.mastery_family(state))
++			return "%s 숙련 Lv%d → Lv%d" % [GrowthV2.family_name(state), now, now + 1] if next else "%s 숙련 Lv%d" % [GrowthV2.family_name(state), now]
+ 		"cadence": return "사격 상한 +%d발"%level(copy,id)
+ 		"efficiency": return "탄환 기본 발열 −%d"%level(copy,id)
+ 		"conduction": return "처치 전이 최대 추가 %d기"%(1+level(copy,id))
+@@ -72,6 +77,7 @@
+ 
+ static func description(id: String) -> String:
+ 	match id:
++		"mastery": return "지금 주력 계열의 모든 공격탄이 숙련 단계마다 타격당 피해 +1(단타 탄은 +2)을 얻습니다. 새로 얻는 같은 계열 탄에도 적용됩니다."
+ 		"cadence": return "한 번에 선택할 수 있는 탄을 1발 늘립니다. 과열 중단·리액터 강행·스파이크 처치 연쇄 조건은 유지됩니다."
+ 		"efficiency": return "모든 탄의 양수 기본 발열을 1 낮춥니다(최소 1). 연속 사격 추가 열·증폭 부하·파츠의 추가 열은 유지합니다."
+ 		"conduction": return "연쇄·돌파 코어의 처치 후 전이 대상을 1기 늘립니다. 주 표적은 세지 않으며 직접 피해량은 바꾸지 않습니다."
+@@ -82,6 +88,7 @@
+ 
+ static func caution(id: String) -> String:
+ 	match id:
++		"mastery": return "주력 계열에만 적용 · 최대 4단계 · 다른 관문 개조 대신 선택"
+ 		"cadence": return "탄창 크기·열 한계는 유지 · 최대 2회 투자"
+ 		"efficiency": return "탄약 지급·열 한계 변경 없음 · 최대 2회 투자"
+ 		"conduction": return "연쇄·돌파 코어에 적용 · 광역탄/열압 충격파 제외"
+--- a/redesign/model.gd
++++ b/redesign/model.gd
+@@ -4,6 +4,7 @@
+ ## same shot resolver on a copy and never changes live state or RNG.
+ const Content = preload("res://redesign/content.gd")
+ const Ranged = preload("res://redesign/ranged.gd")
++const Wreckage = preload("res://redesign/wreckage.gd")
+ const Noble = preload("res://redesign/noble_house.gd")
+ const Central = preload("res://redesign/central_guard.gd")
+ const Patterns = preload("res://redesign/leader_patterns.gd")
+@@ -18,6 +19,7 @@
+ const MagazineBuild = preload("res://redesign/magazine_build.gd")
+ const FocusBuild = preload("res://redesign/focus_build.gd")
+ const BuildEngine = preload("res://redesign/build_engine.gd")
++const GrowthV2 = preload("res://redesign/growth_structure.gd")
+ const Roles = preload("res://redesign/combat_roles.gd")
+ const Balance = preload("res://redesign/run_balance.gd")
+ const VERSION := 15
+@@ -83,6 +85,7 @@
+ 	s.rng_state = str(rng.state)
+ 	s.target_rng_state = _target_state(s)
+ 	_shuffle(s.draw)
++	if GrowthV2.enabled(s): GrowthV2.order_draw(s)
+ 	Reserve.prepare_opening(s, Content.source_id)
+ 	_refill()
+ 	if s.get("course", false):
+@@ -217,7 +220,7 @@
+ 				result.overdrive_next = true
+ 			else:
+ 				break
+-		elif s.gun == "amplifier" and int(result.get("hp", 1)) > 0:
++		elif s.gun == "amplifier" and (int(result.get("hp", 1)) > 0 or result.has("wreckage_hit")):
+ 			break
+ 	var detail := finish_fire(1 if overdrive_used else 0)
+ 	detail.overdrive = overdrive_used
+@@ -258,7 +261,7 @@
+ 		s.prepared = []
+ 		s.legacy_reload_penalty = 0
+ 		_release_unfired_field_round()
+-	Engines.settle(s, Content.equipped_parts(s))
++	Engines.settle(s, Content.active_parts(s))
+ 	var firing_enemies: Array = [] if forecast_only else s.enemies.duplicate(true)
+ 	var firing_projectiles: Array = [] if forecast_only else s.get("projectiles", []).duplicate(true)
+ 	var firing_reinforcements: Array = [] if forecast_only else s.get("reinforcements", []).duplicate(true)
+@@ -342,7 +345,7 @@
+ 		s.legacy_reload_penalty = 0
+ 		Gates.begin(s)
+ 		_release_unfired_field_round()
+-	Engines.settle(s, Content.equipped_parts(s))
++	Engines.settle(s, Content.active_parts(s))
+ 	_settle_ammo_exhaustion()
+ 	var reversed := WeaponRoles.after_cool(s, forced, Content.anchor)
+ 	var detail := {"cost": cost, "elapsed": int(s.turns) - start_turns, "heat_before": before, "heat_after": int(s.heat), "forced": forced, "retained": s.magazine.duplicate(), "advance_events": events, "deployments": deployments, "phase": s.phase}
+@@ -393,7 +396,8 @@
+ 		s.plan.clear()
+ 		s.plan_load_order.clear()
+ 	for id in s.magazine.duplicate():
+-		if MagazineTrial.enabled(s): s.draw.append(id)
++		if MagazineTrial.enabled(s) and GrowthV2.enabled(s) and not GrowthV2.is_basic(str(id)): s.draw.insert(GrowthV2.return_index(s), id)
++		elif MagazineTrial.enabled(s): s.draw.append(id)
+ 		else: _discard_fired_round(str(id))
+ 	s.magazine.clear()
+ 	WeaponRoles.clear(s)
+@@ -449,7 +453,7 @@
+ 		s.prepared = []
+ 		Content.Sustained.reset(s)
+ 	_settle_ammo_exhaustion()
+-	Engines.settle(s, Content.equipped_parts(s))
++	Engines.settle(s, Content.active_parts(s))
+ 	last_reload_detail = {"cost": cost, "heat_paid": heat_paid, "heat_before": heat_before, "heat_after": int(s.heat), "advance_events": advance_events, "deployments": deployments, "phase": s.phase}
+ 	if emergency: last_reload_detail.merge({"emergency":true,"emergency_paid":emergency_paid,"granted":granted,"emergency_uses":int(s.get("emergency_uses",0))})
+ 	if not forecast_only: _record("reload", last_reload_detail)
+@@ -489,6 +493,9 @@
+ 				if not forecast_only:
+ 					events.append({"turn":i,"target":enemy_index,"kind":"burn","damage":hp_before-int(e.hp),"hp":e.hp,"burn":e.burn})
+ 					if Roles.enabled(s):events[-1].ground=ground_damage>0
++		var wrecks := Wreckage.spawn(s.enemies)
++		if not wrecks.is_empty() and not forecast_only:
++			events.append({"kind": "wreckage_spawn", "turn": i, "stacks": wrecks})
+ 		if Roles.enabled(s) and not s.fire_zones.is_empty():
+ 			Roles.tick(s)
+ 			if not forecast_only:events.append({"turn":i,"kind":"fire_zone_tick","zones":s.fire_zones.duplicate(true)})
+@@ -682,7 +689,7 @@
+ # These values depend only on the bullet and the current weapon/parts, not on
+ # a random target. Forecast branches share a read-only profile for this step.
+ static func shot_profile(id: String, state: Dictionary) -> Dictionary:
+-	return {"parts": Content.equipped_parts(state), "damage": Content.damage(id, state), "pen": Content.penetration(id, state), "effect": Content.effect_value(id, state), "hits": Content.hit_count(id, state), "burn": Content.burn_amount(id, state), "burn_tick": Content.burn_damage(state), "heat_limit": Content.heat_limit(state), "hot_threshold": Content.hot_threshold(state)}
++	return {"parts": Content.active_parts(state), "damage": Content.damage(id, state), "pen": Content.penetration(id, state), "effect": Content.effect_value(id, state), "hits": Content.hit_count(id, state), "burn": Content.burn_amount(id, state), "burn_tick": Content.burn_damage(state), "heat_limit": Content.heat_limit(state), "hot_threshold": Content.hot_threshold(state)}
+ 
+ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -> Dictionary:
+ 	var index := forced_target
+@@ -716,6 +723,18 @@
+ 	var thermal_bonus := 0 # Historical result field; the retired heat-threshold round is now incendiary.
+ 	var vent_bonus := vented * int(profile.effect)
+ 	s.heat = heat_before + heat_added - cooled - vented
++	var wreck := Wreckage.blocker(s.enemies, index) if attack else -1
++	if wreck >= 0:
++		var receipt := Wreckage.strike(s.enemies, wreck, Wreckage.STACKS if Content.source_id(id) == "pierce" else int(profile.hits))
++		s.buff = AttackBoosts.consume(s.buff)
++		if s.has("gate_charge"): s.gate_charge = 0
++		s.previous_kill = false
++		var chain_cooled := _cool_third_round(active_parts, part_context)
++		receipt.merge({"id": id, "hit": true, "hits": 0, "push": 0, "heat_before": heat_before, "heat_after": int(s.heat), "heat_added": heat_added,
++			"overheated": int(s.heat) >= int(profile.heat_limit), "cooled": vented + chain_cooled, "chain_cooled": chain_cooled,
++			"sustained_heat": sustained_heat, "sustained_before": sustained_before, "sustained_after": Content.Sustained.count(s),
++			"text": "잔해 −%d칸" % int(receipt.wreckage_hit)})
++		return receipt
+ 	var chase_bonus := int(profile.effect) if spec.effect == "chase" and bool(s.get("previous_kill", false)) else 0
+ 	var sequence_bonus := int(profile.effect) * int(part_context.get("sequence_count", 0)) if spec.effect == "sequence" else 0
+ 	var prepared_rounds: Array = []
+@@ -809,7 +828,9 @@
+ 	part_bonus += engine_flat
+ 	var engine_id := "volley_drive" if engine_flat>0 else ("thermal_drive" if active_parts.has("thermal_drive") and engine_percent>100 else ("siege_drive" if engine_percent>100 else ""))
+ 	if not engine_id.is_empty() and not minimal: part_effects.append({"id":engine_id,"label":Engines.value(s,engine_id)})
+-	var subtotal := int(profile.damage) + dmg_buff + weakness_bonus + part_bonus + chase_bonus + thermal_bonus + vent_bonus + sequence_bonus
++	var mastery_bonus := GrowthV2.mastery_bonus(s, id) if attack else 0
++	if mastery_bonus > 0 and not minimal: part_combo.append("숙련 +%d" % mastery_bonus)
++	var subtotal := int(profile.damage) + dmg_buff + weakness_bonus + part_bonus + chase_bonus + thermal_bonus + vent_bonus + sequence_bonus + mastery_bonus
+ 	var gate_percent := Gates.chain_percent(s) if attack else 100
+ 	var gate_charge := int(s.get("gate_charge",0)) if attack else 0
+ 	if attack and s.has("gate_charge"): s.gate_charge = 0
+@@ -929,7 +950,7 @@
+ 		secondary = relay.events
+ 		relay_hits = int(relay.hits)
+ 		relay_damage = int(relay.damage)
+-	var chain_earned := Gates.level(s,"chain")>0 and (primary_direct_kill or secondary.any(func(v): return int(v.hp)==0 and not bool(v.get("intercept",false))))
++	var chain_earned := Gates.level(s,"chain")>0 and (primary_direct_kill or secondary.any(func(v): return int(v.hp)==0 and not bool(v.get("intercept",false)) and not v.has("wreckage_hit")))
+ 	if chain_earned: s.gate_chain = mini(4,int(s.get("gate_chain",0))+1)
+ 	Engines.observe(s,active_parts,(hits-blocked_hits if damage>0 else 0)+relay_hits,engine_percent>100 and active_parts.has("thermal_drive"),(damage-detonation+relay_damage) if requested_hits==1 else 0)
+ 	# A hot direct hit that reaches the heat limit releases a single pressure wave.
+@@ -987,8 +1008,8 @@
+ 	s.previous_kill = alive_count() < alive_before
+ 	var kill_cooled := mini(int(s.heat), int(Content.PARTS.reclaimer.cool_on_kill)) if active_parts.has("reclaimer") and s.previous_kill else 0
+ 	s.heat -= kill_cooled
+-	var chain_cooled := mini(int(s.heat), int(Content.PARTS.chain_sink.third_cooling)) if active_parts.has("chain_sink") and int(part_context.get("fired_count", -1)) == 2 else 0
+-	s.heat -= chain_cooled
++	var chain_cooled := _cool_third_round(active_parts, part_context)
++	var wrecks := Wreckage.spawn(s.enemies)
+ 	if minimal: return {"sustained_heat":sustained_heat,"sustained_before":sustained_before,"sustained_after":Content.Sustained.count(s),"engine_id":engine_id,"relay_damage":relay_damage,"ordinary_bonus": ordinary_bonus if hits > blocked_hits else 0, "relay_saved": relay_saved, "damage": damage, "heat_after": int(s.heat), "heat_before": heat_before, "overheated": int(s.heat) >= int(profile.heat_limit), "kill_cooled": kill_cooled, "chain_cooled": chain_cooled, "prepared_rounds": prepared_rounds, "interrupted": interrupted, "transferred": transferred, "sequence_bonus": sequence_bonus, "vented": vented, "thermal_bonus": thermal_bonus, "part_hot": active_parts.has("ember_core") and heat_before >= int(profile.hot_threshold) and hits > blocked_hits}
+ 	if relay_saved > 0: combo.append("압축 발열 −%d" % relay_saved)
+ 	if chain_cooled > 0: combo.append("세 번째 발 냉각 −%d" % chain_cooled)
+@@ -1091,8 +1112,14 @@
+ 	result.math.armor_before = armor_before
+ 	result.math.chase = chase_bonus
+ 	if Ranged.is_projectile(index) and int(e.hp) == 0: result.intercept = true
++	if not wrecks.is_empty(): result.wreckage_spawn = wrecks
+ 	return result
+ 
++func _cool_third_round(parts: Array, context: Dictionary) -> int:
++	var cooled := mini(int(s.heat), int(Content.PARTS.chain_sink.third_cooling)) if parts.has("chain_sink") and int(context.get("fired_count", -1)) == 2 else 0
++	s.heat -= cooled
++	return cooled
++
+ # Follow-up direct impacts are bounded by remaining hits/targets. No recursive
+ # status, boost, heat or proc reactivation. Scatter's initial target stays random;
+ # continuation always uses the public nearest-target rule.
+@@ -1104,6 +1131,10 @@
+ 	while remaining>0 or overflow>0:
+ 		var next := target_index()
+ 		if next<0: break
++		var wreck := Wreckage.blocker(s.enemies, next)
++		if wreck >= 0:
++			events.append(Wreckage.strike(s.enemies, wreck, Wreckage.STACKS if Content.source_id(id) == "pierce" else maxi(1, remaining)))
++			break
+ 		if not reached.has(next):
+ 			if reached.size()>=Roles.relay_limit(s,parts):break
+ 			reached.append(next)
+@@ -1196,7 +1227,7 @@
+ 		var equipped := Content.equipped_parts(s)
+ 		var proposed := equipped.duplicate()
+ 		proposed.append(id)
+-		if not Content.valid_part_set(str(s.gun), proposed): return false
++		if not Content.valid_part_set(str(s.gun), proposed, s): return false
+ 		s.equipped_parts = proposed
+ 		s.part = id
+ 	else:
+@@ -1399,6 +1430,7 @@
+ 	if not Roles.valid(parsed):return false
+ 	if not _whole(parsed.get("focus_build_version", 0), 0, FocusBuild.VERSION): return false
+ 	if not BuildEngine.valid(parsed): return false
++	if not GrowthV2.valid(parsed): return false
+ 	if not Balance.valid(parsed): return false
+ 	if not Patterns.valid(parsed): return false
+ 	if FocusBuild.enabled(parsed) and int(parsed.get("fire_control_version",0)) != FireHeatTrial.CAMPAIGN_VERSION: return false
+@@ -1464,11 +1496,11 @@
+ 	if not Content.GUNS.has(parsed.gun) or not Content.PARTS.has(parsed.part) or not _whole(parsed.floor, 0, 6) or not parsed.phase in ["plan", "ready", "reward", "won", "lost"]:
+ 		return false
+ 	if parsed.heat >= Content.heat_limit(parsed): return false
+-	if not parsed.equipped_parts is Array or not Content.valid_part_set(str(parsed.gun), parsed.equipped_parts): return false
++	if not parsed.equipped_parts is Array or not Content.valid_part_set(str(parsed.gun), parsed.equipped_parts, parsed): return false
+ 	# `part` remains readable for older automation and v7 migration. A current save
+ 	# must still satisfy the five-slot and one-core limits after that legacy value
+ 	# is folded into the equipped list.
+-	if not Content.valid_part_set(str(parsed.gun), Content.equipped_parts(parsed)): return false
++	if not Content.valid_part_set(str(parsed.gun), Content.equipped_parts(parsed), parsed): return false
+ 	# JSON numbers cannot preserve every signed 64-bit seed. New saves use text;
+ 	# old ordinary numeric seeds remain readable, unsafe numeric seeds are rejected.
+ 	if parsed.seed is String:
+@@ -1575,6 +1607,7 @@
+ 		if int(enemy.get("foundry_version", 0)) == 3 and not Patterns.enabled(parsed): return false
+ 		if not Content.pressure_combat(parsed) and (int(enemy.get("foundry_version",0))>=2 or int(enemy.get("central_version",0))>=2): return false
+ 	if not Ranged.valid_state(parsed): return false
++	if not Wreckage.valid(parsed.enemies, parsed.reinforcements): return false
+ 	if not BossSkills.valid(parsed): return false
+ 	if parsed.get("loss_reason","") == "ammo":
+ 		if Reserve.emergency_enabled(parsed): return false
+--- a/redesign/part_card_view.gd
++++ b/redesign/part_card_view.gd
+@@ -65,7 +65,7 @@
+ 	equipped = is_equipped
+ 	compact = is_compact
+ 	mini = is_mini
+-	tooltip_text = Content.part_grade_summary(part_id) + "\n" + str(Content.part_spec(part_id,state).text)
++	tooltip_text = Content.part_grade_summary(part_id, state) + "\n" + str(Content.part_spec(part_id,state).text)
+ 	var progress := preload("res://redesign/damage_engines.gd").progress(state,part_id)
+ 	if not progress.is_empty(): tooltip_text += "\n" + progress
+ 	queue_redraw()
+--- a/redesign/rewards/screen.gd
++++ b/redesign/rewards/screen.gd
+@@ -112,7 +112,7 @@
+ 	var has_room := not selected.is_empty() and run.can_acquire_ammo(selected)
+ 	var bag := "가방 %d / %d" % [state.deck.size(), run.model.deck_limit()]
+ 	var mixed := not choosing_outgoing and cards.keys().any(func(id): return Data.PARTS.has(id) != is_part)
+-	%Section.text = "내보낼 탄환" if choosing_outgoing else opening_title if opening else "주력 탄 묶음 · 2/2" if package else "전투 보상 · 1개 선택" if mixed else "회수할 파츠" if is_part else "회수할 탄환"
++	%Section.text = "내보낼 탄환" if choosing_outgoing else opening_title if opening else ("주력 탄 묶음" if run.model.GrowthV2.enabled(state) else "주력 탄 묶음 · 2/2") if package else "전투 보상 · 1개 선택" if mixed else "회수할 파츠" if is_part else "회수할 탄환"
+ 	%Count.text = "장착대 %d / %d" % [run.equipped_parts().size(), Campaign.MAX_EQUIPPED_PARTS] if is_part else bag
+ 	%Credits.text = "대신 %d Cr" % run.credit_reward()
+ 	%Credits.visible = not choosing_outgoing
+--- a/redesign/samples/gate_review/option_icon.gd
++++ b/redesign/samples/gate_review/option_icon.gd
+@@ -6,7 +6,7 @@
+ const ICONS := {
+ 	"cadence": "supply", "efficiency": "cooling_breech", "thermal": "cooling_breech",
+ 	"conduction": "arc_splitter", "chain": "ordinary_chain", "growth": "siege_drive",
+-	"bag": "reserve", "copy": "duplex",
++	"bag": "reserve", "copy": "duplex", "mastery": "sequencer",
+ }
+ 
+ @export var item_id := "cadence":
+--- a/redesign/screen.gd
++++ b/redesign/screen.gd
+@@ -1953,6 +1953,10 @@
+ 	if whole_magazine:
+ 		spec = Content.weapon_spec({"gun":id,"weapon_version":1,"combat_revision":Content.COMBAT_REVISION}).duplicate()
+ 		spec.identity = {"single":"최대 2발 · 공격탄 피해 +1", "burst":"최대 3발 · 같은 적 3회 적중 시 +4", "scatter":"최대 3발 · 탄마다 무작위 표적", "heavy":"최대 3발 · 과열 뒤 1발 강행", "amplifier":"단발 효과 2배 · 처치하면 연속", "rewinder":"기본 3발 · 냉각 때 잔탄 역순", "deadbolt":"기본 3발 · 무작위 1발 ×3·봉인"}[id]
++		# Growth structure v2: the gun's built-in drive (Content.GUN_ENGINES).
++		if page == "loadout" or (campaign != null and not Content.innate_engine(model.s).is_empty()):
++			var drive := str(Content.GUN_ENGINES.get(id, ""))
++			if not drive.is_empty(): spec.identity += " · 내장 " + {"siege_drive": "돌파(단타 ×2)", "volley_drive": "연쇄(타격당 +1)", "thermal_drive": "열압(고열 ×1.5)"}[drive]
+ 		spec.text = "덱에서 섞인 탄창을 장전합니다. 사격 뒤 적이 1행동하며 잔탄은 보존됩니다. 냉각은 적 1행동, 탄창 교체는 적 %d행동입니다. 탄을 먼저 선택해 탄창당 최대 2발을 빼낼 수 있습니다." % (maxi(2,int(spec.reload)) if page=="loadout" else model.reload_cost())
+ 		if page=="loadout" or int(model.s.get("fire_control_version",0))==Model.FireHeatTrial.CAMPAIGN_VERSION:
+ 			spec.text += "\n첫 탄부터 끌어서 발수 선택 → 사격으로 확정합니다. 냉각은 열을 0으로 낮추고 연속 발열을 끊습니다. 탄창 교체는 열과 연속 발열을 유지합니다(냉각 약실 +4 적용)."
+--- /dev/null
++++ b/redesign/growth_structure.gd
+@@ -0,0 +1,77 @@
++extends RefCounted
++## Growth structure v2, first prototype (2026-11-10, user: "이대로 진행해 줘" on the
++## from-scratch growth design, docs/direction/growth-structure.md). New runs only.
++## 1. Special-first magazine: owned special rounds always fill the magazine before basic
++##    rounds, so the deck no longer dilutes the build. Basics stay owned (carry, refit and
++##    gate production keep working); they only fill the slots specials leave.
++## 2. No forced early core: the first win skips the growth-core pick and goes straight to
++##    the main-round package; cores lose the one-core limit and act as rare parts.
++## 3. Ammo mastery (the 'planet card'): a gate option raises one family; every attack round
++##    of that family gets +1 damage per hit per level (+2 for single-hit rounds).
++## 4. Built-in drives: each gun carries a growth drive (content.gd GUN_ENGINES).
++const Content = preload("res://redesign/content.gd")
++const FocusBuild = preload("res://redesign/focus_build.gd")
++const VERSION := 1
++const MASTERY_LIMIT := 4
++
++static func enabled(state: Dictionary) -> bool:
++	return int(state.get("growth_structure_version", 0)) == VERSION
++
++static func is_basic(id: String) -> bool:
++	return Content.source_id(id) == "basic"
++
++## Keep the shuffled order inside each group; specials first, then basics.
++static func order_draw(state: Dictionary) -> void:
++	var specials: Array = []
++	var basics: Array = []
++	for value in state.draw:
++		if is_basic(str(value)): basics.append(value)
++		else: specials.append(value)
++	state.draw = specials + basics
++
++## Where an unfired special goes back into the draw: after the other specials.
++static func return_index(state: Dictionary) -> int:
++	for index in range(state.draw.size()):
++		if is_basic(str(state.draw[index])): return index
++	return state.draw.size()
++
++static func mastery_family(state: Dictionary) -> String:
++	var main := FocusBuild.main_round(state)
++	return Content.source_id(main) if not main.is_empty() else ""
++
++static func mastery(state: Dictionary, family: String) -> int:
++	return int(state.get("mastery", {}).get(family, 0))
++
++static func can_master(state: Dictionary) -> bool:
++	var family := mastery_family(state)
++	return enabled(state) and not family.is_empty() and mastery(state, family) < MASTERY_LIMIT
++
++static func add_mastery(state: Dictionary) -> bool:
++	if not can_master(state): return false
++	var family := mastery_family(state)
++	if not state.has("mastery"): state.mastery = {}
++	state.mastery[family] = mastery(state, family) + 1
++	return true
++
++## Flat damage per hit for attack rounds of a mastered family (before multipliers).
++## Single-hit rounds get +2 per level, multi-hit rounds +1 per hit: in the climb comparison
++## +1 for single-hit 철갑 made mastery much weaker for 리벳 than for 연타 (래칫).
++static func mastery_bonus(state: Dictionary, id: String) -> int:
++	if not enabled(state) or not Content.is_attack(id): return 0
++	var level := mastery(state, Content.source_id(id))
++	return level * (2 if Content.hit_count(id, state) <= 1 else 1)
++
++static func family_name(state: Dictionary) -> String:
++	var family := mastery_family(state)
++	return str(Content.AMMO[family].name) if Content.AMMO.has(family) else "주력 탄"
++
++static func valid(state: Dictionary) -> bool:
++	var version = state.get("growth_structure_version", 0)
++	if not (version is int or version is float) or int(version) != version or int(version) < 0 or int(version) > VERSION: return false
++	if not state.has("mastery"): return true
++	if int(version) == 0 or not state.mastery is Dictionary: return false
++	for key in state.mastery:
++		var value = state.mastery[key]
++		if not Content.AMMO.has(str(key)) or str(key) == "basic": return false
++		if not (value is int or value is float) or int(value) != value or int(value) < 0 or int(value) > MASTERY_LIMIT: return false
++	return true
+--- /dev/null
++++ b/tests/growth_structure_rules.gd
+@@ -0,0 +1,133 @@
++extends "res://tests/supply_live_ui.gd"
++## Growth structure v2 prototype rules (2026-11-10): special-first magazine, no forced
++## first core, cores without the one-core limit, ammo mastery at gates.
++## Uses fresh runs (walked with real combats) and the earned 래칫 region-1 gate state.
++const GrowthV2 = preload("res://redesign/growth_structure.gd")
++const Model = preload("res://redesign/model.gd")
++const Content = preload("res://redesign/content.gd")
++
++func earned(file: String):
++	var c = Campaign.new()
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_BUILD_DIR").path_join(file)))), "earned state restores " + file)
++	return c
++
++func first_win(c) -> bool:
++	while c.departure_pending(): c.advance_departure(true)
++	for step in range(20):
++		if c.s.phase == "reward": return true
++		match str(c.s.phase):
++			"map":
++				var combat: Array = c.choices().filter(func(n): return n.kind in ["combat", "elite"])
++				if combat.is_empty() or not c.enter(int(combat[0].id)): return false
++			"combat":
++				var path: Array = solver.solve(c.model, 4, 18)
++				if path.is_empty(): return false
++				for item in path:
++					if item.action == "eject": c.model.eject_magazine_rounds(item.indices)
++					else: preload("res://tests/weapon_magazine_solver.gd").command(c.model, "swap" if item.action == "reload" else str(item.action))
++				c.sync_combat()
++			_: return false
++	return c.s.phase == "reward"
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	# New runs carry the flag; the first win offers the main-round package, not a core.
++	var c = Campaign.new()
++	c.start("burst", SEED, 0, "balanced", Campaign.Content.RouteMap.VERSION, "work", true)
++	check(GrowthV2.enabled(c.model.s), "new runs use growth structure v2")
++	if check(first_win(c), "first fight won"):
++		check(not c.engine_reward() and c.first_ammo_reward() and not c.reward_options().is_empty(), "first win skips the core and offers the main-round package")
++	# Older runs keep the core pick.
++	var legacy = Campaign.new()
++	legacy.start("burst", SEED, 0, "balanced", Campaign.Content.RouteMap.VERSION, "work", true)
++	legacy.model.s.erase("growth_structure_version")
++	if check(first_win(legacy), "legacy first fight won"):
++		check(legacy.engine_reward(), "runs without v2 still pick a growth core first")
++	# Core limit lifted only for v2.
++	var two_cores := ["volley_drive", "siege_drive"]
++	check(Content.valid_part_set("burst", two_cores, {"growth_structure_version": 1}), "v2 equips two cores")
++	check(not Content.valid_part_set("burst", two_cores) and not Content.valid_part_set("burst", two_cores, {}), "without v2 one core only")
++	# Special-first magazine at the start of a fight and after a reload.
++	var fight = earned("combat_burst_17_r2_n10101.json")
++	var m: Model = fight.model
++	m.s.growth_structure_version = GrowthV2.VERSION
++	var specials: int = m.s.deck.filter(func(id): return not GrowthV2.is_basic(str(id))).size()
++	m.begin_encounter(1)
++	var front: Array = m.s.hand.slice(0, mini(specials, m.s.hand.size()))
++	check(specials > 0 and front.all(func(id): return not GrowthV2.is_basic(str(id))), "opening hand takes specials first (%d owned)" % specials)
++	var mixed := true
++	var seen_basic := false
++	for id in m.s.hand + m.s.draw:
++		if GrowthV2.is_basic(str(id)): seen_basic = true
++		elif seen_basic: mixed = false
++	check(mixed, "no special waits behind a basic")
++	var old = earned("combat_burst_17_r2_n10101.json")
++	old.model.begin_encounter(1)
++	var old_front_basics: int = old.model.s.hand.slice(0, specials).filter(func(id): return GrowthV2.is_basic(str(id))).size()
++	print("OPENING old run: %d of the first %d rounds are basic" % [old_front_basics, specials])
++	# Reload: unfired specials go back ahead of the basics.
++	m.s.draw = ["basic_p2", "basic_p2"]
++	m.s.magazine = ["precise", "basic_p2"]
++	m.s.phase = "ready"
++	m._reload_magazine(0, false)
++	var order: Array = m.s.magazine + m.s.hand + m.s.draw
++	print("RELOAD ORDER ", order)
++	var precise_at: int = order.find("precise")
++	var first_basic: int = -1
++	for i in range(order.size()):
++		if GrowthV2.is_basic(str(order[i])): first_basic = i; break
++	check(precise_at >= 0 and (first_basic < 0 or precise_at < first_basic), "reload returns the unfired special ahead of basics")
++	# Mastery at a gate.
++	var gate = earned("gate_burst_17_r1.json")
++	gate.model.s.growth_structure_version = GrowthV2.VERSION
++	var family := GrowthV2.mastery_family(gate.model.s)
++	check(family == "precise" and gate.gate_options().has("mastery"), "gate offers mastery of the main family (%s)" % family)
++	check(gate.model.Gates.summary("mastery", gate.model.s, true).contains("Lv0 → Lv1"), "gate summary names the next level")
++	check(gate.gate("mastery") and GrowthV2.mastery(gate.model.s, "precise") == 1, "taking mastery raises the family")
++	check(not gate.gate("mastery"), "one gate choice per gate")
++	# +1 damage per hit for that family.
++	var base_fight = earned("combat_burst_17_r2_n10101.json")
++	var plain := Model.new(); plain.s = Model.simulation_state(base_fight.model.s)
++	var mastered := Model.new(); mastered.s = Model.simulation_state(base_fight.model.s)
++	mastered.s.growth_structure_version = GrowthV2.VERSION
++	mastered.s.mastery = {"precise": 1}
++	for probe in [plain, mastered]:
++		probe.s.buff = {}; probe.s.heat = 0
++		for e in probe.s.enemies:
++			e.hp = 999; e.max_hp = 999; e.def = 0; e.barrier = 0
++	var a: Dictionary = plain._shot("precise", 0, {})
++	var b: Dictionary = mastered._shot("precise", 0, {})
++	check(int(b.damage) - int(a.damage) == int(b.hits), "mastery adds +1 per hit: %d → %d over %d hits" % [int(a.damage), int(b.damage), int(b.hits)])
++	check(int(mastered._shot("pierce", 0, {}).damage) == int(plain._shot("pierce", 0, {}).damage), "other families unchanged")
++	# Built-in drives: v2 guns carry their drive without using a part slot.
++	var drive_state: Dictionary = {"gun": "single", "growth_structure_version": 1, "equipped_parts": ["lens"]}
++	check(Content.active_parts(drive_state).has("siege_drive") and Content.equipped_parts(drive_state) == ["lens"], "리벳 carries 돌파 outside the five slots")
++	check(Content.active_parts({"gun": "single", "equipped_parts": ["lens"]}) == ["lens"], "no built-in drive without v2")
++	check(Content.innate_engine({"gun": "burst", "growth_structure_version": 1}) == "volley_drive" and Content.innate_engine({"gun": "heavy", "growth_structure_version": 1}) == "thermal_drive", "래칫 연쇄, 리액터 열압")
++	var single_fight = earned("combat_single_17_r3_n20101.json")
++	var without := Model.new(); without.s = Model.simulation_state(single_fight.model.s)
++	without.s.equipped_parts = []
++	var with_drive := Model.new(); with_drive.s = Model.simulation_state(without.s)
++	with_drive.s.growth_structure_version = GrowthV2.VERSION
++	for probe in [without, with_drive]:
++		probe.s.buff = {}; probe.s.heat = 0
++		for e in probe.s.enemies:
++			e.hp = 999; e.max_hp = 999; e.def = 0; e.barrier = 0
++	var plain_pierce: int = int(without._shot("pierce", 0, {}).damage)
++	var drive_pierce: int = int(with_drive._shot("pierce", 0, {}).damage)
++	check(drive_pierce >= plain_pierce * 2, "built-in 돌파 doubles a single hit: %d → %d" % [plain_pierce, drive_pierce])
++	check(Content.GUN_ENGINES.size() == Content.GUNS.size(), "every gun has a drive")
++	# Mastery: +2 per level for single-hit rounds.
++	var master_single := Model.new(); master_single.s = Model.simulation_state(with_drive.s)
++	master_single.s.mastery = {"pierce": 1}
++	check(GrowthV2.mastery_bonus(master_single.s, "pierce") == 2 and GrowthV2.mastery_bonus(mastered.s, "precise") == 1, "single-hit +2, multi-hit +1 per level")
++	# Saves.
++	var restored := Model.new()
++	check(restored.restore_state(JSON.parse_string(gate.model.serialized_state())) and GrowthV2.mastery(restored.s, "precise") == 1, "mastery survives save and load")
++	var broken: Dictionary = JSON.parse_string(gate.model.serialized_state())
++	broken.mastery = {"precise": 9}
++	check(not Model.new().restore_state(broken), "out-of-range mastery rejected")
++	broken.mastery = {"precise": 1}; broken.growth_structure_version = 0
++	check(not Model.new().restore_state(broken), "mastery without the flag rejected")
++	print("GROWTH STRUCTURE RULES checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/tests/growth_v2_climb.gd
+@@ -0,0 +1,43 @@
++extends "res://tests/economy_roles_climb.gd"
++## Growth structure v2 comparison (2026-11-10). The same full climb as economy_roles_climb
++## (real combats by the solver, real rewards/shops/gates), with v2 on (QA_GROWTH=1, default)
++## or off (QA_GROWTH=0, the flag removed at the start). With v2 the gate policy takes
++## mastery whenever it is offered; otherwise the inherited gate policy applies.
++var growth := true
++## QA_GROWTH=late: start without v2, take the first growth core the old way, then switch
++## v2 on (isolates the cost of removing the first-fight core).
++var late := false
++
++func command(c, item: Dictionary) -> bool:
++	if late and not c.model.GrowthV2.enabled(c.model.s) and int(c.s.get("opening_reward_step", 0)) >= 1:
++		c.model.s.growth_structure_version = c.model.GrowthV2.VERSION
++	# QA_MASTERY=mix: mastery at the region-1 and region-3 gates only, the inherited policy elsewhere.
++	var mix := OS.get_environment("QA_MASTERY") == "mix"
++	if growth and item.action == "gate" and c.gate_options().has("mastery") and (not mix or int(c.s.region) in [0, 2]):
++		item = item.duplicate(true)
++		item.id = "mastery"
++		item.keep = true
++	return super.command(c, item)
++
++func _run() -> void:
++	output = OS.get_environment("QA_OUTPUT_DIR")
++	if not output.replace("\\", "/").contains("/qa_runtime/growth_v2_20261110/"): quit(2); return
++	solver = preload("res://tests/fire_control_solver.gd").new(); route_policy = "safe"; acquisition_policy = "refit"; rule_version = 3
++	run_gun = OS.get_environment("QA_GUN"); run_seed = int(OS.get_environment("QA_SEED")); outfit_id = OS.get_environment("QA_OUTFIT")
++	if run_gun.is_empty(): run_gun = "burst"
++	if outfit_id.is_empty(): outfit_id = "carrier"
++	if run_seed == 0: run_seed = 17
++	growth = OS.get_environment("QA_GROWTH") != "0"
++	late = OS.get_environment("QA_GROWTH") == "late"
++	economy_version = 1
++	build_kind = {"heavy": "fire", "burst": "control", "single": "direct"}[run_gun]; role_build = build_kind == "fire"
++	preferred_core = {"single": "siege_drive", "burst": "volley_drive", "heavy": "thermal_drive"}[run_gun]
++	var c = Campaign.new(); c.start(run_gun, run_seed, 0, "balanced", 4, outfit_id, true)
++	if not growth or late: c.model.s.erase("growth_structure_version")
++	roundtrip(c)
++	var won: bool = await play_run(c)
++	endpoints.append({"gun": run_gun, "seed": run_seed, "outfit": outfit_id, "growth": "late" if late else growth, "won": won, "region": int(c.s.region) + 1, "phase": c.s.phase, "deck": c.model.s.deck, "parts": c.s.equipped_parts, "gate_mods": c.model.s.get("gate_mods", {}), "mastery": c.model.s.get("mastery", {}), "credits": int(c.s.credits)})
++	check(won, "growth comparison climb " + run_gun + " growth=" + str(growth))
++	write_report()
++	print("GROWTH V2 CLIMB COMPLETE won=%s checks=%d failures=%d" % [won, checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)
+diff --git "a/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/build_roles_rules.gd" "b/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/build_roles_rules.gd"
+index 55fab14..c224548 100644
+--- "a/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/build_roles_rules.gd"
++++ "b/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/build_roles_rules.gd"
+@@ -1,7 +1,10 @@
+ extends "res://tests/playtest_rework_rules.gd"
+ const Choices=preload("res://redesign/build_choices.gd")
+ func build(rounds: Array,parts: Array=[],gun: String="single",version: int=3):
+-	var m=modern(rounds,parts,gun);m.s.combat_roles_version=version;return m
++	var m=modern(rounds,parts,gun);m.s.combat_roles_version=version
++	# These checks pin the role rules of 2026-11-03; growth structure v2 (11-10) is a later layer.
++	m.s.erase("growth_structure_version");m.s.erase("mastery")
++	return m
+ func run()->void:
+ 	output=OS.get_environment("QA_OUTPUT_DIR")
+ 	if not output.replace("\\","/").contains("/qa_runtime/build_roles_20261103/"):quit(2);return
+diff --git "a/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/playtest_rework_climb.gd" "b/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/playtest_rework_climb.gd"
+index f2805c9..a152e5f 100644
+--- "a/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/playtest_rework_climb.gd"
++++ "b/\354\203\210-\352\262\214\354\236\204-\355\224\204\353\241\234\354\240\235\355\212\270/tests/playtest_rework_climb.gd"
+@@ -5,7 +5,8 @@ func choose_ammo(c,options: Array)->String:
+  if role_build and not c.first_ammo_reward() and options.has("disrupt") and c.model.s.deck.count("disrupt")<1:return "disrupt"
+  return super.choose_ammo(c,options)
+ func command(c,item: Dictionary)->bool:
+- if item.action=="gate":
++ # keep: a subclass chose the gate option on purpose (growth_v2_climb, 2026-11-10).
++ if item.action=="gate" and not item.get("keep",false):
+   var preferred: String=["cadence","efficiency","conduction","cadence"][mini(3,int(c.s.region))]
+   if preferred=="cadence" and c.s.gun=="amplifier":preferred="efficiency"
+   if c.gate_options().has(preferred):item=item.duplicate(true);item.id=preferred

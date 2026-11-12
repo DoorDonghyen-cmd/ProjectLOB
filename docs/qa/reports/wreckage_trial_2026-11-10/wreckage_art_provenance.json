@@ -1,0 +1,41 @@
+{
+  "status": "used in the playable mold worker wreckage trial",
+  "tool": "OpenAI built-in image editing with transparent output",
+  "references": [
+    {
+      "role": "same worker body, palette, and recognizable components",
+      "path": "새-게임-프로젝트/assets/art/foundry_concepts_20261022/mold_worker_v1.png"
+    },
+    {
+      "role": "actual battle context and display scale",
+      "path": "docs/qa/reports/wreckage_trial_2026-11-10/wreckage_1008.png"
+    }
+  ],
+  "prompt": "Make one transparent 2D pixel art game sprite of the broken remains of the exact wind-up foundry worker in reference image 1. Reference 2 is the actual combat scene for in-game scale and contrast only. Output one isolated compact, low metal pile as a clean game cutout, not a whole dead figure, no ground/shadow/environment/ui or text. Reuse identifiable parts of reference 1: the buckled square charcoal iron chest with a rust-red mold plate, one broken clamp dropped to its left, and the bent double-loop brass winding key slumped on the right. These three features should overlap into one readable silhouette, with two or three small disconnected dark metal chips close to the base. View from the same front/three-quarter side level as the reference sprite, flat horizontal bottom, about 2.4 times as wide as tall. Palette and style extremely faithful to reference 1: subdued blue-gray iron, oxide brown-red and smoked brass, restrained charcoal silhouette, chunky stepped square pixel clusters and connected patches of broad light and shadow, no bright outlines, no glows, no shine, no fine machinery, no blur, no dithering. Read clearly at about 78x34 actual screen pixels. Treat the design as a small 48x22 logical pixel sprite enlarged with nearest neighbor. The whole object fits inside the image with generous transparent margin. Keep transparency genuinely alpha; no checkerboards. A damaged shell from this specific enemy, with a dark uneven jagged outline, and with its feet, eye and standing silhouette completely gone.",
+  "generated": {
+    "size": [
+      1851,
+      849
+    ],
+    "sha256": "f7aa511841196fc88b68b3b9cf9ac77b68cafecd8077651bb8377738a976dfb9"
+  },
+  "normalization": {
+    "tool": "Godot Image",
+    "alpha_threshold": 0.5,
+    "source_rect": [
+      181,
+      141,
+      1490,
+      619
+    ],
+    "resampling": "nearest"
+  },
+  "asset": {
+    "path": "새-게임-프로젝트/assets/art/foundry_concepts_20261022/mold_worker_wreckage_20261110.png",
+    "size": [
+      96,
+      40
+    ],
+    "sha256": "840d2ef5228dbe07d8aaadf273c659b76c52d32b36809ae7e60893a4b55e55c2"
+  }
+}

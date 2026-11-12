@@ -1,0 +1,552 @@
+--- a/redesign/build_choices.gd
++++ b/redesign/build_choices.gd
+@@ -13,9 +13,18 @@
+ static func family(state: Dictionary)->String:return Ammo.source_id(Focus.main_round(state)) if not Focus.main_round(state).is_empty() else ""
+ static func modules(pool: Array,state: Dictionary)->Array:
+ 	var wanted: Array=MODULES.get(family(state),[]).duplicate()
++	# Tag build: tag parts fit any main round through its tags.
++	if preload("res://redesign/tag_build.gd").enabled(state): wanted.append_array(tag_modules(state))
+ 	if state.get("deck",[]).any(func(id):return Ammo.source_id(str(id))=="disrupt") and not wanted.has("rammer"):wanted.append("rammer")
+ 	if Ammo.equipped_parts(state).any(func(id):return id in ["volley_drive","siege_drive"]) and not wanted.has("capacitor"):wanted.append("capacitor")
+ 	return pool.filter(func(id):return wanted.has(id) and not Ammo.is_core_part(id))
++## Tag parts that read a tag the main round carries, plus the tag-free ones
++## (conditional multipliers, magazine variety, copy).
++static func tag_modules(state: Dictionary)->Array:
++	var Tags=preload("res://redesign/tag_build.gd")
++	var main:=Focus.main_round(state)
++	var carried: Array=Tags.tags(state,main) if not main.is_empty() else []
++	return Tags.PARTS.keys().filter(func(id):return not Tags.PARTS[id].has("tag") or carried.has(str(Tags.PARTS[id].tag)))
+ static func signature(state: Dictionary)->String:return str(SIGNATURE.get(family(state),""))
+ static func role(id: String)->String:
+ 	if id in ["coil","inferno","igniter"]:return "불길"
+--- a/redesign/campaign.gd
++++ b/redesign/campaign.gd
+@@ -782,6 +782,7 @@
+ 	s.parts.erase(id)
+ 	s.credits += 10
+ 	Model.BuildEngine.forget(model.s, id)
++	if model.s.has("tag_growth"): model.s.tag_growth.erase(id)
+ 	_log("dismantle", {"id": id})
+ 	return true
+ 
+--- a/redesign/campaign_content.gd
++++ b/redesign/campaign_content.gd
+@@ -370,6 +370,8 @@
+ 	var parts: Array = eligible_parts(gun, discovery_version, focus_version)
+ 	# Build engine parts appear only in runs started with it (build_engine.gd).
+ 	if not preload("res://redesign/build_engine.gd").enabled(state): parts = parts.filter(func(id): return not preload("res://redesign/build_engine.gd").NEW_PARTS.has(id))
++	# Tag build runs offer tag parts instead of the round-specific additive parts; other runs never see tag parts.
++	parts = parts.filter(func(id): return preload("res://redesign/tag_build.gd").offerable(state, id))
+ 	# v2: the gun already carries its drive; do not offer the same drive as a part.
+ 	var innate := Ammo.innate_engine(state)
+ 	if not innate.is_empty(): parts.erase(innate)
+--- a/redesign/content.gd
++++ b/redesign/content.gd
+@@ -277,6 +277,20 @@
+ 	"reserve": {"grade": 0, "name": "예비 급탄기", "kind": "module", "effect": "패 교환", "value": "+1회", "role": "조합 탐색", "upside": "패 교환 +1회", "downside": "", "text": "교전 시작과 재장전마다 복장의 패 교환 횟수 +1회. 운반용 외투도 1회 교환할 수 있습니다."},
+ 	"opening": {"grade": 1, "name": "선두 격발기", "kind": "module", "effect": "첫 발", "value": "+2 피해", "role": "선두 설계", "upside": "탄창 첫 발 피해 +2", "downside": "", "text": "장전한 탄창의 첫 발 직접 피해 +2. 어떤 탄을 선두에 놓을지 결정합니다."},
+ 	"third_striker": {"grade":1,"name":"제3 격발기","kind":"module","effect":"세 번째 발","value":"3번째 ×3","role":"주력 탄 타이밍","upside":"탄창의 세 번째 탄 직접 피해 ×3","downside":"","text":"같은 탄창에서 실제로 발사한 세 번째 탄의 직접 피해 ×3. 지원탄도 한 발로 세고 연타는 타격 수와 무관하게 한 발입니다. 빼내기는 세지 않으며 냉각은 순서를 유지하고 탄창 교체 시 초기화합니다. 화상·기폭·전이에는 적용하지 않습니다."},
++	# Tag parts (2026-11-10, tag_build.gd): offered only in tag-build runs (등반 설정).
++	"tag_fire_add": {"grade": 0, "name": "화염 점화기", "kind": "module", "effect": "화염 태그", "value": "+2", "role": "화염 가산", "upside": "화염 탄 타격당 +2", "downside": "", "text": "화염 태그가 붙은 공격탄(소이·기폭)의 타격당 피해 +2."},
++	"tag_shock_add": {"grade": 0, "name": "전기 증폭 코일", "kind": "module", "effect": "전기 태그", "value": "+2", "role": "전기 가산", "upside": "전기 탄 타격당 +2", "downside": "", "text": "전기 태그가 붙은 공격탄(전격)의 타격당 피해 +2."},
++	"tag_multi_add": {"grade": 0, "name": "다회 가속기", "kind": "module", "effect": "다회 태그", "value": "+1", "role": "다회 가산", "upside": "다회 탄 타격당 +1", "downside": "", "text": "두 번 이상 때리는 공격탄의 타격당 피해 +1."},
++	"tag_single_add": {"grade": 0, "name": "단타 조준경", "kind": "module", "effect": "단타 태그", "value": "+2", "role": "단타 가산", "upside": "단타 탄 +2", "downside": "", "text": "한 번 때리는 특수 공격탄의 피해 +2."},
++	"tag_finisher_add": {"grade": 0, "name": "마무리 조준기", "kind": "module", "effect": "마무리 태그", "value": "+3", "role": "마무리 가산", "upside": "마무리 탄 타격당 +3", "downside": "", "text": "마무리 태그가 붙은 공격탄(추격·기폭)의 타격당 피해 +3."},
++	"tag_single_mult": {"grade": 1, "name": "단타 배율기", "kind": "module", "effect": "단타 배율", "value": "×1.5", "role": "단타 배율", "upside": "단타 탄 ×1.5", "downside": "", "text": "한 번 때리는 특수 공격탄의 피해 ×1.5."},
++	"tag_hot_mult": {"grade": 1, "name": "고열 배율기", "kind": "module", "effect": "고열 배율", "value": "×1.5", "role": "고열 배율", "upside": "고열일 때 공격 ×1.5", "downside": "", "text": "발사 직전 열이 무기 한계의 절반 이상이면 특수 공격탄 피해 ×1.5."},
++	"tag_low_mult": {"grade": 1, "name": "처형 회로", "kind": "module", "effect": "약한 적 배율", "value": "×2", "role": "마무리 배율", "upside": "체력 절반 이하 적 ×2", "downside": "", "text": "체력이 절반 이하인 적에게 특수 공격탄 피해 ×2."},
++	"tag_control_mult": {"grade": 1, "name": "경직 추격기", "kind": "module", "effect": "제어된 적 배율", "value": "×2", "role": "제어 배율", "upside": "감속·차단된 적 ×2", "downside": "", "text": "감속되었거나 특수 행동이 차단된 적에게 특수 공격탄 피해 ×2."},
++	"tag_fire_deck": {"grade": 1, "name": "화염 탄약고", "kind": "module", "effect": "덱 구성", "value": "×1.5", "role": "화염 덱", "upside": "덱에 화염 탄 6장 이상이면 화염 ×1.5", "downside": "", "text": "덱에 화염 태그 탄(소이·기폭·불씨)이 6장 이상이면 화염 공격탄 피해 ×1.5."},
++	"tag_variety": {"grade": 1, "name": "혼합 탄띠", "kind": "module", "effect": "탄창 구성", "value": "+3", "role": "혼합 탄창", "upside": "탄창에 태그 4종 이상이면 +3", "downside": "", "text": "장전된 탄창의 특수탄 태그가 4종 이상이면 특수 공격탄 타격당 피해 +3."},
++	"tag_fire_growth": {"grade": 1, "name": "화염 기록기", "kind": "module", "effect": "처치 기록", "value": "최대 +6", "role": "화염 성장", "upside": "화염 처치 3회마다 화염 탄 +1", "downside": "", "text": "장착한 동안 화염 탄으로 3번 처치할 때마다 이번 등반에서 화염 탄 타격당 피해 +1(최대 +6). 분해하면 기록이 사라집니다."},
++	"tag_copy": {"grade": 2, "name": "복제 기판", "kind": "module", "effect": "복제", "value": "왼쪽 칸", "role": "효과 복제", "upside": "왼쪽에서 가장 가까운 태그 파츠 효과를 한 번 더", "downside": "", "text": "장착대에서 왼쪽으로 가장 가까운 태그 파츠(가산·배율·구성·성장)의 효과를 한 번 더 적용합니다. 사이의 일반 파츠는 건너뜁니다. 마지막에 장착하면 직전 태그 파츠를 복제합니다."},
+ 	# Build engine trial (2026-11-08, build_engine.gd): offered only in runs with build_engine_version.
+ 	"resonator": {"grade": 2, "name": "연타 공명기", "kind": "module", "effect": "연타 공명", "value": "타격마다 ×1·×2·×3", "role": "연타 결정타", "upside": "연타탄의 n번째 타격 피해 ×n", "downside": "연타탄 열 +1", "text": "연타탄이 같은 적을 때리는 동안 타격마다 배율이 커집니다. 1타 ×1, 2타 ×2, 3타 ×3. 증폭·기록·위치 배율이 모두 곱해집니다. 연타탄 열 +1."},
+ 	"tally": {"grade": 1, "name": "타격 기록기", "kind": "module", "effect": "처치 기록", "value": "최대 +6", "role": "등반 성장", "upside": "연타 처치 3회마다 연타 타격당 +1", "downside": "분해하면 기록 소멸", "text": "장착한 동안 연타탄으로 적을 3번 처치할 때마다 이번 등반에서 연타탄 타격당 피해 +1(최대 +6). 해제해도 기록은 남고, 분해하면 사라집니다."},
+--- a/redesign/equipment_screen.gd
++++ b/redesign/equipment_screen.gd
+@@ -106,6 +106,7 @@
+ 	%SelectionSummary.text = "%s  /  %s" % [gun.name, outfit.name]
+ 	%starting_deck.text = "시작 탄환  %d장  ›" % _start_deck().size()
+ 	%preparation_options.text = "등반 설정" if host.selected_difficulty == 0 else "등반 설정 · 난도 %d" % host.selected_difficulty
++	if host.selected_tag_build and not host.preparation_training: %preparation_options.text += " · 태그"
+ 	_fit_layout.call_deferred()
+ 
+ func _fit_layout() -> void:
+@@ -148,6 +149,12 @@
+ 		caption.name = "StartingRound_" + str(id)
+ 		host._label(row, preload("res://redesign/readability.gd").stats(id,{"gun":host.selected_weapon_id},true), 18, host.MUTED)
+ 
++func _pick_scheme(tags: bool, dialog: Control) -> void:
++	host.selected_tag_build = tags
++	dialog.close()
++	refresh()
++	_options.call_deferred()
++
+ func _options() -> void:
+ 	var column: VBoxContainer = host._dialog("등반 설정", false)
+ 	column.name = "PreparationOptions"
+@@ -175,6 +182,14 @@
+ 		host.difficulty_option.editable = int(profile.ascension) > 0
+ 		host.difficulty_option.value_changed.connect(func(value: float): host.selected_difficulty = int(value); refresh())
+ 		column.add_child(host.difficulty_option)
++		# Tag-based rounds and parts prototype (2026-11-10, tag_build.gd), chosen per run.
++		host._label(column, "탄환·파츠 구성 · 비교 시험", 18, host.MUTED)
++		host._label(column, "태그 시험판은 탄의 태그(화염·단타·마무리 등)를 보고 작동하는 파츠 13종으로 바뀝니다.", 16, host.MUTED)
++		var schemes: HBoxContainer = host._row(column)
++		schemes.name = "PartSchemeSelection"
++		for entry in [[false, "현재 구성", "part_scheme_current"], [true, "태그 시험판", "part_scheme_tags"]]:
++			var scheme_button: Button = host._button(schemes, str(entry[1]), str(entry[2]), _pick_scheme.bind(bool(entry[0]), dialog))
++			if bool(entry[0]) == host.selected_tag_build: host._primary_button(scheme_button)
+ 	host._label(column, "시드 · 같은 번호는 같은 경로로 시작합니다", 18, host.MUTED)
+ 	var row: HBoxContainer = host._row(column)
+ 	host.seed_input = LineEdit.new()
+--- a/redesign/model.gd
++++ b/redesign/model.gd
+@@ -20,6 +20,7 @@
+ const FocusBuild = preload("res://redesign/focus_build.gd")
+ const BuildEngine = preload("res://redesign/build_engine.gd")
+ const GrowthV2 = preload("res://redesign/growth_structure.gd")
++const TagBuild = preload("res://redesign/tag_build.gd")
+ const Roles = preload("res://redesign/combat_roles.gd")
+ const Balance = preload("res://redesign/run_balance.gd")
+ const VERSION := 15
+@@ -816,6 +817,13 @@
+ 		if not minimal: part_combo.append("기록 +%d" % tally_bonus)
+ 		if not minimal: part_effects.append({"id": "tally", "label": "기록 +%d" % tally_bonus})
+ 	var resonant := attack and BuildEngine.resonance(s, id, active_parts)
++	# Tag parts (tag_build.gd): + per hit now, × after the drive line below.
++	var tag_effect: Dictionary = TagBuild.shot(s, id, active_parts, e, heat_before, int(profile.hot_threshold)) if attack else {"add": 0, "percent": 100, "labels": []}
++	part_bonus += int(tag_effect.add)
++	if not minimal:
++		for item in tag_effect.labels:
++			part_combo.append(str(Content.PARTS[item.id].name) + " " + str(item.label))
++			part_effects.append({"id": item.id, "label": str(item.label)})
+ 	if MagazineBuild.enabled(s):
+ 		var triad_bonus := MagazineBuild.triad_bonus(s, id) if active_parts.has("triad") else 0
+ 		if triad_bonus > 0:
+@@ -838,6 +846,7 @@
+ 	part_bonus += engine_flat
+ 	var engine_id := "volley_drive" if engine_flat>0 else ("thermal_drive" if active_parts.has("thermal_drive") and engine_percent>100 else ("siege_drive" if engine_percent>100 else ""))
+ 	if not engine_id.is_empty() and not minimal: part_effects.append({"id":engine_id,"label":Engines.value(s,engine_id)})
++	if int(tag_effect.percent) != 100: engine_percent = engine_percent * int(tag_effect.percent) / 100
+ 	var mastery_bonus := GrowthV2.mastery_bonus(s, id) if attack else 0
+ 	if mastery_bonus > 0 and not minimal: part_combo.append("숙련 +%d" % mastery_bonus)
+ 	var subtotal := int(profile.damage) + dmg_buff + weakness_bonus + part_bonus + chase_bonus + thermal_bonus + vent_bonus + sequence_bonus + mastery_bonus
+@@ -897,6 +906,7 @@
+ 				focus_damage += extra
+ 	var primary_direct_kill := attack and hp_before>0 and int(e.hp)==0 and not Ranged.is_projectile(index)
+ 	if primary_direct_kill: BuildEngine.record_kill(s, id, active_parts)
++	if primary_direct_kill: TagBuild.record_kill(s, id, active_parts)
+ 	if resonant and hits > 1 and not minimal:
+ 		combo.append("공명 ×1~×%d" % hits)
+ 		part_effects.append({"id": "resonator", "label": "공명 ×1~×%d" % hits})
+@@ -1444,6 +1454,7 @@
+ 	if not _whole(parsed.get("focus_build_version", 0), 0, FocusBuild.VERSION): return false
+ 	if not BuildEngine.valid(parsed): return false
+ 	if not GrowthV2.valid(parsed): return false
++	if not TagBuild.valid(parsed): return false
+ 	if not Balance.valid(parsed): return false
+ 	if not Patterns.valid(parsed): return false
+ 	if FocusBuild.enabled(parsed) and int(parsed.get("fire_control_version",0)) != FireHeatTrial.CAMPAIGN_VERSION: return false
+--- a/redesign/part_card_view.gd
++++ b/redesign/part_card_view.gd
+@@ -131,8 +131,9 @@
+ 	preload("res://redesign/part_icon_art.gd").draw(self, part_id, p, accent, scale_factor)
+ 
+ func _draw_effect_icon(center: Vector2, color: Color, scale_factor: float) -> void:
++	var icon_id := str(preload("res://redesign/part_icon_art.gd").ALIASES.get(part_id, part_id))
+ 	draw_set_transform(center, 0.0, Vector2.ONE * scale_factor)
+-	match part_id:
++	match icon_id:
+ 		"cooling_breech":
+ 			for y in [-8, 0, 8]: draw_rect(Rect2(-10, y - 1, 20, 2), color)
+ 		"ordinary_chain", "compression_sink":
+--- a/redesign/part_icon_art.gd
++++ b/redesign/part_icon_art.gd
+@@ -40,7 +40,11 @@
+ 	metal(c, left, y, 5, 3)
+ 	metal(c, right, y, 5, 3)
+ 
++## Tag parts (2026-11-10) reuse the icon of the part they replace until they get their own art.
++const ALIASES := {"tag_fire_add": "coil", "tag_shock_add": "capacitor", "tag_multi_add": "duplex", "tag_single_add": "lens", "tag_finisher_add": "executioner", "tag_single_mult": "siege_drive", "tag_hot_mult": "ember_core", "tag_low_mult": "executioner", "tag_control_mult": "rammer", "tag_fire_deck": "inferno", "tag_variety": "triad", "tag_fire_growth": "tally", "tag_copy": "ordinary_chain"}
++
+ static func draw(c: CanvasItem, id: String, center: Vector2, accent: Color, factor: float, pixel_step: bool = true) -> void:
++	id = str(ALIASES.get(id, id))
+ 	var unit := (1.0 if factor < 0.75 else 2.0) if pixel_step else factor
+ 	c.draw_set_transform((center - SIZE * unit * 0.5).floor(), 0, Vector2.ONE * unit)
+ 	var accent_metal := accent.lerp(STEEL, 0.48)
+--- a/redesign/screen.gd
++++ b/redesign/screen.gd
+@@ -75,6 +75,8 @@
+ var workspace_overlay: Control
+ var selected_weapon_id := "single"
+ var selected_loadout_id := "balanced"
++## 등반 설정: tag-based rounds and parts prototype (tag_build.gd) for the next new run.
++var selected_tag_build := false
+ var selected_outfit_id := "carrier"
+ var selected_difficulty := 0
+ var preparation_training := false
+@@ -546,12 +548,14 @@
+ 		var loadout: String = str(campaign.s.loadout) if same_seed else selected_loadout_id
+ 		var map_version: int = int(campaign.s.get("map_version", 1)) if same_seed else CampaignContent.RouteMap.VERSION
+ 		var outfit: String = str(campaign.s.get("outfit", "work")) if same_seed else selected_outfit_id
++		var tags_before: bool = same_seed and campaign != null and int(campaign.model.s.get("tag_build_version", 0)) == 1
+ 		var progress = Campaign.new()
+ 		progress.restore()
+ 		if same_seed and debug_session: progress.profile = campaign.profile.duplicate(true)
+ 		var magazine_mode: bool = campaign.magazine_enabled() if same_seed and campaign != null else true
+ 		campaign = progress
+ 		campaign.start(id, run_seed, difficulty, loadout, map_version, outfit, magazine_mode)
++		if magazine_mode and (tags_before if same_seed else selected_tag_build): campaign.model.s.tag_build_version = preload("res://redesign/tag_build.gd").VERSION
+ 		model = campaign.model
+ 		debug_session = debug_session and same_seed
+ 		page = "run"
+@@ -1727,7 +1731,7 @@
+ 	if busy: return
+ 	var column := _dialog(str(Content.PARTS[id].name), true)
+ 	column.name = "CombatPartDetails"
+-	_label(column, str(Content.PARTS[id].name), 26, PartCardView.COLORS[id])
++	_label(column, str(Content.PARTS[id].name), 26, PartCardView.COLORS.get(id, Content.part_grade_color(id)))
+ 	_label(column, PartFeedback.readiness(next_forecast, id), 20, ACCENT)
+ 	_label(column, str(Content.part_spec(id,model.s).text), 19)
+ 	if Model.Engines.IDS.has(id):
+--- /dev/null
++++ b/redesign/tag_build.gd
+@@ -0,0 +1,138 @@
++extends RefCounted
++## Tag-based rounds and parts, prototype (2026-11-10, user: "태그 기반 탄환 파츠 설계를 별도로
++##진행해주고 두 가지 다 테스트"). Chosen per run in 등반 설정 (model.s.tag_build_version).
++## Rounds carry tags; tag parts read tags instead of naming a round, so every new round
++## combines with the existing parts. Design: docs/direction/tag-build.md.
++## In a tag run the round-specific additive parts (RETIRED) leave the offer pools and the
++## tag parts (PARTS) take their place. Positional, rule, drive and handling parts stay.
++const Content = preload("res://redesign/content.gd")
++const VERSION := 1
++
++## Element and role per round family. Form (단타/다회) comes from the actual hit count.
++const FAMILY_TAGS := {
++	"precise": ["물리", "타격"], "pierce": ["물리", "타격"], "bypass": ["물리", "타격"], "sequence": ["물리", "타격"],
++	"bore": ["화염", "타격"], "detonate": ["화염", "마무리"], "spread": ["화염", "준비"],
++	"arc": ["전기", "광역", "타격"],
++	"chase": ["물리", "마무리"], "push": ["물리", "제어"], "disrupt": ["제어"],
++	"vent": ["열", "타격"], "cool": ["열"],
++	"charge": ["준비"], "charge_hot": ["준비"], "charge_heat": ["준비"], "shatter": ["준비", "물리"], "prepare": ["준비"],
++}
++## Tag parts. kind: add (+ per hit), mult (% on the attack), deck (% when the deck holds
++## enough of a tag), variety (+ per hit with many tags in the magazine), growth (kills of a
++## tag grow + per hit), copy (repeats the nearest tag part on its left; plain parts between are skipped).
++const PARTS := {
++	"tag_fire_add": {"kind": "add", "tag": "화염", "value": 2},
++	"tag_shock_add": {"kind": "add", "tag": "전기", "value": 2},
++	"tag_multi_add": {"kind": "add", "tag": "다회", "value": 1},
++	"tag_single_add": {"kind": "add", "tag": "단타", "value": 2},
++	"tag_finisher_add": {"kind": "add", "tag": "마무리", "value": 3},
++	"tag_single_mult": {"kind": "mult", "tag": "단타", "percent": 150},
++	"tag_hot_mult": {"kind": "mult", "condition": "hot", "percent": 150},
++	"tag_low_mult": {"kind": "mult", "condition": "low_hp", "percent": 200},
++	"tag_control_mult": {"kind": "mult", "condition": "controlled", "percent": 200},
++	"tag_fire_deck": {"kind": "deck", "tag": "화염", "count": 6, "percent": 150},
++	"tag_variety": {"kind": "variety", "kinds": 4, "value": 3},
++	"tag_fire_growth": {"kind": "growth", "tag": "화염", "step": 3, "limit": 6},
++	"tag_copy": {"kind": "copy"},
++}
++## Round-specific additive parts replaced by tag parts in a tag run.
++const RETIRED := ["lens", "coil", "capacitor", "rammer", "sequencer", "igniter", "breaker", "executioner", "ordinary_chain", "triad", "indexer"]
++
++static func enabled(state: Dictionary) -> bool:
++	return int(state.get("tag_build_version", 0)) == VERSION
++
++static func tags(state: Dictionary, id: String) -> Array:
++	var family := Content.source_id(id)
++	if family == "basic": return []
++	var result: Array = FAMILY_TAGS.get(family, []).duplicate()
++	if Content.is_attack(id): result.append("다회" if Content.hit_count(id, state) > 1 else "단타")
++	return result
++
++static func has_tag(state: Dictionary, id: String, tag: String) -> bool:
++	return tags(state, id).has(tag)
++
++static func deck_count(state: Dictionary, tag: String) -> int:
++	return state.get("deck", []).filter(func(value): return has_tag(state, str(value), tag)).size()
++
++static func magazine_tags(state: Dictionary) -> int:
++	var seen: Array = []
++	for value in state.get("magazine_loaded", state.get("magazine", [])):
++		for tag in tags(state, str(value)):
++			if not seen.has(tag): seen.append(tag)
++	return seen.size()
++
++static func growth(state: Dictionary, part: String) -> int:
++	return int(state.get("tag_growth", {}).get(part, 0))
++
++## Tag parts in slot order, each copy replaced by the nearest tag part on its left (if any).
++## Plain parts between do not break it: equipping a copy last copies the latest tag part.
++static func effective(state: Dictionary, parts: Array) -> Array:
++	var result: Array = []
++	var previous := ""
++	for value in parts:
++		var id := str(value)
++		if not PARTS.has(id): continue
++		if str(PARTS[id].kind) == "copy":
++			if not previous.is_empty(): result.append({"id": previous, "via": id})
++		else:
++			result.append({"id": id, "via": id})
++			previous = id
++	return result
++
++## {add, percent, labels} for one attack shot on enemy e.
++static func shot(state: Dictionary, id: String, parts: Array, enemy: Dictionary, heat_before: int, hot_threshold: int) -> Dictionary:
++	var out := {"add": 0, "percent": 100, "labels": []}
++	if not enabled(state) or not Content.is_attack(id) or Content.source_id(id) == "basic": return out
++	for item in effective(state, parts):
++		var spec: Dictionary = PARTS[item.id]
++		var applied := false
++		match str(spec.kind):
++			"add":
++				if has_tag(state, id, str(spec.tag)): out.add += int(spec.value); applied = true
++			"mult":
++				var ok := false
++				if spec.has("tag"): ok = has_tag(state, id, str(spec.tag))
++				elif spec.condition == "hot": ok = heat_before >= hot_threshold
++				elif spec.condition == "low_hp": ok = int(enemy.get("hp", 0)) * 2 <= int(enemy.get("max_hp", 0))
++				elif spec.condition == "controlled": ok = int(enemy.get("slow_left", 0)) > 0 or int(enemy.get("jammed", 0)) > 0
++				if ok: out.percent = out.percent * int(spec.percent) / 100; applied = true
++			"deck":
++				if has_tag(state, id, str(spec.tag)) and deck_count(state, str(spec.tag)) >= int(spec.count): out.percent = out.percent * int(spec.percent) / 100; applied = true
++			"variety":
++				if magazine_tags(state) >= int(spec.kinds): out.add += int(spec.value); applied = true
++			"growth":
++				var bonus := mini(int(spec.limit), growth(state, item.id) / int(spec.step))
++				if bonus > 0 and has_tag(state, id, str(spec.tag)): out.add += bonus; applied = true
++		if applied: out.labels.append({"id": item.via, "label": label(item.id) + (" (복제)" if item.via != item.id else "")})
++	return out
++
++static func label(part: String) -> String:
++	var spec: Dictionary = PARTS[part]
++	match str(spec.kind):
++		"add", "variety": return "+%d" % int(spec.value)
++		"mult", "deck": return "×%s" % ("%.2f" % (int(spec.percent) / 100.0)).rstrip("0").rstrip(".")
++		"growth": return "기록"
++	return ""
++
++static func record_kill(state: Dictionary, id: String, parts: Array) -> void:
++	if not enabled(state): return
++	for value in parts:
++		var part := str(value)
++		if PARTS.has(part) and str(PARTS[part].kind) == "growth" and has_tag(state, id, str(PARTS[part].tag)):
++			if not state.has("tag_growth"): state.tag_growth = {}
++			state.tag_growth[part] = mini(int(PARTS[part].step) * int(PARTS[part].limit), growth(state, part) + 1)
++
++static func offerable(state: Dictionary, part: String) -> bool:
++	if PARTS.has(part): return enabled(state)
++	return not (enabled(state) and RETIRED.has(part))
++
++static func valid(state: Dictionary) -> bool:
++	var version = state.get("tag_build_version", 0)
++	if not (version is int or version is float) or int(version) != version or int(version) < 0 or int(version) > VERSION: return false
++	if not state.has("tag_growth"): return true
++	if int(version) == 0 or not state.tag_growth is Dictionary: return false
++	for key in state.tag_growth:
++		if not PARTS.has(str(key)) or str(PARTS[key].kind) != "growth": return false
++		var value = state.tag_growth[key]
++		if not (value is int or value is float) or int(value) != value or int(value) < 0 or int(value) > 18: return false
++	return true
+--- /dev/null
++++ b/tests/tag_build_rules.gd
+@@ -0,0 +1,111 @@
++extends SceneTree
++## Tag-based rounds and parts prototype rules (2026-11-10). Shots run on the real Model
++## against an earned region-3 combat (QA_BUILD_DIR) with dummy enemies.
++const Campaign = preload("res://redesign/campaign.gd")
++const Model = preload("res://redesign/model.gd")
++const Content = preload("res://redesign/content.gd")
++const Data = preload("res://redesign/campaign_content.gd")
++const Tags = preload("res://redesign/tag_build.gd")
++var checks := 0
++var failures: Array = []
++var base_state: Dictionary
++
++func _initialize() -> void: run.call_deferred()
++
++func check(ok: bool, label: String) -> bool:
++	checks += 1
++	if not ok:
++		failures.append(label); print("FAIL: " + label)
++	return ok
++
++func dummy(parts: Array, tags := true) -> Model:
++	var m := Model.new()
++	m.s = Model.simulation_state(base_state)
++	if tags: m.s.tag_build_version = Tags.VERSION
++	else: m.s.erase("tag_build_version")
++	m.s.equipped_parts = parts.duplicate()
++	m.s.heat = 0; m.s.buff = {}
++	m.s.erase("tag_growth")
++	for e in m.s.enemies:
++		e.hp = 999; e.max_hp = 999; e.def = 0; e.barrier = 0; e.slow_left = 0; e.jammed = 0
++	return m
++
++func hit(parts: Array, id: String, tags := true, setup: Callable = Callable()) -> int:
++	var m := dummy(parts, tags)
++	if setup.is_valid(): setup.call(m)
++	return int(m._shot(id, 0, {}).damage)
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	var c = Campaign.new()
++	check(c.restore_state(JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_BUILD_DIR").path_join("combat_heavy_17_r3_n20101.json")))), "earned combat restores")
++	base_state = c.model.s
++	# Tags.
++	var s := base_state
++	check(Tags.tags(s, "bore").has("화염") and Tags.tags(s, "bore").has("단타"), "소이: 화염·단타")
++	check(Tags.tags(s, "precise").has("다회") and Tags.tags(s, "arc").has("전기") and Tags.tags(s, "chase").has("마무리"), "연타 다회, 전격 전기, 추격 마무리")
++	check(Tags.tags(s, "charge").has("준비") and not Tags.tags(s, "charge").has("단타"), "지원탄은 형태 태그 없음")
++	check(Tags.tags(s, "basic_p2").is_empty(), "기본탄은 태그 없음")
++	# Additive and multiplier parts act only on matching tags, only in tag runs.
++	var bore := hit([], "bore")
++	check(hit(["tag_fire_add"], "bore") == bore + 2, "화염 점화기: 화염 +2")
++	check(hit(["tag_fire_add"], "pierce") == hit([], "pierce"), "화염 점화기는 철갑에 무효")
++	check(hit(["tag_fire_add"], "bore", false) == hit([], "bore", false), "태그 시험판이 아니면 무효")
++	var pierce := hit([], "pierce")
++	check(hit(["tag_single_mult"], "pierce") == pierce * 3 / 2, "단타 배율기 ×1.5: %d → %d" % [pierce, hit(["tag_single_mult"], "pierce")])
++	check(hit(["tag_low_mult"], "pierce", true, func(m): m.s.enemies[0].hp = 400) == pierce * 2, "처형 회로: 절반 이하 ×2")
++	check(hit(["tag_low_mult"], "pierce") == pierce, "처형 회로: 체력이 많으면 무효")
++	check(hit(["tag_control_mult"], "pierce", true, func(m): m.s.enemies[0].slow_left = 2) == pierce * 2, "경직 추격기: 감속된 적 ×2")
++	# Deck composition and magazine variety.
++	check(hit(["tag_fire_deck"], "bore", true, func(m): m.s.deck = ["bore", "bore", "bore", "bore", "bore", "bore"]) == bore * 3 / 2, "화염 탄약고: 화염 6장이면 ×1.5")
++	check(hit(["tag_fire_deck"], "bore", true, func(m): m.s.deck = ["bore", "bore"]) == bore, "화염 탄약고: 부족하면 무효")
++	check(hit(["tag_variety"], "pierce", true, func(m): m.s.magazine_loaded = ["bore", "precise", "arc", "chase"]) == pierce + 3, "혼합 탄띠: 태그 4종 이상 +3")
++	# Copy: repeats the tag part on its left; order matters.
++	check(hit(["tag_fire_add", "tag_copy"], "bore") == bore + 4, "복제 기판: 왼쪽 화염 점화기를 한 번 더")
++	check(hit(["tag_copy", "tag_fire_add"], "bore") == bore + 2, "복제 기판이 왼쪽에 아무것도 없으면 무효")
++	check(hit(["tag_fire_add", "supply", "tag_copy"], "bore") == hit(["supply"], "bore") + 4, "복제 기판은 사이의 일반 파츠를 건너뜀")
++	check(hit(["tag_fire_add", "tag_single_add", "tag_copy"], "bore") == bore + 6, "복제 기판은 가장 가까운 태그 파츠(단타 조준경)를 복제")
++	check(hit(["tag_single_mult", "tag_copy"], "pierce") == pierce * 9 / 4, "복제 기판: 배율도 한 번 더(×1.5×1.5)")
++	# Growth: 화염 kills while equipped.
++	var g := dummy(["tag_fire_growth"])
++	for i in range(3):
++		g.s.enemies[0].hp = 1
++		g._shot("bore", 0, {})
++	check(Tags.growth(g.s, "tag_fire_growth") == 3, "화염 기록기: 화염 처치 기록")
++	g.s.enemies[0].hp = 999
++	check(int(g._shot("bore", 0, {}).damage) == bore + 1, "3처치 → 화염 탄 +1")
++	# Offers.
++	var tag_state: Dictionary = Model.simulation_state(base_state)
++	tag_state.tag_build_version = Tags.VERSION
++	var plain_state: Dictionary = Model.simulation_state(base_state)
++	plain_state.erase("tag_build_version")
++	var tag_seen := 0
++	var retired_seen := 0
++	var leaked := 0
++	for region in range(1, 5):
++		for k in range(12):
++			var node := {"id": region * 10000 + 400 + k, "region": region, "floor": 4, "elite": k % 3 == 0, "kind": "shop"}
++			for offer in Data.offers(node, 731042 + k, 0, "heavy", [], [], [], [], 4, 1, tag_state):
++				if offer.type != "part": continue
++				if Tags.PARTS.has(offer.id): tag_seen += 1
++				if Tags.RETIRED.has(offer.id): retired_seen += 1
++			for offer in Data.offers(node, 731042 + k, 0, "heavy", [], [], [], [], 4, 1, plain_state):
++				if offer.type == "part" and Tags.PARTS.has(offer.id): leaked += 1
++	print("OFFERS tag parts %d, retired parts %d, tag parts in normal runs %d" % [tag_seen, retired_seen, leaked])
++	check(tag_seen > 0 and retired_seen == 0 and leaked == 0, "tag runs offer tag parts and not the retired ones; normal runs never see tag parts")
++	# Icons and text.
++	for id in Tags.PARTS:
++		check(Content.PARTS.has(id) and not str(Content.PARTS[id].text).is_empty(), "part entry " + id)
++		check(preload("res://redesign/part_icon_art.gd").ALIASES.has(id), "icon for " + id)
++	# Saves.
++	var saved := Model.new(); saved.s = Model.simulation_state(base_state)
++	saved.s.tag_build_version = Tags.VERSION; saved.s.tag_growth = {"tag_fire_growth": 4}
++	var back := Model.new()
++	check(back.restore_state(JSON.parse_string(saved.serialized_state())) and Tags.growth(back.s, "tag_fire_growth") == 4, "tag growth survives save and load")
++	var broken: Dictionary = JSON.parse_string(saved.serialized_state())
++	broken.tag_growth = {"tag_fire_add": 1}
++	check(not Model.new().restore_state(broken), "growth only for growth parts")
++	broken.tag_growth = {"tag_fire_growth": 2}; broken.tag_build_version = 0
++	check(not Model.new().restore_state(broken), "tag growth needs the tag flag")
++	print("TAG BUILD RULES checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)
+--- /dev/null
++++ b/tests/tag_build_ui.gd
+@@ -0,0 +1,81 @@
++extends "res://tests/supply_live_ui.gd"
++## Tag-based rounds and parts prototype on screen (2026-11-10): the 등반 설정 scheme toggle
++## starts a tag run, a tag part in the shop opens its details, and equipped tag parts show
++## in the combat header with their own details. Shop/combat come from earned 2026-11-06 states.
++const Tags = preload("res://redesign/tag_build.gd")
++
++func find(id: String) -> Control:
++	for name in ["ShopTerminal", "WorkspaceOverlay"]:
++		var scene: Node = host.find_child(name, true, false)
++		if scene != null and id != name:
++			var inside: Node = scene.find_child(id, true, false)
++			if inside != null: return inside as Control
++	return host.find_child(id, true, false) as Control
++
++func earned(file: String, edit: Callable):
++	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(OS.get_environment("QA_BUILD_DIR").path_join(file)))
++	data.combat.tag_build_version = Tags.VERSION
++	edit.call(data)
++	var c = Campaign.new()
++	check(c.restore_state(data), "tag state restores " + file)
++	return c
++
++func on_screen(control: Control) -> bool:
++	return control != null and control.is_visible_in_tree() and root.get_visible_rect().grow(1).encloses(control.get_global_rect())
++
++func run() -> void:
++	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
++	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
++	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
++	for extent in [Vector2i(1280, 800), Vector2i(844, 390)]:
++		root.size = extent
++		var suffix := "%dx%d" % [extent.x, extent.y]
++		# 등반 설정: choose the tag scheme, then start a new run.
++		if is_instance_valid(host): host.free()
++		host = load("res://redesign/main.tscn").instantiate(); host.save_enabled = false
++		root.add_child(host); await settle()
++		host.selected_tag_build = false
++		host._open_preparation(false); await settle()
++		await tap("preparation_options")
++		check(on_screen(find("part_scheme_current")) or find("part_scheme_current") != null, "scheme row in 등반 설정 " + suffix)
++		await tap("part_scheme_tags")
++		check(host.selected_tag_build, "태그 시험판 selected " + suffix)
++		await capture("options_tags_" + suffix)
++		await tap("DialogClose")
++		check(find("preparation_options").text.contains("태그"), "등반 설정 button marks the tag scheme " + suffix)
++		host._start(host.selected_weapon_id, false); await settle()
++		check(Tags.enabled(host.campaign.model.s), "new run from the tag scheme carries the tag flag " + suffix)
++		var copy = Campaign.new()
++		check(copy.restore_state(JSON.parse_string(JSON.stringify({"campaign": host.campaign.s, "combat": JSON.parse_string(host.campaign.model.serialized_state()), "profile": host.campaign.profile}))) and Tags.enabled(copy.model.s), "tag flag survives save")
++		host._start(host.campaign.s.gun, true); await settle()
++		check(Tags.enabled(host.campaign.model.s), "restart with the same seed keeps the tag scheme")
++		host.selected_tag_build = false
++		host._start(host.selected_weapon_id, false); await settle()
++		check(not Tags.enabled(host.campaign.model.s), "현재 구성 starts without the tag flag")
++		# Shop: a tag part on sale opens its details.
++		var shop = earned("shop_burst_17_r5_n40401.json", func(data):
++			data.campaign.offers[2] = {"id": "tag_multi_add", "new": true, "price": 30, "sold": false, "type": "part"})
++		await mount(shop)
++		host.city_ui.shop_selection = 2; host.redraw(); await settle()
++		await tap("Details")
++		var window := find("PartDetails")
++		check(on_screen(window) and window.get_meta("dialog").find_child("Title", true, false).text.contains("다회 가속기"), "shop part details for 다회 가속기 " + suffix)
++		await capture("shop_tag_part_" + suffix)
++		# Combat: equipped tag parts in the HUD build panel.
++		var combat = earned("combat_heavy_17_r3_n20101.json", func(data):
++			data.campaign.parts = data.campaign.parts + ["tag_fire_add", "tag_copy"]
++			data.campaign.equipped_parts = ["tag_fire_add", "tag_copy"]
++			data.combat.equipped_parts = ["tag_fire_add", "tag_copy"])
++		await mount(combat)
++		# The live combat HUD lists the build behind its Parts button.
++		var hud: Control = host.campaign_hud
++		check(hud != null and on_screen(hud.node("Parts")), "combat HUD Parts button " + suffix)
++		await capture("combat_tag_" + suffix)
++		if hud != null:
++			hud.node("Parts").pressed.emit(); await settle()
++			var body: String = hud.node("DetailBody").text
++			check(hud.node("Detail").is_visible_in_tree() and body.contains("태그 시험판") and body.contains("화염 점화기") and body.contains("복제 기판"), "build panel lists the tag scheme and both parts " + suffix)
++			check(not body.contains(" · \n") and not body.contains("\n\n"), "no empty value lines for plain parts")
++			await capture("combat_tag_build_" + suffix)
++	print("TAG BUILD UI checks=%d failures=%d" % [checks, failures.size()])
++	quit(0 if failures.is_empty() else 1)

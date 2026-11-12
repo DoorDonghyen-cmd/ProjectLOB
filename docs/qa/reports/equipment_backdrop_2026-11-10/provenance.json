@@ -1,0 +1,38 @@
+{
+  "tool": "OpenAI built-in image editing",
+  "status": "approved and used by the production equipment screen",
+  "output": "새-게임-프로젝트/assets/art/equipment_20261011/workshop_grouped_20261110.png",
+  "size": [
+    1671,
+    941
+  ],
+  "sha256": "490f66f90afd12dea34c058e25407b0f9907e0ec015da113db5c465262d3fb9c",
+  "passes": [
+    {
+      "inputs": [
+        {
+          "role": "edit target",
+          "path": "새-게임-프로젝트/assets/art/equipment_20261011/workshop_v1.png"
+        },
+        {
+          "role": "on-screen scale and character style only",
+          "path": "docs/qa/reports/equipment_card_proportion_2026-11-08/after_1280x800.png"
+        }
+      ],
+      "prompt": "Controlled background edit for ORVASK, a 2D pixel-art game. Input 1 is the exact 16:9 departure workshop background to EDIT. Input 2 is the actual equipment selection screen only to show the on-screen size and broad pixel clusters of the carrier-outfit character; it is a style/context reference, do not reproduce any UI or character. Deliver a full-bleed opaque 16:9 background plate only. Preserve Input 1's geometry very closely because Godot registers the character's feet to it: straight front-on view, fixed crop, existing walls and their quiet side spaces, workbench and stool on left of centre, three adjoining blue-grey locker silhouettes at centre, overhead pendant centered at x=50% and lamp face y=19%, narrow industrial-city slit x=58–68%, drawer cabinet below that slit, uninterrupted floor top exactly y=69.7% across the plate, same floor thickness and framing. Do not move any object, raise floor, change camera, or enlarge the room. Keep the original blue-charcoal steel, subdued teal city, and localized amber cone and lantern. Selectively redraw busy surfaces using crisp, larger square pixel clusters on a visibly consistent coarse grid around 360–420 logical pixels wide. Strongly simplify wrench rack to 3–4 solid silhouettes, locker edges and vents to a handful of broad tones, boxes to simple blocks, city depth to large flat masses, pipe seams/floor scratches to minimal shapes, reduce little specular glints. Lamp cone and floor reflection should have 2–4 broad stepped value bands with the same lighting direction and footprint. Keep readable workbench and metal details as broad shapes. Preserve dark calm side walls for UI and muted midtone space behind the character. Crisp hard pixel edges, no antialiased blur, grain, dithering, gradients, outlines around all objects, texture noise, added props, text, borders, UI or figures. An actual version of the same game background with the surface details unified and reduced."
+    },
+    {
+      "inputs": [
+        {
+          "role": "edit target",
+          "path": "first-pass generated backdrop"
+        },
+        {
+          "role": "reference for the tapered lamp cone only",
+          "path": "새-게임-프로젝트/assets/art/equipment_20261011/workshop_v1.png"
+        }
+      ],
+      "prompt": "Precisely edit Image 1, the new 16:9 ORVASK pixel-art workshop background. Keep the entire plate exactly as Image 1 except for the amber light cone directly under the overhead pendant in the central bay. Image 2, the original backdrop, is a reference for the narrower, more natural taper of that cone only. Retain Image 1's simplified tools, large flat lockers and city blocks, all object placements, colors, framing, floor top and reflection. Refine the illuminated cone edge so its staircase has roughly twice as many smaller square steps with shorter horizontal runs; use the same restrained amber with 3–4 broad tonal groups and a low contrast outer band. The halo should be closer to the protagonist's chunky pixel clusters, with crisp edges, no blur or visible dithering. Do not modify the pendant itself, center, cone footprint, shop props, side walls, floor, or window. No characters, words or UI. Preserve the exact 16:9 proportions of Image 1, with no extra border."
+    }
+  ]
+}

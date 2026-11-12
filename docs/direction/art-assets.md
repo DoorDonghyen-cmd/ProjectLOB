@@ -1,5 +1,7 @@
 # 아트 자산과 적용 상태
 
+**리와인더·데드볼트 도트 보강(2026-11-11)** — 리와인더의 카세트 릴·철판 이음매와 데드볼트의 약실·경첩·목재 결을 보강한 원화를 장비 선택·빌드 작업실·전투에 연결했다. [전후 화면과 검증](../qa/reports/weapon_details_2026-11-11/README.md) · [원화와 제작 입력](../../새-게임-프로젝트/assets/art/weapon_expansion_20261106/provenance.json)
+
 **전투 복장 7종 G안 적용(2026-11-08)** — 승인된 운반복 G를 기준으로 권총·장총의 실제 사용 자세 77개를 [몸체·앞손 공용 아틀라스](../../새-게임-프로젝트/assets/art/combat_outfit_grid_20261108/provenance.json)에 구웠다. 전투와 장비 선택의 총을 든 배우에 적용했다. 복장별 재질색을 살리고 손·총·발 등록을 유지한다. [Godot 28컷 복장·자세 비교](../qa/reports/combat_outfit_grid_2026-11-08/outfits.png)
 
 **이전 전투 복장 7종 색면 정리(2026-11-07)** — 운반복 E안을 기준으로 헬멧·어깨·가방·바지의 도트 덩어리를 정리했다. [자산 21장과 출처](../../새-게임-프로젝트/assets/art/combat_outfit_blocks_20261107/provenance.json)는 원본 포즈·파지·발 좌표 및 G의 제작 입력을 보존한다. [당시 Godot 복장 비교](../qa/reports/combat_outfit_blocks_2026-11-07/outfits.png)
@@ -67,6 +69,8 @@
 **주조장 본편 동작 — 2026-10-23 후속:** 이전6종 원화와 `foundry_motion_20261023/`의 2포즈 시트3장(금형 파수꾼 축압/전진, 주조 감독 축압/전진, 압력공 조준/반동)을 편성8 본편에 연결했다. 키포즈+절차형 이동·피격·사망이며 프레임별 수작업 걷기 애니메이션은 아니다. 원본 PNG·전체 프롬프트·해시·발 기준·UV 등록 보존. 보스 시트의 두 실루엣은 좌우 폭이 일부 겹쳐 투명한 사이를 나누는 UV 다각형으로 분리한다. 실제 렌더에서는 체력 영역을 확보하도록 정예140px/보스148px 표시 높이를 사용한다. 아래 정지 시안 단계보다 이 적용 상태가 우선한다. [출처·등록](../../새-게임-프로젝트/assets/art/foundry_motion_20261023/provenance.json) · [화면·검증](../qa/reports/foundry_live_2026-10-23.md).
 
 **주조장 정예·보스 콘셉트 — 2026-10-23:** `foundry_leaders_20261023/`의 금형 파수꾼·주조 감독 정지 원화2장을 추가했다. 이전 일반4종과 같은 재질/화풍을 사용하며 기존 비교 뷰어에 그룹 전환을 추가했다. 원본 RGBA/발 기준/전체 프롬프트와 참조·출력 해시 보존,3해상도 실제 비교 완료. 본편 아트 교체·상태 키포즈는 후속. [제작 기록](../../새-게임-프로젝트/assets/art/foundry_leaders_20261023/provenance.json) · [화면·검증](../qa/reports/foundry_leaders_2026-10-23.md).
+
+**주조장 금형공 잔해 시험 — 2026-11-10:** 금형공의 몸통 판·집게·황동 태엽을 참고한 `foundry_concepts_20261022/mold_worker_wreckage_20261110.png`를 잔해 시험 전투에 연결했다. [전후 비교·제작·검증](../qa/reports/wreckage_trial_2026-11-10/README.md#금형공-도트-반영)
 
 **주조장 일반4종 콘셉트 — 2026-10-22:** `foundry_concepts_20261022/`의 노역 인형·금형공·압력공·재받이4장을 정지 시안으로 제작했다. 원본 RGBA/측정 영역/발 기준을 보존하고 확대·전투 크기 비교 화면과 개발 메뉴 진입을 연결했다. 본편 편성/아트는 미교체, 새 배경/상태 동작/사용자 미감은 후속. [원본·전체 프롬프트](../../새-게임-프로젝트/assets/art/foundry_concepts_20261022/provenance.json) · [비교 화면·검증](../qa/reports/foundry_concepts_2026-10-22.md).
 
@@ -171,7 +175,7 @@ Use case: stylized-concept. Asset type: production background texture for a 2D t
 
 ## 등반 장비실 제작 자산
 
-- `assets/art/equipment_20261011/workshop_v1.png`: 탑 내부 정비실, 기존 주거구역의 청회색/황색 조명 참고.
+- `assets/art/equipment_20261011/workshop_grouped_20261110.png`: 사용자가 채택한 출발 정비실 배경. 이전 `workshop_v1.png`의 작업대와 황색 조명을 유지하며 표면의 잔선을 줄였다. [전후 비교·제작·검수](../qa/reports/equipment_backdrop_2026-11-10/README.md)
 - `outfits_v1.png`: 기본/운반/정찰3종 착용 미리보기. 투명 아틀라스 원본 보존, Godot 영역 분리와 alpha0.5 컷오프로 가장자리 정리. 전투 동작에는 아직 미적용.
 - 생성 도구·전체 프롬프트·교정·참고 파일: 같은 폴더 `provenance.json`. 외부 게임 그림 복사 없음.
 - `equipment_screen.tscn` / `equipment_weapon.tscn`: 에디터에서 시각 계층·기본 선택·그림 확인 가능. 런타임은 데이터/선택/화면 크기를 바인딩한다.
