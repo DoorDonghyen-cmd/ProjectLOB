@@ -112,11 +112,15 @@ func show_round(index: int,id: String)->void:
  for side in [SIDE_LEFT,SIDE_TOP,SIDE_RIGHT,SIDE_BOTTOM]:carrier.set_patch_margin(side,12 if occupied else 8)
  for prefix in ["Name","Value","Cost","Icon"]:ui.node(prefix+str(index)).visible=occupied
  ui.node("Index%d"%index).hide()
+ # Tag chips and the boosted number follow the shifting rounds too (2026-11-11).
+ ui.node("Value%d"%index).add_theme_color_override("font_color",Color("f3cf73"))
+ if ui.hud!=null:ui.hud.sync_tag_card(index,id)
  if not occupied:return
  ui.node("Name%d"%index).text=Content.AMMO[id].name
  ui.node("Value%d"%index).text=str(Content.primary_stat(id,ui.model.s).value).replace("−","-")
  ui.node("Cost%d"%index).text="열 "+Content.heat_label(id,ui.model.s).replace("−","-")
  ui.node("Icon%d"%index).item_id=id
+ if ui.hud!=null:ui.hud.sync_tag_card(index,id)
 
 func stop_magazine_motion()->void:
  if magazine_tween!=null and magazine_tween.is_valid():magazine_tween.kill()

@@ -38,9 +38,13 @@ static func settle(state: Dictionary, parts: Array) -> void:
 	if not state.has("engine"): state.engine = fresh()
 	if state.engine.settled: return
 	state.engine.settled = true
+	# v2 (2026-11-10): winning while meeting the drive's condition still grows it, but only up to
+	# 8. Levels 9-12 come only from choices: the gate's 구동 강화 (+4) and the shop's 구동 정비 (+2).
+	# Removing this growth entirely failed the 리벳 climb and slowed 리액터 from 463 to 669 turns.
+	var earned_cap := Growth.BASE_LIMIT if int(state.get("growth_structure_version", 0)) == 1 else Growth.limit(state)
 	for id in IDS:
 		var earned := int(state.engine.hits) >= 3 if id == "volley_drive" else bool(state.engine.hot if id == "thermal_drive" else state.engine.siege)
-		if parts.has(id) and earned and level(state,id) < Growth.limit(state):
+		if parts.has(id) and earned and level(state,id) < earned_cap:
 			state.engine.levels[id] = level(state,id)+1
 			state.engine.gains.append(id)
 

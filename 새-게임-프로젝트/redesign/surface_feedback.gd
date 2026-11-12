@@ -10,11 +10,11 @@ static func resolve(packet: Dictionary, kind: String="shot") -> Dictionary:
 	var damage:=int(packet.get("damage",0))
 	var shield:=int(packet.get("blocked_hits",0))>0 or int(packet.get("barrier_removed",0))>0
 	var chips:=int(packet.get("armor_removed",0))>0
-	var metal:=chips or int(math.get("armor",0))>0 or int(math.get("armor_before",packet.get("armor",0)))>0
+	var metal:=chips or packet.has("wreckage_hit") or int(math.get("armor",0))>0 or int(math.get("armor_before",packet.get("armor",0)))>0
 	var burn:=kind=="burn" and damage>0
 	var transferred:=kind in ["burn_transfer","spread"] and int(packet.get("transferred",0))>0
 	var fire:=burn or transferred or int(packet.get("burn_added",0))>0
-	var hit:bool=damage>0 and not bool(packet.get("intercept",false))
+	var hit:bool=(damage>0 or packet.has("wreckage_hit")) and not bool(packet.get("intercept",false))
 	return {"kind":kind,"contact":hit,"shield":shield,"broken":shield and int(packet.get("barrier",1))==0,"metal":metal,"chips":chips,"fire":fire,"burn":burn,"transfer":transferred,"ground":bool(packet.get("ground",false)),"intercept":bool(packet.get("intercept",false))}
 
 static func frame(index: int, cell: Vector2, columns: int) -> Rect2:

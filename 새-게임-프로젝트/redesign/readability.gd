@@ -10,6 +10,9 @@ static func cycle_text(state: Dictionary) -> String:
 
 static func description(id: String, state: Dictionary) -> String:
 	var text := Content.grade_detail(id) + ("\n" + Content.profile_detail(id) if not Content.profile_detail(id).is_empty() else "") + "\n" + _description(id, state)
+	# Tag build runs: the round's tags and what the equipped tag parts do to it, first.
+	var Tags = preload("res://redesign/tag_build.gd")
+	if Tags.enabled(state): text = Tags.round_summary(state, id, Content.active_parts(state)) + "\n\n" + text
 	if Content.Sustained.enabled(state):
 		text += "\n\n" + Content.Sustained.rules()
 		text += "\n카드의 열은 기본값입니다. 실제 추가 열과 과열 중단은 발사 순서에서 확인하세요."
@@ -17,6 +20,9 @@ static func description(id: String, state: Dictionary) -> String:
 
 static func _description(id: String, state: Dictionary) -> String:
 	var spec: Dictionary = Content.AMMO[id]
+	# 2026-11-12 round rework (ammo_revision.gd): 연계탄 and 예약탄 in new runs.
+	var revised := preload("res://redesign/ammo_revision.gd").text(id, state)
+	if not revised.is_empty(): return revised
 	if Content.Roles.enabled(state) and spec.effect=="disrupt":return "특수 행동 차단과 함께 접근량을 %d적 행동 동안 절반으로 낮춥니다(올림, 이동 시 최소 1). 적마다 경직 1회 · 압력탄 제외."%Content.Roles.slow_duration(state,Content.is_compressed(id),Content.equipped_parts(state))
 	if Content.Roles.enabled(state) and spec.effect=="burn":return "표적에 화상 %d턴. 착발 지점 앞뒤 %dm에 불길을 %d적 행동 남깁니다.\n화상은 행동당 %d, 불길은 %d피해 · 장갑/차폐 무시. 겹친 화상/불길은 큰 값 한 번만 적용됩니다.\n불길 최대 3곳 · 재장전/냉각 중에도 진행."%[Content.burn_amount(id,state),Content.Roles.fire_radius(state,Content.equipped_parts(state)),Content.Roles.fire_duration(Content.equipped_parts(state),state),Content.burn_damage(state),Content.burn_damage(state)+(Content.Roles.coil_ground_bonus(state) if Content.has_part(state,"coil") else 0)]
 	if spec.effect == "burn":
@@ -48,7 +54,7 @@ static func _description(id: String, state: Dictionary) -> String:
 		match str(spec.effect):
 			"prepare": rule = "뒤의 전술탄 %d발을 다음 재장전 패로 예약. 총 3장 한도, 임시탄 제외. 복제하지 않습니다." % value
 			"disrupt": rule = "생존 표적의 발사 준비·충전을 %d턴 정지. 적마다 한 번, 이동·발사된 압력탄에는 효과가 없습니다." % value
-			"spread": rule = "화상 최대 %d를 가장 가까운 다른 생존 적에게 이동. 원래 적에게서 옮긴 만큼 차감합니다." % value
+			"spread": rule = "화상 최대 %d를 표적 뒤의 가장 가까운 생존 적에게 이동. 원래 적에게서 옮긴 만큼 차감합니다." % value
 			"sequence": rule = "앞서 발사한 다른 탄종마다 피해 +%d, 최대 3종. 같은 탄과 압축형은 한 종류입니다." % value
 			"vent": rule = "발사 직전 열 최대 %d 소모 · 열 1당 피해 +%d. 앞에서 과열되면 발사되지 않습니다." % [int(spec.heat_spend), value]
 			"thermal": rule = "발사 직전 열 %d 이상이면 피해 +%d. 자신의 발열로는 조건을 채우지 않습니다." % [Content.hot_threshold(state), value]
@@ -65,7 +71,7 @@ static func _description(id: String, state: Dictionary) -> String:
 			"pierce_c": return "탄창 2칸 · 피해 %d · 관통 %d를 한 발에 집중합니다." % [Content.damage(id, state), Content.penetration(id, state)]
 			"push_c": return "먼저 장전 · 마지막 발사 · 적을 최대 %dm 밀칩니다." % Content.effect_value(id, state)
 			"precise_c": return "마지막 장전 · 첫 발사 · 같은 적을 %d회 타격합니다." % Content.hit_count(id, state)
-			"arc_c": return "마지막 장전 · 첫 발사 · 주 표적 외 모든 생존 적에게 전이 %d피해." % Content.effect_value(id, state)
+			"arc_c": return "마지막 장전 · 첫 발사 · 주 표적 뒤의 모든 생존 적에게 전이 %d피해." % Content.effect_value(id, state)
 	if id == "basic": return "발열 1의 물리 탄환. " + cycle_text(state) if Content.uses_ammo_cards(state) else "재장전마다 별도로 보급되는 기본탄입니다."
 	if state.get("course", false) and int(state.floor) == 0:
 		if id == "basic": return "발열 1의 물리 탄환. 한 장당 한 발이며 사용 후 버린 더미로 이동합니다." if Content.uses_ammo_cards(state) else "재장전할 때 다시 채워지는 물리 기본탄입니다."
@@ -79,9 +85,9 @@ static func _description(id: String, state: Dictionary) -> String:
 	if id == "cool": return "현재 열을 %d 낮춥니다. 과열 한계에 도달하기 전에 배치하세요. 열은 0 아래로 내려가지 않습니다." % Content.effect_value(id, state)
 	if id == "prepare": return "뒤의 전술탄 %d발을 다음 재장전 패로 예약합니다. 현장 압축탄 제외, 전체 예약 최대 3장. 먼저 발사되도록 마지막에 장전하세요. 탄환은 복제하지 않습니다." % Content.effect_value(id, state)
 	if id == "disrupt": return "생존 표적의 발사 준비·충전을 %d턴 정지합니다. 적마다 한 번만 적용하며, 이동·이미 발사된 압력탄·교대 장갑은 멈추지 않습니다." % Content.effect_value(id, state)
-	if id == "spread": return "표적의 화상 최대 %d를 가장 가까운 다른 생존 적에게 옮깁니다. 원래 화상은 옮긴 만큼 줄며 도착한 적은 최대 6턴까지 받습니다. 소이 → 확산 순서로 발사하세요." % Content.effect_value(id, state)
+	if id == "spread": return "표적의 화상 최대 %d를 표적 뒤의 가장 가까운 생존 적에게 옮깁니다. 원래 화상은 옮긴 만큼 줄며 도착한 적은 최대 6턴까지 받습니다. 소이 → 불씨 순서로 발사하세요." % Content.effect_value(id, state)
 	if id == "sequence": return "이번 탄창에서 앞서 발사한 다른 탄종마다 피해 +%d, 최대 3종. 같은 탄과 압축형은 한 종류이며 연계탄 자신은 제외합니다. 긴 탄창과 다양한 저발열탄에 연결됩니다." % Content.effect_value(id, state)
-	if id == "arc": return "주 표적 공격 후 가장 가까운 다른 생존 적에게 전이 %d피해. 귀족 거주구의 차폐는 전기 주 타격으로 2회 제거합니다." % Content.effect_value(id, state)
+	if id == "arc": return "주 표적 뒤의 가장 가까운 생존 적에게 전이 %d피해. 귀족 거주구의 차폐는 전기 주 타격으로 2회 제거합니다." % Content.effect_value(id, state)
 	return Content.AMMO[id].text
 
 static func stats(id: String, state: Dictionary, full: bool = false) -> String:
@@ -118,15 +124,19 @@ static func _explain(shot: Dictionary, enemies: Array = []) -> String:
 	var equation := "피해 %d" % m.base
 	if int(m.get("thermal", 0)) > 0: equation += " + 고열 %d" % int(m.thermal)
 	if int(m.get("vent", 0)) > 0: equation += " + 열 전환 %d" % int(m.vent)
-	if int(m.get("sequence", 0)) > 0: equation += " + 탄종 연계 %d" % int(m.sequence)
+	if int(m.get("sequence", 0)) > 0: equation += " + 연계탄 %d" % int(m.sequence)
 	if m.boost > 0: equation += " + 증폭 %d" % m.boost
 	if int(m.get("chase", 0)) > 0: equation += " + 추격 %d" % int(m.chase)
 	if int(m.get("part_bonus", 0)) > 0: equation += " + 파츠 %d" % int(m.part_bonus)
 	if int(m.get("weakness", 0)) > 0: equation += " + 약점 %d" % int(m.weakness)
 	if int(m.get("overflow", 0)) > 0: equation += " + 초과관통 %d" % m.overflow
 	if int(m.get("factor", 1)) > 1: equation = "(" + equation + ") ×%d" % int(m.factor)
-	if int(m.get("part_factor", 1)) > 1: equation = "(" + equation + ") ×%d(후미)" % int(m.part_factor)
+	if float(m.get("part_factor", 1)) > 1.0:
+		var position_label := str(shot.get("position_label", ""))
+		var factor := ("%.2f" % float(m.part_factor)).rstrip("0").rstrip(".")
+		equation = "(%s) ×%s(%s)" % [equation, factor, "파츠" if not position_label.is_empty() else "후미"]
 	if int(m.get("engine_percent", 100)) != 100: equation = "(" + equation + ") ×%.2f" % (int(m.engine_percent)/100.0)
+	if int(m.get("tag_percent", 100)) != 100: equation = "(" + equation + ") ×%.2f 태그" % (int(m.tag_percent)/100.0)
 	if int(m.get("gate_percent",100))>100: equation += " ×%.2f(연쇄)" % (int(m.gate_percent)/100.0)
 	if int(m.get("overdrive_percent",100))>100: equation = "(" + equation + ") ×%.2f(강행)" % (int(m.overdrive_percent)/100.0)
 	if int(m.get("engine_percent",100))!=100 or int(m.get("gate_percent",100))!=100 or int(m.get("overdrive_percent",100))!=100: equation += " (버림)"
@@ -161,7 +171,9 @@ static func _explain(shot: Dictionary, enemies: Array = []) -> String:
 	if int(shot.get("burn_added", 0)) > 0: reasons.append("화상 +%d → %d" % [shot.burn_added, shot.burn])
 	if int(shot.get("push", 0)) > 0: reasons.append("거리 +%dm" % shot.push)
 	for other in shot.get("secondary", []):
-		if str(other.get("kind", "arc")) == "burn_transfer":
+		if other.has("wreckage_hit"):
+			reasons.append("잔해 −%d칸" % int(other.wreckage_hit))
+		elif str(other.get("kind", "arc")) == "burn_transfer":
 			reasons.append("%s에게 화상 %d 이동" % [Forecast.tag(other.target, enemies), other.transferred])
 		elif str(other.get("kind", "arc")) == "spread":
 			reasons.append("%s 확산 %d피해 (절반%d − 장갑%d, %d회) · HP%d" % [Forecast.tag(other.target, enemies), other.damage, other.raw, other.armor, other.hits, other.hp])

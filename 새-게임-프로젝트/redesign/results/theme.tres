@@ -2,46 +2,29 @@
 
 [ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
 
+[ext_resource type="Script" path="res://redesign/ui/button_frame.gd" id="button_frame"]
+
 [sub_resource type="StyleBoxFlat" id="idle"]
+script = ExtResource("button_frame")
+content_margin_top = 0.0
 bg_color = Color(0.12, 0.096, 0.107, 1)
-border_width_bottom = 2
 border_color = Color(0.26, 0.206, 0.218, 1)
 content_margin_left = 12.0
 content_margin_right = 12.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="hover"]
+script = ExtResource("button_frame")
+content_margin_top = 0.0
 bg_color = Color(0.23, 0.172, 0.181, 1)
-border_width_bottom = 2
 border_color = Color(0.63, 0.46, 0.41, 1)
 content_margin_left = 12.0
 content_margin_right = 12.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="focus"]
+script = ExtResource("button_frame")
+focus_ring = true
 bg_color = Color(0, 0, 0, 0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0.93, 0.76, 0.62, 1)
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="primary"]
-bg_color = Color(0.79, 0.61, 0.53, 1)
-border_width_bottom = 2
-border_color = Color(0.56, 0.40, 0.36, 1)
-content_margin_left = 12.0
-content_margin_right = 12.0
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="primary_hover"]
-bg_color = Color(0.92, 0.73, 0.62, 1)
-border_width_bottom = 2
-border_color = Color(0.67, 0.50, 0.45, 1)
-content_margin_left = 12.0
-content_margin_right = 12.0
-anti_aliasing = false
 
 [resource]
 default_font = ExtResource("font")
@@ -50,15 +33,11 @@ Label/colors/font_color = Color(0.93, 0.88, 0.84, 1)
 Button/colors/font_color = Color(0.93, 0.88, 0.84, 1)
 Button/colors/font_hover_color = Color(1, 0.94, 0.88, 1)
 Button/colors/font_pressed_color = Color(1, 0.94, 0.88, 1)
+Button/colors/font_disabled_color = Color(0.57, 0.52, 0.49, 1)
 Button/styles/normal = SubResource("idle")
 Button/styles/hover = SubResource("hover")
 Button/styles/pressed = SubResource("hover")
+Button/styles/hover_pressed = SubResource("hover")
+Button/styles/disabled = SubResource("idle")
 Button/styles/focus = SubResource("focus")
-MainAction/base_type = &"Button"
-MainAction/colors/font_color = Color(0.10, 0.067, 0.076, 1)
-MainAction/colors/font_hover_color = Color(0.10, 0.067, 0.076, 1)
-MainAction/colors/font_pressed_color = Color(0.10, 0.067, 0.076, 1)
-MainAction/styles/normal = SubResource("primary")
-MainAction/styles/hover = SubResource("primary_hover")
-MainAction/styles/pressed = SubResource("primary_hover")
 

@@ -90,8 +90,8 @@ func _run() -> void:
 	model.s.enemies[0].distance = 6
 	load_fire(model, ["arc"])
 	shot = model.s.history.back().detail.results[0]
-	check(shot.target == 0 and shot.secondary[0].get("intercept", false), "arc can intercept behind a closer enemy")
-	check(model.s.enemies[1].hp == 18, "arc does not magically hit rear shooter")
+	check(shot.target == 0 and shot.secondary.size() == 1 and shot.secondary[0].target == 1, "arc passes the projectile and reaches the rear enemy")
+	check(model.s.enemies[1].hp == 16 and Ranged.active(model.s).size() == 1, "arc damages the rear shooter without intercepting")
 	model = fixture()
 	model.s.enemies[0].distance = 12
 	check(Ranged.is_projectile(model.target_index()), "equal distance prioritizes projectile")

@@ -8,10 +8,14 @@ func _feedback_transaction(event: Dictionary, effects) -> void:
 		if int(event.before.credits)!=int(event.after.credits):
 			effects.pulse(%ConsoleWallet,"money");effects.pulse(%Wallet,"money")
 		effects.pulse(%Feedback,"complete")
-		if command=="buy":effects.pulse(offer_button(int(event.value)),"acquired")
+		if command == "buy":
+			var offer: Control = offer_button(int(event.value))
+			effects.pulse(offer, "acquired")
+			for id in effects.added_ids(event.before.equipped, event.after.equipped):
+				if run.is_equipped(id): effects.install_part(%PartsButton, offer, id)
 		elif command=="reroll":
 			for i in range(run.s.offers.size()):effects.pulse(offer_button(i),"stock")
-	elif command in ["equip","replace_part"] and not %PartsPane.is_visible_in_tree():
+	elif command in ["equip","replace_part"] and not is_instance_valid(host.workspace_overlay):
 		effects.pulse(%PartsButton,"installed")
 
 func configure(screen) -> void:
@@ -25,7 +29,6 @@ func _ready() -> void:
 	bind_trade_controls()
 	bind_terminal_controls()
 	bind_console_controls()
-	%PartsPane.perform_action = perform_trade
 	%Details.pressed.connect(open_rules)
 	%Bag.pressed.connect(host._ammo_bag)
 	%Tools.pressed.connect(open_tools)
@@ -51,6 +54,14 @@ func refresh() -> void:
 	super.refresh()
 	%Details.visible = not current_offer().is_empty()
 	%Charge.visible = %Stock.visible and not run.magazine_enabled()
+	# v2: the compressor slot (hidden in magazine climbs) becomes 구동 정비.
+	if run.model.GrowthV2.enabled(run.model.s) and not run.model.Content.innate_engine(run.model.s).is_empty():
+		%Charge.visible = %Stock.visible
+		var maxed: bool = run.drive_level() >= run.model.Engines.Growth.V2_LIMIT
+		# A sixth key overflows the row on short screens; there 구동 정비 lives in the shop menu.
+		%Charge.visible = %Stock.visible and host.ReadableUI.available(host).size.x >= 1000
+		%Charge.text = drive_tune_label()
+		%Charge.disabled = not run.can_tune_drive()
 	%SaveNotice.text = host.save_error
 	%SaveNotice.visible = not host.save_error.is_empty()
 
@@ -70,8 +81,12 @@ func show_record(open: bool) -> void:
 	%Bag.visible = not open
 
 func open_parts() -> void:
-	super.open_parts()
-	%Bag.hide()
+	if run == null or is_instance_valid(host.workspace_overlay): return
+	if %Record.visible: show_record(false)
+	var offer := current_offer()
+	var preferred := str(offer.id) if offer.get("type", "") == "part" else ""
+	var workspace: Control = host.city_ui.deck("parts", preferred, %PartsButton)
+	workspace.mount.parts_changed.connect(refresh)
 
 func perform_trade(command: String, value: Variant = "", extra: String = "") -> bool:
 	var accepted: bool = host._campaign_action(command, value, extra, "", false)
@@ -103,7 +118,20 @@ func reroll() -> void:
 		%Feedback.text = "새 물건이 도착했습니다."
 		refresh()
 
+func drive_tune_label() -> String:
+	if run.drive_level() >= run.model.Engines.Growth.V2_LIMIT: return "구동 정비 · 최대"
+	return "구동 정비 Lv%d→%d · %dCr" % [run.drive_level(), mini(run.model.Engines.Growth.V2_LIMIT, run.drive_level() + 2), run.drive_tune_price()]
+
+func tune_from_menu() -> void:
+	host._close_workspace()
+	charge()
+
 func charge() -> void:
+	if run.model.GrowthV2.enabled(run.model.s) and not run.model.Content.innate_engine(run.model.s).is_empty():
+		if perform_trade("drive_tune"):
+			%Feedback.text = "구동 정비 완료 · Lv%d" % run.drive_level()
+			refresh()
+		return
 	if perform_trade("buy_compressor"):
 		%Feedback.text = "압축 충전 완료"
 		refresh()
@@ -124,7 +152,12 @@ func open_rules() -> void:
 
 func open_tools() -> void:
 	var column: VBoxContainer = host._workspace("상점 메뉴")
-	host._button(column, "빌드 작업실", "city_shop_build", host.city_ui.deck.bind("parts"))
+	host._button(column, "빌드 작업실", "city_shop_build", func():
+		host._close_workspace()
+		open_parts()
+	)
+	if run.model.GrowthV2.enabled(run.model.s) and not run.model.Content.innate_engine(run.model.s).is_empty():
+		host._button(column, drive_tune_label(), "shop_drive_tune", tune_from_menu, not run.can_tune_drive())
 	host._button(column, "설정", "shop_settings", host._settings)
 	host._button(column, "타이틀", "shop_title", host._to_menu)
 
@@ -133,7 +166,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if %ReplaceOverlay.visible:
 		close_replacement()
-	elif %PartsPane.visible or %Record.visible:
+	elif %Record.visible:
 		show_record(false)
 	else:
 		return

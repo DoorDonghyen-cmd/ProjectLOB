@@ -54,7 +54,42 @@ const BUILD_ROLE_PARTS:={
 	"rammer":{"effect":"경직 후속","value":"직접 피해 +2","role":"제어 후 화력","upside":"경직 중인 적 직접 피해 +2 · 밀기 +1m","text":"접근 감속이 남아 있는 적을 직접 타격할 때 타격당 피해 +2. 차단탄으로 먼저 경직시킨 뒤 주력 탄을 연결하세요. 화상/기폭/전격 전이에는 적용하지 않으며 연쇄 코어의 잔여 타격은 새 표적의 경직을 다시 확인합니다. 기존 밀치기와 탄창당 한도 +1m도 유지합니다."},
 	"capacitor":{"effect":"전이 확장","value":"전이 +1 · 대상 +1","role":"전이 모듈","upside":"전격 전이 피해 +1 · 처치 전이 대상 +1","text":"전격탄 전이 피해 +1. 연쇄·돌파 코어의 처치 후 전이 대상도 추가 1기 늘립니다. 모듈이므로 해당 코어와 함께 장착할 수 있습니다. 처치 전이의 직접 피해 배율은 바꾸지 않습니다."},
 	"arc_splitter":{"text":"전격탄 전이 피해 +2, 전격 전이 대상 +1. 모든 직접 피해 −1. 전격의 광역 전이를 위한 코어이며 연쇄·돌파 코어와 동시 장착할 수 없습니다.","upside":"전격 전이 피해 +2 · 대상 +1"}}
+## Part text after the 11-11 fixes (part_tuning.gd), runs with the overheat cost only.
+const TUNED_PART_TEXT := {
+	"cooling_breech": {"effect": "냉각 직후", "value": "+3", "upside": "수동 냉각 직후 첫 공격탄 타격당 +3", "text": "직접 냉각한 바로 다음 사격에서 첫 공격탄의 타격당 피해 +3. 재장전 냉각 +4. 대신 탄창 −1칸. 과열 전에 미리 식히는 판단을 보상합니다."},
+	"ember_core": {"value": "피해 +3", "upside": "절반 열 이상에서 피해 +3", "downside": "열 한계 −1", "text": "발사 직전 열이 최종 열 한계의 절반 이상이면 타격당 피해 +3. 대신 열 한계 −1. 자신의 발열로 조건을 채우지 못합니다."},
+	"resonator": {"downside": "", "text": "연타탄이 같은 적을 때리는 동안 타격마다 배율이 커집니다. 1타 ×1, 2타 ×2, 3타 ×3. 증폭·기록·위치 배율이 모두 곱해집니다."},
+	"afterburner": {"downside": ""},
+	"lens": {"value": "관통 +2 · 피해 +2", "upside": "관통탄 관통 +2 · 타격당 +2", "text": "탄환 자체 관통이 1 이상인 탄(철갑·우회 등)의 관통 +2, 타격당 피해 +2. 기본탄이나 관통 없는 탄에는 붙지 않습니다."},
+	"executioner": {"value": "+4 피해", "upside": "체력 30% 이하 적 피해 +4", "text": "발사 직전 체력이 최대의 30% 이하인 적에게 직접 피해 +4."},
+	"momentum": {"downside": "", "text": "차단탄의 접근 감속 기간 +1적 행동(일반 3, 압축 4). 같은 적에게 경직은 여전히 전투당 1회이며 특수 행동 차단 기간은 늘리지 않습니다. 충격탄 밀치기와 탄창당 한도 +2m."},
+	"loader": {"text": "탄창 교체 −1턴(최소 2턴), 과열 강제 냉각 −1행동."},
+}
+
 static func part_spec(id: String, state: Dictionary) -> Dictionary:
+	var spec := _version_part_spec(id, state)
+	if id == "third_striker" and preload("res://redesign/samples/opening_build/third_striker_trial.gd").upgraded(state):
+		spec = spec.duplicate()
+		spec.name += " ★2"
+		for key in ["value", "upside", "text"]: spec[key] = str(spec[key]).replace("×3", "×3.5")
+	# 11-11 fixes (part_tuning.gd) on top of the version layers.
+	if TUNED_PART_TEXT.has(id) and preload("res://redesign/part_tuning.gd").enabled(state):
+		spec = spec.duplicate()
+		spec.merge(TUNED_PART_TEXT[id], true)
+	return spec
+
+static func _version_part_spec(id: String, state: Dictionary) -> Dictionary:
+	if id == "triad" and int(state.get("growth_structure_version", 0)) == 1 and int(state.get("magazine_build_version", 0)) >= 1:
+		var triad: Dictionary = PARTS[id].duplicate()
+		triad.merge(MAGAZINE_BUILD_PARTS[id], true)
+		triad.effect = "4종 탄창"; triad.upside = "특수탄 4종 이상 탄창 · 특수 공격탄 피해 +3"
+		triad.text = "장전된 탄창에 서로 다른 특수 탄종이 4종 이상이면 그 탄창의 특수 공격탄 피해 +3. 특수탄이 먼저 장전되므로 3종이 아닌 4종을 요구합니다. 기본탄 피해 −1."
+		return triad
+	if id == "reserve" and int(state.get("growth_structure_version", 0)) == 1:
+		var reserve: Dictionary = PARTS[id].duplicate()
+		reserve.effect = "빼내기"; reserve.value = "+1회"; reserve.role = "탄창 순서 통제"; reserve.upside = "탄창당 빼내기 +1회"
+		reserve.text = "탄창마다 빼낼 수 있는 탄이 2발에서 3발로 늘어납니다. 특수탄 우선 장전과 함께 원하는 탄을 원하는 순서에 맞추세요."
+		return reserve
 	if id == "tally" and int(state.get("build_engine_version", 0)) == 1:
 		# Build engine growth (build_engine.gd): show the current record on the part.
 		var kills := int(state.get("part_growth", {}).get("tally", 0))
@@ -103,7 +138,7 @@ static func duplex_bonus(state: Dictionary) -> int:
 const BASE_AMMO := {
 	"prepare": {"heat": 2, "name": "예약탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "prepare", "value": 1, "text": "뒤의 탄환 1발을 다음 재장전 패로 예약합니다. 현장 압축탄은 제외하며 예약은 최대 3장. 탄을 복제하지 않습니다."},
 	"disrupt": {"heat": 2, "name": "차단탄", "dmg": 0, "pen": 0, "attribute": "electric", "effect": "disrupt", "value": 1, "text": "생존 표적의 발사 준비·충전을 1턴 멈춥니다. 이동과 이미 발사된 압력탄에는 영향이 없으며, 적마다 한 번만 차단할 수 있습니다."},
-	"spread": {"heat": 2, "name": "불씨탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "spread", "value": 2, "text": "표적의 화상 최대 2를 가장 가까운 다른 생존 적에게 옮깁니다. 원래 표적의 화상은 옮긴 만큼 줄어듭니다. 압력탄은 제외합니다."},
+	"spread": {"heat": 2, "name": "불씨탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "spread", "value": 2, "text": "표적의 화상 최대 2를 표적 뒤의 가장 가까운 생존 적에게 옮깁니다. 원래 표적의 화상은 옮긴 만큼 줄어듭니다. 압력탄은 제외합니다."},
 	"sequence": {"heat": 3, "name": "연계탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "sequence", "value": 2, "text": "이번 탄창에서 앞서 발사한 다른 탄종 하나마다 피해 +2, 최대 3종. 같은 탄과 그 압축형은 한 종류로 셉니다."},
 	"vent": {"heat": 0, "name": "열방출탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "vent", "value": 2, "heat_spend": 4, "anchor": "last", "text": "가장 먼저 장전하며 마지막에 발사합니다. 발사 직전 열을 최대 4 소모하고, 소모한 열 1마다 직접 피해 +2. 앞에서 과열되면 발사되지 않습니다."},
 	"basic": {"heat": 1, "name": "기본탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "", "value": 0, "text": "발열 1의 물리 탄환. 덱에서 한 장씩 뽑고, 사용 후 버린 더미로 이동합니다."},
@@ -114,7 +149,7 @@ const BASE_AMMO := {
 	"charge_heat": {"heat": 1, "name": "잔열 증폭탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 6, "boost_rounds": 1, "boost_hot": true, "text": "다음 공격 직전 열이 무기 한계의 절반 이상이면 타격당 피해 +6. 낮으면 강화 없이 소비합니다. 공격 자체의 발열은 조건에서 제외. 일반 증폭과 교체되며 냉각 순서에 주의."},
 	"charge_hot": {"heat": 5, "name": "배율탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 0, "boost_factor": 2, "boost_rounds": 1, "boost_heat": 3, "text": "다음 공격탄의 타격당 피해 ×2. 증폭을 더한 뒤 배율을 적용하고 장갑을 차감합니다. 강화받은 공격은 추가 발열 +3. 같은 배율은 중첩되지 않습니다. 준비 발열 5."},
 	"precise": {"heat": 4, "name": "연타탄", "dmg": 2, "pen": 0, "attribute": "physical", "effect": "double", "value": 2, "text": "같은 적을 2회 타격합니다. 증폭 피해도 두 타격에 각각 적용됩니다."},
-	"arc": {"heat": 3, "name": "전격탄", "dmg": 2, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "text": "주 표적을 공격한 뒤 가장 가까운 다른 생존 적에게 고정 2피해를 전이합니다."},
+	"arc": {"heat": 3, "name": "전격탄", "dmg": 2, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "text": "주 표적을 공격한 뒤 표적 뒤의 가장 가까운 생존 적에게 고정 2피해를 전이합니다."},
 	"shatter": {"heat": 1, "name": "파쇄탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "shatter", "value": 3, "text": "직접 피해 없이 장갑을 3 낮춥니다. 배리어를 소모하지 않고 장갑에 적용됩니다. 후속 탄환 모두가 낮아진 장갑을 공격합니다."},
 	"detonate": {"heat": 3, "name": "기폭탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "detonate", "value": 1, "text": "타격 후 남은 화상의 총 피해를 즉시 입히고 화상을 없앱니다. 기폭 피해는 장갑과 배리어를 무시합니다. 먼저 소이탄으로 불을 붙이세요."},
 	"chase": {"heat": 3, "name": "추격탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "chase", "value": 4, "text": "이 탄창의 직전 탄환이 적을 처치했다면 피해 +4. 전이 처치도 인정하며, 압력탄 요격과 턴 종료 화상 처치는 인정하지 않습니다."},
@@ -127,7 +162,7 @@ const BASE_AMMO := {
 	"bore_c": {"heat": 7, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 6, "compressed": true, "source": "bore", "slot_cost": 1, "anchor": "", "text": "보호막에 막혀도 화상 최대 6턴. 매 적 행동 직전 HP에 2피해, 보호막·장갑 무시. 탄창 1칸에 집약하는 대신 발열 +7."},
 	"charge_c": {"heat": 5, "name": "증폭탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 4, "boost_rounds": 2, "compressed": true, "source": "charge", "slot_cost": 1, "anchor": "last", "text": "가장 먼저 장전하며 마지막에 발사합니다. 남긴 증폭은 다음 탄창의 첫 공격탄 두 발로 이어집니다. 지원탄은 소비하지 않으며 다른 증폭과 더해집니다."},
 	"precise_c": {"heat": 6, "name": "연타탄", "dmg": 3, "pen": 0, "attribute": "physical", "effect": "double", "value": 3, "hits": 3, "compressed": true, "source": "precise", "slot_cost": 1, "anchor": "first", "text": "가장 마지막에 장전하며 첫 발로 같은 적을 3회 타격합니다."},
-	"arc_c": {"heat": 6, "name": "전격탄", "dmg": 4, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "arc_targets": 99, "compressed": true, "source": "arc", "slot_cost": 1, "anchor": "first", "text": "가장 마지막에 장전하며 첫 발로 주 표적을 제외한 모든 생존 적에게 전이합니다."},
+	"arc_c": {"heat": 6, "name": "전격탄", "dmg": 4, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "arc_targets": 99, "compressed": true, "source": "arc", "slot_cost": 1, "anchor": "first", "text": "가장 마지막에 장전하며 첫 발로 주 표적 뒤의 모든 생존 적에게 전이합니다."},
 	# Field-compressed rounds are encounter-only mirrors. They use the same combat
 	# profile and fittings as permanent compression, then split back into the two
 	# source rounds when fired or discarded.
@@ -136,14 +171,14 @@ const BASE_AMMO := {
 	"bore_f": {"heat": 7, "name": "소이탄", "dmg": 1, "pen": 1, "attribute": "fire", "effect": "burn", "value": 6, "compressed": true, "temporary": true, "source": "bore", "slot_cost": 1, "anchor": "", "text": "임시 압축 · 사용/재장전 시 원본 2장 복원. 보호막에 막혀도 화상 최대 6턴, 매 적 행동 직전 HP에 2피해, 보호막·장갑 무시. 탄창 1칸 · 발열 +7."},
 	"charge_f": {"heat": 5, "name": "증폭탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "boost", "value": 4, "boost_rounds": 2, "compressed": true, "temporary": true, "source": "charge", "slot_cost": 1, "anchor": "last", "text": "이번 교전에서 두 증폭탄을 마지막 한 발로 임시 집약합니다."},
 	"precise_f": {"heat": 6, "name": "연타탄", "dmg": 3, "pen": 0, "attribute": "physical", "effect": "double", "value": 3, "hits": 3, "compressed": true, "temporary": true, "source": "precise", "slot_cost": 1, "anchor": "first", "text": "이번 교전에서 두 연타탄을 첫 한 발로 임시 집약합니다."},
-	"arc_f": {"heat": 6, "name": "전격탄", "dmg": 4, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "arc_targets": 99, "compressed": true, "temporary": true, "source": "arc", "slot_cost": 1, "anchor": "first", "text": "이번 교전에서 두 전격탄을 첫 한 발로 임시 집약합니다."},
+	"arc_f": {"heat": 6, "name": "전격탄", "dmg": 4, "pen": 1, "attribute": "electric", "effect": "arc", "value": 2, "arc_targets": 99, "compressed": true, "temporary": true, "source": "arc", "slot_cost": 1, "anchor": "first", "text": "이번 교전에서 두 전격탄을 첫 한 발로 임시 집약합니다. 주 표적 뒤의 모든 생존 적에게 전이합니다."},
 	# Advanced profiles preserve each family; field copies use identical rules.
 	"prepare_c": {"heat": 3, "name": "예약탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "prepare", "value": 2, "text": "뒤의 전술탄 2발을 다음 패로 예약합니다. 탄창 2칸을 차지하며 총 예약 한도 3장은 유지됩니다.", "slot_cost": 2, "compressed": true, "source": "prepare"},
 	"prepare_f": {"heat": 3, "name": "예약탄", "dmg": 0, "pen": 0, "attribute": "physical", "effect": "prepare", "value": 2, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 뒤의 전술탄 2발을 다음 패로 예약합니다. 탄창 2칸을 차지하며 총 예약 한도 3장은 유지됩니다.", "slot_cost": 2, "compressed": true, "source": "prepare", "temporary": true},
 	"disrupt_c": {"heat": 4, "name": "차단탄", "dmg": 0, "pen": 0, "attribute": "electric", "effect": "disrupt", "value": 2, "text": "첫 발 고정. 생존 표적의 발사 준비·충전을 2턴 멈춥니다. 이동과 이미 발사된 탄에는 효과가 없고 적마다 한 번만 적용합니다.", "anchor": "first", "compressed": true, "source": "disrupt"},
 	"disrupt_f": {"heat": 4, "name": "차단탄", "dmg": 0, "pen": 0, "attribute": "electric", "effect": "disrupt", "value": 2, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 첫 발 고정. 생존 표적의 발사 준비·충전을 2턴 멈춥니다. 이동과 이미 발사된 탄에는 효과가 없고 적마다 한 번만 적용합니다.", "anchor": "first", "compressed": true, "source": "disrupt", "temporary": true},
-	"spread_c": {"heat": 4, "name": "불씨탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "spread", "value": 4, "text": "화상 최대 4를 가장 가까운 다른 생존 적에게 옮깁니다. 탄창 2칸을 차지하며 원래 적의 화상은 옮긴 만큼 줄어듭니다.", "slot_cost": 2, "compressed": true, "source": "spread"},
-	"spread_f": {"heat": 4, "name": "불씨탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "spread", "value": 4, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 화상 최대 4를 가장 가까운 다른 생존 적에게 옮깁니다. 탄창 2칸을 차지하며 원래 적의 화상은 옮긴 만큼 줄어듭니다.", "slot_cost": 2, "compressed": true, "source": "spread", "temporary": true},
+	"spread_c": {"heat": 4, "name": "불씨탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "spread", "value": 4, "text": "화상 최대 4를 표적 뒤의 가장 가까운 생존 적에게 옮깁니다. 탄창 2칸을 차지하며 원래 적의 화상은 옮긴 만큼 줄어듭니다.", "slot_cost": 2, "compressed": true, "source": "spread"},
+	"spread_f": {"heat": 4, "name": "불씨탄", "dmg": 0, "pen": 0, "attribute": "fire", "effect": "spread", "value": 4, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 화상 최대 4를 표적 뒤의 가장 가까운 생존 적에게 옮깁니다. 탄창 2칸을 차지하며 원래 적의 화상은 옮긴 만큼 줄어듭니다.", "slot_cost": 2, "compressed": true, "source": "spread", "temporary": true},
 	"sequence_c": {"heat": 5, "name": "연계탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "sequence", "value": 3, "text": "마지막 발 고정. 앞서 발사한 다른 탄종마다 피해 +3, 최대 3종. 높은 발열을 감당할 공간을 남겨야 합니다.", "anchor": "last", "compressed": true, "source": "sequence"},
 	"sequence_f": {"heat": 5, "name": "연계탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "sequence", "value": 3, "text": "임시 고급 · 발사 또는 재장전 시 원본 두 장으로 복원. 마지막 발 고정. 앞서 발사한 다른 탄종마다 피해 +3, 최대 3종. 높은 발열을 감당할 공간을 남겨야 합니다.", "anchor": "last", "compressed": true, "source": "sequence", "temporary": true},
 	"vent_c": {"heat": 0, "name": "열방출탄", "dmg": 1, "pen": 1, "attribute": "physical", "effect": "vent", "value": 3, "heat_spend": 6, "anchor": "last", "text": "마지막 발 고정·탄창 2칸. 발사 직전 열을 최대 6 소모하고 열 1마다 피해 +3. 앞에서 과열되면 발사할 수 없습니다.", "slot_cost": 2, "compressed": true, "source": "vent"},
@@ -200,7 +235,16 @@ const BASE_FIELD_COMPRESSIONS := {
 	"arc": "arc_f",
 }
 
-static var AMMO: Dictionary = Variants.build(Merge.definitions(BASE_AMMO))
+static var AMMO: Dictionary = _marked(Variants.build(Merge.definitions(BASE_AMMO)))
+
+## Compressed rounds carry a short mark in their name on every screen (2026-11-12, ammo-naming.md 1):
+## 철갑탄 and 압축 철갑탄 (2 → 5 damage) both read 철갑탄 on cards before; the shop alone said 압축.
+## A short mark, because the magazine card has room for about four characters.
+static func _marked(definitions: Dictionary) -> Dictionary:
+	for id in definitions:
+		var spec: Dictionary = definitions[id]
+		if bool(spec.get("compressed", false)) and not str(spec.get("name", "")).ends_with("+"): spec.name = str(spec.name) + "+"
+	return definitions
 static var COMPRESSIONS: Dictionary = Variants.compressions(BASE_COMPRESSIONS)
 static var FIELD_COMPRESSIONS: Dictionary = Variants.compressions(BASE_FIELD_COMPRESSIONS, true)
 
@@ -243,7 +287,7 @@ const PARTS := {
 	"volley_drive": {"grade": 1, "name": "연쇄 구동핵", "kind": "core", "effect": "타격 성장", "value": "타격 +1 · 잔타 연결", "role": "여러 타격을 전열로", "upside": "타격당 피해 +1 · 남은 타격은 최근접 적으로", "downside": "다회 타격탄 열 +1", "text": "초기 보너스는 직접 타격당 피해 +1. 표적 처치 후 남은 타격은 최근접 표적으로 이어집니다(대상의 장갑·배리어 적용, 속성 효과 재발동 없음). 다회 타격탄 열 +1. 한 전투에서 피해 타격 3회 후 승리하면 추가 피해 +1 성장, 최대 +9. 이번 등반에 유지."},
 	"thermal_drive": {"grade": 1, "name": "열압 구동핵", "kind": "core", "effect": "고열 배율 성장", "value": "고열 ×1.50", "heat_limit": -2, "role": "잔열을 큰 화력으로", "upside": "고열 직접 피해 ×1.50 · 열 한계에서 충격파", "downside": "열 한계 −2", "text": "발사 직전 열이 한계의 절반 이상이면 직접 타격 피해를 초기 ×1.50(장갑 차감 전, 소수점 버림)로 강화합니다. 고열 직접 피해를 주고 승리하면 배율 +0.25 성장, 최대 ×3.50. 전투당 1회 성장, 이번 등반 유지. 자신의 발열로 고열 조건을 채우지 않습니다. 고열 공격이 열 한계에 도달해 직접 피해를 주면, 나머지 전열에 장갑 차감 전 1회 타격 피해의 절반을 충격파로 전달합니다. 충격파는 각 대상의 장갑을 적용하고 배리어에 막힙니다. 열 한계 −2."},
 	"siege_drive": {"grade": 1, "name": "돌파 구동핵", "kind": "core", "effect": "단타 배율 성장", "value": "단타 ×2.00 · 관통 잔량", "capacity": -1, "role": "큰 한 발로 전열 돌파", "upside": "1회 타격 탄 피해 ×2 · 초과 피해 전달", "downside": "탄창 −1칸", "text": "1회 타격 공격탄의 초기 직접 피해 배율 ×2.00. 처치한 적의 초과 피해를 최근접 표적으로 전달하며 장갑을 다시 차감합니다. 배리어는 잔량을 막습니다. 한 탄의 직접 피해(전달 포함) 8 이상 후 승리하면 배율 +0.25, 최대 ×4.00. 전투당 1회 성장, 이번 등반 유지. 탄창 −1칸. 기폭·전이 피해는 배율/전달 제외."},
-	"ordinary_chain": {"grade": 1, "name": "교차 급탄기", "kind": "module", "effect": "마지막 공격 강화", "value": "최대 +6", "role": "탄종 집약", "upside": "마지막 공격탄: 앞선 다른 탄종마다 피해 +2", "downside": "", "text": "탄창의 마지막 공격탄에 앞서 발사한 다른 탄종마다 타격당 피해 +2, 최대 +6. 위력·개조·압축이 달라도 같은 탄종으로 셉니다. 뒤의 지원탄은 마지막 공격 판정에 영향을 주지 않습니다."},
+	"ordinary_chain": {"grade": 1, "name": "다종 급탄기", "kind": "module", "effect": "마지막 공격 강화", "value": "최대 +6", "role": "탄종 집약", "upside": "마지막 공격탄: 앞선 다른 탄종마다 피해 +2", "downside": "", "text": "탄창의 마지막 공격탄에 앞서 발사한 다른 탄종마다 타격당 피해 +2, 최대 +6. 위력·개조·압축이 달라도 같은 탄종으로 셉니다. 뒤의 지원탄은 마지막 공격 판정에 영향을 주지 않습니다."},
 	"compression_sink": {"grade": 1, "name": "압축 안정기", "kind": "module", "effect": "일반탄 다음 압축", "value": "발열 −2", "heat_limit": -1, "role": "압축탄 준비", "upside": "일반탄 직후 압축탄 발열 −2", "downside": "열 한계 −1", "text": "같은 탄창에서 일반 전술탄 바로 다음에 쏘는 영구·임시 압축탄의 발생 열 −2(최소 0). 기본탄은 준비에 포함하지 않습니다. 열 한계 −1, 점유 칸·첫/마지막 발 제약은 유지합니다."},
 	"cooling_breech": {"grade": 1, "name": "냉각 약실", "kind": "core", "effect": "재장전 냉각", "value": "+4", "capacity": -1, "reload_cooling": 4, "role": "짧은 탄창 순환", "upside": "재장전 냉각 +4", "downside": "탄창 −1칸", "text": "탄창 −1칸, 일반 재장전 냉각 +4. 무기의 재장전 턴은 그대로이며 짧은 사격을 자주 순환하는 구성입니다."},
 	"chain_sink": {"grade": 1, "name": "연쇄 방열기", "kind": "module", "effect": "세 번째 발 냉각", "value": "열 −3", "heat_limit": -1, "third_cooling": 3, "role": "긴 탄창의 연결점", "upside": "탄창 세 번째 탄 열 −3", "downside": "열 한계 −1", "text": "탄창의 세 번째 탄이 발사되면 과열 판정 전에 열 −3. 대신 열 한계 −1. 세 번째 발에 도달하지 못하면 냉각되지 않습니다."},
@@ -266,6 +310,22 @@ const PARTS := {
 	"reserve": {"grade": 0, "name": "예비 급탄기", "kind": "module", "effect": "패 교환", "value": "+1회", "role": "조합 탐색", "upside": "패 교환 +1회", "downside": "", "text": "교전 시작과 재장전마다 복장의 패 교환 횟수 +1회. 운반용 외투도 1회 교환할 수 있습니다."},
 	"opening": {"grade": 1, "name": "선두 격발기", "kind": "module", "effect": "첫 발", "value": "+2 피해", "role": "선두 설계", "upside": "탄창 첫 발 피해 +2", "downside": "", "text": "장전한 탄창의 첫 발 직접 피해 +2. 어떤 탄을 선두에 놓을지 결정합니다."},
 	"third_striker": {"grade":1,"name":"제3 격발기","kind":"module","effect":"세 번째 발","value":"3번째 ×3","role":"주력 탄 타이밍","upside":"탄창의 세 번째 탄 직접 피해 ×3","downside":"","text":"같은 탄창에서 실제로 발사한 세 번째 탄의 직접 피해 ×3. 지원탄도 한 발로 세고 연타는 타격 수와 무관하게 한 발입니다. 빼내기는 세지 않으며 냉각은 순서를 유지하고 탄창 교체 시 초기화합니다. 화상·기폭·전이에는 적용하지 않습니다."},
+	# Tag parts (2026-11-10, tag_build.gd): offered only in tag-build runs (등반 설정).
+	"tag_fire_add": {"grade": 0, "name": "화염 점화기", "kind": "module", "effect": "화염 태그", "value": "+2", "role": "화염 가산", "upside": "화염 탄 타격당 +2", "downside": "", "text": "화염 태그가 붙은 공격탄(소이·기폭)의 타격당 피해 +2."},
+	"tag_shock_add": {"grade": 0, "name": "전기 증폭 코일", "kind": "module", "effect": "전기 태그", "value": "+2", "role": "전기 가산", "upside": "전기 탄 타격당 +2", "downside": "", "text": "전기 태그가 붙은 공격탄(전격)의 타격당 피해 +2."},
+	"tag_multi_add": {"grade": 0, "name": "다회 가속기", "kind": "module", "effect": "다회 태그", "value": "+1", "role": "다회 가산", "upside": "다회 탄 타격당 +1", "downside": "", "text": "두 번 이상 때리는 공격탄의 타격당 피해 +1."},
+	"tag_single_add": {"grade": 0, "name": "단타 조준경", "kind": "module", "effect": "단타 태그", "value": "+2", "role": "단타 가산", "upside": "단타 탄 +2", "downside": "", "text": "한 번 때리는 특수 공격탄의 피해 +2."},
+	"tag_finisher_add": {"grade": 0, "name": "마무리 조준기", "kind": "module", "effect": "마무리 태그", "value": "+3", "role": "마무리 가산", "upside": "마무리 탄 타격당 +3", "downside": "", "text": "마무리 태그가 붙은 공격탄(추격·기폭)의 타격당 피해 +3."},
+	"tag_single_mult": {"grade": 1, "name": "단타 배율기", "kind": "module", "effect": "단타 배율", "value": "×1.5", "role": "단타 배율", "upside": "단타 탄 ×1.5", "downside": "", "text": "한 번 때리는 특수 공격탄의 피해 ×1.5."},
+	"tag_hot_mult": {"grade": 1, "name": "고열 배율기", "kind": "module", "effect": "고열 배율", "value": "×1.5", "role": "고열 배율", "upside": "고열일 때 공격 ×1.5", "downside": "", "text": "발사 직전 열이 무기 한계의 절반 이상이면 특수 공격탄 피해 ×1.5."},
+	"tag_low_mult": {"grade": 1, "name": "처형 회로", "kind": "module", "effect": "약한 적 배율", "value": "×2", "role": "마무리 배율", "upside": "체력 절반 이하 적 ×2", "downside": "", "text": "체력이 절반 이하인 적에게 특수 공격탄 피해 ×2."},
+	"tag_control_mult": {"grade": 1, "name": "경직 추격기", "kind": "module", "effect": "제어된 적 배율", "value": "×2", "role": "제어 배율", "upside": "감속·차단된 적 ×2", "downside": "", "text": "감속되었거나 특수 행동이 차단된 적에게 특수 공격탄 피해 ×2."},
+	"tag_fire_deck": {"grade": 1, "name": "화염 탄약고", "kind": "module", "effect": "덱 구성", "value": "×1.5", "role": "화염 덱", "upside": "덱에 화염 탄 6장 이상이면 화염 ×1.5", "downside": "", "text": "덱에 화염 태그 탄(소이·기폭·불씨)이 6장 이상이면 화염 공격탄 피해 ×1.5."},
+	"tag_variety": {"grade": 1, "name": "혼합 탄띠", "kind": "module", "effect": "탄창 구성", "value": "+3", "role": "혼합 탄창", "upside": "탄창에 태그 4종 이상이면 +3", "downside": "", "text": "장전된 탄창의 특수탄 태그가 4종 이상이면 특수 공격탄 타격당 피해 +3."},
+	"tag_fire_growth": {"grade": 1, "name": "화염 기록기", "kind": "module", "effect": "처치 기록", "value": "최대 +6", "role": "화염 성장", "upside": "화염 처치 3회마다 화염 탄 +1", "downside": "", "text": "장착한 동안 화염 탄으로 3번 처치할 때마다 이번 등반에서 화염 탄 타격당 피해 +1(최대 +6). 분해하면 기록이 사라집니다."},
+	"tag_fire_burn": {"grade": 0, "name": "화염 연소기", "kind": "module", "effect": "화염 화상", "value": "+1턴", "role": "화상 지속", "upside": "화염 탄 화상 +1턴", "downside": "", "text": "화염 태그 탄(소이)이 거는 화상 +1턴(최대 6턴). 복제 기판으로 한 번 더 늘릴 수 있습니다."},
+	"tag_burning_mult": {"grade": 1, "name": "잔불 추격기", "kind": "module", "effect": "화상 중인 적 배율", "value": "×2", "role": "화상 배율", "upside": "화상 중인 적 ×2", "downside": "", "text": "화상 중인 적에게 특수 공격탄 피해 ×2."},
+	"tag_copy": {"grade": 2, "name": "복제 기판", "kind": "module", "effect": "복제", "value": "왼쪽 칸", "role": "효과 복제", "upside": "왼쪽에서 가장 가까운 태그 파츠 효과를 한 번 더", "downside": "", "text": "장착대에서 왼쪽으로 가장 가까운 태그 파츠(가산·배율·구성·성장·화상)의 효과를 한 번 더 적용합니다. 사이의 일반 파츠는 건너뜁니다. 마지막에 장착하면 직전 태그 파츠를 복제합니다."},
 	# Build engine trial (2026-11-08, build_engine.gd): offered only in runs with build_engine_version.
 	"resonator": {"grade": 2, "name": "연타 공명기", "kind": "module", "effect": "연타 공명", "value": "타격마다 ×1·×2·×3", "role": "연타 결정타", "upside": "연타탄의 n번째 타격 피해 ×n", "downside": "연타탄 열 +1", "text": "연타탄이 같은 적을 때리는 동안 타격마다 배율이 커집니다. 1타 ×1, 2타 ×2, 3타 ×3. 증폭·기록·위치 배율이 모두 곱해집니다. 연타탄 열 +1."},
 	"tally": {"grade": 1, "name": "타격 기록기", "kind": "module", "effect": "처치 기록", "value": "최대 +6", "role": "등반 성장", "upside": "연타 처치 3회마다 연타 타격당 +1", "downside": "분해하면 기록 소멸", "text": "장착한 동안 연타탄으로 적을 3번 처치할 때마다 이번 등반에서 연타탄 타격당 피해 +1(최대 +6). 해제해도 기록은 남고, 분해하면 사라집니다."},
@@ -312,7 +372,7 @@ const ENCOUNTERS := [
 	{"name": "03 / 열처리 통로", "text": "소이탄의 화상은 재장전 중에도 피해를 줍니다. 접근하는 적과 발열을 함께 살피세요."},
 	{"name": "04 / 압축 운반로", "text": "증폭 뒤 연타탄은 증폭 피해를 두 번 적용합니다."},
 	{"name": "05 / 무인 정비층", "text": "충격탄으로 거리를 벌리고 다음 표적 순서를 바꾸세요."},
-	{"name": "06 / 전도 경계", "text": "전격탄은 가장 가까운 다른 적에게 피해를 전이합니다."},
+	{"name": "06 / 전도 경계", "text": "전격탄은 맞은 적 뒤의 가장 가까운 적에게 피해를 전이합니다."},
 	{"name": "07 / 배정되지 않은 자리", "text": "문은 열린다. 그 너머에는 인간의 자리가 배정되어 있지 않다."},
 ]
 
@@ -334,7 +394,7 @@ const LESSONS := [
 	"화상은 보호막을 무시하고 적 행동 직전에 피해를 줍니다",
 	"연타탄은 두 번 공격 · 증폭도 두 번 적용됩니다",
 	"충격탄은 2m 밀어 거리와 다음 표적을 바꿉니다",
-	"전격탄은 가장 가까운 다른 적에게 2피해를 전이합니다",
+	"전격탄은 맞은 적 뒤의 가장 가까운 적에게 2피해를 전이합니다",
 	"마지막 교전 · 피해·거리·속성을 한 순서로 설계하세요",
 ]
 
@@ -342,7 +402,7 @@ static func lesson(state: Dictionary) -> String:
 	match int(state.floor):
 		2: return "화상은 전진 직전에 턴당 %d피해를 줍니다" % burn_damage(state)
 		4: return "충격탄은 %dm 밀어 거리를 벌립니다" % effect_value("push", state)
-		5: return "전격탄은 다른 생존 적에게 %d피해를 전이합니다" % effect_value("arc", state)
+		5: return "전격탄은 맞은 적 뒤의 생존 적에게 %d피해를 전이합니다" % effect_value("arc", state)
 	return LESSONS[int(state.floor)]
 
 static func enemy_rule(enemy: Dictionary, state: Dictionary = {}) -> String:
@@ -438,8 +498,35 @@ static func equipped_parts(state: Dictionary) -> Array:
 	if PARTS.has(legacy) and legacy != "none" and not result.has(legacy): result.append(legacy)
 	return result
 
+## Growth structure v2 (2026-11-10): each gun carries the growth drive its first-fight core
+## used to provide, so no core is forced mid-run. Climb comparison: removing the first core
+## alone failed the 리벳 and 리액터 climbs. Director mapping, before human play.
+const GUN_ENGINES := {"single": "siege_drive", "burst": "volley_drive", "heavy": "thermal_drive", "scatter": "volley_drive", "amplifier": "siege_drive", "rewinder": "thermal_drive", "deadbolt": "siege_drive"}
+
+## Ammo overhaul (2026-11-10): support families gain mastery through their effect value
+## (boost amount, heat cooled, armor removed, burn moved). Attack families gain per-hit damage
+## in growth_structure.gd. 차단·예약 stay out (paused rounds). 배율탄 stays out: a ×2 boost
+## carries no flat amount (attack_boosts.gd rejects one).
+const SUPPORT_MASTERY_STEPS := {"charge": 1, "charge_heat": 2, "shatter": 1, "cool": 1, "spread": 1}
+
+## Rounds that can be pulled out of one magazine. v2: 예비 급탄기 adds one (its old hand
+## exchange has no button in the magazine climb).
+static func eject_limit(state: Dictionary) -> int:
+	return 2 + (1 if int(state.get("growth_structure_version", 0)) == 1 and has_part(state, "reserve") else 0)
+
+static func innate_engine(state: Dictionary) -> String:
+	if int(state.get("growth_structure_version", 0)) != 1: return ""
+	return str(GUN_ENGINES.get(str(state.get("gun", "")), ""))
+
+## Equipped parts plus the gun's built-in drive (v2). Use for effects, never for slot limits.
+static func active_parts(state: Dictionary) -> Array:
+	var result := equipped_parts(state)
+	var engine := innate_engine(state)
+	if not engine.is_empty() and not result.has(engine): result.append(engine)
+	return result
+
 static func has_part(state: Dictionary, id: String) -> bool:
-	return equipped_parts(state).has(id)
+	return active_parts(state).has(id)
 
 # Grade is acquisition rarity/build scope, independent from the core equipment limit.
 static func part_grade(id: String) -> int:
@@ -452,14 +539,19 @@ static func part_grade_name(id: String) -> String:
 static func part_grade_color(id: String) -> Color:
 	return [Color("9aa9a0"), Color("94b7ce"), Color("c7a476")][maxi(0, part_grade(id))]
 
-static func part_grade_summary(id: String) -> String:
+static func part_grade_summary(id: String, state: Dictionary = {}) -> String:
 	if part_grade(id) < 0: return "빈 슬롯"
-	return part_grade_name(id) + (" · 코어 · 최대 1개 장착" if is_core_part(id) else " · 모듈")
+	# Growth structure v2 lifts the one-core limit (growth_structure.gd).
+	var core_line := " · 코어" if int(state.get("growth_structure_version", 0)) == 1 else " · 코어 · 최대 1개 장착"
+	# Part type by gun component (2026-11-11, part_slots.gd) instead of the generic 모듈.
+	var kind := str(preload("res://redesign/part_slots.gd").name_of(id))
+	return part_grade_name(id) + " · " + kind + (core_line if is_core_part(id) else "")
 
 static func is_core_part(id: String) -> bool:
 	return PARTS.has(id) and str(PARTS[id].get("kind", "module")) == "core"
 
-static func valid_part_set(gun: String, ids: Array) -> bool:
+## state: the run (model) state. Growth structure v2 (growth_structure.gd) lifts the one-core limit.
+static func valid_part_set(gun: String, ids: Array, state: Dictionary = {}) -> bool:
 	if ids.size() > MAX_EQUIPPED_PARTS: return false
 	var seen: Array = []
 	var cores := 0
@@ -467,7 +559,7 @@ static func valid_part_set(gun: String, ids: Array) -> bool:
 		var id := str(value)
 		if id == "none" or seen.has(id) or not accepts_part(gun, id): return false
 		seen.append(id)
-		if is_core_part(id): cores += 1
+		if is_core_part(id) and not int(state.get("growth_structure_version", 0)) == 1: cores += 1
 	return cores <= 1
 
 static func damage(id: String, state: Dictionary) -> int:
@@ -478,7 +570,8 @@ static func damage(id: String, state: Dictionary) -> int:
 	var result := int(AMMO[id].dmg) * multiplier(state) + bonus
 	if has_part(state, "overbore") and is_heavy_attack(id): result += 3
 	if has_part(state, "arc_splitter"): result -= 1
-	if has_part(state, "momentum"): result -= 1
+	if has_part(state, "momentum"): result -= preload("res://redesign/part_tuning.gd").momentum_penalty(state)
+	if has_part(state, "lens") and int(AMMO[id].pen) > 0: result += preload("res://redesign/part_tuning.gd").lens_damage(state)
 	if source_id(id) == "basic" and has_part(state, "triad"): result -= 1
 	return maxi(0, result)
 
@@ -542,6 +635,7 @@ static func effect_value(id: String, state: Dictionary) -> int:
 	if effect == "spread":
 		if has_part(state, "coil"): value += 1
 		if has_part(state, "inferno"): value += 2
+	if int(state.get("growth_structure_version", 0)) == 1: value += int(state.get("mastery", {}).get(source_id(id), 0)) * int(SUPPORT_MASTERY_STEPS.get(source_id(id), 0))
 	return value
 
 static func prior_kind_count(prior: Array, current: String) -> int:
@@ -591,7 +685,7 @@ static func exchange_capacity(state: Dictionary) -> int:
 
 static func reload_modifier(state: Dictionary) -> int:
 	var value := -1 if has_part(state, "loader") else 0
-	if has_part(state, "afterburner"): value += 1
+	if has_part(state, "afterburner"): value += preload("res://redesign/part_tuning.gd").afterburner_swap(state)
 	if has_part(state, "inferno"): value += 1
 	return value
 
@@ -624,7 +718,7 @@ static func replacement_cooling(state: Dictionary)->int:
 
 static func heat_limit(state: Dictionary) -> int:
 	var limit := int(weapon_spec(state).heat_limit)
-	for part in equipped_parts(state): limit += int(PARTS[part].get("heat_limit", 0))
+	for part in equipped_parts(state): limit += int(PARTS[part].get("heat_limit", 0)) + preload("res://redesign/part_tuning.gd").heat_limit_fix(state, part)
 	return maxi(1, limit)
 
 static func hot_threshold(state: Dictionary) -> int:
@@ -639,7 +733,7 @@ static func heat_delta(id: String, state: Dictionary) -> int:
 static func part_heat_bonus(id: String, state: Dictionary) -> int:
 	var bonus := 1 if is_attack(id) and has_part(state,"volley_drive") and hit_count(id,state)>1 else 0
 	if revised_combat(state) and source_id(id) == "precise" and has_part(state,"duplex"): bonus += 1
-	if int(state.get("build_engine_version", 0)) == 1 and str(AMMO[id].effect) == "double" and has_part(state, "resonator"): bonus += 1
+	if int(state.get("build_engine_version", 0)) == 1 and str(AMMO[id].effect) == "double" and has_part(state, "resonator") and preload("res://redesign/part_tuning.gd").resonator_heats(state): bonus += 1
 	return bonus
 
 static func field_compression_bonus(state: Dictionary) -> int:
@@ -668,6 +762,8 @@ static func burn_amount(id: String, state: Dictionary) -> int:
 	var amount := int(AMMO[id].value)
 	if has_part(state, "coil"): amount += 1
 	if has_part(state, "inferno"): amount += 2
+	# Tag runs: 화염 연소기 (tag_build.gd). Loaded at run time; tag_build.gd preloads this script.
+	if int(state.get("tag_build_version", 0)) >= 1: amount += int(load("res://redesign/tag_build.gd").burn_bonus(state, active_parts(state)))
 	return mini(6, amount)
 
 static func grade(id: String) -> int:

@@ -7,8 +7,19 @@ func _run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/playtest_revision_20261026/"): quit(2); return
 	var m = fixture(["basic"], [["runner", 20, 0, 3, 3]])
 	check(Threat.analyze(m.s)[0].tone == "danger", "contact exactly on next action")
+	check(Threat.snapshot(m.s, true).proximity == {"actions": 1, "kind": "contact"}, "contact produces the immediate warning")
 	m.s.enemies[0].burn = 1; m.s.enemies[0].hp = 1
 	check(Threat.analyze(m.s)[0].text.contains("화상 처치"), "lethal burn cancels contact")
+	check(Threat.snapshot(m.s, true).proximity.is_empty(), "lethal burn cancels the global warning")
+	m = fixture(["basic"], [["runner", 20, 0, 3, 6]])
+	var before_warning := JSON.stringify(m.s)
+	check(Threat.snapshot(m.s, true).proximity == {"actions": 2, "kind": "contact"}, "contact two enemy actions away gives early warning")
+	check(JSON.stringify(m.s) == before_warning, "both steps of the warning leave the live state and RNG untouched")
+	m.s.enemies[0].distance = 3
+	m.s.combat_roles_version = 1
+	m.s.fire_zones = []
+	m.s.enemies[0].slow_left = 2
+	check(Threat.snapshot(m.s, true).proximity.get("actions", 0) != 1, "slow movement cannot show false immediate contact")
 	m = fixture(["basic"], [["caster", 20, 0, 0, 20], ["runner", 20, 0, 1, 3]])
 	m.s.enemies[0].charge_max = 2; m.s.enemies[0].charge = 1; m.s.enemies[0].charge_pull = 2
 	check(Threat.analyze(m.s)[1].tone == "danger", "pull plus ordinary movement causes contact")
@@ -17,8 +28,11 @@ func _run() -> void:
 	m = fixture(["basic"], [Hunters.leader(Hunters.BOSS)])
 	m.s.enemies[0].leap_left = 1
 	check(Threat.analyze(m.s)[0].text.contains("돌진") and Threat.analyze(m.s)[0].step == 7, "zero base speed still predicts leap")
+	m.s.enemies[0].distance = 7
+	check(Threat.snapshot(m.s, true).proximity == {"actions": 1, "kind": "contact"}, "boss leap triggers immediate warning despite zero base speed")
 	m.s.enemies[0].recovering = true
 	check(Threat.analyze(m.s)[0].step == 0, "recovery has no invented arrival countdown")
+	check(Threat.snapshot(m.s, true).proximity.get("actions", 0) != 1, "boss recovery is not immediate contact")
 	m = fixture(["basic"], Workers.revise([Workers.leader(Workers.BOSS, 56, 20)]))
 	m.s.enemies[0].windup = 1
 	check(Threat.analyze(m.s)[0].text.contains("돌진"), "modern two-action windup")
@@ -30,6 +44,14 @@ func _run() -> void:
 	m.s.enemies[0].jammed = 0
 	m.s.projectiles = [{"uid":1,"source":0,"kind":"pressure","hp":1,"speed":6,"distance":12}]
 	check(not Threat.analyze(m.s)[0].text.contains("발사"), "existing projectile prevents a second launch")
+	check(Threat.snapshot(m.s, true).proximity == {"actions": 2, "kind": "projectile"}, "projectile two enemy actions away gives early warning")
+	m.s.projectiles[0].distance = 6
+	check(Threat.snapshot(m.s, true).proximity == {"actions": 1, "kind": "projectile"}, "projectile about to land has its own danger kind")
+	m.s.projectiles[0].hp = 0
+	m.s.enemies[0].distance = 3
+	m.s.enemies[0].ranged_phase = "prepare"
+	m.s.enemies[0].ranged_left = 2
+	check(Threat.snapshot(m.s, true).proximity.is_empty(), "stationary shooter and a birth-tick projectile are not immediate contact")
 	# Same public resolver across all current regions, states and saved revisions.
 	for revision in [0, 1, 2]:
 		for region in range(5):

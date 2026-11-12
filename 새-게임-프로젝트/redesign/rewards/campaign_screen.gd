@@ -24,7 +24,7 @@ func refresh() -> void:
 	super.refresh()
 	var boss := run.boss_loot()
 	var package := run.first_ammo_reward() and Focus.enabled(run.s)
-	var inspecting := not choosing_outgoing and not selected.is_empty()
+	var inspecting := not choosing_outgoing and not selected.is_empty() and selected != TRIM
 	%Credits.visible = not choosing_outgoing and not boss
 	%Trade.visible = inspecting and not package and run.can_acquire_ammo(selected) and not exchange_choices().is_empty()
 	%RewardDetails.visible = inspecting

@@ -69,7 +69,8 @@ static func valid(buff: Dictionary) -> bool:
 		if not value is Dictionary or value.size() not in [4,7]: return false
 		if value.size() == 7:
 			if value.get("channel", "") not in ["flat","factor","carry"] or not value.get("hot") is bool or not whole(value.get("heat"),0,3): return false
-		if not whole(value.get("dmg"), 0, 16) or not whole(value.get("factor"), 1, 3) or not whole(value.get("left"), 1, 2) or not value.get("carry") is bool: return false
+		# 2026-11-10: up to 40 (support mastery on 잔열 증폭 with 스파이크's ×2 exceeds 16).
+		if not whole(value.get("dmg"), 0, 40) or not whole(value.get("factor"), 1, 3) or not whole(value.get("left"), 1, 2) or not value.get("carry") is bool: return false
 		if value.dmg == 0 and value.factor == 1: return false
 		if value.has("channel"):
 			if value.channel == "factor" and (value.dmg != 0 or value.factor <= 1 or value.hot or value.carry): return false

@@ -6,7 +6,7 @@ const AmmoArt = preload("res://redesign/ammo_art.gd")
 const ICONS := {
 	"cadence": "supply", "efficiency": "cooling_breech", "thermal": "cooling_breech",
 	"conduction": "arc_splitter", "chain": "ordinary_chain", "growth": "siege_drive",
-	"bag": "reserve", "copy": "duplex",
+	"bag": "reserve", "copy": "duplex", "mastery": "sequencer", "mastery_support": "radiator", "drive": "siege_drive",
 }
 
 @export var item_id := "cadence":

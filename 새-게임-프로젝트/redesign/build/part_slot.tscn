@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/build/part_slot.gd" id="slot"]
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/item_glyph.gd" id="glyph"]
+
+[node name="PartSlot" type="Button"]
+custom_minimum_size = Vector2(44, 56)
+size_flags_horizontal = 3
+toggle_mode = true
+script = ExtResource("slot")
+
+[node name="Glyph" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -18.0
+mouse_filter = 2
+script = ExtResource("glyph")
+is_part = true
+item_id = "opening"
+
+[node name="Caption" type="Label" parent="."]
+layout_mode = 1
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = -4.0
+offset_top = -22.0
+offset_bottom = -3.0
+mouse_filter = 2
+clip_text = true
+text_overrun_behavior = 3
+horizontal_alignment = 1
+text = "선두 격발기"

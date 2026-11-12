@@ -9,6 +9,8 @@ const SLOW_SHADOW := Color("29243b")
 const MAX_SALVO_HIT_STOP := 0.12
 const CombatVFX = preload("res://redesign/combat_vfx.gd")
 const Payoff = preload("res://redesign/combat_payoff.gd")
+const PartIcon = preload("res://redesign/part_icon_art.gd")
+const AmmoArt = preload("res://redesign/ammo_art.gd")
 const ImpactStyle=preload("res://redesign/impact_style.gd")
 const ImpactSprite=preload("res://redesign/impact_sprite.gd")
 const Surface=preload("res://redesign/surface_feedback.gd")
@@ -26,6 +28,7 @@ var payoff_tier := 0
 var payoff_last: Dictionary = {}
 var build_signature: Dictionary = {}
 var salvo_receipt: Dictionary = {}
+var shot_activations: Array[Dictionary] = []
 var salvo_results: Array = []
 var receipt_is_previous := false
 var impact_readout_bounds: Array = []
@@ -60,6 +63,7 @@ func sync(state: Dictionary, prediction: Dictionary = {}) -> void:
 	payoff_tier = 0
 	payoff_last = {}
 	build_signature = {}
+	shot_activations.clear()
 	impact_style={}
 	surface_profile={}
 	firing_profile={}
@@ -199,6 +203,10 @@ func _damage_position(point: Vector2) -> Vector2:
 			position.y = maxf(position.y, hud.end.y + 4 + FONT.get_ascent(_damage_font_size()))
 	return position.round()
 
+func _innate_activation() -> String:
+	var innate := Content.innate_engine(display_state)
+	return "" if Content.equipped_parts(display_state).has(innate) else innate
+
 func _prepare_shot(result: Dictionary) -> void:
 	if receipt_is_previous:
 		salvo_receipt = {}
@@ -206,7 +214,7 @@ func _prepare_shot(result: Dictionary) -> void:
 	build_signature = Payoff.signature(result)
 	impact_style=ImpactStyle.resolve(result)
 	surface_profile=Surface.resolve(result)
-	firing_profile=FiringVFX.profile(str(display_state.get("gun","single")),result)
+	firing_profile=FiringVFX.profile(str(display_state.get("gun","single")),result,_innate_activation())
 	launch_ready=false
 	hero_action = "aim"
 	if result.get("overdrive", false): _feedback("reactor_overdrive", {"heat":int(result.get("heat_before", 0))})
@@ -238,6 +246,9 @@ func _prepare_shot(result: Dictionary) -> void:
 	hero_action = "fire"
 
 func _hold_impact(result: Dictionary) -> void:
+	shot_activations = Payoff.activations(result, _innate_activation())
+	if not shot_activations.is_empty() and int(result.damage) > 0:
+		damage_popups[0].activated = true
 	salvo_results.append(result)
 	salvo_receipt = Payoff.receipt(salvo_results)
 	payoff_last = Payoff.describe(result)
@@ -291,6 +302,7 @@ func _play_hit_stop(result: Dictionary) -> void:
 
 func _finish_shot() -> void:
 	build_signature = {}
+	shot_activations.clear()
 	impact_style={}
 	surface_profile={}
 	firing_profile={}
@@ -397,7 +409,7 @@ func _draw_surface_overlay(canvas: CanvasItem) -> void:
 	var point:=surface_contact(float_target)
 	var surface_point:=enemy_feet(float_target)-Vector2(0,8) if surface_profile.get("ground",false) else point
 	if not reduced_feedback and not fast_forward and surface_profile.get("contact", false) and not firing_profile.is_empty():
-		EnhancedShot.draw_contact(canvas, point, pulse, firing_profile.tier, firing_profile.color, finish_camera())
+		EnhancedShot.draw_contact(canvas, point, pulse, firing_profile.tier, firing_profile.color, finish_camera(), firing_profile.part_powered)
 	Surface.draw(canvas,surface_point,pulse,surface_profile,reduced_feedback or fast_forward,finish_camera())
 	if float_target == stagger_target and not reduced_feedback and not fast_forward:
 		var strength := _stagger_weight()
@@ -440,7 +452,7 @@ func _draw_link_on(canvas: CanvasItem, from: Vector2, to: Vector2, kind: String)
 		for side in [-1,1]:
 			var edge := (to+Vector2(side*reach,-8)).snapped(Vector2(2,2))
 			canvas.draw_rect(Rect2(edge,Vector2(3,16)),Color(HOT,1.0-pulse))
-	elif kind in ["relay","overflow"]:
+	elif kind in ["relay","overflow","wreckage"]:
 		var midpoint := Vector2(roundf((from.x+to.x)*0.5),from.y)
 		var points := PackedVector2Array([from.round(),midpoint,Vector2(midpoint.x,to.y).round(),to.round()])
 		canvas.draw_polyline(points,Color(BOOST,1.0-pulse),4 if kind=="overflow" else 2,false)
@@ -482,16 +494,62 @@ func _draw_build_receipt() -> void:
 	var title: String = salvo_receipt.signature.title
 	if title.is_empty(): title="사격 결과"
 	if receipt_is_previous: title="직전 · " + title
-	var width := 208.0
+	var badges := activation_badges()
+	var width := 220.0
+	var title_width := width
+	var detail_width := width
+	if not badges.is_empty():
+		var first: Dictionary = shot_activations.front()
+		var last: Dictionary = shot_activations.back()
+		title = str(last.title) if str(last.title).ends_with(" 준비") else str(first.title)
+		if shot_activations.size() > badges.size(): title += " · +%d" % (shot_activations.size() - badges.size())
+		color = impact_style.color if impact_style.get("active", false) else Color("b9c4a3")
+		# Reserve the peak width so the text does not resize as the icons settle.
+		detail_width = 166.0 if badges.size() == 1 else 172.0 - 36.0 * (badges.size() - 1)
+		if badges.size() == 1: title_width = detail_width
 	draw_rect(Rect2(14,9,width+16,57),Color(0.045,0.075,0.09,0.9))
 	draw_rect(Rect2(14,9,3,57),color)
 	var font_size := 19
-	while font_size>14 and FONT.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x>width: font_size-=1
-	draw_string(FONT,Vector2(24,31),title,HORIZONTAL_ALIGNMENT_LEFT,width,font_size,color)
+	while font_size>14 and FONT.get_string_size(title,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x>title_width: font_size-=1
+	draw_string(FONT,Vector2(24,31),title,HORIZONTAL_ALIGNMENT_LEFT,title_width,font_size,color)
 	var detail: String = salvo_receipt.detail
 	var detail_size := 18
-	while detail_size>12 and FONT.get_string_size(detail,HORIZONTAL_ALIGNMENT_LEFT,-1,detail_size).x>width: detail_size-=1
-	draw_string(FONT,Vector2(24,54),detail,HORIZONTAL_ALIGNMENT_LEFT,width,detail_size,Color("e7e4d9"))
+	while detail_size>12 and FONT.get_string_size(detail,HORIZONTAL_ALIGNMENT_LEFT,-1,detail_size).x>detail_width: detail_size-=1
+	draw_string(FONT,Vector2(24,54),detail,HORIZONTAL_ALIGNMENT_LEFT,detail_width,detail_size,Color("e7e4d9"))
+	for badge in badges:
+		var bounds: Rect2 = badge.bounds
+		var effect: Dictionary = badge.effect
+		draw_rect(bounds, Color("172227"))
+		draw_rect(Rect2(bounds.position, Vector2(2, bounds.size.y)), color)
+		var emphasis := float(badge.scale) - 1.0
+		if emphasis > 0.01:
+			draw_rect(bounds, Color(color, minf(1.0, emphasis * 2.5)), false, 1.0)
+			for side in [-1, 1]:
+				var edge := bounds.get_center() + Vector2(side * (bounds.size.x * 0.5 + 3), -bounds.size.y * 0.32)
+				draw_rect(Rect2(edge.round(), Vector2(3, 2)), Color(color.lightened(0.28), minf(1.0, emphasis * 3.0)))
+		var center := bounds.get_center() + Vector2(1, 0)
+		if effect.kind == "part":
+			var icon_scale := (0.94 if badges.size() == 1 else 0.80) * float(badge.scale)
+			PartIcon.draw(self, effect.id, center, color, icon_scale, false)
+		else:
+			var extent := (Vector2(20, 27) if badges.size() == 1 else Vector2(16, 19)) * float(badge.scale)
+			AmmoArt.draw(self, effect.id, Rect2(center - extent * 0.5, extent))
+
+func activation_badges() -> Array[Dictionary]:
+	if fast_forward or shot_activations.is_empty(): return []
+	var shown := shot_activations.slice(0, 3)
+	# Keep the firing cartridge visible alongside the first two part triggers.
+	if shot_activations.size() > 3 and shot_activations.back().kind == "ammo": shown[2] = shot_activations.back()
+	var badges: Array[Dictionary] = []
+	for index in range(shown.size()):
+		var phase := maxf(0.0, pulse - 0.06 * index)
+		var weight := (0.45 + 0.55 * smoothstep(0.0, 0.16, phase)) * (1.0 - smoothstep(0.10, 0.56, phase))
+		var magnification := 1.0 if reduced_feedback else 1.0 + 0.38 * weight
+		var center := Vector2(220, 37) if shown.size() == 1 else Vector2(228 - 36 * (shown.size() - 1 - index), 49)
+		if not reduced_feedback: center.y -= roundf(weight * 2.0)
+		var extent := ((Vector2(32, 30) if shown.size() == 1 else Vector2(26, 20)) * magnification).round()
+		badges.append({"effect": shown[index], "scale": magnification, "bounds": Rect2((center - extent * 0.5).round(), extent)})
+	return badges
 
 func _draw_build_impact(point: Vector2) -> void:
 	if reduced_feedback or fast_forward or build_signature.is_empty() or not damage_popups.any(func(entry):return int(entry.amount)>0): return
@@ -556,6 +614,7 @@ func _play_advance(before: Dictionary, after: Dictionary, events: Array, reloadi
 			pulse = 0.0
 		for event in tick_events:
 			if event.kind=="fire_zone_tick":display_state.fire_zones=event.zones.duplicate(true)
+			if event.kind == "wreckage_spawn": _apply_wreckage_spawns(event.stacks)
 			if event.kind == "charge":
 				enemies[int(event.target)].charge = int(event.charge)
 				visual_events.append(event.duplicate(true))

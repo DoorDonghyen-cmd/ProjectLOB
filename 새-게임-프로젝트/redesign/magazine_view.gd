@@ -225,6 +225,8 @@ func forecast_readout(logical: int) -> Dictionary:
 	var color := Color("899ea6")
 	if logical < forecast.shots.size():
 		var shot: Dictionary = forecast.shots[logical]
+		if shot.has("wreckage_hit"):
+			return {"value": "잔해 −%d" % int(shot.wreckage_hit), "note": "%d칸 남음" % int(shot.wreckage_left), "color": Color("dcb07e")}
 		value = "무작위" if shot.get("random", false) else "피해 %d" % int(shot.damage)
 		if shot.get("intercept", false): value = "요격"
 		elif float(shot.get("intercept_probability", 0)) >= 0.999999: value = "확정 요격"
@@ -282,6 +284,7 @@ func _can_move(from: int, to: int) -> bool:
 
 static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArray:
 	var shot: Dictionary = prediction.shots[index]
+	if shot.has("wreckage_hit"): return PackedStringArray(["잔해 −%d" % int(shot.wreckage_hit), "%d칸 남음" % int(shot.wreckage_left), "엄폐 차단"])
 	if float(shot.get("intercept_probability", 0)) >= 0.999999: return PackedStringArray(["확정 요격", "압력탄 제거", "증폭" if shot.get("boosted", false) else ""])
 	if shot.get("random", false):
 		if int(shot.get("burn_duration", 0)) > 0:
@@ -313,7 +316,7 @@ static func compact_lines(prediction: Dictionary, index: int) -> PackedStringArr
 	elif int(shot.get("focus_damage", 0)) > 0: result[2] = "집중+%d" % shot.focus_damage
 	elif int(shot.get("relay_damage",0))>0: result[2] = "후속 전달 +%d" % int(shot.relay_damage)
 	elif int(shot.get("overdrive_percent",100))>100: result[2] = "강행 ×%.2f" % (int(shot.overdrive_percent)/100.0)
-	elif int(shot.get("part_factor",1))>1: result[2] = "후미 결산 ×%d" % int(shot.part_factor)
+	elif int(shot.get("part_factor",1))>1: result[2] = str(shot.get("position_label", "후미 결산 ×%d" % int(shot.part_factor)))
 	elif int(shot.get("engine_percent",100))>100: result[2] = "코어 ×%.2f" % (int(shot.engine_percent)/100.0)
 	elif boosted: result[2] = "%d회 강화 적용" % int(shot.hits) if int(shot.hits) > 1 else "강화 +%d ×%d" % [int(shot.math.boost), int(shot.math.get("factor", 1))]
 	elif int(shot.get("hits", 1)) > 1: result[2] = "×%d" % int(shot.hits)

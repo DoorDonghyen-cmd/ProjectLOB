@@ -50,8 +50,10 @@ func run()->void:
    await tap("workspace_close")
    var future: Dictionary=campaign.current_nodes().filter(func(n):return n.kind=="boss")[0]
    await tap("map_node_"+str(future.id))
-   check(not screen.find_child("city_enter_"+str(id),true,false).visible,"future preview has no illegal move")
+   var move_button := screen.find_child("city_enter_"+str(id),true,false) as Button
+   check(not move_button.visible and move_button.disabled,"future preview has no illegal move")
    await tap("map_node_"+str(id))
+   check(move_button.visible and not move_button.disabled and move_button.theme == preload("res://redesign/ui/dark_primary.tres"),"available move uses the shared action theme")
    if region==0:await capture("map_%dx%d"%[resolution.x,resolution.y])
    var visits: int=campaign.s.visited.size()
    await tap("city_enter_"+str(id))

@@ -5,21 +5,33 @@ const Data = preload("res://redesign/content.gd")
 const Focus = preload("res://redesign/focus_build.gd")
 const PartChoice = preload("res://redesign/part_choice.gd")
 const BuildGuide = preload("res://redesign/build_guide.gd")
+const DarkPrimary = preload("res://redesign/ui/dark_primary.tres")
+const ButtonFrame = preload("res://redesign/ui/button_frame.gd")
 const EXCHANGE_PAGE_SIZE := 3
 
 var run: Campaign
 var selected := ""
 var outgoing := ""
 var choosing_outgoing := false
+## Reward row "remove one round" (2026-11-11, reward_trim.gd): the outgoing list without an incoming round.
+var trimming := false
+## The trim choice is the first reward card (seen without scrolling on phones; the card row scrolls).
+const TRIM := "trim"
 var exchange_page := 0
 var prototype_card: Button
 var cards: Dictionary = {}
 var reveal: Tween
 var reveal_duration := 0.26
+var exchange_theme: Theme
 
 func _ready() -> void:
 	prototype_card = %Offers.get_child(0).duplicate()
 	prototype_card.button_pressed = false
+	# The exchange button sizes to its label. Keep the reward screen's padding.
+	exchange_theme = DarkPrimary.duplicate() as Theme
+	for state in [&"normal", &"hover", &"pressed", &"hover_pressed", &"disabled", &"focus"]:
+		var face := DarkPrimary.get_stylebox(state, &"Button")
+		exchange_theme.set_stylebox(state, &"Button", ButtonFrame.with_margins(face, %Confirm.get_theme_stylebox(state)))
 	%Confirm.pressed.connect(confirm)
 	%Skip.pressed.connect(skip)
 	%Credits.pressed.connect(claim.bind("credits"))
@@ -39,9 +51,14 @@ func present() -> void:
 
 func reset_choices(preferred: String = "") -> void:
 	choosing_outgoing = false
+	trimming = false
 	outgoing = ""
 	var ids := run.reward_options() + run.part_rewards()
 	selected = preferred if ids.has(preferred) else str(ids[0]) if not ids.is_empty() else ""
+	# Elites keep a part selected first; the salvage round is the extra choice.
+	if preferred.is_empty() and run.node().get("elite", false) and not run.part_rewards().is_empty(): selected = str(run.part_rewards()[0])
+	# First card, so it is seen without scrolling on phones; the first round stays selected.
+	if run.can_trim_reward(): ids.push_front(TRIM)
 	rebuild_cards(ids)
 	refresh()
 	if reveal != null:
@@ -67,7 +84,8 @@ func rebuild_cards(ids: Array) -> void:
 		var quantity := card.get_node("Quantity") as Label
 		var glyph = card.get_node("Glyph")
 		var item_name := title_for(str(id))
-		glyph.item_id = id
+		# The trim card shows the round it would remove first (basic first).
+		glyph.item_id = str(run.trim_reward_options()[0]) if id == TRIM else id
 		glyph.is_part = Data.PARTS.has(id)
 		label.text = item_name
 		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -83,15 +101,21 @@ func rebuild_cards(ids: Array) -> void:
 	%Offers.get_parent().scroll_horizontal = 0
 
 func title_for(id: String) -> String:
+	if id == TRIM: return "탄 1장 빼기"
 	return str(Data.part_spec(id, run.model.s).name) if Data.PARTS.has(id) else str(Data.AMMO[id].name)
 
 func ammo_stats(id: String) -> String:
+	if not Data.AMMO.has(id): return ""
 	var stat := Data.primary_stat(id, run.model.s)
 	return "%s %s   ·   열 %s" % [stat.label, stat.value, Data.heat_label(id, run.model.s)]
 
 func card_readout(id: String) -> String:
+	if id == TRIM: return "덱 정리"
 	if Data.PARTS.has(id):
-		return str(Data.part_spec(id, run.model.s).get("value", "")).get_slice(" · ", 0)
+		return str(preload("res://redesign/part_slots.gd").name_of(id)) + " · " + str(Data.part_spec(id, run.model.s).get("value", "")).get_slice(" · ", 0)
+	# Salvage card (salvage.gd): name the enemy it came from.
+	var salvage := run.salvage_card()
+	if not salvage.is_empty() and str(salvage.id) == id: return "회수 · " + str(salvage.name)
 	var stat := Data.primary_stat(id, run.model.s)
 	return "%s %s · 열%s" % [stat.label, stat.value, Data.heat_label(id, run.model.s)]
 
@@ -112,7 +136,7 @@ func refresh() -> void:
 	var has_room := not selected.is_empty() and run.can_acquire_ammo(selected)
 	var bag := "가방 %d / %d" % [state.deck.size(), run.model.deck_limit()]
 	var mixed := not choosing_outgoing and cards.keys().any(func(id): return Data.PARTS.has(id) != is_part)
-	%Section.text = "내보낼 탄환" if choosing_outgoing else opening_title if opening else "주력 탄 묶음 · 2/2" if package else "전투 보상 · 1개 선택" if mixed else "회수할 파츠" if is_part else "회수할 탄환"
+	%Section.text = "뺄 탄환" if trimming else "내보낼 탄환" if choosing_outgoing else opening_title if opening else ("주력 탄 묶음" if run.model.GrowthV2.enabled(state) else "주력 탄 묶음 · 2/2") if package else "전투 보상 · 1개 선택" if mixed else "회수할 파츠" if is_part else "회수할 탄환"
 	%Count.text = "장착대 %d / %d" % [run.equipped_parts().size(), Campaign.MAX_EQUIPPED_PARTS] if is_part else bag
 	%Credits.text = "대신 %d Cr" % run.credit_reward()
 	%Credits.visible = not choosing_outgoing
@@ -122,6 +146,8 @@ func refresh() -> void:
 	for id in cards:
 		cards[id].set_pressed_no_signal(id == (outgoing if choosing_outgoing else selected))
 	%Item.text = title_for(selected) if not selected.is_empty() else "회수할 물건 없음"
+	%Confirm.theme = exchange_theme if choosing_outgoing else null
+	%Confirm.theme_type_variation = &"" if choosing_outgoing else &"Claim"
 	%Confirm.disabled = selected.is_empty()
 	%Fit.text = ""
 	%Gain.text = ""
@@ -142,6 +168,13 @@ func refresh() -> void:
 		%Confirm.disabled = outgoing.is_empty()
 		%Confirm.text = "이 탄으로 교체"
 		%Status.text = "가방 수량 유지"
+		%Exchange.get_node("Incoming/Direction").text = "보상" if trimming else "받을 탄"
+		if trimming:
+			%IncomingName.text = "덱 정리"
+			%IncomingStats.text = "탄 1장을 덱에서 뺍니다"
+			%IncomingCount.text = "가방 %d → %d장" % [state.deck.size(), state.deck.size() - 1]
+			%Confirm.text = "이 탄 빼기"
+			%Status.text = "최소 %d장까지" % run.minimum_deck()
 	elif is_part:
 		var spec := Data.part_spec(selected, state)
 		%Gain.text = PartChoice.effect(selected, state)
@@ -152,9 +185,16 @@ func refresh() -> void:
 			%Fit.text = "현재 주력 · %s %d장" % [title_for(main), PartChoice.family_count(state, Data.source_id(main))]
 		%Status.text = "획득 시 장착" if run.can_equip_reward(selected) else "획득 후 보관"
 		%Confirm.text = "코어 회수" if opening and core else "파츠 회수"
+	elif selected == TRIM:
+		%Gain.text = "보유 탄 1장을 덱에서 뺍니다"
+		%Fit.text = "기본탄부터 · 덱 최소 %d장" % run.minimum_deck()
+		%Status.text = "가방 %d → %d장" % [state.deck.size(), state.deck.size() - 1]
+		%Confirm.text = "뺄 탄 고르기"
 	elif not selected.is_empty():
 		%Gain.text = Focus.package_text(selected) if package else ammo_stats(selected)
 		%Fit.text = "기본탄 3장 교체 · 가방 수량 유지" if package else Focus.offer_label(state, selected)
+		var salvage := run.salvage_card()
+		if not salvage.is_empty() and str(salvage.id) == selected: %Fit.text = "회수 · 마지막으로 쓰러뜨린 %s" % salvage.name
 		%Status.text = "" if package else "가방에 1장 추가" if has_room else "가방 가득 참"
 		%Confirm.text = "묶음 회수" if package else "탄환 회수" if has_room else "교체할 탄 고르기"
 		%Confirm.disabled = Focus.replace_opening(state.deck, selected).is_empty() if package else not has_room and exchange_choices().is_empty()
@@ -162,6 +202,7 @@ func refresh() -> void:
 	%Fit.visible = not %Fit.text.is_empty()
 
 func exchange_choices() -> Array:
+	if trimming: return run.trim_reward_options()
 	return run.replaceable_ammo().filter(func(id): return run.can_acquire_ammo(selected, id))
 
 func change_exchange_page(delta: int) -> void:
@@ -180,8 +221,9 @@ func change_exchange_page(delta: int) -> void:
 
 func cancel_exchange() -> void:
 	choosing_outgoing = false
+	trimming = false
 	outgoing = ""
-	rebuild_cards(run.reward_options())
+	rebuild_cards(([TRIM] if run.can_trim_reward() else []) + run.reward_options() + run.part_rewards())
 	refresh()
 	if cards.has(selected):
 		cards[selected].grab_focus()
@@ -195,11 +237,21 @@ func skip() -> void:
 func confirm() -> void:
 	if choosing_outgoing:
 		if not outgoing.is_empty():
-			claim(selected, outgoing)
+			claim("trim" if trimming else selected, outgoing)
+	elif selected == TRIM:
+		open_trim()
 	elif Data.PARTS.has(selected) or (run.first_ammo_reward() and Focus.enabled(run.s)) or run.can_acquire_ammo(selected):
 		claim(selected)
 	elif not selected.is_empty():
 		open_exchange()
+
+func open_trim() -> void:
+	if not run.can_trim_reward(): return
+	trimming = true
+	choosing_outgoing = true
+	outgoing = ""
+	exchange_page = 0
+	change_exchange_page(0)
 
 func open_exchange() -> void:
 	choosing_outgoing = true

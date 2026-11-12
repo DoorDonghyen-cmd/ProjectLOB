@@ -73,6 +73,20 @@ func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = 
 		model.s.focus_build_version = Model.FocusBuild.VERSION
 		# Build engine trial (2026-11-08): 연타 공명기·타격 기록기 for new runs.
 		model.s.build_engine_version = Model.BuildEngine.VERSION
+		# Growth structure v2 (2026-11-10): special-first magazine, no forced first core, mastery.
+		model.s.growth_structure_version = Model.GrowthV2.VERSION
+		# Overheat cost (2026-11-11): forced cooling costs more enemy actions (overheat_cost.gd).
+		model.s.overheat_version = Model.Overheat.VERSION
+		# Normal-fight reward row "remove one round" (2026-11-11, reward_trim.gd).
+		model.s.reward_trim_version = Model.RewardTrim.VERSION
+		# Mixed round rewards (2026-11-11, reward_mix.gd): main / another attack / support.
+		model.s.reward_mix_version = Model.RewardMix.VERSION
+		# 교차 사격 (2026-11-11, mix_combo.gd): switching attack families grows per-hit damage.
+		model.s.mix_combo_version = Model.MixCombo.VERSION
+		# Salvaged rounds (2026-11-11, salvage.gd): the last enemy killed drops its answer round.
+		model.s.salvage_version = Model.Salvage.VERSION
+		# 연계탄·예약탄 rework (2026-11-12, ammo_revision.gd).
+		model.s.ammo_revision_version = Model.AmmoRevision.VERSION
 	if magazine_mode and map_version>=4:
 		s.combat_roles_version=Model.Roles.VERSION;model.s.combat_roles_version=Model.Roles.VERSION
 		s.specialist_core_version=Model.Roles.SPECIALIST_VERSION;model.s.specialist_core_version=Model.Roles.SPECIALIST_VERSION
@@ -262,6 +276,8 @@ func sync_combat() -> void:
 			s.encounter.stage = "cleared"
 			s.message = "현장 물자 확보 · +%dCr" % int(found.bonus)
 		s.clears += 1
+		# v2: the first win skips the growth-core pick and offers the main-round package.
+		if Model.GrowthV2.enabled(model.s) and int(s.clears) == 1 and int(s.get("opening_reward_step", 2)) == 0: s.opening_reward_step = 1
 		s.phase = "reward"
 		_log("clear", {"node": s.node, "shots": model.s.shots, "turns": model.s.turns})
 		if node().kind == "boss":
@@ -281,7 +297,7 @@ func boss_loot() -> bool:
 	return modern_gates() and node().get("kind","")=="boss" and s.phase=="reward"
 
 func gate_options() -> Array:
-	var late_growth: bool = int(s.region)>=1 and s.parts.any(func(id): return Model.Engines.IDS.has(id))
+	var late_growth: bool = int(s.region)>=1 and (s.parts.any(func(id): return Model.Engines.IDS.has(id)) or not Ammo.innate_engine(model.s).is_empty())
 	return Gates.options(model.s,late_growth) if modern_gates() and s.phase=="gate" and not s.resolved else []
 
 func gate_ready() -> bool:
@@ -327,8 +343,12 @@ func reward(choice: String, remove_id: String = "") -> bool:
 	if boss_loot() and choice=="credits": return false
 	var opening_core := engine_reward() and int(s.get("discovery_version",0)) >= 3
 	var opening_ammo := first_ammo_reward()
-	if not remove_id.is_empty() and not reward_options().has(choice): return false
+	if not remove_id.is_empty() and choice != "trim" and not reward_options().has(choice): return false
 	if choice == "credits": s.credits += credit_reward()
+	elif choice == "trim":
+		if not can_trim_reward() or not model.s.deck.has(remove_id): return false
+		model.s.deck.erase(remove_id)
+		s.message = Ammo.AMMO[remove_id].name + " 1장을 덱에서 뺐습니다."
 	elif choice == "skip": pass
 	elif part_rewards().has(choice):
 		s.parts.append(choice)
@@ -368,14 +388,55 @@ func reward_options() -> Array:
 	if engine_reward(): return []
 	if first_ammo_reward(): return Model.FocusBuild.opening_options(model.s) if Model.FocusBuild.enabled(s) else Content.Acquisition.first_options(int(s.seed), str(s.gun), s.parts, str(s.loadout))
 	if boss_loot(): return boss_ammo_options()
-	if node().get("elite", false): return []
+	if node().get("elite", false):
+		# Elites: the upgraded salvage round next to the part choices (salvage.gd).
+		var elite_card := salvage_card()
+		return [elite_card.id] if not elite_card.is_empty() else []
 	var options := Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts if int(s.get("roster_version",1))>=3 else [], int(s.get("discovery_version",0)))
-	if Model.FocusBuild.enabled(s): return Model.FocusBuild.rewards(model.s, node(), options)
+	if Model.FocusBuild.enabled(s): return _with_salvage(_mixed_rewards(Model.FocusBuild.rewards(model.s, node(), options)))
 	return Content.Rhythm.rewards(node(), model.s.deck, options) if int(s.get("roster_version",1)) >= Content.Rhythm.VERSION else options
+
+## Mixed round rewards (reward_mix.gd, new runs): one main card (upgrade if offered, else a copy),
+## another attack round (the family held least), one support round; the old cards fill gaps.
+func _mixed_rewards(options: Array) -> Array:
+	if not Model.RewardMix.enabled(model.s): return options
+	var main := Model.FocusBuild.main_round(model.s)
+	if main.is_empty(): return options
+	var family := Ammo.source_id(main)
+	var improved := Model.FocusBuild.upgrade(main)
+	var result: Array = [improved if options.has(improved) else main]
+	var other := Model.RewardMix.other_attack(Content.ammo_pool(node(), int(s.get("discovery_version", 0))), model.s.deck, family, int(s.seed) + int(node().id))
+	if not other.is_empty() and int(s.get("discovery_version", 0)) >= 2:
+		other = Ammo.Variants.offer(other, Ammo.AMMO, Content.rng(int(s.seed), int(node().id) + 5300), node())
+	if not other.is_empty() and not result.has(other): result.append(other)
+	for id in options:
+		if Model.FocusBuild.supports_for(model.s, family).has(Ammo.source_id(str(id))) and not result.has(id):
+			result.append(id)
+			break
+	for id in options:
+		if result.size() >= 3: break
+		if not result.has(id): result.append(id)
+	return result.slice(0, 3)
+
+## The salvage card of the fight just won (salvage.gd): {id, kind, name}, or {}.
+func salvage_card() -> Dictionary:
+	if s.phase != "reward" or s.resolved or engine_reward() or first_ammo_reward(): return {}
+	return Model.Salvage.card(model.s, bool(node().get("elite", false)), str(node().get("kind", "")) == "boss")
+
+## Normal fights: the salvage card takes the "another attack" slot, so there are still three
+## cards, the main card (and its upgrade) stays, and the player still chooses.
+func _with_salvage(options: Array) -> Array:
+	var salvage := salvage_card()
+	if salvage.is_empty() or options.has(salvage.id): return options
+	var result := options.duplicate()
+	var slot := 1
+	if result.size() <= slot: result.append(salvage.id)
+	else: result[slot] = salvage.id
+	return result
 
 func _supply_options() -> Array:
 	var found := Content.rewards(node(), int(s.seed), model.s.deck, s.equipped_parts, int(s.discovery_version))
-	if Model.FocusBuild.enabled(s): return Model.FocusBuild.rewards(model.s, node(), found)
+	if Model.FocusBuild.enabled(s): return _mixed_rewards(Model.FocusBuild.rewards(model.s, node(), found))
 	var eligible: Array = []
 	for id in model.s.deck:
 		if Ammo.COMPRESSIONS.has(id) and Ammo.grade(id) <= 0 and not eligible.has(id): eligible.append(id)
@@ -431,7 +492,7 @@ func _resolve_encounter(choice: String, value: String, replacement: String) -> b
 	return true
 
 func engine_reward() -> bool:
-	return s.get("phase", "") == "reward" and int(s.get("build_version",0))==1 and int(s.clears)==1 and (int(s.get("discovery_version",0)) < 3 or int(s.get("opening_reward_step",2)) == 0)
+	return s.get("phase", "") == "reward" and int(s.get("build_version",0))==1 and int(s.clears)==1 and (int(s.get("discovery_version",0)) < 3 or int(s.get("opening_reward_step",2)) == 0) and not Model.GrowthV2.enabled(model.s)
 
 func first_ammo_reward() -> bool:
 	return s.get("phase", "") == "reward" and int(s.get("discovery_version",0)) >= 3 and int(s.clears)==1 and int(s.get("opening_reward_step",2)) == 1
@@ -476,10 +537,20 @@ func part_rewards() -> Array:
 		if offer.type == "part" and not s.parts.has(offer.id): options.append(offer.id)
 	return options.slice(0, 2)
 
+## Normal-fight reward row "remove one round" (reward_trim.gd): new runs, normal fights only,
+## never below the deck minimum.
+func can_trim_reward() -> bool:
+	if not Model.RewardTrim.enabled(model.s) or s.phase != "reward" or s.resolved: return false
+	if engine_reward() or first_ammo_reward() or boss_loot() or node().get("elite", false) or node().kind == "boss": return false
+	return model.s.deck.size() > minimum_deck()
+
+func trim_reward_options() -> Array:
+	return Model.RewardTrim.options(model.s.deck) if can_trim_reward() else []
+
 func can_equip_reward(id: String) -> bool:
 	var proposed: Array = equipped_parts()
 	proposed.append(id)
-	return Ammo.valid_part_set(str(s.gun), proposed)
+	return Ammo.valid_part_set(str(s.gun), proposed, model.s)
 
 func compressible_ids() -> Array:
 	var result: Array = []
@@ -525,6 +596,12 @@ func gate(choice: String, ammo_id: String = "", sources: Array = []) -> bool:
 	if modern_gates():
 		if choice=="skip": pass
 		elif not gate_options().has(choice): return false
+		elif choice=="mastery":
+			if not Model.GrowthV2.add_mastery(model.s): return false
+		elif choice=="drive":
+			if not Gates.grow_drive(model.s): return false
+		elif choice=="mastery_support":
+			if not Model.GrowthV2.add_mastery(model.s, true): return false
 		elif choice=="production":
 			if not Gates.can_produce(model.s,ammo_id,sources): return false
 			for id in sources: model.s.deck.erase(id)
@@ -547,6 +624,27 @@ func gate(choice: String, ammo_id: String = "", sources: Array = []) -> bool:
 		if choice == "growth": s.message = Gates.summary(choice,model.s)+" · 다음 전투부터 조건 달성 후 추가 성장"
 		return true
 	_advance_region()
+	return true
+
+## Drive tune (2026-11-10, growth structure v2): the shop's former compressor slot raises the
+## gun's built-in drive by 2 levels for credits (12, 18, 24 ... Cr), up to 12. With the gate's
+## 구동 강화 (+4) it replaces the automatic per-win growth. Credits were left unspent (110+)
+## in every v2 climb, so this is also their main late use.
+func drive_level() -> int:
+	return int(model.s.get("engine", {}).get("levels", {}).get(Ammo.innate_engine(model.s), 0))
+
+func drive_tune_price() -> int:
+	return 12 + 6 * (drive_level() / 2)
+
+func can_tune_drive() -> bool:
+	return s.phase == "shop" and Model.GrowthV2.enabled(model.s) and not Ammo.innate_engine(model.s).is_empty() and model.s.has("engine") and drive_level() < Model.Engines.Growth.V2_LIMIT and int(s.credits) >= drive_tune_price()
+
+func tune_drive() -> bool:
+	if not can_tune_drive(): return false
+	var price := drive_tune_price()
+	s.credits -= price
+	model.s.engine.levels[Ammo.innate_engine(model.s)] = mini(Model.Engines.Growth.V2_LIMIT, drive_level() + 2)
+	_log("drive_tune", {"price": price, "level": drive_level()})
 	return true
 
 func can_buy_gate_bag() -> bool:
@@ -709,7 +807,7 @@ func can_equip(id: String) -> bool:
 	if not s.parts.has(id) or is_equipped(id): return false
 	var proposed: Array = equipped_parts()
 	proposed.append(id)
-	return Ammo.valid_part_set(str(s.gun), proposed)
+	return Ammo.valid_part_set(str(s.gun), proposed, model.s)
 
 func can_manage_parts() -> bool:
 	return not str(s.get("phase", "")) in ["combat", "won", "lost"]
@@ -733,7 +831,7 @@ func replace_part(outgoing: String, incoming: String) -> bool:
 	if index < 0: return false
 	var proposed: Array = s.equipped_parts.duplicate()
 	proposed[index] = incoming
-	if not Ammo.valid_part_set(str(s.gun), proposed): return false
+	if not Ammo.valid_part_set(str(s.gun), proposed, model.s): return false
 	s.equipped_parts = proposed
 	_sync_equipped_parts()
 	_log("replace_part", {"outgoing": outgoing, "incoming": incoming, "equipped": proposed.duplicate()})
@@ -751,6 +849,7 @@ func dismantle(id: String) -> bool:
 	s.parts.erase(id)
 	s.credits += 10
 	Model.BuildEngine.forget(model.s, id)
+	if model.s.has("tag_growth"): model.s.tag_growth.erase(id)
 	_log("dismantle", {"id": id})
 	return true
 
@@ -967,7 +1066,7 @@ func restore_state(data: Dictionary) -> bool:
 	for id in state.parts:
 		if id == "none" or not Ammo.PARTS.has(id) or unique.has(id) or not Ammo.accepts_part(str(state.gun), str(id)): return false
 		unique.append(id)
-	if not Ammo.valid_part_set(str(state.gun), state.equipped_parts): return false
+	if not Ammo.valid_part_set(str(state.gun), state.equipped_parts, data.get("combat", {})): return false
 	for id in state.equipped_parts:
 		if not state.parts.has(id): return false
 	unique = []

@@ -70,7 +70,7 @@ func run() -> void:
 		await escape()
 		check(window() == null, "Esc closes settings " + suffix)
 		# 조작 안내
-		await tap("guide")
+		await tap("first_guide" if find("first_guide").is_visible_in_tree() else "guide")
 		shell = window()
 		check(find("FirstGuide") != null and find("GuideStep3") != null and find("GuideFlow") != null, "guide shows three steps and the climb flow " + suffix)
 		check(shell != null and on_screen(shell.get_node("%Frame")), "guide frame on screen " + suffix)

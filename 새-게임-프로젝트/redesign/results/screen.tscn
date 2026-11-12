@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://redesign/results/core_icon.gd" id="core"]
 [ext_resource type="Script" path="res://redesign/ammo_art_view.gd" id="ammo"]
 [ext_resource type="Theme" path="res://redesign/results/theme.tres" id="theme"]
+[ext_resource type="Theme" path="res://redesign/ui/dark_primary.tres" id="action_theme"]
 
 [sub_resource type="StyleBoxEmpty" id="empty"]
 
@@ -332,7 +333,7 @@ theme_override_constants/separation = 9
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(109, 50)
-theme_type_variation = &"MainAction"
+theme = ExtResource("action_theme")
 text = "새 도전"
 
 [node name="Archive" type="Button" parent="Frame/Record/Stack/ActionsBar"]

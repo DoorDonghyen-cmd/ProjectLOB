@@ -8,7 +8,8 @@ const SHORT := Color("d89b82")
 
 static func item_name(id: String, state: Dictionary) -> String:
 	if Data.AMMO.has(id):
-		return ("압축 " if Data.is_compressed(id) else "") + str(Data.AMMO[id].name)
+		# Compressed rounds already carry their + mark (content.gd _marked, 2026-11-12).
+		return str(Data.AMMO[id].name)
 	return str(Data.part_spec(id, state).name)
 
 func show_offer(offer: Dictionary, state: Dictionary, credits: int, chosen: bool) -> void:

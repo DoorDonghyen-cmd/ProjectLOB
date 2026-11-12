@@ -37,6 +37,46 @@ static func signature(shot: Dictionary) -> Dictionary:
 	var color:Color=style.color if style.active and style.family!="plain" else COLORS[kind]
 	return {"kind":kind,"title":title,"rank":rank,"color":color,"parts":ids}
 
+static func activations(shot: Dictionary, innate_part: String = "") -> Array[Dictionary]:
+	var active: Array[Dictionary] = []
+	var parts := {}
+	for effect in shot.get("part_effects", []):
+		var id := str(effect.get("id", ""))
+		if id != innate_part and Content.PARTS.has(id) and not parts.has(id):
+			parts[id] = true
+			active.append({"id": id, "kind": "part", "title": str(Content.PARTS[id].name)})
+	var round_id := str(shot.get("id", ""))
+	var spec: Dictionary = Content.AMMO.get(round_id, {})
+	var title := _round_activation(shot, spec)
+	if not title.is_empty(): active.append({"id": round_id, "kind": "ammo", "title": title})
+	return active
+
+static func _round_activation(shot: Dictionary, spec: Dictionary) -> String:
+	if spec.is_empty(): return ""
+	if int(shot.get("boost_factor_granted", 1)) > 1: return "배율 준비"
+	if int(shot.get("boost_granted", 0)) > 0: return "증폭 준비"
+	var math: Dictionary = shot.get("math", {})
+	var damaging_hit := int(shot.get("damage", 0)) > 0 and not bool(shot.get("intercept", false))
+	if damaging_hit and int(shot.get("hits", 0)) > int(shot.get("blocked_hits", 0)):
+		if int(math.get("factor", 1)) > 1: return "배율 적용"
+		if int(math.get("boost", 0)) > 0: return "증폭 적용"
+	var triggered := false
+	match str(spec.get("effect", "")):
+		"arc": triggered = shot.get("secondary", []).any(func(hit): return hit.get("kind", "") == "arc")
+		"burn": triggered = int(shot.get("burn_added", 0)) > 0
+		"spread": triggered = int(shot.get("transferred", 0)) > 0
+		"push": triggered = int(shot.get("push", 0)) > 0
+		"double": triggered = damaging_hit and int(shot.get("hits", 0)) - int(shot.get("blocked_hits", 0)) > 1
+		"disrupt": triggered = int(shot.get("interrupted", 0)) > 0 or int(shot.get("slowed", 0)) > 0
+		"prepare": triggered = not shot.get("prepared_rounds", []).is_empty()
+		"cool": triggered = int(shot.get("cooled", 0)) > 0
+		"shatter": triggered = int(shot.get("armor_removed", 0)) > 0
+		"detonate": triggered = int(shot.get("detonation", 0)) > 0
+		"chase": triggered = damaging_hit and int(shot.get("chase_bonus", 0)) > 0
+		"sequence": triggered = damaging_hit and int(shot.get("sequence_bonus", 0)) > 0
+		"vent": triggered = int(shot.get("vented", 0)) > 0
+	return str(spec.name) if triggered else ""
+
 static func receipt(results: Array) -> Dictionary:
 	if results.is_empty(): return {}
 	var damage := 0

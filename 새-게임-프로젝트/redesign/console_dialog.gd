@@ -2,6 +2,8 @@ extends Control
 ## Shared, editor-visible modal shell. Content is supplied by the current screen.
 signal confirmed
 signal canceled
+const ButtonFrame = preload("res://redesign/ui/button_frame.gd")
+const ButtonTheme = preload("res://redesign/equipment/theme.tres")
 var compact := false
 var confirmation := false
 var return_focus: WeakRef
@@ -33,8 +35,15 @@ func setup(owner_screen: Control, title: String, small: bool) -> VBoxContainer:
 	%Title.add_theme_font_size_override("font_size", host._font_scaled(32))
 	var skin = preload("res://redesign/combat_pixel_skin.gd")
 	for button in [%DialogClose, %DialogCancel, %DialogConfirm]:
+		var role := "EquipmentPrimary" if button == %DialogConfirm else "Button"
+		var original_kind := "primary" if button == %DialogConfirm else "button"
 		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
-			button.add_theme_stylebox_override(state, skin.box("primary" if button == %DialogConfirm else "button", state))
+			var face := ButtonTheme.get_stylebox(state, role)
+			button.add_theme_stylebox_override(state, ButtonFrame.with_margins(face, skin.box(original_kind, state)))
+		var hover_pressed := ButtonTheme.get_stylebox("hover_pressed", role)
+		button.add_theme_stylebox_override("hover_pressed", ButtonFrame.with_margins(hover_pressed, skin.box(original_kind, "pressed")))
+		for state in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color", "font_disabled_color"]:
+			button.add_theme_color_override(state, ButtonTheme.get_color(state, role) if ButtonTheme.has_color(state, role) else ButtonTheme.get_color("font_color", role))
 		button.add_theme_font_override("font", skin.FONT)
 		button.add_theme_font_size_override("font_size", host._font_scaled(20))
 		button.pressed.connect(func(): host.feedback.play("click"))

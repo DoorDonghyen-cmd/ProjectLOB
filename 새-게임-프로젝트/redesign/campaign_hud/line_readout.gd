@@ -130,7 +130,13 @@ func _place_cards()->void:
 		var top:=4.0 if headers.is_empty() else 10.0+headers.size()*18.0
 		for index in order:
 			cards[index]=Rect2(Vector2(roundf(float(view._plaque_lefts.get(index,238))),top),Vector2(hud_width(index),heights[index]))
-			if has_intent(index):_intents[index]=Rect2(220,2+headers.find(index)*18,maxf(100,view.size.x-232),16)
+			if has_intent(index):
+				var header_y := 2.0 + headers.find(index) * 18.0
+				var header := Rect2(220,header_y,maxf(100,view.size.x-232),16)
+				if House.shield_rule(view.enemies[index]) == House.PIERCE_ONLY:
+					header = _intent_above(cards[index])
+					header.position.y = header_y
+				_intents[index] = header
 	else:
 		for index in cards:
 			if has_intent(index):_intents[index]=_intent_above(cards[index])

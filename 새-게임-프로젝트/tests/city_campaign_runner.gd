@@ -41,6 +41,7 @@ func command(campaign, item: Dictionary) -> bool:
 		"gate_depart": accepted = campaign.depart_gate()
 		"buy": accepted = campaign.buy(int(item.id))
 		"buy_compressor": accepted = campaign.buy_compressor_charge()
+		"drive_tune": accepted = campaign.tune_drive()
 		"reroll": accepted = campaign.reroll()
 		"shop_refine": accepted = campaign.shop_refine(str(item.id))
 		"equip": accepted = campaign.equip(str(item.id))

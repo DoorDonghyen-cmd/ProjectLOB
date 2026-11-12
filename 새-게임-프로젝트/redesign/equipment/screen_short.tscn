@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" path="res://redesign/equipment_screen.tscn" id="1"]
 
+; Keep outfit card layout inherited. Only the spacing between sections changes here.
 [node name="EquipmentScreen" instance=ExtResource("1")]
 
 [node name="Margin" parent="." index="2"]

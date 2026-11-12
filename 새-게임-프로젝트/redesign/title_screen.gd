@@ -2,7 +2,11 @@ extends Control
 ## Authored title layout; runtime only binds save state, actions and preferences.
 const Campaign = preload("res://redesign/campaign.gd")
 const Content = preload("res://redesign/content.gd")
-const Regions = preload("res://redesign/campaign_content.gd")
+const RESUME_DESTINATIONS := {
+	"map": "지도", "combat": "전투", "reward": "보상", "gate": "관문",
+	"shop": "상점", "supply": "탄약고", "event": "조우", "bypass": "샛길",
+	"won": "귀환", "lost": "결과",
+}
 var host: Control
 
 func _ready() -> void:
@@ -39,10 +43,12 @@ func bind_screen(owner_screen: Control, saved_run, has_save: bool, training_save
 	%resume.visible = can_resume
 	%SaveCaption.visible = can_resume
 	%resume_training.visible = training_saved
-	%first_guide.visible = not bool(host.preferences.data.get("guide_seen", false))
+	%first_guide.visible = not can_resume and not training_saved and not bool(host.preferences.data.get("guide_seen", false))
+	%guide.visible = not %first_guide.visible
 	if can_resume:
 		%resume.text = "정상 제어실로  ›" if saved_run.restoration_pending() else "등반 계속  ›"
-		%SaveCaption.text = "%s · %s" % [Regions.info(int(saved_run.s.region)).name, Content.GUNS[saved_run.s.gun].name]
+		%SaveCaption.text = _resume_caption(saved_run)
+		%resume.tooltip_text = "%s · %s" % [%SaveCaption.text, Content.GUNS[saved_run.s.gun].name]
 	var actions := {
 		"resume": host._resume, "new_run_setup": host._open_preparation.bind(false),
 		"settings": host._settings, "training_setup": host._open_preparation.bind(true),
@@ -54,11 +60,9 @@ func bind_screen(owner_screen: Control, saved_run, has_save: bool, training_save
 		button.add_theme_font_size_override("font_size", host._scaled(20 if key in ["resume", "new_run_setup", "settings"] else 17))
 		button.pressed.connect(func(): host.feedback.play("click"))
 		button.pressed.connect(actions[key])
-		if key in ["resume", "new_run_setup", "settings"]:
-			button.add_theme_color_override("font_color", Color("d4ddd5"))
-			for state in ["normal", "hover", "pressed", "disabled", "focus"]:
-				button.add_theme_stylebox_override(state, host._console_style("button", state))
-	host._primary_button(%resume if can_resume else %new_run_setup)
+	%new_run_setup.theme = %settings.theme if can_resume else %resume.theme
+	for button: Button in [%resume, %new_run_setup, %settings]:
+		button.add_theme_color_override("font_focus_color", button.get_theme_color("font_color"))
 	var warnings: Array[String] = []
 	if FileAccess.file_exists(Campaign.SAVE) and not has_save:
 		warnings.append("등반 저장을 읽을 수 없습니다. 원본은 보존됩니다.")
@@ -71,3 +75,14 @@ func bind_screen(owner_screen: Control, saved_run, has_save: bool, training_save
 	(%Backdrop.material as ShaderMaterial).set_shader_parameter("animate_light", host.preferences.data.get("motion", "normal") != "instant")
 	%Reclaimer.set_motion_enabled(host.preferences.data.get("motion", "normal") != "instant")
 	host._focus_control.call_deferred(%resume if can_resume else %new_run_setup)
+
+func _resume_caption(saved_run) -> String:
+	if saved_run.departure_pending(): return "출발 전 · 우리 동네 정비소"
+	if saved_run.restoration_pending(): return "정상 · 공급 복구"
+	var phase: String = saved_run.s.phase
+	var destination: String = RESUME_DESTINATIONS[phase]
+	if phase == "supply" and saved_run.node().get("workshop", false): destination = "정비소"
+	var region: String = saved_run.region_info().name
+	var floor := int(saved_run.s.floor)
+	if floor > 0: region += " %d층" % floor
+	return "%s · %s" % [region, destination]

@@ -23,6 +23,7 @@ func _ready()->void:
  board.custom_minimum_size=Vector2(0,80)
  board.size_flags_vertical=Control.SIZE_EXPAND_FILL
  board.character_reference_height=300.0
+ board.proximity_warning_enabled=true
  parent.add_child(board);parent.move_child(board,at)
  board.enemy_inspected.connect(inspect_enemy)
  board.reinforcement_inspected.connect(inspect_reinforcement)
@@ -83,6 +84,8 @@ func refresh()->void:
   return
  super.refresh()
  node("Title").text="%s · %s"%[host.campaign.region_info().name,host.campaign.node().name]
+ var shield_test := str(model.s.enemies[0].get("shield_trial", "")) if not model.s.enemies.is_empty() else ""
+ if not shield_test.is_empty(): node("Title").text = "수석 시종 · A 철갑 약점" if shield_test == Model.Noble.PIERCE_WEAK else "수석 시종 · B 철갑 전용"
  node("StatusNote").text="전체 등반 · 자동 저장" if save_ok else "저장 실패 · 현재 플레이 유지"
  node("Pressure").text="등반 현황"
  node("Other").text="시작 화면"
@@ -91,6 +94,10 @@ func refresh()->void:
  # magazine-composition parts) beside the magazine count. Hidden while ejecting.
  var combo_line: String=""
  if Model.MagazineBuild.enabled(model.s) and model.s.phase=="ready" and not eject_mode:combo_line=Model.MagazineBuild.combo_line(model.s)
+ if not eject_mode and not last_prediction.get("shots", []).is_empty():
+  var shot: Dictionary = last_prediction.shots[0]
+  if shot.has("wreckage_hit") or float(shot.get("wreckage_probability", 0.0)) > 0.0: combo_line = Forecast.note(last_prediction, 0)
+  elif shot.has("shield_rule") and int(shot.get("blocked_hits", 0)) > 0: combo_line = Forecast.note(last_prediction, 0)
  if combo_label!=null:
   combo_label.text=combo_line
   combo_label.visible=not combo_line.is_empty()
@@ -104,7 +111,7 @@ func refresh()->void:
 func show_help()->void:
  var controls: String=""
  if Trial.range_enabled(model.s):controls="\n첫 탄부터 오른쪽으로 끌기 → 발수 선택 → 사격 버튼으로 확정\n짧게 누르기 → 빼내기 선택 · 메뉴 −/+로도 발수 조절\n탄창 밖에 놓기·Esc·포커스 이탈은 범위 선택 취소\n짧게 쏴도 적 1행동 · 리액터 강행/스파이크 연속 조건 유지\n탄창 교체는 열·연속 발열 유지(냉각 약실 +4는 적용)\n냉각은 적 1행동·잔탄 보존·열 0·연속 발열 초기화"
- show_detail("탄창과 선택",weapon_hint()+controls+"\n사격 · 적 1행동 / 냉각 · 적 1행동\n탄창 교체 · 적 %d행동 / 미사용 탄은 예비 뒤로\n과열되면 강제 냉각 중 적이 추가로 접근합니다.\n빼내기 · 탄창당 2발까지, 중간 탄도 선택 가능\n빼낸 탄은 이번 전투에서 소모되고 빈자리는 채우지 않습니다.\n다음 전투에 보유 탄 전체가 복구됩니다.\n전투·보상·정비마다 자동 저장합니다."%model.reload_cost())
+ show_detail("탄창과 선택",weapon_hint()+controls+("\n사격 · 적 1행동 / 냉각 · 적 1행동\n탄창 교체 · 적 %d행동 / 미사용 탄은 예비 뒤로\n과열되면 강제 냉각 · 적 %d행동(미리 냉각하면 1행동).\n빼내기 · 탄창당 2발까지, 중간 탄도 선택 가능\n빼낸 탄은 이번 전투에서 소모되고 빈자리는 채우지 않습니다.\n다음 전투에 보유 탄 전체가 복구됩니다.\n전투·보상·정비마다 자동 저장합니다."%[model.reload_cost(),model.forced_cooling_cost()])+("\n교차 사격 · 탄창 안에서 직전 공격탄과 다른 계열을 쏘면 타격당 +1, 연달아 바꾸면 최대 +3" if Model.MixCombo.enabled(model.s) else "")+("\n회수 · 마지막으로 쓰러뜨린 적의 탄이 보상에 회수 카드로 나옵니다(장갑벽 → 철갑탄 등)" if Model.Salvage.enabled(model.s) else ""))
 
 func show_route()->void:
  show_detail("등반 현황","%s · %d / %d층\n현재 · %s\n승리 %d회 · %d Cr\n\n전투가 끝나면 보상을 고르고 지도에서 다음 목적지를 선택합니다. 관문에서는 개조와 재정비를 마친 뒤 다음 구역으로 출발합니다."%[host.campaign.region_info().name,host.campaign.s.floor,host.campaign.region_info().floors,host.campaign.node().name,host.campaign.s.clears,host.campaign.s.credits])
@@ -119,11 +126,26 @@ func show_deck()->void:
 
 func show_parts()->void:
  var lines: PackedStringArray=[weapon_hint()]
+ var tags:=Model.TagBuild.enabled(model.s)
+ if tags:
+  lines.append("태그 시험판 · 장전된 탄창 태그 %d종"%Model.TagBuild.magazine_tags(model.s))
+  # Legend for the card chips (tag_chips.gd).
+  var legend: PackedStringArray=[]
+  for tag in Model.TagBuild.SHORT:legend.append("%s %s"%[Model.TagBuild.SHORT[tag],tag])
+  lines.append("탄 카드 위 글자 · "+" / ".join(legend))
+  var read: Array=Model.TagBuild.read_tags(model.s,Content.active_parts(model.s))
+  lines.append("채워진 칸 · 장착 파츠가 읽는 태그"+(" ("+"·".join(read)+")" if not read.is_empty() else " (없음)"))
  for id in Content.equipped_parts(model.s):
-  lines.append(Content.PARTS[id].name+" · "+Model.Engines.value(model.s,id))
-  lines.append(Model.Engines.progress(model.s,id))
+  var value:=Model.Engines.value(model.s,id)
+  lines.append("[%s] "%preload("res://redesign/part_slots.gd").name_of(id)+str(Content.PARTS[id].name)+("" if value.is_empty() else " · "+value))
+  var progress:=Model.Engines.progress(model.s,id)
+  if not progress.is_empty():lines.append(progress)
+  # Tag growth parts: kills recorded this climb.
+  if tags and Model.TagBuild.PARTS.has(id) and str(Model.TagBuild.PARTS[id].kind)=="growth":
+   var spec: Dictionary=Model.TagBuild.PARTS[id]
+   lines.append("기록 %d처치 · %s 탄 +%d"%[Model.TagBuild.growth(model.s,id),spec.tag,mini(int(spec.limit),Model.TagBuild.growth(model.s,id)/int(spec.step))])
   lines.append(Content.part_spec(id,model.s).text)
- if Content.equipped_parts(model.s).is_empty():lines.append("첫 승리 뒤 성장 코어를 선택합니다.")
+ if Content.equipped_parts(model.s).is_empty():lines.append("장착 파츠 없음 · 보상과 상점에서 파츠를 얻습니다." if Model.GrowthV2.enabled(model.s) else "첫 승리 뒤 성장 코어를 선택합니다.")
  show_detail("총기와 빌드","\n".join(lines))
 
 func inspect_enemy(index: int)->void:

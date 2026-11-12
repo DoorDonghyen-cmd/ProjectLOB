@@ -18,7 +18,7 @@ static func remaining(state: Dictionary) -> int:
 
 static func emergency_available(state: Dictionary, attack: Callable) -> bool:
 	if not emergency_enabled(state) or state.phase not in ["plan", "ready"]: return false
-	for zone in ["hand", "draw", "magazine", "plan"]:
+	for zone in ["hand", "draw", "magazine", "plan", "held_front"]:
 		for id in state.get(zone, []):
 			if attack.call(str(id)): return false
 	return true
@@ -54,7 +54,8 @@ static func prepare_opening(state: Dictionary, family: Callable) -> void:
 static func exhausted(state: Dictionary) -> bool:
 	if emergency_enabled(state): return false
 	if not enabled(state) or state.phase not in ["plan", "ready"]: return false
-	for zone in ["hand", "draw", "magazine", "plan"]:
+	# held_front: rounds a 예약탄 set aside for the next magazine (ammo_revision.gd).
+	for zone in ["hand", "draw", "magazine", "plan", "held_front"]:
 		if not state.get(zone, []).is_empty(): return false
 	if not state.get("fire_zones",[]).is_empty():return false
 	# A final burning enemy can still die while the player waits/reloads.

@@ -30,6 +30,7 @@ const INK := Color("e4f2ee")
 const MUTED := Color("8fb0b0")
 const ACCENT := Color("5cdddc")
 const DANGER := Color("ff6f61")
+const COMBAT_WEAPON_SCALE := 1.15
 var model = Model.new()
 var campaign = null
 var campaign_hud: Control
@@ -75,6 +76,8 @@ var content_margin: MarginContainer
 var workspace_overlay: Control
 var selected_weapon_id := "single"
 var selected_loadout_id := "balanced"
+## 등반 설정: tag-based rounds and parts prototype (tag_build.gd) for the next new run.
+var selected_tag_build := false
 var selected_outfit_id := "carrier"
 var selected_difficulty := 0
 var preparation_training := false
@@ -546,12 +549,14 @@ func _start(id: String, same_seed: bool) -> void:
 		var loadout: String = str(campaign.s.loadout) if same_seed else selected_loadout_id
 		var map_version: int = int(campaign.s.get("map_version", 1)) if same_seed else CampaignContent.RouteMap.VERSION
 		var outfit: String = str(campaign.s.get("outfit", "work")) if same_seed else selected_outfit_id
+		var tags_before: bool = same_seed and campaign != null and int(campaign.model.s.get("tag_build_version", 0)) == 1
 		var progress = Campaign.new()
 		progress.restore()
 		if same_seed and debug_session: progress.profile = campaign.profile.duplicate(true)
 		var magazine_mode: bool = campaign.magazine_enabled() if same_seed and campaign != null else true
 		campaign = progress
 		campaign.start(id, run_seed, difficulty, loadout, map_version, outfit, magazine_mode)
+		if magazine_mode and (tags_before if same_seed else selected_tag_build): campaign.model.s.tag_build_version = preload("res://redesign/tag_build.gd").VERSION
 		model = campaign.model
 		debug_session = debug_session and same_seed
 		page = "run"
@@ -620,6 +625,11 @@ func _new_battle_view() -> Control:
 		view.free()
 		view = preload("res://redesign/central_battle_view.tscn").instantiate()
 	view.reduced_feedback = str(preferences.data.motion) == "instant"
+	var scale_weapon := func() -> void:
+		var actor := view.weapon_viewport.get_node("Actor") as Node2D
+		actor.combat_pose = true
+		actor.weapon_size_multiplier = COMBAT_WEAPON_SCALE
+	view.ready.connect(scale_weapon, CONNECT_ONE_SHOT)
 	view.projectile_inspected.connect(_combat_projectile_details)
 	return view
 
@@ -745,6 +755,7 @@ func _combat() -> void:
 	battle_view.compact_ui = compact
 	battle_view.region = int(campaign.s.region) if campaign != null else 0
 	if campaign != null:
+		battle_view.proximity_warning_enabled = true
 		# Campaign depth includes shops/events and comes from the selected node,
 		# unlike the combat model's encounter index or the number of visited rooms.
 		battle_view.set_route_background(int(campaign.s.region), int(campaign.s.floor), int(campaign.region_info().floors))
@@ -1726,7 +1737,9 @@ func _combat_part_details(id: String) -> void:
 	if busy: return
 	var column := _dialog(str(Content.PARTS[id].name), true)
 	column.name = "CombatPartDetails"
-	_label(column, str(Content.PARTS[id].name), 26, PartCardView.COLORS[id])
+	_label(column, str(Content.PARTS[id].name), 26, PartCardView.COLORS.get(id, Content.part_grade_color(id)))
+	# Part type by gun component (2026-11-11, part_slots.gd).
+	_label(column, Content.part_grade_summary(id, model.s), 18, preload("res://redesign/part_slots.gd").color_of(id))
 	_label(column, PartFeedback.readiness(next_forecast, id), 20, ACCENT)
 	_label(column, str(Content.part_spec(id,model.s).text), 19)
 	if Model.Engines.IDS.has(id):
@@ -1952,6 +1965,11 @@ func _weapon_details(id: String) -> void:
 	if whole_magazine:
 		spec = Content.weapon_spec({"gun":id,"weapon_version":1,"combat_revision":Content.COMBAT_REVISION}).duplicate()
 		spec.identity = {"single":"최대 2발 · 공격탄 피해 +1", "burst":"최대 3발 · 같은 적 3회 적중 시 +4", "scatter":"최대 3발 · 탄마다 무작위 표적", "heavy":"최대 3발 · 과열 뒤 1발 강행", "amplifier":"단발 효과 2배 · 처치하면 연속", "rewinder":"기본 3발 · 냉각 때 잔탄 역순", "deadbolt":"기본 3발 · 무작위 1발 ×3·봉인"}[id]
+		# Growth structure v2: the gun's built-in drive (Content.GUN_ENGINES).
+		if page == "loadout" or (campaign != null and not Content.innate_engine(model.s).is_empty()):
+			var drive := str(Content.GUN_ENGINES.get(id, ""))
+			if id == "single": spec.identity += " · 빼낸 탄은 탄창 뒤로"
+			if not drive.is_empty(): spec.identity += " · 내장 " + {"siege_drive": "돌파(단타 ×2)", "volley_drive": "연쇄(타격당 +1)", "thermal_drive": "열압(고열 ×1.5)"}[drive]
 		spec.text = "덱에서 섞인 탄창을 장전합니다. 사격 뒤 적이 1행동하며 잔탄은 보존됩니다. 냉각은 적 1행동, 탄창 교체는 적 %d행동입니다. 탄을 먼저 선택해 탄창당 최대 2발을 빼낼 수 있습니다." % (maxi(2,int(spec.reload)) if page=="loadout" else model.reload_cost())
 		if page=="loadout" or int(model.s.get("fire_control_version",0))==Model.FireHeatTrial.CAMPAIGN_VERSION:
 			spec.text += "\n첫 탄부터 끌어서 발수 선택 → 사격으로 확정합니다. 냉각은 열을 0으로 낮추고 연속 발열을 끊습니다. 탄창 교체는 열과 연속 발열을 유지합니다(냉각 약실 +4 적용)."
@@ -2582,6 +2600,7 @@ func _campaign_action(command: String, value: Variant = "", extra: String = "", 
 		"gate_copy": accepted = campaign.buy_gate_copy(str(value))
 		"buy": accepted = campaign.buy(int(value), extra)
 		"buy_compressor": accepted = campaign.buy_compressor_charge()
+		"drive_tune": accepted = campaign.tune_drive()
 		"reroll": accepted = campaign.reroll()
 		"shop_refine": accepted = campaign.shop_refine(str(value))
 		"shop_compress": accepted = campaign.shop_compress(str(value))
@@ -2592,7 +2611,7 @@ func _campaign_action(command: String, value: Variant = "", extra: String = "", 
 		"resolve": accepted = campaign.resolve(str(value), extra, replacement)
 		"leave": accepted = campaign.leave()
 	if accepted:
-		if command in ["gate_copy", "gate_bag", "gate", "gate_production", "gate_depart", "reward", "buy", "buy_compressor", "shop_refine", "shop_compress", "tune", "equip", "replace_part"] or (command=="resolve" and str(value)!="skip"):
+		if command in ["gate_copy", "gate_bag", "gate", "gate_production", "gate_depart", "reward", "buy", "buy_compressor", "drive_tune", "shop_refine", "shop_compress", "tune", "equip", "replace_part"] or (command=="resolve" and str(value)!="skip"):
 			feedback.play("confirm")
 		model = campaign.model
 		selected_slot = 0

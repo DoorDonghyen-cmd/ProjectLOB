@@ -12,14 +12,19 @@ const SPECS:={
 	"blocked":{"rounds":["basic_p2"],"parts":["opening"],"family":"muted"},
 	"kill":{"rounds":["basic_p2"],"parts":["opening"],"family":"multiply"},
 	"arc":{"rounds":["arc"],"parts":["arc_splitter"],"family":"plain"},
+	"tag_add":{"rounds":["pierce_p2"],"parts":["tag_single_add"],"family":"add"},
+	"tag_multiplier":{"rounds":["pierce_p2"],"parts":["tag_single_mult","tag_copy"],"family":"multiply"},
 }
 
 static func make(kind: String):
 	# Controlled illustrations, separate from acquired campaign evidence.
 	var spec:Dictionary=SPECS[kind]
-	var c=Campaign.new();c.start("single",17,0,"balanced",4,"carrier",true);c.enter(101)
+	var tags_enabled := kind.begins_with("tag_")
+	var c=Campaign.new();c.start("rewinder" if tags_enabled else "single",17,0,"balanced",4,"carrier",true);c.enter(101)
 	c.s.parts=spec.parts.duplicate();c.s.equipped_parts=spec.parts.duplicate()
 	var m=c.model;m.s.equipped_parts=spec.parts.duplicate();m.s.part="none"
+	if tags_enabled: m.s.tag_build_version = m.TagBuild.VERSION
+	else: m.s.erase("growth_structure_version")
 	m.s.deck=spec.rounds.duplicate()
 	while m.s.deck.size()<14:m.s.deck.append("basic_p2")
 	m.begin_encounter()

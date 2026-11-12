@@ -1,4 +1,4 @@
-param([ValidateSet('poses','live','rules','compare')][string]$Mode='poses',[string]$Label='before')
+param([ValidateSet('poses','live','rules','compare','outfits')][string]$Mode='poses',[string]$Label='before')
 $ErrorActionPreference='Stop'
 if ($Label -notmatch '^[a-zA-Z0-9_-]+$') {throw 'Invalid label'}
 $repo=Split-Path -Parent $PSScriptRoot

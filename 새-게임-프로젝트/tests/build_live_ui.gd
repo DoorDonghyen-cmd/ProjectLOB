@@ -20,7 +20,7 @@ func run() -> void:
 	if not ProjectSettings.globalize_path("user://").replace("\\", "/").contains("/qa_runtime/"): quit(2); return
 	output = OS.get_environment("QA_OUTPUT_DIR"); Input.emulate_mouse_from_touch = true
 	if FileAccess.file_exists(Campaign.SAVE): DirAccess.remove_absolute(Campaign.SAVE)
-	for extent in [Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454)]:
+	for extent in [Vector2i(1280, 800), Vector2i(844, 390), Vector2i(1008, 454), Vector2i(2340, 1080)]:
 		root.size = extent
 		var suffix := "%dx%d" % [extent.x, extent.y]
 		var c = earned("entry_single_17_r5.json")
@@ -31,6 +31,16 @@ func run() -> void:
 		check(find("EquippedPartGrid") == null and find("DeckGrid") == null, "old deck loadout is gone")
 		check(overlay != null and root.get_visible_rect().grow(1).encloses(find("PartsPane").get_global_rect()), "parts pane fits " + suffix)
 		check(root.get_visible_rect().grow(1).encloses(find("Apply").get_global_rect()), "apply button on screen " + suffix)
+		var shelf := find("StorageScroll") as ScrollContainer
+		var slots_rect := find("Slots").get_global_rect()
+		var apply_rect := find("Apply").get_global_rect()
+		shelf.scroll_vertical = 10000
+		await settle()
+		if extent != Vector2i(1280, 800):
+			check(shelf.scroll_vertical > 0, "short workbench scrolls the storage list " + suffix)
+		check(find("Slots").get_global_rect() == slots_rect and find("Apply").get_global_rect() == apply_rect, "storage scroll keeps slots and apply fixed " + suffix)
+		shelf.scroll_vertical = 0
+		await settle()
 		await capture("parts_" + suffix)
 		# Swap: a stored part needs a slot; choosing the slot enables the swap.
 		var equipped: Array = c.equipped_parts()
@@ -41,7 +51,7 @@ func run() -> void:
 			for slot_id in equipped:
 				var test: Array = equipped.duplicate()
 				test[test.find(slot_id)] = candidate
-				if c.model.Content.valid_part_set(str(c.s.gun), test):
+				if c.model.Content.valid_part_set(str(c.s.gun), test, c.model.s):
 					incoming = str(candidate); outgoing = str(slot_id); break
 			if not incoming.is_empty(): break
 		if check(not incoming.is_empty(), "a valid swap exists"):
@@ -49,7 +59,7 @@ func run() -> void:
 			check(find("Apply").disabled and find("Instruction").text.contains("교체할 장착 슬롯"), "full loadout asks for a slot")
 			await tap("Slot%d" % (equipped.find(outgoing) + 1))
 			check(not find("Apply").disabled and find("Apply").text == "교체 장착", "choosing the slot enables the swap")
-			if extent == Vector2i(1280, 800): await capture("swap_" + suffix)
+			if extent in [Vector2i(1280, 800), Vector2i(2340, 1080)]: await capture("swap_" + suffix)
 			await tap("Apply")
 			check(c.is_equipped(incoming) and not c.is_equipped(outgoing) and c.s.parts.has(outgoing), "swap installs and stores the old part")
 			check(saved().is_equipped(incoming), "swap is autosaved")

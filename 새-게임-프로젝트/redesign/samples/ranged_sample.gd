@@ -110,7 +110,7 @@ func _projectile_details(target_id: int) -> void:
 	column.name = "ProjectileDetails"
 	column.get_meta("dialog").get_ok_button().text = "닫기"
 	_label(column, "%dm · 도달 %d턴 · HP 1" % [projectile.distance, Ranged.arrival(projectile)], 24)
-	_label(column, "가장 가까운 위협이면 다음 탄이 자동으로 요격합니다. 스플린터도 확정 요격합니다.\n증폭탄의 강화와 전격탄의 전이는 요격해도 발동합니다.\n한 턴마다 6m 이동합니다. 재장전이 2턴이면 두 번 이동합니다.\n본체를 처치해도 이미 발사된 탄은 남고, 0m에 도달하면 패배합니다.", 19)
+	_label(column, "가장 가까운 위협이면 다음 탄이 자동으로 요격합니다. 스플린터도 확정 요격합니다.\n증폭탄은 요격해도 발동합니다. 전격탄으로 요격하면 그 뒤의 생존 적에게 전이합니다.\n한 턴마다 6m 이동합니다. 재장전이 2턴이면 두 번 이동합니다.\n본체를 처치해도 이미 발사된 탄은 남고, 0m에 도달하면 패배합니다.", 19)
 
 func _sample_result(won: bool) -> void:
 	super._sample_result(won)

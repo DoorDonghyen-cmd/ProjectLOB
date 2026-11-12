@@ -1,18 +1,12 @@
 [gd_resource type="StyleBoxFlat" format=3]
+[ext_resource type="Script" path="res://redesign/ui/button_frame.gd" id="button_frame"]
+
 [resource]
+script = ExtResource("button_frame")
+focus_ring = true
 bg_color = Color(0.0, 0.0, 0.0, 0.0)
 border_color = Color(0.866667, 0.803922, 0.631373, 1.0)
-anti_aliasing = false
-corner_detail = 1
-border_width_left = 2
 content_margin_left = 12.0
-border_width_top = 2
 content_margin_top = 8.0
-border_width_right = 2
 content_margin_right = 12.0
-border_width_bottom = 2
 content_margin_bottom = 8.0
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_left = 4
-corner_radius_bottom_right = 4

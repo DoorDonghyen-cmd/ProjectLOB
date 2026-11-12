@@ -37,7 +37,7 @@ static func entry(result: Dictionary, kind: String = "shot") -> Dictionary:
 		elif int(result.get("transferred",0)) > 0: number = "이동"; label = "화상 %d" % int(result.transferred)
 		elif result.get("boost_hot",false): number = "잔열"; label = "고열 공격 +%d" % int(result.get("boost_granted",0))
 		elif int(result.get("boost_granted",0)) > 0: number = "증폭"; label = "공격 %d발 +%d" % [int(result.get("boost_rounds", 2)), int(result.boost_granted)]
-		elif not result.get("prepared_rounds",[]).is_empty(): number = "예약"; label = "다음 패 %d장" % result.prepared_rounds.size()
+		elif not result.get("prepared_rounds",[]).is_empty(): number = "예약"; label = ("다음 탄창 맨 앞 %d발" if result.get("held", false) else "다음 패 %d장") % result.prepared_rounds.size()
 		elif int(result.get("cooled",0)) > 0: number = "냉각"; label = "열 −%d" % int(result.cooled)
 		elif str(result.get("id", "")) in preload("res://redesign/content.gd").AMMO and not preload("res://redesign/content.gd").is_attack(str(result.id)):
 			number = "지원"; label = "효과 없음"
@@ -55,10 +55,23 @@ static func entry(result: Dictionary, kind: String = "shot") -> Dictionary:
 		if amount<=0 and int(result.get("burn_added",0))==0:
 			number="파손" if opened else "차폐"
 			label="본체 노출" if opened else "−%d회 · %d 남음"%[int(result.get("barrier_removed",1)),int(result.barrier)]
+			if int(result.get("barrier_removed", 1)) == 0: label = "철갑탄 전용"
 			color=Color("dfc993") if opened else Color("a6c3c2")
 		elif opened: label=(label+" · " if not label.is_empty() else "")+"차폐 파손"
+	if result.has("wreckage_hit"):
+		number = "잔해 파괴" if int(result.wreckage_left) == 0 else "잔해 −%d" % int(result.wreckage_hit)
+		label = "" if int(result.wreckage_left) == 0 else "%d칸 남음" % int(result.wreckage_left)
+		color = Color("dcb07e")
 	var kill: bool = amount > 0 and int(result.get("hp",1)) <= 0 and not result.get("intercept",false) and int(result.get("target",-1))>=0 and int(result.get("target",-1))<10000
+	# Tag parts (2026-11-11): name the tags that acted, first, in the tag colour.
+	var tag_hit: Dictionary = preload("res://redesign/tag_build.gd").hit_label(result.get("part_effects", [])) if kind == "shot" else {"text": ""}
+	if not str(tag_hit.text).is_empty(): label = str(tag_hit.text) + (" · " + label if not label.is_empty() else "")
+	# 교차 사격 (mix_combo.gd), first: the step that grows with each switch of round family.
+	var cross := int(result.get("math", {}).get("cross", 0)) if kind == "shot" else 0
+	if cross > 0: label = "교차+%d" % cross + (" · " + label if not label.is_empty() else "")
 	if kill: label = (label + " · " if not label.is_empty() else "") + "처치"
+	# Salvage (salvage.gd): what this kill drops if it is the last one of the fight.
+	if kill and not str(result.get("salvage", "")).is_empty(): label += " · 회수 " + str(preload("res://redesign/content.gd").AMMO[str(result.salvage)].name)
 	# Importance is visual only: never call this a random critical-hit mechanic.
 	var emphasis := 3 if kill else 2 if amount>=12 else 1 if strong else 0
 	var label_color:=color
@@ -66,6 +79,7 @@ static func entry(result: Dictionary, kind: String = "shot") -> Dictionary:
 	if style.active:
 		color=style.color
 		if int(result.get("burn_added",0))<=0 and not result.get("ground",false):label_color=color
+	if not str(tag_hit.text).is_empty(): label_color = tag_hit.color
 	# Kill/large-damage importance changes size/marks, retaining effect hue.
 	return {"target":int(result.get("target",-1)),"amount":amount,"number":number,"label":label,"color":color,"label_color":label_color,"style":style,"strong":strong,"kill":kill,"kind":kind,"emphasis":emphasis,"ledger":ledger_text(result) if kind == "shot" and amount > 0 else ""}
 
@@ -80,7 +94,7 @@ static func ledger_text(result: Dictionary) -> String:
 	var mults: Array = []
 	for key in ["factor", "part_factor", "weapon_factor"]:
 		if int(math.get(key, 1)) > 1: mults.append(float(math[key]))
-	for key in ["engine_percent", "gate_percent", "overdrive_percent"]:
+	for key in ["engine_percent", "tag_percent", "gate_percent", "overdrive_percent"]:
 		var percent := int(math.get(key, 100))
 		if percent != 100: mults.append(percent / 100.0)
 	var resonant := false

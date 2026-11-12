@@ -71,12 +71,14 @@ func layout_checks(label: String, rail_fits: bool) -> void:
 		check(width<=info.size.x+1,label+" information fits "+id)
 	for outfit in Content.OUTFITS:
 		var card: Button=view.find_child("outfit_select_"+outfit,true,false)
-		var icon: TextureRect=card.get_node("Icon")
+		var icon: TextureRect=card.get_node("Content/Icon")
 		check(icon.size==Vector2(64,52) and icon.texture.get_size()==Vector2(32,26),label+" uniform G portrait "+outfit)
-		var copy: VBoxContainer=card.get_node("Copy")
+		var copy: VBoxContainer=card.get_node("Content/Copy")
+		var icon_rect := icon.get_global_rect()
+		check(card.get_global_rect().encloses(icon_rect) and icon_rect.end.x + 12.0 <= copy.get_global_rect().position.x + 0.5,label+" outfit portrait fits beside text "+outfit)
 		var name: Label=copy.get_node("Name")
 		check(name.get_line_count() <= 2 and copy.get_combined_minimum_size().y <= copy.size.y + 0.5,label+" outfit name and carry stay inside card "+outfit)
-		var info: Label=card.get_node("Copy/Stats")
+		var info: Label=copy.get_node("Stats")
 		var width:=info.get_theme_font("font").get_string_size(info.text,HORIZONTAL_ALIGNMENT_LEFT,-1,info.get_theme_font_size("font_size")).x
 		check(width<=info.size.x+1,label+" outfit limit fits "+outfit)
 
@@ -100,7 +102,7 @@ func run() -> void:
 	check(screen.page=="loadout","title enters authored equipment")
 	for scale in ([] if OS.get_environment("QA_EQUIPMENT_LAUNCH_ONLY")=="1" else [0.9,1.0,1.1]):
 		screen.preferences.data.text_scale=scale
-		for extent in [Vector2i(1280,800),Vector2i(1170,540),Vector2i(2340,1080),Vector2i(2340,960),Vector2i(1008,454),Vector2i(844,390)]:
+		for extent in [Vector2i(1280,800),Vector2i(1280,591),Vector2i(1170,540),Vector2i(2340,1080),Vector2i(2340,960),Vector2i(1008,454),Vector2i(844,390)]:
 			root.size=extent
 			await settle()
 			screen._open_preparation(false)
@@ -151,7 +153,7 @@ func run() -> void:
 			check(portrait.actor.gun_id==gun and portrait.actor.outfit_id==outfit,"live pair "+gun+"/"+outfit)
 			var visible: Dictionary={}
 			for id in ["Capacity","Heat","Reload","FireMode"]:visible[id]=last_number(view.find_child(id,true,false).text)
-			visible.carry=last_number(view.find_child("outfit_select_"+outfit,true,false).get_node("Copy/Stats").text)
+			visible.carry=last_number(view.find_child("outfit_select_"+outfit,true,false).get_node("Content/Copy/Stats").text)
 			await super.touch("start_"+gun)
 			check(screen.page=="run" and screen.campaign.s.gun==gun and screen.campaign.s.outfit==outfit,"launch actual pair "+gun+"/"+outfit)
 			check(visible.Capacity==screen.model.capacity(),"displayed capacity equals actual new campaign "+gun+"/"+outfit)
@@ -220,7 +222,7 @@ func run() -> void:
 	var locked_weapon := screen.find_child("weapon_select_deadbolt",true,false) as Button
 	check(locked_outfit.disabled,"training outfit restriction retained")
 	check(locked_weapon.disabled and locked_weapon.get_node("Art").self_modulate.a<1.0,"training weapon has disabled art")
-	check(locked_outfit.get_node("Icon").self_modulate.a<1.0,"training outfit has disabled art")
+	check(locked_outfit.get_node("Content/Icon").self_modulate.a<1.0,"training outfit has disabled art")
 	await capture("equipment_training_locks")
 	await super.touch("start_"+screen.selected_weapon_id)
 	check(screen.campaign==null and screen.model.s.outfit=="work","training start binding retained")

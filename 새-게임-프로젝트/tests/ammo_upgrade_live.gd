@@ -52,6 +52,7 @@ func run() -> void:
 		await tap("Apply")
 		var d = dialog()
 		check(d.visible and not d.body.has_node("Methods"), "one comparison has no method selector")
+		check(d.body.get_node("Actions/Confirm").theme == preload("res://redesign/ui/dark_primary.tres"), "workshop confirmation uses the shared action theme")
 		check(d.proposal.valid and d.proposal.target == Model.Content.compressed_id(id), "exact owned pair has actual upgraded result")
 		check(d.body.get_node("Review/Rows/Comparison/Stats/Cell02").text == "→ " + str(Model.Content.damage(d.proposal.target,c.model.s) * Model.Content.hit_count(d.proposal.target,c.model.s)), "result direct damage uses actual weapon")
 		check(d.body.get_node("Review/Rows/Comparison/Stats/Cell01").text == str(2 * Model.Content.damage(id,c.model.s) * Model.Content.hit_count(id,c.model.s)), "input damage compares both rounds")

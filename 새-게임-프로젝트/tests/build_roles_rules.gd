@@ -1,7 +1,12 @@
 extends "res://tests/playtest_rework_rules.gd"
 const Choices=preload("res://redesign/build_choices.gd")
 func build(rounds: Array,parts: Array=[],gun: String="single",version: int=3):
-	var m=modern(rounds,parts,gun);m.s.combat_roles_version=version;return m
+	var m=modern(rounds,parts,gun);m.s.combat_roles_version=version
+	# These checks pin the role rules of 2026-11-03; growth structure v2 (11-10) is a later layer.
+	m.s.erase("growth_structure_version");m.s.erase("mastery")
+	# 2026-11-11 layers (교차 사격, 과열 대가) are later rules too.
+	m.s.erase("mix_combo_version");m.s.erase("overheat_version");m.s.erase("salvage_version")
+	return m
 func run()->void:
 	output=OS.get_environment("QA_OUTPUT_DIR")
 	if not output.replace("\\","/").contains("/qa_runtime/build_roles_20261103/"):quit(2);return
@@ -57,6 +62,12 @@ func run()->void:
 		check(Model.Gates.options(state,true).has("growth")==(core in Model.Engines.IDS),"growth gate applies only to growing cores")
 	var before_offers=load("res://../qa_runtime/build_roles_20261103/before/새-게임-프로젝트/redesign/campaign_content.gd")
 	var data=Campaign.Content
+	# 2026-11-10: tag parts (tag_build.gd) joined Content.PARTS but are offered only in tag runs.
+	# The 11-03 code cannot filter them, so its offers are frozen here, written once by that
+	# code on the part list before tag parts (QA_OFFER_BASELINE=write).
+	var baseline_path:="res://../qa_runtime/build_roles_20261103/offers_before_tags_20261110.json"
+	var writing:=OS.get_environment("QA_OFFER_BASELINE")=="write"
+	var baseline: Dictionary={} if writing else JSON.parse_string(FileAccess.get_file_as_string(baseline_path))
 	for seed_value in range(80):
 		for family in ["bore","arc","precise_p2","pierce_p2","vent"]:
 			var state=build(["basic_p2"],["thermal_drive"]).s
@@ -72,7 +83,10 @@ func run()->void:
 			check(not seen.has(rerolled[1].id) and not seen.has(rerolled[2].id),"unseen priority survives adaptive fitting")
 			for version in [1,2]:
 				state.combat_roles_version=version
-				check(canonical(data.offers(node,seed_value,0,"single",owned,[],[],state.equipped_parts,3,1,state))==canonical(before_offers.offers(node,seed_value,0,"single",owned,[],[],state.equipped_parts,3,1)),"v1/v2 offer RNG and result unchanged")
+				var key:="%d/%s/%d"%[seed_value,family,version]
+				if writing:baseline[key]=canonical(before_offers.offers(node,seed_value,0,"single",owned,[],[],state.equipped_parts,3,1))
+				check(canonical(data.offers(node,seed_value,0,"single",owned,[],[],state.equipped_parts,3,1,state))==baseline.get(key),"v1/v2 offer RNG and result unchanged")
+	if writing:FileAccess.open(ProjectSettings.globalize_path(baseline_path),FileAccess.WRITE).store_string(JSON.stringify(baseline))
 	var state=build(["bore","bore","disrupt","basic_p2"],["thermal_drive"]).s
 	var ammo: Array=[]
 	for revision in range(3):ammo.append(Choices.shop_ammo(state,{"id":303},revision))

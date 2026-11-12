@@ -1,0 +1,396 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/build/part_mount_view.gd" id="view"]
+[ext_resource type="PackedScene" path="res://redesign/equipment_weapon.tscn" id="weapon"]
+[ext_resource type="PackedScene" path="res://redesign/build/part_slot.tscn" id="slot"]
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/item_glyph.gd" id="glyph"]
+[ext_resource type="Theme" path="res://redesign/ui/dark_primary.tres" id="primary"]
+
+[sub_resource type="StyleBoxFlat" id="Panel"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(0.086, 0.082, 0.065, 0.98)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.26, 0.23, 0.18, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="MatFrame"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.38, 0.32, 0.23, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="ScrollTrack"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.10, 0.09, 0.07, 1)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="ScrollThumb"]
+bg_color = Color(0.36, 0.32, 0.24, 1)
+anti_aliasing = false
+
+[sub_resource type="Theme" id="ScrollTheme"]
+VScrollBar/styles/scroll = SubResource("ScrollTrack")
+VScrollBar/styles/grabber = SubResource("ScrollThumb")
+VScrollBar/styles/grabber_highlight = SubResource("ScrollThumb")
+VScrollBar/styles/grabber_pressed = SubResource("ScrollThumb")
+
+[sub_resource type="Gradient" id="Light"]
+offsets = PackedFloat32Array(0, 0.62, 1)
+colors = PackedColorArray(0.231, 0.188, 0.133, 1, 0.157, 0.145, 0.122, 1, 0.125, 0.118, 0.098, 1)
+
+[sub_resource type="GradientTexture2D" id="Mat"]
+gradient = SubResource("Light")
+width = 320
+height = 160
+fill = 1
+fill_from = Vector2(0.52, 0.33)
+fill_to = Vector2(1, 0.89)
+
+
+[node name="PartsPane" type="HBoxContainer"]
+unique_name_in_owner = true
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+script = ExtResource("view")
+
+[node name="Bench" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.7
+theme_override_constants/separation = 8
+
+[node name="GunHeader" type="PanelContainer" parent="Bench"]
+theme_override_styles/panel = SubResource("Panel")
+layout_mode = 2
+
+[node name="GunLine" type="HBoxContainer" parent="Bench/GunHeader"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="GunName" type="Label" parent="Bench/GunHeader/GunLine"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"SectionTitle"
+text = "리벳"
+
+[node name="GunStats" type="Label" parent="Bench/GunHeader/GunLine"]
+layout_mode = 2
+unique_name_in_owner = true
+clip_text = true
+text_overrun_behavior = 3
+theme_type_variation = &"Caption"
+size_flags_horizontal = 3
+text = "탄창 7칸 · 재장전 2턴"
+
+[node name="Mat" type="Control" parent="Bench"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 65)
+
+[node name="Surface" type="TextureRect" parent="Bench/Mat"]
+layout_mode = 1
+anchor_right = 1
+anchor_bottom = 1
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+texture = SubResource("Mat")
+
+[node name="Frame" type="Panel" parent="Bench/Mat"]
+layout_mode = 1
+anchor_right = 1
+anchor_bottom = 1
+mouse_filter = 2
+theme_override_styles/panel = SubResource("MatFrame")
+
+[node name="WeaponArt" instance=ExtResource("weapon") parent="Bench/Mat"]
+layout_mode = 1
+anchor_right = 1
+anchor_bottom = 1
+mouse_filter = 2
+unique_name_in_owner = true
+offset_left = 34
+offset_right = -34
+offset_top = 12
+offset_bottom = -12
+art_limit = Vector2(740, 250)
+
+[node name="Rack" type="PanelContainer" parent="Bench"]
+theme_override_styles/panel = SubResource("Panel")
+layout_mode = 2
+
+[node name="RackBody" type="VBoxContainer" parent="Bench/Rack"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="RackHeader" type="HBoxContainer" parent="Bench/Rack/RackBody"]
+layout_mode = 2
+
+[node name="RackTitle" type="Label" parent="Bench/Rack/RackBody/RackHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "장착 파츠"
+
+[node name="MountCount" type="Label" parent="Bench/Rack/RackBody/RackHeader"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"Caption"
+text = "5 / 5"
+
+[node name="Slots" type="HBoxContainer" parent="Bench/Rack/RackBody"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_override_constants/separation = 6
+
+[node name="Slot1" instance=ExtResource("slot") parent="Bench/Rack/RackBody/Slots"]
+layout_mode = 2
+tooltip_text = "선두 격발기"
+sample_part = "opening"
+sample_caption = "선두 격발기"
+
+[node name="Slot2" instance=ExtResource("slot") parent="Bench/Rack/RackBody/Slots"]
+layout_mode = 2
+tooltip_text = "전이 축전기"
+sample_part = "capacitor"
+sample_caption = "전이 축전기"
+
+[node name="Slot3" instance=ExtResource("slot") parent="Bench/Rack/RackBody/Slots"]
+layout_mode = 2
+tooltip_text = "확장 방열판"
+sample_part = "radiator"
+sample_caption = "확장 방열판"
+button_pressed = true
+
+[node name="Slot4" instance=ExtResource("slot") parent="Bench/Rack/RackBody/Slots"]
+layout_mode = 2
+tooltip_text = "충격 가이드"
+sample_part = "rammer"
+sample_caption = "충격 가이드"
+
+[node name="Slot5" instance=ExtResource("slot") parent="Bench/Rack/RackBody/Slots"]
+layout_mode = 2
+tooltip_text = "가속 총열"
+sample_part = "lens"
+sample_caption = "가속 총열"
+
+[node name="Inspector" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(336, 0)
+theme_override_constants/separation = 8
+
+[node name="StockPanel" type="PanelContainer" parent="Inspector"]
+theme_override_styles/panel = SubResource("Panel")
+layout_mode = 2
+
+[node name="StockBody" type="VBoxContainer" parent="Inspector/StockPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StorageCount" type="Label" parent="Inspector/StockPanel/StockBody"]
+layout_mode = 2
+unique_name_in_owner = true
+text = "보유 파츠 · 4개"
+
+[node name="StorageScroll" type="ScrollContainer" parent="Inspector/StockPanel/StockBody"]
+layout_mode = 2
+unique_name_in_owner = true
+follow_focus = true
+horizontal_scroll_mode = 0
+custom_minimum_size = Vector2(0, 136)
+theme = SubResource("ScrollTheme")
+
+[node name="Storage" type="VBoxContainer" parent="Inspector/StockPanel/StockBody/StorageScroll"]
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="StorageEmpty" type="Label" parent="Inspector/StockPanel/StockBody/StorageScroll/Storage"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"Caption"
+text = "보관 중인 파츠가 없습니다."
+
+[node name="Preview" type="PanelContainer" parent="Inspector"]
+theme_override_styles/panel = SubResource("Panel")
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PreviewBody" type="VBoxContainer" parent="Inspector/Preview"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_override_constants/separation = 6
+
+[node name="PreviewHeader" type="HBoxContainer" parent="Inspector/Preview/PreviewBody"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PreviewHeading" type="Label" parent="Inspector/Preview/PreviewBody/PreviewHeader"]
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.84, 0.71, 0.49, 1)
+text = "교체 미리보기"
+
+[node name="Result" type="Label" parent="Inspector/Preview/PreviewBody/PreviewHeader"]
+layout_mode = 2
+unique_name_in_owner = true
+visible = false
+theme_override_colors/font_color = Color(0.91, 0.76, 0.50, 1)
+
+[node name="Pair" type="HBoxContainer" parent="Inspector/Preview/PreviewBody"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_override_constants/separation = 8
+
+[node name="Before" type="PanelContainer" parent="Inspector/Preview/PreviewBody/Pair"]
+theme_override_styles/panel = SubResource("Panel")
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+
+[node name="Contents" type="VBoxContainer" parent="Inspector/Preview/PreviewBody/Pair/Before"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="PreviousGlyph" type="Control" parent="Inspector/Preview/PreviewBody/Pair/Before/Contents"]
+layout_mode = 2
+unique_name_in_owner = true
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 52)
+script = ExtResource("glyph")
+is_part = true
+showcase = true
+item_id = "radiator"
+
+[node name="PreviousName" type="Label" parent="Inspector/Preview/PreviewBody/Pair/Before/Contents"]
+layout_mode = 2
+unique_name_in_owner = true
+clip_text = true
+text_overrun_behavior = 3
+horizontal_alignment = 1
+text = "확장 방열판"
+
+[node name="SwapArrow" type="Label" parent="Inspector/Preview/PreviewBody/Pair"]
+layout_mode = 2
+unique_name_in_owner = true
+text = "→"
+vertical_alignment = 1
+
+[node name="After" type="PanelContainer" parent="Inspector/Preview/PreviewBody/Pair"]
+theme_override_styles/panel = SubResource("Panel")
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+
+[node name="Contents" type="VBoxContainer" parent="Inspector/Preview/PreviewBody/Pair/After"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="SelectedGlyph" type="Control" parent="Inspector/Preview/PreviewBody/Pair/After/Contents"]
+layout_mode = 2
+unique_name_in_owner = true
+mouse_filter = 2
+custom_minimum_size = Vector2(0, 52)
+script = ExtResource("glyph")
+is_part = true
+showcase = true
+item_id = "third_striker"
+
+[node name="PartName" type="Label" parent="Inspector/Preview/PreviewBody/Pair/After/Contents"]
+layout_mode = 2
+unique_name_in_owner = true
+clip_text = true
+text_overrun_behavior = 3
+horizontal_alignment = 1
+text = "제3 격발기"
+
+[node name="PartStatus" type="Label" parent="Inspector/Preview/PreviewBody"]
+layout_mode = 2
+unique_name_in_owner = true
+visible = false
+theme_type_variation = &"Caption"
+text = "보관 중"
+
+[node name="DetailsScroll" type="ScrollContainer" parent="Inspector/Preview/PreviewBody"]
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+custom_minimum_size = Vector2(0, 44)
+theme = SubResource("ScrollTheme")
+
+[node name="Details" type="VBoxContainer" parent="Inspector/Preview/PreviewBody/DetailsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Instruction" type="Label" parent="Inspector/Preview/PreviewBody/DetailsScroll/Details"]
+layout_mode = 2
+unique_name_in_owner = true
+autowrap_mode = 3
+visible = false
+theme_override_colors/font_color = Color(0.71, 0.67, 0.57, 1)
+text = "교체할 장착 슬롯을 고르세요."
+
+[node name="Gain" type="Label" parent="Inspector/Preview/PreviewBody/DetailsScroll/Details"]
+layout_mode = 2
+unique_name_in_owner = true
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.88, 0.84, 0.74, 1)
+text = "얻음  탄창의 세 번째 탄 직접 피해 ×3"
+
+[node name="Loss" type="Label" parent="Inspector/Preview/PreviewBody/DetailsScroll/Details"]
+layout_mode = 2
+unique_name_in_owner = true
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.85, 0.64, 0.54, 1)
+text = "잃음  열 한계 +3"
+
+[node name="Stats" type="Label" parent="Inspector/Preview/PreviewBody/DetailsScroll/Details"]
+layout_mode = 2
+unique_name_in_owner = true
+autowrap_mode = 3
+theme_override_colors/font_color = Color(0.85, 0.64, 0.54, 1)
+text = "열 한계  15 → 12"
+
+[node name="Actions" type="HBoxContainer" parent="Inspector/Preview/PreviewBody"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PartRules" type="Button" parent="Inspector/Preview/PreviewBody/Actions"]
+layout_mode = 2
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 44)
+text = "규칙"
+
+[node name="PartDismantle" type="Button" parent="Inspector/Preview/PreviewBody/Actions"]
+layout_mode = 2
+unique_name_in_owner = true
+custom_minimum_size = Vector2(98, 44)
+visible = false
+text = "분해 · +10Cr"
+
+[node name="ActionSpace" type="Control" parent="Inspector/Preview/PreviewBody/Actions"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="Apply" type="Button" parent="Inspector/Preview/PreviewBody/Actions"]
+layout_mode = 2
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 44)
+theme = ExtResource("primary")
+text = "교체 장착"

@@ -65,7 +65,7 @@ func setup(id: String, current_state: Dictionary, is_equipped: bool = false, is_
 	equipped = is_equipped
 	compact = is_compact
 	mini = is_mini
-	tooltip_text = Content.part_grade_summary(part_id) + "\n" + str(Content.part_spec(part_id,state).text)
+	tooltip_text = Content.part_grade_summary(part_id, state) + "\n" + str(Content.part_spec(part_id,state).text)
 	var progress := preload("res://redesign/damage_engines.gd").progress(state,part_id)
 	if not progress.is_empty(): tooltip_text += "\n" + progress
 	queue_redraw()
@@ -131,8 +131,9 @@ func _draw_part_icon(p: Vector2, accent: Color, scale_factor: float) -> void:
 	preload("res://redesign/part_icon_art.gd").draw(self, part_id, p, accent, scale_factor)
 
 func _draw_effect_icon(center: Vector2, color: Color, scale_factor: float) -> void:
+	var icon_id := str(preload("res://redesign/part_icon_art.gd").ALIASES.get(part_id, part_id))
 	draw_set_transform(center, 0.0, Vector2.ONE * scale_factor)
-	match part_id:
+	match icon_id:
 		"cooling_breech":
 			for y in [-8, 0, 8]: draw_rect(Rect2(-10, y - 1, 20, 2), color)
 		"ordinary_chain", "compression_sink":

@@ -5,6 +5,7 @@ var case_name:=""
 var pending_events:Array=[]
 var frames:Array=[]
 var images:Dictionary={}
+var installation_effect
 
 func canonical(value):return JSON.parse_string(JSON.stringify(value))
 func bundle():return canonical({"campaign":screen.campaign.s,"combat":screen.model.s,"profile":screen.campaign.profile})
@@ -12,6 +13,12 @@ func oracle():
 	var copy=Campaign.new();check(copy.restore_state(bundle()),"oracle restores actual UI state "+case_name);return copy
 
 func post_draw() -> void:
+	if case_name == "install" and is_instance_valid(installation_effect) and installation_effect.kind == "installed":
+		var phase: float = installation_effect.progress
+		if phase >= 0.12 and phase <= 0.52 and not images.has("install_travel.png"):
+			images["install_travel.png"] = root.get_texture().get_image()
+		elif phase >= 0.66 and not images.has("install_seated.png"):
+			images["install_seated.png"] = root.get_texture().get_image()
 	for event in pending_events:
 		var targets:Array=[]
 		for path in event.targets:
@@ -22,6 +29,11 @@ func post_draw() -> void:
 			check(not effect is Control,"decoration cannot alter container or touch layout")
 			if target is Container:check(effect.ink().get_luminance()>0.1,"panel confirmation uses readable current-theme ink")
 			check(effect.progress<1 and effect.kind!="input","completion is visible on the updated target "+case_name)
+			if target.name.begins_with("Slot") and effect.kind == "installed":
+				check(event.after.equipped.has(effect.installed_id) and not event.before.equipped.has(effect.installed_id),"only the newly committed part travels into its slot")
+				check(effect.installation_origin.distance_to(effect.size * 0.5) > 30.0, "installation starts at the part preview")
+				if case_name == "install": installation_effect = effect
+				if mode == "instant": check(effect.tween == null or not effect.tween.is_running(), "instant setting keeps the installation confirmation still")
 			targets.append({"name":target.name,"path":path,"rect":str(target.get_global_rect()),"progress":effect.progress,"kind":effect.kind,"tween":effect.tween!=null and effect.tween.is_running()})
 		check(not targets.is_empty(),"accepted command has actual completion surface "+case_name)
 		var name:="%s_%02d.png"%[case_name,frames.size()]
@@ -99,25 +111,47 @@ func shop_actions(size: Vector2i, motion: String) -> void:
 	check(screen.campaign.save()==OK,"post-interaction state saves")
 	var restored=Campaign.new();check(restored.restore(),"post-interaction state resumes")
 	check(canonical(restored.model.s)==canonical(screen.model.s),"resume keeps exact model")
+	if motion == "normal":
+		await touch_button(shop().offer_button(1))
+		case_name = "buy_auto_install"
+		await touch_key("Buy");await settle();flush()
+		check(screen.campaign.is_equipped("supply"), "a purchased part fills the actual free slot")
+		check(frames.any(func(frame): return frame.case == "buy_auto_install" and frame.targets.any(func(target): return target.name == "PartsButton" and target.kind == "installed")), "automatic installation confirms on the physical parts key")
 
 func part_actions() -> void:
 	await enter_shop(0,"carrier","burst",true);await fixture_offers();set_motion("normal")
 	for id in ["opening","thermal_drive"]:screen.campaign.s.parts.append(id)
 	screen.campaign._sync_equipped_parts();screen.redraw();await settle()
 	await touch_key("PartsButton")
-	var pane=field("PartsPane")
+	var pane=parts_pane()
 	await touch_button(pane.stored_buttons["opening"])
 	case_name="install";var expected=oracle();check(expected.equip("opening"),"oracle installs owned part")
-	await touch_button(pane.get_node("%Apply"));await settle();flush()
+	await touch_button(pane.get_node("%Apply"));await settle()
 	check(canonical(screen.model.s)==canonical(expected.model.s),"installation matches actual resolver")
+	var installed = pane.get_node("%Slots").get_child(screen.campaign.equipped_parts().find("opening")).get_node("InteractionResponse")
+	await create_timer(0.45).timeout
+	check(installed.installed_id.is_empty() and installed.z_index == 0, "installation effect returns to its resting layer")
+	flush()
 	case_name="remove";expected=oracle();check(expected.equip("opening"),"oracle removes installed part")
 	await touch_button(pane.get_node("%Apply"));await settle();flush()
 	check(canonical(screen.model.s)==canonical(expected.model.s),"removal matches actual resolver")
+	# v2 allows multiple cores; fill the actual mount to exercise replacement.
+	for id in ["lens", "rammer", "reclaimer"]:
+		screen.campaign.s.parts.append(id)
+		check(screen.campaign.equip(id), "fill the mount with an eligible part")
+	pane.open(screen.campaign, "thermal_drive")
+	await settle()
 	await touch_button(pane.stored_buttons["thermal_drive"])
 	await touch_button(pane.get_node("%Slots").get_child(0))
-	case_name="replace_core";expected=oracle();check(expected.replace_part("volley_drive","thermal_drive"),"oracle replaces exclusive core")
+	case_name="replace_core";expected=oracle();check(expected.replace_part("volley_drive","thermal_drive"),"oracle replaces part in a full mount")
 	await touch_button(pane.get_node("%Apply"));await settle();flush()
 	check(canonical(screen.model.s)==canonical(expected.model.s),"replacement matches actual resolver")
+	set_motion("instant")
+	await touch_button(pane.stored_buttons["opening"])
+	await touch_button(pane.get_node("%Slots").get_child(0))
+	case_name = "install_instant"
+	await touch_button(pane.get_node("%Apply"));await settle();flush()
+	check(frames.any(func(frame): return frame.case == "install_instant" and frame.targets.any(func(target): return target.kind == "installed" and not target.tween)), "instant part installation still marks the committed slot")
 
 func workshop() -> void:
 	var c=Campaign.new();c.start("burst",17,0,"balanced",Campaign.Content.RouteMap.VERSION,"carrier",true);c.advance_departure(true)

@@ -81,8 +81,22 @@ func pose_matrix() -> void:
 			var expected:Vector2=actor.registered_muzzle(b.player_feet(),b.character_scale())+b._recoil()
 			check(muzzle.is_equal_approx(expected),"actual gun attachment at every outfit/kick "+str(original.gun)+"/"+outfit)
 			check(is_finite(b.muzzle_angle()) and absf(b.muzzle_angle())<PI/2,"flash follows forward barrel orientation")
+			if b.WeaponActor.family(original.gun) == "long":
+				check_long_gun_grip(actor, original.gun, outfit)
 			geometry_rows.append({"gun":original.gun,"outfit":outfit,"kick":kick,"muzzle":str(muzzle),"angle":b.muzzle_angle()})
 	b.display_state=original;b.hero_action="aim";b.flash=0
+
+func check_long_gun_grip(actor: Node2D, gun: String, outfit: String) -> void:
+	var frame: Dictionary = actor.frame_for(outfit, gun, "aim")
+	var weapon: Dictionary = actor.WEAPONS[gun]
+	var hold: Transform2D = actor.registered_transform()
+	var origin: Vector2 = actor.FOOT - frame.foot * frame.scale
+	check(absf(hold.get_rotation()) < deg_to_rad(12.0), "long gun fires close to level " + gun)
+	for index in range(2):
+		var hand: Rect2 = frame.hands[index]
+		var area := Rect2(origin + hand.position * frame.scale, hand.size * frame.scale)
+		var contact: Vector2 = hold * (weapon.grip if index == 0 else weapon.support)
+		check(area.grow(4.0).has_point(contact), "long gun stays within the hand " + gun + "/" + outfit)
 
 func fire_and_compare(c) -> void:
 	var b=host.campaign_hud.board

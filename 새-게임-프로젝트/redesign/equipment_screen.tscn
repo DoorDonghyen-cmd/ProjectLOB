@@ -1,6 +1,6 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 [ext_resource type="Script" path="res://redesign/equipment_screen.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/workshop_v1.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/art/equipment_20261011/workshop_grouped_20261110.png" id="2"]
 [ext_resource type="Texture2D" path="res://assets/art/combat_outfit_grid_20261108/combat_outfits.png" id="3"]
 [ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="4"]
 [ext_resource type="PackedScene" path="res://redesign/equipment_weapon.tscn" id="8"]
@@ -11,6 +11,7 @@
 [ext_resource type="StyleBox" path="res://redesign/equipment/weapon_info_panel.tres" id="14"]
 [ext_resource type="Script" path="res://redesign/equipment/weapon_rail.gd" id="15"]
 [ext_resource type="PackedScene" path="res://redesign/equipment/rail_weapon.tscn" id="16"]
+[ext_resource type="Theme" path="res://redesign/ui/dark_primary.tres" id="action_theme"]
 
 [sub_resource type="AtlasTexture" id="Work"]
 atlas = ExtResource("3")
@@ -335,32 +336,34 @@ size_flags_vertical = 3
 toggle_mode = true
 metadata/caption = "기본 작업복"
 
-[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work" ]
+[node name="Content" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work"]
 layout_mode = 1
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 26.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Content"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 texture = SubResource("Work")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work" ]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 86.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Copy" ]
+[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -369,7 +372,7 @@ max_lines_visible = 2
 text = "기본 작업복"
 
 
-[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Copy" ]
+[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_work/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -385,32 +388,34 @@ toggle_mode = true
 button_pressed = true
 metadata/caption = "운반용 외투"
 
-[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier" ]
+[node name="Content" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier"]
 layout_mode = 1
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 26.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Content"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 texture = SubResource("Carrier")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier" ]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 86.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Copy" ]
+[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -419,7 +424,7 @@ max_lines_visible = 2
 text = "운반용 외투"
 
 
-[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Copy" ]
+[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_carrier/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -434,32 +439,34 @@ size_flags_vertical = 3
 toggle_mode = true
 metadata/caption = "정찰용 작업복"
 
-[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout" ]
+[node name="Content" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout"]
 layout_mode = 1
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 26.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Content"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 texture = SubResource("Scout")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout" ]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 86.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Copy" ]
+[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -468,7 +475,7 @@ max_lines_visible = 2
 text = "정찰용 작업복"
 
 
-[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Copy" ]
+[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_scout/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -483,32 +490,34 @@ size_flags_vertical = 3
 toggle_mode = true
 metadata/caption = "기본 작업복"
 
-[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker" ]
+[node name="Content" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker"]
 layout_mode = 1
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 26.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Content"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 texture = SubResource("Heatworker")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker" ]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 86.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Copy" ]
+[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -517,7 +526,7 @@ max_lines_visible = 2
 text = "기본 작업복"
 
 
-[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Copy" ]
+[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_heatworker/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -532,32 +541,34 @@ size_flags_vertical = 3
 toggle_mode = true
 metadata/caption = "기본 작업복"
 
-[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist" ]
+[node name="Content" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist"]
 layout_mode = 1
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 26.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Content"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 texture = SubResource("Hoist")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist" ]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 86.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Copy" ]
+[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -566,7 +577,7 @@ max_lines_visible = 2
 text = "기본 작업복"
 
 
-[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Copy" ]
+[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_hoist/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -581,32 +592,34 @@ size_flags_vertical = 3
 toggle_mode = true
 metadata/caption = "기본 작업복"
 
-[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery" ]
+[node name="Content" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery"]
 layout_mode = 1
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 26.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Content"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 texture = SubResource("Recovery")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery" ]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 86.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Copy" ]
+[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -615,7 +628,7 @@ max_lines_visible = 2
 text = "기본 작업복"
 
 
-[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Copy" ]
+[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_recovery/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -630,32 +643,34 @@ size_flags_vertical = 3
 toggle_mode = true
 metadata/caption = "기본 작업복"
 
-[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition" ]
+[node name="Content" type="HBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition"]
 layout_mode = 1
-anchor_top = 0.5
-anchor_bottom = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 10.0
-offset_top = -26.0
-offset_right = 74.0
-offset_bottom = 26.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Content"]
+custom_minimum_size = Vector2(64, 52)
+layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 texture = SubResource("Expedition")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition" ]
-layout_mode = 1
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 86.0
-offset_top = 8.0
-offset_right = -8.0
-offset_bottom = -8.0
+[node name="Copy" type="VBoxContainer" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
 mouse_filter = 2
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Copy" ]
+[node name="Name" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -664,7 +679,7 @@ max_lines_visible = 2
 text = "기본 작업복"
 
 
-[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Copy" ]
+[node name="Stats" type="Label" parent="Margin/Layout/SelectionScroll/SelectionLayout/Stage/OutfitSelection/OutfitScroll/OutfitList/outfit_select_expedition/Content/Copy"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_font_sizes/font_size = 16
@@ -902,7 +917,7 @@ theme_override_colors/font_color = Color(0.647059, 0.635294, 0.580392, 1.0)
 [node name="Launch" type="Button" parent="Margin/Layout/Footer" ]
 unique_name_in_owner = true
 layout_mode = 2
-theme_type_variation = &"EquipmentPrimary"
+theme = ExtResource("action_theme")
 text = "등반 시작  ›"
 custom_minimum_size = Vector2(250, 54)
 

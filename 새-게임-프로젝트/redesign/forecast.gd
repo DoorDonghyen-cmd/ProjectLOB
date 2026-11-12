@@ -146,10 +146,12 @@ static func random_analyze(state: Dictionary, include_reload: bool = false, canc
 				if actual.get("prepared_rounds", []).size() > Content.multiplier(state): shot.part_probabilities["indexer"] = float(shot.part_probabilities.get("indexer", 0)) + probability
 				if int(actual.get("interrupted", 0)) > 0 or int(actual.get("transferred", 0)) > 0 or int(actual.get("sequence_bonus", 0)) > 0 or not actual.get("prepared_rounds", []).is_empty(): shot.effect_probability += probability
 				if not actual.get("prepared_rounds", []).is_empty(): shot.prepared_rounds = actual.prepared_rounds.duplicate()
-				if not target_stats.has(target): target_stats[target] = {"target": target, "probability": 0.0, "damage_min": int(actual.damage), "damage_max": int(actual.damage)}
-				target_stats[target].probability += probability
-				target_stats[target].damage_min = mini(int(target_stats[target].damage_min), int(actual.damage))
-				target_stats[target].damage_max = maxi(int(target_stats[target].damage_max), int(actual.damage))
+				var impact_target := int(actual.get("target", target))
+				if actual.has("wreckage_hit"): shot.wreckage_probability = float(shot.get("wreckage_probability", 0.0)) + probability
+				if not target_stats.has(impact_target): target_stats[impact_target] = {"target": impact_target, "probability": 0.0, "damage_min": int(actual.damage), "damage_max": int(actual.damage)}
+				target_stats[impact_target].probability += probability
+				target_stats[impact_target].damage_min = mini(int(target_stats[impact_target].damage_min), int(actual.damage))
+				target_stats[impact_target].damage_max = maxi(int(target_stats[impact_target].damage_max), int(actual.damage))
 				var peak := maxi(int(branch.peak), int(actual.heat_after))
 				var branch_key := _shot_branch_key(copy.s)
 				branch_key.append(peak)
@@ -258,6 +260,8 @@ static func _shot_branch_key(state: Dictionary) -> Array:
 		key.append_array([int(enemy.hp), int(enemy.def), int(enemy.distance), int(enemy.get("burn", 0)), int(enemy.get("focus_hits", 0)), int(enemy.get("barrier", 0)), int(enemy.get("stance_def", 0)), int(enemy.get("jammed", 0)), bool(enemy.get("disrupted", false))])
 		key.append(int(enemy.get("exposure_left",0)))
 		key.append_array([int(enemy.get("slow_left",0)),bool(enemy.get("slow_used",false))])
+		if enemy.has("wreckage"): key.append(int(enemy.wreckage))
+		if enemy.has("shield_open_left"): key.append(int(enemy.shield_open_left))
 	for projectile in state.get("projectiles", []):
 		key.append_array([int(projectile.uid), int(projectile.hp), int(projectile.distance), int(projectile.get("burn", 0))])
 	return key
@@ -362,9 +366,14 @@ static func _heat_ranges(state: Dictionary, rows: Array) -> Dictionary:
 
 static func tag(index: int, enemies: Array = []) -> String:
 	if Ranged.is_projectile(index): return "요격"
-	return str(enemies[index].get("name", "대상")) if index >= 0 and index < enemies.size() else "대상"
+	if index < 0 or index >= enemies.size(): return "대상"
+	var enemy: Dictionary = enemies[index]
+	return "잔해" if enemy.has("wreckage") and int(enemy.hp) == 0 else str(enemy.get("name", "대상"))
 
 static func outcome(shot: Dictionary) -> String:
+	if shot.has("wreckage_hit"): return "잔해 −%d칸" % int(shot.wreckage_hit)
+	if shot.has("shield_rule") and int(shot.get("blocked_hits", 0)) > 0 and int(shot.damage) == 0:
+		return "차폐 유지" if int(shot.barrier_removed) == 0 else "차폐 −%d칸" % int(shot.barrier_removed)
 	if shot.get("intercept", false): return "요격"
 	if shot.get("random", false): return "%d~%d" % [shot.damage_min, shot.damage_max]
 	if not shot.hit: return "빗나감"
@@ -386,6 +395,9 @@ static func burn_ticks_for_shot(forecast: Dictionary, shot_index: int) -> int:
 static func note(forecast: Dictionary, shot_index: int) -> String:
 	if shot_index < 0 or shot_index >= forecast.get("shots", []).size(): return ""
 	var shot: Dictionary = forecast.shots[shot_index]
+	if shot.has("wreckage_hit"): return "잔해 −%d칸" % int(shot.wreckage_hit)
+	var wreckage_chance := float(shot.get("wreckage_probability", 0.0))
+	if wreckage_chance > 0.0: return "잔해 명중 %d%%" % roundi(wreckage_chance * 100.0)
 	if float(shot.get("intercept_probability", 0)) >= 0.999999: return "확정 요격"
 	if shot.get("random", false):
 		if str(shot.id) in ["prepare", "disrupt", "spread", "sequence"]:
@@ -405,6 +417,9 @@ static func note(forecast: Dictionary, shot_index: int) -> String:
 	if int(shot.get("blocked_hits", 0)) > 0:
 		if int(shot.get("burn_added", 0)) > 0:
 			return "보호막 너머 화상 %d/턴 · %d턴" % [int(shot.burn_tick), int(shot.burn)]
+		if shot.has("shield_rule"):
+			if int(shot.barrier_removed) == 0: return "차폐 유지 · 노출 대기"
+			return "차폐 −%d칸%s" % [int(shot.barrier_removed), " · 본체 노출" if int(shot.barrier) == 0 else ""]
 		return "배리어 −%d%s" % [int(shot.blocked_hits), " · HP −%d" % int(shot.damage) if int(shot.damage) > 0 else ""]
 	if int(shot.get("focus_damage", 0)) > 0: return "집중 +%d" % shot.focus_damage
 	var boosted := int(shot.get("math", {}).get("boost", 0)) > 0 or int(shot.get("math", {}).get("factor", 1)) > 1
@@ -412,6 +427,9 @@ static func note(forecast: Dictionary, shot_index: int) -> String:
 	if not secondary.is_empty():
 		var impacts: PackedStringArray = []
 		for other in secondary:
+			if other.has("wreckage_hit"):
+				impacts.append("잔해 −%d칸" % int(other.wreckage_hit))
+				continue
 			var effect_name: String = {"spread":"확산","relay":"잔타","overflow":"돌파","burn_transfer":"화상","heat_wave":"열압"}.get(str(other.get("kind","arc")),"전이")
 			impacts.append("%s %s −%d" % [tag(other.target, forecast.get("enemies", [])), effect_name, other.damage])
 		return ("증폭 · " if boosted else "") + " / ".join(impacts)

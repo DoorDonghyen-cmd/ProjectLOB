@@ -34,13 +34,13 @@ static func combat_report(state: Dictionary, floor_filter: int = -1) -> Dictiona
 				report.push += int(shot.get("push", 0))
 				if int(shot.get("math", {}).get("boost", 0)) > 0:
 					report.boost_hits += int(shot.get("hits", 1))
-				if int(shot.get("hp", 1)) <= 0 and not bool(shot.get("intercept", false)):
+				if int(shot.get("hp", 1)) <= 0 and not bool(shot.get("intercept", false)) and not shot.has("wreckage_hit"):
 					report.kills += 1
 				for secondary_value in shot.get("secondary", []):
 					var secondary: Dictionary = secondary_value
 					if str(secondary.get("kind", "arc")) == "spread": report.spread += int(secondary.get("damage", 0))
 					else: report.arc += int(secondary.get("damage", 0))
-					if int(secondary.get("hp", 1)) <= 0 and not bool(secondary.get("intercept", false)):
+					if int(secondary.get("hp", 1)) <= 0 and not bool(secondary.get("intercept", false)) and not secondary.has("wreckage_hit"):
 						report.kills += 1
 		for event_value in detail.get("advance_events", []):
 			var event: Dictionary = event_value

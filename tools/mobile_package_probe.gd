@@ -14,7 +14,8 @@ func _initialize() -> void:
 func run_probe() -> void:
 	var args := OS.get_cmdline_user_args()
 	check(not args.is_empty() and Model.VERSION == int(args[0]), "Packaged model version")
-	check(Content.GUNS.size() == 5, "Five playable weapons")
+	# 2026-11-06: deadbolt and rewinder joined the main game (magazine climbs only).
+	check(Content.GUNS.size() == 7, "Seven playable weapons")
 	var comparison := args.size() > 2 and args[2] == "weapon-magazine"
 	var journey_mode := args.size() > 2 and args[2] == "magazine-journey"
 	check(args.size() <= 2 or args[2] in ["campaign", "weapon-magazine", "magazine-journey"], "Supported play mode")
@@ -57,7 +58,16 @@ func run_probe() -> void:
 			for card in range(before.size()):
 				if before[card] != campaign.model.s.deck[card]: changed += 1
 			check(changed == 1 and campaign.model.s.deck[index] == "basic_p2_power", "Only one legacy owned copy changes")
-	for gun in Content.GUNS:
+	# The magazine-only guns: a real campaign starts, loads its magazine and fires.
+	for gun in ["deadbolt", "rewinder"]:
+		var CampaignScript = load("res://redesign/campaign.gd")
+		var run = CampaignScript.new()
+		run.start(gun, 731042, 0, "balanced", CampaignScript.Content.RouteMap.VERSION, "work", true)
+		while run.departure_pending(): run.advance_departure(true)
+		check(run.enter(int(run.choices()[0].id)) and run.model.s.phase == "ready" and not run.model.s.magazine.is_empty(), "Magazine campaign loads: " + gun)
+		check(run.model.fire(), "Magazine campaign fires: " + gun)
+	# Hand-rule checks: the five original guns that still support the hand mode.
+	for gun in ["single", "burst", "scatter", "heavy", "amplifier"]:
 		var model = Model.new()
 		model.start(gun, 731042)
 		check(model.s.hand.size() == mini(model.s.deck.size(), Content.hand_capacity(model.s)), "Opening hand: " + gun)
@@ -86,6 +96,8 @@ func run_probe() -> void:
 		for frame in range(30): await process_frame
 		if journey_mode:
 			await probe_journey(scene, args[3])
+		elif not comparison:
+			await probe_outfit_cards(scene)
 		if comparison:
 			for gun_index in range(5):
 				for case_index in range(4):
@@ -105,6 +117,30 @@ func run_probe() -> void:
 		await process_frame
 	if failures == 0: print("MOBILE_PACKAGE_PROBE_PASS model=", Model.VERSION)
 	quit(0 if failures == 0 else 1)
+
+func probe_outfit_cards(scene: Control) -> void:
+	root.size = Vector2i(1280, 591)
+	scene.save_enabled = false
+	scene._open_preparation(false)
+	for frame in range(8):
+		await process_frame
+	var list := scene.find_child("OutfitScroll", true, false) as ScrollContainer
+	check(list != null, "Packaged equipment opens the outfit list")
+	if list == null:
+		return
+	for id in Content.OUTFITS:
+		var card := list.find_child("outfit_select_" + id, true, false) as Button
+		check(card != null, "Packaged outfit card exists: " + id)
+		if card == null:
+			continue
+		var icon := card.get_node_or_null("Content/Icon") as TextureRect
+		var copy := card.get_node_or_null("Content/Copy") as Control
+		check(icon != null and copy != null, "Packaged outfit has portrait and text: " + id)
+		if icon == null or copy == null:
+			continue
+		var rect := icon.get_global_rect()
+		check(icon.texture != null and rect.size == Vector2(64, 52), "Packaged outfit portrait has full size: " + id)
+		check(card.get_global_rect().encloses(rect) and rect.end.x <= copy.get_global_rect().position.x, "Packaged outfit portrait fits beside text: " + id)
 
 func canonical(value: Variant) -> Variant:
 	return JSON.parse_string(JSON.stringify(value))

@@ -19,14 +19,31 @@ static func tier(result: Dictionary, style: Dictionary, attack: bool) -> Tier:
 		var weapon_factor := int(result.get("weapon_factor", math.get("weapon_factor", 1)))
 		var percent: int = max(
 			int(result.get("engine_percent", math.get("engine_percent", 100))),
+			int(math.get("tag_percent", 100)),
 			int(result.get("gate_percent", math.get("gate_percent", 100))),
 			int(result.get("overdrive_percent", math.get("overdrive_percent", 100)))
 		)
 		return Tier.SHOCKWAVE if int(style.rank) >= 2 or weapon_factor >= 3 or percent >= 300 else Tier.EMBERS
+	if style.operator == "repeat":
+		if style.sources.has("resonator"): return Tier.EMBERS
+		if style.sources.has("duplex") or style.added: return Tier.TRACER
 	return Tier.TRACER if style.operator == "add" else Tier.STANDARD
 
 static func trail_limit(option: int) -> float:
 	return TRAIL_LENGTHS[option]
+
+static func draw_muzzle(canvas: CanvasItem, progress: float, option: int, ink: Color) -> void:
+	if option == Tier.STANDARD or progress >= 0.26: return
+	var phase := clampf(progress / 0.26, 0.0, 1.0)
+	var opacity := 1.0 - phase
+	var reach := 7.0 + phase * (11.0 if option == Tier.SHOCKWAVE else 7.0)
+	var hot := Color(ink.lightened(0.35), opacity)
+	for side in [-1, 1]:
+		_bar(canvas, -3, 4, side * reach - 1, 2, Color(ink, opacity * 0.8))
+		_bar(canvas, 5, 11, side * (reach + 3) - 1, 2, hot)
+	if option == Tier.SHOCKWAVE:
+		_bar(canvas, 12, 15, -reach * 0.55, roundf(reach * 1.1), Color(ink, opacity * 0.7))
+		_bar(canvas, -6, 18, -1, 2, hot)
 
 static func _bar(canvas: CanvasItem, left: float, right: float, y: float, height: float, color: Color) -> void:
 	if right <= left: return
@@ -62,12 +79,19 @@ static func _shards(canvas: CanvasItem, offsets: Array, progress: float, ink: Co
 		var dimensions := Vector2(9 if i % 3 == 0 else 5, 3 if i % 2 == 0 else 2)
 		canvas.draw_rect(Rect2(point, dimensions), Color(ink if i % 3 == 0 else ink.darkened(0.22), 1.0 - progress))
 
-static func draw_contact(canvas: CanvasItem, center: Vector2, pulse: float, option: int, ink: Color, camera: Transform2D) -> void:
+static func draw_contact(canvas: CanvasItem, center: Vector2, pulse: float, option: int, ink: Color, camera: Transform2D, part_powered: bool = false) -> void:
 	var duration := 0.48 if option == Tier.TRACER else 0.78
 	if option == Tier.STANDARD or pulse >= duration: return
 	canvas.draw_set_transform_matrix(camera * Transform2D(0, center.round()))
 	var phase := pulse / duration
 	var hot := ink.lightened(0.45)
+	if part_powered and phase < 0.38:
+		var spread := phase / 0.38
+		var spark := Color(hot, 1.0 - spread)
+		for side: int in [-1, 1]:
+			var edge := side * (15.0 + spread * 12.0)
+			_bar(canvas, edge - 4, edge + 4, -11.0 - spread * 9.0, 3, spark)
+			_bar(canvas, edge - 3, edge + 3, 9.0 + spread * 8.0, 2, spark)
 	match option:
 		Tier.TRACER:
 			if phase < 0.22:

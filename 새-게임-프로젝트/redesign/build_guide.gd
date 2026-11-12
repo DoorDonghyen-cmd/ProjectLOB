@@ -58,7 +58,7 @@ static func connection(id: String, state: Dictionary) -> String:
 			"capacitor":return "전격 강화 · 연쇄/돌파와 함께 장착해 전이 대상 +1"
 			"arc_splitter":return "전격 전이 대상 +1 · 성장 코어와 교체하는 선택"
 			"coil":return "화상 +1행동 · 불길 피해 +2 · 소이/기폭 연결"
-	if id == "third_striker": return "지원탄도 한 발 · 주력 탄을 세 번째 발사에 맞춰 ×3"
+	if id == "third_striker": return "지원탄도 한 발 · 주력 탄을 세 번째 발사에 맞춰 " + preload("res://redesign/samples/opening_build/third_striker_trial.gd").multiplier_label(state)
 	if int(state.get("focus_build_version",0)) == 1:
 		if id == "opening": return "첫 발 ×2 · 앞 탄을 빼내 주력 탄으로 시작"
 		if id == "afterburner": return "실제 증폭 → 마지막 단타 ×3 · 지원탄 보유만으로 발동하지 않음"
@@ -102,6 +102,24 @@ static func connection(id: String, state: Dictionary) -> String:
 		return "압축 후보 %d쌍 · 두 발을 동시에 손에 모아 사용" % pairs
 	if id == "reserve": return "패 교환 %d → %d회 · 덱의 다른 탄을 찾아 조합" % [Ammo.exchange_capacity(state), Ammo.exchange_capacity(state) if Ammo.has_part(state, id) else Ammo.exchange_capacity(state) + 1]
 	if id == "afterburner" and Ammo.revised_combat(state): return "증폭·배율 → 마지막 단타 ×2 · 뒤의 지원탄은 허용 · 연타 제외"
+	# Tag parts (tag_build.gd): name what in the deck carries the tag the part reads.
+	var Tags = preload("res://redesign/tag_build.gd")
+	if Tags.PARTS.has(id):
+		var spec: Dictionary = Tags.PARTS[id]
+		if spec.has("tag"):
+			var carriers: PackedStringArray = []
+			for source in counts:
+				var sample := str(state.get("deck", []).filter(func(round_id): return Ammo.source_id(str(round_id)) == source)[0])
+				if Tags.has_tag(state, sample, str(spec.tag)) and Ammo.is_attack(sample): carriers.append("%s %d" % [Ammo.AMMO[sample].name, counts[source]])
+			return "%s 태그 공격탄 · %s" % [spec.tag, " / ".join(carriers)] if not carriers.is_empty() else "%s 태그 공격탄을 먼저 확보하세요" % spec.tag
+		if str(spec.kind) == "variety": return "장전 탄창 태그 %d종 · 4종부터 발동" % Tags.magazine_tags(state)
+		if str(spec.kind) == "copy":
+			var left := ""
+			for value in Ammo.equipped_parts(state):
+				if str(value) == id: break
+				if Tags.PARTS.has(str(value)) and str(Tags.PARTS[str(value)].kind) != "copy": left = str(value)
+			return "복제 대상 · " + str(Ammo.PARTS[left].name) if not left.is_empty() else "왼쪽에 태그 파츠를 먼저 장착하세요"
+		return "조건 배율 · 모든 특수 공격탄"
 	if not LINKS.has(id): return str(Ammo.part_spec(id,state).role) + " · 특정 탄종 없이 적용"
 	var found: PackedStringArray = []
 	for source in LINKS[id]:

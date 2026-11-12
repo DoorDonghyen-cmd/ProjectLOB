@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" path="res://assets/art/residential_ascent_20261011/middle_v1.png" id="battle"]
 [ext_resource type="Script" path="res://redesign/rewards/item_art.gd" id="glyph"]
 
+[ext_resource type="Script" path="res://redesign/ui/button_frame.gd" id="button_frame"]
+
 [sub_resource type="Gradient" id="shade"]
 offsets = PackedFloat32Array(0, 0.48, 1)
 colors = PackedColorArray(0.058, 0.06, 0.064, 0.94, 0.058, 0.06, 0.064, 0.32, 0.058, 0.06, 0.064, 0)
@@ -34,54 +36,52 @@ content_margin_left = 1.0
 content_margin_top = 1.0
 
 [sub_resource type="StyleBoxFlat" id="button"]
+script = ExtResource("button_frame")
+content_margin_top = 0.0
 bg_color = Color(0.15, 0.159, 0.176, 1)
 content_margin_left = 12.0
 content_margin_right = 12.0
-border_width_bottom = 2
 border_color = Color(0.317, 0.316, 0.302, 1)
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="hover"]
+script = ExtResource("button_frame")
+content_margin_top = 0.0
 bg_color = Color(0.226, 0.23, 0.245, 1)
 content_margin_left = 12.0
 content_margin_right = 12.0
-border_width_bottom = 2
 border_color = Color(0.68, 0.59, 0.43, 1)
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="selected"]
+script = ExtResource("button_frame")
+content_margin_top = 2.0
 bg_color = Color(0.27, 0.234, 0.179, 1)
-border_width_top = 2
-border_width_bottom = 2
 border_color = Color(0.83, 0.66, 0.405, 1)
 content_margin_left = 12.0
 content_margin_right = 12.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="confirm"]
+script = ExtResource("button_frame")
+brass_face = true
+content_margin_top = 0.0
+content_margin_bottom = 3.0
 bg_color = Color(0.81, 0.645, 0.419, 1)
 content_margin_left = 16.0
 content_margin_right = 16.0
-border_width_bottom = 3
 border_color = Color(0.51, 0.385, 0.245, 1)
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="confirm_hover"]
+script = ExtResource("button_frame")
+content_margin_top = 0.0
+content_margin_bottom = 3.0
 bg_color = Color(0.93, 0.765, 0.511, 1)
 content_margin_left = 16.0
 content_margin_right = 16.0
-border_width_bottom = 3
 border_color = Color(0.63, 0.49, 0.31, 1)
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="focus"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+script = ExtResource("button_frame")
+focus_ring = true
 border_color = Color(0.96, 0.84, 0.65, 1)
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="scroll_track"]
 bg_color = Color(0.12, 0.125, 0.132, 1)
@@ -110,8 +110,12 @@ Claim/base_type = &"Button"
 Claim/colors/font_color = Color(0.125, 0.103, 0.073, 1)
 Claim/colors/font_hover_color = Color(0.125, 0.103, 0.073, 1)
 Claim/colors/font_focus_color = Color(0.125, 0.103, 0.073, 1)
+Claim/colors/font_pressed_color = Color(0.125, 0.103, 0.073, 1)
+Claim/colors/font_hover_pressed_color = Color(0.125, 0.103, 0.073, 1)
 Claim/styles/normal = SubResource("confirm")
 Claim/styles/hover = SubResource("confirm_hover")
+Claim/styles/pressed = SubResource("confirm_hover")
+Claim/styles/hover_pressed = SubResource("confirm_hover")
 HScrollBar/styles/scroll = SubResource("scroll_track")
 HScrollBar/styles/grabber = SubResource("scroll_handle")
 HScrollBar/styles/grabber_highlight = SubResource("scroll_handle")

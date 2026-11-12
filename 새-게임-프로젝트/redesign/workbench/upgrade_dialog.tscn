@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://redesign/workbench/upgrade_dialog.gd" id="script"]
 
 [ext_resource type="Theme" path="res://redesign/workbench/theme.tres" id="theme"]
+[ext_resource type="Theme" path="res://redesign/ui/dark_primary.tres" id="action_theme"]
 
 [ext_resource type="Script" path="res://redesign/workbench/grade_frame.gd" id="frame"]
 
@@ -360,4 +361,4 @@ text = "취소"
 layout_mode = 2
 custom_minimum_size = Vector2(120,44)
 text = "강화 확정"
-theme_type_variation = &"PrimaryButton"
+theme = ExtResource("action_theme")

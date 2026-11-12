@@ -1,4 +1,4 @@
-param([ValidateSet('performance','rules','ui','mobile_ui','mobile_save','render_ui','builds','combat','combat_ui','shop_ui','pressure','pressure_ui','pressure_probe','inventory','inventory_ui','emergency','emergency_ui','emergency_probe','payoff','payoff_ui','threat','threat_ui','sustained','sustained_ui','sustained_probe')][string]$Mode='performance', [ValidatePattern('^[a-zA-Z0-9_-]+$')][string]$Tag='current', [ValidateRange(0,2)][int]$Revision=2)
+param([ValidateSet('performance','rules','ui','mobile_ui','mobile_save','render_ui','builds','combat','combat_ui','shop_ui','pressure','pressure_ui','pressure_probe','inventory','inventory_ui','emergency','emergency_ui','emergency_probe','payoff','payoff_ui','threat','threat_ui','proximity_ui','sustained','sustained_ui','sustained_probe')][string]$Mode='performance', [ValidatePattern('^[a-zA-Z0-9_-]+$')][string]$Tag='current', [ValidateRange(0,2)][int]$Revision=2)
 $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
 $project=(Get-ChildItem -LiteralPath $repo -Directory | Where-Object {Test-Path -LiteralPath (Join-Path $_.FullName 'project.godot')} | Select-Object -First 1).FullName

@@ -128,7 +128,8 @@ func show_details(offer: Dictionary, state: Dictionary, credits: int) -> void:
 	var duplicate: bool = not is_ammo and run.s.parts.has(id)
 	var full: bool = is_ammo and not run.can_acquire_ammo(id)
 	%ItemName.text = Offer.item_name(id, state)
-	%Kind.text = "탄환" if is_ammo else "코어" if Data.is_core_part(id) else "파츠"
+	# Part type by gun component (2026-11-11, part_slots.gd).
+	%Kind.text = "탄환" if is_ammo else ("코어" if Data.is_core_part(id) else "파츠") + " · " + str(preload("res://redesign/part_slots.gd").name_of(id))
 	if is_ammo:
 		var view = Card.new()
 		view.setup(id, 1, state)

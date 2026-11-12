@@ -5,7 +5,8 @@ const VERSION := 1
 const Roles=preload("res://redesign/combat_roles.gd")
 const MAX_LEVEL := 2
 const Growth = preload("res://redesign/core_growth.gd")
-const NAMES := {"thermal":"축열 변환기", "chain":"연쇄 격발기", "production":"전용 탄약 생산권", "growth":"코어 성장 확장", "cadence":"급탄 기구 확장", "efficiency":"저발열 약실", "conduction":"전이 회로 확장"}
+const GrowthV2 = preload("res://redesign/growth_structure.gd")
+const NAMES := {"thermal":"축열 변환기", "chain":"연쇄 격발기", "production":"전용 탄약 생산권", "growth":"코어 성장 확장", "cadence":"급탄 기구 확장", "efficiency":"저발열 약실", "conduction":"전이 회로 확장", "mastery":"탄종 숙련", "mastery_support":"보조 숙련", "drive":"구동 강화"}
 
 static func level(state: Dictionary, id: String) -> int:
 	return int(state.get("gate_mods", {}).get(id, 0))
@@ -43,11 +44,29 @@ static func options(state: Dictionary, late_growth: bool = false) -> Array:
 	var result: Array = []
 	for id in (["cadence","efficiency","conduction","chain"] if Roles.enabled(state) else ["thermal","chain"]):
 		if id=="cadence" and state.get("gun","")=="amplifier":continue
-		if id=="conduction" and Roles.builds(state) and not Ammo.equipped_parts(state).any(func(part):return part in ["volley_drive","siege_drive"]):continue
+		if id=="conduction" and Roles.builds(state) and not Ammo.active_parts(state).any(func(part):return part in ["volley_drive","siege_drive"]):continue
 		if level(state,id)<MAX_LEVEL: result.append(id)
+	if can_grow_drive(state): result.append("drive")
+	if GrowthV2.can_master(state): result.append("mastery")
+	if GrowthV2.can_master_support(state): result.append("mastery_support")
 	if basics(state.deck).size()>=3 and not specimens(state.deck).is_empty(): result.append("production")
-	if late_growth and Growth.enabled(state) and level(state,"growth")<Growth.MAX_UPGRADES and (not Roles.builds(state) or Ammo.equipped_parts(state).any(func(part):return part in ["volley_drive","siege_drive","thermal_drive"])): result.append("growth")
+	if late_growth and not GrowthV2.enabled(state) and Growth.enabled(state) and level(state,"growth")<Growth.MAX_UPGRADES and (not Roles.builds(state) or Ammo.active_parts(state).any(func(part):return part in ["volley_drive","siege_drive","thermal_drive"])): result.append("growth")
 	return result
+
+## v2 drive growth (gate choice).
+static func can_grow_drive(state: Dictionary) -> bool:
+	var drive := Ammo.innate_engine(state)
+	return GrowthV2.enabled(state) and not drive.is_empty() and int(state.get("engine", {}).get("levels", {}).get(drive, 0)) < Growth.V2_LIMIT
+
+static func grow_drive(state: Dictionary) -> bool:
+	if not can_grow_drive(state): return false
+	var drive := Ammo.innate_engine(state)
+	if not state.has("engine"): return false
+	state.engine.levels[drive] = mini(Growth.V2_LIMIT, int(state.engine.levels.get(drive, 0)) + Growth.V2_STEP)
+	return true
+
+static func drive_name(state: Dictionary) -> String:
+	return {"siege_drive": "돌파 구동", "volley_drive": "연쇄 구동", "thermal_drive": "열압 구동"}.get(Ammo.innate_engine(state), "내장 구동")
 
 static func can_produce(state: Dictionary, specimen: String, sources: Array) -> bool:
 	if sources.size()!=3 or not specimens(state.deck).has(specimen): return false
@@ -62,6 +81,15 @@ static func summary(id: String, state: Dictionary, next: bool = false) -> String
 	copy.gate_mods = state.get("gate_mods",{}).duplicate()
 	if next and id!="production": copy.gate_mods[id] = mini(Growth.MAX_UPGRADES if id=="growth" else MAX_LEVEL,level(state,id)+1)
 	match id:
+		"drive":
+			var drive_level := int(state.get("engine", {}).get("levels", {}).get(Ammo.innate_engine(state), 0))
+			return "%s Lv%d → Lv%d" % [drive_name(state), drive_level, mini(Growth.V2_LIMIT, drive_level + Growth.V2_STEP)] if next else "%s Lv%d" % [drive_name(state), drive_level]
+		"mastery_support":
+			var level := GrowthV2.mastery(state, GrowthV2.support_family(state))
+			return "%s 숙련 Lv%d → Lv%d" % [GrowthV2.support_name(state), level, level + 1] if next else "%s 숙련 Lv%d" % [GrowthV2.support_name(state), level]
+		"mastery":
+			var now := GrowthV2.mastery(state, GrowthV2.mastery_family(state))
+			return "%s 숙련 Lv%d → Lv%d" % [GrowthV2.family_name(state), now, now + 1] if next else "%s 숙련 Lv%d" % [GrowthV2.family_name(state), now]
 		"cadence": return "사격 상한 +%d발"%level(copy,id)
 		"efficiency": return "탄환 기본 발열 −%d"%level(copy,id)
 		"conduction": return "처치 전이 최대 추가 %d기"%(1+level(copy,id))
@@ -72,6 +100,9 @@ static func summary(id: String, state: Dictionary, next: bool = false) -> String
 
 static func description(id: String) -> String:
 	match id:
+		"drive": return "총기에 내장된 구동을 4단계 키웁니다. 돌파는 단타 배율, 연쇄는 타격당 피해, 열압은 고열 배율이 커집니다. 조건을 달성한 승리로는 8단계까지만 자랍니다."
+		"mastery_support": return "가장 많이 가진 지원탄 계열의 효과가 단계마다 커집니다. 증폭 +1, 잔열 증폭 +2, 파쇄 장갑 −1, 냉각 열 −1, 불씨 화상 이동 +1."
+		"mastery": return "지금 주력 계열의 모든 공격탄이 숙련 단계마다 타격당 피해 +1(단타 탄은 +2)을 얻습니다. 새로 얻는 같은 계열 탄에도 적용됩니다."
 		"cadence": return "한 번에 선택할 수 있는 탄을 1발 늘립니다. 과열 중단·리액터 강행·스파이크 처치 연쇄 조건은 유지됩니다."
 		"efficiency": return "모든 탄의 양수 기본 발열을 1 낮춥니다(최소 1). 연속 사격 추가 열·증폭 부하·파츠의 추가 열은 유지합니다."
 		"conduction": return "연쇄·돌파 코어의 처치 후 전이 대상을 1기 늘립니다. 주 표적은 세지 않으며 직접 피해량은 바꾸지 않습니다."
@@ -82,6 +113,9 @@ static func description(id: String) -> String:
 
 static func caution(id: String) -> String:
 	match id:
+		"drive": return "최대 12단계 · 내장 구동에만 적용 · 다른 관문 개조 대신 선택"
+		"mastery_support": return "지원탄 계열 하나에만 적용 · 최대 4단계 · 다른 관문 개조 대신 선택"
+		"mastery": return "주력 계열에만 적용 · 최대 4단계 · 다른 관문 개조 대신 선택"
 		"cadence": return "탄창 크기·열 한계는 유지 · 최대 2회 투자"
 		"efficiency": return "탄약 지급·열 한계 변경 없음 · 최대 2회 투자"
 		"conduction": return "연쇄·돌파 코어에 적용 · 광역탄/열압 충격파 제외"

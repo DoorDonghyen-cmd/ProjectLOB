@@ -40,6 +40,18 @@ var pose_id := "idle"
 var recoil_amount := 0.0
 var reload_amount := 0.0
 var heat_amount := 0.0
+var combat_pose := false:
+	set(value):
+		if combat_pose == value: return
+		combat_pose = value
+		_refresh_weapon_layer()
+		queue_redraw()
+var weapon_size_multiplier := 1.0:
+	set(value):
+		if is_equal_approx(weapon_size_multiplier, value): return
+		weapon_size_multiplier = value
+		_refresh_weapon_layer()
+		queue_redraw()
 # The body/hand atlas keeps the same measured contacts as the source art.
 var use_outfit_grid := true
 @export var coarse_weapons := true:
@@ -168,19 +180,27 @@ static func portrait(outfit: String) -> AtlasTexture:
 	atlas.region = Rect2(frame.source.position + frame.bounds.position, frame.bounds.size)
 	return atlas
 
+func _art_action() -> String:
+	# The combat view already moves the actor back on recoil. Keep the aiming
+	# hand span so the shortened recoil drawing cannot pull away from the fore-end.
+	if combat_pose and pose_id == "recoil" and family(gun_id) == "long":
+		return "aim"
+	return body_action(gun_id, pose_id)
+
 func body_texture() -> Texture2D:
-	return body_for(outfit_id, gun_id, pose_id)
+	return body_for(outfit_id, gun_id, _art_action())
 
 func outfit_grid_region() -> Rect2:
 	var outfit_row := GRID_OUTFITS.find(outfit_id)
-	var pose_column := GRID_POSES.find(body_action(gun_id, pose_id))
-	if not use_outfit_grid or outfit_row < 0 or pose_column < 0 or body_texture() != body_for(outfit_id, gun_id, pose_id):
+	var action := _art_action()
+	var pose_column := GRID_POSES.find(action)
+	if not use_outfit_grid or outfit_row < 0 or pose_column < 0 or body_texture() != body_for(outfit_id, gun_id, action):
 		return Rect2()
 	var row := outfit_row * 2 + (1 if family(gun_id) == "long" else 0)
 	return Rect2(Vector2(pose_column, row) * GRID_CELL, GRID_CELL)
 
 func registered_hands() -> Array[Rect2]:
-	var frame := frame_for(outfit_id, gun_id, pose_id)
+	var frame := frame_for(outfit_id, gun_id, _art_action())
 	var result: Array[Rect2] = []
 	for index in range(frame.hands.size()):
 		var hand: Rect2 = frame.hands[index]
@@ -191,7 +211,7 @@ func registered_hands() -> Array[Rect2]:
 	return result
 
 func registered_transform() -> Transform2D:
-	var frame := frame_for(outfit_id, gun_id, pose_id)
+	var frame := frame_for(outfit_id, gun_id, _art_action())
 	var weapon: Dictionary = WEAPONS[gun_id]
 	# Keep each weapon's established scale across all outfits and key poses.
 	var factor := float(weapon.get("scale", 0.24))
@@ -201,10 +221,22 @@ func registered_transform() -> Transform2D:
 		factor = (POSES.long.aim.support - POSES.long.aim.grip).length() / source_span.length()
 		if frame.has("support"):
 			angle = (frame.support - frame.grip).angle() - source_span.angle()
-	angle += deg_to_rad(float(KICK_ANGLE.get(gun_id, -5.0)) * recoil_amount)
-	var hand_position: Vector2 = FOOT + (frame.grip - frame.foot) * float(frame.scale)
-	var result := Transform2D(angle, Vector2.ONE * factor, 0.0, hand_position)
-	result.origin -= result.basis_xform(weapon.grip)
+	var kick := deg_to_rad(float(KICK_ANGLE.get(gun_id, -5.0)) * recoil_amount)
+	var level_shot := combat_pose and frame.has("support") and pose_id in ["aim", "recoil"]
+	var held_angle := angle + kick
+	var body_scale: float = frame.scale
+	var hand_position: Vector2 = FOOT + (frame.grip - frame.foot) * body_scale
+	var anchor: Vector2 = weapon.grip
+	if frame.has("support") and (weapon_size_multiplier != 1.0 or level_shot):
+		anchor = anchor.lerp(weapon.support, 0.5)
+		if level_shot:
+			# Match the midpoint of the actual hands, including narrower outfits.
+			hand_position += (frame.support - frame.grip) * body_scale * 0.5
+			held_angle = angle * 0.25 + kick * 0.4
+		else:
+			hand_position += (anchor - weapon.grip).rotated(held_angle) * factor
+	var result := Transform2D(held_angle, Vector2.ONE * factor * weapon_size_multiplier, 0.0, hand_position)
+	result.origin -= result.basis_xform(anchor)
 	return result
 
 func _draw() -> void:
@@ -212,19 +244,39 @@ func _draw() -> void:
 	if grid.has_area():
 		draw_texture_rect_region(BODY_GRID, GRID_DEST, grid)
 		_draw_held_weapon()
+		_draw_stock_overlap(BODY_GRID, GRID_DEST, grid)
 		grid.position.x += GRID_CELL.x * GRID_POSES.size()
 		draw_texture_rect_region(BODY_GRID, GRID_DEST, grid)
 		return
-	var frame := frame_for(outfit_id, gun_id, pose_id)
+	var frame := frame_for(outfit_id, gun_id, _art_action())
 	var body := body_texture()
 	var factor: float = frame.scale
 	var body_position: Vector2 = FOOT - frame.foot * factor
 	var source: Rect2 = frame.source
-	draw_texture_rect_region(body, Rect2(body_position, source.size * factor), source)
+	var body_rect := Rect2(body_position, source.size * factor)
+	draw_texture_rect_region(body, body_rect, source)
 	_draw_held_weapon()
+	_draw_stock_overlap(body, body_rect, source)
 	# Redraw only the registered fingers, not the whole fist across the barrel.
 	for hand: Rect2 in registered_hands():
 		draw_texture_rect_region(body, Rect2(body_position + hand.position * factor, hand.size * factor), Rect2(source.position + hand.position, hand.size))
+
+func _draw_stock_overlap(body: Texture2D, dest: Rect2, source: Rect2) -> void:
+	if not combat_pose or not WEAPONS[gun_id].has("stock"): return
+	var stock: Rect2 = WEAPONS[gun_id].stock
+	var transform := registered_transform()
+	var points := transform * PackedVector2Array([
+		stock.position, Vector2(stock.end.x, stock.position.y), stock.end, Vector2(stock.position.x, stock.end.y)
+	])
+	var body_polygon := PackedVector2Array([
+		dest.position, Vector2(dest.end.x, dest.position.y), dest.end, Vector2(dest.position.x, dest.end.y)
+	])
+	# The sleeve and shoulder occlude the stock along its rotated silhouette.
+	for overlap in Geometry2D.intersect_polygons(points, body_polygon):
+		var uvs := PackedVector2Array()
+		for point in overlap:
+			uvs.append((source.position + (point - dest.position) / dest.size * source.size) / body.get_size())
+		draw_polygon(overlap, PackedColorArray([Color.WHITE]), uvs, body)
 
 func _draw_held_weapon() -> void:
 	if coarse_weapons and is_instance_valid(weapon_layer_viewport):

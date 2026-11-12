@@ -73,6 +73,11 @@ func pulse(control: Control, role: String="complete") -> void:
 	response(control).pulse(role)
 	if not delivering.is_empty():delivering.targets.append(str(control.get_path()))
 
+func install_part(control: Control, source: Control, id: String) -> void:
+	if control == null or not control.is_inside_tree() or not control.is_visible_in_tree(): return
+	response(control).install_part(source, id)
+	if not delivering.is_empty(): delivering.targets.append(str(control.get_path()))
+
 static func added_ids(before: Array, after: Array) -> Array:
 	var remaining:=before.duplicate();var added:Array=[]
 	for id in after:

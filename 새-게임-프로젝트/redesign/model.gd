@@ -4,6 +4,7 @@ const AttackBoosts = preload("res://redesign/attack_boosts.gd")
 ## same shot resolver on a copy and never changes live state or RNG.
 const Content = preload("res://redesign/content.gd")
 const Ranged = preload("res://redesign/ranged.gd")
+const Wreckage = preload("res://redesign/wreckage.gd")
 const Noble = preload("res://redesign/noble_house.gd")
 const Central = preload("res://redesign/central_guard.gd")
 const Patterns = preload("res://redesign/leader_patterns.gd")
@@ -18,6 +19,15 @@ const WeaponRoles = preload("res://redesign/weapon_role_trial.gd")
 const MagazineBuild = preload("res://redesign/magazine_build.gd")
 const FocusBuild = preload("res://redesign/focus_build.gd")
 const BuildEngine = preload("res://redesign/build_engine.gd")
+const GrowthV2 = preload("res://redesign/growth_structure.gd")
+const TagBuild = preload("res://redesign/tag_build.gd")
+const Overheat = preload("res://redesign/overheat_cost.gd")
+const RewardTrim = preload("res://redesign/reward_trim.gd")
+const RewardMix = preload("res://redesign/reward_mix.gd")
+const MixCombo = preload("res://redesign/mix_combo.gd")
+const Salvage = preload("res://redesign/salvage.gd")
+const PartTuning = preload("res://redesign/part_tuning.gd")
+const AmmoRevision = preload("res://redesign/ammo_revision.gd")
 const Roles = preload("res://redesign/combat_roles.gd")
 const Balance = preload("res://redesign/run_balance.gd")
 const VERSION := 15
@@ -73,6 +83,7 @@ func begin_encounter(field_charges: int = 1) -> void:
 	s.legacy_reload_penalty = 0
 	s.previous_kill = false
 	s.prepared = []
+	if AmmoRevision.enabled(s): s.held_front = []
 	s.push_left = Content.push_budget(s)
 	s.exchange_left = Content.exchange_capacity(s)
 	s.field_compression_left = 0 if s.get("course", false) else clampi(field_charges, 0, 2) + Content.field_compression_bonus(s)
@@ -83,6 +94,7 @@ func begin_encounter(field_charges: int = 1) -> void:
 	s.rng_state = str(rng.state)
 	s.target_rng_state = _target_state(s)
 	_shuffle(s.draw)
+	if GrowthV2.enabled(s): GrowthV2.order_draw(s)
 	Reserve.prepare_opening(s, Content.source_id)
 	_refill()
 	if s.get("course", false):
@@ -187,6 +199,8 @@ func fire() -> bool:
 	# Amplifier is the deliberate single-shot weapon, but a kill keeps the trigger
 	# window open. The first survivor ends the execution chain and advances time.
 	var count: int = s.magazine.size() if Content.chains(s) or s.gun == "amplifier" else 1
+	# 냉각 약실 (part_tuning.gd): the first attack round after a manual cool.
+	var breech := PartTuning.breech_ready(s, Content.active_parts(s))
 	if MagazineTrial.enabled(s): count = mini(count, MagazineTrial.pulse(s))
 	var recent_rounds: Array = _recent_part_rounds()
 	var previous_round: String = str(recent_rounds.back()) if not recent_rounds.is_empty() else ""
@@ -200,7 +214,8 @@ func fire() -> bool:
 		var id: String = s.magazine.pop_front()
 		var source: String = Content.source_id(id)
 		var triad_ready: bool = recent_sources.size() >= 2 and recent_sources[-1] != recent_sources[-2] and source != recent_sources[-1] and source != recent_sources[-2]
-		var result := _shot(id, -1, {"weapon_factor":weapon_factor,"overdrive":overdrive_pending,"first": recent_sources.is_empty(), "last": s.magazine.is_empty(), "last_attack": not s.magazine.any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "previous_round": previous_round, "fired_count": recent_sources.size(), "sequence_count": Content.prior_kind_count(recent_sources, id)})
+		var result := _shot(id, -1, {"weapon_factor":weapon_factor,"overdrive":overdrive_pending,"first": recent_sources.is_empty(), "last": s.magazine.is_empty(), "last_attack": not s.magazine.any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "previous_round": previous_round, "fired_count": recent_sources.size(), "sequence_count": Content.prior_kind_count(recent_sources, id), "recent_sources": recent_sources.duplicate(), "breech": breech and Content.is_attack(id)})
+		if breech and Content.is_attack(id): breech = false
 		result.overdrive = overdrive_pending
 		results.append(result)
 		peak_heat = maxi(peak_heat, int(s.get("heat", 0)))
@@ -217,7 +232,7 @@ func fire() -> bool:
 				result.overdrive_next = true
 			else:
 				break
-		elif s.gun == "amplifier" and int(result.get("hp", 1)) > 0:
+		elif s.gun == "amplifier" and (int(result.get("hp", 1)) > 0 or result.has("wreckage_hit")):
 			break
 	var detail := finish_fire(1 if overdrive_used else 0)
 	detail.overdrive = overdrive_used
@@ -258,7 +273,7 @@ func finish_fire(overdrive_cost: int = 0) -> Dictionary:
 		s.prepared = []
 		s.legacy_reload_penalty = 0
 		_release_unfired_field_round()
-	Engines.settle(s, Content.equipped_parts(s))
+	Engines.settle(s, Content.active_parts(s))
 	var firing_enemies: Array = [] if forecast_only else s.enemies.duplicate(true)
 	var firing_projectiles: Array = [] if forecast_only else s.get("projectiles", []).duplicate(true)
 	var firing_reinforcements: Array = [] if forecast_only else s.get("reinforcements", []).duplicate(true)
@@ -277,8 +292,11 @@ func finish_fire(overdrive_cost: int = 0) -> Dictionary:
 
 func trial_load_magazine() -> bool:
 	if not MagazineTrial.enabled(s) or s.phase != "plan" or not s.plan.is_empty() or not s.magazine.is_empty(): return false
-	var picked := MagazineTrial.take(s.hand + s.draw, capacity(), Content.slot_cost, Content.anchor)
+	# 예약탄 (ammo_revision.gd): held rounds go in first.
+	var held: Array = s.get("held_front", []) if AmmoRevision.enabled(s) else []
+	var picked := MagazineTrial.take(held + s.hand + s.draw, capacity(), Content.slot_cost, Content.anchor)
 	if picked.selected.is_empty(): return false
+	if AmmoRevision.enabled(s): s.held_front = []
 	s.magazine = picked.selected
 	MagazineBuild.on_load(s)
 	if MagazineTrial.weapons_enabled(s): s.magazine_ejected = 0
@@ -293,7 +311,7 @@ func trial_load_magazine() -> bool:
 	return true
 
 func ejection_remaining() -> int:
-	return maxi(0, MagazineTrial.EJECT_LIMIT - int(s.get("magazine_ejected", 0))) if MagazineTrial.weapons_enabled(s) else 0
+	return maxi(0, Content.eject_limit(s) - int(s.get("magazine_ejected", 0))) if MagazineTrial.weapons_enabled(s) else 0
 
 # Validate the entire selection before mutation. Duplicate ammo IDs remain
 # independent physical cards; remove by position without reordering survivors.
@@ -307,6 +325,15 @@ func eject_magazine_rounds(indices: Array) -> bool:
 	positions.sort()
 	var removed: Array = []
 	for index in positions: removed.append(s.magazine[index])
+	# 리벳 rework (2026-11-10, v2): a pulled round goes to the back of this magazine instead of
+	# being spent, so the order can be set without losing the round. Counts toward the limit.
+	if GrowthV2.enabled(s) and str(s.gun) == "single":
+		for i in range(positions.size()-1,-1,-1): s.magazine.remove_at(positions[i])
+		s.magazine.append_array(removed)
+		s.magazine_ejected = int(s.get("magazine_ejected",0)) + removed.size()
+		s.message = "%d발 탄창 뒤로 · 남은 빼내기 %d" % [removed.size(), ejection_remaining()]
+		_record("eject", {"positions":positions,"rounds":removed,"retained":s.magazine.duplicate(),"cost":0,"elapsed":0,"ejected":int(s.magazine_ejected),"remaining":ejection_remaining(),"moved":true})
+		return true
 	WeaponRoles.on_eject(s, positions)
 	for i in range(positions.size()-1,-1,-1): s.magazine.remove_at(positions[i])
 	for id in removed: _discard_fired_round(str(id))
@@ -325,8 +352,16 @@ func cool_magazine() -> bool:
 	_trial_cool(false)
 	return true
 
+## Enemy actions of a forced cooling (before 강행). With the overheat cost (part_tuning.gd) the
+## swap-cost penalties of parts (후미 점화기·열폭주 노심 +1) do not apply to overheating a second
+## time; 회수 가속기 (−1) still shortens it (magazine swaps have a 2-turn floor, so this is
+## where the part acts).
+func forced_cooling_cost() -> int:
+	var reload := maxi(1, int(Content.weapon_spec(s).reload) + mini(0, Content.reload_modifier(s))) if PartTuning.enabled(s) else base_reload_cost()
+	return reload + 1 + Overheat.extra(s)
+
 func _trial_cool(forced: bool, overdrive_cost: int = 0) -> Dictionary:
-	var cost := base_reload_cost() + 1 + overdrive_cost if forced else 1
+	var cost := forced_cooling_cost() + overdrive_cost if forced else 1
 	var before := int(s.heat)
 	var start_turns := int(s.turns)
 	var events := _advance(cost, true)
@@ -342,7 +377,7 @@ func _trial_cool(forced: bool, overdrive_cost: int = 0) -> Dictionary:
 		s.legacy_reload_penalty = 0
 		Gates.begin(s)
 		_release_unfired_field_round()
-	Engines.settle(s, Content.equipped_parts(s))
+	Engines.settle(s, Content.active_parts(s))
 	_settle_ammo_exhaustion()
 	var reversed := WeaponRoles.after_cool(s, forced, Content.anchor)
 	var detail := {"cost": cost, "elapsed": int(s.turns) - start_turns, "heat_before": before, "heat_after": int(s.heat), "forced": forced, "retained": s.magazine.duplicate(), "advance_events": events, "deployments": deployments, "phase": s.phase}
@@ -393,7 +428,8 @@ func _reload_magazine(overdrive_cost: int, emergency: bool) -> bool:
 		s.plan.clear()
 		s.plan_load_order.clear()
 	for id in s.magazine.duplicate():
-		if MagazineTrial.enabled(s): s.draw.append(id)
+		if MagazineTrial.enabled(s) and GrowthV2.enabled(s) and not GrowthV2.is_basic(str(id)): s.draw.insert(GrowthV2.return_index(s), id)
+		elif MagazineTrial.enabled(s): s.draw.append(id)
 		else: _discard_fired_round(str(id))
 	s.magazine.clear()
 	WeaponRoles.clear(s)
@@ -449,7 +485,7 @@ func _reload_magazine(overdrive_cost: int, emergency: bool) -> bool:
 		s.prepared = []
 		Content.Sustained.reset(s)
 	_settle_ammo_exhaustion()
-	Engines.settle(s, Content.equipped_parts(s))
+	Engines.settle(s, Content.active_parts(s))
 	last_reload_detail = {"cost": cost, "heat_paid": heat_paid, "heat_before": heat_before, "heat_after": int(s.heat), "advance_events": advance_events, "deployments": deployments, "phase": s.phase}
 	if emergency: last_reload_detail.merge({"emergency":true,"emergency_paid":emergency_paid,"granted":granted,"emergency_uses":int(s.get("emergency_uses",0))})
 	if not forecast_only: _record("reload", last_reload_detail)
@@ -489,6 +525,9 @@ func _advance(turn_count: int, count_turns: bool = false) -> Array:
 				if not forecast_only:
 					events.append({"turn":i,"target":enemy_index,"kind":"burn","damage":hp_before-int(e.hp),"hp":e.hp,"burn":e.burn})
 					if Roles.enabled(s):events[-1].ground=ground_damage>0
+		var wrecks := Wreckage.spawn(s.enemies)
+		if not wrecks.is_empty() and not forecast_only:
+			events.append({"kind": "wreckage_spawn", "turn": i, "stacks": wrecks})
 		if Roles.enabled(s) and not s.fire_zones.is_empty():
 			Roles.tick(s)
 			if not forecast_only:events.append({"turn":i,"kind":"fire_zone_tick","zones":s.fire_zones.duplicate(true)})
@@ -595,6 +634,18 @@ func active_targets() -> Array:
 	for projectile in Ranged.active(s): result.append(Ranged.target_id(projectile))
 	return result
 
+func _rear_transfer_targets(impact_distance: int) -> Array[int]:
+	var targets: Array[int] = []
+	for i in range(s.enemies.size()):
+		var enemy: Dictionary = s.enemies[i]
+		if int(enemy.hp) > 0 and int(enemy.distance) > impact_distance: targets.append(i)
+	targets.sort_custom(func(a: int, b: int):
+		var left := int(s.enemies[a].distance)
+		var right := int(s.enemies[b].distance)
+		return a < b if left == right else left < right
+	)
+	return targets
+
 func shot_targets(id: String) -> Array:
 	var nearest := target_index()
 	if nearest < 0: return []
@@ -670,7 +721,7 @@ func _target_state(state: Dictionary) -> String:
 # These values depend only on the bullet and the current weapon/parts, not on
 # a random target. Forecast branches share a read-only profile for this step.
 static func shot_profile(id: String, state: Dictionary) -> Dictionary:
-	return {"parts": Content.equipped_parts(state), "damage": Content.damage(id, state), "pen": Content.penetration(id, state), "effect": Content.effect_value(id, state), "hits": Content.hit_count(id, state), "burn": Content.burn_amount(id, state), "burn_tick": Content.burn_damage(state), "heat_limit": Content.heat_limit(state), "hot_threshold": Content.hot_threshold(state)}
+	return {"parts": Content.active_parts(state), "damage": Content.damage(id, state), "pen": Content.penetration(id, state), "effect": Content.effect_value(id, state), "hits": Content.hit_count(id, state), "burn": Content.burn_amount(id, state), "burn_tick": Content.burn_damage(state), "heat_limit": Content.heat_limit(state), "hot_threshold": Content.hot_threshold(state)}
 
 func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -> Dictionary:
 	var index := forced_target
@@ -704,10 +755,36 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	var thermal_bonus := 0 # Historical result field; the retired heat-threshold round is now incendiary.
 	var vent_bonus := vented * int(profile.effect)
 	s.heat = heat_before + heat_added - cooled - vented
+	var wreck := Wreckage.blocker(s.enemies, index) if attack else -1
+	if wreck >= 0:
+		var receipt := Wreckage.strike(s.enemies, wreck, Wreckage.STACKS if Content.source_id(id) == "pierce" else int(profile.hits))
+		s.buff = AttackBoosts.consume(s.buff)
+		if s.has("gate_charge"): s.gate_charge = 0
+		s.previous_kill = false
+		var chain_cooled := _cool_third_round(active_parts, part_context)
+		receipt.merge({"id": id, "hit": true, "hits": 0, "push": 0, "heat_before": heat_before, "heat_after": int(s.heat), "heat_added": heat_added,
+			"overheated": int(s.heat) >= int(profile.heat_limit), "cooled": vented + chain_cooled, "chain_cooled": chain_cooled,
+			"vented": vented, "sustained_active": Content.Sustained.enabled(s), "sustained_heat": sustained_heat,
+			"sustained_before": sustained_before, "sustained_after": Content.Sustained.count(s),
+			"text": "잔해 −%d칸" % int(receipt.wreckage_hit)})
+		return receipt
 	var chase_bonus := int(profile.effect) if spec.effect == "chase" and bool(s.get("previous_kill", false)) else 0
-	var sequence_bonus := int(profile.effect) * int(part_context.get("sequence_count", 0)) if spec.effect == "sequence" else 0
+	# 연계탄 (ammo_revision.gd) raises the 교차 step instead of its own +2 per kind.
+	var sequence_bonus := int(profile.effect) * int(part_context.get("sequence_count", 0)) if spec.effect == "sequence" and not AmmoRevision.enabled(s) else 0
 	var prepared_rounds: Array = []
-	if spec.effect == "prepare":
+	var held_round := false
+	if spec.effect == "prepare" and AmmoRevision.enabled(s) and MagazineTrial.enabled(s):
+		# 예약탄 (ammo_revision.gd): the round behind it waits for the front of the next magazine.
+		if not s.has("held_front"): s.held_front = []
+		for slot in range(s.magazine.size()):
+			var next_id := str(s.magazine[slot])
+			if Content.is_temporary(next_id) or s.held_front.size() >= AmmoRevision.HELD_LIMIT: continue
+			s.magazine.remove_at(slot)
+			s.held_front.append(next_id)
+			prepared_rounds.append(next_id)
+			held_round = true
+			break
+	elif spec.effect == "prepare":
 		if not s.has("prepared"): s.prepared = []
 		var candidates: Array = []
 		for value in s.magazine:
@@ -724,21 +801,21 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	var pen := int(profile.pen)
 	var weakness_bonus := Content.weakness_bonus(id, e)
 	var part_bonus := 0
-	var part_factor := 1
+	var part_factor: Variant = 1
 	var part_combo: PackedStringArray = []
 	var part_effects: Array = []
 	var ordinary_bonus := 2 * int(part_context.get("sequence_count",0)) if active_parts.has("ordinary_chain") and bool(part_context.get("last_attack",false)) and Content.is_attack(id) else 0
 	if ordinary_bonus > 0:
 		part_bonus += ordinary_bonus
-		if not minimal: part_combo.append("교차 급탄 +%d" % ordinary_bonus)
-		if not minimal: part_effects.append({"id": "ordinary_chain", "label": "교차 급탄 +%d" % ordinary_bonus})
+		if not minimal: part_combo.append("다종 급탄 +%d" % ordinary_bonus)
+		if not minimal: part_effects.append({"id": "ordinary_chain", "label": "다종 급탄 +%d" % ordinary_bonus})
 	var burn_before := int(e.get("burn", 0))
 	var control_bonus:=Roles.control_bonus(s,active_parts,e) if attack else 0
 	if control_bonus>0:
 		part_bonus+=control_bonus
 		if not minimal:part_combo.append("경직 추격 +2");part_effects.append({"id":"rammer","label":"경직 피해 +2"})
 	if active_parts.has("ember_core") and heat_before >= int(profile.hot_threshold):
-		var bonus := int(Content.PARTS.ember_core.hot_damage)
+		var bonus := int(Content.PARTS.ember_core.hot_damage) + PartTuning.ember_extra(s)
 		part_bonus += bonus
 		if not minimal: part_combo.append("잔열 +%d" % bonus)
 		if not minimal: part_effects.append({"id": "ember_core", "label": "고열 피해 +%d" % bonus})
@@ -746,10 +823,14 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 		part_bonus += 2
 		if not minimal: part_combo.append("점화 +2")
 		if not minimal: part_effects.append({"id": "igniter", "label": "피해 +2"})
-	if active_parts.has("executioner") and int(e.hp) <= 5:
-		part_bonus += 2
-		if not minimal: part_combo.append("처형 +2")
-		if not minimal: part_effects.append({"id": "executioner", "label": "피해 +2"})
+	if active_parts.has("executioner") and PartTuning.executes(s, int(e.hp), int(e.get("max_hp", e.hp))):
+		var execute := PartTuning.execute_bonus(s)
+		part_bonus += execute
+		if not minimal: part_combo.append("처형 +%d" % execute)
+		if not minimal: part_effects.append({"id": "executioner", "label": "피해 +%d" % execute})
+	# 가속 총열 (part_tuning.gd): its damage is in Content.damage; show it acting.
+	if attack and not minimal and active_parts.has("lens") and PartTuning.lens_damage(s) > 0 and int(Content.AMMO[id].pen) > 0:
+		part_effects.append({"id": "lens", "label": "관통탄 +%d" % PartTuning.lens_damage(s)})
 	if active_parts.has("opening") and bool(part_context.get("first", false)):
 		if FocusBuild.enabled(s): part_factor *= 2
 		else: part_bonus += 2
@@ -757,9 +838,12 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 		if not minimal: part_combo.append(label)
 		if not minimal: part_effects.append({"id": "opening", "label": label})
 	if FocusBuild.enabled(s) and active_parts.has("third_striker") and int(part_context.get("fired_count", -1)) == 2:
-		part_factor *= 3
-		if not minimal: part_combo.append("3번째 ×3")
-		if not minimal: part_effects.append({"id":"third_striker", "label":"3번째 ×3"})
+		const StrikerTrial = preload("res://redesign/samples/opening_build/third_striker_trial.gd")
+		part_factor *= StrikerTrial.multiplier(s)
+		if not minimal:
+			var label := "3번째 " + StrikerTrial.multiplier_label(s)
+			part_combo.append(label)
+			part_effects.append({"id":"third_striker", "label":label})
 	if Content.revised_combat(s) and active_parts.has("afterburner") and attack and int(profile.hits) == 1 and bool(part_context.get("last_attack",false)) and (dmg_buff > 0 or factor > 1 or (not FocusBuild.enabled(s) and MagazineBuild.enabled(s) and MagazineBuild.afterburner_ready(s))):
 		var ending_factor := 3 if FocusBuild.enabled(s) else 2
 		part_factor *= ending_factor
@@ -775,6 +859,13 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 		if not minimal: part_combo.append("기록 +%d" % tally_bonus)
 		if not minimal: part_effects.append({"id": "tally", "label": "기록 +%d" % tally_bonus})
 	var resonant := attack and BuildEngine.resonance(s, id, active_parts)
+	# Tag parts (tag_build.gd): + per hit now, × after the drive line below.
+	var tag_effect: Dictionary = TagBuild.shot(s, id, active_parts, e, heat_before, int(profile.hot_threshold)) if attack else {"add": 0, "percent": 100, "labels": []}
+	part_bonus += int(tag_effect.add)
+	if not minimal:
+		for item in tag_effect.labels:
+			part_combo.append(str(Content.PARTS[item.id].name) + " " + str(item.label))
+			part_effects.append({"id": item.id, "label": str(item.label), "source": str(item.get("source", item.id))})
 	if MagazineBuild.enabled(s):
 		var triad_bonus := MagazineBuild.triad_bonus(s, id) if active_parts.has("triad") else 0
 		if triad_bonus > 0:
@@ -797,7 +888,19 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	part_bonus += engine_flat
 	var engine_id := "volley_drive" if engine_flat>0 else ("thermal_drive" if active_parts.has("thermal_drive") and engine_percent>100 else ("siege_drive" if engine_percent>100 else ""))
 	if not engine_id.is_empty() and not minimal: part_effects.append({"id":engine_id,"label":Engines.value(s,engine_id)})
-	var subtotal := int(profile.damage) + dmg_buff + weakness_bonus + part_bonus + chase_bonus + thermal_bonus + vent_bonus + sequence_bonus
+	# The drive alone (11-11): hot checks and drive labels must not see the tag multiplier.
+	var drive_percent := engine_percent
+	if int(tag_effect.percent) != 100: engine_percent = engine_percent * int(tag_effect.percent) / 100
+	var mastery_bonus := GrowthV2.mastery_bonus(s, id) if attack else 0
+	if mastery_bonus > 0 and not minimal: part_combo.append("숙련 +%d" % mastery_bonus)
+	# 교차 사격 (mix_combo.gd): a different attack family than the previous attack round.
+	var cross_bonus := MixCombo.bonus(s, id, part_context.get("recent_sources", [])) if attack else 0
+	var breech_bonus := PartTuning.BREECH_BONUS if attack and part_context.get("breech", false) else 0
+	if breech_bonus > 0 and not minimal:
+		part_combo.append("냉각 직후 +%d" % breech_bonus)
+		part_effects.append({"id": "cooling_breech", "label": "냉각 직후 +%d" % breech_bonus})
+	if cross_bonus > 0 and not minimal: part_combo.append("교차 +%d" % cross_bonus)
+	var subtotal := int(profile.damage) + dmg_buff + weakness_bonus + part_bonus + chase_bonus + thermal_bonus + vent_bonus + sequence_bonus + mastery_bonus + cross_bonus + breech_bonus
 	var gate_percent := Gates.chain_percent(s) if attack else 100
 	var gate_charge := int(s.get("gate_charge",0)) if attack else 0
 	if attack and s.has("gate_charge"): s.gate_charge = 0
@@ -837,7 +940,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 		var blocked := false
 		if int(e.get("barrier", 0)) > 0:
 			var strip_count := (2 if active_parts.has("breaker") else 1) + (1 if (Noble.shielded(e) or Central.active(e)) and str(spec.attribute)=="electric" else 0)
-			var removed := Noble.strip(e, strip_count)
+			var removed := Noble.strip(e, strip_count, Content.source_id(id))
 			barrier_removed += removed
 			blocked_hits += 1
 			blocked = true
@@ -854,6 +957,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 				focus_damage += extra
 	var primary_direct_kill := attack and hp_before>0 and int(e.hp)==0 and not Ranged.is_projectile(index)
 	if primary_direct_kill: BuildEngine.record_kill(s, id, active_parts)
+	if primary_direct_kill: TagBuild.record_kill(s, id, active_parts)
 	if resonant and hits > 1 and not minimal:
 		combo.append("공명 ×1~×%d" % hits)
 		part_effects.append({"id": "resonator", "label": "공명 ×1~×%d" % hits})
@@ -882,7 +986,9 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 		else: e.def -= armor_removed
 		if not minimal and (armor_removed > 0): combo.append("장갑 −%d" % armor_removed)
 	var damage := hp_before - int(e.hp)
-	if not minimal and (blocked_hits > 0): combo.append("배리어 −%d" % barrier_removed)
+	var shield_rule := Noble.shield_rule(e)
+	if not minimal and (blocked_hits > 0):
+		combo.append("철갑탄 전용" if barrier_removed == 0 and shield_rule == Noble.PIERCE_ONLY else "배리어 −%d" % barrier_removed)
 	if not minimal and (focus_triggers > 0): combo.append("집중 추가 피해 %d" % focus_damage)
 	if not minimal and (heat_added > 0): combo.append("열 +%d" % heat_added)
 	if not minimal and (cooled > 0): combo.append("냉각 −%d" % cooled)
@@ -912,18 +1018,18 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 		var remainder := maxi(0,first_hit-hp_before) if requested_hits==1 and blocked_hits==0 and active_parts.has("siege_drive") else 0
 		var remaining_hits := requested_hits-hits if active_parts.has("volley_drive") else 0
 		# Target-dependent bonuses are recomputed; the prepared buff is paid only once.
-		var base_subtotal := subtotal-weakness_bonus-control_bonus-(2 if active_parts.has("igniter") and burn_before>0 else 0)-(2 if active_parts.has("executioner") and hp_before<=5 else 0)
+		var base_subtotal := subtotal-weakness_bonus-control_bonus-(2 if active_parts.has("igniter") and burn_before>0 else 0)-(PartTuning.execute_bonus(s) if active_parts.has("executioner") and PartTuning.executes(s, hp_before, int(e.get("max_hp", hp_before))) else 0)
 		var relay := _engine_relay(id,remaining_hits,remainder,base_subtotal,factor * weapon_factor * (part_factor if FocusBuild.enabled(s) else 1),engine_percent,pen,active_parts,gate_percent,overdrive_percent)
 		secondary = relay.events
 		relay_hits = int(relay.hits)
 		relay_damage = int(relay.damage)
-	var chain_earned := Gates.level(s,"chain")>0 and (primary_direct_kill or secondary.any(func(v): return int(v.hp)==0 and not bool(v.get("intercept",false))))
+	var chain_earned := Gates.level(s,"chain")>0 and (primary_direct_kill or secondary.any(func(v): return int(v.hp)==0 and not bool(v.get("intercept",false)) and not v.has("wreckage_hit")))
 	if chain_earned: s.gate_chain = mini(4,int(s.get("gate_chain",0))+1)
-	Engines.observe(s,active_parts,(hits-blocked_hits if damage>0 else 0)+relay_hits,engine_percent>100 and active_parts.has("thermal_drive"),(damage-detonation+relay_damage) if requested_hits==1 else 0)
+	Engines.observe(s,active_parts,(hits-blocked_hits if damage>0 else 0)+relay_hits,drive_percent>100 and active_parts.has("thermal_drive"),(damage-detonation+relay_damage) if requested_hits==1 else 0)
 	# A hot direct hit that reaches the heat limit releases a single pressure wave.
 	# Resolve before kill-cooling: a kill-cooling build may earn its way out of reload.
 	var shock_damage := 0
-	if active_parts.has("thermal_drive") and engine_percent>100 and damage-detonation>0 and int(s.heat)>=int(profile.heat_limit):
+	if active_parts.has("thermal_drive") and drive_percent>100 and damage-detonation>0 and int(s.heat)>=int(profile.heat_limit):
 		var shock_raw := int(raw/2)
 		# The seal boosts this cartridge's direct impacts, not an extra wave proc.
 		if weapon_factor>1:
@@ -935,14 +1041,14 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 			var other := target_entity(int(other_index))
 			var blocked := int(other.get("barrier",0))>0
 			var dealt := 0 if blocked else mini(int(other.hp),Content.armored_damage(shock_raw,int(other.def),s,0))
-			if blocked: Noble.strip(other,1)
+			var removed := Noble.strip(other, 1) if blocked else 0
 			other.hp -= dealt
 			shock_damage += dealt
 			secondary.append({"kind":"heat_wave","target":other_index,"damage":dealt,"hp":other.hp,"raw":shock_raw,"armor":other.def,"barrier":int(other.get("barrier",0)),"blocked_hits":1 if blocked else 0,"intercept":Ranged.is_projectile(int(other_index)) and int(other.hp)<=0})
 			if Content.pressure_combat(s): secondary[-1].armor_percent = Content.armor_percent(int(other.def))
 			if Noble.shielded(other):
 				secondary[-1].exposure_left=int(other.exposure_left)
-				secondary[-1].barrier_removed=1 if blocked else 0
+				secondary[-1].barrier_removed=removed
 			elif Central.active(other):
 				secondary[-1].exposure_left=1 if int(other.barrier)==0 else 0
 				secondary[-1].barrier_removed=1 if blocked else 0
@@ -955,10 +1061,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	var slowed := Roles.slow(e,Roles.slow_duration(s,Content.is_compressed(id),active_parts)) if Roles.enabled(s) and spec.effect=="disrupt" and not Ranged.is_projectile(index) else 0
 	var transferred := 0
 	if spec.effect == "spread" and not Ranged.is_projectile(index) and burn_before > 0:
-		var others: Array = []
-		for i in range(s.enemies.size()):
-			if i != index and int(s.enemies[i].hp) > 0: others.append(i)
-		others.sort_custom(func(a: int, b: int): return int(s.enemies[a].distance) < int(s.enemies[b].distance) if int(s.enemies[a].distance) != int(s.enemies[b].distance) else a < b)
+		var others := _rear_transfer_targets(int(e.distance))
 		if not others.is_empty():
 			var other: Dictionary = s.enemies[others[0]]
 			transferred = mini(mini(burn_before, int(profile.effect)), 6 - int(other.get("burn", 0)))
@@ -966,30 +1069,20 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 			other.burn = int(other.get("burn", 0)) + transferred
 			if transferred > 0: secondary.append({"kind": "burn_transfer", "target": others[0], "damage": 0, "hp": other.hp, "burn": other.burn, "transferred": transferred})
 	if spec.effect == "arc":
-		var others: Array = []
-		for i in active_targets():
-			if i != index: others.append(i)
-		others.sort_custom(func(a: int, b: int):
-			if int(target_entity(a).distance) == int(target_entity(b).distance):
-				if Ranged.is_projectile(a) != Ranged.is_projectile(b): return Ranged.is_projectile(a)
-				return a < b
-			return int(target_entity(a).distance) < int(target_entity(b).distance)
-		)
+		var others := _rear_transfer_targets(int(e.distance))
 		var target_count := mini(others.size(), int(spec.get("arc_targets", 1)) + Content.arc_target_bonus(s))
 		for other_index in range(target_count):
 			var other: int = int(others[other_index])
-			var other_entity := target_entity(other)
+			var other_entity: Dictionary = s.enemies[other]
 			var amount := mini(int(other_entity.hp), int(profile.effect))
 			other_entity.hp -= amount
-			var impact := {"kind": "arc", "target": other, "damage": amount, "hp": other_entity.hp}
-			if Ranged.is_projectile(other): impact.intercept = true
-			secondary.append(impact)
+			secondary.append({"kind": "arc", "target": other, "damage": amount, "hp": other_entity.hp})
 		if not minimal and (not secondary.is_empty()): combo.append("전이 %d명" % secondary.size())
 	s.previous_kill = alive_count() < alive_before
 	var kill_cooled := mini(int(s.heat), int(Content.PARTS.reclaimer.cool_on_kill)) if active_parts.has("reclaimer") and s.previous_kill else 0
 	s.heat -= kill_cooled
-	var chain_cooled := mini(int(s.heat), int(Content.PARTS.chain_sink.third_cooling)) if active_parts.has("chain_sink") and int(part_context.get("fired_count", -1)) == 2 else 0
-	s.heat -= chain_cooled
+	var chain_cooled := _cool_third_round(active_parts, part_context)
+	var wrecks := Wreckage.spawn(s.enemies)
 	if minimal: return {"sustained_heat":sustained_heat,"sustained_before":sustained_before,"sustained_after":Content.Sustained.count(s),"engine_id":engine_id,"relay_damage":relay_damage,"ordinary_bonus": ordinary_bonus if hits > blocked_hits else 0, "relay_saved": relay_saved, "damage": damage, "heat_after": int(s.heat), "heat_before": heat_before, "overheated": int(s.heat) >= int(profile.heat_limit), "kill_cooled": kill_cooled, "chain_cooled": chain_cooled, "prepared_rounds": prepared_rounds, "interrupted": interrupted, "transferred": transferred, "sequence_bonus": sequence_bonus, "vented": vented, "thermal_bonus": thermal_bonus, "part_hot": active_parts.has("ember_core") and heat_before >= int(profile.hot_threshold) and hits > blocked_hits}
 	if relay_saved > 0: combo.append("압축 발열 −%d" % relay_saved)
 	if chain_cooled > 0: combo.append("세 번째 발 냉각 −%d" % chain_cooled)
@@ -1012,6 +1105,8 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	if not combo.is_empty(): description += " · " + " / ".join(combo)
 	if e.hp == 0: description += " · 요격" if Ranged.is_projectile(index) else " · 처치"
 	var result := {"id": id, "target": index, "hit": true, "damage": damage, "hits": hits, "pen": pen, "hp": e.hp, "burn": int(e.get("burn", 0)), "burn_added": burn_added, "burn_tick": int(profile.burn_tick), "push": pushed, "secondary": secondary, "math": math, "combo": combo, "text": description, "focus_before": focus_before, "focus_after": int(e.get("focus_hits", 0)), "focus_damage": focus_damage, "focus_triggers": focus_triggers, "barrier_before": barrier_before, "barrier": int(e.get("barrier", 0)), "blocked_hits": blocked_hits, "barrier_removed": barrier_removed, "boost_granted": int(profile.effect) if spec.effect == "boost" else 0}
+	# Salvage (salvage.gd): what this kill would drop if it is the last one.
+	if int(e.hp) == 0 and Salvage.enabled(s) and not Salvage.round_for(str(e.get("kind", ""))).is_empty(): result.salvage = Salvage.round_for(str(e.get("kind", "")))
 	if WeaponRoles.enabled(s):
 		result.weapon_factor = weapon_factor
 		result.math.weapon_factor = weapon_factor
@@ -1028,11 +1123,17 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	result.math.first_hit = first_hit
 	result.math.gate_charge = gate_charge
 	result.math.gate_percent = gate_percent
-	result.engine_percent = engine_percent
+	result.engine_percent = drive_percent
 	result.relay_damage = relay_damage
 	result.relay_hits = relay_hits
 	result.shock_damage = shock_damage
-	result.math.engine_percent = engine_percent
+	result.math.engine_percent = drive_percent
+	# Tag parts (tag_build.gd), recorded apart so readouts can name them; only when they act,
+	# so other runs keep their exact records.
+	if int(tag_effect.percent) != 100: result.math.tag_percent = int(tag_effect.percent)
+	if int(tag_effect.add) != 0: result.math.tag_add = int(tag_effect.add)
+	if cross_bonus > 0: result.math.cross = cross_bonus
+	if breech_bonus > 0: result.math.breech = breech_bonus
 	if Content.revised_combat(s):
 		result.part_factor = part_factor
 		result.math.part_factor = part_factor
@@ -1049,6 +1150,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	result.boost_factor_granted = Content.boost_factor(id, s) if spec.effect == "boost" else 1
 	result.pending_boost = s.buff.duplicate(true)
 	if Roles.builds(s):result.slowed=slowed;result.fire_zones=s.fire_zones.duplicate(true)
+	if not shield_rule.is_empty(): result.shield_rule = shield_rule
 	result.part_effects = preload("res://redesign/part_feedback.gd").shot_effects(s, result, part_effects, burn_before)
 	if chain_cooled > 0: result.part_effects.append({"id": "chain_sink", "label": "세 번째 발 냉각 −%d" % chain_cooled})
 	if active_parts.has("indexer") and prepared_rounds.size() > Content.multiplier(s): result.part_effects.append({"id": "indexer", "label": "예약 +1장"})
@@ -1067,6 +1169,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	result.cooled = cooled + vented + kill_cooled + chain_cooled
 	result.chain_cooled = chain_cooled
 	result.prepared_rounds = prepared_rounds
+	if held_round: result.held = true
 	result.interrupted = interrupted
 	if Roles.enabled(s):
 		result.slowed=slowed;result.slow_left=int(e.get("slow_left",0));result.slow_used=bool(e.get("slow_used",false));result.fire_zones=s.fire_zones.duplicate(true)
@@ -1087,17 +1190,24 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	result.stance_def = int(e.get("stance_def", 0))
 	if Noble.shielded(e): result.exposure_left=int(e.exposure_left)
 	elif Central.active(e): result.exposure_left=1 if int(e.barrier)==0 else 0
+	if e.has("shield_open_left"): result.shield_open_left = int(e.shield_open_left)
 	if Ranged.is_gatekeeper(e): result.guard_armor = int(e.guard_armor)
 	if int(e.get("foundry_version", 0)) == 3: result.shell_armor = int(e.shell_armor)
 	result.math.armor_before = armor_before
 	result.math.chase = chase_bonus
 	if Ranged.is_projectile(index) and int(e.hp) == 0: result.intercept = true
+	if not wrecks.is_empty(): result.wreckage_spawn = wrecks
 	return result
+
+func _cool_third_round(parts: Array, context: Dictionary) -> int:
+	var cooled := mini(int(s.heat), int(Content.PARTS.chain_sink.third_cooling)) if parts.has("chain_sink") and int(context.get("fired_count", -1)) == 2 else 0
+	s.heat -= cooled
+	return cooled
 
 # Follow-up direct impacts are bounded by remaining hits/targets. No recursive
 # status, boost, heat or proc reactivation. Scatter's initial target stays random;
 # continuation always uses the public nearest-target rule.
-func _engine_relay(id: String, remaining: int, overflow: int, base: int, factor: int, percent: int, pen: int, parts: Array, gate_percent: int = 100, overdrive_percent: int = 100) -> Dictionary:
+func _engine_relay(id: String, remaining: int, overflow: int, base: int, factor: float, percent: int, pen: int, parts: Array, gate_percent: int = 100, overdrive_percent: int = 100) -> Dictionary:
 	var events: Array = []
 	var total := 0
 	var connected := 0
@@ -1105,6 +1215,10 @@ func _engine_relay(id: String, remaining: int, overflow: int, base: int, factor:
 	while remaining>0 or overflow>0:
 		var next := target_index()
 		if next<0: break
+		var wreck := Wreckage.blocker(s.enemies, next)
+		if wreck >= 0:
+			events.append(Wreckage.strike(s.enemies, wreck, Wreckage.STACKS if Content.source_id(id) == "pierce" else maxi(1, remaining)))
+			break
 		if not reached.has(next):
 			if reached.size()>=Roles.relay_limit(s,parts):break
 			reached.append(next)
@@ -1114,13 +1228,13 @@ func _engine_relay(id: String, remaining: int, overflow: int, base: int, factor:
 		var blocked := int(other.get("barrier",0))>0
 		var amount := overflow
 		if not is_overflow:
-			var added := Content.weakness_bonus(id,other)+Roles.control_bonus(s,parts,other)+(2 if parts.has("igniter") and int(other.get("burn",0))>0 else 0)+(2 if parts.has("executioner") and hp<=5 else 0)
+			var added := Content.weakness_bonus(id,other)+Roles.control_bonus(s,parts,other)+(2 if parts.has("igniter") and int(other.get("burn",0))>0 else 0)+(PartTuning.execute_bonus(s) if parts.has("executioner") and PartTuning.executes(s, hp, int(other.get("max_hp", hp))) else 0)
 			amount = int((base+added)*factor*percent*gate_percent*overdrive_percent/1000000.0)
 		amount = Content.armored_damage(amount,maxi(0,int(other.def)-pen),s,0 if is_overflow else 1)
 		var dealt := 0
 		var removed := 0
 		if blocked:
-			removed=Noble.strip(other,(2 if parts.has("breaker") else 1)+(1 if (Noble.shielded(other) or Central.active(other)) and str(Content.AMMO[id].attribute)=="electric" and not is_overflow else 0))
+			removed=Noble.strip(other,(2 if parts.has("breaker") else 1)+(1 if (Noble.shielded(other) or Central.active(other)) and str(Content.AMMO[id].attribute)=="electric" and not is_overflow else 0), "" if is_overflow else Content.source_id(id))
 		else:
 			dealt = mini(hp,amount)
 			other.hp -= dealt
@@ -1169,7 +1283,7 @@ func preview() -> Dictionary:
 	var source: String = Content.source_id(str(stack.front()))
 	var triad_ready: bool = recent.size() >= 2 and recent[-1] != recent[-2] and source != recent[-1] and source != recent[-2]
 	var rounds := _recent_part_rounds() if s.phase == "ready" else []
-	return copy._shot(str(stack.front()), -1, {"weapon_factor":3 if WeaponRoles.mark(s)==0 else 1,"previous_round": str(rounds.back()) if not rounds.is_empty() else "", "first": recent.is_empty(), "last": stack.size() == 1, "last_attack": not stack.slice(1).any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "fired_count": recent.size(), "sequence_count": Content.prior_kind_count(recent, str(stack.front()))})
+	return copy._shot(str(stack.front()), -1, {"weapon_factor":3 if WeaponRoles.mark(s)==0 else 1,"previous_round": str(rounds.back()) if not rounds.is_empty() else "", "first": recent.is_empty(), "last": stack.size() == 1, "last_attack": not stack.slice(1).any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "fired_count": recent.size(), "sequence_count": Content.prior_kind_count(recent, str(stack.front())), "recent_sources": recent.duplicate(), "breech": PartTuning.breech_ready(s, Content.active_parts(s)) and Content.is_attack(str(stack.front()))})
 
 func movement_preview(turn_count: int) -> Array:
 	var copy = get_script().new()
@@ -1197,7 +1311,7 @@ func choose_reward(id: String, remove_id: String = "") -> bool:
 		var equipped := Content.equipped_parts(s)
 		var proposed := equipped.duplicate()
 		proposed.append(id)
-		if not Content.valid_part_set(str(s.gun), proposed): return false
+		if not Content.valid_part_set(str(s.gun), proposed, s): return false
 		s.equipped_parts = proposed
 		s.part = id
 	else:
@@ -1395,11 +1509,19 @@ func restore_state(source: Dictionary) -> bool:
 	if not _whole(parsed.get("magazine_trial_version", 0), 0, MagazineTrial.VERSION): return false
 	if not _whole(parsed.get("weapon_magazine_version", 0), 0, MagazineTrial.WEAPON_VERSION): return false
 	if int(parsed.get("weapon_magazine_version", 0)) > 0 and (not MagazineTrial.enabled(parsed) or int(parsed.get("weapon_version", 0)) != 1): return false
-	if parsed.has("magazine_ejected") and (not MagazineTrial.weapons_enabled(parsed) or not _whole(parsed.magazine_ejected,0,MagazineTrial.EJECT_LIMIT)): return false
+	if parsed.has("magazine_ejected") and (not MagazineTrial.weapons_enabled(parsed) or not _whole(parsed.magazine_ejected,0,Content.eject_limit(parsed))): return false
 	if not _whole(parsed.get("magazine_build_version", 0), 0, MagazineBuild.VERSION): return false
 	if not Roles.valid(parsed):return false
 	if not _whole(parsed.get("focus_build_version", 0), 0, FocusBuild.VERSION): return false
 	if not BuildEngine.valid(parsed): return false
+	if not GrowthV2.valid(parsed): return false
+	if not TagBuild.valid(parsed): return false
+	if not Overheat.valid(parsed): return false
+	if not RewardTrim.valid(parsed): return false
+	if not RewardMix.valid(parsed): return false
+	if not MixCombo.valid(parsed): return false
+	if not Salvage.valid(parsed): return false
+	if not AmmoRevision.valid(parsed): return false
 	if not Balance.valid(parsed): return false
 	if not Patterns.valid(parsed): return false
 	if FocusBuild.enabled(parsed) and int(parsed.get("fire_control_version",0)) != FireHeatTrial.CAMPAIGN_VERSION: return false
@@ -1465,11 +1587,11 @@ func restore_state(source: Dictionary) -> bool:
 	if not Content.GUNS.has(parsed.gun) or not Content.PARTS.has(parsed.part) or not _whole(parsed.floor, 0, 6) or not parsed.phase in ["plan", "ready", "reward", "won", "lost"]:
 		return false
 	if parsed.heat >= Content.heat_limit(parsed): return false
-	if not parsed.equipped_parts is Array or not Content.valid_part_set(str(parsed.gun), parsed.equipped_parts): return false
+	if not parsed.equipped_parts is Array or not Content.valid_part_set(str(parsed.gun), parsed.equipped_parts, parsed): return false
 	# `part` remains readable for older automation and v7 migration. A current save
 	# must still satisfy the five-slot and one-core limits after that legacy value
 	# is folded into the equipped list.
-	if not Content.valid_part_set(str(parsed.gun), Content.equipped_parts(parsed)): return false
+	if not Content.valid_part_set(str(parsed.gun), Content.equipped_parts(parsed), parsed): return false
 	# JSON numbers cannot preserve every signed 64-bit seed. New saves use text;
 	# old ordinary numeric seeds remain readable, unsafe numeric seeds are rejected.
 	if parsed.seed is String:
@@ -1576,6 +1698,7 @@ func restore_state(source: Dictionary) -> bool:
 		if int(enemy.get("foundry_version", 0)) == 3 and not Patterns.enabled(parsed): return false
 		if not Content.pressure_combat(parsed) and (int(enemy.get("foundry_version",0))>=2 or int(enemy.get("central_version",0))>=2): return false
 	if not Ranged.valid_state(parsed): return false
+	if not Wreckage.valid(parsed.enemies, parsed.reinforcements): return false
 	if not BossSkills.valid(parsed): return false
 	if parsed.get("loss_reason","") == "ammo":
 		if Reserve.emergency_enabled(parsed): return false

@@ -18,7 +18,7 @@ static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array
 			"lens":
 				if unblocked and int(spec.pen) > 0 and int(shot.math.armor_before) > int(shot.pen) - 2: label = "관통 +2"
 			"breaker":
-				if int(shot.barrier_removed) > int(shot.blocked_hits): label = "보호 파쇄"
+				if not shot.has("shield_rule") and int(shot.barrier_removed) > int(shot.blocked_hits): label = "보호 파쇄"
 			"duplex":
 				var direct_hits := int(shot.hits)
 				for impact in shot.get("secondary",[]):
@@ -34,7 +34,7 @@ static func shot_effects(state: Dictionary, shot: Dictionary, conditional: Array
 					label = "화상 +%d" % mini(bonus, int(shot.burn) - without)
 			"capacitor", "arc_splitter":
 				# Applied enhancement, not additive credit for enemy HP removed.
-				if spec.effect == "arc" and not shot.secondary.is_empty(): label = "전이 강화"
+				if spec.effect == "arc" and shot.secondary.any(func(impact): return impact.get("kind", "") == "arc"): label = "전이 강화"
 			"rammer", "momentum":
 				if int(shot.push) > 0: label = "밀기 %dm" % int(shot.push)
 		if Content.Roles.builds(state):
@@ -114,5 +114,5 @@ static func highlights(state: Dictionary) -> Array:
 	var result: Array = []
 	for id in ids.slice(0, 2): result.append({"id": id, "text": "%s · %d발 발동" % [Content.PARTS[id].name, counts[id]]})
 	if result.size() < 2 and focus > 0: result.append({"id": "", "text": "집중 추가 피해 %d" % focus})
-	if result.size() < 2 and boosted > 0: result.append({"id": "", "text": "증폭 연계 %d발" % boosted})
+	if result.size() < 2 and boosted > 0: result.append({"id": "", "text": "증폭 이어짐 %d발" % boosted})
 	return result

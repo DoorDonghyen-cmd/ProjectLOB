@@ -1,7 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://redesign/common/window.gd" id="1"]
 [ext_resource type="Theme" path="res://redesign/workbench/theme.tres" id="2"]
+
+[ext_resource type="Script" path="res://redesign/ui/button_frame.gd" id="button_frame"]
 
 [sub_resource type="StyleBoxFlat" id="frame"]
 bg_color = Color(0.072, 0.063, 0.052, 0.98)
@@ -17,14 +19,13 @@ content_margin_bottom = 16.0
 anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="close"]
+script = ExtResource("button_frame")
 bg_color = Color(0.11, 0.098, 0.08, 0.95)
-border_width_bottom = 1
 border_color = Color(0.36, 0.31, 0.23, 1)
 content_margin_left = 12.0
 content_margin_right = 12.0
 content_margin_top = 8.0
 content_margin_bottom = 8.0
-anti_aliasing = false
 
 [node name="CommonWindow" type="Control"]
 layout_mode = 3

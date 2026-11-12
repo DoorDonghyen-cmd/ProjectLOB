@@ -43,7 +43,7 @@ func run() -> void:
 		check(screen.find_child("OutfitSummary",true,false).text.contains("휴대 28장"),"scout carry cap shown")
 		await press("outfit_select_expedition")
 		check(screen.find_child("OutfitSummary",true,false).text.contains("휴대 40장"),"expedition carry cap shown")
-		var outfit_stats=screen.find_child("outfit_select_expedition",true,false).get_node("Copy/Stats")
+		var outfit_stats=screen.find_child("outfit_select_expedition",true,false).get_node("Content/Copy/Stats")
 		check(outfit_stats.is_visible_in_tree() and outfit_stats.text.contains("휴대 40") and outfit_stats.text.contains("교환 0"),"visible outfit row retains exchange count")
 		check(not screen.main_scroll.get_h_scroll_bar().visible,"equipment no horizontal overflow")
 		await capture("equipment_%dx%d"%[resolution.x,resolution.y])

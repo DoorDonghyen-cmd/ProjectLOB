@@ -3,12 +3,13 @@ const Cases=preload("res://tests/impact_parts_cases.gd")
 const Style=preload("res://redesign/impact_style.gd")
 const FX=preload("res://redesign/firing_vfx.gd")
 const Tier=preload("res://redesign/enhanced_shot_fx.gd").Tier
-const EXPECTED_TIERS={"add":Tier.TRACER,"opening":Tier.EMBERS,"third":Tier.SHOCKWAVE,"stacked":Tier.SHOCKWAVE,"thermal":Tier.EMBERS,"kill":Tier.EMBERS}
+const EXPECTED_TIERS={"add":Tier.TRACER,"opening":Tier.EMBERS,"third":Tier.SHOCKWAVE,"stacked":Tier.SHOCKWAVE,"thermal":Tier.EMBERS,"kill":Tier.EMBERS,"tag_add":Tier.TRACER,"tag_multiplier":Tier.EMBERS}
 var recording:=false
 var current_case:=""
 var seen:Dictionary={}
 var frames:Array=[]
 var flights:Dictionary={}
+var pending_images: Dictionary = {}
 
 func palette_pixels(frame: Image, rect: Rect2, color: Color) -> int:
 	var area:=Rect2i(rect).intersection(Rect2i(Vector2i.ZERO,frame.get_size()))
@@ -24,11 +25,12 @@ func post_draw() -> void:
 	var board=host.campaign_hud.board
 	if board.launch_ready and not board.bullet.is_empty() and board.bullet_progress >= 0.5 and not flights.has(current_case):
 		var path:=FX.geometry(board.projectile_origin(),board.enemy_position(board.projectile_target),board.bullet_progress,board.firing_profile,board.reduced_feedback)
-		flights[current_case]={"tier":board.firing_profile.tier,"tail":path.tail_length}
-		root.get_texture().get_image().save_png(output.path_join(current_case+"_flight.png"))
+		flights[current_case]={"tier":board.firing_profile.tier,"tail":path.tail_length,"part_powered":board.firing_profile.part_powered}
+		pending_images[current_case+"_flight.png"] = root.get_texture().get_image()
 	if board.damage_popups.is_empty():return
-	var phase:=0 if board.pulse<0.02 else 1 if board.pulse<0.25 else 2 if board.pulse<0.55 else 3
-	var key:="%s_%d"%[current_case,phase]
+	var phase:=0 if board.pulse<0.02 else 1 if board.pulse<0.25 else 2 if board.pulse<0.55 else 3 if board.pulse<0.72 else 4
+	var ordinal: int = board.salvo_results.size()
+	var key := "%s_%d_%d" % [current_case, ordinal, phase] if current_case == "boost_salvo" else "%s_%d" % [current_case, phase]
 	if seen.has(key):return
 	seen[key]=true
 	var image:Image=root.get_texture().get_image()
@@ -41,15 +43,25 @@ func post_draw() -> void:
 		var pixels:=palette_pixels(image,ink,entry.color)
 		entries.append({"target":entry.target,"number":entry.number,"amount":entry.amount,"color":entry.color.to_html(false),"family":entry.style.family,"operator":entry.style.operator,"rank":entry.style.rank,"kill":entry.kill,"bounds":str(global),"palette_pixels":pixels})
 		if phase==0 and entry.style.active:check(pixels>=8,"actual number hue rendered "+key+"/"+str(entry.target))
-	frames.append({"case":current_case,"phase":phase,"pulse":board.pulse,"reduced":board.reduced_feedback,"impact":board.impact_style,"tier":board.firing_profile.get("tier", Tier.STANDARD),"entries":entries,"image":key+".png"})
-	image.save_png(output.path_join(key+".png"))
+		if current_case == "stacked_1008x454" and entry.get("activated", false):
+			check(not item.bounds.intersects(board.enemy_plaque(entry.target)), "boosted number stays clear of its HP plate " + key)
+	var badges: Array = board.activation_badges()
+	var accent: Color = board.impact_style.color if board.impact_style.get("active", false) else Color("b9c4a3")
+	for badge in badges:
+		var ink: Rect2 = board.get_global_transform_with_canvas() * Rect2(badge.bounds.position, Vector2(2, badge.bounds.size.y))
+		check(palette_pixels(image, ink, accent) > 0, "activation plate actually rendered " + key)
+	frames.append({"case":current_case,"ordinal":ordinal,"phase":phase,"pulse":board.pulse,"reduced":board.reduced_feedback,"impact":board.impact_style,"tier":board.firing_profile.get("tier", Tier.STANDARD),"entries":entries,"badges":badges,"number_reacts":board.damage_popups[0].get("activated",false),"image":key+".png"})
+	pending_images[key+".png"] = image
 
 func fire_and_compare(c) -> void:
 	var oracle=Model.new();oracle.s=c.model.s.duplicate(true)
 	check(oracle.fire(),"oracle accepts the same public prefix "+current_case)
 	await tap("Fire")
+	for name in pending_images: pending_images[name].save_png(output.path_join(name))
+	pending_images.clear()
 	check(canonical(c.model.s)==canonical(oracle.s),"presentation leaves complete model and RNG exact "+current_case)
 	check(host.campaign_hud.board.damage_popups.is_empty() and host.campaign_hud.board.impact_style.is_empty(),"hit sprites/readouts reset "+current_case)
+	check(host.campaign_hud.board.activation_badges().is_empty(),"activation clears after the shot "+current_case)
 
 func exercise(kind: String, size: Vector2i, reduced: bool=false) -> void:
 	root.size=size
@@ -68,14 +80,39 @@ func exercise(kind: String, size: Vector2i, reduced: bool=false) -> void:
 		var flight: Dictionary = flights[current_case]
 		check(flight.tier == tier,"flight selects the resolved tier "+current_case)
 		check(flight.tail == 0.0 if reduced else (flight.tail <= 20.0 if tier == Tier.STANDARD else flight.tail > 30.0),"trail fits tier and motion setting "+current_case)
+		if kind.begins_with("tag_"):
+			check(flight.part_powered, "real tag part powers the launch effect "+current_case)
 	check(not observed.is_empty(),"actual impact observed "+current_case)
 	check(observed.all(func(frame): return int(frame.tier) == tier),"impact keeps the flight tier "+current_case)
 	if not observed.is_empty():check(observed[0].entries[0].family==Cases.SPECS[kind].family,"resolved trigger uses expected visible family "+current_case)
 	if kind=="blocked":check(observed.all(func(f):return not f.impact.active),"blocked part never displays product burst")
+	if kind in ["plain", "blocked"]:check(observed.all(func(frame): return frame.badges.is_empty()),"no badges for a plain or fully blocked shot")
+	if kind=="stacked":
+		check(observed.any(func(frame): return frame.badges.size()==3 and frame.number_reacts),"simultaneous part and ammo triggers with the same damage number")
+		check(observed.all(func(frame): return frame.badges.all(func(badge): return badge.scale==1.0) if reduced else true),"motion setting holds icons at their resting size")
+		if not reduced:
+			check(observed.any(func(frame): return frame.badges.any(func(badge): return badge.scale > 1.30)),"activation reaches visible overshoot")
+			check(observed.any(func(frame): return frame.badges.all(func(badge): return badge.scale == 1.0)),"all activations settle to the resting size "+current_case)
 	if kind=="kill":check(observed.any(func(f):return f.entries[0].kill and f.entries[0].family=="multiply"),"lethal product retains violet hue")
 	if kind=="arc":check(observed.any(func(f):return f.entries.size()>1 and f.entries[1].family=="volley"),"secondary arc has its own hue")
+	if kind == "tag_multiplier":
+		check(observed.any(func(frame): return frame.badges.size() == 2 and frame.badges[0].effect.id == "tag_single_mult" and frame.badges[1].effect.id == "tag_copy"), "tag multiplier and the copy part each get a badge")
 	hud_bounds()
 	await capture("settled_"+current_case)
+
+func boost_salvo() -> void:
+	root.size = Vector2i(1008,454)
+	var c=Cases.make("add")
+	await mount(c)
+	host.save_enabled=false
+	host.campaign_hud.select_budget(2)
+	current_case="boost_salvo"
+	recording=true
+	await fire_and_compare(c)
+	recording=false
+	var observed := frames.filter(func(frame): return frame.case == current_case)
+	check(observed.any(func(frame): return frame.ordinal == 1 and not frame.badges.is_empty() and frame.badges[0].effect.title == "증폭 준비" and not frame.number_reacts), "first round prepares a boost without a damage pulse")
+	check(observed.any(func(frame): return frame.ordinal == 2 and not frame.badges.is_empty() and frame.badges[0].effect.title == "증폭 적용" and frame.number_reacts), "second round consumes the boost and marks its own damage number")
 
 func acquired() -> void:
 	var folder:=ProjectSettings.globalize_path("res://../qa_runtime/focus_build_20261103/climb_growth_primary")
@@ -103,6 +140,7 @@ func run() -> void:
 	for kind in Cases.SPECS:await exercise(kind,Vector2i(1280,800))
 	for kind in ["plain","opening","stacked"]:await exercise(kind,Vector2i(1008,454))
 	await exercise("stacked",Vector2i(1008,454),true)
+	await boost_salvo()
 	await acquired()
 	RenderingServer.frame_post_draw.disconnect(post_draw)
 	if is_instance_valid(host):host.free()

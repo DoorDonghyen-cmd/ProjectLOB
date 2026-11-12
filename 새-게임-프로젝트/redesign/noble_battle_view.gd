@@ -112,7 +112,7 @@ func _draw() -> void:
 	readout_layer.queue_redraw()
 	for index in _alive_indices():
 		var enemy:Dictionary=enemies[index]
-		if House.leader(enemy):
+		if House.leader(enemy) and not enemy.has("shield_trial"):
 			_draw_hud_text(Vector2(16,28),("관문 · " if enemy.rank=="boss" else "정예 · ")+str(enemy.name),HORIZONTAL_ALIGNMENT_LEFT,260,20,Color("cfb67e"))
 		if House.shielded(enemy) and (int(enemy.barrier)==0 or House.leader(enemy)):
 			var rect:=intent_rect(index)
@@ -141,6 +141,8 @@ func _before_enemy_movement(events: Array) -> void:
 		else:
 			enemies[index].barrier=int(event.barrier)
 			enemies[index].exposure_left=int(event.exposure_left)
+			if event.action == "timed_open": caption = "차폐 개방 · 본체 노출"
+		if event.has("shield_open_left"): enemies[index].shield_open_left = int(event.shield_open_left)
 		visual_events.append(event.duplicate(true))
 
 func _after_advance_tick(events: Array) -> void:

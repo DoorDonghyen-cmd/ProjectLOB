@@ -12,6 +12,7 @@ const Ranged = preload("res://redesign/ranged.gd")
 const Art = preload("res://redesign/world_art.gd")
 const Pixel = preload("res://redesign/pixel_art.gd")
 const ActorMotion = preload("res://redesign/actor_motion.gd")
+const MOLD_WRECKAGE = preload("res://assets/art/foundry_concepts_20261022/mold_worker_wreckage_20261110.png")
 const EnemyThreat = preload("res://redesign/enemy_threat.gd")
 const EnemyStatusIcons = preload("res://redesign/enemy_status_icons.gd")
 const FINISH_MAX_ZOOM := 1.25
@@ -26,6 +27,8 @@ const ActorArtStyle = preload("res://redesign/actor_art_style.gd")
 const FONT = preload("res://redesign/combat_pixel_font.tres")
 var readout_layer: Node2D
 var threat_readouts: Dictionary = {}
+var proximity_warning_enabled := false
+var proximity_warning: Dictionary = {}
 var display_state: Dictionary = {}
 var enemies: Array = []
 var projectiles: Array = []
@@ -38,6 +41,7 @@ var show_caption := false
 var bullet := ""
 var bullet_progress := 0.0
 var projectile_target := -1
+var wreckage_impact := false
 var flash := 0.0
 var float_text := ""
 var float_color := Color.WHITE
@@ -142,9 +146,12 @@ func sync(state: Dictionary, prediction: Dictionary = {}) -> void:
 	damage_popups.clear()
 	hit_hp_before.clear()
 	damage_anchors.clear()
+	wreckage_impact = false
 	display_state = {"course": state.get("course", false), "floor": state.floor, "gun": state.gun, "outfit": state.get("outfit", "work"), "combat_revision": state.get("combat_revision",0)}
 	display_state.fire_zones=state.get("fire_zones",[]).duplicate(true)
-	threat_readouts = EnemyThreat.analyze(state)
+	var threat := EnemyThreat.snapshot(state, proximity_warning_enabled)
+	threat_readouts = threat.intents
+	proximity_warning = threat.proximity
 	enemies = state.enemies.duplicate(true)
 	projectiles = state.get("projectiles", []).duplicate(true)
 	_last_threat_x.clear()
@@ -155,6 +162,10 @@ func sync(state: Dictionary, prediction: Dictionary = {}) -> void:
 	reinforcements = state.get("reinforcements", []).duplicate(true)
 	forecast = prediction.duplicate(true)
 	target = -1 if state.gun == "scatter" else _nearest()
+	if not forecast.get("shots", []).is_empty():
+		var next: Dictionary = forecast.shots[0]
+		if next.has("wreckage_hit"): target = int(next.target)
+		elif float(next.get("wreckage_probability", 0.0)) >= 0.999999: target = int(next.targets[0].target)
 	caption = ""
 	compact_lanes = true
 	_rebuild_info_buttons()
@@ -345,6 +356,37 @@ func enemy_feet(index: int) -> Vector2:
 func enemy_position(index: int) -> Vector2:
 	return enemy_feet(index) - Vector2(0, 48)
 
+func _wreckage_rect(index: int) -> Rect2:
+	var extent := (MOLD_WRECKAGE.get_size() * clampf(size.y / 270.0, 0.72, 1.0)).round()
+	return Rect2((enemy_feet(index) - Vector2(extent.x * 0.5, extent.y)).round(), extent)
+
+func _wreckage_point(index: int) -> Vector2:
+	return _wreckage_rect(index).get_center()
+
+func _draw_wreckage() -> void:
+	for i in range(enemies.size()):
+		if int(enemies[i].get("wreckage", 0)) <= 0: continue
+		var rect := _wreckage_rect(i)
+		Pixel.shadow(self, enemy_feet(i), rect.size.x - 12.0)
+		draw_texture_rect(MOLD_WRECKAGE, rect, false)
+
+func _draw_wreckage_readouts(canvas: CanvasItem) -> void:
+	for i in range(enemies.size()):
+		var stacks := int(enemies[i].get("wreckage", 0))
+		if stacks <= 0: continue
+		var foot := enemy_feet(i)
+		var rect := _wreckage_rect(i)
+		var plate := Rect2(Vector2(clampf(foot.x - 29, 4, size.x - 62), rect.position.y - 23), Vector2(58, 19))
+		canvas.draw_rect(plate, Color("211d1a"))
+		canvas.draw_string(FONT, plate.position + Vector2(2, 14), "잔해 %d" % stacks, HORIZONTAL_ALIGNMENT_CENTER, 54, 14, Color("dec39a"))
+		if i == target:
+			for side in [-1, 1]:
+				var corner := foot + Vector2(side * (rect.size.x * 0.5 + 2.0), 3)
+				canvas.draw_polyline(PackedVector2Array([corner - Vector2(0, 6), corner, corner - Vector2(side * 7, 0)]), Color("edc47a"), 2, false)
+
+func _apply_wreckage_spawns(stacks: Dictionary) -> void:
+	for index in stacks: enemies[int(index)].wreckage = int(stacks[index])
+
 func distance_label_rect(index: int) -> Rect2:
 	# One ground-aligned baseline: never follows idle bob, recoil or sprite height.
 	var height := ceilf(FONT.get_height(20)) + 4.0
@@ -431,6 +473,7 @@ func _draw() -> void:
 	_draw_backdrop()
 	_draw_finish_shade()
 	_draw_fire_zones()
+	_draw_wreckage()
 	var muzzle := player_muzzle()
 	_draw_player(player_feet())
 	# The threshold is painted on the floor instead of a tall UI wall.
@@ -440,7 +483,7 @@ func _draw() -> void:
 		_draw_muzzle_flash(muzzle)
 	# Fixed depth order; defeated enemies do not reshuffle the surviving sprites.
 	var ordered := _alive_indices()
-	if float_target >= 0 and float_target < enemies.size() and int(enemies[float_target].hp) <= 0:
+	if not wreckage_impact and float_target >= 0 and float_target < enemies.size() and int(enemies[float_target].hp) <= 0:
 		ordered.append(float_target)
 	for entry in damage_popups:
 		var index:=int(entry.target)
@@ -467,10 +510,10 @@ func _draw() -> void:
 		for i in range(reinforcements.size()):
 			_draw_reinforcement_actor(i,Rect2(reserve_rect.position+Vector2(145+i*28,2),Vector2(24,24)))
 	if not bullet.is_empty() and not _visual_entity(projectile_target).is_empty():
-		var to := enemy_position(projectile_target)
+		var to := _wreckage_point(projectile_target) if wreckage_impact else enemy_position(projectile_target)
 		_draw_projectile(projectile_origin(),to,bullet_progress)
 	if not _visual_entity(float_target).is_empty():
-		var point := enemy_position(float_target)
+		var point := _wreckage_point(float_target) if wreckage_impact else enemy_position(float_target)
 		for secondary in chain_targets:
 			if _visual_entity(int(secondary.target)).is_empty(): continue
 			var other_point := enemy_position(int(secondary.target))
@@ -500,6 +543,8 @@ func _draw_secondary_link(from: Vector2, to: Vector2, kind: String) -> void:
 func _capture_damage_anchors() -> void:
 	damage_anchors.clear()
 	for index in _alive_indices(): damage_anchors[index] = enemy_position(index)
+	for index in range(enemies.size()):
+		if int(enemies[index].get("wreckage", 0)) > 0: damage_anchors[index] = _wreckage_point(index)
 
 func _set_damage_popups(result: Dictionary) -> void:
 	damage_popups = _damage_entries(result)
@@ -537,13 +582,25 @@ func damage_popup_layout(entries: Array = [], defeated: Array = []) -> Array:
 		var available := size.y-8
 		var font_size := int([36,44,56,64][emphasis])
 		if finish_active and entry.kill: font_size=72
-		var pop := 0 if not actor_motion_enabled() else int((8 if emphasis>=2 else 4)*(1.0-clampf(pulse/0.25,0,1)))
+		var pop_height := 8 if emphasis >= 2 else 4
+		if entry.get("activated", false): pop_height += 4
+		var pop := 0 if not actor_motion_enabled() else int(pop_height * (1.0 - clampf(pulse / 0.25, 0, 1)))
 		font_size += pop
 		while font_size > 24 and FONT.get_height(font_size)+22 > available: font_size -= 2
 		while font_size > 24 and FONT.get_string_size(entry.number,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > width: font_size -= 2
 		var rise := 0.0 if not actor_motion_enabled() else roundf(4.0*(1.0-pulse)*(1.0-pulse))
-		var height:=FONT.get_height(font_size)+rise+18+(16 if not str(entry.get("ledger","")).is_empty() else 0)
-		var top:=clampf(point.y-height*0.5,4,maxf(4,size.y-height-4))
+		var extra_height := rise + 18.0 + (16.0 if not str(entry.get("ledger", "")).is_empty() else 0.0)
+		var top_limit := 4.0
+		if entry.get("activated", false) and index >= 0 and index < enemies.size() and int(enemies[index].hp) > 0:
+			var plaque := enemy_plaque(index)
+			var clear_top := plaque.end.y + 3.0
+			var clear_height := size.y - clear_top - 4.0
+			if left < plaque.end.x and left + width > plaque.position.x and FONT.get_height(24) + extra_height <= clear_height:
+				while font_size > 24 and FONT.get_height(font_size) + extra_height > clear_height: font_size -= 2
+				top_limit = maxf(top_limit, clear_top)
+		var height := FONT.get_height(font_size) + extra_height
+		var bottom_limit := maxf(4.0, size.y - height - 4.0)
+		var top := clampf(point.y - height * 0.5, top_limit, bottom_limit)
 		var baseline := Vector2(left,top+rise+FONT.get_ascent(font_size))
 		var bounds := Rect2(left,top, width, height-rise)
 		output.append({"entry":entry,"baseline":baseline.round(),"font_size":font_size,"bounds":bounds})
@@ -819,6 +876,7 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 	visual_events.clear()
 	for result in results:
 		focus_flash = -1
+		wreckage_impact = result.has("wreckage_hit")
 		projectile_target = int(result.target)
 		target = projectile_target
 		bullet = str(result.id)
@@ -835,6 +893,7 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 		var enemy := _visual_entity(target)
 		hit_hp_before[target] = int(enemy.hp)
 		enemy.hp = result.hp
+		if wreckage_impact: enemy.wreckage = int(result.wreckage_left)
 		enemy.burn = result.get("burn", 0)
 		if result.has("fire_zones"):display_state.fire_zones=result.fire_zones.duplicate(true)
 		if result.has("slow_left"):enemy.slow_left=result.slow_left;enemy.slow_used=result.slow_used
@@ -845,6 +904,7 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 		enemy.focus_hits = result.get("focus_after", 0)
 		enemy.barrier = result.get("barrier", enemy.get("barrier", 0))
 		if result.has("exposure_left"): enemy.exposure_left=int(result.exposure_left)
+		if result.has("shield_open_left"): enemy.shield_open_left = int(result.shield_open_left)
 		if int(result.get("interrupted", 0)) > 0:
 			enemy.jammed = int(result.interrupted)
 			enemy.disrupted = true
@@ -856,13 +916,16 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 			if secondary.has("exposure_left"): _visual_entity(int(secondary.target)).exposure_left=int(secondary.exposure_left)
 			if secondary.has("focus_hits"): _visual_entity(int(secondary.target)).focus_hits = secondary.focus_hits
 			if secondary.has("burn"): _visual_entity(int(secondary.target)).burn = secondary.burn
+			if secondary.has("wreckage_left"): _visual_entity(int(secondary.target)).wreckage = int(secondary.wreckage_left)
 			visual_events.append({"kind": "secondary", "target": secondary.target, "damage": secondary.damage, "hp": secondary.hp})
+		_apply_wreckage_spawns(result.get("wreckage_spawn", {}))
 		float_target = target
 		impact_attribute = str(Content.AMMO[str(result.id)].attribute)
 		float_text = "막힘" if int(result.get("blocked_hits", 0)) > 0 and result.damage == 0 else ("방어" if result.damage == 0 else "-%d" % result.damage)
 		if result.has("exposure_left") and int(result.get("blocked_hits",0))>0 and result.damage==0:
 			float_text="차폐 파손" if int(result.barrier)==0 else "차폐 −%d"%int(result.barrier_removed)
-		if result.get("intercept", false): float_text = "요격"
+		if wreckage_impact: float_text = str(result.text)
+		elif result.get("intercept", false): float_text = "요격"
 		elif result.hp == 0: float_text += "  처치"
 		elif not result.get("prepared_rounds", []).is_empty(): float_text = "다음 패 %d장 예약" % result.prepared_rounds.size()
 		elif int(result.get("interrupted", 0)) > 0: float_text += " · 차단"
@@ -884,6 +947,7 @@ func play_action(before: Dictionary, after: Dictionary, results: Array, advance_
 		chain_targets.clear()
 		pulse = 0.0
 		focus_flash = -1
+		wreckage_impact = false
 		_finish_shot()
 	await _play_advance(before, after, advance_events, reloading)
 	enemies = after.enemies.duplicate(true)
@@ -924,6 +988,7 @@ func _play_advance(_before: Dictionary, after: Dictionary, advance_events: Array
 		pulse = 0.0
 	for event in advance_events:
 		var kind := str(event.kind)
+		if kind == "wreckage_spawn": _apply_wreckage_spawns(event.stacks)
 		if kind == "charge":
 			var charge_target := int(event.target)
 			if charge_target >= 0 and charge_target < enemies.size(): enemies[charge_target].charge = int(event.charge)

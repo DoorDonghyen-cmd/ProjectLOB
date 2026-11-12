@@ -1,0 +1,64 @@
+[gd_resource type="Theme" load_steps=8 format=3]
+
+[ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
+[ext_resource type="Script" path="res://redesign/ui/button_frame.gd" id="frame"]
+
+[sub_resource type="StyleBoxFlat" id="normal"]
+script = ExtResource("frame")
+brass_face = true
+brass_accent = Color(0.666667, 0.576471, 0.380392, 1)
+bg_color = Color(0.145098, 0.168627, 0.137255, 1)
+border_color = Color(0.509804, 0.447059, 0.32549, 1)
+content_margin_left = 14.0
+content_margin_top = 0.0
+content_margin_right = 14.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="hover"]
+script = ExtResource("frame")
+bg_color = Color(0.192157, 0.215686, 0.172549, 1)
+border_color = Color(0.509804, 0.447059, 0.32549, 1)
+content_margin_left = 14.0
+content_margin_top = 0.0
+content_margin_right = 14.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="pressed"]
+script = ExtResource("frame")
+bg_color = Color(0.105882, 0.129412, 0.101961, 1)
+border_color = Color(0.509804, 0.447059, 0.32549, 1)
+content_margin_left = 14.0
+content_margin_top = 0.0
+content_margin_right = 14.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="disabled"]
+script = ExtResource("frame")
+bg_color = Color(0.101961, 0.113725, 0.105882, 0.878431)
+border_color = Color(0.211765, 0.235294, 0.188235, 1)
+content_margin_left = 14.0
+content_margin_top = 0.0
+content_margin_right = 14.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="focus"]
+script = ExtResource("frame")
+focus_ring = true
+border_color = Color(0.733333, 0.654902, 0.482353, 1)
+
+[resource]
+resource_name = "Dark iron primary action"
+default_font = ExtResource("font")
+default_font_size = 16
+Button/colors/font_color = Color(0.92549, 0.878431, 0.784314, 1)
+Button/colors/font_focus_color = Color(0.92549, 0.878431, 0.784314, 1)
+Button/colors/font_hover_color = Color(0.92549, 0.878431, 0.784314, 1)
+Button/colors/font_pressed_color = Color(0.92549, 0.878431, 0.784314, 1)
+Button/colors/font_hover_pressed_color = Color(0.92549, 0.878431, 0.784314, 1)
+Button/colors/font_disabled_color = Color(0.470588, 0.490196, 0.423529, 1)
+Button/styles/normal = SubResource("normal")
+Button/styles/hover = SubResource("hover")
+Button/styles/pressed = SubResource("pressed")
+Button/styles/hover_pressed = SubResource("pressed")
+Button/styles/disabled = SubResource("disabled")
+Button/styles/focus = SubResource("focus")

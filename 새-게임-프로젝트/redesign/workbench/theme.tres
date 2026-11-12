@@ -1,35 +1,34 @@
 [gd_resource type="Theme" format=3]
 [ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="font"]
 
+[ext_resource type="Script" path="res://redesign/ui/button_frame.gd" id="button_frame"]
+
 [sub_resource type="StyleBoxFlat" id="plain"]
+script = ExtResource("button_frame")
 bg_color = Color(0.06,0.055,0.048,0.88)
-border_width_bottom = 1
 border_color = Color(0.28,0.25,0.20,1)
 content_margin_left = 12.0
 content_margin_right = 12.0
 content_margin_top = 8.0
 content_margin_bottom = 8.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="hover"]
+script = ExtResource("button_frame")
 bg_color = Color(0.18,0.16,0.12,0.94)
-border_width_bottom = 1
 border_color = Color(0.70,0.59,0.40,1)
 content_margin_left = 12.0
 content_margin_right = 12.0
 content_margin_top = 8.0
 content_margin_bottom = 8.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="selected"]
+script = ExtResource("button_frame")
 bg_color = Color(0.21,0.18,0.13,0.85)
-border_width_bottom = 2
 border_color = Color(0.73,0.62,0.43,1)
 content_margin_left = 12.0
 content_margin_right = 12.0
 content_margin_top = 8.0
 content_margin_bottom = 8.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="tab"]
 bg_color = Color(0,0,0,0)
@@ -48,37 +47,38 @@ content_margin_bottom = 12.0
 anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="primary"]
+script = ExtResource("button_frame")
+brass_face = true
+border_color = Color(0.78, 0.69, 0.49, 1)
 bg_color = Color(0.64,0.54,0.36,1)
 content_margin_left = 12.0
 content_margin_right = 12.0
 content_margin_top = 8.0
 content_margin_bottom = 8.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="primary_hover"]
+script = ExtResource("button_frame")
+border_color = Color(0.89, 0.79, 0.57, 1)
 bg_color = Color(0.76,0.65,0.45,1)
 content_margin_left = 12.0
 content_margin_right = 12.0
 content_margin_top = 8.0
 content_margin_bottom = 8.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="disabled"]
+script = ExtResource("button_frame")
+border_color = Color(0.24, 0.21, 0.16, 1)
 bg_color = Color(0.11,0.10,0.085,0.9)
 content_margin_left = 12.0
 content_margin_right = 12.0
 content_margin_top = 8.0
 content_margin_bottom = 8.0
-anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="focus"]
+script = ExtResource("button_frame")
+focus_ring = true
 bg_color = Color(0,0,0,0)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0.82,0.73,0.56,1)
-anti_aliasing = false
 
 [resource]
 default_font = ExtResource("font")
@@ -114,6 +114,9 @@ PrimaryButton/base_type = &"Button"
 PrimaryButton/styles/normal = SubResource("primary")
 PrimaryButton/styles/hover = SubResource("primary_hover")
 PrimaryButton/styles/pressed = SubResource("primary_hover")
+PrimaryButton/styles/hover_pressed = SubResource("primary_hover")
 PrimaryButton/colors/font_color = Color(0.08,0.07,0.05,1)
 PrimaryButton/colors/font_hover_color = Color(0.08,0.07,0.05,1)
 PrimaryButton/colors/font_pressed_color = Color(0.08,0.07,0.05,1)
+PrimaryButton/colors/font_hover_pressed_color = Color(0.08,0.07,0.05,1)
+PrimaryButton/colors/font_focus_color = Color(0.08,0.07,0.05,1)

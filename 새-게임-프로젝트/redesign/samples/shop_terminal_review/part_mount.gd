@@ -15,11 +15,17 @@ var perform_action: Callable
 func _feedback_transaction(event: Dictionary, effects) -> void:
 	if campaign==null or str(event.command) not in ["equip","replace_part"]:return
 	var before:Array=event.before.equipped;var after:Array=event.after.equipped
-	var id:=str(event.extra) if event.command=="replace_part" else str(event.value)
-	var index:=after.find(id) if after.has(id) else before.find(id)
-	if index>=0 and index<%Slots.get_child_count():effects.pulse(%Slots.get_child(index),"installed")
-	if stored_buttons.has(id):effects.pulse(stored_buttons[id],"stored")
+	if campaign.equipped_parts() != after: return
+	for id in effects.added_ids(before, after):
+		var index := after.find(id)
+		if index >= 0 and index < %Slots.get_child_count():
+			effects.install_part(%Slots.get_child(index), installation_source(), id)
+	for id in effects.added_ids(after, before):
+		if stored_buttons.has(id): effects.pulse(stored_buttons[id], "stored")
 	effects.pulse(%Result,"complete")
+
+func installation_source() -> Control:
+	return %SelectedGlyph
 
 func _ready() -> void:
 	for index in range(Campaign.MAX_EQUIPPED_PARTS):
@@ -32,7 +38,7 @@ func open(run: Campaign, preferred: String) -> void:
 	var stored := rebuild_storage(equipped)
 	selected_id = preferred if campaign.s.parts.has(preferred) else str(equipped[0]) if not equipped.is_empty() else str(stored[0]) if not stored.is_empty() else ""
 	outgoing = ""
-	%Result.text = ""
+	show_result("")
 	refresh()
 	if stored_buttons.has(selected_id):
 		stored_buttons[selected_id].grab_focus()
@@ -47,13 +53,8 @@ func rebuild_storage(equipped: Array) -> Array:
 	var stored: Array = campaign.s.parts.filter(func(id): return not equipped.has(id))
 	for value in stored:
 		var id := str(value)
-		var button := Button.new()
+		var button := storage_button(id)
 		button.name = "Stored_" + id
-		button.text = part_name(id) + (" · 코어" if Data.is_core_part(id) else "")
-		button.custom_minimum_size.y = 44
-		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.toggle_mode = true
-		button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		button.pressed.connect(select_part.bind(id))
 		%Storage.add_child(button)
 		stored_buttons[id] = button
@@ -61,13 +62,22 @@ func rebuild_storage(equipped: Array) -> Array:
 	%StorageCount.text = "보관함 · %d개" % stored.size()
 	return stored
 
+func storage_button(id: String) -> Button:
+	var button := Button.new()
+	button.text = part_name(id) + (" · 코어" if Data.is_core_part(id) else "")
+	button.custom_minimum_size.y = 44
+	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	button.toggle_mode = true
+	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	return button
+
 func part_name(id: String) -> String:
 	return str(Data.part_spec(id, campaign.model.s).name)
 
 func select_part(id: String) -> void:
 	selected_id = id
 	outgoing = ""
-	%Result.text = ""
+	show_result("")
 	refresh()
 
 func select_slot(index: int) -> void:
@@ -79,7 +89,7 @@ func select_slot(index: int) -> void:
 		select_part(id)
 	else:
 		outgoing = id
-		%Result.text = ""
+		show_result("")
 		refresh()
 
 func valid_replacements(equipped: Array) -> Array:
@@ -87,9 +97,14 @@ func valid_replacements(equipped: Array) -> Array:
 	for index in range(equipped.size()):
 		var proposed := equipped.duplicate()
 		proposed[index] = selected_id
-		if Data.valid_part_set(str(campaign.s.gun), proposed):
+		if Data.valid_part_set(str(campaign.s.gun), proposed, campaign.model.s):
 			valid.append(equipped[index])
 	return valid
+
+func display_slot(slot: Button, id: String) -> void:
+	var glyph = slot.get_node("Glyph")
+	glyph.visible = not id.is_empty()
+	if glyph.visible: glyph.item_id = id
 
 func refresh() -> void:
 	var equipped := campaign.equipped_parts()
@@ -103,10 +118,7 @@ func refresh() -> void:
 	for index in range(Campaign.MAX_EQUIPPED_PARTS):
 		var slot := %Slots.get_child(index) as Button
 		var id := str(equipped[index]) if index < equipped.size() else ""
-		var glyph = slot.get_node("Glyph")
-		glyph.visible = not id.is_empty()
-		if glyph.visible:
-			glyph.item_id = id
+		display_slot(slot, id)
 		slot.tooltip_text = "빈 슬롯" if id.is_empty() else part_name(id)
 		slot.disabled = id.is_empty() or (needs_slot and not valid.has(id))
 		slot.set_pressed_no_signal(not id.is_empty() and (id == selected_id or id == outgoing))
@@ -185,9 +197,12 @@ func apply_selection() -> void:
 	var equipped := campaign.equipped_parts()
 	rebuild_storage(equipped)
 	refresh()
-	%Result.text = result
+	show_result(result)
 	if stored_buttons.has(selected_id):
 		stored_buttons[selected_id].grab_focus()
 	else:
 		%Slots.get_child(equipped.find(selected_id)).grab_focus()
 	parts_changed.emit()
+
+func show_result(message: String) -> void:
+	%Result.text = message

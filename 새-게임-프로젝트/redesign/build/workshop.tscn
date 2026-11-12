@@ -1,0 +1,228 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/build/workshop.gd" id="logic"]
+[ext_resource type="Theme" path="res://redesign/workbench/theme.tres" id="theme"]
+[ext_resource type="Texture2D" path="res://assets/art/service_background_grouped_20261025/workshop.png" id="room"]
+[ext_resource type="PackedScene" path="res://redesign/build/part_mount.tscn" id="parts"]
+
+[sub_resource type="StyleBoxFlat" id="Header"]
+bg_color = Color(0.082, 0.086, 0.067, 1)
+border_width_bottom = 1
+border_color = Color(0.26, 0.23, 0.18, 1)
+content_margin_left = 0.0
+content_margin_right = 0.0
+content_margin_top = 8.0
+content_margin_bottom = 8.0
+anti_aliasing = false
+
+[node name="WorkspaceOverlay" type="Control"]
+layout_mode = 1
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+z_index = 100
+mouse_filter = 0
+theme = ExtResource("theme")
+script = ExtResource("logic")
+
+[node name="Room" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture_filter = 1
+texture = ExtResource("room")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Shade" type="ColorRect" parent="."]
+layout_mode = 1
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.047, 0.038, 0.026, 0.67)
+
+[node name="HeaderBand" type="Panel" parent="."]
+mouse_filter = 2
+layout_mode = 1
+anchor_right = 1
+offset_bottom = 60
+theme_override_styles/panel = SubResource("Header")
+
+[node name="SafeArea" type="MarginContainer" parent="."]
+layout_mode = 1
+anchor_right = 1
+anchor_bottom = 1
+grow_horizontal = 2
+grow_vertical = 2
+unique_name_in_owner = true
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Frame" type="VBoxContainer" parent="SafeArea"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="PanelContainer" parent="SafeArea/Frame"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_override_styles/panel = SubResource("Header")
+
+[node name="HeaderRow" type="HBoxContainer" parent="SafeArea/Frame/Header"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="SafeArea/Frame/Header/HeaderRow"]
+layout_mode = 2
+theme_type_variation = &"SectionTitle"
+text = "빌드 작업실"
+
+[node name="Tabs" type="HBoxContainer" parent="SafeArea/Frame/Header/HeaderRow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="PartsTab" type="Button" parent="SafeArea/Frame/Header/HeaderRow/Tabs"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"ModeTab"
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+button_pressed = true
+text = "파츠 구성"
+
+[node name="AmmoTab" type="Button" parent="SafeArea/Frame/Header/HeaderRow/Tabs"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"ModeTab"
+custom_minimum_size = Vector2(96, 44)
+toggle_mode = true
+button_pressed = false
+text = "탄환 덱"
+
+[node name="BuildFeedback" type="Label" parent="SafeArea/Frame/Header/HeaderRow"]
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+clip_text = true
+text_overrun_behavior = 3
+theme_type_variation = &"Caption"
+horizontal_alignment = 2
+vertical_alignment = 1
+theme_override_colors/font_color = Color(0.91, 0.76, 0.5, 1)
+
+[node name="workspace_close" type="Button" parent="SafeArea/Frame/Header/HeaderRow"]
+layout_mode = 2
+unique_name_in_owner = true
+custom_minimum_size = Vector2(88, 44)
+text = "닫기"
+
+[node name="PartsPage" type="VBoxContainer" parent="SafeArea/Frame"]
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_vertical = 3
+
+[node name="PartsPane" instance=ExtResource("parts") parent="SafeArea/Frame/PartsPage"]
+layout_mode = 2
+unique_name_in_owner = true
+
+[node name="AmmoPage" type="VBoxContainer" parent="SafeArea/Frame"]
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_vertical = 3
+visible = false
+theme_override_constants/separation = 8
+
+[node name="DeckSummary" type="Label" parent="SafeArea/Frame/AmmoPage"]
+layout_mode = 2
+unique_name_in_owner = true
+clip_text = true
+text_overrun_behavior = 3
+theme_type_variation = &"Caption"
+
+[node name="AmmoBody" type="HBoxContainer" parent="SafeArea/Frame/AmmoPage"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="Carried" type="VBoxContainer" parent="SafeArea/Frame/AmmoPage/AmmoBody"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Pack" type="HBoxContainer" parent="SafeArea/Frame/AmmoPage/AmmoBody/Carried"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="PackTitle" type="Label" parent="SafeArea/Frame/AmmoPage/AmmoBody/Carried/Pack"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"Caption"
+
+[node name="Capacity" type="Control" parent="SafeArea/Frame/AmmoPage/AmmoBody/Carried/Pack"]
+layout_mode = 2
+unique_name_in_owner = true
+size_flags_horizontal = 3
+mouse_filter = 2
+size_flags_vertical = 4
+custom_minimum_size = Vector2(0, 16)
+
+[node name="StacksScroll" type="ScrollContainer" parent="SafeArea/Frame/AmmoPage/AmmoBody/Carried"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 0
+
+[node name="Stacks" type="GridContainer" parent="SafeArea/Frame/AmmoPage/AmmoBody/Carried/StacksScroll"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+
+[node name="AmmoDetail" type="PanelContainer" parent="SafeArea/Frame/AmmoPage/AmmoBody"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"Inspector"
+custom_minimum_size = Vector2(320, 0)
+
+[node name="AmmoDetailScroll" type="ScrollContainer" parent="SafeArea/Frame/AmmoPage/AmmoBody/AmmoDetail"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="AmmoDetailCopy" type="VBoxContainer" parent="SafeArea/Frame/AmmoPage/AmmoBody/AmmoDetail/AmmoDetailScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="AmmoName" type="Label" parent="SafeArea/Frame/AmmoPage/AmmoBody/AmmoDetail/AmmoDetailScroll/AmmoDetailCopy"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"SectionTitle"
+
+[node name="AmmoGrade" type="Label" parent="SafeArea/Frame/AmmoPage/AmmoBody/AmmoDetail/AmmoDetailScroll/AmmoDetailCopy"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"Caption"
+
+[node name="AmmoText" type="Label" parent="SafeArea/Frame/AmmoPage/AmmoBody/AmmoDetail/AmmoDetailScroll/AmmoDetailCopy"]
+layout_mode = 2
+unique_name_in_owner = true
+autowrap_mode = 3
+
+[node name="AmmoStats" type="Label" parent="SafeArea/Frame/AmmoPage/AmmoBody/AmmoDetail/AmmoDetailScroll/AmmoDetailCopy"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"Caption"
+autowrap_mode = 3
+
+[node name="AmmoHint" type="Label" parent="SafeArea/Frame/AmmoPage/AmmoBody/AmmoDetail/AmmoDetailScroll/AmmoDetailCopy"]
+layout_mode = 2
+unique_name_in_owner = true
+theme_type_variation = &"Caption"
+autowrap_mode = 3
+text = "새 탄은 탄약고·조우·보상에서, 교체와 강화는 정비소에서 합니다."

@@ -8,6 +8,7 @@ const Actors = preload("res://redesign/service_actor_catalog.gd")
 const Item = preload("res://redesign/workbench/item.tscn")
 const Candidate = preload("res://redesign/workbench/candidate.tscn")
 const Upgrade = preload("res://redesign/ammo_upgrade.gd")
+const DarkPrimary = preload("res://redesign/ui/dark_primary.tres")
 const MODES = {0:"탄종 교체", 1:"탄환 강화", 3:"덱 정리", 4:"가방 확장"}
 var host
 var presenter
@@ -229,6 +230,9 @@ func _refresh() -> void:
 		content.get_node("Condition").text = host.save_error
 		content.get_node("Condition").visible = true
 	var apply: Button = $Inspector/Inset/Actions/Apply
+	var commits_work := not done and mode != 1
+	apply.theme = DarkPrimary if commits_work else null
+	apply.theme_type_variation = &"" if commits_work else &"PrimaryButton"
 	apply.text = action
 	apply.disabled = not done and not proposal.valid
 	if mode == 1 and not done:

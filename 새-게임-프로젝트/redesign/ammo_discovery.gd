@@ -1,6 +1,9 @@
 extends RefCounted
 ## Versioned acquisition policy. Retired cards remain valid for legacy ownership.
-const VERSION := 3
+## v4 (2026-11-10, growth structure v2): 연계탄 returns to the pools. Special-first loading
+## puts several special kinds in front, so its condition now holds.
+## v5 (2026-11-12, ammo_revision.gd): 예약탄 returns; it now works in magazine combat.
+const VERSION := 5
 const PAUSED_AMMO := ["prepare", "disrupt"]
 const PAUSED_PARTS := ["indexer"]
 const LINKS := {
@@ -38,7 +41,7 @@ const LINKS := {
 }
 
 static func ammo(pool: Array, version: int = 1) -> Array:
-	var result := pool.filter(func(id): return not PAUSED_AMMO.has(id) and (version < 2 or id != "sequence"))
+	var result := pool.filter(func(id): return (not PAUSED_AMMO.has(id) or (version >= 5 and id == "prepare")) and (version < 2 or version >= 4 or id != "sequence"))
 	if version >= 2: result.append("basic")
 	return result
 

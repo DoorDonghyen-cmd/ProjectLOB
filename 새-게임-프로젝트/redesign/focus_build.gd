@@ -100,5 +100,5 @@ static func offer_label(state: Dictionary, id: String) -> String:
 	var main := main_round(state)
 	if not main.is_empty() and id == upgrade(main): return "주력 강화 · 새 1장"
 	if id == main: return "집중 보충 · 동일 성능 %d장 보유" % state.deck.count(id)
-	if not main.is_empty() and supports_for(state,Content.source_id(main)).has(id): return "연계 · " + str(Content.AMMO[main].name)
+	if not main.is_empty() and supports_for(state,Content.source_id(main)).has(id): return "보조 · " + str(Content.AMMO[main].name)
 	return "새 조합" if not state.deck.any(func(owned): return Content.source_id(str(owned)) == Content.source_id(id)) else "다른 선택"

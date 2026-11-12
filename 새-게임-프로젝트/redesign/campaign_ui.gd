@@ -24,7 +24,7 @@ const DeckLoadout = preload("res://redesign/deck_loadout.tscn")
 const GateScreen = preload("res://redesign/samples/gate_review/threshold_preview.tscn")
 const DepotScreen = preload("res://redesign/samples/supply_review/preview.tscn")
 const EventScreen = preload("res://redesign/samples/event_review/preview.tscn")
-const BuildWorkshop = preload("res://redesign/build/workshop.gd")
+const BuildWorkshop = preload("res://redesign/build/workshop.tscn")
 const Insight = preload("res://redesign/run_insight.gd")
 const Lore = preload("res://redesign/city_story.gd")
 const ArchiveRoom = preload("res://redesign/common/archive.gd")
@@ -216,7 +216,7 @@ func part_card(parent: Node, id: String, compact: bool = false, equipped: bool =
 ## Part details (2026-11-08): common window, opened from the build workshop, rewards and
 ## the shop terminal. Same content as before.
 func part_details(id: String) -> void:
-	var panel: VBoxContainer = ui.CommonWindows.open(ui, str(Ammo.PARTS[id].name), Ammo.part_grade_summary(id), Vector2(780, 600))
+	var panel: VBoxContainer = ui.CommonWindows.open(ui, str(Ammo.PARTS[id].name), Ammo.part_grade_summary(id, ui.model.s), Vector2(780, 600))
 	panel.name = "PartDetails"
 	panel.get_meta("dialog").get_node("%Subtitle").add_theme_color_override("font_color", Ammo.part_grade_color(id))
 	# The part's pixel icon (as on the mount) beside its effect, instead of the old teal card.
@@ -239,13 +239,13 @@ func part_details(id: String) -> void:
 	ui.CommonWindows.text(copy, "장착 효과 · " + Insight.reward_impact(id, ui.model.s, []), &"", ui.CommonWindows.IVORY)
 	ui.CommonWindows.text(copy, BuildGuide.connection(id, ui.model.s), &"", ui.CommonWindows.GOLD)
 	ui.CommonWindows.text(panel, str(Ammo.part_spec(id,ui.model.s).text), &"", ui.CommonWindows.MUTED)
-	ui.CommonWindows.text(panel, "등급 막대 1 / 2 / 3개: 일반 / 고급 / 희귀 · 코어는 별도 장착 제한", &"Caption")
+	ui.CommonWindows.text(panel, "등급 막대 1 / 2 / 3개: 일반 / 고급 / 희귀" + ("" if preload("res://redesign/growth_structure.gd").enabled(ui.model.s) else " · 코어는 별도 장착 제한"), &"Caption")
 
 func _purchase_will_equip(id: String) -> bool:
 	var proposed: Array = campaign.equipped_parts()
 	if proposed.has(id): return false
 	proposed.append(id)
-	return Ammo.valid_part_set(str(campaign.s.gun), proposed)
+	return Ammo.valid_part_set(str(campaign.s.gun), proposed, campaign.model.s)
 
 func _offer_destination(id: String) -> String:
 	if campaign.is_equipped(id): return "장착 중"
@@ -1119,18 +1119,16 @@ func _new_challenge() -> void:
 	ui.preparation_seed = ""
 	ui._open_preparation()
 
-## 빌드 작업실 (reworked 2026-11-08): redesign/build/workshop.gd, registered as the
-## screen's workspace overlay so 닫기/Esc/focus return behave as before.
-func deck(initial_tab: String = "parts") -> void:
+func deck(initial_tab: String = "parts", preferred_part: String = "", return_focus: Control = null) -> Control:
 	ui._close_workspace()
-	var prior: Control = ui.get_viewport().gui_get_focus_owner()
+	var prior: Control = return_focus if is_instance_valid(return_focus) else ui.get_viewport().gui_get_focus_owner()
 	if prior != null: ui.workspace_return_focus = weakref(prior)
-	var view: Control = BuildWorkshop.new()
-	view.name = "WorkspaceOverlay"
-	view.configure(ui, self, initial_tab, workspace_feedback)
+	var view: Control = BuildWorkshop.instantiate()
+	view.configure(ui, self, initial_tab, workspace_feedback, preferred_part)
 	workspace_feedback = ""
-	ui.add_child(view)
 	ui.workspace_overlay = view
+	ui.add_child(view)
+	return view
 
 func _inspect_part(view: Control, id: String) -> void:
 	if not is_instance_valid(view): return
@@ -1173,7 +1171,7 @@ func _inspect_part(view: Control, id: String) -> void:
 			for candidate in proposed:
 				var test:=proposed.duplicate()
 				test[test.find(candidate)]=id
-				if Ammo.valid_part_set(str(campaign.s.gun),test): replacements.append(candidate)
+				if Ammo.valid_part_set(str(campaign.s.gun),test,campaign.model.s): replacements.append(candidate)
 			if replacements.is_empty():
 				effects.text="이 구성에는 장착할 수 없습니다."
 				cost.hide();delta.hide();apply.hide()
@@ -1236,8 +1234,9 @@ func _inspect_part(view: Control, id: String) -> void:
 		for key in ["normal","hover","pressed","focus","disabled"]: button.add_theme_stylebox_override(key,StyleBoxEmpty.new())
 	ui._workspace_focus_chain.call_deferred()
 
-func _confirm_part_dismantle(id: String) -> void:
-	ui._confirmation("파츠 분해", "%s을 분해해 10Cr를 받습니다.\n분해한 파츠는 보관함에서 사라집니다." % Ammo.PARTS[id].name, "PartDismantleConfirmation", "분해 · +10Cr", "보관", _apply_part_change.bind("dismantle", id, id))
+func _confirm_part_dismantle(id: String, confirm: Callable = Callable()) -> void:
+	var apply := confirm if confirm.is_valid() else _apply_part_change.bind("dismantle", id, id)
+	ui._confirmation("파츠 분해", "%s을 분해해 10Cr를 받습니다.\n분해한 파츠는 보관함에서 사라집니다." % Ammo.PARTS[id].name, "PartDismantleConfirmation", "분해 · +10Cr", "보관", apply)
 
 func _apply_part_change(command: String, value: String, selected: String) -> void:
 	selected_part_id = selected

@@ -27,6 +27,9 @@ func _initialize() -> void:
 func new_run(magazine: bool):
 	var c = Campaign.new()
 	c.start("single", 731042, 0, "balanced", 3, "carrier", magazine)
+	# These checks pin the magazine-build rules before growth structure v2 (11-10: 4-kind triad,
+	# rivet ejects to the back); those are checked in growth_structure_rules.gd.
+	c.model.s.erase("growth_structure_version")
 	return c
 
 func start_deck_checks() -> void:

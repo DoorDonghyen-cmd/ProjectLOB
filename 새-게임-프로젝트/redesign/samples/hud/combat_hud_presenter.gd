@@ -6,6 +6,8 @@ const HudTheme=preload("res://redesign/samples/hud/combat_hud_theme.tres")
 const SmallFont=preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 const LargeFont=preload("res://assets/fonts/NeoDunggeunmoPro-Regular.ttf")
 const HudMaterial=preload("res://redesign/combat_material/skin.gd")
+const Tags=preload("res://redesign/tag_build.gd")
+const TagChips=preload("res://redesign/tag_chips.gd")
 const TEXT=HudMaterial.INK
 const MUTED=HudMaterial.MUTED
 const GOLD=Color("f3cf73")
@@ -325,12 +327,40 @@ func render()->void:
   if n("Seal%d"%i).visible:
    n("Select%d"%i).tooltip_text+=" · 봉인탄 ×3 · 빼내기 불가"
    n("Select%d"%i).accessibility_name+=" · 봉인탄 ×3 · 빼내기 불가"
+  # Tag build runs (2026-11-11): chips and the boosted number (sync_tag_card), tags in the tooltip.
+  var tagged: bool=sync_tag_card(i,str(stack[i]) if occupied else "")
+  if tagged:
+   var own: Array=Tags.tags(state,str(stack[i]))
+   n("Select%d"%i).tooltip_text+=" · 태그 "+"·".join(own)
+   n("Select%d"%i).accessibility_name+=" · 태그 "+"·".join(own)
  for button in ui.find_children("*","Button",true,false):
   var frame=button.get_node_or_null(str(button.name)+"Frame")
   if frame!=null and frame.has_method("sync"):frame.sync()
  n("Menu").disabled=ui.busy or ui.eject_mode
  feedback.sync_phase()
  sync_focus()
+
+## Tag chips in the card's top strip (filled when a part reads the tag) and the card number
+## raised by unconditional tag parts, in green. Also called while the magazine animates
+## (combat_hud_feedback.gd show_round). Returns whether the round shows tags.
+func sync_tag_card(i: int,id: String)->bool:
+ var state: Dictionary=ui.model.s
+ var face: Control=n("Face%d"%i)
+ var chips: Control=face.get_node_or_null("Tags")
+ if chips==null and Tags.enabled(state):
+  chips=TagChips.new();chips.name="Tags";chips.position=Vector2(6,2);face.add_child(chips)
+ if chips==null:return false
+ var own: Array=Tags.tags(state,id) if not id.is_empty() else []
+ chips.visible=Tags.enabled(state) and not own.is_empty()
+ if not chips.visible:return false
+ chips.set_tags(own,Tags.read_tags(state,Content.active_parts(state)))
+ var boost: Dictionary=Tags.card_bonus(state,id,Content.active_parts(state))
+ if int(boost.add)!=0 or int(boost.percent)!=100:
+  if str(Content.primary_stat(id,state).label)=="피해":
+   var per_hit:=(Content.damage(id,state)+int(boost.add))*int(boost.percent)/100
+   n("Value%d"%i).text=str(per_hit)+("×%d"%Content.hit_count(id,state) if str(Content.AMMO[id].effect)=="double" else "")
+  n("Value%d"%i).add_theme_color_override("font_color",Tags.BOOSTED)
+ return true
 
 func lock()->void:
  feedback.begin_action()

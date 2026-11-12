@@ -13,9 +13,18 @@ const SIGNATURE:={"bore":"coil","arc":"capacitor","precise":"third_striker","pie
 static func family(state: Dictionary)->String:return Ammo.source_id(Focus.main_round(state)) if not Focus.main_round(state).is_empty() else ""
 static func modules(pool: Array,state: Dictionary)->Array:
 	var wanted: Array=MODULES.get(family(state),[]).duplicate()
+	# Tag build: tag parts fit any main round through its tags.
+	if preload("res://redesign/tag_build.gd").enabled(state): wanted.append_array(tag_modules(state))
 	if state.get("deck",[]).any(func(id):return Ammo.source_id(str(id))=="disrupt") and not wanted.has("rammer"):wanted.append("rammer")
 	if Ammo.equipped_parts(state).any(func(id):return id in ["volley_drive","siege_drive"]) and not wanted.has("capacitor"):wanted.append("capacitor")
 	return pool.filter(func(id):return wanted.has(id) and not Ammo.is_core_part(id))
+## Tag parts that read a tag the main round carries, plus the tag-free ones
+## (conditional multipliers, magazine variety, copy).
+static func tag_modules(state: Dictionary)->Array:
+	var Tags=preload("res://redesign/tag_build.gd")
+	var main:=Focus.main_round(state)
+	var carried: Array=Tags.tags(state,main) if not main.is_empty() else []
+	return Tags.PARTS.keys().filter(func(id):return not Tags.PARTS[id].has("tag") or carried.has(str(Tags.PARTS[id].tag)))
 static func signature(state: Dictionary)->String:return str(SIGNATURE.get(family(state),""))
 static func role(id: String)->String:
 	if id in ["coil","inferno","igniter"]:return "불길"

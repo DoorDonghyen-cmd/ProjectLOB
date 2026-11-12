@@ -40,8 +40,12 @@ static func feet(c: CanvasItem, left: int, right: int, y: int) -> void:
 	metal(c, left, y, 5, 3)
 	metal(c, right, y, 5, 3)
 
-static func draw(c: CanvasItem, id: String, center: Vector2, accent: Color, factor: float) -> void:
-	var unit := 1 if factor < 0.75 else 2
+## Tag parts (2026-11-10) reuse the icon of the part they replace until they get their own art.
+const ALIASES := {"tag_fire_add": "coil", "tag_shock_add": "capacitor", "tag_multi_add": "duplex", "tag_single_add": "lens", "tag_finisher_add": "executioner", "tag_single_mult": "siege_drive", "tag_hot_mult": "ember_core", "tag_low_mult": "executioner", "tag_control_mult": "rammer", "tag_fire_deck": "supply", "tag_fire_burn": "inferno", "tag_burning_mult": "igniter", "tag_variety": "triad", "tag_fire_growth": "tally", "tag_copy": "ordinary_chain"}
+
+static func draw(c: CanvasItem, id: String, center: Vector2, accent: Color, factor: float, pixel_step: bool = true) -> void:
+	id = str(ALIASES.get(id, id))
+	var unit := (1.0 if factor < 0.75 else 2.0) if pixel_step else factor
 	c.draw_set_transform((center - SIZE * unit * 0.5).floor(), 0, Vector2.ONE * unit)
 	var accent_metal := accent.lerp(STEEL, 0.48)
 	match id:

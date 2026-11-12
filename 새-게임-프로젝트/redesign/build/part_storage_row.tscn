@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://redesign/samples/shop_terminal_review/item_glyph.gd" id="glyph"]
+
+[node name="PartStorageRow" type="Button"]
+custom_minimum_size = Vector2(0, 44)
+size_flags_horizontal = 3
+toggle_mode = true
+
+[node name="Inset" type="MarginContainer" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 10
+
+[node name="Line" type="HBoxContainer" parent="Inset"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Glyph" type="Control" parent="Inset/Line"]
+layout_mode = 2
+mouse_filter = 2
+custom_minimum_size = Vector2(36, 28)
+script = ExtResource("glyph")
+is_part = true
+item_id = "third_striker"
+
+[node name="PartName" type="Label" parent="Inset/Line"]
+layout_mode = 2
+mouse_filter = 2
+size_flags_horizontal = 3
+clip_text = true
+text_overrun_behavior = 3
+text = "제3 격발기"
+
+[node name="Value" type="Label" parent="Inset/Line"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"Caption"
+custom_minimum_size = Vector2(96, 0)
+clip_text = true
+text_overrun_behavior = 3
+horizontal_alignment = 2
+text = "3번째 ×3"

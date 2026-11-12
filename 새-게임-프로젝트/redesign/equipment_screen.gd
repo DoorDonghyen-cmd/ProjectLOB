@@ -35,11 +35,13 @@ func bind_screen(owner_screen: Control, run_profile: Dictionary) -> void:
 		var button := find_child("outfit_select_" + id, true, false) as Button
 		var outfit: Dictionary = Content.OUTFITS[id]
 		button.set_meta("caption", outfit.name)
-		button.get_node("Copy/Name").text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-		button.get_node("Copy/Name").custom_minimum_size.x = 0
-		button.get_node("Copy/Name").text = outfit.name
-		button.get_node("Copy/Stats").text = "탄약 최대 %d발" % Content.Roles.CARRY[id]
-		if host.preparation_training: button.get_node("Copy/Stats").text = "손패 %d · 교환 %d회" % [outfit.hand, outfit.exchange]
+		var name_label: Label = button.get_node("Content/Copy/Name")
+		var stats: Label = button.get_node("Content/Copy/Stats")
+		name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		name_label.custom_minimum_size.x = 0
+		name_label.text = outfit.name
+		stats.text = "탄약 최대 %d발" % Content.Roles.CARRY[id]
+		if host.preparation_training: stats.text = "손패 %d · 교환 %d회" % [outfit.hand, outfit.exchange]
 		button.disabled = host.preparation_training and id != "work"
 		button.pressed.connect(_select_outfit.bind(id))
 	for button in find_children("*", "Button", true, false):
@@ -106,6 +108,7 @@ func refresh() -> void:
 	%SelectionSummary.text = "%s  /  %s" % [gun.name, outfit.name]
 	%starting_deck.text = "시작 탄환  %d장  ›" % _start_deck().size()
 	%preparation_options.text = "등반 설정" if host.selected_difficulty == 0 else "등반 설정 · 난도 %d" % host.selected_difficulty
+	if host.selected_tag_build and not host.preparation_training: %preparation_options.text += " · 태그"
 	_fit_layout.call_deferred()
 
 func _fit_layout() -> void:
@@ -148,6 +151,12 @@ func _deck_details() -> void:
 		caption.name = "StartingRound_" + str(id)
 		host._label(row, preload("res://redesign/readability.gd").stats(id,{"gun":host.selected_weapon_id},true), 18, host.MUTED)
 
+func _pick_scheme(tags: bool, dialog: Control) -> void:
+	host.selected_tag_build = tags
+	dialog.close()
+	refresh()
+	_options.call_deferred()
+
 func _options() -> void:
 	var column: VBoxContainer = host._dialog("등반 설정", false)
 	column.name = "PreparationOptions"
@@ -175,6 +184,14 @@ func _options() -> void:
 		host.difficulty_option.editable = int(profile.ascension) > 0
 		host.difficulty_option.value_changed.connect(func(value: float): host.selected_difficulty = int(value); refresh())
 		column.add_child(host.difficulty_option)
+		# Tag-based rounds and parts prototype (2026-11-10, tag_build.gd), chosen per run.
+		host._label(column, "탄환·파츠 구성 · 비교 시험", 18, host.MUTED)
+		host._label(column, "태그 시험판은 탄의 태그(화염·단타·마무리 등)를 보고 작동하는 파츠 15종으로 바뀝니다.", 16, host.MUTED)
+		var schemes: HBoxContainer = host._row(column)
+		schemes.name = "PartSchemeSelection"
+		for entry in [[false, "현재 구성", "part_scheme_current"], [true, "태그 시험판", "part_scheme_tags"]]:
+			var scheme_button: Button = host._button(schemes, str(entry[1]), str(entry[2]), _pick_scheme.bind(bool(entry[0]), dialog))
+			if bool(entry[0]) == host.selected_tag_build: host._primary_button(scheme_button)
 	host._label(column, "시드 · 같은 번호는 같은 경로로 시작합니다", 18, host.MUTED)
 	var row: HBoxContainer = host._row(column)
 	host.seed_input = LineEdit.new()

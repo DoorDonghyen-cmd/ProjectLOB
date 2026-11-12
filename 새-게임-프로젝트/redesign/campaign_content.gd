@@ -370,6 +370,13 @@ static func offers(node: Dictionary, seed_value: int, revision: int, gun: String
 	var parts: Array = eligible_parts(gun, discovery_version, focus_version)
 	# Build engine parts appear only in runs started with it (build_engine.gd).
 	if not preload("res://redesign/build_engine.gd").enabled(state): parts = parts.filter(func(id): return not preload("res://redesign/build_engine.gd").NEW_PARTS.has(id))
+	# Tag build runs offer tag parts instead of the round-specific additive parts; other runs never see tag parts.
+	parts = parts.filter(func(id): return preload("res://redesign/tag_build.gd").offerable(state, id))
+	# 11-11 part fixes (part_tuning.gd): 야전 압축기 has no use in magazine combat.
+	parts = parts.filter(func(id): return preload("res://redesign/part_tuning.gd").offerable(state, id))
+	# v2: the gun already carries its drive; do not offer the same drive as a part.
+	var innate := Ammo.innate_engine(state)
+	if not innate.is_empty(): parts.erase(innate)
 	for id in owned: parts.erase(id)
 	var unseen: Array = []
 	var repeated: Array = []

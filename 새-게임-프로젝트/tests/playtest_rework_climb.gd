@@ -5,7 +5,8 @@ func choose_ammo(c,options: Array)->String:
  if role_build and not c.first_ammo_reward() and options.has("disrupt") and c.model.s.deck.count("disrupt")<1:return "disrupt"
  return super.choose_ammo(c,options)
 func command(c,item: Dictionary)->bool:
- if item.action=="gate":
+ # keep: a subclass chose the gate option on purpose (growth_v2_climb, 2026-11-10).
+ if item.action=="gate" and not item.get("keep",false):
   var preferred: String=["cadence","efficiency","conduction","cadence"][mini(3,int(c.s.region))]
   if preferred=="cadence" and c.s.gun=="amplifier":preferred="efficiency"
   if c.gate_options().has(preferred):item=item.duplicate(true);item.id=preferred

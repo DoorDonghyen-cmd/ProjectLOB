@@ -23,7 +23,8 @@ $suites = [ordered]@{
   'equipment_dialog_ui' = 'equipment_dialog_20261106'; 'console_visual_runner' = 'console_visual'; 'modal_touch_runner' = 'modal_touch\ui'
   'line_world_ui' = 'maps'; 'shop_terminal_live_runner' = 'shop_terminal_live'; 'reward_live_runner' = 'reward_live_20261105'
   'results_live_runner' = 'results_live_20261104'; 'workshop_standard_ui' = 'ui_standard_20261104'
-  'weapon_live_ui' = 'weapon_live_20261106\ui|plain'; 'build_engine_rules' = 'build_engine_rules'; 'build_engine_ui' = 'build_engine_ui'
+  'weapon_live_ui' = 'weapon_live_20261106\ui|plain'; 'build_engine_rules' = 'build_engine_rules'; 'build_engine_ui' = 'build_engine_ui'; 'growth_structure_rules' = 'growth_structure_rules'; 'overhaul_ui' = 'overhaul_ui'
+  'tag_build_rules' = 'tag_build_rules'; 'tag_build_ui' = 'tag_build_ui'; 'overheat_cost_rules' = 'overheat_cost_rules'; 'tag_float_ui' = 'tag_float_ui'; 'reward_trim_ui' = 'reward_trim_ui'; 'reward_mix_ui' = 'reward_mix_ui'; 'mix_combo_rules' = 'mix_combo_rules'; 'mix_combo_ui' = 'mix_combo_ui'; 'part_slots_ui' = 'part_slots_ui'; 'salvage_ui' = 'salvage_ui'; 'part_tuning_rules' = 'part_tuning_rules'; 'ammo_revision_rules' = 'ammo_revision_rules'
 }
 $queue = [System.Collections.Queue]::new()
 foreach ($name in $(if ($Only) { $Only.Split(',') } else { @($suites.Keys) })) { $queue.Enqueue($name) }

@@ -61,7 +61,7 @@ func _run() -> void:
 	await fresh()
 	for key in ["first_guide", "guide", "settings", "new_run_setup", "training_setup"]:
 		check(screen.find_child(key, true, false) != null, "menu exposes " + key)
-	await press("guide")
+	await press("first_guide")
 	check(screen.find_child("FirstGuide", true, false) != null, "first guide opens")
 	check(screen.preferences.data.guide_seen, "opening guide records completion")
 	await close_dialogs()

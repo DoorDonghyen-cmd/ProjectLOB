@@ -99,8 +99,13 @@ static func has_ordinary_tactical(state: Dictionary) -> bool:
 # --- part conditions used by Model._shot -------------------------------------------
 
 ## Triad: 3+ special kinds in the magazine -> each special attack round +3.
+## v2 (special-first loading) needs four kinds: three kinds held in 88-100% of opening
+## magazines on real climb decks (2026-11-10 probe), four in 0-76% (close to the old rate).
+static func triad_kinds(state: Dictionary) -> int:
+	return TRIAD_KINDS + (1 if int(state.get("growth_structure_version", 0)) == 1 else 0)
+
 static func triad_bonus(state: Dictionary, id: String) -> int:
-	return TRIAD_BONUS if is_special(id) and Content.is_attack(id) and special_kinds(state) >= TRIAD_KINDS else 0
+	return TRIAD_BONUS if is_special(id) and Content.is_attack(id) and special_kinds(state) >= triad_kinds(state) else 0
 
 ## Compression stabiliser: any ordinary tactical round in the magazine -> compressed rounds heat -2.
 static func compression_ready(state: Dictionary, id: String) -> bool:
@@ -127,7 +132,8 @@ static func combos(state: Dictionary) -> PackedStringArray:
 			if event.get("action","") == "fire": fired += event.get("detail",{}).get("results",[]).size()
 		if parts.has("third_striker") and fired <= 2 and stack.size() > 2-fired:
 			var third := str(stack[2-fired])
-			items.append("3번째 %s ×3" % Content.AMMO[third].name if Content.is_attack(third) else "3번째 지원탄 · 강화 없음")
+			var multiplier := preload("res://redesign/samples/opening_build/third_striker_trial.gd").multiplier_label(state)
+			items.append("3번째 %s %s" % [Content.AMMO[third].name, multiplier] if Content.is_attack(third) else "3번째 지원탄 · 강화 없음")
 		if parts.has("opening") and fired == 0 and not stack.is_empty() and Content.is_attack(str(stack[0])): items.append("첫 발 ×2")
 	for i in range(stack.size()):
 		var id := str(stack[i])
@@ -136,11 +142,11 @@ static func combos(state: Dictionary) -> PackedStringArray:
 			if Content.is_attack(str(stack[j])):
 				items.append("%s→%s" % [Content.AMMO[id].name, Content.AMMO[str(stack[j])].name])
 				break
-	if parts.has("triad") and special_kinds(state) >= TRIAD_KINDS: items.append("삼중 %d종 +%d" % [special_kinds(state), TRIAD_BONUS])
+	if parts.has("triad") and special_kinds(state) >= triad_kinds(state): items.append("삼중 %d종 +%d" % [special_kinds(state), TRIAD_BONUS])
 	if parts.has("afterburner") and afterburner_ready(state): items.append("후미: 강화 단타 ×3" if focus else "후미 결산 ×2")
 	if parts.has("compression_sink") and stack.any(func(id): return compression_ready(state, str(id))): items.append("압축 발열 −%d" % COMPRESSION_SAVE)
 	return items.slice(0, 3)
 
 static func combo_line(state: Dictionary) -> String:
 	var items := combos(state)
-	return "연계  " + " · ".join(items) if not items.is_empty() else ""
+	return "탄창 효과  " + " · ".join(items) if not items.is_empty() else ""

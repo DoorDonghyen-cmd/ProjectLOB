@@ -1,32 +1,25 @@
-[gd_resource type="Theme" load_steps=13 format=3]
+[gd_resource type="Theme" load_steps=14 format=3]
 
 [ext_resource type="Font" path="res://redesign/combat_pixel_font.tres" id="1"]
 
+[ext_resource type="Script" path="res://redesign/ui/button_frame.gd" id="button_frame"]
+
 [sub_resource type="StyleBoxFlat" id="Action"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.105882, 0.117647, 0.105882, 0.909804)
 
 border_color = Color(0.270588, 0.282353, 0.243137, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 1
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 14.0
 
@@ -37,30 +30,21 @@ content_margin_right = 14.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="ActionHover"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.188235, 0.203922, 0.168627, 0.937255)
 
 border_color = Color(0.545098, 0.54902, 0.470588, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 1
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 14.0
 
@@ -71,30 +55,21 @@ content_margin_right = 14.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="Choice"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.090196, 0.105882, 0.090196, 0.929412)
 
 border_color = Color(0.270588, 0.282353, 0.243137, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 1
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 0.0
 
@@ -105,30 +80,21 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="Selected"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.192157, 0.180392, 0.137255, 0.937255)
 
 border_color = Color(0.745098, 0.639216, 0.419608, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 3
 
-border_width_top = 1
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 0.0
 
@@ -139,30 +105,21 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="ChoiceHover"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.160784, 0.180392, 0.145098, 0.941176)
 
 border_color = Color(0.454902, 0.47451, 0.407843, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 1
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 0.0
 
@@ -173,30 +130,21 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="SelectedHover"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.227451, 0.207843, 0.152941, 0.941176)
 
 border_color = Color(0.745098, 0.639216, 0.419608, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 3
 
-border_width_top = 1
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 0.0
 
@@ -207,30 +155,21 @@ content_margin_right = 0.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="Disabled"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.101961, 0.113725, 0.105882, 0.878431)
 
 border_color = Color(0.211765, 0.231373, 0.196078, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 1
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 14.0
 
@@ -241,30 +180,22 @@ content_margin_right = 14.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="Focus"]
+script = ExtResource("button_frame")
+focus_ring = true
 
 bg_color = Color(0.0, 0.0, 0.0, 0.0)
 
 border_color = Color(0.854902, 0.792157, 0.619608, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 2
 
-border_width_top = 2
 
-border_width_right = 2
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 14.0
 
@@ -275,30 +206,22 @@ content_margin_right = 14.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="Primary"]
+script = ExtResource("button_frame")
+brass_face = true
 
 bg_color = Color(0.745098, 0.639216, 0.419608, 1.0)
 
 border_color = Color(0.894118, 0.827451, 0.658824, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 2
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 14.0
 
@@ -309,30 +232,21 @@ content_margin_right = 14.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="PrimaryHover"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.803922, 0.709804, 0.501961, 1.0)
 
 border_color = Color(0.894118, 0.827451, 0.658824, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 2
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 14.0
 
@@ -343,30 +257,21 @@ content_margin_right = 14.0
 content_margin_bottom = 0.0
 
 [sub_resource type="StyleBoxFlat" id="PrimaryPressed"]
+script = ExtResource("button_frame")
 
 bg_color = Color(0.615686, 0.529412, 0.356863, 1.0)
 
 border_color = Color(0.894118, 0.827451, 0.658824, 1.0)
 
-anti_aliasing = false
 
-corner_detail = 1
 
-border_width_left = 1
 
-border_width_top = 2
 
-border_width_right = 1
 
-border_width_bottom = 2
 
-corner_radius_top_left = 4
 
-corner_radius_top_right = 4
 
-corner_radius_bottom_left = 4
 
-corner_radius_bottom_right = 4
 
 content_margin_left = 14.0
 
@@ -481,5 +386,7 @@ EquipmentPrimary/colors/font_hover_color = Color(0.094118, 0.105882, 0.082353, 1
 EquipmentPrimary/colors/font_pressed_color = Color(0.094118, 0.105882, 0.082353, 1.0)
 
 EquipmentPrimary/colors/font_hover_pressed_color = Color(0.094118, 0.105882, 0.082353, 1.0)
+
+EquipmentPrimary/colors/font_focus_color = Color(0.094118, 0.105882, 0.082353, 1.0)
 
 EquipmentPrimary/colors/font_disabled_color = Color(0.470588, 0.490196, 0.423529, 1.0)

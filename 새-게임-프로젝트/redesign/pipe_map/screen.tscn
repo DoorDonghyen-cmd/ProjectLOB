@@ -20,7 +20,7 @@
 [ext_resource type="Texture2D" path="res://assets/ui/pipe_map_art_20261101/region_central_closed.png" id="region4"]
 [ext_resource type="StyleBox" path="res://redesign/pipe_map/panel.tres" id="panel"]
 [ext_resource type="StyleBox" path="res://redesign/pipe_map/button.tres" id="slate"]
-[ext_resource type="StyleBox" path="res://redesign/pipe_map/primary.tres" id="fire"]
+[ext_resource type="Theme" path="res://redesign/ui/dark_primary.tres" id="action_theme"]
 [ext_resource type="StyleBox" path="res://redesign/pipe_map/gate.tres" id="reload"]
 [ext_resource type="Script" path="res://redesign/pipe_map/screen.gd" id="logic"]
 [ext_resource type="Script" path="res://redesign/pipe_map/graph.gd" id="graph"]
@@ -746,7 +746,7 @@ text = "자세히"
 [node name="Enter" type="Button" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy"]
 custom_minimum_size = Vector2(60,44)
 layout_mode = 2
-theme_type_variation = &"MapPrimary"
+theme = ExtResource("action_theme")
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "이동"
@@ -758,7 +758,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("button_edge")
-primary_variation = &"MapPrimary"
 
 [node name="MaterialEdge" type="Control" parent="Header/city_archive"]
 layout_mode = 1
@@ -766,7 +765,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("button_edge")
-primary_variation = &"MapPrimary"
 
 [node name="MaterialEdge" type="Control" parent="Header/settings"]
 layout_mode = 1
@@ -774,7 +772,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("button_edge")
-primary_variation = &"MapPrimary"
 
 [node name="MaterialEdge" type="Control" parent="Header/menu"]
 layout_mode = 1
@@ -782,7 +779,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("button_edge")
-primary_variation = &"MapPrimary"
 
 [node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions/MapKey"]
 layout_mode = 1
@@ -790,7 +786,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("button_edge")
-primary_variation = &"MapPrimary"
 
 [node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Actions/city_map_details"]
 layout_mode = 1
@@ -798,7 +793,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("button_edge")
-primary_variation = &"MapPrimary"
 
 [node name="MaterialEdge" type="Control" parent="MapWorkspace/SideColumn/MapRouteSheet/Copy/Enter"]
 layout_mode = 1
@@ -806,4 +800,3 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("button_edge")
-primary_variation = &"MapPrimary"
