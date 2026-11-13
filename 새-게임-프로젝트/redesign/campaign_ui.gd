@@ -302,10 +302,11 @@ func inspect_node(id: int) -> void:
 	for candidate in campaign.current_nodes():
 		if int(candidate.id) == id: item = candidate
 	if item.is_empty(): return
-	var panel = ui._workspace(str(item.name), "경로 상세 · 닫으면 지도로 돌아갑니다.")
+	var panel = ui._workspace(str(item.name), "")
 	ui._label(panel, Data.hint(item), 22)
-	if campaign.is_shortcut(id): ui._label(panel, "일반 전투 한 곳을 건너뜁니다. 그 전투의 보상과 코어 성장은 얻지 않습니다.", 18, ui.MUTED)
-	ui._label(panel, "\uacc4\ub2e8 \u00b7 \ubb34\ub8cc" if item.route == "stairs" else "\ud658\uae30\uad6c \u00b7 \ub2e4\uc74c \uc804\ud22c \uc2dc\uc791 \uac70\ub9ac -2m", 18, ui.ACCENT)
+	if campaign.is_shortcut(id): ui._label(panel, "일반 전투 한 곳을 건너뜁니다. 그 전투의 보상과 구동 성장은 얻지 않습니다.", 18, ui.MUTED)
+	# Launch pass (2026-11-12): only the route that costs something is named.
+	if item.route != "stairs": ui._label(panel, "\ud658\uae30\uad6c \u00b7 \ub2e4\uc74c \uc804\ud22c\uc5d0\uc11c \uc801\uc774 2m \uac00\uae4c\uc774 \uc2dc\uc791", 18, ui.ACCENT)
 	if item.route == "duct" and item.kind in ["combat", "boss"]: ui._label(panel, "크레딧 보상 +%dCr" % Data.ROUTE_REWARD_BONUS, 19, ui.ACCENT)
 	if item.kind in ["combat", "boss"]:
 		var pack := Data.encounter_pack(item, int(campaign.s.seed), str(campaign.s.gun), int(campaign.s.difficulty), 2 if item.route == "duct" or (campaign.choices().any(func(n): return int(n.id) == id) and int(campaign.s.pressure) > 0) else 0, int(campaign.s.get("roster_version", 1)), int(campaign.s.get("combat_revision",0)))
@@ -319,7 +320,7 @@ func inspect_node(id: int) -> void:
 			var chip: VBoxContainer = ui._panel(front)
 			chip.get_parent().custom_minimum_size.x = 128
 			ui._label(chip, "%s  %s" % [String.chr(65 + enemy_index), enemy.name], 16)
-			ui._label(chip, "HP%d  \u25c6%d  %dm" % [enemy.hp, enemy.def, enemy.distance], 15, ui.MUTED)
+			ui._label(chip, "HP %d \u00b7 %dm" % [enemy.hp, enemy.distance] + (" \u00b7 \uc7a5\uac11 %d" % int(enemy.def) if int(enemy.def) > 0 else ""), 15, ui.MUTED)
 		if not pack.reserve.is_empty():
 			var reserve_names: PackedStringArray = []
 			for enemy in pack.reserve: reserve_names.append(str(enemy.name))
@@ -797,7 +798,7 @@ func _show_shop_offer_compare(workbench: Control, offer: Dictionary, offer_index
 	var unavailable:=sold or int(campaign.s.credits)<int(offer.price) or (str(offer.type)=="ammo" and not can_take_ammo(id))
 	var label:="구매 완료" if sold else "%dCr 구매 · 잔액 %d"%[int(offer.price),int(campaign.s.credits)-int(offer.price)]
 	if not sold and int(campaign.s.credits)<int(offer.price): label="%dCr 부족"%(int(offer.price)-int(campaign.s.credits))
-	elif not sold and str(offer.type)=="ammo" and not can_take_ammo(id): label="가방이 가득함 · 교체할 탄 없음"
+	elif not sold and str(offer.type)=="ammo" and not can_take_ammo(id): label="탄약 가득 참 · 교체할 탄 없음"
 	var purchase: Button=ui._button(actions,label,"city_compare_buy_"+str(offer_index),callback,unavailable)
 	ui._primary_button(purchase)
 	purchase.custom_minimum_size=Vector2(180,48)

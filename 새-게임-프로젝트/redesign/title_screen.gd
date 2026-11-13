@@ -42,7 +42,16 @@ func bind_screen(owner_screen: Control, saved_run, has_save: bool, training_save
 	var can_resume: bool = has_save and (not saved_run.s.settled or saved_run.restoration_pending())
 	%resume.visible = can_resume
 	%SaveCaption.visible = can_resume
-	%resume_training.visible = training_saved
+	# Launch build (2026-11-12): the developer menu and the legacy hand-loading training are
+	# not part of the game a player meets. They appear only with the developer switch.
+	var dev: bool = host.preferences.dev_tools()
+	%dev.visible = dev
+	%training_setup.visible = dev
+	%resume_training.visible = training_saved and dev
+	training_saved = training_saved and dev
+	var wordmark: Control = $TitleHero/Wordmark
+	wordmark.mouse_filter = Control.MOUSE_FILTER_STOP
+	wordmark.gui_input.connect(_wordmark_input)
 	%first_guide.visible = not can_resume and not training_saved and not bool(host.preferences.data.get("guide_seen", false))
 	%guide.visible = not %first_guide.visible
 	if can_resume:
@@ -66,7 +75,7 @@ func bind_screen(owner_screen: Control, saved_run, has_save: bool, training_save
 	var warnings: Array[String] = []
 	if FileAccess.file_exists(Campaign.SAVE) and not has_save:
 		warnings.append("등반 저장을 읽을 수 없습니다. 원본은 보존됩니다.")
-	if FileAccess.file_exists(host.SAVE) and not training_saved:
+	if dev and FileAccess.file_exists(host.SAVE) and not training_saved:
 		warnings.append("훈련 저장을 읽을 수 없습니다. 원본은 보존됩니다.")
 	%SaveWarning.text = "\n".join(warnings)
 	%SaveWarning.visible = not warnings.is_empty()
@@ -76,12 +85,31 @@ func bind_screen(owner_screen: Control, saved_run, has_save: bool, training_save
 	%Reclaimer.set_motion_enabled(host.preferences.data.get("motion", "normal") != "instant")
 	host._focus_control.call_deferred(%resume if can_resume else %new_run_setup)
 
+## Developer switch: seven quick taps on the wordmark (no visible control for players).
+const DEV_TAPS := 7
+var wordmark_taps: Array = []
+
+func _wordmark_input(event: InputEvent) -> void:
+	var pressed: bool = (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventScreenTouch and event.pressed)
+	if not pressed: return
+	var now := Time.get_ticks_msec()
+	wordmark_taps = wordmark_taps.filter(func(at): return now - int(at) < 4000)
+	wordmark_taps.append(now)
+	if wordmark_taps.size() < DEV_TAPS: return
+	wordmark_taps.clear()
+	toggle_dev_tools()
+
+func toggle_dev_tools() -> void:
+	host.preferences.set_value("dev_tools", not host.preferences.dev_tools())
+	host.feedback.play("load")
+	host.redraw.call_deferred()
+
 func _resume_caption(saved_run) -> String:
 	if saved_run.departure_pending(): return "출발 전 · 우리 동네 정비소"
 	if saved_run.restoration_pending(): return "정상 · 공급 복구"
 	var phase: String = saved_run.s.phase
 	var destination: String = RESUME_DESTINATIONS[phase]
-	if phase == "supply" and saved_run.node().get("workshop", false): destination = "정비소"
+	if phase == "supply" and saved_run.node().get("workshop", false): destination = "공방"
 	var region: String = saved_run.region_info().name
 	var floor := int(saved_run.s.floor)
 	if floor > 0: region += " %d층" % floor

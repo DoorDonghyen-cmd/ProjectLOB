@@ -43,7 +43,7 @@ func refresh() -> void:
 	var replacing := not outgoing.is_empty()
 	var active := equipped.has(selected_id)
 	%GunName.text = Data.GUNS[campaign.s.gun].name
-	%GunStats.text = "탄창 %d칸 · 재장전 %d턴" % [model.capacity(), model.reload_cost()]
+	%GunStats.text = "탄창 %d칸 · 탄창 교체 적 %d행동" % [model.capacity(), model.reload_cost()]
 	if %WeaponArt.gun_id != str(campaign.s.gun): %WeaponArt.gun_id = str(campaign.s.gun)
 	%MountCount.text = "%d / %d" % [equipped.size(), Campaign.MAX_EQUIPPED_PARTS]
 	%StorageCount.text = "보유 파츠 · %d개" % stored_buttons.size()

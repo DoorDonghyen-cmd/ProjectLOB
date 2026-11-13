@@ -181,11 +181,16 @@ func inspect_round(index: int)->void:
  if ui.busy or ui.overlay_open or index<0 or index>=ui.model.s.magazine.size():return
  var id: String=ui.model.s.magazine[index]
  var spec: Dictionary=Content.AMMO[id]
- var amount:=str(spec.dmg)+(" ×%d회"%int(spec.get("hits",2)) if str(spec.effect)=="double" else "")
  if index==Model.WeaponRoles.mark(ui.model.s):
   ui.show_detail(spec.name+" · 봉인탄 ×3","이번 탄창의 이 한 발만 직접 피해 ×3.\n빼내기 불가 · 발사하면 탄창 교체 잠금 해제.\n냉각은 사용할 수 있습니다.\n화상·전격 전이·기폭 효과는 강화하지 않습니다.")
   return
- ui.show_detail(spec.name,"%d번째 탄 · %d칸 사용 · 발열 %s\n기본 피해 %s · 장갑 관통 %d\n\n%s\n\n위로 올라온 청록 테두리의 탄이 다음 발사 대상입니다. 카드의 기본 피해는 표적·총기·코어·연계 적용 전 위력입니다.\n사용한 탄은 이번 전투에 돌아오지 않으며 다음 전투에 복구됩니다."%[index+1,Content.slot_cost(id),Content.heat_label(id,ui.model.s),amount,int(spec.pen),preload("res://redesign/readability.gd").description(id,ui.model.s)])
+ # Launch pass (2026-11-12): the same numbers as the card (gun bonus included), then the
+ # round's own effect. Penetration and slots only when they differ from the usual 0 and 1.
+ var stat: Dictionary=Content.primary_stat(id,ui.model.s)
+ var numbers:="%d번째 탄 · %s %s · 열 %s"%[index+1,stat.label,stat.value,Content.heat_label(id,ui.model.s)]
+ if Content.penetration(id,ui.model.s)>0:numbers+=" · 관통 %d"%Content.penetration(id,ui.model.s)
+ if Content.slot_cost(id)>1:numbers+=" · 탄창 %d칸"%Content.slot_cost(id)
+ ui.show_detail(spec.name,numbers+"\n\n"+preload("res://redesign/readability.gd").description(id,ui.model.s))
 
 func help_body(title: String,body: String)->String:
  body=body.replace("−","-")
@@ -280,7 +285,7 @@ func render()->void:
  var cool_danger:=cool_text.contains("위험")
  action("Cool","냉각",("피격 위험" if cool_text.contains("피격") else "접촉 위험") if cool_danger else "적 1행동" if not n("Cool").disabled else "",cool_danger)
  if Model.WeaponRoles.can_reverse(state,Content.anchor):
-  action("Cool","냉각·역전",("피격 위험" if cool_text.contains("피격") else "접촉 위험") if cool_danger else "적 1행동" if not n("Cool").disabled else "열 필요",cool_danger)
+  action("Cool","냉각·되감기",("피격 위험" if cool_text.contains("피격") else "접촉 위험") if cool_danger else "적 1행동" if not n("Cool").disabled else "열 필요",cool_danger)
  action("EjectApply","%d발 빼내기"%ui.eject_selected.size(),"탄약 소진으로 패배" if ui.eject_preview.get("phase","")=="lost" else "이번 전투에서 소모",true)
  for i in range(ui.slot_count):
   var occupied:=i<stack.size()

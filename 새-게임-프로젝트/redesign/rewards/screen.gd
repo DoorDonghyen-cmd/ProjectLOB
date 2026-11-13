@@ -37,6 +37,7 @@ func _ready() -> void:
 	%Credits.pressed.connect(claim.bind("credits"))
 	%PrevPage.pressed.connect(change_exchange_page.bind(-1))
 	%NextPage.pressed.connect(change_exchange_page.bind(1))
+	resized.connect(fit_choices)
 
 func _exit_tree() -> void:
 	if is_instance_valid(prototype_card):
@@ -93,12 +94,40 @@ func rebuild_cards(ids: Array) -> void:
 		meta.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		quantity.visible = choosing_outgoing or package
 		quantity.text = "×%d" % (2 if package else run.model.s.deck.count(id))
+		# Salvage card (salvage.gd): marked in the corner; the enemy is named in the inspector.
+		if not choosing_outgoing and is_salvage(str(id)):
+			quantity.visible = true
+			quantity.text = "회수"
 		label.tooltip_text = item_name
 		card.tooltip_text = item_name
 		card.pressed.connect(pick.bind(str(id)))
 		%Offers.add_child(card)
 		cards[id] = card
 	%Offers.get_parent().scroll_horizontal = 0
+	fit_choices.call_deferred()
+
+## Launch pass (2026-11-12): four or five cards (trim, main, other, support, salvage) were cut
+## at the row's right edge on phones. Give the card row the width its cards need, up to about
+## two thirds of the tray; the inspector takes the rest. Wider rows still scroll.
+func fit_choices() -> void:
+	if not is_inside_tree(): return
+	var offers: HBoxContainer = %Offers
+	var choices := offers.get_parent() as Control
+	var bench := choices.get_parent() as Control
+	var count: int = offers.get_child_count()
+	if count == 0 or bench.size.x <= 0.0: return
+	var card := offers.get_child(0) as Control
+	var need: float = count * card.custom_minimum_size.x + (count - 1) * offers.get_theme_constant("separation") + 4.0
+	var available: float = bench.size.x - 2.0 * bench.get_theme_constant("separation") - 4.0
+	var rest: float = maxf(available - need, available * 0.34)
+	choices.size_flags_stretch_ratio = clampf((available - rest) / rest * 1.05, 1.0, 2.1)
+
+func is_salvage(id: String) -> bool:
+	var salvage := run.salvage_card()
+	return not salvage.is_empty() and str(salvage.id) == id
+
+## Short stat names for the 128px cards; the inspector shows the full line.
+const CARD_LABELS := {"다음 공격": "증폭", "고열 공격": "고열 증폭", "경직 행동": "경직", "화상 / 턴": "화상", "화상 이동": "화상 이동"}
 
 func title_for(id: String) -> String:
 	if id == TRIM: return "탄 1장 빼기"
@@ -113,11 +142,8 @@ func card_readout(id: String) -> String:
 	if id == TRIM: return "덱 정리"
 	if Data.PARTS.has(id):
 		return str(preload("res://redesign/part_slots.gd").name_of(id)) + " · " + str(Data.part_spec(id, run.model.s).get("value", "")).get_slice(" · ", 0)
-	# Salvage card (salvage.gd): name the enemy it came from.
-	var salvage := run.salvage_card()
-	if not salvage.is_empty() and str(salvage.id) == id: return "회수 · " + str(salvage.name)
 	var stat := Data.primary_stat(id, run.model.s)
-	return "%s %s · 열%s" % [stat.label, stat.value, Data.heat_label(id, run.model.s)]
+	return "%s %s · 열%s" % [CARD_LABELS.get(str(stat.label), stat.label), stat.value, Data.heat_label(id, run.model.s)]
 
 func pick(id: String) -> void:
 	if choosing_outgoing:
@@ -134,7 +160,7 @@ func refresh() -> void:
 	var opening_title := "첫 파츠 · 1/2" if is_part and not core else "성장 코어 · 1/2"
 	var package := run.first_ammo_reward() and Focus.enabled(run.s)
 	var has_room := not selected.is_empty() and run.can_acquire_ammo(selected)
-	var bag := "가방 %d / %d" % [state.deck.size(), run.model.deck_limit()]
+	var bag := "탄약 %d / %d" % [state.deck.size(), run.model.deck_limit()]
 	var mixed := not choosing_outgoing and cards.keys().any(func(id): return Data.PARTS.has(id) != is_part)
 	%Section.text = "뺄 탄환" if trimming else "내보낼 탄환" if choosing_outgoing else opening_title if opening else ("주력 탄 묶음" if run.model.GrowthV2.enabled(state) else "주력 탄 묶음 · 2/2") if package else "전투 보상 · 1개 선택" if mixed else "회수할 파츠" if is_part else "회수할 탄환"
 	%Count.text = "장착대 %d / %d" % [run.equipped_parts().size(), Campaign.MAX_EQUIPPED_PARTS] if is_part else bag
@@ -167,12 +193,12 @@ func refresh() -> void:
 		%OutgoingCount.text = "" if outgoing.is_empty() else "%d → %d장" % [outgoing_count, outgoing_count - 1]
 		%Confirm.disabled = outgoing.is_empty()
 		%Confirm.text = "이 탄으로 교체"
-		%Status.text = "가방 수량 유지"
+		%Status.text = "탄약 수 그대로"
 		%Exchange.get_node("Incoming/Direction").text = "보상" if trimming else "받을 탄"
 		if trimming:
 			%IncomingName.text = "덱 정리"
 			%IncomingStats.text = "탄 1장을 덱에서 뺍니다"
-			%IncomingCount.text = "가방 %d → %d장" % [state.deck.size(), state.deck.size() - 1]
+			%IncomingCount.text = "탄약 %d → %d장" % [state.deck.size(), state.deck.size() - 1]
 			%Confirm.text = "이 탄 빼기"
 			%Status.text = "최소 %d장까지" % run.minimum_deck()
 	elif is_part:
@@ -188,14 +214,14 @@ func refresh() -> void:
 	elif selected == TRIM:
 		%Gain.text = "보유 탄 1장을 덱에서 뺍니다"
 		%Fit.text = "기본탄부터 · 덱 최소 %d장" % run.minimum_deck()
-		%Status.text = "가방 %d → %d장" % [state.deck.size(), state.deck.size() - 1]
+		%Status.text = "탄약 %d → %d장" % [state.deck.size(), state.deck.size() - 1]
 		%Confirm.text = "뺄 탄 고르기"
 	elif not selected.is_empty():
 		%Gain.text = Focus.package_text(selected) if package else ammo_stats(selected)
-		%Fit.text = "기본탄 3장 교체 · 가방 수량 유지" if package else Focus.offer_label(state, selected)
+		%Fit.text = "기본탄 3장과 교체 · 탄약 수 그대로" if package else Focus.offer_label(state, selected)
 		var salvage := run.salvage_card()
 		if not salvage.is_empty() and str(salvage.id) == selected: %Fit.text = "회수 · 마지막으로 쓰러뜨린 %s" % salvage.name
-		%Status.text = "" if package else "가방에 1장 추가" if has_room else "가방 가득 참"
+		%Status.text = "" if package else "1장 추가" if has_room else "탄약 가득 참"
 		%Confirm.text = "묶음 회수" if package else "탄환 회수" if has_room else "교체할 탄 고르기"
 		%Confirm.disabled = Focus.replace_opening(state.deck, selected).is_empty() if package else not has_room and exchange_choices().is_empty()
 	%Cost.visible = not %Cost.text.is_empty()

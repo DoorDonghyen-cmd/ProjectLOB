@@ -87,6 +87,8 @@ func start(gun: String, seed_value: int, difficulty: int = 0, loadout: String = 
 		model.s.salvage_version = Model.Salvage.VERSION
 		# 연계탄·예약탄 rework (2026-11-12, ammo_revision.gd).
 		model.s.ammo_revision_version = Model.AmmoRevision.VERSION
+		# Launch balance (2026-11-12, launch_balance.gd): 리와인더 되감기 사격.
+		model.s.launch_balance_version = Model.LaunchBalance.VERSION
 	if magazine_mode and map_version>=4:
 		s.combat_roles_version=Model.Roles.VERSION;model.s.combat_roles_version=Model.Roles.VERSION
 		s.specialist_core_version=Model.Roles.SPECIALIST_VERSION;model.s.specialist_core_version=Model.Roles.SPECIALIST_VERSION
@@ -252,6 +254,8 @@ func _begin_combat(selected: Dictionary) -> void:
 			if int(selected.id) == int(approach.NODES[role]): approach.apply_opening(model.s,role)
 		# Deck-building revision v2: tougher enemies so a fight spans several magazines.
 		Model.MagazineBuild.strengthen(model.s, "boss" if str(selected.get("kind", "")) == "boss" else "elite" if selected.get("elite", false) else "normal")
+		# Launch balance (launch_balance.gd): 난도마다 적 체력 증가, 후반 구역일수록 크게. 난도 0은 그대로.
+		Model.LaunchBalance.harden(model.s, int(s.difficulty), int(s.region))
 		Model.Balance.approach(model.s,selected)
 		Model.Patterns.prepare(model.s,selected)
 		Model.BossSkills.prepare(model.s,selected)
@@ -573,12 +577,12 @@ func can_grow_bag() -> bool:
 
 func bag_growth_hint() -> String:
 	if Model.Roles.enabled(model.s):
-		if int(s.bag_upgrades)>=Model.Roles.BAG_STEPS:return "수납 확장 완료 · 휴대 상한 %d발"%model.deck_limit()
-		return "휴대 상한 %d → %d발 · 탄약 지급 없음"%[model.deck_limit(),model.deck_limit()+2] if can_grow_bag() else "현재 구역 한도 · 다음 구역에서 확장"
+		if int(s.bag_upgrades)>=Model.Roles.BAG_STEPS:return "가방 확장 완료 · 탄약 상한 %d발"%model.deck_limit()
+		return "탄약 상한 %d → %d발"%[model.deck_limit(),model.deck_limit()+2] if can_grow_bag() else "현재 구역 한도 · 다음 구역에서 확장"
 	if int(s.get("bag_version", 0)) != Ammo.BAG_VERSION: return "새 등반에서 가방 성장 가능"
 	if Ammo.hand_capacity(model.s) >= Ammo.MAX_BAG_CAPACITY: return "최대 10장 도달"
 	if not can_grow_bag(): return "현재 구역 한도 · 다음 구역에서 확장"
-	if magazine_enabled(): return "휴대 상한 %d → %d발 · 탄약 지급 없음" % [model.deck_limit(), mini(40, model.deck_limit()+2)]
+	if magazine_enabled(): return "탄약 상한 %d → %d발" % [model.deck_limit(), mini(40, model.deck_limit()+2)]
 	if Model.Reserve.inventory_enabled(s): return "손패 +1 · 휴대 상한 %d → %d장 · 탄약 지급 없음" % [model.deck_limit(), mini(40, model.deck_limit()+2)]
 	return "구역 한도 %d장 · 최종 10장" % bag_growth_limit()
 
@@ -587,7 +591,7 @@ func _grow_bag() -> void:
 	model.s.bag_upgrades = s.bag_upgrades
 	s.message = "가방 확장 · 다음 교전부터 손패 %d장" % Ammo.hand_capacity(model.s)
 	if magazine_enabled():
-		s.message = "가방 확장 · 휴대 상한 %d발 · 탄약 지급 없음" % model.deck_limit()
+		s.message = "가방 확장 · 탄약 상한 %d발" % model.deck_limit()
 		return
 	if Model.Reserve.inventory_enabled(s): s.message += " · 휴대 상한 %d장 · 탄약 지급 없음" % model.deck_limit()
 
@@ -655,7 +659,7 @@ func buy_gate_bag() -> bool:
 	s.credits-=Economy.BAG_PRICE
 	_grow_bag()
 	s.gate_bag_used=true
-	s.message="수납 +2발 · %dCr 사용 · 탄약 지급 없음"%Economy.BAG_PRICE
+	s.message="가방 확장 · 탄약 상한 +2발 · %dCr 사용"%Economy.BAG_PRICE
 	_log("gate_bag",{"price":Economy.BAG_PRICE,"limit":model.deck_limit()})
 	return true
 

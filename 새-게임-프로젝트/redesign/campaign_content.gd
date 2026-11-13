@@ -103,14 +103,14 @@ static func hint(node: Dictionary) -> String:
 	var rhythm := Rhythm.hint(node)
 	if not rhythm.is_empty(): return rhythm
 	if int(node.get("map_version", 1)) >= 3:
-		if node.get("workshop", false): return "무료 작업 1회 · 압축 / 개조 / 제거 / 가방 확장"
-		if node.kind == "shop": return "파츠·탄환·전투용 압축 충전 구매"
+		if node.get("workshop", false): return "무료 작업 1회 · 탄종 교체 / 탄환 강화 / 덱 정리 / 가방 확장"
+		if node.kind == "shop": return "파츠·탄환 구매"
 		if node.kind == "supply": return "보유 탄 보충 또는 새로운 탄환 · 무료 1장"
 		if node.kind == "event": return "사람과 설비가 남긴 흔적 · 현장에서 단서를 살펴보세요."
 	if node.get("elite", false): return "정예와 호위 · 위험한 전열\n미보유 파츠 최대 2종 중 1개 또는 크레딧"
 	if node.get("workshop", false): return "무료 정비 1회 · 탄환 압축 / 1장 제거 / 압축 코어 충전"
 	match str(node.kind):
-		"combat": return "적 편성 공개 · 탄환 또는 크레딧 보상"
+		"combat": return "전투 · 탄환 또는 크레딧 보상"
 		"boss": return "최종 관문 · 처치 후 정상 설비 복구" if int(node.region) == 4 else "구역 관문 · 처치하면 다음 구역으로"
 		"shop": return "탄환·파츠 구매 · 보유 파츠 교체"
 		"supply": return "공개된 탄환 중 1장 보급"
@@ -320,6 +320,16 @@ static func prepare_opening_hand(model) -> void:
 static func lesson(node: Dictionary, state: Dictionary) -> String:
 	if not Rhythm.hint(node).is_empty(): return ""
 	if int(node.get("region", -1)) != 0: return ""
+	# Magazine game (launch pass 2026-11-12): the loading-order tips below belong to the
+	# hand-loading training; the first fights say what matters with an auto-loaded magazine.
+	if preload("res://redesign/magazine_trial.gd").enabled(state):
+		match int(node.get("floor", 0)):
+			1: return "기본탄만으로 싸웁니다 · 과열 전에 냉각하세요"
+			2: return "장갑 · 철갑탄이 뚫고, 화상은 장갑을 무시합니다"
+			3: return "원거리 적 · 먼저 처치하거나 날아오는 탄을 요격하세요"
+			4, 5: return "증원이 뒤따릅니다 · 열은 다음 탄창에도 남습니다"
+			6: return "전열 뒤에도 증원 · 탄약을 남겨 두세요"
+		return ""
 	match int(node.get("floor", 0)):
 		1: return "충격 → 소이 장전 · 소이가 먼저 발사" if opening_pair(state) == ["bore", "push"] else "연타 → 증폭 장전 · 증폭이 먼저 발사"
 		2: return "장갑 돌파 · 관통으로 뚫거나 화상·밀치기로 시간을 버세요"

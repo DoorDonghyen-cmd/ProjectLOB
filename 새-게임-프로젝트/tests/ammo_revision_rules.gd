@@ -76,6 +76,11 @@ func run() -> void:
 	if p.s.phase == "ready" and p.s.magazine.is_empty(): p.reload_magazine()
 	if p.s.phase == "plan": p.trial_load_magazine()
 	check(p.s.phase == "ready" and str(p.s.magazine[0]) == "pierce" and p.s.get("held_front", []).is_empty(), "the next magazine starts with the held 철갑탄 (%s)" % [p.s.magazine.slice(0, 3)])
+	# 2026-11-12 launch pass: the strengthened round holds two, as its card says.
+	var strong := rig(["prepare_c", "pierce", "basic_p2", "basic_p2"])
+	fire_one(strong)
+	check(strong.s.held_front == ["pierce", "basic_p2"] and strong.s.magazine == ["basic_p2"], "예약탄+ holds two rounds (%s / %s)" % [strong.s.held_front, strong.s.magazine])
+	check(str(Content.primary_stat("prepare_c", strong.s).value) == "2발" and Revision.text("prepare_c", strong.s).contains("2발") and Revision.text("prepare", strong.s).contains("1발"), "예약탄 card and text name the same count")
 	var q := rig(["prepare", "pierce", "basic_p2"], false)
 	fire_one(q)
 	check(q.s.magazine.has("pierce") and q.s.get("held_front", []).is_empty(), "older saves: 예약탄 keeps the old rule")

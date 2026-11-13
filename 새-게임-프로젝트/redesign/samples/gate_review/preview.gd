@@ -106,7 +106,7 @@ func add_live_menu() -> void:
 	var actions := VBoxContainer.new()
 	actions.name = "Actions"
 	panel.add_child(actions)
-	for entry in [["Build", "내 빌드", live_presenter.deck], ["Archive", "기록", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
+	for entry in [["Build", "빌드", live_presenter.deck], ["Archive", "기록실", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로 나가기", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
 		var button := Button.new()
 		button.name = entry[0]
 		button.text = entry[1]
@@ -191,7 +191,7 @@ func show_mode(next: Mode) -> void:
 				labels[id] = ammo_label(id)
 		Mode.SERVICE:
 			if paid_service():
-				labels = {"bag": "수납 확장  ·  %d Cr" % run.Economy.BAG_PRICE, "copy": "보유 탄 1장 복제"}
+				labels = {"bag": "가방 확장  ·  %d Cr" % run.Economy.BAG_PRICE, "copy": "보유 탄 1장 복제"}
 		Mode.COPIES:
 			for id in run.gate_copy_options():
 				labels[id] = "%s · %d Cr" % [ammo_label(id), run.gate_copy_price(id)]
@@ -298,7 +298,7 @@ func refresh() -> void:
 			%Apply.text = "견본 고르기" if selected == "production" else "개조 적용"
 			%Apply.disabled = selected.is_empty()
 			if selected == "production":
-				show_values("기본탄 3장", "견본 탄환 3장", "가방 수량 유지 · 보유 특수탄을 견본으로 사용")
+				show_values("기본탄 3장", "견본 탄환 3장", "탄약 수 그대로 · 보유 특수탄을 견본으로 사용")
 			elif selected.is_empty():
 				show_values("개조 한도 도달", "변경 없음", "개조를 보류하고 재정비로 이동할 수 있습니다.")
 			else:
@@ -317,14 +317,14 @@ func refresh() -> void:
 			%Back.text = "개조로"
 			%Apply.text = "기본탄 고르기"
 			%Apply.disabled = selected.is_empty()
-			show_values("기본탄 3장", "견본 탄환 3장" if selected.is_empty() else "%s 3장" % Ammo.AMMO[selected].name, "견본은 가방에 남습니다.")
+			show_values("기본탄 3장", "견본 탄환 3장" if selected.is_empty() else "%s 3장" % Ammo.AMMO[selected].name, "견본은 그대로 남습니다.")
 		Mode.SOURCES:
 			%Condition.text = "교체할 기본탄  %d / 3" % sources.size()
 			%Back.text = "견본으로"
 			%Secondary.text = "한 장 취소"
 			%Apply.text = "3장 교체"
 			%Apply.disabled = not Gates.can_produce(run.model.s, specimen, sources)
-			show_values("기본탄 %d장 선택" % sources.size(), "%s 3장" % Ammo.AMMO[specimen].name, "전체 탄약 %d장 유지" % deck.size())
+			show_values("기본탄 %d장 선택" % sources.size(), "%s 3장" % Ammo.AMMO[specimen].name, "탄약 %d장 그대로" % deck.size())
 		Mode.SERVICE:
 			if not paid_service():
 				%Condition.text = "보유 %d Cr" % credits
@@ -336,23 +336,23 @@ func refresh() -> void:
 			%Condition.text = "유료 정비 %s   ·   보유 %d Cr" % ["완료" if service_used() else "1회", credits]
 			%Secondary.text = "출발"
 			var bag := selected == "bag"
-			%Apply.text = "수납 확장" if bag else "복제할 탄 고르기"
+			%Apply.text = "가방 확장" if bag else "복제할 탄 고르기"
 			%Apply.disabled = traveling or (not run.can_buy_gate_bag() if bag else not can_copy())
 			var capacity: int = run.model.deck_limit()
 			if service_used():
 				%BeforeLabel.text = "보유 탄약"
 				%AfterLabel.text = "잔액"
-				show_values("가방 %d / %d발" % [deck.size(), capacity], "%d Cr" % credits, str(run.s.message))
+				show_values("탄약 %d / %d발" % [deck.size(), capacity], "%d Cr" % credits, str(run.s.message))
 			elif bag:
 				var cost := run.Economy.BAG_PRICE
-				var detail := "%d Cr · 탄약 지급 없음" % cost
+				var detail := "%d Cr · 상한만 늘어납니다" % cost
 				if not run.can_grow_bag():
-					detail = "이 구역의 수납 확장 한도에 도달했습니다."
+					detail = "이 구역에서는 더 늘릴 수 없습니다."
 				elif credits < cost:
 					detail = "%d Cr 부족" % (cost - credits)
-				show_values("휴대 상한 %d발" % capacity, "휴대 상한 %d발" % mini(40, capacity + 2), detail)
+				show_values("탄약 상한 %d발" % capacity, "탄약 상한 %d발" % mini(40, capacity + 2), detail)
 			else:
-				show_values("보유 탄약 %d발" % deck.size(), "보유 탄약 %d발" % (deck.size() + 1), "일반 12 Cr · 고급 24 Cr" if can_copy() else "가방 여유와 보유 크레딧을 확인하세요.")
+				show_values("보유 탄약 %d발" % deck.size(), "보유 탄약 %d발" % (deck.size() + 1), "일반 12 Cr · 고급 24 Cr" if can_copy() else "탄약 여유와 크레딧을 확인하세요.")
 		Mode.COPIES:
 			%Condition.text = "복제할 보유 탄  ·  %d Cr" % credits
 			%Back.text = "재정비로"
@@ -361,7 +361,7 @@ func refresh() -> void:
 			if not selected.is_empty():
 				var count: int = deck.count(selected)
 				var price := run.gate_copy_price(selected)
-				show_values("%s %d장" % [Ammo.AMMO[selected].name, count], "%s %d장" % [Ammo.AMMO[selected].name, count + 1], "%d Cr 사용  ·  잔액 %d Cr" % [price, credits - price] if not %Apply.disabled else "가방 여유와 보유 크레딧을 확인하세요.")
+				show_values("%s %d장" % [Ammo.AMMO[selected].name, count], "%s %d장" % [Ammo.AMMO[selected].name, count + 1], "%d Cr 사용  ·  잔액 %d Cr" % [price, credits - price] if not %Apply.disabled else "탄약 여유와 크레딧을 확인하세요.")
 		Mode.DEPARTED:
 			%Condition.text = str(run.region_info().name)
 			%Apply.text = "관문 다시 보기"
@@ -384,7 +384,7 @@ func inspector_title() -> String:
 				return "출발 준비"
 			if service_used():
 				return "재정비 완료"
-			return "수납 확장" if selected == "bag" else "탄환 복제"
+			return "가방 확장" if selected == "bag" else "탄환 복제"
 		Mode.COPIES: return "탄환 복제" if selected.is_empty() else str(Ammo.AMMO[selected].name)
 	return "통과 완료"
 

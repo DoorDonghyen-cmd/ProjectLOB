@@ -147,19 +147,19 @@ func open_rules() -> void:
 	if offer.type == "part":
 		host.city_ui.part_details(id)
 		return
-	var column: VBoxContainer = host._workspace(str(Data.AMMO[id].name))
+	var column: VBoxContainer = host._workspace_card(str(Data.AMMO[id].name))
 	host._label(column, preload("res://redesign/readability.gd").description(id, run.model.s), 18)
 
 func open_tools() -> void:
-	var column: VBoxContainer = host._workspace("상점 메뉴")
-	host._button(column, "빌드 작업실", "city_shop_build", func():
+	var column: VBoxContainer = host._workspace_card("상점 메뉴")
+	host._button(column, "빌드", "city_shop_build", func():
 		host._close_workspace()
 		open_parts()
 	)
 	if run.model.GrowthV2.enabled(run.model.s) and not run.model.Content.innate_engine(run.model.s).is_empty():
 		host._button(column, drive_tune_label(), "shop_drive_tune", tune_from_menu, not run.can_tune_drive())
 	host._button(column, "설정", "shop_settings", host._settings)
-	host._button(column, "타이틀", "shop_title", host._to_menu)
+	host._button(column, "타이틀로 나가기", "shop_title", host._to_menu)
 
 func _input(event: InputEvent) -> void:
 	if host == null or not is_visible_in_tree() or is_instance_valid(host.workspace_overlay) or not event.is_action_pressed("ui_cancel"):

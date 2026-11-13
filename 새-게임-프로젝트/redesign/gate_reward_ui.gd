@@ -142,23 +142,23 @@ static func reorganization(host) -> void:
 	depart.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ui._primary_button(depart)
 	ui._label(workspace,"%s · %s · 탄창 %d칸 · 재장전 %d턴" % [Ammo.GUNS[campaign.s.gun].name,Ammo.outfit_name(ui.model.s),ui.model.capacity(),ui.model.reload_cost()],19,ui.INK)
-	if campaign.magazine_enabled(): ui._label(workspace,"휴대 탄약 %d/%d발 · 다음 전투에 새 탄창 장전" % [ui.model.s.deck.size(),ui.model.deck_limit()],19,ui.INK)
+	if campaign.magazine_enabled(): ui._label(workspace,"보유 탄약 %d/%d발" % [ui.model.s.deck.size(),ui.model.deck_limit()],19,ui.INK)
 	else: ui._label(workspace,"휴대 탄약 %d/%d장 · 손패 %d장 · 교환 %d회" % [ui.model.s.deck.size(),ui.model.deck_limit(),Ammo.hand_capacity(ui.model.s),Ammo.exchange_capacity(ui.model.s)],19,ui.INK)
 	if campaign.Economy.enabled(campaign.s):
 		var service:=VBoxContainer.new()
 		service.name="GateBagService"
 		service.add_theme_constant_override("separation",8)
 		workspace.add_child(service)
-		var hint: String="관문당 유료 정비 1회 · 수납 확장 또는 보유 탄 복제"
-		var title: String="수납 %d → %d발 · %dCr"%[ui.model.deck_limit(),ui.model.deck_limit()+2,campaign.Economy.BAG_PRICE]
+		var hint: String="관문당 유료 정비 1회 · 가방 확장 또는 보유 탄 복제"
+		var title: String="탄약 상한 %d → %d발 · %dCr"%[ui.model.deck_limit(),ui.model.deck_limit()+2,campaign.Economy.BAG_PRICE]
 		if campaign.s.gate_bag_used or campaign.s.get("gate_ammo_used",false):title="이번 관문 유료 정비 완료"
-		elif not campaign.can_grow_bag():title="수납 확장 한도 도달"
+		elif not campaign.can_grow_bag():title="가방 확장 한도 도달"
 		elif int(campaign.s.credits)<campaign.Economy.BAG_PRICE:title+=" · %dCr 부족"%(campaign.Economy.BAG_PRICE-int(campaign.s.credits))
 		ui._label(service,"유료 정비 · 보유 %dCr"%campaign.s.credits,19,ui.INK)
 		ui._label(service,hint,17,ui.MUTED)
 		var expand: Button=ui._button(service,title,"city_gate_bag_service",host.action.bind("gate_bag"),not campaign.can_buy_gate_bag())
 		expand.custom_minimum_size.y=52
-		ui._label(service,"수납 확장은 탄약 지급 없음 · 공방과 총 3회 상한 공유",17,ui.MUTED)
+		ui._label(service,"가방 확장은 공방과 합쳐 3회까지",17,ui.MUTED)
 		var copy_ready: bool=campaign.gate_copy_options().any(func(id):return campaign.can_buy_gate_copy(id))
 		var copy: Button=ui._button(service,"보유 탄 1장 복제 · 12 / 24Cr","city_gate_copy_service",copies.bind(host),not copy_ready)
 		copy.custom_minimum_size.y=52

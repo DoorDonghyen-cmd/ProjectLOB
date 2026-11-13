@@ -191,7 +191,7 @@ func run() -> void:
 	await touch("DialogClose")
 	await touch("starting_deck")
 	var capacity_rule: Label=screen.find_child("OutfitCapacityRule",true,false)
-	check(capacity_rule!=null and capacity_rule.text.contains("최소 유지") and capacity_rule.text.contains("정비 후 최대"),"outfit minimum and expansion are available in details")
+	check(capacity_rule!=null and capacity_rule.text.contains("덱 ") and capacity_rule.text.contains("공방 확장"),"outfit minimum and expansion are available in details")
 	var seen: Array = []
 	for ammo in MagazineBuild.start_deck(screen.selected_weapon_id):
 		if seen.has(ammo): continue

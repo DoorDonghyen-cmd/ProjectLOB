@@ -209,10 +209,10 @@ func _refresh() -> void:
 			3:
 				pairs = [["제거", "1발"], ["보유 수량", "%d → %d발" % [campaign.model.s.deck.count(selected), proposal.after.deck.count(selected)]], ["보유 탄약", "%d → %d발" % [n, n-1]], ["최소 보유", "%d발" % campaign.minimum_deck()]]
 			4:
-				pairs = [["휴대 상한", "%d → %d발" % [campaign.model.deck_limit(), proposal.limit]], ["보유 탄약", "%d발 유지" % n], ["탄약 지급", "없음"]]
+				pairs = [["탄약 상한", "%d → %d발" % [campaign.model.deck_limit(), proposal.limit]], ["보유 탄약", "%d발 그대로" % n]]
 	if not done and mode == 1 and proposal.valid:
 		pairs = Upgrade.comparison(selected, str(proposal.target), campaign.model.s, n, proposal.after.deck.size()).map(func(row): return [row[0],str(row[1])+" → "+str(row[2])])
-		detail = "탄 수 · 발사 횟수 2 → 1\n" + _round_rules(selected, str(proposal.target))
+		detail = "두 발을 한 발로 합칩니다.\n" + _round_rules(selected, str(proposal.target))
 		detail = detail.strip_edges()
 	for i in range(4):
 		var key: Label = content.get_node("Stats/Key%d" % i)
@@ -248,9 +248,8 @@ func _round_rules(source: String, target: String) -> String:
 		text += "\n탄창 %d → %d칸" % [Ammo.slot_cost(source), Ammo.slot_cost(target)]
 	if Ammo.source_id(target) == "basic" and Ammo.anchor(source) != Ammo.anchor(target):
 		match Ammo.anchor(target):
-			"first": text += "\n첫 발 고정"
-			"last": text += "\n마지막 발 고정"
-			_: text += "\n발사 순서 제한 없음"
+			"first": text += "\n탄창 맨 앞에 장전됩니다."
+			"last": text += "\n탄창 맨 뒤에 장전됩니다."
 	return text
 
 func _apply() -> void:

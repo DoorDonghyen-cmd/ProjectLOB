@@ -18,7 +18,50 @@ const TAG_PREFERRED := {
 ## QA_NAIVE=fire (2026-11-11, user: "아무탄이나 막 발사해도 클리어 되는 문제"): combat without
 ## judgement. Every turn fire the full pulse; reload when the magazine is empty; emergency
 ## resupply when offered. No ejecting, no cooling by choice. Shop/gate choices stay as before.
+## QA_NAIVE=careful (2026-11-12 launch pass): the play the user described — "과열 경고를 보고
+## 확실히 발수를 제한하게 돼". Fire the largest volley that does not overheat; when even one
+## round would overheat, cool first; swap an empty magazine. No ejecting, no look-ahead beyond
+## the next volley. The solver minimises the player's own actions, so it walks into forced
+## cooling (over half of its enemy actions); this policy is the one that pays for cooling.
+func careful_path(c) -> Array:
+	var m = solver.clone(c.model)
+	var path: Array = []
+	for step in range(400):
+		if m.s.phase != "ready": break
+		var item: Dictionary = {}
+		if m.can_emergency_resupply(): item = {"action": "emergency"}
+		elif m.s.magazine.is_empty(): item = {"action": "reload"}
+		else:
+			var most: int = mini(m.s.magazine.size(), int(m.MagazineTrial.WEAPON_PULSES[m.s.gun]) + int(m.Roles.pulse_bonus(m.s)))
+			if m.s.gun == "amplifier": most = 1
+			for amount in range(most, 0, -1):
+				var trial = solver.clone(m)
+				if trial.FireHeatTrial.enabled(trial.s): trial.s.fire_heat_trial.rounds = amount
+				if not trial.fire(): continue
+				if trial.s.phase == "lost": continue
+				var detail: Dictionary = trial.s.history.back().get("detail", {})
+				if trial.s.phase != "ready" or detail.get("forced_cooling", {}).is_empty():
+					item = {"action": "fire", "rounds": amount}
+					break
+			if item.is_empty():
+				var cooled = solver.clone(m)
+				item = {"action": "cool"} if int(m.s.heat) > 0 and cooled.cool_magazine() and cooled.s.phase != "lost" else {"action": "fire", "rounds": 1}
+		var ok := false
+		match str(item.action):
+			"emergency": ok = m.emergency_resupply()
+			"reload": ok = m.reload_magazine()
+			"cool": ok = m.cool_magazine()
+			"fire":
+				if m.FireHeatTrial.enabled(m.s): m.s.fire_heat_trial.rounds = int(item.rounds)
+				ok = m.fire()
+		if not ok:
+			item = {"action": "cool"}
+			if not m.cool_magazine(): break
+		path.append(item)
+	return path
+
 func checked_previous_path(c) -> Array:
+	if OS.get_environment("QA_NAIVE") == "careful": return careful_path(c)
 	if OS.get_environment("QA_NAIVE") != "fire": return super.checked_previous_path(c)
 	var m = solver.clone(c.model)
 	var path: Array = []
@@ -114,9 +157,18 @@ func _run() -> void:
 	growth = OS.get_environment("QA_GROWTH") != "0"
 	late = OS.get_environment("QA_GROWTH") == "late"
 	economy_version = 1
-	build_kind = {"heavy": "fire", "burst": "control", "single": "direct"}[run_gun]; role_build = build_kind == "fire"
-	preferred_core = {"single": "siege_drive", "burst": "volley_drive", "heavy": "thermal_drive"}[run_gun]
-	var c = Campaign.new(); c.start(run_gun, run_seed, 0, "balanced", 4, outfit_id, true)
+	# 2026-11-12 launch pass: all seven guns. The four later guns follow the build of their
+	# built-in drive (스플린터 연쇄, 스파이크·데드볼트·리와인더 돌파).
+	build_kind = {"heavy": "fire", "burst": "control", "single": "direct", "scatter": "control", "amplifier": "direct", "rewinder": "direct", "deadbolt": "direct"}[run_gun]; role_build = build_kind == "fire"
+	preferred_core = Ammo.gun_engine(run_gun, true)
+	# QA_BUILD=direct|control|fire: another build for the same gun (is it the gun or the build?).
+	if OS.get_environment("QA_BUILD") in ["direct", "control", "fire"]:
+		build_kind = OS.get_environment("QA_BUILD"); role_build = build_kind == "fire"
+	# QA_DIFFICULTY=n (2026-11-12): climb at 난도 n (the profile is given that ascension).
+	var difficulty := int(OS.get_environment("QA_DIFFICULTY"))
+	var c = Campaign.new()
+	if difficulty > 0: c.profile.ascension = difficulty
+	c.start(run_gun, run_seed, difficulty, "balanced", 4, outfit_id, true)
 	if not growth or late: c.model.s.erase("growth_structure_version")
 	# QA_TAGS=1: tag-based rounds and parts prototype (tag_build.gd), as chosen in 등반 설정.
 	var tags := OS.get_environment("QA_TAGS") == "1"

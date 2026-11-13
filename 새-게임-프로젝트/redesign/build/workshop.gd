@@ -92,7 +92,7 @@ func open_tab(id: String) -> void:
 
 func refresh_summary() -> void:
 	var model = campaign.model
-	var text := "%s · 탄창 %d칸 · 재장전 %d턴 · 휴대 %d / %d발" % [Ammo.GUNS[campaign.s.gun].name, model.capacity(), model.reload_cost(), model.s.deck.size(), model.deck_limit()]
+	var text := "%s · 탄창 %d칸 · 탄창 교체 적 %d행동 · 탄약 %d / %d발" % [Ammo.GUNS[campaign.s.gun].name, model.capacity(), model.reload_cost(), model.s.deck.size(), model.deck_limit()]
 	if Ammo.Roles.enabled(model.s): text += " · 덱 최소 %d" % campaign.minimum_deck()
 	if not campaign.magazine_enabled(): text += " · 손패 %d장 / 교환 %d" % [Ammo.hand_capacity(model.s), Ammo.exchange_capacity(model.s)]
 	%DeckSummary.text = text
@@ -156,7 +156,7 @@ func rebuild_stacks() -> void:
 		stacks_grid.add_child(item)
 		stack_buttons[str(id)] = item
 	if not counts.has(selected_ammo): selected_ammo = str(order[0]) if not order.is_empty() else ""
-	pack_label.text = "휴대 탄약 %d / %d발" % [deck.size(), campaign.model.deck_limit()]
+	pack_label.text = "보유 탄약 %d / %d발" % [deck.size(), campaign.model.deck_limit()]
 	select_ammo(selected_ammo)
 	fit()
 	cells.queue_redraw()

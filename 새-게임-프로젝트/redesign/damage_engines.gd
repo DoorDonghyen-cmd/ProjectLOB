@@ -60,6 +60,13 @@ static func progress(state: Dictionary, id: String) -> String:
 	var e: Dictionary = state.get("engine",fresh())
 	var condition := "%d/3회 피해 타격" % int(e.hits) if id == "volley_drive" else ("고열 피해 성공" if e.hot else "고열 피해 필요") if id == "thermal_drive" else ("단타 8피해 달성" if e.siege else "단타 8피해 필요")
 	var cap := Growth.limit(state)
+	# Growth structure v2 (found 2026-11-12): wins grow the drive to 8 only; 9~12 come from the
+	# gate and the shop. The line used to read "성장 8/12 · … · 승리 시 성장" at a level where
+	# winning no longer grows it.
+	if int(state.get("growth_structure_version", 0)) == 1:
+		if level(state,id) < Growth.BASE_LIMIT: return "성장 %d/%d · %s · 승리 시 성장" % [level(state,id),Growth.BASE_LIMIT,condition]
+		if level(state,id) < cap: return "성장 %d/%d · 여기부터는 관문·상점에서 강화" % [level(state,id),cap]
+		return "성장 %d/%d · 최대" % [level(state,id),cap]
 	if level(state,id)<cap: return "성장 %d/%d · %s · 승리 시 성장" % [level(state,id),cap,condition]
 	return "성장 %d/%d · 추가 성장은 관문 확장 필요" % [level(state,id),cap] if Growth.enabled(state) and cap < LIMIT+Growth.STEP*Growth.MAX_UPGRADES else "성장 완료 · 이번 등반에 유지"
 

@@ -294,7 +294,7 @@ line_spacing = 3
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.70, 0.66, 0.59, 1)
-text = "보유 2장 · 가방 25 / 32"
+text = "보유 2장 · 탄약 25 / 32"
 
 [node name="TradeResult" type="VBoxContainer" parent="Composition/Terminal/Display/Stock/Checkout"]
 layout_mode = 2
@@ -304,7 +304,7 @@ theme_override_constants/separation = 5
 [node name="Outcome" type="Label" parent="Composition/Terminal/Display/Stock/Checkout/TradeResult"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "가방에 한 장 추가"
+text = "한 장 추가"
 
 [node name="Balance" type="Label" parent="Composition/Terminal/Display/Stock/Checkout/TradeResult"]
 unique_name_in_owner = true

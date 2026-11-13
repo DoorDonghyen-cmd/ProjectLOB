@@ -109,7 +109,7 @@ func add_live_menu() -> void:
 	var actions := VBoxContainer.new()
 	actions.name = "Actions"
 	menu_panel.add_child(actions)
-	for entry in [["Build", "내 빌드", live_presenter.deck], ["Archive", "기록", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
+	for entry in [["Build", "빌드", live_presenter.deck], ["Archive", "기록실", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로 나가기", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
 		var button := Button.new()
 		button.name = entry[0]
 		button.text = entry[1]

@@ -163,7 +163,7 @@ theme_override_constants/v_separation = 12
 
 [node name="Cell00" type="Label" parent="Center/Panel/Body/Review/Rows/Comparison/Stats"]
 layout_mode = 2
-text = "기본 직접 피해 합계"
+text = "피해 · 2발 합"
 size_flags_horizontal = 3
 theme_type_variation = &"Caption"
 
@@ -195,7 +195,7 @@ horizontal_alignment = 2
 
 [node name="Cell20" type="Label" parent="Center/Panel/Body/Review/Rows/Comparison/Stats"]
 layout_mode = 2
-text = "탄창 점유 합계"
+text = "탄창 칸"
 size_flags_horizontal = 3
 theme_type_variation = &"Caption"
 
@@ -211,7 +211,7 @@ horizontal_alignment = 2
 
 [node name="Cell30" type="Label" parent="Center/Panel/Body/Review/Rows/Comparison/Stats"]
 layout_mode = 2
-text = "전체 탄약"
+text = "보유 탄약"
 size_flags_horizontal = 3
 theme_type_variation = &"Caption"
 
@@ -296,7 +296,7 @@ theme_type_variation = &"Caption"
 [node name="Text" type="Label" parent="Center/Panel/Body/Review/Rows/Details"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "탄 수 · 발사 횟수 2 → 1"
+text = "두 발을 한 발로 합칩니다."
 autowrap_mode = 3
 theme_type_variation = &"Caption"
 

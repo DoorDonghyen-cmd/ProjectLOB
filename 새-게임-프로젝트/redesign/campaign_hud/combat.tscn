@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" path="res://redesign/samples/hud/combat_hud.tscn" id="hud"]
 [ext_resource type="Script" path="res://redesign/campaign_hud/combat.gd" id="controller"]
+[ext_resource type="Script" path="res://redesign/combat_material/frame.gd" id="line_frame"]
 
 [node name="CampaignCombatHUD" instance=ExtResource("hud")]
 script = ExtResource("controller")
@@ -10,23 +11,53 @@ script = ExtResource("controller")
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="BudgetLess" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(44,44)
-theme_override_font_sizes/font_size = 16
-text = "−"
-
-[node name="BudgetMore" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(44,44)
-theme_override_font_sizes/font_size = 16
-text = "+"
-
 [node name="BudgetValue" type="Label" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 16
 text = "이번 사격 최대 2발"
 mouse_filter = 2
+
+[node name="BudgetLess" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(64,44)
+theme_override_font_sizes/font_size = 16
+text = "−"
+
+[node name="BudgetLessFrame" type="NinePatchRect" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow/BudgetLess"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "slate"
+
+[node name="BudgetMore" type="Button" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(64,44)
+theme_override_font_sizes/font_size = 16
+text = "+"
+
+[node name="BudgetMoreFrame" type="NinePatchRect" parent="MenuLayer/MenuSurface/MenuLayerMargin/MenuScroll/MenuList/BudgetRow/BudgetMore"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+mouse_filter = 2
+show_behind_parent = true
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+script = ExtResource("line_frame")
+kind = "slate"
 
 [editable path="MenuLayer"]

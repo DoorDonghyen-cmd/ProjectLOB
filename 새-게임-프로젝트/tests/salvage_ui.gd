@@ -69,7 +69,10 @@ func run() -> void:
 		await mount(c)
 		var card: Dictionary = c.salvage_card()
 		var view := find("city_reward_" + str(card.id)) as Control
-		check(view != null and view.is_visible_in_tree() and (view.get_node("Meta") as Label).text.begins_with("회수 · "), "salvage card marked 회수 on screen " + suffix)
+		# Launch pass (2026-11-12): 회수 is the corner mark; the meta line keeps the round's numbers.
+		var mark := view.get_node("Quantity") as Label if view != null else null
+		check(view != null and view.is_visible_in_tree() and mark != null and mark.visible and mark.text == "회수" and not (view.get_node("Meta") as Label).text.contains("회수"), "salvage card marked 회수 on screen " + suffix)
+		check(view != null and (view.get_parent().get_parent() as Control).get_global_rect().grow(1).encloses(view.get_global_rect()), "salvage card fully inside the card row without scrolling " + suffix)
 		await capture("salvage_reward_" + suffix)
 	print("SALVAGE UI checks=%d failures=%d" % [checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)

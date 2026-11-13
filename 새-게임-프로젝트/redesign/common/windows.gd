@@ -56,8 +56,8 @@ static func settings(host: Control) -> VBoxContainer:
 	var label_width := 210.0 if wide(host) else 150.0
 	choice(column, "MotionSetting", "전투 연출", "사격·적 행동 속도", label_width, [["기본", "normal"], ["빠르게", "fast"], ["즉시", "instant"]])
 	choice(column, "EffectsVolumeSetting", "효과음", "버튼·사격 소리", label_width, [["끄기", 0.0], ["25%", 0.25], ["50%", 0.5], ["75%", 0.75], ["100%", 1.0]])
-	choice(column, "ContextHintsSetting", "상황 도움말", "장면별 짧은 안내", label_width, [["켜기", true], ["끄기", false]])
-	text(column, "탄환 수치, 예상 결과, 비용과 위험 표시는 도움말을 꺼도 유지됩니다.", &"Caption")
+	choice(column, "ContextHintsSetting", "상황 도움말", "첫 전투들의 한 줄 안내", label_width, [["켜기", true], ["끄기", false]])
+	text(column, "피해 예측과 과열 경고는 도움말을 꺼도 그대로 보입니다.", &"Caption")
 	var reset := Button.new()
 	reset.name = "settings_reset"
 	reset.text = "기본 설정으로 복원"
@@ -146,10 +146,11 @@ static func guide(host: Control, magazine: bool) -> VBoxContainer:
 		["3", "열과 시간을 확인한다", "열 한계에 닿으면 사격이 끊기고 강제 재장전합니다. 냉각탄은 그 전에 놓으세요. 예상 처치와 총 경과 턴을 확인한 뒤 확정하고 쏩니다."],
 	]
 	if magazine:
+		# Launch pass (2026-11-12): the three decisions of one turn, in the words of the HUD.
 		steps = [
-			["1", "이번 탄창을 읽는다", "보유 덱을 섞어 탄창을 채웁니다. 밝은 테두리와 순서 번호가 이번에 쏠 탄입니다. 탄환 수치는 기본 성능이며 적의 HP 게이지에서 사격 예측을 확인할 수 있습니다."],
-			["2", "쏘거나 탄을 빼낸다", "그대로 사격하거나 탄을 먼저 고른 뒤 빼내기를 누르세요. 탄창당 두 발까지 뺄 수 있습니다. 빼낸 탄은 이번 전투에서 소모되며 뒤 탄이 앞으로 당겨집니다."],
-			["3", "열과 접근을 판단한다", "사격 뒤 적이 한 번 행동합니다. 냉각은 잔탄을 보존하고, 탄창 교체는 미사용 탄을 예비 뒤로 보냅니다. 과열 냉각은 추가 시간이 들며 적이 도달하면 패배합니다."],
+			["1", "탄창을 읽는다", "덱이 섞여 탄창에 들어옵니다. 왼쪽 탄부터 나갑니다. 카드의 큰 숫자는 피해, 아래 숫자는 오르는 열입니다."],
+			["2", "몇 발 쏠지 정한다", "첫 탄에서 오른쪽으로 끌어 발수를 고르고 사격을 누릅니다. 사격할 때마다 적이 한 번 움직입니다. 필요 없는 탄은 눌러서 빼낼 수 있습니다."],
+			["3", "열을 넘기지 않는다", "열이 한계에 닿으면 과열되어 적이 여러 번 움직입니다. 그 전에 냉각하면 적 1행동으로 열이 0이 됩니다. 적이 닿으면 패배합니다."],
 		]
 	var grid := GridContainer.new()
 	grid.name = "GuideSteps"
@@ -188,7 +189,7 @@ static func guide(host: Control, magazine: bool) -> VBoxContainer:
 	chain.add_theme_constant_override("h_separation", 8)
 	chain.add_theme_constant_override("v_separation", 6)
 	flow_body.add_child(chain)
-	var stops := ["지도에서 다음 장소 선택", "전투 · 탄약고 · 조우 · 정비소 · 상점", "구역 관문", "다음 구역 · 다섯째 구역 최종 관문"]
+	var stops := ["지도에서 길 선택", "전투 · 탄약고 · 조우 · 공방 · 상점", "구역 관문", "다섯 구역 끝의 정상"]
 	for i in range(stops.size()):
 		var stop := Label.new()
 		stop.text = stops[i]
@@ -199,22 +200,26 @@ static func guide(host: Control, magazine: bool) -> VBoxContainer:
 			arrow.text = "→"
 			arrow.add_theme_color_override("font_color", GOLD)
 			chain.add_child(arrow)
-	text(flow_body, "기초 훈련은 개별 장전으로 탄환 효과를 익히는 별도 모드입니다.", &"Caption")
+	if not magazine: text(flow_body, "기초 훈련은 개별 장전으로 탄환 효과를 익히는 별도 모드입니다.", &"Caption")
 	return column
 
 # ---------------------------------------------------------------- 게임 규칙
 
 static func rules(host: Control, magazine: bool, pressure: bool) -> VBoxContainer:
 	if magazine:
-		var column := open(host, "게임 규칙", "탄창과 등반 · 덱을 섞어 탄창을 채웁니다", Vector2(1040, 660))
+		# Launch pass (2026-11-12): the current rules of a new run, one decision per row.
+		var column := open(host, "게임 규칙", "적이 닿기 전에 모두 쓰러뜨립니다", Vector2(1040, 660))
 		column.name = "RulesDialog"
-		var heading_width := 180.0 if wide(host) else 120.0
+		var heading_width := 150.0 if wide(host) else 110.0
 		for entry in [
-			["사격", "사격은 총기마다 2~3발씩 진행하며 남은 탄은 탄창에 보존됩니다. 스파이크는 한 발을 쏘고 처치하면 이어 쏩니다. 사격 뒤 적이 1행동합니다."],
-			["빼내기", "탄을 먼저 선택한 뒤 빼내기를 누르면 해당 탄이 빠집니다. 탄창당 최대 2발이며 적 행동이나 발열은 늘지 않습니다. 빈칸을 새 탄으로 채우지는 않습니다."],
-			["냉각과 교체", "냉각은 잔탄을 보존하고 적이 1행동합니다. 탄창 교체는 미사용 탄을 예비 뒤로 보내고 새로운 탄창을 채웁니다. 과열 시 강제 냉각 중 적이 추가로 접근합니다."],
-			["소모와 복구", "사용하거나 빼낸 탄은 이번 전투에서 돌아오지 않습니다. 공격탄을 소진하면 비상 보급을 선택할 수 있지만 추가 시간이 듭니다. 다음 전투에는 보유 탄이 복구됩니다."],
-			["등반과 저장", "전투 보상과 상점에서 덱·파츠를 만들고 관문에서 개조·재정비합니다. 공방에서 같은 일반탄 두 발을 영구 압축할 수 있습니다. 전투·선택마다 자동 저장됩니다."],
+			["사격", "첫 탄부터 고른 발수만큼 쏩니다. 사격 한 번에 적이 1행동하고, 남은 탄은 탄창에 남습니다."],
+			["열", "탄마다 열이 오르고 공격탄을 이어 쏠수록 더 오릅니다. 한계에 닿으면 과열되어 강제 냉각 동안 적이 여러 번 행동합니다."],
+			["냉각 · 교체", "냉각은 적 1행동으로 열을 0으로 만들고 남은 탄을 지킵니다. 탄창 교체는 적 2행동 이상이며 열은 그대로입니다."],
+			["빼내기", "탄을 눌러 고른 뒤 빼냅니다. 탄창당 2발, 적은 움직이지 않습니다. 빼낸 탄은 이번 전투에서 쓰지 못합니다."],
+			["교차 사격", "한 탄창에서 직전 공격탄과 다른 종류를 쏘면 타격당 피해 +1, 계속 바꾸면 최대 +3입니다."],
+			["탄약", "쓴 탄은 다음 전투에 모두 돌아옵니다. 전투 중 공격탄이 떨어지면 비상 보급을 받지만 적이 더 움직입니다."],
+			["성장", "전투 보상으로 탄을 더하거나 덜어 냅니다. 마지막에 쓰러뜨린 적은 자기 약점 탄을 남깁니다. 정예는 파츠, 관문은 개조를 줍니다."],
+			["저장", "전투와 선택마다 자동 저장됩니다."],
 		]:
 			rule_row(column, str(entry[0]), str(entry[1]), heading_width)
 		return column

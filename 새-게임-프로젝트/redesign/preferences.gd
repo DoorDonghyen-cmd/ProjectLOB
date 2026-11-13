@@ -10,6 +10,12 @@ const DEFAULTS := {
 	"hints": true,
 	"guide_seen": false,
 	"effects_volume": 0.5,
+	# Launch build (2026-11-12): developer tools, the legacy training mode and the tag
+	# comparison toggle are hidden unless this is on (seven taps on the title wordmark).
+	"dev_tools": false,
+	# First-fight coach line (campaign_hud/combat.gd): shown while 상황 도움말 is on, until the
+	# player has won three fights. Kept across 기본 설정으로 복원 like the guide flag.
+	"coached": false,
 }
 
 var data: Dictionary = DEFAULTS.duplicate(true)
@@ -35,6 +41,8 @@ func load_preferences(path: String = SAVE) -> bool:
 	data.motion = motion
 	data.hints = bool(source.get("hints", true))
 	data.guide_seen = bool(source.get("guide_seen", false))
+	data.dev_tools = bool(source.get("dev_tools", false))
+	data.coached = bool(source.get("coached", false))
 	var audio_value: Variant = source.get("effects_volume", 0.5)
 	if (audio_value is float or audio_value is int) and is_finite(float(audio_value)):
 		data.effects_volume = clampf(float(audio_value), 0.0, 1.0)
@@ -63,8 +71,16 @@ func set_value(key: String, value: Variant, path: String = SAVE) -> Error:
 	return save_preferences(path)
 
 func reset(path: String = SAVE) -> Error:
+	# Not a player setting: restoring the defaults keeps the developer switch.
+	var dev := bool(data.get("dev_tools", false))
+	var coached := bool(data.get("coached", false))
 	data = DEFAULTS.duplicate(true)
+	data.dev_tools = dev
+	data.coached = coached
 	return save_preferences(path)
+
+func dev_tools() -> bool:
+	return bool(data.get("dev_tools", false))
 
 func motion_scale() -> float:
 	return {"normal": 1.0, "fast": 0.55, "instant": 0.05}.get(str(data.motion), 1.0)

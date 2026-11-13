@@ -96,10 +96,10 @@ func refresh() -> void:
 	source_text.visible = valid and Ammo.source_id(selected) != "basic"
 	source_text.text = "원본 / 발\n" + Readability._description(selected,campaign.model.s) if source_text.visible else ""
 	if valid:
-		detail = "탄 수 · 발사 횟수 2 → 1"
+		detail = "두 발을 한 발로 합칩니다. 사격 한 번에 두 발 몫이 나갑니다."
 		if Ammo.source_id(target) != "basic": detail = "강화 / 발\n" + Readability._description(target, campaign.model.s)
-		if Ammo.anchor(target) == "first": detail += "\n첫 발 고정"
-		elif Ammo.anchor(target) == "last": detail += "\n마지막 발 고정"
+		if Ammo.anchor(target) == "first": detail += "\n탄창 맨 앞에 장전됩니다."
+		elif Ammo.anchor(target) == "last": detail += "\n탄창 맨 뒤에 장전됩니다."
 	body.get_node("Review/Rows/Details/Text").text = detail
 	body.get_node("Actions/Cost").text = "무료 정비 1회 사용" if not campaign.s.resolved else "정비 완료"
 	body.get_node("Actions/Confirm").text = "강화 확정"

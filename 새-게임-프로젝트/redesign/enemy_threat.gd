@@ -48,7 +48,7 @@ static func snapshot(state: Dictionary, include_proximity: bool) -> Dictionary:
 		elif text == "대기" and str(enemy.kind) == "spitter":
 			text = "조준" if enemy.get("ranged_phase", "") == "prepare" else "탄 비행" if enemy.get("ranged_phase", "") == "waiting" else "회복"
 		intents[i] = {"text": "다음 " + text, "tone": tone, "step": movement,
-			"detail": "다음 적 행동: %s · 실제 접근 %dm\n공격·밀기·차단 전 기준입니다. 재장전은 여러 적 행동을 진행할 수 있습니다." % [text, movement]}
+			"detail": "다음 행동 · %s%s" % [text, " %dm" % movement if movement > 0 and not text.contains("접촉") else ""]}
 	if not include_proximity: return result
 	var actions := 1
 	if copy.s.phase in ["plan", "ready"]:

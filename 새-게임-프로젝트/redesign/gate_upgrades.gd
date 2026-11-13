@@ -90,9 +90,9 @@ static func summary(id: String, state: Dictionary, next: bool = false) -> String
 		"mastery":
 			var now := GrowthV2.mastery(state, GrowthV2.mastery_family(state))
 			return "%s 숙련 Lv%d → Lv%d" % [GrowthV2.family_name(state), now, now + 1] if next else "%s 숙련 Lv%d" % [GrowthV2.family_name(state), now]
-		"cadence": return "사격 상한 +%d발"%level(copy,id)
-		"efficiency": return "탄환 기본 발열 −%d"%level(copy,id)
-		"conduction": return "처치 전이 최대 추가 %d기"%(1+level(copy,id))
+		"cadence": return "한 번에 쏠 발수 +%d"%level(copy,id)
+		"efficiency": return "탄 기본 열 −%d"%level(copy,id)
+		"conduction": return "처치 뒤 피해를 넘기는 대상 %d기"%(1+level(copy,id))
 		"growth": return "성장 상한 %d → %d" % [Growth.limit(state),Growth.limit(copy)] if next else "성장 상한 %d단계" % Growth.limit(state)
 		"thermal": return "첫 타격 +%d까지" % charge_limit(copy)
 		"chain": return "처치 연쇄 ×%.2f까지" % (chain_limit(copy)/100.0)
@@ -100,29 +100,29 @@ static func summary(id: String, state: Dictionary, next: bool = false) -> String
 
 static func description(id: String) -> String:
 	match id:
-		"drive": return "총기에 내장된 구동을 4단계 키웁니다. 돌파는 단타 배율, 연쇄는 타격당 피해, 열압은 고열 배율이 커집니다. 조건을 달성한 승리로는 8단계까지만 자랍니다."
+		"drive": return "내장 구동을 4단계 키웁니다. 승리로는 8단계까지만 자라고, 그 위는 관문과 상점에서만 오릅니다."
 		"mastery_support": return "가장 많이 가진 지원탄 계열의 효과가 단계마다 커집니다. 증폭 +1, 잔열 증폭 +2, 파쇄 장갑 −1, 냉각 열 −1, 불씨 화상 이동 +1."
-		"mastery": return "지금 주력 계열의 모든 공격탄이 숙련 단계마다 타격당 피해 +1(단타 탄은 +2)을 얻습니다. 새로 얻는 같은 계열 탄에도 적용됩니다."
-		"cadence": return "한 번에 선택할 수 있는 탄을 1발 늘립니다. 과열 중단·리액터 강행·스파이크 처치 연쇄 조건은 유지됩니다."
-		"efficiency": return "모든 탄의 양수 기본 발열을 1 낮춥니다(최소 1). 연속 사격 추가 열·증폭 부하·파츠의 추가 열은 유지합니다."
-		"conduction": return "연쇄·돌파 코어의 처치 후 전이 대상을 1기 늘립니다. 주 표적은 세지 않으며 직접 피해량은 바꾸지 않습니다."
+		"mastery": return "주력 계열 공격탄의 타격당 피해 +1(한 번만 맞히는 탄은 +2). 나중에 얻는 같은 계열 탄에도 적용됩니다."
+		"cadence": return "한 번에 쏠 수 있는 발수가 1발 늘어납니다."
+		"efficiency": return "모든 탄의 기본 열 −1(최소 1). 이어 쏠 때 붙는 추가 열은 그대로입니다."
+		"conduction": return "연쇄·돌파 구동이 처치 뒤 피해를 넘기는 대상이 1기 늘어납니다."
 		"growth": return "성장 코어의 상한을 2단계 높입니다. 이후 전투에서 기존 성장 조건을 달성하고 승리하면 추가로 성장합니다."
 		"thermal": return "일반 재장전으로 식힌 열을 다음 공격탄의 첫 타격 피해로 전환합니다."
-		"chain": return "탄창에서 직접 처치를 낸 탄마다 이후 공격의 피해 배율이 0.25 증가합니다."
+		"chain": return "한 탄창 안에서 탄으로 적을 처치할 때마다 이후 공격의 피해 배율 +0.25."
 	return "보유한 일반 특수탄을 견본으로 골라 기본탄 3장을 동일한 탄으로 교체합니다."
 
 static func caution(id: String) -> String:
 	match id:
-		"drive": return "최대 12단계 · 내장 구동에만 적용 · 다른 관문 개조 대신 선택"
-		"mastery_support": return "지원탄 계열 하나에만 적용 · 최대 4단계 · 다른 관문 개조 대신 선택"
-		"mastery": return "주력 계열에만 적용 · 최대 4단계 · 다른 관문 개조 대신 선택"
-		"cadence": return "탄창 크기·열 한계는 유지 · 최대 2회 투자"
-		"efficiency": return "탄약 지급·열 한계 변경 없음 · 최대 2회 투자"
-		"conduction": return "연쇄·돌파 코어에 적용 · 광역탄/열압 충격파 제외"
+		"drive": return "최대 12단계"
+		"mastery_support": return "지원탄 계열 하나에만 적용 · 최대 4단계"
+		"mastery": return "주력 계열에만 적용 · 최대 4단계"
+		"cadence": return "최대 2회"
+		"efficiency": return "최대 2회"
+		"conduction": return "연쇄·돌파 구동에만 적용"
 		"growth": return "즉시 피해 증가 없음 · 다른 관문 개조 대신 선택 · 코어를 바꿔도 상한 유지"
 		"thermal": return "강제 냉각 제외 · 중첩 없음 · 장갑·보호막 적용"
-		"chain": return "재장전 시 초기화 · 한 탄당 한 단계 · 속성 처치 제외"
-	return "탄약 총량 유지 · 바꿀 기본탄은 직접 선택"
+		"chain": return "탄창을 교체하면 처음부터 · 화상·전이 처치는 세지 않음"
+	return "탄약 수는 그대로 · 바꿀 기본탄은 직접 고릅니다"
 
 static func active_summary(state: Dictionary) -> String:
 	var lines: PackedStringArray = []

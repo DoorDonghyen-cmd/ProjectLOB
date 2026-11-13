@@ -136,7 +136,7 @@ func show_details(offer: Dictionary, state: Dictionary, credits: int) -> void:
 		var stat := Data.primary_stat(id, state)
 		%Effect.text = "%s %s  ·  열 %s\n%s" % [stat.label, stat.value, Data.heat_label(id, state), view.effect_text()]
 		view.free()
-		%Owned.text = "보유 %d장  ·  가방 %d / %d" % [state.deck.count(id), state.deck.size(), run.model.deck_limit()]
+		%Owned.text = "보유 %d장  ·  탄약 %d / %d" % [state.deck.count(id), state.deck.size(), run.model.deck_limit()]
 	else:
 		var effect := str(spec.get("upside", spec.get("text", "")))
 		var downside := str(spec.get("downside", ""))
@@ -145,7 +145,7 @@ func show_details(offer: Dictionary, state: Dictionary, credits: int) -> void:
 		if duplicate:
 			%Owned.text = "장착 중" if run.is_equipped(id) else "보관함에 보유"
 	var can_equip: bool = not is_ammo and run.can_equip_reward(id)
-	var outcome := "가방에 한 장 추가" if is_ammo else "구매 후 장착" if can_equip else "구매 후 보관"
+	var outcome := "한 장 추가" if is_ammo else "구매 후 장착" if can_equip else "구매 후 보관"
 	if sold:
 		outcome = "구매 완료"
 	elif duplicate:
@@ -174,7 +174,7 @@ func open_replacement() -> void:
 		%Candidates.remove_child(child)
 		child.queue_free()
 	var state: Dictionary = run.model.s
-	%ReplaceSummary.text = "%s 한 장 구매 · %d Cr · 가방 %d / %d 유지" % [Offer.item_name(str(offer.id), state), int(offer.price), state.deck.size(), run.model.deck_limit()]
+	%ReplaceSummary.text = "%s 한 장 구매 · %d Cr · 탄약 %d / %d 그대로" % [Offer.item_name(str(offer.id), state), int(offer.price), state.deck.size(), run.model.deck_limit()]
 	for id in replacement_ids(str(offer.id)):
 		var option := Button.new()
 		var stat := Data.primary_stat(str(id), state)

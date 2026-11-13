@@ -43,6 +43,8 @@ func fit_content() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	if not is_inside_tree(): return
+	# Content built with screen.gd helpers carries the teal console colours.
+	preload("res://redesign/common/workspace_skin.gd").recolor(content)
 	var preferred: Vector2 = get_meta("preferred_size", Vector2(960, 660))
 	var needed: float = %Frame.get_combined_minimum_size().y + content.get_combined_minimum_size().y + 2.0
 	set_meta("preferred_size", Vector2(preferred.x, minf(preferred.y, needed)))

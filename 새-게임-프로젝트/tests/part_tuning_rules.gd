@@ -109,7 +109,10 @@ func run() -> void:
 	# 4. Name.
 	check(str(Content.PARTS.ordinary_chain.name) == "다종 급탄기", "교차 급탄기 → 다종 급탄기")
 	# Version layers stay under the fix text (후미 점화기 keeps its current effect text).
-	check(str(Content.part_spec("afterburner", tuned_state).text) == str(Content._version_part_spec("afterburner", tuned_state).text) and str(Content.part_spec("afterburner", tuned_state).downside) == "", "후미 점화기 keeps its version text, no downside")
+	# 2026-11-12 launch pass: the tuned text keeps the current effect (×3) and no longer states the
+	# removed swap cost; the upside line still comes from the version layer.
+	var burner: Dictionary = Content.part_spec("afterburner", tuned_state)
+	check(str(burner.text).contains("×3") and not str(burner.text).contains("재장전") and str(burner.upside) == str(Content._version_part_spec("afterburner", tuned_state).upside) and str(burner.downside) == "", "후미 점화기 keeps its ×3 effect, no swap cost in text, no downside")
 	# Texts.
 	check(str(Content.part_spec("cooling_breech", tuned_state).upside).contains("냉각 직후") and str(Content.part_spec("cooling_breech", old_state).upside).contains("재장전 냉각"), "냉각 약실 text follows the rule")
 	check(str(Content.part_spec("ember_core", tuned_state).downside) == "열 한계 −1", "잔열 노심 text −1")

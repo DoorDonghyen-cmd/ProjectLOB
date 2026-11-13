@@ -53,7 +53,9 @@ func run() -> void:
 		quit(2)
 		return
 	Input.emulate_mouse_from_touch = true
-	for extent in [Vector2i(1280, 800), Vector2i(2340, 1080), Vector2i(2160, 1032), Vector2i(1008, 630), Vector2i(844, 390)]:
+	# 3120x1440 (1040x480 in game units) added 2026-11-12: the result buttons were under the
+	# screen edge on 1440p phones.
+	for extent in [Vector2i(1280, 800), Vector2i(2340, 1080), Vector2i(2160, 1032), Vector2i(3120, 1440), Vector2i(1008, 630), Vector2i(844, 390)]:
 		var resolution := "%dx%d" % [extent.x, extent.y]
 		root.size = extent
 		var won = restore_fixture("won_heavy_17")

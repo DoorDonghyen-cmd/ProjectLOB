@@ -86,9 +86,9 @@ func refresh()->void:
  node("Title").text="%s · %s"%[host.campaign.region_info().name,host.campaign.node().name]
  var shield_test := str(model.s.enemies[0].get("shield_trial", "")) if not model.s.enemies.is_empty() else ""
  if not shield_test.is_empty(): node("Title").text = "수석 시종 · A 철갑 약점" if shield_test == Model.Noble.PIERCE_WEAK else "수석 시종 · B 철갑 전용"
- node("StatusNote").text="전체 등반 · 자동 저장" if save_ok else "저장 실패 · 현재 플레이 유지"
+ node("StatusNote").text="자동 저장됨" if save_ok else "저장 실패 · 지금 플레이는 계속됩니다"
  node("Pressure").text="등반 현황"
- node("Other").text="시작 화면"
+ node("Other").text="타이틀로 나가기"
  node("Reset").hide()
  # Deck-building revision: name what the auto-loaded magazine forms (boost pairs,
  # magazine-composition parts) beside the magazine count. Hidden while ejecting.
@@ -98,20 +98,78 @@ func refresh()->void:
   var shot: Dictionary = last_prediction.shots[0]
   if shot.has("wreckage_hit") or float(shot.get("wreckage_probability", 0.0)) > 0.0: combo_line = Forecast.note(last_prediction, 0)
   elif shot.has("shield_rule") and int(shot.get("blocked_hits", 0)) > 0: combo_line = Forecast.note(last_prediction, 0)
+ # First fights (launch pass 2026-11-12): when nothing else uses the line, one sentence on the
+ # next decision. 설정 → 상황 도움말 turns it off; it stops by itself after three wins.
+ var coaching:=false
+ if combo_line.is_empty() and coach_enabled():
+  combo_line=coach_line()
+  coaching=not combo_line.is_empty()
  if combo_label!=null:
   combo_label.text=combo_line
   combo_label.visible=not combo_line.is_empty()
   combo_label.tooltip_text=combo_line
+  combo_label.add_theme_color_override("font_color",Color("bff3f1") if coaching else Color("f3cf73"))
  node("BudgetRow").visible=Trial.range_enabled(model.s)
- node("BudgetValue").text="이번 사격 최대 %d발"%current_budget()
+ node("BudgetValue").text="한 번에 쏠 발수 · %d발"%current_budget()
  node("BudgetLess").disabled=current_budget()<=1
  node("BudgetMore").disabled=current_budget()>=maximum_budget()
  hud.cycle_focus((["MenuClose","BudgetLess","BudgetMore"] if Trial.range_enabled(model.s) else ["MenuClose"])+["Help","Pressure","Other","EffectsVolume","CombatMotion"])
 
+## The gun's one-line rule in the build window and help. 리와인더 names its 되감기 사격 in runs
+## that have it (launch_balance.gd).
+func weapon_hint()->String:
+ if Model.WeaponRoles.kind(model.s)=="rewinder" and Model.LaunchBalance.enabled(model.s):
+  return "탄창마다 첫 냉각 때 남은 탄 순서를 뒤집고, 되감은 직후 첫 공격탄 ×%d"%Model.LaunchBalance.REWIND_FACTOR
+ return super.weapon_hint()
+
+func coach_enabled()->bool:
+ var prefs: Dictionary=host.preferences.data
+ if not bool(prefs.get("hints",true)) or bool(prefs.get("coached",false)):return false
+ if int(host.campaign.profile.get("ascension",0))>0 or int(host.campaign.s.clears)>=3:
+  # A player who has won three fights (or a whole climb) no longer needs the line.
+  host.preferences.set_value("coached",true)
+  return false
+ return true
+
+func coach_line()->String:
+ if model.s.phase!="ready" or eject_mode or busy:return ""
+ if model.s.magazine.is_empty():return "탄창이 비었습니다 · 탄창 교체를 누르세요"
+ var heat: Dictionary=last_prediction.get("heat",{})
+ if float(heat.get("forced_probability",0))>0:return "이대로 쏘면 과열 · 발수를 줄이거나 먼저 냉각하세요"
+ if int(model.s.heat)*2>=Content.heat_limit(model.s):return "열이 절반을 넘었습니다 · 냉각은 적 1행동"
+ if Trial.range_enabled(model.s):return "첫 탄에서 오른쪽으로 끌어 발수를 고르고 사격"
+ return "사격을 누르면 탄창 앞쪽 탄부터 나갑니다"
+
+## Launch pass (2026-11-12): 위로/아래로 only when the text is longer than the window.
+func show_detail(title: String,body: String)->void:
+ super.show_detail(title,body)
+ node("DetailUp").hide();node("DetailDown").hide()
+ sync_detail_scroll.call_deferred()
+
+func sync_detail_scroll()->void:
+ await get_tree().process_frame
+ await get_tree().process_frame
+ if not is_inside_tree() or not node("Detail").visible:return
+ var bar: VScrollBar=node("DetailScroll").get_v_scroll_bar()
+ var needed: bool=bar.max_value>bar.page+1.0
+ node("DetailUp").visible=needed;node("DetailDown").visible=needed
+
 func show_help()->void:
- var controls: String=""
- if Trial.range_enabled(model.s):controls="\n첫 탄부터 오른쪽으로 끌기 → 발수 선택 → 사격 버튼으로 확정\n짧게 누르기 → 빼내기 선택 · 메뉴 −/+로도 발수 조절\n탄창 밖에 놓기·Esc·포커스 이탈은 범위 선택 취소\n짧게 쏴도 적 1행동 · 리액터 강행/스파이크 연속 조건 유지\n탄창 교체는 열·연속 발열 유지(냉각 약실 +4는 적용)\n냉각은 적 1행동·잔탄 보존·열 0·연속 발열 초기화"
- show_detail("탄창과 선택",weapon_hint()+controls+("\n사격 · 적 1행동 / 냉각 · 적 1행동\n탄창 교체 · 적 %d행동 / 미사용 탄은 예비 뒤로\n과열되면 강제 냉각 · 적 %d행동(미리 냉각하면 1행동).\n빼내기 · 탄창당 2발까지, 중간 탄도 선택 가능\n빼낸 탄은 이번 전투에서 소모되고 빈자리는 채우지 않습니다.\n다음 전투에 보유 탄 전체가 복구됩니다.\n전투·보상·정비마다 자동 저장합니다."%[model.reload_cost(),model.forced_cooling_cost()])+("\n교차 사격 · 탄창 안에서 직전 공격탄과 다른 계열을 쏘면 타격당 +1, 연달아 바꾸면 최대 +3" if Model.MixCombo.enabled(model.s) else "")+("\n회수 · 마지막으로 쓰러뜨린 적의 탄이 보상에 회수 카드로 나옵니다(장갑벽 → 철갑탄 등)" if Model.Salvage.enabled(model.s) else ""))
+ # Launch pass (2026-11-12): what each action costs, then the rules that change a decision.
+ var lines: PackedStringArray=[weapon_hint(),""]
+ if Trial.range_enabled(model.s):lines.append("발수 선택 · 첫 탄에서 오른쪽으로 끌고 사격")
+ lines.append("빼내기 · 탄을 눌러 고르고 빼내기(탄창당 2발, 적 행동 없음)")
+ lines.append("")
+ lines.append("사격 · 적 1행동")
+ lines.append("냉각 · 적 1행동 · 열 0 · 남은 탄 유지")
+ lines.append("탄창 교체 · 적 %d행동 · 남은 탄은 예비 뒤로 · 열 그대로"%model.reload_cost())
+ lines.append("과열 · 강제 냉각 적 %d행동"%model.forced_cooling_cost())
+ if Content.Sustained.enabled(model.s):lines.append("연속 사격 · 공격탄을 이어 쏘면 3번째부터 열 +1, 5번째부터 +2. 냉각하면 처음부터")
+ lines.append("")
+ if Model.MixCombo.enabled(model.s):lines.append("교차 사격 · 직전 공격탄과 다른 종류를 쏘면 타격당 +1, 계속 바꾸면 최대 +3")
+ if Model.Salvage.enabled(model.s):lines.append("회수 · 마지막으로 쓰러뜨린 적이 자기 약점 탄을 보상에 남깁니다")
+ lines.append("탄약 · 쓴 탄과 빼낸 탄은 다음 전투에 모두 돌아옵니다")
+ show_detail("전투 도움말","\n".join(lines))
 
 func show_route()->void:
  show_detail("등반 현황","%s · %d / %d층\n현재 · %s\n승리 %d회 · %d Cr\n\n전투가 끝나면 보상을 고르고 지도에서 다음 목적지를 선택합니다. 관문에서는 개조와 재정비를 마친 뒤 다음 구역으로 출발합니다."%[host.campaign.region_info().name,host.campaign.s.floor,host.campaign.region_info().floors,host.campaign.node().name,host.campaign.s.clears,host.campaign.s.credits])
@@ -135,6 +193,12 @@ func show_parts()->void:
   lines.append("탄 카드 위 글자 · "+" / ".join(legend))
   var read: Array=Model.TagBuild.read_tags(model.s,Content.active_parts(model.s))
   lines.append("채워진 칸 · 장착 파츠가 읽는 태그"+(" ("+"·".join(read)+")" if not read.is_empty() else " (없음)"))
+ # Growth structure v2: the gun's built-in drive, its current value and what grows it.
+ var drive:=str(Content.innate_engine(model.s))
+ if not drive.is_empty():
+  lines.append("[내장 구동] %s · %s"%[str(Content.PARTS[drive].name),Model.Engines.value(model.s,drive)])
+  var drive_progress:=Model.Engines.progress(model.s,drive)
+  if not drive_progress.is_empty():lines.append(drive_progress)
  for id in Content.equipped_parts(model.s):
   var value:=Model.Engines.value(model.s,id)
   lines.append("[%s] "%preload("res://redesign/part_slots.gd").name_of(id)+str(Content.PARTS[id].name)+("" if value.is_empty() else " · "+value))
@@ -151,9 +215,9 @@ func show_parts()->void:
 func inspect_enemy(index: int)->void:
  if busy or overlay_open or index<0 or index>=model.s.enemies.size():return
  var e: Dictionary=model.s.enemies[index]
- var lines: PackedStringArray=["HP %d / %d"%[e.hp,e.max_hp]]
+ var lines: PackedStringArray=["HP %d / %d · 거리 %dm"%[e.hp,e.max_hp,int(e.get("distance",0))]]
  var threat: Dictionary=preload("res://redesign/enemy_threat.gd").analyze(model.s).get(index,{})
- lines.append(str(threat.get("detail","")))
+ if not str(threat.get("detail","")).is_empty():lines.append(str(threat.get("detail","")))
  for entry in preload("res://redesign/enemy_status_icons.gd").entries(e):lines.append(entry.text)
  lines.append(Content.enemy_rule(e,model.s))
  show_detail(e.name,"\n".join(lines))

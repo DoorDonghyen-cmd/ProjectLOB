@@ -20,6 +20,21 @@ func run() -> void:
 		await settle()
 		screen._to_menu()
 		await settle()
+		# Launch build (2026-11-12): developer menu and legacy training are hidden until the
+		# developer switch (seven taps on the wordmark) is turned on.
+		if not screen.preferences.dev_tools():
+			for key in ["training_setup", "dev", "resume_training"]: check(not screen.find_child(key, true, false).visible, "launch title hides " + key)
+			for key in ["TitleHero", "new_run_setup", "settings", "first_guide", "city_archive", "rules"]: bounds(key)
+			await capture("launch_" + str(resolution.x))
+			var title_node = screen.find_child("TitleScreen", true, false)
+			for i in range(6):
+				var early := InputEventMouseButton.new(); early.button_index = MOUSE_BUTTON_LEFT; early.pressed = true
+				title_node._wordmark_input(early)
+			check(not screen.preferences.dev_tools(), "six taps do not open developer tools")
+			var last := InputEventMouseButton.new(); last.button_index = MOUSE_BUTTON_LEFT; last.pressed = true
+			title_node._wordmark_input(last)
+			await settle()
+			check(screen.preferences.dev_tools(), "seven taps on the wordmark turn the developer switch on")
 		for key in ["TitleHero", "new_run_setup", "settings", "first_guide", "training_setup", "city_archive", "rules", "dev"]: bounds(key)
 		check(not screen.find_child("resume", true, false).visible, "fresh save has no false continue")
 		check_title_primary(screen.find_child("new_run_setup", true, false))

@@ -55,27 +55,81 @@ const BUILD_ROLE_PARTS:={
 	"capacitor":{"effect":"전이 확장","value":"전이 +1 · 대상 +1","role":"전이 모듈","upside":"전격 전이 피해 +1 · 처치 전이 대상 +1","text":"전격탄 전이 피해 +1. 연쇄·돌파 코어의 처치 후 전이 대상도 추가 1기 늘립니다. 모듈이므로 해당 코어와 함께 장착할 수 있습니다. 처치 전이의 직접 피해 배율은 바꾸지 않습니다."},
 	"arc_splitter":{"text":"전격탄 전이 피해 +2, 전격 전이 대상 +1. 모든 직접 피해 −1. 전격의 광역 전이를 위한 코어이며 연쇄·돌파 코어와 동시 장착할 수 없습니다.","upside":"전격 전이 피해 +2 · 대상 +1"}}
 ## Part text after the 11-11 fixes (part_tuning.gd), runs with the overheat cost only.
+## 2026-11-12 launch pass: these entries were reworded (행동, 열 한계). The wording of the other
+## offered parts is in LAUNCH_PART_TEXT below.
 const TUNED_PART_TEXT := {
-	"cooling_breech": {"effect": "냉각 직후", "value": "+3", "upside": "수동 냉각 직후 첫 공격탄 타격당 +3", "text": "직접 냉각한 바로 다음 사격에서 첫 공격탄의 타격당 피해 +3. 재장전 냉각 +4. 대신 탄창 −1칸. 과열 전에 미리 식히는 판단을 보상합니다."},
-	"ember_core": {"value": "피해 +3", "upside": "절반 열 이상에서 피해 +3", "downside": "열 한계 −1", "text": "발사 직전 열이 최종 열 한계의 절반 이상이면 타격당 피해 +3. 대신 열 한계 −1. 자신의 발열로 조건을 채우지 못합니다."},
-	"resonator": {"downside": "", "text": "연타탄이 같은 적을 때리는 동안 타격마다 배율이 커집니다. 1타 ×1, 2타 ×2, 3타 ×3. 증폭·기록·위치 배율이 모두 곱해집니다."},
+	"cooling_breech": {"effect": "냉각 직후", "value": "+3", "upside": "냉각 직후 첫 공격탄 타격당 +3", "text": "직접 냉각한 바로 다음 사격에서 첫 공격탄의 타격당 피해 +3. 탄창을 교체할 때 열 −4. 탄창 −1칸."},
+	"ember_core": {"value": "피해 +3", "upside": "열이 절반 이상이면 피해 +3", "downside": "열 한계 −1", "text": "발사 직전 열이 한계의 절반 이상이면 타격당 피해 +3. 열 한계 −1."},
+	"resonator": {"downside": "", "text": "연타탄의 타격마다 배율이 커집니다. 1타 ×1, 2타 ×2, 3타 ×3. 다른 배율과 곱해집니다."},
 	"afterburner": {"downside": ""},
-	"lens": {"value": "관통 +2 · 피해 +2", "upside": "관통탄 관통 +2 · 타격당 +2", "text": "탄환 자체 관통이 1 이상인 탄(철갑·우회 등)의 관통 +2, 타격당 피해 +2. 기본탄이나 관통 없는 탄에는 붙지 않습니다."},
-	"executioner": {"value": "+4 피해", "upside": "체력 30% 이하 적 피해 +4", "text": "발사 직전 체력이 최대의 30% 이하인 적에게 직접 피해 +4."},
-	"momentum": {"downside": "", "text": "차단탄의 접근 감속 기간 +1적 행동(일반 3, 압축 4). 같은 적에게 경직은 여전히 전투당 1회이며 특수 행동 차단 기간은 늘리지 않습니다. 충격탄 밀치기와 탄창당 한도 +2m."},
-	"loader": {"text": "탄창 교체 −1턴(최소 2턴), 과열 강제 냉각 −1행동."},
+	"lens": {"value": "관통 +2 · 피해 +2", "upside": "관통탄 관통 +2 · 타격당 +2", "text": "관통이 있는 탄(철갑탄·우회탄 등)의 관통 +2, 타격당 피해 +2."},
+	"executioner": {"value": "+4 피해", "upside": "체력 30% 이하 적 피해 +4", "text": "체력이 30% 이하인 적에게 직접 피해 +4."},
+	"momentum": {"downside": "", "text": "차단탄의 경직 +1행동(적마다 한 번). 충격탄 밀치기와 탄창당 한도 +2m."},
+	"loader": {"value": "−1행동", "upside": "탄창 교체·과열 냉각 −1행동", "text": "탄창 교체 −1행동(최소 2), 과열 강제 냉각 −1행동."},
+}
+
+## 2026-11-12 launch pass: what each offered part does and its cost, in the words of the HUD
+## (행동, 열 한계, 강화탄). Notes written for older structures (one core only, 재장전 +1턴,
+## loading order) are gone because they are not true in new runs. These rules come from the
+## other new-run layers (growth structure v2, focus build, magazine build), so the wording is
+## applied only when the run has all of them, which every new run does; a state with one layer
+## removed (older saves, rule tests) keeps that layer's own text.
+const LAUNCH_PART_TEXT := {
+	"afterburner": {"text": "증폭이나 배율을 받은 마지막 공격탄이 한 번만 맞히는 탄이면 직접 피해 ×3. 뒤에 지원탄이 있어도 됩니다."},
+	"ordinary_chain": {"text": "탄창의 마지막 공격탄이, 앞서 쏜 다른 탄종마다 타격당 피해 +2(최대 +6). 위력이나 강화 여부가 달라도 같은 탄종입니다."},
+	"compression_sink": {"upside": "특수탄이 든 탄창의 강화탄(+) 열 −2", "text": "탄창에 기본탄이 아닌 일반탄이 1발 이상 있으면 그 탄창의 강화탄(+) 열 −2. 열 한계 −1."},
+	"chain_sink": {"text": "탄창의 세 번째 탄을 쏘면 과열 판정 전에 열 −3. 열 한계 −1."},
+	"radiator": {"text": "열 한계 +3."},
+	"reclaimer": {"text": "탄으로 적을 처치하면 열 −2. 한 탄에 한 번, 과열 판정 전에 적용됩니다."},
+	"supply": {"text": "탄창 +1칸."},
+	"capacitor": {"text": "전격탄 전이 피해 +1. 연쇄·돌파 구동이 처치 뒤 피해를 넘기는 대상 +1."},
+	"arc_splitter": {"text": "전격탄 전이 피해 +2, 전이 대상 +1. 모든 직접 피해 −1."},
+	"rammer": {"text": "경직 중인 적을 직접 맞히면 타격당 +2. 충격탄 밀치기와 탄창당 한도 +1m. 차단탄 다음에 주력 탄을 쏘세요."},
+	"sequencer": {"text": "증폭탄이 주는 추가 피해 +3. 배율탄에는 적용되지 않습니다."},
+	"duplex": {"text": "연타탄의 타격 수 +2, 열 +1."},
+	"reserve": {"text": "탄창마다 빼낼 수 있는 탄이 2발에서 3발로 늘어납니다."},
+	"opening": {"text": "탄창에서 처음 쏜 탄의 직접 피해 ×2. 첫 탄이 지원탄이면 효과 없이 지나갑니다. 빼낸 탄은 세지 않습니다."},
+	"third_striker": {"text": "탄창에서 세 번째로 쏜 탄의 직접 피해 ×3. 지원탄도 한 발로 세고 빼낸 탄은 세지 않습니다. 냉각해도 순서는 이어지고, 탄창을 교체하면 처음부터 셉니다."},
+	"overbore": {"text": "탄창 2칸을 차지하는 공격탄의 타격당 피해 +3, 관통 +2. 탄창 −1칸."},
+	"igniter": {"text": "화상 중인 적을 직접 맞히면 피해 +2."},
+	"inferno": {"downside": "탄창 교체 +1행동"},
+	"breaker": {"text": "타격마다 배리어를 한 칸 더 걷어 냅니다. 연타탄과 잘 맞습니다."},
 }
 
 static func part_spec(id: String, state: Dictionary) -> Dictionary:
 	var spec := _version_part_spec(id, state)
+	# 11-11 fixes (part_tuning.gd) on top of the version layers.
+	var tuned: bool = preload("res://redesign/part_tuning.gd").enabled(state)
+	if TUNED_PART_TEXT.has(id) and tuned:
+		spec = spec.duplicate()
+		spec.merge(TUNED_PART_TEXT[id], true)
+	var current: bool = tuned and int(state.get("growth_structure_version", 0)) == 1 and int(state.get("focus_build_version", 0)) == 1 and int(state.get("magazine_build_version", 0)) >= 1
+	if LAUNCH_PART_TEXT.has(id) and current:
+		spec = spec.duplicate()
+		spec.merge(LAUNCH_PART_TEXT[id], true)
+	# Fire parts carry run numbers, so their short wording is built here (launch pass 2026-11-12).
+	if current and Roles.builds(state) and id in ["inferno", "coil"]:
+		spec = spec.duplicate()
+		if id == "inferno":
+			spec.text = "화상과 불길의 행동당 피해 +%d. 소이탄 화상 +2턴(최대 6턴), 불씨탄이 옮기는 한도 +2턴. 불길이 맞은 자리 앞뒤 3m에 %d행동 남습니다. 탄창 교체 +1행동." % [Roles.burn_growth(state, [id]), Roles.fire_duration([id], state)]
+			if Roles.specialists(state): spec.text += " 열압 구동이 %d번 자랄 때마다 화상 +1." % Roles.burn_growth_step(state)
+		else:
+			spec.text = "소이탄 화상 +1턴(최대 6턴), 불씨탄이 옮기는 한도 +1턴. 불길의 행동당 피해 +%d." % Roles.coil_ground_bonus(state)
+	# A drive bought as a part (the gun's own drive is never offered): effect, reach, how it grows, cost.
+	if current and Roles.enabled(state) and id in ["volley_drive", "siege_drive", "thermal_drive"]:
+		spec = spec.duplicate()
+		var reach := Roles.relay_limit(state, equipped_parts(state))
+		match id:
+			"volley_drive": spec.text = "직접 타격마다 피해 +1. 표적이 쓰러지면 남은 타격이 가까운 적 %d기까지 이어집니다. 다회 타격탄 열 +1. 피해 타격 3회 뒤 이기면 자랍니다." % reach
+			"siege_drive": spec.text = "한 번만 맞히는 공격탄의 직접 피해 ×2.00. 넘친 피해는 가까운 적 %d기까지 넘어갑니다. 한 발로 8 이상 피해를 주고 이기면 자랍니다. 탄창 −1칸." % reach
+			"thermal_drive":
+				spec.text = "발사 직전 열이 한계의 절반 이상이면 직접 피해 ×1.50. 그 공격이 열 한계에 닿으면 나머지 적에게 절반 피해의 충격파. 고열 피해를 주고 이기면 자랍니다. 열 한계 −2."
+				if int(state.get("combat_roles_version", 0)) >= 2: spec.text += " 성장 %d회마다 화상 +1." % Roles.burn_growth_step(state)
+	# ★2 (shop upgrade) last, so the number survives whichever wording was chosen above.
 	if id == "third_striker" and preload("res://redesign/samples/opening_build/third_striker_trial.gd").upgraded(state):
 		spec = spec.duplicate()
 		spec.name += " ★2"
 		for key in ["value", "upside", "text"]: spec[key] = str(spec[key]).replace("×3", "×3.5")
-	# 11-11 fixes (part_tuning.gd) on top of the version layers.
-	if TUNED_PART_TEXT.has(id) and preload("res://redesign/part_tuning.gd").enabled(state):
-		spec = spec.duplicate()
-		spec.merge(TUNED_PART_TEXT[id], true)
 	return spec
 
 static func _version_part_spec(id: String, state: Dictionary) -> Dictionary:
@@ -83,7 +137,7 @@ static func _version_part_spec(id: String, state: Dictionary) -> Dictionary:
 		var triad: Dictionary = PARTS[id].duplicate()
 		triad.merge(MAGAZINE_BUILD_PARTS[id], true)
 		triad.effect = "4종 탄창"; triad.upside = "특수탄 4종 이상 탄창 · 특수 공격탄 피해 +3"
-		triad.text = "장전된 탄창에 서로 다른 특수 탄종이 4종 이상이면 그 탄창의 특수 공격탄 피해 +3. 특수탄이 먼저 장전되므로 3종이 아닌 4종을 요구합니다. 기본탄 피해 −1."
+		triad.text = "탄창에 서로 다른 특수탄이 4종 이상이면 그 탄창의 특수 공격탄 피해 +3. 기본탄 피해 −1."
 		return triad
 	if id == "reserve" and int(state.get("growth_structure_version", 0)) == 1:
 		var reserve: Dictionary = PARTS[id].duplicate()
@@ -409,7 +463,7 @@ static func enemy_rule(enemy: Dictionary, state: Dictionary = {}) -> String:
 	var rule := _enemy_rule(enemy)
 	if int(enemy.get("slow_left",0))>0:rule+="\n경직 %d행동 · 접근량 절반(올림), 이동 시 최소 1"%int(enemy.slow_left)
 	if pressure_combat(state) and maxi(int(enemy.get("def",0)),int(enemy.get("guard_armor",0)))>0:
-		rule += "\n관통을 뺀 장갑 1마다 직접 피해 10% 감소(최대 80%, 버림, 최소 1). 파쇄는 장갑 자체를 낮추고 화상·전이는 장갑을 무시합니다."
+		rule += "\n장갑 1마다 직접 피해 −10%(최대 −80%). 관통과 파쇄로 줄이고, 화상·전이는 장갑을 무시합니다."
 	return rule
 
 static func _enemy_rule(enemy: Dictionary) -> String:
@@ -514,9 +568,20 @@ const SUPPORT_MASTERY_STEPS := {"charge": 1, "charge_heat": 2, "shatter": 1, "co
 static func eject_limit(state: Dictionary) -> int:
 	return 2 + (1 if int(state.get("growth_structure_version", 0)) == 1 and has_part(state, "reserve") else 0)
 
+## Launch balance (2026-11-12, launch_balance.gd): 리와인더 carries 돌파 instead of 열압 in new
+## runs. Its own trick (rewind by cooling, heat 0) and 열압 (needs heat at half or more) pulled
+## against each other; with careful play it lost at the region 2 boss with a fire build and in
+## region 4 with a direct build.
+const LAUNCH_GUN_ENGINES := {"rewinder": "siege_drive"}
+
+## The drive a gun carries. launch: true for a new run (or the preparation screen).
+static func gun_engine(gun: String, launch: bool) -> String:
+	if launch and LAUNCH_GUN_ENGINES.has(gun): return str(LAUNCH_GUN_ENGINES[gun])
+	return str(GUN_ENGINES.get(gun, ""))
+
 static func innate_engine(state: Dictionary) -> String:
 	if int(state.get("growth_structure_version", 0)) != 1: return ""
-	return str(GUN_ENGINES.get(str(state.get("gun", "")), ""))
+	return gun_engine(str(state.get("gun", "")), int(state.get("launch_balance_version", 0)) >= 1)
 
 ## Equipped parts plus the gun's built-in drive (v2). Use for effects, never for slot limits.
 static func active_parts(state: Dictionary) -> Array:
@@ -613,7 +678,7 @@ static func primary_stat(id: String, state: Dictionary) -> Dictionary:
 		"boost": return {"label":"고열 공격" if bool(AMMO[id].get("boost_hot",false)) else "다음 공격", "value":boost_label(id, state)}
 		"shatter": return {"label":"장갑", "value":"−%d" % value}
 		"cool": return {"label":"냉각", "value":"−%d" % value}
-		"prepare": return {"label":"예약", "value":"%d장" % value}
+		"prepare": return {"label":"예약", "value":"%d발" % value}
 		"disrupt": return {"label":"경직 행동", "value":str(Roles.slow_duration(state,is_compressed(id),equipped_parts(state)))} if Roles.enabled(state) else {"label":"차단", "value":"%d턴" % value}
 		"spread": return {"label":"화상 이동", "value":"%d" % value}
 		"burn": return {"label":"화상 / 턴", "value":str(burn_damage(state))}
@@ -774,7 +839,7 @@ static func grade_name(id: String) -> String:
 	return "기본" if grade(id) < 0 else ("고급" if grade(id) == 1 else "일반")
 
 static func grade_detail(id: String) -> String:
-	return grade_name(id) + (" · 임시 압축 · 사용 후 원본 2장 복원" if is_temporary(id) else (" · 영구 압축" if is_compressed(id) else (" · 배율 강화형" if id == "charge_hot" else "")))
+	return grade_name(id) + (" · 임시 압축 · 사용 후 원본 2장 복원" if is_temporary(id) else (" · 강화탄" if is_compressed(id) else (" · 배율 강화형" if id == "charge_hot" else "")))
 
 static func compression_cost_text(id: String, state: Dictionary = {}) -> String:
 	var pieces: PackedStringArray = ["열 " + heat_label(id, state if not state.is_empty() else {"gun": "single"}), "%d칸" % slot_cost(id)]
@@ -795,7 +860,7 @@ static func profile_detail(id: String) -> String:
 	var spec: Dictionary=AMMO[id]
 	if not spec.get("profile",false): return ""
 	var tune:=str(spec.get("tune",""))
-	return "기초 위력 %d/5%s" % [int(spec.power), " · 화력 개조 +1" if tune=="power" else " · 방열 개조 −1" if tune=="cool" else " · 미개조"]
+	return "위력 %d/5%s" % [int(spec.power), " · 화력 개조 +1" if tune=="power" else " · 방열 개조 −1" if tune=="cool" else ""]
 
 static func compressed_id(id: String) -> String:
 	return str(COMPRESSIONS.get(id, ""))

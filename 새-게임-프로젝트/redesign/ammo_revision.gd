@@ -16,8 +16,8 @@ static func enabled(state: Dictionary) -> bool:
 static func text(id: String, state: Dictionary) -> String:
 	if not enabled(state): return ""
 	var family := str(preload("res://redesign/content.gd").source_id(id))
-	if family == "sequence": return "쏘면 교차 사격 단계 +%d(최대 +3). 이 탄 뒤에 다른 계열 공격탄을 이어 쏘면 교차 피해가 커집니다. 이 탄도 지금 단계만큼 교차 피해를 받습니다." % SEQUENCE_STEP
-	if family == "prepare": return "바로 뒤의 탄 1발을 탄창에서 빼 두었다가, 다음 탄창 맨 앞에 먼저 넣습니다(최대 %d발). 강한 탄을 다음 탄창 첫 발로 아끼거나, 과열 직전의 탄을 미룹니다." % HELD_LIMIT
+	if family == "sequence": return "쏘면 교차 사격 단계 +%d(최대 +3). 뒤이어 쏘는 다른 종류 공격탄의 교차 피해가 커집니다." % SEQUENCE_STEP
+	if family == "prepare": return "바로 뒤의 탄 %d발을 빼 두었다가 다음 탄창 맨 앞에 넣습니다(최대 %d발 보관). 강한 탄을 아끼거나 과열 직전의 탄을 미룰 때 씁니다." % [maxi(1, preload("res://redesign/content.gd").effect_value(id, state)), HELD_LIMIT]
 	return ""
 
 static func valid(state: Dictionary) -> bool:

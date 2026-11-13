@@ -1783,7 +1783,7 @@ func _heat_report(parent: Node, state: Dictionary) -> void:
 	row.name = "HeatReport"
 	row.tooltip_text = RunInsight.heat_report_tip(report)
 	# Three open columns, no extra panels. Numbers lead; details live in the record.
-	for item in [["최고 열", str(report.heat_peak), INK], ["탄·파츠 냉각", "−%d" % report.cooled if int(report.cooled) > 0 else "0", INK], ["강제 재장전", "%d회" % report.forced_reloads, DANGER if int(report.forced_reloads) > 0 else MUTED]]:
+	for item in [["최고 열", str(report.heat_peak), INK], ["탄·파츠 냉각", "−%d" % report.cooled if int(report.cooled) > 0 else "0", INK], ["과열" if campaign != null and campaign.magazine_enabled() else "강제 재장전", "%d회" % (int(report.overheats) if campaign != null and campaign.magazine_enabled() else int(report.forced_reloads)), DANGER if int(report.forced_reloads) > 0 else MUTED]]:
 		var column := VBoxContainer.new()
 		column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		column.add_theme_constant_override("separation", 0)
@@ -1793,10 +1793,11 @@ func _heat_report(parent: Node, state: Dictionary) -> void:
 		_label(column, str(item[1]), 27, item[2])
 
 func _encounter_record(state: Dictionary) -> void:
-	var column := _workspace("교전 기록", "이번 전투에서 실제로 발생한 효과입니다.")
-	_label(column, RunInsight.combat_report_line(state), 20, ACCENT)
+	# Launch pass (2026-11-12): totals, three numbers, then the shots. The four lines that
+	# explained how the numbers are counted stay in the tooltip of the number row.
+	var column := _workspace("교전 기록", "이번 전투에서 쏜 탄과 결과")
+	_label(column, RunInsight.combat_report_line(state).trim_prefix("교전 기록 · "), 20, ACCENT)
 	_heat_report(column, state)
-	_label(column, RunInsight.heat_report_tip(RunInsight.combat_report(state)), 17, MUTED)
 	for event in state.get("history", []):
 		if str(event.get("action", "")) != "fire": continue
 		for shot in event.get("detail", {}).get("results", []):
@@ -1808,6 +1809,16 @@ func _skip_animation() -> void:
 		battle_view.fast_forward = true
 
 func _dialog(title: String, compact: bool = false) -> VBoxContainer:
+	# Launch pass (2026-11-12): only the legacy hand-loading battle keeps the teal console
+	# dialog. Everything else opens the common window (workshop/shop/gate material).
+	var legacy_battle: bool = page == "run" and campaign == null and model.s.get("phase", "") in ["plan", "ready"]
+	if page != "loadout" and not legacy_battle:
+		var window = preload("res://redesign/common/window.tscn").instantiate()
+		window.set_meta("preferred_size", Vector2(760, 560) if compact else Vector2(1040, 660))
+		add_child(window)
+		var content: VBoxContainer = window.setup(self, title, compact)
+		window.fit_content()
+		return content
 	var shell = preload("res://redesign/equipment/dialog.tscn") if page=="loadout" else preload("res://redesign/console_dialog.tscn")
 	var dialog = shell.instantiate()
 	add_child(dialog)
@@ -1883,8 +1894,18 @@ func _workspace(title: String, subtitle: String = "") -> VBoxContainer:
 	column.add_theme_constant_override("separation", 12)
 	column.set_meta("dialog", overlay)
 	scroll.add_child(column)
+	# Outside combat the overlay wears the workshop/shop/gate material (launch pass 2026-11-12).
+	# Deferred so the content the caller adds after this returns is skinned too.
+	if not battle_overlay: preload("res://redesign/common/workspace_skin.gd").apply.call_deferred(overlay)
 	_focus_control.call_deferred(close)
 	_workspace_focus_chain.call_deferred()
+	return column
+
+## A short menu or note (launch pass 2026-11-12): the same overlay drawn as a centred card over
+## the dimmed place instead of a full-screen page. Names and closing stay those of _workspace.
+func _workspace_card(title: String, subtitle: String = "") -> VBoxContainer:
+	var column := _workspace(title, subtitle)
+	workspace_overlay.set_meta("card", true)
 	return column
 
 func _workspace_focus_chain() -> void:
@@ -1973,6 +1994,9 @@ func _weapon_details(id: String) -> void:
 		spec.text = "덱에서 섞인 탄창을 장전합니다. 사격 뒤 적이 1행동하며 잔탄은 보존됩니다. 냉각은 적 1행동, 탄창 교체는 적 %d행동입니다. 탄을 먼저 선택해 탄창당 최대 2발을 빼낼 수 있습니다." % (maxi(2,int(spec.reload)) if page=="loadout" else model.reload_cost())
 		if page=="loadout" or int(model.s.get("fire_control_version",0))==Model.FireHeatTrial.CAMPAIGN_VERSION:
 			spec.text += "\n첫 탄부터 끌어서 발수 선택 → 사격으로 확정합니다. 냉각은 열을 0으로 낮추고 연속 발열을 끊습니다. 탄창 교체는 열과 연속 발열을 유지합니다(냉각 약실 +4 적용)."
+	if whole_magazine:
+		_magazine_weapon_details(id, spec)
+		return
 	if id in Content.WeaponRoles.KINDS: spec.text=Content.WeaponRoles.TEXT[id]+"\n\n"+spec.text
 	var column := _dialog(spec.name + " · " + spec.role, true)
 	column.name = "WeaponDetails"
@@ -2004,6 +2028,53 @@ func _weapon_details(id: String) -> void:
 	_label(column, "기본탄으로 출발 · 첫 승리 후 코어와 특수탄 선택", 18, MUTED)
 	if CampaignContent.SUPPLY_PREFERENCE_VISIBLE: _label(column, "첫 특수탄 보급 선호 · " + CampaignContent.LOADOUTS[loadout].name, 16, MUTED)
 	_label(column, "기초 훈련에서는 무기와 관계없이 같은 순서로 탄환을 배웁니다.", 16, MUTED)
+
+## Weapon window of the magazine game (launch pass 2026-11-12): what this gun does, its four
+## numbers and its built-in drive. General rules live in 게임 규칙, the deck in 시작 탄환.
+const WEAPON_NOTES := {
+	"single": ["한 번에 최대 2발", "공격탄 피해 +1", "빼낸 탄은 탄창 맨 뒤로 돌아옵니다"],
+	"burst": ["한 번에 최대 3발", "같은 적을 3번 맞힐 때마다 추가 피해 4 · 연타탄은 타격마다 셉니다"],
+	"scatter": ["한 번에 최대 3발", "탄마다 살아 있는 적 중 무작위 표적 · 연타탄의 타격은 한 표적에"],
+	"heavy": ["한 번에 최대 3발", "과열되면 다음 탄 1발을 강행 · 직접 피해 ×2", "강행 뒤에도 과열이면 강제 냉각에 적 1행동 추가 · 냉각탄으로 식히면 그대로 끝"],
+	"amplifier": ["한 번에 1발 · 처치하면 다음 탄을 이어 쏩니다", "탄의 피해·관통·효과 2배(타격 수와 지속 시간은 그대로)"],
+	"rewinder": ["기본 3발", "탄창마다 첫 수동 냉각 때 남은 탄의 순서를 뒤집습니다"],
+	"deadbolt": ["기본 3발", "장전할 때 무작위 공격탄 1발이 봉인탄 · 직접 피해 ×3", "봉인탄은 뺄 수 없고, 쏘기 전에는 탄창 교체가 잠깁니다"],
+}
+const DRIVE_NOTES := {
+	"siege_drive": "돌파 · 한 번만 맞히는 탄의 피해 ×2, 넘친 피해는 다음 적에게",
+	"volley_drive": "연쇄 · 타격마다 피해 +1, 남은 타격은 다음 적에게",
+	"thermal_drive": "열압 · 열이 한계의 절반 이상이면 피해 ×1.5",
+}
+
+func _magazine_weapon_details(id: String, spec: Dictionary) -> void:
+	var in_run := page != "loadout"
+	var column := _dialog(str(spec.name) + " · " + str(spec.role), true)
+	column.name = "WeaponDetails"
+	for line in WEAPON_NOTES[id]: _label(column, str(line), 20, WeaponView.COLORS[id])
+	# 되감기 사격 (launch_balance.gd): new runs only.
+	if id == "rewinder" and (not in_run or Model.LaunchBalance.enabled(model.s)): _label(column, "되감은 직후 첫 공격탄의 직접 피해 ×%d" % Model.LaunchBalance.REWIND_FACTOR, 20, WeaponView.COLORS[id])
+	var drive := Content.gun_engine(id, true) if not in_run else Content.innate_engine(model.s)
+	if not drive.is_empty():
+		var built_in: Label = _label(column, "내장 구동 · " + str(DRIVE_NOTES[drive]), 19, ACCENT)
+		built_in.name = "WeaponDrive"
+		_label(column, "조건을 채우고 이길 때마다 구동이 자랍니다.", 17, MUTED)
+	var capacity: int = model.capacity() if in_run else int(spec.capacity) + 3
+	var limit: int = Content.heat_limit(model.s) if in_run else int(spec.heat_limit)
+	var swap: int = model.reload_cost() if in_run else maxi(2, int(spec.reload))
+	var forced: int = model.forced_cooling_cost() if in_run else maxi(1, int(spec.reload)) + 1 + int(Model.Overheat.EXTRA_BY_GUN.get(id, Model.Overheat.EXTRA))
+	var numbers: Label = _label(column, "탄창 %d칸 · 열 한계 %d\n냉각 적 1행동 · 탄창 교체 적 %d행동 · 과열 냉각 적 %d행동" % [capacity, limit, swap, forced], 19)
+	numbers.name = "WeaponNumbers"
+	_label(column, str(WEAPON_TIPS[id]), 18, MUTED)
+
+const WEAPON_TIPS := {
+	"single": "증폭탄 바로 뒤에 큰 한 발을 두면 가장 셉니다.",
+	"burst": "연타탄으로 같은 적을 빠르게 세 번 맞히세요.",
+	"scatter": "여러 적을 한꺼번에 깎는 전격탄·소이탄과 잘 맞습니다.",
+	"heavy": "열을 높게 유지할수록 셉니다. 강행 자리에 화력을 둘지 냉각탄을 둘지 고르세요.",
+	"amplifier": "한 발에 처치되는 순서를 만들면 계속 이어 쏩니다.",
+	"rewinder": "가장 큰 한 발이 탄창 뒤쪽에 있을 때 냉각으로 되감아 맨 앞에서 쏘세요.",
+	"deadbolt": "봉인탄 앞에 증폭탄을 두면 ×3이 더 커집니다.",
+}
 
 func _inspect_slot(index: int) -> void:
 	if busy or not is_instance_valid(calculation_label): return

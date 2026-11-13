@@ -8,14 +8,22 @@ const Reserve = preload("res://redesign/ammo_reserve.gd")
 static func cycle_text(state: Dictionary) -> String:
 	return "사용한 탄은 이번 전투에 돌아오지 않으며, 다음 전투에서 보유 탄약이 복구됩니다." if Reserve.enabled(state) else "사용 후 버린 더미로 이동하며 덱이 비면 다시 섞습니다."
 
+## What one round is and does (launch pass 2026-11-12). One line of grade and power, then the
+## round's own effect. Heat and slots are on the card and in each screen's own number row, and
+## the consecutive-fire heat rule is in 게임 규칙 and on the heat gauge, so neither is repeated
+## under every round.
 static func description(id: String, state: Dictionary) -> String:
-	var text := Content.grade_detail(id) + ("\n" + Content.profile_detail(id) if not Content.profile_detail(id).is_empty() else "") + "\n" + _description(id, state)
+	var head := Content.grade_detail(id)
+	if not Content.profile_detail(id).is_empty(): head += " · " + Content.profile_detail(id)
+	var body := _description(id, state)
+	if Content.is_compressed(id):
+		body = body.replace("\n" + Content.compression_cost_text(id, state), "")
+		if Content.anchor(id) == "first": body += "\n탄창 맨 앞에 장전됩니다."
+		elif Content.anchor(id) == "last": body += "\n탄창 맨 뒤에 장전됩니다."
+	var text := head + "\n" + body
 	# Tag build runs: the round's tags and what the equipped tag parts do to it, first.
 	var Tags = preload("res://redesign/tag_build.gd")
 	if Tags.enabled(state): text = Tags.round_summary(state, id, Content.active_parts(state)) + "\n\n" + text
-	if Content.Sustained.enabled(state):
-		text += "\n\n" + Content.Sustained.rules()
-		text += "\n카드의 열은 기본값입니다. 실제 추가 열과 과열 중단은 발사 순서에서 확인하세요."
 	return text
 
 static func _description(id: String, state: Dictionary) -> String:
@@ -23,31 +31,46 @@ static func _description(id: String, state: Dictionary) -> String:
 	# 2026-11-12 round rework (ammo_revision.gd): 연계탄 and 예약탄 in new runs.
 	var revised := preload("res://redesign/ammo_revision.gd").text(id, state)
 	if not revised.is_empty(): return revised
-	if Content.Roles.enabled(state) and spec.effect=="disrupt":return "특수 행동 차단과 함께 접근량을 %d적 행동 동안 절반으로 낮춥니다(올림, 이동 시 최소 1). 적마다 경직 1회 · 압력탄 제외."%Content.Roles.slow_duration(state,Content.is_compressed(id),Content.equipped_parts(state))
-	if Content.Roles.enabled(state) and spec.effect=="burn":return "표적에 화상 %d턴. 착발 지점 앞뒤 %dm에 불길을 %d적 행동 남깁니다.\n화상은 행동당 %d, 불길은 %d피해 · 장갑/차폐 무시. 겹친 화상/불길은 큰 값 한 번만 적용됩니다.\n불길 최대 3곳 · 재장전/냉각 중에도 진행."%[Content.burn_amount(id,state),Content.Roles.fire_radius(state,Content.equipped_parts(state)),Content.Roles.fire_duration(Content.equipped_parts(state),state),Content.burn_damage(state),Content.burn_damage(state)+(Content.Roles.coil_ground_bonus(state) if Content.has_part(state,"coil") else 0)]
+	if Content.Roles.enabled(state) and spec.effect=="disrupt":return "적의 특수 행동을 끊고, 적 %d행동 동안 접근을 절반으로 늦춥니다. 적마다 한 번만 걸립니다."%Content.Roles.slow_duration(state,Content.is_compressed(id),Content.equipped_parts(state))
+	if Content.Roles.enabled(state) and spec.effect=="burn":return "표적에 화상 %d턴, 맞은 자리 앞뒤 %dm에 불길 %d행동.\n적 행동마다 화상 %d · 불길 %d피해, 장갑 무시. 겹치면 큰 쪽만 적용됩니다."%[Content.burn_amount(id,state),Content.Roles.fire_radius(state,Content.equipped_parts(state)),Content.Roles.fire_duration(Content.equipped_parts(state),state),Content.burn_damage(state),Content.burn_damage(state)+(Content.Roles.coil_ground_bonus(state) if Content.has_part(state,"coil") else 0)]
 	if spec.effect == "burn":
 		return "직접 피해 %d · 보호막에 막혀도 화상 %d턴 부여.\n매 적 행동 직전 HP에 %d피해 · 보호막·장갑 무시.\n재장전 중에도 진행. 추가 적중은 기간을 더하며 최대 6턴, 턴당 피해는 중첩되지 않습니다.\n%s" % [Content.damage(id, state), Content.burn_amount(id, state), Content.burn_damage(state), Content.compression_cost_text(id, state)]
 	if spec.get("profile",false):
-		var rule := "물리 탄환. " + cycle_text(state)
+		var rule := "특수 효과 없는 기본 탄환입니다."
 		if Content.source_id(id) == "pierce": rule = "관통 %d만큼 장갑을 무시합니다." % Content.penetration(id,state)
 		if Content.source_id(id) == "precise": rule = "같은 적을 %d회 타격합니다. 증폭·파츠 피해도 타격마다 적용됩니다." % Content.hit_count(id,state)
 		if Content.is_compressed(id): rule += "\n" + Content.compression_cost_text(id,state)
 		return rule
 	if spec.effect == "boost":
-		var rule := "직접 피해 없음 · 다음 공격탄 %d발 %s. 지원탄은 소비하지 않습니다. " % [Content.boost_rounds(id), Content.boost_label(id, state)]
+		var rule := "피해 없음 · 다음 공격탄 %d발 %s. " % [Content.boost_rounds(id), Content.boost_label(id, state)]
 		if bool(spec.get("boost_hot",false)):
-			rule += "공격 직전 열 %d 이상일 때만 강화하며 낮으면 효과 없이 소비합니다. 공격 자체의 발열은 제외합니다. 일반 증폭과는 마지막 효과로 교체됩니다. " % Content.hot_threshold(state)
+			rule += "공격 직전 열이 %d 이상일 때만 강화하고, 낮으면 효과 없이 사라집니다. " % Content.hot_threshold(state)
 		elif int(spec.get("boost_heat",0)) > 0:
-			rule += "강화받은 공격에 추가 발열 +%d. 공격이 막혀도 열을 지불합니다. 같은 배율은 마지막 효과로 교체됩니다. " % int(spec.boost_heat)
-		elif Content.is_compressed(id):
-			rule += "마지막에 발사해 다음 탄창을 준비합니다. 같은 이월 증폭은 교체됩니다. "
-		else: rule += "일반·잔열 증폭은 마지막 효과로 교체됩니다. "
-		rule += "덧셈 뒤 배율, 그 뒤 장갑을 계산합니다. "
-		rule += "한 번의 재장전까지 이월합니다." if Content.is_compressed(id) else "미사용 효과는 재장전 시 사라집니다."
+			rule += "강화받은 공격의 열 +%d. " % int(spec.boost_heat)
+		rule += "배율탄끼리는 나중 것만 남고 증폭탄과는 겹칩니다. " if Content.boost_factor(id, state) > 1 else "증폭탄끼리는 나중 것만 남고 배율탄과는 겹칩니다. "
+		rule += "탄창을 한 번 교체해도 이어집니다." if Content.is_compressed(id) else "탄창을 교체하면 사라집니다."
 		return rule + ("\n" + Content.compression_cost_text(id, state) if Content.is_compressed(id) else "")
 	if spec.effect == "shatter":
-		return "직접 피해 없이 장갑 −%d. 배리어를 소모하지 않으며 태세 전환 뒤에도 유지됩니다. 강화 효과는 다음 공격탄에 남습니다." % Content.effect_value(id, state) + ("\n" + Content.compression_cost_text(id, state) if Content.is_compressed(id) else "")
+		return "피해 없이 장갑 −%d. 증폭 효과는 쓰지 않고 다음 공격탄에 남습니다." % Content.effect_value(id, state) + ("\n" + Content.compression_cost_text(id, state) if Content.is_compressed(id) else "")
 
+	# Magazine game wording (launch pass 2026-11-12): what the round does, without the loading
+	# order notes and edge cases written for the hand-loading training mode below.
+	if preload("res://redesign/magazine_trial.gd").enabled(state):
+		var amount := Content.effect_value(id, state)
+		match str(spec.effect):
+			"spread": return "표적의 화상을 최대 %d턴만큼 뒤의 가장 가까운 적에게 옮깁니다. 소이탄 다음에 쏘세요." % amount
+			"vent": return "쌓인 열을 최대 %d까지 써서 열 1당 피해 +%d." % [int(spec.heat_spend), amount] + (" 과열 직후 강행으로도 쏠 수 있습니다." if Content.reactor_enabled(state) else "")
+			"detonate": return ("남은 화상 피해의 2배를" if Content.is_compressed(id) else "남은 화상 피해를") + " 한 번에 터뜨리고 화상을 없앱니다. 장갑·배리어 무시. 소이탄 다음에 쏘세요."
+			"chase": return "바로 앞 탄이 적을 처치했다면 피해 +%d." % amount
+			"bypass": return "맨 앞 적을 건너뛰고 두 번째 적을 공격합니다. 적이 하나뿐이면 그 적을 공격합니다."
+			"cool": return "열을 %d 낮춥니다." % amount + (" 강행 탄으로 써서 한계 아래로 내리면 강제 냉각 없이 끝납니다." if Content.reactor_enabled(state) else "")
+		match id:
+			"pierce_c": return "관통 %d만큼 장갑을 무시합니다." % Content.penetration(id, state) + (" 탄창 %d칸을 차지합니다." % Content.slot_cost(id) if Content.slot_cost(id) > 1 else "")
+			"push_c": return "적을 최대 %dm 밀칩니다." % amount
+			"precise_c": return "같은 적을 %d회 타격합니다. 증폭 피해도 타격마다 적용됩니다." % Content.hit_count(id, state)
+			"arc_c": return "표적 뒤의 모든 적에게 전이 %d피해(장갑 무시)." % amount
+			"basic": return "특수 효과 없는 기본 탄환입니다."
+			"pierce": return "관통 %d만큼 장갑을 무시합니다." % Content.penetration(id, state)
 	if Content.is_compressed(id) and Content.source_id(id) in ["prepare", "disrupt", "spread", "sequence", "vent", "thermal", "shatter", "detonate", "chase", "bypass", "cool"]:
 		var value := Content.effect_value(id, state)
 		var rule := ""
@@ -77,17 +100,17 @@ static func _description(id: String, state: Dictionary) -> String:
 		if id == "basic": return "발열 1의 물리 탄환. 한 장당 한 발이며 사용 후 버린 더미로 이동합니다." if Content.uses_ammo_cards(state) else "재장전할 때 다시 채워지는 물리 기본탄입니다."
 	if id == "push": return "적을 %dm 밀칩니다. 탄창당 총 %dm까지 적용됩니다." % [Content.effect_value(id, state), Content.push_budget(state)]
 	if id == "precise": return "같은 적을 %d회 타격합니다. 증폭 피해도 타격마다 적용됩니다." % Content.hit_count(id, state)
-	if id == "shatter": return "타격 후 장갑 −%d. 배리어에 막혀도 적용되며, 태세 전환 뒤에도 유지됩니다." % Content.effect_value(id, state)
-	if id == "chase": return "같은 탄창의 직전 탄이 적을 처치했다면 피해 +%d. 전이 처치 포함, 요격·시간 경과 화상 처치 제외." % Content.effect_value(id, state)
-	if id == "vent" and Content.reactor_enabled(state): return "먼저 장전 · 마지막 발사. 열 최대 %d를 소모해 열 1당 피해 +%d. 과열 직후 강행으로 발사할 수도 있습니다." % [int(spec.heat_spend),Content.effect_value(id, state)]
-	if id == "vent": return "먼저 장전 · 마지막 발사. 현재 열을 최대 %d 소모하고, 열 1마다 피해 +%d. 앞선 탄에서 과열되면 발사되지 않습니다." % [int(spec.heat_spend), Content.effect_value(id, state)]
-	if id == "cool" and Content.reactor_enabled(state): return "현재 열을 %d 낮춥니다. 강행 탄으로 열을 한계 아래로 내리면 강제 재장전을 막고 잔탄을 보존합니다." % Content.effect_value(id, state)
-	if id == "cool": return "현재 열을 %d 낮춥니다. 과열 한계에 도달하기 전에 배치하세요. 열은 0 아래로 내려가지 않습니다." % Content.effect_value(id, state)
+	if id == "shatter": return "맞힌 뒤 장갑 −%d. 배리어에 막혀도 적용됩니다." % Content.effect_value(id, state)
+	if id == "chase": return "바로 앞 탄이 적을 처치했다면 피해 +%d." % Content.effect_value(id, state)
+	if id == "vent" and Content.reactor_enabled(state): return "쌓인 열을 최대 %d까지 써서 열 1당 피해 +%d. 과열 직후 강행으로도 쏠 수 있습니다." % [int(spec.heat_spend),Content.effect_value(id, state)]
+	if id == "vent": return "쌓인 열을 최대 %d까지 써서 열 1당 피해 +%d." % [int(spec.heat_spend), Content.effect_value(id, state)]
+	if id == "cool" and Content.reactor_enabled(state): return "열을 %d 낮춥니다. 강행 탄으로 써서 한계 아래로 내리면 강제 냉각 없이 끝납니다." % Content.effect_value(id, state)
+	if id == "cool": return "열을 %d 낮춥니다." % Content.effect_value(id, state)
 	if id == "prepare": return "뒤의 전술탄 %d발을 다음 재장전 패로 예약합니다. 현장 압축탄 제외, 전체 예약 최대 3장. 먼저 발사되도록 마지막에 장전하세요. 탄환은 복제하지 않습니다." % Content.effect_value(id, state)
-	if id == "disrupt": return "생존 표적의 발사 준비·충전을 %d턴 정지합니다. 적마다 한 번만 적용하며, 이동·이미 발사된 압력탄·교대 장갑은 멈추지 않습니다." % Content.effect_value(id, state)
-	if id == "spread": return "표적의 화상 최대 %d를 표적 뒤의 가장 가까운 생존 적에게 옮깁니다. 원래 화상은 옮긴 만큼 줄며 도착한 적은 최대 6턴까지 받습니다. 소이 → 불씨 순서로 발사하세요." % Content.effect_value(id, state)
+	if id == "disrupt": return "표적의 발사 준비·충전을 %d턴 멈춥니다. 적마다 한 번만 걸립니다." % Content.effect_value(id, state)
+	if id == "spread": return "표적의 화상을 최대 %d턴만큼 뒤의 가장 가까운 적에게 옮깁니다. 소이탄 다음에 쏘세요." % Content.effect_value(id, state)
 	if id == "sequence": return "이번 탄창에서 앞서 발사한 다른 탄종마다 피해 +%d, 최대 3종. 같은 탄과 압축형은 한 종류이며 연계탄 자신은 제외합니다. 긴 탄창과 다양한 저발열탄에 연결됩니다." % Content.effect_value(id, state)
-	if id == "arc": return "주 표적 뒤의 가장 가까운 생존 적에게 전이 %d피해. 귀족 거주구의 차폐는 전기 주 타격으로 2회 제거합니다." % Content.effect_value(id, state)
+	if id == "arc": return "표적 뒤의 가장 가까운 적에게 전이 %d피해(장갑 무시). 귀족 거주구의 차폐는 전격탄 두 번으로 걷힙니다." % Content.effect_value(id, state)
 	return Content.AMMO[id].text
 
 static func stats(id: String, state: Dictionary, full: bool = false) -> String:

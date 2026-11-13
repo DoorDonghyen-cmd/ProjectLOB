@@ -41,7 +41,7 @@ tools\run_current_ui_checks.ps1 -Only gate_live_ui,build_live_ui
 | `growth_structure_rules` | 성장 구조 v2 규칙(숙련·내장 구동·구동 성장·저장) | 50 |
 | `overhaul_ui` | 관문 구동 강화·숙련 선택지, 상점 구동 정비 | 30 |
 | `tag_build_rules` | 태그 시험판 규칙(태그·카드 글자·탄 상세·이름표·카드 숫자·파츠 15종·화상·복제·기록·제시·저장) | 229 |
-| `tag_build_ui` | 등반 설정 구성 선택, 태그 파츠 상세, 탄창 카드 태그 글자·초록 숫자·탄 상세, 전투 빌드 창 | 68 |
+| `tag_build_ui` | 등반 설정 구성 선택, 태그 파츠 상세, 탄창 카드 태그 글자·초록 숫자·탄 상세, 전투 빌드 창 | 74 |
 | `overheat_cost_rules` | 과열 대가(강제 냉각 행동 수, 사격 예측, 옛 저장, 저장 검증) | 26 |
 | `tag_float_ui` | 실제 리벳 전투의 태그 이름표·초록 카드 숫자·비워진 칸 | 20 |
 | `reward_trim_ui` | 일반 전투 보상 탄 1장 빼기(규칙·맨 앞 카드·화면·저장) | 71 |
@@ -49,9 +49,18 @@ tools\run_current_ui_checks.ps1 -Only gate_live_ui,build_live_ui
 | `mix_combo_rules` | 교차 사격 규칙(단계·실제 사격·저장) | 17 |
 | `mix_combo_ui` | 실제 래칫 전투의 교차+N 표시 | 4 |
 | `part_slots_ui` | 파츠 종류 표시(분류·상점·상세·빌드 창) | 111 |
-| `salvage_ui` | 탄환 회수(마지막 처치·보상 카드·정예·처치 숫자·저장) | 40 |
+| `salvage_ui` | 탄환 회수(마지막 처치·보상 카드·정예·처치 숫자·저장) | 42 |
 | `part_tuning_rules` | 11-11 파츠 수정(강제 냉각 대가·잔열 노심·공명기·냉각 약실·야전 압축기 제시·약한 파츠 숫자·이름) | 29 |
-| `ammo_revision_rules` | 탄환 이름·효과 정리(압축 +, 연계 낱말, 연계탄 교차 단계, 예약탄 다음 탄창, 저장) | 19 |
+| `ammo_revision_rules` | 탄환 이름·효과 정리(압축 +, 연계 낱말, 연계탄 교차 단계, 예약탄 다음 탄창·강화형 2발, 저장) | 21 |
+| `launch_balance_rules` | 출시 밸런스(리와인더 되감기 사격 ×3, 다른 총·이전 저장 불변, 예측 일치, 저장) | 35 |
+
+2026-11-12 출시 준비에서 고친 검사: `title_ui_runner`(개발·훈련 버튼은 숨김이 기본, 글자 7번으로 켠 뒤 확인), `tag_build_ui`(비교 토글은 개발 도구를 켠 뒤), `salvage_ui`(회수는 모서리 표식, 카드가 줄 안에 다 보이는지), `equipment_live_ui`·`weapon_live_ui`·`part_tuning_rules`(바뀐 문구). 전체 35종 통과.
+
+검사가 아닌 점검 도구(2026-11-12, [출시 준비 점검](../direction/launch-readiness.md)):
+
+- `tests/launch_tour.gd` — 타이틀부터 엔딩까지 실제 새 등반 1회를 진행하며 화면 종류마다 한 장씩 찍는다(`QA_TOUR_SIZE` 기본 1170x540, `QA_GUN`, `QA_SEED`). 통과·실패가 없다. 사람이 그림을 본다.
+- `tests/launch_text_dump.gd` — 새 등반의 탄환·파츠·총기·복장 문장을 `text_dump.txt` 한 파일로 뽑는다.
+- `tests/growth_v2_climb.gd`의 `QA_NAIVE=careful` — 과열하지 않는 가장 큰 발수만 쏘고 과열 직전에 식히는 플레이.
 
 2026-11-08에 고친 검사: `title_ui_runner`(엔딩 고정 상태를 실제 승리 상태로), `preart_ux_runner`·`console_visual_runner`·`modal_touch_runner`·`equipment_dialog_ui`·`line_world_ui`(설정 선택 버튼, 출발 장면, 탄약고 장면, 공통 창). 바뀐 줄에는 날짜와 이유를 주석으로 남겼다.
 

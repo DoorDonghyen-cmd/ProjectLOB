@@ -38,7 +38,12 @@ func refresh() -> void:
 	elif run.s.get("encounter", {}).get("stage", "") == "cleared":
 		receipts.append(str(run.s.message))
 	for id in run.model.s.get("engine", {}).get("gains", []):
-		receipts.append("%s · %s" % [Data.PARTS[id].name, Engines.gain_summary(run.model.s, id)])
+		# "단타 ×2.00 → 단타 ×2.15" reads as "… 성장 · 단타 ×2.00 → ×2.15".
+		var gain := Engines.gain_summary(run.model.s, id)
+		var sides := gain.split(" → ")
+		if sides.size() == 2 and sides[0].get_slice(" ", 0) == sides[1].get_slice(" ", 0):
+			gain = sides[0] + " → " + sides[1].trim_prefix(sides[0].get_slice(" ", 0) + " ")
+		receipts.append("%s 성장 · %s" % [Data.PARTS[id].name, gain])
 	if not host.save_error.is_empty():
 		receipts.insert(0, host.save_error)
 	%Receipt.text = "  /  ".join(receipts)
@@ -64,11 +69,11 @@ func open_record() -> void:
 	host._encounter_record(PartFeedback.encounter_state(run.encounter_report_state()))
 
 func open_tools() -> void:
-	var column: VBoxContainer = host._workspace("전투 보상 메뉴")
+	var column: VBoxContainer = host._workspace_card("메뉴")
 	host._button(column, "빌드", "city_deck", host.city_ui.deck)
 	host._button(column, "기록실", "city_archive", host.city_ui.archive)
 	host._button(column, "설정", "settings", host._settings)
-	host._button(column, "타이틀", "menu", host._to_menu)
+	host._button(column, "타이틀로 나가기", "menu", host._to_menu)
 
 func _input(event: InputEvent) -> void:
 	if choosing_outgoing and event.is_action_pressed("ui_cancel"):

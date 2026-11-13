@@ -37,6 +37,14 @@ func run() -> void:
 		host = load("res://redesign/main.tscn").instantiate(); host.save_enabled = false
 		root.add_child(host); await settle()
 		host.selected_tag_build = false
+		# Launch build (2026-11-12): the comparison toggle is a developer tool.
+		host.preferences.data.dev_tools = false
+		host._open_preparation(false); await settle()
+		await tap("preparation_options")
+		check(find("part_scheme_current") == null and find("CityDifficulty") != null, "launch 등반 설정 has no scheme toggle " + suffix)
+		await capture("options_launch_" + suffix)
+		await tap("DialogClose")
+		host.preferences.data.dev_tools = true
 		host._open_preparation(false); await settle()
 		await tap("preparation_options")
 		check(on_screen(find("part_scheme_current")) or find("part_scheme_current") != null, "scheme row in 등반 설정 " + suffix)

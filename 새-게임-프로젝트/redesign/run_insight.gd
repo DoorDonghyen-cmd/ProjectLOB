@@ -118,7 +118,7 @@ static func threat_line(enemies: Array) -> String:
 	if int(data.barrier) > 0: locks.append("◆%d" % int(data.barrier))
 	if bool(data.charge): locks.append("충전")
 	if bool(data.stance): locks.append("교대 장갑")
-	return "위협 · %d개체 · 장갑 최대 %d · 접촉 최소 %d턴%s" % [data.count, data.max_armor, data.contact_turns, " · " + "/".join(locks) if not locks.is_empty() else ""]
+	return "적 %d기 · 장갑 최대 %d · 가장 빠른 적 도달 %d행동%s" % [data.count, data.max_armor, data.contact_turns, " · " + "/".join(locks) if not locks.is_empty() else ""]
 
 static func reward_impact(id: String, state: Dictionary, next_enemies: Array) -> String:
 	var threat := threat_data(next_enemies)

@@ -133,7 +133,7 @@ func add_live_menu() -> void:
 	var actions := VBoxContainer.new()
 	actions.name = "Actions"
 	panel.add_child(actions)
-	for entry in [["Build", "내 빌드", live_presenter.deck], ["Archive", "기록", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
+	for entry in [["Build", "빌드", live_presenter.deck], ["Archive", "기록실", live_presenter.archive], ["Settings", "설정", live_host._settings], ["ReturnTitle", "타이틀로 나가기", live_host._to_menu], ["CloseMenu", "닫기", Callable()]]:
 		var button := Button.new()
 		button.name = entry[0]
 		button.text = entry[1]
@@ -541,7 +541,7 @@ func commit(replace: String) -> void:
 	var before: int = deck().count(incoming)
 	if not command("resolve", "ammo", incoming, replace):
 		return
-	receipt = "%s 1장 확보 · %s" % [Ammo.AMMO[incoming].name, ("%s 1장 내보냄" % Ammo.AMMO[replace].name) if not replace.is_empty() else "휴대 %d → %d발" % [deck().size() - 1, deck().size()]]
+	receipt = "%s 1장 확보 · %s" % [Ammo.AMMO[incoming].name, ("%s 1장 내보냄" % Ammo.AMMO[replace].name) if not replace.is_empty() else "탄약 %d → %d발" % [deck().size() - 1, deck().size()]]
 	mode = Mode.DONE
 	outgoing = ""
 	verify(deck().count(incoming) == before + 1, "incoming round counted once")
@@ -552,14 +552,14 @@ func commit(replace: String) -> void:
 func skip() -> void:
 	if mode == Mode.DONE: return
 	if command("resolve", "skip"):
-		receipt = "보급 없이 출발 · 휴대 %d / %d발 유지" % [deck().size(), limit()]
+		receipt = "보급 없이 출발"
 		mode = Mode.DONE
 		refresh()
 
 func refresh() -> void:
 	var state: Dictionary = run.model.s
 	var count := deck().size()
-	pack_title.text = "휴대 탄약 %d / %d발" % [count, limit()]
+	pack_title.text = "보유 탄약 %d / %d발" % [count, limit()]
 	chest_label.text = "보급함 · %d종 중 1장" % offer_buttons.size()
 	if layout == "shelf":
 		offers_scroll.visible = mode != Mode.REPLACE
@@ -589,36 +589,30 @@ func refresh() -> void:
 	title_label.text = str(Ammo.AMMO[incoming].name)
 	tag_label.text = ("보충 · 같은 탄 %d장 보유" % owned) if owned > 0 and mode != Mode.DONE else ("새 탄환 · 처음 확보" if mode != Mode.DONE else "확보 완료")
 	# First paragraph only, without the grade line; the shared heat rules live in help.
-	var lines: PackedStringArray = Readability.description(incoming, state).get_slice("
-
-", 0).split("
-")
-	if lines.size() > 1 and lines[0].length() <= 4: lines.remove_at(0)
-	description_label.text = "
-".join(lines)
+	description_label.text = Readability.description(incoming, state)
 	description_label.visible = not compact()
 	tag_label.visible = not compact() or mode == Mode.DONE
 	explanation.visible = not compact()
 	before_label.visible = not compact()
 	after_label.visible = not compact()
-	stats_label.text = "%s · 발열 %s · 탄창 %d칸" % [Comparison.power(incoming, state), Ammo.heat_label(incoming, state), Ammo.slot_cost(incoming)]
+	stats_label.text = "%s · 열 %s%s" % [Comparison.power(incoming, state), Ammo.heat_label(incoming, state), " · 탄창 %d칸" % Ammo.slot_cost(incoming) if Ammo.slot_cost(incoming) > 1 else ""]
 	secondary.visible = mode != Mode.DONE
 	match mode:
 		Mode.PICK:
 			before_label.text = "현재"
 			after_label.text = "추가 확보 후"
-			before_value.text = "%s %d장\n휴대 %d / %d발" % [Ammo.AMMO[incoming].name, owned, count, limit()]
+			before_value.text = "%s %d장\n탄약 %d / %d발" % [Ammo.AMMO[incoming].name, owned, count, limit()]
 			if bag_full():
-				after_value.text = "휴대 상한\n교체만 가능"
-				explanation.text = "가방이 가득 찼습니다. 받을 탄과 바꿀 탄을 아래에서 고르세요."
+				after_value.text = "탄약 상한\n교체만 가능"
+				explanation.text = "탄약이 가득 찼습니다. 교체로만 받을 수 있습니다."
 				primary.text = "추가 불가"
 				primary.disabled = true
 				primary.theme_type_variation = &""
 				secondary.text = "교체해서 확보"
 				secondary.theme_type_variation = &"PrimaryButton"
 			else:
-				after_value.text = "%s %d장\n휴대 %d / %d발" % [Ammo.AMMO[incoming].name, owned + 1, count + 1, limit()]
-				explanation.text = "추가하면 전투에서 쓸 탄이 1발 늘어납니다. 교체하면 총량은 그대로이고 덱의 비중만 바뀝니다."
+				after_value.text = "%s %d장\n탄약 %d / %d발" % [Ammo.AMMO[incoming].name, owned + 1, count + 1, limit()]
+				explanation.text = ""
 				primary.text = "추가로 확보"
 				primary.disabled = false
 				primary.theme_type_variation = &"PrimaryButton"
@@ -632,26 +626,28 @@ func refresh() -> void:
 			secondary.text = "취소"
 			if outgoing.is_empty():
 				before_value.text = "아래 선반에서\n한 장 선택"
-				after_value.text = "%s %d → %d장\n휴대 %d / %d발" % [Ammo.AMMO[incoming].name, owned, owned + 1, count, limit()]
+				after_value.text = "%s %d → %d장\n탄약 %d / %d발" % [Ammo.AMMO[incoming].name, owned, owned + 1, count, limit()]
 				explanation.text = "내보낸 탄은 이번 등반에서 사라집니다."
 				primary.text = "교체 확정"
 				primary.disabled = true
 			else:
 				var leaving: int = deck().count(outgoing)
 				before_value.text = "%s %d → %d장" % [Ammo.AMMO[outgoing].name, leaving, leaving - 1]
-				after_value.text = "%s %d → %d장\n휴대 %d / %d발 유지" % [Ammo.AMMO[incoming].name, owned, owned + 1, count, limit()]
+				after_value.text = "%s %d → %d장\n탄약 %d / %d발 그대로" % [Ammo.AMMO[incoming].name, owned, owned + 1, count, limit()]
 				explanation.text = "%s 1장을 내보내고 %s 1장을 받습니다." % [Ammo.AMMO[outgoing].name, Ammo.AMMO[incoming].name]
 				primary.text = "교체 확정"
 				primary.disabled = false
 		Mode.DONE:
 			before_label.text = "보급 결과"
-			after_label.text = "휴대 탄약"
+			after_label.text = "보유 탄약"
 			before_value.text = receipt.get_slice(" · ", 0)
 			after_value.text = "%d / %d발" % [count, limit()]
-			explanation.text = receipt
+			# The result is already in the two cells; only what they do not say stays below.
+			explanation.text = receipt.get_slice(" · ", 1) if receipt.get_slice_count(" · ") > 1 and receipt.contains("내보냄") else ""
 			primary.text = "지도로 계속"
 			primary.disabled = false
 			primary.theme_type_variation = &"PrimaryButton"
+	explanation.visible = not compact() and not explanation.text.is_empty()
 	cells.queue_redraw()
 
 # --- verification --------------------------------------------------------------------

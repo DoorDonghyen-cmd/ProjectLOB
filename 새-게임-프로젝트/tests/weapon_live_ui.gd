@@ -102,7 +102,7 @@ func run() -> void:
 		if c.s.phase=="combat" and gun=="rewinder":
 			var copy=Model.new();copy.s=c.model.s.duplicate(true)
 			check(copy.cool_magazine() and copy.s.phase=="ready","native first cooling survives")
-			check(hud.node("CoolName").text=="냉각·역전","native first cooling advertises reversal")
+			check(hud.node("CoolName").text=="냉각·되감기","native first cooling advertises reversal")
 			await capture("combat_rewinder_before_cool")
 			await tap("Cool")
 			check(canonical(c.model.s)==canonical(copy.s) and c.model.s.weapon_role_trial.rewound,"native UI reversal matches exact model")

@@ -28,6 +28,7 @@ const MixCombo = preload("res://redesign/mix_combo.gd")
 const Salvage = preload("res://redesign/salvage.gd")
 const PartTuning = preload("res://redesign/part_tuning.gd")
 const AmmoRevision = preload("res://redesign/ammo_revision.gd")
+const LaunchBalance = preload("res://redesign/launch_balance.gd")
 const Roles = preload("res://redesign/combat_roles.gd")
 const Balance = preload("res://redesign/run_balance.gd")
 const VERSION := 15
@@ -201,6 +202,8 @@ func fire() -> bool:
 	var count: int = s.magazine.size() if Content.chains(s) or s.gun == "amplifier" else 1
 	# 냉각 약실 (part_tuning.gd): the first attack round after a manual cool.
 	var breech := PartTuning.breech_ready(s, Content.active_parts(s))
+	# 리와인더 (launch_balance.gd): the first attack round after the rewind.
+	var rewind := WeaponRoles.kind(s) == "rewinder" and LaunchBalance.rewind_ready(s)
 	if MagazineTrial.enabled(s): count = mini(count, MagazineTrial.pulse(s))
 	var recent_rounds: Array = _recent_part_rounds()
 	var previous_round: String = str(recent_rounds.back()) if not recent_rounds.is_empty() else ""
@@ -212,6 +215,9 @@ func fire() -> bool:
 		fired_in_action += 1
 		var weapon_factor := WeaponRoles.consume_front(s)
 		var id: String = s.magazine.pop_front()
+		if rewind and Content.is_attack(id):
+			weapon_factor = LaunchBalance.REWIND_FACTOR
+			rewind = false
 		var source: String = Content.source_id(id)
 		var triad_ready: bool = recent_sources.size() >= 2 and recent_sources[-1] != recent_sources[-2] and source != recent_sources[-1] and source != recent_sources[-2]
 		var result := _shot(id, -1, {"weapon_factor":weapon_factor,"overdrive":overdrive_pending,"first": recent_sources.is_empty(), "last": s.magazine.is_empty(), "last_attack": not s.magazine.any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "previous_round": previous_round, "fired_count": recent_sources.size(), "sequence_count": Content.prior_kind_count(recent_sources, id), "recent_sources": recent_sources.duplicate(), "breech": breech and Content.is_attack(id)})
@@ -775,15 +781,20 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	var held_round := false
 	if spec.effect == "prepare" and AmmoRevision.enabled(s) and MagazineTrial.enabled(s):
 		# 예약탄 (ammo_revision.gd): the round behind it waits for the front of the next magazine.
+		# 2026-11-12 launch pass: 예약탄+ holds as many rounds as its card says (2), so the
+		# strengthened round is no longer the same as the plain one.
 		if not s.has("held_front"): s.held_front = []
-		for slot in range(s.magazine.size()):
-			var next_id := str(s.magazine[slot])
-			if Content.is_temporary(next_id) or s.held_front.size() >= AmmoRevision.HELD_LIMIT: continue
-			s.magazine.remove_at(slot)
+		var wanted := maxi(1, Content.effect_value(id, s))
+		var held_at := 0
+		while held_at < s.magazine.size() and prepared_rounds.size() < wanted:
+			var next_id := str(s.magazine[held_at])
+			if Content.is_temporary(next_id) or s.held_front.size() >= AmmoRevision.HELD_LIMIT:
+				held_at += 1
+				continue
+			s.magazine.remove_at(held_at)
 			s.held_front.append(next_id)
 			prepared_rounds.append(next_id)
 			held_round = true
-			break
 	elif spec.effect == "prepare":
 		if not s.has("prepared"): s.prepared = []
 		var candidates: Array = []
@@ -905,7 +916,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	var gate_charge := int(s.get("gate_charge",0)) if attack else 0
 	if attack and s.has("gate_charge"): s.gate_charge = 0
 	var overdrive_percent := Content.overdrive_percent(s) if attack and bool(part_context.get("overdrive",false)) else 100
-	var weapon_factor := int(part_context.get("weapon_factor",1)) if WeaponRoles.kind(s)=="deadbolt" and attack else 1
+	var weapon_factor := int(part_context.get("weapon_factor",1)) if WeaponRoles.enabled(s) and attack else 1
 	var raw := int(subtotal * factor * part_factor * weapon_factor * engine_percent * gate_percent * overdrive_percent / 1000000.0) if attack else 0
 	var heat_percent:=FireHeatTrial.damage_percent(s,heat_before,int(profile.heat_limit))
 	var first_raw:=raw+gate_charge
@@ -933,7 +944,7 @@ func _shot(id: String, forced_target: int = -1, part_context: Dictionary = {}) -
 	if not minimal and (weakness_bonus > 0): combo.append("약점 +%d" % weakness_bonus)
 	if not minimal and (chase_bonus > 0): combo.append("추격 +%d" % chase_bonus)
 	if not minimal: combo.append_array(part_combo)
-	if not minimal and weapon_factor>1: combo.append("봉인탄 ×3")
+	if not minimal and weapon_factor>1: combo.append("봉인탄 ×3" if WeaponRoles.kind(s)=="deadbolt" else "되감기 ×%d" % weapon_factor)
 	for hit_index in range(requested_hits):
 		if int(e.hp) <= 0: break
 		hits += 1
@@ -1283,7 +1294,7 @@ func preview() -> Dictionary:
 	var source: String = Content.source_id(str(stack.front()))
 	var triad_ready: bool = recent.size() >= 2 and recent[-1] != recent[-2] and source != recent[-1] and source != recent[-2]
 	var rounds := _recent_part_rounds() if s.phase == "ready" else []
-	return copy._shot(str(stack.front()), -1, {"weapon_factor":3 if WeaponRoles.mark(s)==0 else 1,"previous_round": str(rounds.back()) if not rounds.is_empty() else "", "first": recent.is_empty(), "last": stack.size() == 1, "last_attack": not stack.slice(1).any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "fired_count": recent.size(), "sequence_count": Content.prior_kind_count(recent, str(stack.front())), "recent_sources": recent.duplicate(), "breech": PartTuning.breech_ready(s, Content.active_parts(s)) and Content.is_attack(str(stack.front()))})
+	return copy._shot(str(stack.front()), -1, {"weapon_factor":3 if WeaponRoles.mark(s)==0 else (LaunchBalance.REWIND_FACTOR if WeaponRoles.kind(s)=="rewinder" and LaunchBalance.rewind_ready(s) and Content.is_attack(str(stack.front())) else 1),"previous_round": str(rounds.back()) if not rounds.is_empty() else "", "first": recent.is_empty(), "last": stack.size() == 1, "last_attack": not stack.slice(1).any(func(round_id): return Content.is_attack(str(round_id))), "triad": triad_ready, "fired_count": recent.size(), "sequence_count": Content.prior_kind_count(recent, str(stack.front())), "recent_sources": recent.duplicate(), "breech": PartTuning.breech_ready(s, Content.active_parts(s)) and Content.is_attack(str(stack.front()))})
 
 func movement_preview(turn_count: int) -> Array:
 	var copy = get_script().new()
@@ -1522,6 +1533,7 @@ func restore_state(source: Dictionary) -> bool:
 	if not MixCombo.valid(parsed): return false
 	if not Salvage.valid(parsed): return false
 	if not AmmoRevision.valid(parsed): return false
+	if not LaunchBalance.valid(parsed): return false
 	if not Balance.valid(parsed): return false
 	if not Patterns.valid(parsed): return false
 	if FocusBuild.enabled(parsed) and int(parsed.get("fire_control_version",0)) != FireHeatTrial.CAMPAIGN_VERSION: return false

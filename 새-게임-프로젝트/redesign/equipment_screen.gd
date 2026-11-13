@@ -20,6 +20,7 @@ func _fit_art() -> void:
 func bind_screen(owner_screen: Control, run_profile: Dictionary) -> void:
 	host = owner_screen
 	profile = run_profile
+	if not host.preferences.dev_tools(): host.selected_tag_build = false
 	%Heading.text = "훈련 장비" if host.preparation_training else "등반 장비"
 	%loadout_back.pressed.connect(host._to_menu)
 	%preparation_options.pressed.connect(_options)
@@ -87,11 +88,11 @@ func refresh() -> void:
 	%OutfitName.text = outfit.name
 	%OutfitSummary.text = "손패 %d장 · 교환 %d회" % [outfit.hand, outfit.exchange]
 	if not host.preparation_training:
-		%WeaponIdentity.text = {"single":"공격탄 피해 +1","burst":"같은 적 3회 적중 시 +4","scatter":"탄마다 무작위 표적","heavy":"과열 뒤 1발 강행","amplifier":"단발 효과 2배 · 처치 연속","rewinder":"냉각 때 잔탄 역순","deadbolt":"무작위 1발 ×3·봉인"}[host.selected_weapon_id]
-		%OutfitSummary.text = "덱 %d~%d발 · 시작 %d발 · 정비 최대 +6" % [Content.Roles.MINIMUM[outfit_id],Content.Roles.CARRY[outfit_id],preload("res://redesign/magazine_build.gd").start_deck(host.selected_weapon_id).size()]
-		%Reload.text = "교체  %d턴" % maxi(2,int(gun.reload))
-		%Cooling.text = "냉각  1턴 · 열 0"
-		%Heat.text = "발열 상한  %d" % gun.heat_limit
+		%WeaponIdentity.text = {"single":"공격탄 피해 +1","burst":"같은 적 3회 적중 시 +4","scatter":"탄마다 무작위 표적","heavy":"과열 뒤 1발 강행","amplifier":"단발 효과 2배 · 처치 연속","rewinder":"냉각 때 잔탄 역순 · 첫 발 ×3","deadbolt":"무작위 1발 ×3·봉인"}[host.selected_weapon_id]
+		%OutfitSummary.text = "덱 %d~%d발 · 시작 %d발 · 공방 확장 +6" % [Content.Roles.MINIMUM[outfit_id],Content.Roles.CARRY[outfit_id],preload("res://redesign/magazine_build.gd").start_deck(host.selected_weapon_id).size()]
+		%Reload.text = "교체  적 %d행동" % maxi(2,int(gun.reload))
+		%Cooling.text = "냉각  적 1행동"
+		%Heat.text = "열 한계  %d" % gun.heat_limit
 		%FireMode.text = {"single":"사격 1~2발","burst":"사격 1~3발","scatter":"사격 1~3발","heavy":"기본 사격 1~3발","amplifier":"사격 1발 · 처치 시 연속","rewinder":"사격 1~3발","deadbolt":"사격 1~3발"}[host.selected_weapon_id]
 		if host.selected_weapon_id=="amplifier":%WeaponIdentity.text="단발 피해·효과 ×2"
 	%OutfitHint.text = "훈련은 기본 작업복을 사용합니다." if host.preparation_training else ""
@@ -130,17 +131,12 @@ func _start_deck() -> Array:
 
 func _outfit_capacity(id: String) -> String:
 	var expanded:=Content.Roles.carry({"outfit":id,"bag_upgrades":Content.Roles.BAG_STEPS})
-	return "최소 유지 %d발 · 보유 상한 %d발 · 정비 후 최대 %d발" % [Content.Roles.MINIMUM[id],Content.Roles.CARRY[id],expanded]
+	return "덱 %d~%d발 · 공방 확장 시 최대 %d발" % [Content.Roles.MINIMUM[id],Content.Roles.CARRY[id],expanded]
 
 func _deck_details() -> void:
 	var column: VBoxContainer = host._dialog("시작 탄환 · " + str(Content.GUNS[host.selected_weapon_id].name), false)
 	column.name = "StartingDeckPreview"
-	if not host.preparation_training:
-		var capacity: Label=host._label(column,Content.OUTFITS[host.selected_outfit_id].name+" · "+_outfit_capacity(host.selected_outfit_id),18,host.MUTED)
-		capacity.name="OutfitCapacityRule"
-	if not host.preparation_training: host._label(column,"기본탄으로 출발 · 첫 승리 후 코어와 특수탄 선택",18,host.MUTED)
-	if not host.preparation_training: host._label(column,"덱을 섞어 탄창을 채웁니다. 탄창 교체 시 미사용 탄은 예비 뒤로 돌아갑니다. 사용·빼낸 탄은 다음 전투에 복구됩니다.",18,host.MUTED)
-	if not host.preparation_training: host._label(column,"특수탄 획득 후에는 보유 특수탄 중 무작위 1장이 첫 탄창 후보에 포함됩니다. 탄환을 선택하고 빼내면 뒤 탄이 앞으로 당겨집니다.",18,host.MUTED)
+	# Launch pass (2026-11-12): the deck first, then the two facts a first run needs.
 	var deck := _start_deck()
 	var seen: Array = []
 	for id in deck:
@@ -149,7 +145,16 @@ func _deck_details() -> void:
 		var row: HBoxContainer = host._row(column)
 		var caption: Label = host._label(row, "%s ×%d" % [Content.AMMO[id].name, deck.count(id)], 21)
 		caption.name = "StartingRound_" + str(id)
-		host._label(row, preload("res://redesign/readability.gd").stats(id,{"gun":host.selected_weapon_id},true), 18, host.MUTED)
+		if host.preparation_training:
+			host._label(row, preload("res://redesign/readability.gd").stats(id,{"gun":host.selected_weapon_id},true), 18, host.MUTED)
+		else:
+			var state := {"gun":host.selected_weapon_id,"weapon_version":1,"combat_revision":Content.COMBAT_REVISION}
+			var stat: Dictionary = Content.primary_stat(id, state)
+			host._label(row, "%s %s · 열 %s" % [stat.label, stat.value, Content.heat_label(id, state)], 18, host.MUTED)
+	if not host.preparation_training:
+		host._label(column,"전투가 끝나면 쓴 탄이 모두 돌아옵니다. 첫 승리 보상에서 주력 탄을 고릅니다.",18,host.MUTED)
+		var capacity: Label=host._label(column,Content.OUTFITS[host.selected_outfit_id].name+" · "+_outfit_capacity(host.selected_outfit_id),18,host.MUTED)
+		capacity.name="OutfitCapacityRule"
 
 func _pick_scheme(tags: bool, dialog: Control) -> void:
 	host.selected_tag_build = tags
@@ -175,24 +180,41 @@ func _options() -> void:
 					_options.call_deferred()
 				)
 				if id == host.selected_loadout_id: host._primary_button(button)
-		host._label(column, "난도 · 등반 성공 시 다음 난도가 해금됩니다", 18, host.MUTED)
-		host.difficulty_option = SpinBox.new()
-		host.difficulty_option.name = "CityDifficulty"
-		host.difficulty_option.custom_minimum_size = Vector2(120, 52)
-		host.difficulty_option.max_value = int(profile.ascension)
-		host.difficulty_option.value = host.selected_difficulty
-		host.difficulty_option.editable = int(profile.ascension) > 0
-		host.difficulty_option.value_changed.connect(func(value: float): host.selected_difficulty = int(value); refresh())
-		column.add_child(host.difficulty_option)
-		# Tag-based rounds and parts prototype (2026-11-10, tag_build.gd), chosen per run.
-		host._label(column, "탄환·파츠 구성 · 비교 시험", 18, host.MUTED)
-		host._label(column, "태그 시험판은 탄의 태그(화염·단타·마무리 등)를 보고 작동하는 파츠 15종으로 바뀝니다.", 16, host.MUTED)
-		var schemes: HBoxContainer = host._row(column)
-		schemes.name = "PartSchemeSelection"
-		for entry in [[false, "현재 구성", "part_scheme_current"], [true, "태그 시험판", "part_scheme_tags"]]:
-			var scheme_button: Button = host._button(schemes, str(entry[1]), str(entry[2]), _pick_scheme.bind(bool(entry[0]), dialog))
-			if bool(entry[0]) == host.selected_tag_build: host._primary_button(scheme_button)
-	host._label(column, "시드 · 같은 번호는 같은 경로로 시작합니다", 18, host.MUTED)
+		# Difficulty (launch pass 2026-11-12): a − / + stepper instead of a number box.
+		var highest := int(profile.ascension)
+		var difficulty: HBoxContainer = host._row(column)
+		difficulty.name = "CityDifficulty"
+		var level: Label = host._label(difficulty, "난도 %d" % host.selected_difficulty, 22)
+		level.name = "DifficultyValue"
+		level.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if highest > 0:
+			for entry in [["−", "difficulty_less", -1], ["+", "difficulty_more", 1]]:
+				var step: Button = host._button(difficulty, str(entry[0]), str(entry[1]), func():
+					host.selected_difficulty = clampi(host.selected_difficulty + int(entry[2]), 0, highest)
+					dialog.close()
+					refresh()
+					_options.call_deferred()
+				)
+				step.custom_minimum_size = Vector2(72, 52)
+				step.size_flags_horizontal = Control.SIZE_SHRINK_END
+				step.disabled = host.selected_difficulty + int(entry[2]) < 0 or host.selected_difficulty + int(entry[2]) > highest
+		# What the level changes (launch_balance.gd: enemy HP; campaign_content.gd: start distance;
+		# campaign.gd: fight credits).
+		var chosen: int = host.selected_difficulty
+		var effect: Label = host._label(column, "기본 난도" if chosen == 0 else "적 체력 +%d%%(첫 구역) ~ +%d%%(마지막 구역) · 시작 거리 −%dm · 전투 보상 −%d Cr" % [preload("res://redesign/launch_balance.gd").harden_percent(chosen, 0) - 100, preload("res://redesign/launch_balance.gd").harden_percent(chosen, 4) - 100, mini(4, chosen / 2), chosen], 18)
+		effect.name = "DifficultyEffect"
+		effect.visible = highest > 0
+		host._label(column, "최고 난도 %d까지 선택할 수 있습니다." % highest if highest > 0 else "등반에 성공하면 다음 난도가 열립니다.", 17, host.MUTED)
+		# Tag-based rounds and parts prototype (2026-11-10, tag_build.gd): a comparison build,
+		# shown only with the developer switch (title_screen.gd).
+		if host.preferences.dev_tools():
+			host._label(column, "개발 도구 · 탄환·파츠 구성 비교", 18, host.MUTED)
+			var schemes: HBoxContainer = host._row(column)
+			schemes.name = "PartSchemeSelection"
+			for entry in [[false, "현재 구성", "part_scheme_current"], [true, "태그 시험판", "part_scheme_tags"]]:
+				var scheme_button: Button = host._button(schemes, str(entry[1]), str(entry[2]), _pick_scheme.bind(bool(entry[0]), dialog))
+				if bool(entry[0]) == host.selected_tag_build: host._primary_button(scheme_button)
+	host._label(column, "시드 · 같은 번호는 같은 지도로 시작합니다", 18, host.MUTED)
 	var row: HBoxContainer = host._row(column)
 	host.seed_input = LineEdit.new()
 	host.seed_input.name = "Seed"

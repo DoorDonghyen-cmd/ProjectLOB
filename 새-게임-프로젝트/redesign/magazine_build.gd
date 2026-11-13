@@ -133,7 +133,7 @@ static func combos(state: Dictionary) -> PackedStringArray:
 		if parts.has("third_striker") and fired <= 2 and stack.size() > 2-fired:
 			var third := str(stack[2-fired])
 			var multiplier := preload("res://redesign/samples/opening_build/third_striker_trial.gd").multiplier_label(state)
-			items.append("3번째 %s %s" % [Content.AMMO[third].name, multiplier] if Content.is_attack(third) else "3번째 지원탄 · 강화 없음")
+			items.append("3번째 %s %s" % [Content.AMMO[third].name, multiplier] if Content.is_attack(third) else "3번째가 지원탄 · 격발기 쉼")
 		if parts.has("opening") and fired == 0 and not stack.is_empty() and Content.is_attack(str(stack[0])): items.append("첫 발 ×2")
 	for i in range(stack.size()):
 		var id := str(stack[i])
